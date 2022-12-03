@@ -270,8 +270,8 @@ script:
       #     {{ not is_state(mp, 'playing') }}
       # - alias: "Wait until the sound has stopped playing"
       #   wait_template: "{{ not is_state(primary_player, 'playing') }}"
-      - alias: "Wait until the media player is idle"
-        wait_template: "{{ is_state(primary_player, 'idle') }}"
+      - alias: "Wait until the media player is paused"
+        wait_template: "{{ is_state(primary_player, 'paused') }}"
 
       # Set the volume for the TTS
       - service: media_player.volume_set
@@ -303,10 +303,10 @@ script:
       #   wait_template: >-
       #     {% set mp = media_players | last %}
       #     {{ not is_state(mp, 'playing') }}
-      # - alias: "Wait until the sound has stopped playing"
-      #   wait_template: "{{ not is_state(primary_player, 'playing') }}"
-      - alias: "Wait until the media player is idle"
-        wait_template: "{{ is_state(primary_player, 'idle') }}"
+      - alias: "Wait until the sound has stopped playing"
+        wait_template: "{{ not is_state(primary_player, 'playing') }}"
+      # - alias: "Wait until the media player is idle"
+      #   wait_template: "{{ is_state(primary_player, 'idle') }}"
 
       # # Restore the media player volumes
       # - service: script.restore_media_player_volume
