@@ -1,0 +1,37 @@
+# Mark person as Just Left
+#
+# This automation will simply check if a person's
+# input_boolean has turned off. This does not actually
+# contain logic to determine if they are not home. If
+# true, it will set their status to Jeft Left
+id: "people_status_left"
+alias: Mark person as just left
+mode: parallel
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id:
+      - input_boolean.cristina_home
+      - input_boolean.john_home
+      - input_boolean.joe_home
+      - input_boolean.nonna_home
+      - input_boolean.katia_home
+    to: "off"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: >
+        {% if trigger.entity_id == 'input_boolean.cristina_home' %}
+          input_select.cristina_status_dropdown
+        {% elif trigger.entity_id == 'input_boolean.john_home' %}
+          input_select.john_status
+        {% elif trigger.entity_id == 'input_boolean.joe_home' %}
+          input_select.joe_status_dropdown
+        {% elif trigger.entity_id == 'input_boolean.nonna_home' %}
+          input_select.nonna_status
+        {% elif trigger.entity_id == 'input_boolean.katia_home' %}
+          input_select.katia_status
+        {% endif %}
+      option: Just Left
+  # - service: script.turn_on
+  #   entity_id: script.scan_bt_depart

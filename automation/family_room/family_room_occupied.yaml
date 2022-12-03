@@ -1,0 +1,51 @@
+id: "family_room_occupied"
+initial_state: "on"
+alias: "Family room occupied"
+trigger:
+  # # If anybody is detected via Bluetooth
+  # - platform: template
+  #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
+  # Aqara occupancy detected
+  - platform: state
+    entity_id: binary_sensor.family_room_motion_sensor_occupancy
+    to: "on"
+  # Motion detected
+  - platform: state
+    entity_id: binary_sensor.family_room_motion_sensor
+    to: "on"
+  # # Bayesian sensor turns on
+  # - platform: state
+  #   entity_id: binary_sensor.family_room_presence
+  #   to: "on"
+  # If the TV is on
+  - platform: state
+    entity_id: device_tracker.family_room_tv
+    to: "home"
+  - platform: state
+    entity_id: media_player.sony_bravia_tv
+    to: "playing"
+  - platform: state
+    entity_id: media_player.sonos_family_and_kitchen
+    to: "playing"
+condition:
+  # Family room is not occupied
+  - condition: state
+    entity_id: input_boolean.family_room_occupied
+    state: "off"
+  # Either Bluetooth detects people or motion does
+  - condition: or
+    conditions:
+      # Bluetooth detects somebody
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
+      # Aqara occupancy detected
+      - condition: state
+        entity_id: binary_sensor.family_room_motion_sensor_occupancy
+        state: "on"
+action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.family_room_occupied
+  - service: notify.mobile_app_jk
+    data:
+      title: Family Room
+      message: The familiy room is now occupied!

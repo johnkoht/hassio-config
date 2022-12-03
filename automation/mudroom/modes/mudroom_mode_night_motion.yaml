@@ -1,0 +1,44 @@
+# Mudroom Mode Night Motion
+#
+# When the house is in Bedtime mode, the mudroom
+# light will trigger to motion by will be dim
+#
+id: "mudroom_mode_night_motion"
+initial_state: "on"
+alias: "Mudroom mode night motion"
+trigger:
+  # House is turned to Bedtime mode for 10 mins
+  - platform: state
+    entity_id: input_select.house
+    to: "Bedtime"
+    for:
+      minutes: 10
+  # Bedtime mode enabled
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "on"
+  # Bedtime hours
+  - platform: state
+    entity_id: binary_sensor.bedtime
+    to: "on"
+condition:
+  # Make sure the house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Bedtime mode enabled
+  - conditino: state
+    entity_id: input_boolean.bedtime
+    state: "on"
+  # Bedtime hours are active
+  - conditino: state
+    entity_id: binary_sensor.bedtime
+    state: "on"
+  # Mudroom isn't already set to motion
+  - condition: template
+    value_template: "{{ not is_state('input_select.mudroom','Night Motion') }}"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.mudroom
+      option: "Night Motion"

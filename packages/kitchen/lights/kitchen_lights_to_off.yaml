@@ -1,0 +1,51 @@
+# Kitchen Lights to Off"
+#
+automation:
+  - id: "kitchen_lights_to_off"
+    initial_state: on
+    alias: "Kitchen Lights to off"
+    trigger:
+      # Kitchen turns to Off Mode
+      - platform: state
+        entity_id: input_select.kitchen
+        to: "Off"
+      # Kitchen is not occupied
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+        # for:
+        #   minutes: 2
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lighting automations enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Kitchen lighting automations enabled
+      - condition: state
+        entity_id: input_boolean.kitchen_lighting_automations
+        state: "on"
+      # Kitchen is Off or the kitchen is no longer occupied
+      - condition: or
+        conditions:
+          # Kitchen is turned to Off mode
+          - condition: state
+            entity_id: input_select.kitchen
+            state: "Off"
+          # Kitchen is no longer occupied
+          - condition: state
+            entity_id: input_boolean.kitchen_occupied
+            state: "off"
+      # Kitchen is not in Dim Mode
+      # - condition: template
+      #   value_template: "{{ not is_state('input_select.kitchen','Dim') }}"
+      # Lights are currently on
+      - condition: state
+        entity_id: light.kitchen_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_lights

@@ -1,0 +1,31 @@
+# Foyer Lights Sleep Mode On
+#
+# The Foyer has a few Hue bulbs and uses adaptive
+# lighting, but we need to make sure that sleep mode
+# is on in the evenings after the sun is down
+#
+automation:
+  - id: "foyer_lights_sleep_mode_on"
+    initial_state: on
+    alias: "Foyer Lights Sleep Mode On"
+    trigger:
+      # 15 mins after sunset
+      - platform: sun
+        event: sunset
+      # Or at 8pm
+      - platform: time
+        at: "20:00:00"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Sun is set
+      - condition: sun
+        after: sunset
+      # # After 8pm
+      # - condition: time
+      #   after: "20:00:00"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.adaptive_lighting_sleep_mode_foyer

@@ -1,0 +1,36 @@
+# Office DnD Light On
+#
+# When the Office goes into DnD mode, let's turn
+# on the Hue signal outside to let people know.
+#
+automation:
+  - id: "office_dnd_light_on"
+    initial_state: on
+    alias: "Office DnD Light On"
+    trigger:
+      # Office goes to DnD Mode
+      - platform: state
+        entity_id: input_select.office
+        to: "DnD"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office is DnD Mode
+      - condition: state
+        entity_id: input_select.office
+        state: "DnD"
+    action:
+      - service: hue.hue_activate_scene
+        data:
+          group_name: Office Signal
+          scene_name: John DnD

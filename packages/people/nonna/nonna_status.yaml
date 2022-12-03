@@ -1,0 +1,9 @@
+input_select:
+  nonna_status:
+    name: Nonna
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+    initial: Away

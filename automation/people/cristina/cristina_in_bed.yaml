@@ -1,0 +1,49 @@
+# Cristina In Bed
+#
+# Triggered by the Bayesian sleep sensor and
+# simply toggles the in_bed and awake sensors
+#
+id: "cristina_in_bed"
+alias: "Cristina in bed"
+initial_state: "on"
+trigger:
+  # Cristina is in bed
+  - platform: state
+    entity_id: binary_sensor.cristina_sleeping
+    to: "on"
+    for:
+      minutes: 2
+  # Cristina is most likley in bed
+  - platform: state
+    entity_id: binary_sensor.cristina_probably_sleeping
+    to: "on"
+    for:
+      minutes: 2
+  # It's bedtime hours
+  - platform: state
+    entity_id: binary_sensor.bedtime
+    to: "on"
+  # Door is closed
+  - platform: state
+    entity_id: binary_sensor.main_bedroom_door_sensor_status
+    to: "off"
+condition:
+  # Cristina is probably sleeping
+  - condition: state
+    entity_id: binary_sensor.cristina_probably_sleeping
+    state: "on"
+    for:
+      minutes: 2
+  # Cristina is home
+  - condition: state
+    entity_id: input_boolean.cristina_home
+    state: "on"
+  # It's bedtime hours
+  - condition: state
+    entity_id: binary_sensor.bedtime
+    state: "on"
+action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.cristina_in_bed
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.cristina_is_awake

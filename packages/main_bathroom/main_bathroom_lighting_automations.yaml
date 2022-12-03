@@ -1,0 +1,5 @@
+input_boolean:
+  main_bathroom_lighting_automations:
+    name: Main Bathroom Lighting Automations
+    icon: mdi:motion-sensor
+    initial: on

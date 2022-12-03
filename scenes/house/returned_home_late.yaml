@@ -1,0 +1,20 @@
+name: "Returned Home late"
+entities:
+  light.mudroom_main_lights:
+    state: "on"
+    brightness: 50
+  light.garage_lights:
+    state: "on"
+    brightness: 65
+  light.foyer_ceiling_lights:
+    state: "on"
+    brightness: 50
+  light.foyer_chandelier:
+    state: "on"
+    brightness: 65
+  light.kitchen_main_light_switch:
+    state: "on"
+    brightness: 50
+  light.stairs_light:
+    state: "on"
+    brightness: 25

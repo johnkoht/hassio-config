@@ -1,0 +1,5 @@
+input_boolean:
+  garage_override:
+    name: Garage Override
+    icon: mdi:garage-lock
+    initial: false

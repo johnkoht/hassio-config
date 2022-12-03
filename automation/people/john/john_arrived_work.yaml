@@ -1,0 +1,42 @@
+id: "john_arrived_work"
+alias: "John arrived at work"
+initial_state: "on"
+trigger:
+  # Entered the work zone
+  - platform: zone
+    entity_id: person.john_koht
+    zone: zone.john_s_work
+    event: enter
+  # He's less than .5km
+  - platform: numeric_state
+    entity_id: proximity.john_work
+    below: .5
+condition:
+  # John is not home
+  - condition: state
+    entity_id: input_boolean.john_home
+    state: "off"
+  # It's a work day
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: "on"
+  # Before 10:30 am
+  - condition: time
+    before: "10:30:00"
+  # He's at work
+  - condition: state
+    entity_id: person.john_koht
+    state: "John's Work"
+action:
+  # Announcement
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "Attention! Baba arrived at the office.",
+            "Pardon the interruption, but Baba just go to work.",
+            "Just a friendly note that Baba has arrived at the office."
+          ] | random
+        }}
+      media_players: "auto"

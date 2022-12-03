@@ -1,0 +1,93 @@
+- id: '1626057067253'
+  name: Outdoor Light (Standard)
+  entities:
+    light.front_porch_pendant:
+      supported_color_modes:
+      - brightness
+      color_mode: brightness
+      brightness: 255
+      device_id: '2'
+      zone_id: '1'
+      friendly_name: Front Porch Pendant
+      supported_features: 33
+      state: 'on'
+- id: '1644810295925'
+  name: Nobody Home
+  entities:
+    light.main_light_switch:
+      supported_color_modes:
+      - brightness
+      device_id: '8'
+      zone_id: '4'
+      icon: mdi:ceiling-light-multiple-outline
+      friendly_name: Main Light Switch
+      supported_features: 33
+      state: 'off'
+    light.table_light_switch:
+      supported_color_modes:
+      - brightness
+      device_id: '9'
+      zone_id: '5'
+      icon: mdi:ceiling-light-multiple-outline
+      friendly_name: Table Light
+      supported_features: 33
+      state: 'off'
+    light.family_room_main_lights:
+      supported_color_modes:
+      - brightness
+      device_id: '3'
+      zone_id: '2'
+      friendly_name: Family Room_Main Lights
+      supported_features: 33
+      state: 'off'
+    climate.nest_main_floor:
+      hvac_modes:
+      - cool
+      - 'off'
+      - heat
+      - heat_cool
+      - fan_only
+      min_temp: 45
+      max_temp: 95
+      fan_modes:
+      - 'on'
+      - 'off'
+      preset_modes:
+      - none
+      - eco
+      current_temperature: 73
+      temperature:
+      target_temp_high: 75
+      target_temp_low: 67
+      fan_mode: 'off'
+      hvac_action: heating
+      preset_mode: none
+      friendly_name: Nest Main Floor
+      supported_features: 27
+      state: heat_cool
+    climate.nest_2nd_floor:
+      hvac_modes:
+      - cool
+      - 'off'
+      - heat
+      - heat_cool
+      - fan_only
+      min_temp: 45
+      max_temp: 95
+      fan_modes:
+      - 'on'
+      - 'off'
+      preset_modes:
+      - none
+      - eco
+      current_temperature: 72
+      temperature:
+      target_temp_high: 75
+      target_temp_low: 67
+      fan_mode: 'on'
+      hvac_action: idle
+      preset_mode: none
+      friendly_name: Nest 2nd Floor
+      supported_features: 27
+      state: heat_cool
+  icon: mdi:home-minus-outline

@@ -1,0 +1,38 @@
+# Main Bedroom Music Off
+#
+# If the Main Bedroom is no longer occupied then stop the music.
+#
+automation:
+  - id: "main_bedroom_music_off"
+    initial_state: on
+    alias: "Main Bedroom Music Off"
+    trigger:
+      # Main Bedroom is no longer occupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "off"
+      # Main Bedroom is in Off Mode
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Off"
+    condition:
+      # Main Bedroom is NOT OCCUPIED
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "off"
+      # Nobody detected via BLE
+      - condition: state
+        entity_id: binary_sensor.main_bedroom_ble_occupancy
+        state: "off"
+      # Music is playing
+      - condition: state
+        entity_id: media_player.sonos_main_bedroom
+        state: "playing"
+    action:
+      # Unjoin if it's joined
+      - service: media_player.unjoin
+        entity_id: media_player.sonos_main_bedroom
+
+      # Turn off the Sonos music
+      - service: media_player.media_pause
+        entity_id: media_player.sonos_main_bedroom

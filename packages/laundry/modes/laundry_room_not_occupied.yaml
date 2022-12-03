@@ -1,0 +1,26 @@
+automation:
+  - id: "laundry_room_not_occupied"
+    initial_state: on
+    alias: "Laundry Room not occupied"
+    trigger:
+      # No motion for 3 minutes
+      - platform: state
+        entity_id: binary_sensor.laundry_room_motion_sensor_motion
+        to: "off"
+        for:
+          minutes: 2
+      # Laundry Room sensor no longer detects occupancy
+      - platform: state
+        entity_id: binary_sensor.laundry_room_motion_sensor_occupancy
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: input_boolean.laundry_room_occupied
+        state: "on"
+      # Entry motion sensor does not detect motion
+      - condition: state
+        entity_id: binary_sensor.laundry_room_motion_sensor_motion
+        state: "off"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.laundry_room_occupied

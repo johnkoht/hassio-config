@@ -1,0 +1,15 @@
+sensor:
+  - platform: group
+    name: Room Presence Family
+    unique_id: room_presence_family
+    entities:
+      - sensor.john_room_presence
+      - sensor.cristina_room_presence
+
+  - platform: group
+    name: Room Presence Everybody
+    unique_id: room_presence_everybody
+    entities:
+      - sensor.john_room_presence
+      - sensor.cristina_room_presence
+      - sensor.antoun_room_presence

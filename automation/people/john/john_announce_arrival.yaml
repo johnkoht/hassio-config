@@ -1,0 +1,38 @@
+id: "john_announce_arrival"
+alias: John Announce Arrival
+mode: parallel
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id: input_select.john_status
+    from: "Away"
+    to: "Just Arrived"
+  - platform: state
+    entity_id: input_select.john_status
+    from: "Extended Away"
+    to: "Just Arrived"
+condition:
+  # Somebody has been home for 5 minutes
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+    for:
+      minutes: 5
+action:
+  # Announcement
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "Guess who's home? It's Baba!",
+            "Stop what you're doing, Baba is home!",
+            "Baba is home! Yay!",
+            "I am sensing a disturbance in the force. Baba must be home!",
+            "And the house becomes a home. Welcome back Baba!",
+            "Pardon the interruption but Baba is home!",
+            "Knock knock. Who's there? It's Baba!!",
+            "Fear not! Baba is home!"
+          ] | random
+        }}
+      media_players: "auto"

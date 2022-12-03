@@ -1,0 +1,4 @@
+input_boolean:
+  playroom_occupied:
+    name: Playroom Occupied
+    icon: mdi:teddy-bear

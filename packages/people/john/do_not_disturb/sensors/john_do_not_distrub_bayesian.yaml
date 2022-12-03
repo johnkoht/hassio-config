@@ -1,0 +1,94 @@
+binary_sensor:
+  - platform: bayesian
+    prior: 0.50
+    name: "John Do Not Disturb"
+    probability_threshold: 0.75
+    observations:
+      # Calendar/Scheduled Meetings
+      #
+      # In a meeting
+      - platform: state
+        entity_id: "calendar.john_launchpadlab_com"
+        prob_given_true: 0.95
+        prob_given_false: 0.10
+        to_state: "on"
+      # Not in a meeting
+      - platform: state
+        entity_id: "calendar.john_launchpadlab_com"
+        prob_given_true: 0.10
+        prob_given_false: 0.60
+        to_state: "off"
+
+      # Calendar not personal time
+      #
+      # Personal time
+      - platform: state
+        entity_id: "binary_sensor.john_personal_time"
+        prob_given_true: 0.20
+        prob_given_false: 0.95
+        to_state: "on"
+      # Not personal time
+      - platform: state
+        entity_id: "binary_sensor.john_personal_time"
+        prob_given_true: 0.75
+        prob_given_false: 0.40
+        to_state: "off"
+
+      # Macbook Camera Activity
+      #
+      # Camera ON
+      - platform: state
+        entity_id: "binary_sensor.john_laptop_camera_active"
+        prob_given_true: 0.98
+        prob_given_false: 0.02
+        to_state: "on"
+      # Camera OFF
+      - platform: state
+        entity_id: "binary_sensor.john_laptop_camera_active"
+        prob_given_true: 0.30
+        prob_given_false: 0.80
+        to_state: "off"
+
+      # Room Presence
+      #
+      # Detected in the office
+      - platform: state
+        entity_id: sensor.john_room_presence
+        prob_given_true: 0.95
+        prob_given_false: 0.80
+        to_state: "office"
+      # Not detected in the office
+      - platform: template
+        value_template: "{{ not is_state('sensor.john_room_presence','office') }}"
+        prob_given_true: 0.10
+        prob_given_false: 0.10
+
+      # Work Hours
+      #
+      # Work Hours hours is ON
+      - platform: state
+        entity_id: binary_sensor.work_hours
+        prob_given_true: 0.96
+        prob_given_false: 0.90
+        to_state: "on"
+      # Work Hours hours is OFF
+      - platform: state
+        entity_id: binary_sensor.work_hours
+        prob_given_true: 0.10
+        prob_given_false: 0.10
+        to_state: "off"
+
+      # Door Status
+      #
+      # Doors are closed
+      - platform: state
+        entity_id: binary_sensor.office_doors
+        prob_given_true: 0.80
+        prob_given_false: 0.40
+        to_state: "off"
+      # Doors are open
+      - platform: state
+        entity_id: binary_sensor.office_doors
+        prob_given_true: 0.30
+        prob_given_false: 0.60
+        to_state: "on"

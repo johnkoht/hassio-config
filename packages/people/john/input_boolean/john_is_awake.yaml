@@ -1,0 +1,4 @@
+input_boolean:
+  john_is_awake:
+    name: John is awake
+    icon: mdi:alarm

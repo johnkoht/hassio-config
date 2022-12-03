@@ -1,0 +1,19 @@
+john_status_dropdown:
+  name: John
+  options:
+    - Home
+    - Just Arrived
+    - Just Left
+    - Away
+    - Extended Away
+  initial: Home
+  
+cristina_status_dropdown:
+  name: Cristina
+  options:
+    - Home
+    - Just Arrived
+    - Just Left
+    - Away
+    - Extended Away
+  initial: Home

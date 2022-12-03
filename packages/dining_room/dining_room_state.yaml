@@ -1,0 +1,6 @@
+input_select:
+  dining_room:
+    name: Dining Room
+    options:
+      - "Auto"
+      - "Off"

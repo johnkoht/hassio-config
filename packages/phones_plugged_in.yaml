@@ -1,0 +1,98 @@
+input_boolean:
+  cristina_phone_plugged_in:
+    name: Cristina Phone Plugged In
+    icon: mdi:battery-charging
+
+  john_phone_plugged_in:
+    name: John Phone Plugged In
+    icon: mdi:battery-charging
+
+automation:
+  # Cristina
+  #
+  # Cristina's phone is plugged in and charging
+  - id: "cristina_phone_plugged_in"
+    alias: "Cristina's phone is plugged in"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: sensor.cfalb_battery_state
+        to: "Charging"
+      - platform: state
+        entity_id: sensor.cfalb_battery_state
+        to: "Full"
+    condition:
+      - condition: state
+        entity_id: input_boolean.cristina_phone_plugged_in
+        state: "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: sensor.cfalb_battery_state
+            state: "Charging"
+          - condition: state
+            entity_id: sensor.cfalb_battery_state
+            state: "Full"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.cristina_phone_plugged_in
+
+  # Cristina's phone is no longer plugged in or charging
+  - id: "cristina_phone_unplugged"
+    alias: "Cristina's phone is unplugged"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: sensor.cfalb_battery_state
+        to: "Not Charging"
+    condition:
+      - condition: state
+        entity_id: sensor.cfalb_battery_state
+        state: "Not Charging"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.cristina_phone_plugged_in
+
+  # John
+  #
+  # John's phone is plugged in and charging
+  - id: "john_phone_plugged_in"
+    alias: "John's phone is plugged in"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: sensor.jk_battery_state
+        to: "Charging"
+      - platform: state
+        entity_id: sensor.jk_battery_state
+        to: "Full"
+    condition:
+      - condition: state
+        entity_id: input_boolean.john_phone_plugged_in
+        state: "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: sensor.jk_battery_state
+            state: "Charging"
+          - condition: state
+            entity_id: sensor.jk_battery_state
+            state: "Full"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.john_phone_plugged_in
+
+  - id: "john_phone_unplugged"
+    alias: "John's phone is unplugged"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: sensor.jk_battery_state
+        to: "Not Charging"
+    condition:
+      - condition: state
+        entity_id: sensor.jk_battery_state
+        state: "Not Charging"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.john_phone_plugged_in

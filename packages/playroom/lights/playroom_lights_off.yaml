@@ -1,0 +1,42 @@
+# Playroom Lights Off
+#
+# Automatically turn the lights off based on various
+# triggers like the Playroom is off/not occupied, or
+# the weather has improve or it's bright eneough.
+#
+automation:
+  - id: "playroom_lights_off"
+    initial_state: on
+    alias: "Playroom lights off"
+    trigger:
+      # Playroom is Off
+      - platform: state
+        entity_id: input_select.playroom
+        to: "Off"
+      # Playroom is not occupied
+      - platform: state
+        entity_id: input_boolean.playroom_occupied
+        to: "off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Playroom is not occupied
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "off"
+      # Playroom is Off, not occupied, or the room is bright enough
+      - condition: or
+        conditions:
+          # Playroom is Off
+          - condition: state
+            entity_id: input_select.playroom
+            state: "Off"
+          # Playroom is not occupied
+          - condition: state
+            entity_id: input_boolean.playroom_occupied
+            state: "off"
+    action:
+      - service: light.turn_off
+        entity_id: group.playroom_lights

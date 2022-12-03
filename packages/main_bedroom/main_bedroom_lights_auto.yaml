@@ -1,0 +1,5 @@
+input_boolean:
+  main_bedroom_lights_auto:
+    name: Main Bedroom Lights auto
+    icon: mdi:lightbulb-auto
+    initial: off

@@ -1,0 +1,4 @@
+- platform: tod
+  name: Work Hours
+  after: "08:30"
+  before: "17:00"

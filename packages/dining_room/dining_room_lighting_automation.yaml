@@ -1,0 +1,5 @@
+input_boolean:
+  dining_room_lighting_automations:
+    name: Dining Room Lighting Automations
+    icon: mdi:motion-sensor
+    initial: off

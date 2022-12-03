@@ -1,0 +1,13 @@
+# input_select.main_bathroom
+#
+# Stores the current state for the Main Bathroom
+input_select:
+  main_bathroom:
+    name: Main Bathroom
+    options:
+      - "Auto"
+      - "Away"
+      - "Bedtime"
+      - "Wake"
+      - "Motion"
+      - "Off"

@@ -1,0 +1,14 @@
+# input_select.main_bedroom
+#
+# Stores the current state for the Main Bedroom
+input_select:
+  main_bedroom:
+    name: Main Bedroom
+    options:
+      - "Auto"
+      - "Away"
+      - "Bedtime"
+      - "Wake"
+      - "Motion"
+      - "Off"
+      - "On"

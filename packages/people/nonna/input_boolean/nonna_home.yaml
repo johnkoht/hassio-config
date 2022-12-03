@@ -1,0 +1,4 @@
+input_boolean:
+  nonna_home:
+    name: Nonna Home
+    icon: mdi:home

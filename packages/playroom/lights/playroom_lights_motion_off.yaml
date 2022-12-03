@@ -1,0 +1,34 @@
+# Playroom Lights Motion Off
+#
+# If motion is no longer detected and the Playroom
+# is not occupied, let's turn the lights off quickly
+#
+automation:
+  - id: "playroom_lights_motion_off"
+    initial_state: off
+    alias: "Playroom lights motion off"
+    trigger:
+      # Motion no longer detected
+      - platform: state
+        entity_id: binary_sensor.playroom_motion
+        to: "off"
+        for:
+          minutes: 2
+      # Playroom sensor detects occupancy
+      - platform: state
+        entity_id: binary_sensor.playroom_occupancy
+        to: "off"
+    condition:
+      # Playroom is not occupied
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "off"
+      # Lights are currently on
+      - condition: state
+        entity_id: group.playroom_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: group.playroom_lights
+      - service: automation.turn_off
+        entity_id: automation.playroom_lights_motion_off

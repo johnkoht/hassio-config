@@ -1,0 +1,4 @@
+input_boolean:
+  laundry_room_occupied:
+    name: Laundry Room Occupied
+    icon: mdi:washing-machine

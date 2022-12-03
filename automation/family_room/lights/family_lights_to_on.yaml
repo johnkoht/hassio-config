@@ -1,0 +1,39 @@
+id: "family_room_lights_to_on"
+initial_state: "off"
+alias: "Family room lights to On"
+trigger:
+  # Famiily room is in On mode
+  - platform: state
+    entity_id: input_select.family_room
+    to: "On"
+  # House is in the On mode
+  - platform: state
+    entity_id: input_select.house
+    to: "On"
+condition:
+  # Lighting automations are enabled
+  - condition: state
+    entity_id: input_boolean.lighting_automations
+    state: "on"
+  - condition: or
+    conditions:
+      # Family room is On
+      - condition: state
+        entity_id: input_select.family_room
+        state: "On"
+      # OR family room is in Auto mode or the house is On
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.family_room
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.house
+            state: "On"
+  # Light are currently off
+  - condition: state
+    entity_id: light.family_room_main_lights
+    state: "off"
+action:
+  - service: switch.turn_on
+    entity_id: light.family_room_main_lights

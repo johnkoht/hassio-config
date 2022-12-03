@@ -1,0 +1,9 @@
+input_select:
+  katia_status:
+    name: Katia
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+    initial: Away

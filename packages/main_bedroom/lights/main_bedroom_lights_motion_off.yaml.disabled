@@ -1,0 +1,41 @@
+automation:
+  - id: "main_bedroom_lights_motion_off"
+    initial_state: off
+    alias: "Main bedroom lights motion off"
+    trigger:
+      # No motion for 1 minute
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor
+        to: "off"
+        for:
+          minutes: 1
+    condition:
+      # Lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: or
+        conditions:
+          # Main bedroom is not occupied
+          - condition: state
+            entity_id: input_boolean.main_bedroom_occupied
+            state: "off"
+          # Or we're in bed
+          - condition: state
+            entity_id:
+              - input_boolean.john_is_in_bed
+              - input_boolean.cristina_in_bed
+            state: "on"
+      # Bedroom lights are on
+      - condition: state
+        entity_id: light.main_bedroom_lights
+        state: "on"
+      # Ensure lights were turned on automatically
+      - condition: state
+        entity_id: input_boolean.main_bedroom_lights_auto
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.main_bedroom_lights
+      - service: automation.turn_off
+        entity_id: automation.main_bedroom_lights_motion_off

@@ -1,0 +1,39 @@
+automation:
+  - id: "main_bedroom_lights_day_off"
+    initial_state: off
+    alias: "Main bedroom lights day off"
+    trigger:
+      # Light is bright enough
+      - platform: numeric_state
+        entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
+        above: 101
+        for:
+          minutes: 2
+      # The weather not bad anymore
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "off"
+    condition:
+      # Lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # The weather not bad anymore
+      - condition: state
+        entity_id: input_boolean.bad_weather
+        state: "off"
+      # Room is bright enough
+      - condition: numeric_state
+        entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
+        above: 100
+      # Bedroom lights are on
+      - condition: state
+        entity_id: light.main_bedroom_all_lights
+        state: "on"
+      # Ensure lights were turned on automatically
+      - condition: state
+        entity_id: input_boolean.main_bedroom_lights_auto
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.main_bedroom_all_lights

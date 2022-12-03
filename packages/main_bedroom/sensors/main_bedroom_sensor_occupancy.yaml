@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Main Bedroom Motion Sensor Occupancy
+    unique_id: main_bedroom_motion_sensor_occupancy
+    device_class: occupancy
+    entities:
+      - binary_sensor.main_bedroom_motion_sensor_entry_occupancy
+      - binary_sensor.main_bedroom_motion_sensor_back_occupancy

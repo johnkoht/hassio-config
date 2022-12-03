@@ -1,0 +1,9 @@
+sensor:
+  - platform: mqtt_room
+    device_id: "apple:1007:11-7"
+    # device_id: "john_iphone"
+    # device_id: "John's iPhone"
+    name: "JK Room Presence"
+    state_topic: "espresense/rooms"
+    timeout: 60
+    away_timeout: 120

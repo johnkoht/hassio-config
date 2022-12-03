@@ -1,0 +1,63 @@
+# Bad Weather Mode Off
+#
+# Listens for a bunch of weather changes and
+# then adjust an input_boolean if weather improves
+#
+id: "bad_weather_mode_off"
+initial_state: "on"
+alias: "Bad Weather Mode Off"
+trigger:
+  # House becomes occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+  - platform: state
+    entity_id: sensor.openweathermap_condition
+    to: "sunny"
+  # Clear skies or just a few clouds
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: "799"
+    below: "803"
+  # Not that cloudy
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_cloud_coverage
+    above: "41"
+  # It's getting brighter outside
+  - platform: numeric_state
+    entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+    above: 250
+    for:
+      minutes: 5
+condition:
+  # The house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Bad weather already on
+  - condition: state
+    entity_id: input_boolean.bad_weather
+    state: "on"
+  # The sun is above the horizon
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
+  # There is bad weather outside
+  - condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.openweathermap_weather_code
+        above: "799"
+        below: "803"
+      - condition: state
+        entity_id: sensor.openweathermap_condition
+        state: "sunny"
+      - condition: numeric_state
+        entity_id: sensor.openweathermap_forecast_cloud_coverage
+        below: "40"
+      - condition: numeric_state
+        entity_id: sensor.openweathermap_cloud_coverage
+        above: "41"
+action:
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.bad_weather

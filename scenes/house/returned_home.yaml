@@ -1,0 +1,4 @@
+name: "Returned Home"
+entities:
+  light.mudroom_main_lights: "on"
+  light.garage_lights: "on"

@@ -1,0 +1,43 @@
+id: "mudroom_mode_motion"
+initial_state: "on"
+alias: "Mudroom mode motion"
+trigger:
+  # If motion is no longer detected for 3 minutes
+  - platform: state
+    entity_id: binary_sensor.mudroom_motion_sensor_motion_detection
+    to: "off"
+    for:
+      minutes: 5
+  # House is turned to Auto mode
+  - platform: state
+    entity_id: input_select.house
+    to: "Auto"
+condition:
+  # Make sure the house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # # The house is on Auto
+  # - condition: state
+  #   entity_id: input_select.house
+  #   state: "Auto"
+  # House is not in bedtime mode
+  - condition: state
+    entity_id: input_boolean.bedtime
+    state: "off"
+  - condition: or
+    conditions:
+      # Mudroom is set to On
+      - condition: template
+        value_template: "{{ is_state('input_select.mudroom','On') }}"
+        # Mudroom is set to On
+      - condition: template
+        value_template: "{{ is_state('input_select.mudroom','Night Motion') }}"
+  # Mudroom isn't already set to motion
+  - condition: template
+    value_template: "{{ not is_state('input_select.mudroom','Motion') }}"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.mudroom
+      option: "Motion"

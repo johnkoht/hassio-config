@@ -1,0 +1,5 @@
+input_boolean:
+  garage_lighting_automations:
+    name: Garage Lighting Automations
+    icon: mdi:motion-sensor
+    initial: on

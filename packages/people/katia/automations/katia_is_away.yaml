@@ -1,0 +1,42 @@
+# Automation to detect and initiate away for Katia
+#
+#
+automation:
+  - id: "katia_is_away"
+    alias: "Katia Is Away"
+    initial_state: on
+    trigger:
+      # If ESPresense detects her in a room
+      - platform: template
+        value_template: "{{ states.sensor.katia_room_presence.state == 'not_home'}}"
+      # katia not home
+      - platform: state
+        entity_id: person.katia
+        to: "not_home"
+      # Handle restarts and reloads of HA
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Didn't just leave
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.katia_status
+            state: "Just Left"
+      # Person is not home
+      - condition: state
+        entity_id: person.katia
+        state: "not_home"
+      # # Not detected home
+      # - condition: or
+      #   conditions:
+      #     - condition: template
+      #       value_template: "{{ states.sensor.katia_room_presence.state == 'not_home'}}"
+      #     - condition: state
+      #       entity_id: person.katia
+      #       state: "not_home"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.katia_home

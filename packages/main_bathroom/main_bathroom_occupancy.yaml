@@ -1,0 +1,4 @@
+input_boolean:
+  main_bathroom_occupied:
+    name: Main Bathroom
+    icon: mdi:shower

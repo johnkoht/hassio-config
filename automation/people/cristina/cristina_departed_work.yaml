@@ -1,0 +1,39 @@
+id: "cristina_departed_work"
+alias: "Cristina has left the office"
+initial_state: "on"
+trigger:
+  # Left the work zone
+  - platform: zone
+    entity_id: person.cristina_falbo
+    zone: zone.cristina_s_work
+    event: leave
+  # She's more than 2km away from work
+  - platform: numeric_state
+    entity_id: proximity.cristina_work
+    above: 2
+condition:
+  # Cristina is not home
+  - condition: state
+    entity_id: input_boolean.cristina_home
+    state: "off"
+  # It's a work day
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: "on"
+  # # She's driving
+  # - condition: state
+  #   entity_id: sensor.cfalb_activity
+  #   state: "Automotive"
+  # After 4pm
+  - condition: time
+    after: "16:00:00"
+  # She's driving away work
+  - condition: template
+    value_template: "{{ states.proximity.cristina_work.attributes.dir_of_travel == 'away_from' }}"
+  # She's driving towards home
+  - condition: template
+    value_template: "{{ states.proximity.cristina_home.attributes.dir_of_travel == 'towards' }}"
+action:
+  - service: script.cristina_left_work
+    data:
+      who: cfalb

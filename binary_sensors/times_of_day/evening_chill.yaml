@@ -1,0 +1,4 @@
+- platform: tod
+  name: Evening Chill
+  after: "20:05"
+  before: "23:59"

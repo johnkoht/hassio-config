@@ -1,0 +1,48 @@
+# Office Lights Off
+#
+# Automatically turn the lights off based on various
+# triggers like the office is off/not occupied, or
+# the weather has improve or it's bright eneough.
+#
+automation:
+  - id: "office_lights_off"
+    initial_state: on
+    alias: "Office lights off"
+    trigger:
+      # Office is Off
+      - platform: state
+        entity_id: input_select.office
+        to: "Off"
+      # Office is not occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+        # for:
+        #   minutes: 2
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Office is not occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "off"
+      # Office is Off, not occupied, or the room is bright enough
+      - condition: or
+        conditions:
+          # Office is Off
+          - condition: state
+            entity_id: input_select.office
+            state: "Off"
+          # Office is not occupied
+          - condition: state
+            entity_id: input_boolean.office_occupied
+            state: "off"
+          # Room is bright enough
+          - condition: numeric_state
+            entity_id: sensor.office_aqara_illuminance
+            above: 151
+    action:
+      - service: light.turn_off
+        entity_id: group.office_lights

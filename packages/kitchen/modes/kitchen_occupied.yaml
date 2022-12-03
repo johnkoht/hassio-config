@@ -1,0 +1,46 @@
+# Kitchen Occupied
+#
+automation:
+  - id: "kitchen_occupied"
+    initial_state: on
+    alias: "Kitchen occupied"
+    trigger:
+      # If anybody is detected via Bluetooth
+      # - platform: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length > 0 }}"
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion_sensor_status
+        to: "on"
+      # Occupancy detected
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+        to: "on"
+      # Lights are turned on
+      - platform: state
+        entity_id: light.kitchen_lights
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Kitchen is not occupied
+      - condition: state
+        entity_id: input_boolean.kitchen_occupied
+        state: "off"
+      # Either Bluetooth detects people or occupancy detected
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length > 0 }}"
+          - condition: state
+            entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kitchen_occupied
+      - service: notify.mobile_app_jk
+        data:
+          title: Kitchen
+          message: The Kitchen is now occupied!

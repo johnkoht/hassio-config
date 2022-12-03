@@ -1,0 +1,6 @@
+device_tracker:
+  - platform: ping
+    count: 2
+    scan_interval: 90
+    hosts:
+      nonna_ping_tracker: 192.168.1.195

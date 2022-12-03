@@ -1,0 +1,38 @@
+# Office Camera Light On
+#
+# When I'm in my office and my camera comes on,
+# turn the El Gato light on
+#
+automation:
+  - id: "office_camera_light_on"
+    initial_state: on
+    alias: "Office Camera Light On"
+    trigger:
+      # Laptop camera goes on
+      - platform: state
+        entity_id: binary_sensor.john_laptop_camera_active
+        to: "on"
+      # John's room presence is the office
+      - platform: state
+        entity_id: sensor.john_room_presence
+        to: "office"
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Laptop camera is on
+      - condition: state
+        entity_id: binary_sensor.john_laptop_camera_active
+        state: "on"
+      # John's in the office
+      - condition: state
+        entity_id: sensor.john_room_presence
+        state: "office"
+      # Camera light is off
+      - condition: state
+        entity_id: light.elgato_key_light_air
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.elgato_key_light_air

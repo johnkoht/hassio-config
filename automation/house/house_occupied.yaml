@@ -1,0 +1,48 @@
+# Automation to detect if the house is now occupied
+#
+# This automation will detect if the house is occupied
+# based on a few triggers and conditions
+# and if it's occupied, it will update the
+# input_boolean.house_occupied to be on
+#
+id: "house_occupied"
+alias: "House occupied"
+initial_state: "on"
+trigger:
+  # Triggered if John, Cristina, or Guest mode
+  # get turned on
+  - platform: state
+    entity_id:
+      - input_boolean.john_home
+      - input_boolean.cristina_home
+      - input_boolean.joe_home
+      - input_boolean.guest_mode
+    to: "on"
+  # Hassio reloads/starts
+  - platform: event
+    event_type: automation_reloaded
+  - platform: homeassistant
+    event: start
+condition:
+  # House is current unoccupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "off"
+  # Somebody is marked as home
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.cristina_home
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.joe_home
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "on"
+action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.house_occupied

@@ -1,0 +1,109 @@
+# Main Bedroom Not Occupied
+#
+automation:
+  - id: "main_bedroom_not_occupied"
+    initial_state: on
+    alias: "Main bedroom not occupied"
+    trigger:
+      # # Nobody detected via Bluetooth for 2 minutes
+      # - platform: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length == 0 }}"
+      #   for:
+      #     minutes: 2
+      # Anybody detected via BLE
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_ble_occupancy
+        to: "off"
+        for:
+          minutes: 2
+      # Bedtime is disabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+      # No motion detected for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor
+        to: "off"
+        for:
+          minutes: 5
+      # No aqara occupancy
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
+        to: "off"
+      # No aqara occupancy for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
+        to: "off"
+        for:
+          minutes: 5
+    condition:
+      # The bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "on"
+      # Nobody detected via BLE
+      # - condition: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length == 0 }}"
+      # Anybody detected via BLE
+      - condition: state
+        entity_id: binary_sensor.main_bedroom_ble_occupancy
+        state: "off"
+      # Main bathroom is not occupied
+      - condition: state
+        entity_id: input_boolean.main_bathroom_occupied
+        state: "off"
+      # It's not bedtime
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # Main bedroom sensor no longer detects occupancy
+      - condition: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
+        state: "off"
+      # Auto mode between 5-midnight
+      # OR bedtime mode and between 6am-9pm
+      - condition: or
+        conditions:
+          # Auto mode between 5am - 11:59
+          - condition: and
+            conditions:
+              # Auto mode or
+              # - condition: state
+              #   entity_id: input_select.main_bedroom
+              #   state: "Auto"
+              # - condition: template
+              #   value_template: "{{ states('input_select.main_bedroom') in ('Auto', 'Wake') }}"
+              # Not in bedtime mode
+              - condition: template
+                value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
+              # Between 5 - 12am
+              - condition: time
+                after: "05:00:00"
+                before: "23:59:59"
+          # OR it's bedtime mode and betwen 4-10
+          - condition: and
+            conditions:
+              # Not in bedtime mode
+              - condition: state
+                entity_id: input_select.main_bedroom
+                state: "Bedtime"
+              # It's between 6am - 9pm
+              - condition: time
+                after: "06:00:00"
+                before: "21:00:00"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.main_bedroom_occupied
+
+      # Notify for loggging
+      - service: notify.mobile_app_jk
+        data:
+          title: Main Bedroom
+          message: The main bedroom is no longer occupied!
+
+      # Wati 2 seconds to activate lighting automations
+      - alias: "Wait 2 seconds"
+        delay: 02
+
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bedroom_lighting_automations

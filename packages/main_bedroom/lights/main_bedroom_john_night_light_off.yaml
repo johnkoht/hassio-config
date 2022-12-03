@@ -1,0 +1,49 @@
+automation:
+  - id: "main_bedroom_john_night_light_off"
+    initial_state: on
+    alias: "Main bedroom night light for John - Turn Off"
+    trigger:
+      # John's in bed
+      - platform: state
+        entity_id: input_boolean.john_is_in_bed
+        to: "on"
+        for:
+          minutes: 10
+      # Bedtime enabled for 5 minutes
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+        for:
+          minutes: 5
+    condition:
+      # Light automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Bedroom is in Auto or Bedtime mode
+      - condition: or
+        conditions:
+          # Bedroom is Auto
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Auto"
+          # Bedroom is Bedtime
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Bedtime"
+      # Bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "on"
+      # John is in bed
+      - condition: state
+        entity_id: input_boolean.john_is_in_bed
+        state: "on"
+        for:
+          minutes: 10
+    action:
+      - service: light.turn_off
+        entity_id:
+          - light.hue_ambiance_lamp_1
+          - light.hue_ambiance_lamp_1_2
+          - light.main_bathroom_vanity_lights

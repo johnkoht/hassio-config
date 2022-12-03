@@ -1,0 +1,64 @@
+# Main Bedroom Occupied
+#
+# Automation to mark the main bedroom as occupied
+#
+automation:
+  - id: "main_bedroom_occupied"
+    initial_state: on
+    alias: "Main bedroom occupied"
+    trigger:
+      # # If anybody is detected via Bluetooth
+      # - platform: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'main_bedroom')|map(attribute='name')|list | length > 0 }}"
+      # We're sleeping
+      # - platform: state
+      #   entity_id:
+      #     - binary_sensory.john_in_bed
+      #     - binary_sensory.cristina_sleeping
+      #   to: "on"
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor
+        to: "on"
+      # Main bedroom sensor detects occupancy
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
+        to: "on"
+      # The door is closed
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_door_sensor_status
+        to: "off"
+      # Lights are turned on
+      - platform: state
+        entity_id: light.main_bedroom_main_lights
+        to: "on"
+      # Hassio resloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Main bedroom is not occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "off"
+      # Somebody detected via BLE or Aqara
+      - condition: or
+        conditions:
+          # - condition: template
+          #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length > 0 }}"
+          # Anybody detected via BLE
+          - condition: state
+            entity_id: binary_sensor.main_bedroom_ble_occupancy
+            state: "on"
+          # Main bedroom sensor detects occupancy
+          - condition: state
+            entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bedroom_occupied

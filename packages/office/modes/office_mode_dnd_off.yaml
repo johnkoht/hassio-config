@@ -1,0 +1,46 @@
+# Office Mode DnD Off
+#
+# This automation specifically turns off the
+# DnD mode and activates Auto. The point is that
+# Auto mode automations shouldn't really care or
+# know about personal DnD modes.
+#
+automation:
+  - id: "office_mode_dnd_off"
+    initial_state: off
+    alias: "Office Mode DnD Off"
+    trigger:
+      # Office is occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+      # John's DnD is off
+      - platform: state
+        entity_id: input_boolean.john_dnd
+        to: "off"
+        for:
+          minutes: 2
+    condition:
+      # Office is currently DnD mode
+      - condition: state
+        entity_id: input_select.office
+        state: "DnD"
+      - condition: or
+        conditions:
+          # John's DnD is off
+          - condition: state
+            entity_id: input_boolean.john_dnd
+            state: "off"
+          # OR Office is not occupied
+          - condition: state
+            entity_id: input_boolean.office_occupied
+            state: "off"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.office
+          option: "Auto"

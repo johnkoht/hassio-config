@@ -1,0 +1,16 @@
+# Second Floor Climate to Resume
+#
+# If the house becomes occupied or we wake up
+# then resume the second floor temperature
+#
+script:
+  second_floor_climate_to_resume:
+    alias: Second Floor Climate to Resume
+    mode: restart
+    sequence:
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.nest_2nd_floor
+        data:
+          temperature: "{{ states('input_number.temperature_2nd_floor') }}"
+          hvac_mode: "{{ states('input_text.temperature_mode_2nd_floor') }}"

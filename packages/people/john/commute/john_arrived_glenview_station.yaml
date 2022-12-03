@@ -1,0 +1,44 @@
+# Off by default, should be turned on if I leave
+# the Golf or Glenview train station
+#
+automation:
+  - id: "john_arrived_glenview_station"
+    alias: "John Arrived at Glenview Station"
+    initial_state: off
+    trigger:
+      # Entered the untion station zone
+      - platform: zone
+        entity_id: person.john_koht
+        zone: zone.glenview_train_station
+        event: enter
+    condition:
+      # John is not home
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "off"
+      # After noon
+      - condition: time
+        after: "12:00:00"
+      # Traveling towards home
+      - condition: template
+        value_template: "{{ states.proximity.john_home.attributes.dir_of_travel == 'towards' }}"
+    action:
+      # Announcement
+      # - service: script.general_announcement
+      #   data:
+      #     speech_message: >-
+      #       {{
+      #         [
+      #           "Attention! Baba just arrived at Glenview Station.",
+      #           "Pardon the interruption, but Baba just go to work.",
+      #           "Just a friendly note that Baba has arrived at the office."
+      #         ] | random
+      #       }}
+      #     media_players: "auto"
+
+      # Turn off the other automation
+      - service: automation.turn_on
+        entity_id:
+          - automation.john_departed_union_station
+          - automation.john_passing_morton_grove_station
+          - automation.john_arrived_glenview_station

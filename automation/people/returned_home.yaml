@@ -1,0 +1,95 @@
+id: "returned_home"
+initial_state: "on"
+alias: "Returned home"
+trigger:
+  # People nearly home
+  - platform: numeric_state
+    entity_id: proximity.cristina_home
+    below: 1
+  - platform: numeric_state
+    entity_id: proximity.john_home
+    below: 1
+  # People just got home
+  - platform: state
+    entity_id:
+      - input_select.cristina_status_dropdown
+      - input_select.john_status
+    to: "Just Arrived"
+  # Should also include some travel time magic here
+  # Basically, travel time < 15 for 10 minutes, travelling towards home
+condition:
+  condition: and
+  conditions:
+    # Lighting automations are enabled
+    - condition: state
+      entity_id: input_boolean.lighting_automations
+      state: "on"
+    # House has just become occupied
+    - condition: template
+      value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.house_occupied.last_updated)) | int < 300 }}"
+    # Somebody is nearly home, or just arrived
+    - condition: or
+      conditions:
+        # Somebody is nearly home or just arrived
+        - condition: and
+          conditions:
+            - condition: or
+              conditions:
+                - condition: template
+                  value_template: "{{ ( (states('proximity.cristina_home')|int) < 1 ) and is_state_attr('proximity.cristina_home', 'dir_of_travel', 'towards') and (not is_state('input_select.cristina_status_dropdown','Home') ) }}"
+                - condition: template
+                  value_template: "{{ ( (states('proximity.john_home')|int) < 1 ) and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards') and (not is_state('input_select.john_status','Home') ) }}"
+        # Cristina is nearly home, but not home yet
+        - condition: and
+          conditions:
+            - condition: template
+              value_template: "{{ ( trigger.entity_id == 'proximity.cristina_home' ) and ( (trigger.from_state.state|int) > 1 ) and ( (trigger.to_state.state|int) < 1 ) and is_state_attr('proximity.cristina_home', 'dir_of_travel', 'towards') }}"
+            - condition: state
+              entity_id: input_select.cristina_status_dropdown
+              state: Away
+        # John is nearly home, but not home yet
+        - condition: and
+          conditions:
+            - condition: template
+              value_template: "{{ ( trigger.entity_id == 'proximity.john_home' ) and ( (trigger.from_state.state|int) > 1 ) and ( (trigger.to_state.state|int) < 1 ) and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards') }}"
+            - condition: state
+              entity_id: input_select.john_status
+              state: Away
+        # Or somebody has just arrived
+        - condition: template
+          value_template: "{{ is_state('input_select.john_status','Just Arrived') }}"
+        - condition: template
+          value_template: "{{ is_state('input_select.cristina_status_dropdown','Just Arrived') }}"
+action:
+  - service: notify.mobile_app_jk
+    data:
+      title: Arrival Mode
+      message: >-
+        I noticed that you're arriving home so I've opened the garage and turned
+        on a couple of lights.
+
+  # # Turn the climate back to what it was
+  # - service: script.climate_activate
+  #   data: {}
+
+  # Open the middle garage door
+  - service: cover.open_cover
+    data: {}
+    target:
+      entity_id: cover.garage_door_2
+
+  # Set the scene based on time of day
+  - alias: "If it's late then turn on a late night scene"
+    choose:
+      # If late night
+      - alias: "Late night"
+        conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: "below_horizon"
+        sequence:
+          - scene: scene.returned_home_late
+
+    # Otherwise, default scene
+    default:
+      - scene: scene.returned_home

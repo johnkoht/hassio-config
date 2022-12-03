@@ -1,0 +1,4 @@
+input_boolean:
+  christmas_active:
+    name: Christmas Active
+    icon: mdi:string-lights

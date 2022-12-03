@@ -1,0 +1,42 @@
+# Garage Mode Auto
+#
+automation:
+  - id: "garage_mode_auto"
+    initial_state: on
+    alias: "Garage mode auto"
+    trigger:
+      # Garage is occupied
+      - platform: state
+        entity_id: input_boolean.garage_occupied
+        to: "on"
+      # House turn to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # Garage sensor detects occupancy
+      - platform: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Garage is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.garage','Auto') }}"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.garage
+          option: "Auto"
+      # Turn off the garage door automation for empty house
+      - service: automation.turn_off
+        entity_id: automation.garage_doors_close_when_empty_house
+      # Turn on the garage door automation for occupied house
+      - service: automation.turn_on
+        entity_id: automation.garage_doors_close_when_home

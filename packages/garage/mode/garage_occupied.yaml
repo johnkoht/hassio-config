@@ -1,0 +1,44 @@
+# Garage Occupied
+#
+automation:
+  - id: "garage_occupied"
+    initial_state: on
+    alias: "Garage occupied"
+    trigger:
+      # # If anybody is detected via Bluetooth
+      # - platform: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length > 0 }}"
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.garage_motion_sensor_motion
+        to: "on"
+      # Garage lights are turned on
+      - platform: state
+        entity_id: light.garage_lights
+        to: "on"
+      # Garage door is open
+      - platform: state
+        entity_id: cover.garage_doors
+        to: "open"
+      # Hassio resloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Garage is not already occupied
+      - condition: state
+        entity_id: input_boolean.garage_occupied
+        state: "off"
+      # Bluetooth detected somebody or Aqara detects occupancy
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length > 0 }}"
+          # Garage sensor detects occupancy
+          - condition: state
+            entity_id: binary_sensor.garage_motion_sensor_occupancy
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garage_occupied

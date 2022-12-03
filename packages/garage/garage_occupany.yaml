@@ -1,0 +1,4 @@
+input_boolean:
+  garage_occupied:
+    name: Garage Occupied
+    icon: mdi:garage

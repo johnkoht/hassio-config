@@ -1,0 +1,28 @@
+id: "family_room_mode_away"
+initial_state: "off"
+alias: "Family room mode away"
+trigger:
+  # Family room is not occupied
+  - platform: state
+    entity_id: input_boolean.family_room_occupied
+    to: "off"
+  # Or it's been unoccupied for 10 minutes
+  - platform: state
+    entity_id: input_boolean.family_room_occupied
+    to: "off"
+    for:
+      minutes: 10
+  # Or the house is not occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+condition:
+  # House is not occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "off"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.family_room
+      option: "Away"

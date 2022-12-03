@@ -1,0 +1,64 @@
+id: "gianluca_room_temperature_alert"
+alias: "Gianluca Room Temperature Alert"
+initial_state: "off"
+trigger:
+  # Gianluca's room is occupied, e.g. he's sleeping
+  - platform: state
+    entity_id: input_boolean.gianlucas_room_occupied
+    to: "on"
+    for:
+      minutes: 5
+  # Gianluca's temperature is too high or low (climate sensor)
+  - platform: numeric_state
+    entity_id:
+      - sensor.gianluca_room_temperature
+      - sensor.gianlucas_door_sensor_temperature
+    above: 78
+    for:
+      minutes: 1
+  # Gianluca's temperature is too high or low (door sensor)
+  - platform: numeric_state
+    entity_id:
+      - sensor.gianluca_room_temperature
+      - sensor.gianlucas_door_sensor_temperature
+    below: 67
+    for:
+      minutes: 1
+condition:
+  # The house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Room is occupied (e.g. door is closed)
+  - condition: state
+    entity_id: input_boolean.gianlucas_room_occupied
+    state: "on"
+  # Either the door sensor temperature or the climate sensor
+  # are out of the comfortable range
+  - condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id:
+          - sensor.gianluca_room_temperature
+          - sensor.gianlucas_door_sensor_temperature
+        below: 67
+      - condition: numeric_state
+        entity_id:
+          - sensor.gianluca_room_temperature
+          - sensor.gianlucas_door_sensor_temperature
+        above: 78
+action:
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {% set temp = states.sensor.gianluca_room_temperature.state %}
+        {% set door_temp = states.sensor.gianlucas_door_sensor_temperature.state %}
+        {% set low = temp if temp < door_temp else door_temp %}
+        {% set high = temp if temp > door_temp else door_temp %}
+
+        {% if (low | float) <= 67 %}
+          "Attention, Gianluca's room is too cold at {{low}} degrees!"
+        {% else %}
+          "Attention, Gianluca's room is too hot at {{high}} degrees!"
+        {% endif %}
+      media_players: "auto"

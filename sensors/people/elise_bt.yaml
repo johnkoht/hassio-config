@@ -1,0 +1,6 @@
+- platform: mqtt_room
+  device_id: "apple:iphone13-2"
+  name: "Elise Room Presence"
+  state_topic: "espresense/rooms"
+  timeout: 60
+  away_timeout: 120

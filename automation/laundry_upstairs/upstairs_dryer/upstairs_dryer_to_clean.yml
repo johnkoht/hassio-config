@@ -1,0 +1,22 @@
+# Wait 8 minutes for us to be in the Finishing state before we
+# decide the washing machine has finished. This way, if the
+# washing machine is in between cycles and the power drops, we
+# won't mark the washing machine cycle as finished too early.
+id: "upstairs_dryer_to_clean"
+alias: "Upstairs dryer to clean"
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id: input_select.upstairs_dryer_status
+    to: "Finishing"
+    for:
+      minutes: 8
+condition:
+  - condition: state
+    entity_id: input_select.upstairs_dryer_status
+    state: "Finishing"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.upstairs_dryer_status
+      option: "Clean"

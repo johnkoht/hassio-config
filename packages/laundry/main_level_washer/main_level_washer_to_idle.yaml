@@ -1,0 +1,33 @@
+automation:
+  - id: "main_level_washer_to_idle"
+    alias: "Upstairs washer to idle"
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.main_level_washer_door_sensor_status
+        to: "on"
+    condition:
+      # Washer is in status Clean or Finishing
+      - condition: or
+        conditions:
+          # The washing machine is clean
+          - condition: state
+            entity_id: input_select.main_level_washer_status
+            state: "Clean"
+          # The washing machine is Finishing
+          # Sometimes the person washing is quick to unload
+          # while the washer is still in Finishing mode, although
+          # its actually finished.
+          - condition: state
+            entity_id: input_select.main_level_washer_status
+            state: "Finishing"
+          # Sometimes its done quickly and somebody changes it before
+          # the automation changes state
+          - condition: state
+            entity_id: input_select.main_level_washer_status
+            state: "Running"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_level_washer_status
+          option: "Idle"

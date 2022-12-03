@@ -1,0 +1,7 @@
+- platform: template
+  sensors:
+    family_room_presence:
+      friendly_name: "Family Room Presence"
+      unique_id: "family_room_presence"
+      value_template: >-
+        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

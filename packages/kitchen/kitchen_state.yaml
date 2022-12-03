@@ -1,0 +1,14 @@
+input_select:
+  kitchen:
+    name: Kitchen
+    options:
+      - "Auto"
+      - "Away"
+      # - "Motion"
+      - "Dim"
+      - "Day on"
+      # - "Night on"
+      # - "Bedtime"
+      # - "Wake"
+      - "On"
+      - "Off"

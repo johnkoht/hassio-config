@@ -1,0 +1,55 @@
+binary_sensor:
+  # First Floor Motion Group
+  #
+  - platform: group
+    name: First Floor Motion
+    unique_id: first_floor_motion
+    device_class: motion
+    entities:
+      - binary_sensor.kitchen_motion_sensor_status
+      - binary_sensor.family_room_motion_sensor
+      - binary_sensor.playroom_motion
+      - binary_sensor.office_aqara_motion_sensor
+      - binary_sensor.mudroom_motion_sensor_motion_detection
+
+  # First Floor Occupancy Group
+  #
+  - platform: group
+    name: First Floor Occupancy
+    unique_id: first_floor_occupancy
+    device_class: occupancy
+    entities:
+      - binary_sensor.kitchen_motion_sensor_occupancy
+      - binary_sensor.family_room_motion_sensor_occupancy
+      - binary_sensor.playroom_occupancy
+      - binary_sensor.office_aqara_occupancy
+
+  # First Floor Room Presence
+  #
+  # Binary sensor to reeturn if anybody is detected
+  # via BLE presence.
+  - platform: template
+    sensors:
+      first_floor_any_room_presence:
+        friendly_name: First Floor Any Room Presence
+        value_template: >-
+          {{ 
+            expand('group.room_presence_devices') |
+            selectattr('state', 'in', ['playroom', 'kitchen', 'family_room', 'office']) |
+            map(attribute='name') |
+            list |
+            length > 0
+          }}
+
+  - platform: template
+    sensors:
+      first_floor_occupied:
+        friendly_name: First Floor Occupied
+        unique_id: first_floor_occupied
+        value_template: >-
+          {{
+            states.input_boolean.kitchen_occupied.state == "on"
+            or states.input_boolean.family_room_occupied.state == "on"
+            or states.input_boolean.playroom_occupied.state == "on"
+            or states.input_boolean.office_occupied.state == "on"
+          }}

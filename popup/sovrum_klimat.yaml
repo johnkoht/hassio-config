@@ -1,0 +1,72 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Klimat
+  style:
+    hui-vertical-stack-card:
+      $hui-entities-card$ : |
+        #states {
+          padding-top: 0.5em;
+          padding-bottom: 0em;
+        }
+  card:
+    type: vertical-stack
+    cards:
+
+      - type: thermostat
+        entity: climate.ac
+
+      - type: entities
+        card_mod:
+          class: content
+        entities:
+          - entity: sensor.broadlink_rm4_pro_temperature
+            name: Rumstemperatur
+          - entity: sensor.broadlink_rm4_pro_humidity
+            name: Luftfuktighet
+
+      - type: custom:apexcharts-card
+        layout: minimal
+        locale: se
+        graph_span: 8h
+        show:
+          loading: false
+        apex_config:
+          plotOptions:
+            area:
+              fillTo: end
+          grid:
+            padding:
+              top: -15
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              opacityFrom: 0.8
+              opacityTo: 0
+              stops:
+                - 0
+                - 99
+                - 100
+          stroke:
+            width: 4
+          tooltip:
+            style:
+              fontSize: 14px
+            x:
+              format: dddd HH:mm
+          chart:
+            height: 140px
+            offsetY: -20px
+          xaxis:
+            crosshairs:
+              show: false
+        series:
+          - entity: sensor.broadlink_rm4_pro_temperature
+            name: Temp
+            color: '#385581'
+            type: area
+            fill_raw: last
+            group_by:
+              func: avg
+              duration: 1h

@@ -1,0 +1,21 @@
+automation:
+  - id: "christmas_shortcut_button"
+    alias: "Christmas Shortcut Button"
+    initial_state: on
+    trigger:
+      - device_id: d98b081e7991a6e9ce1672128dad93ae
+        domain: zha
+        platform: device
+        type: remote_button_short_press
+        subtype: turn_on
+      # - device_id: d98b081e7991a6e9ce1672128dad93ae
+      #   domain: zha
+      #   platform: device
+      #   type: remote_button_double_press
+      #   subtype: turn_on
+    action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.christmas_active
+
+      - alias: "Wait 1 seconds"
+        delay: 01

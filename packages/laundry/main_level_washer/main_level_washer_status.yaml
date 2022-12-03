@@ -1,0 +1,9 @@
+input_select:
+  main_level_washer_status:
+    name: Main Level Washer Status
+    options:
+      - Idle
+      - Running
+      - Finishing
+      - Clean
+    initial: Idle

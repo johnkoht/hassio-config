@@ -1,0 +1,75 @@
+# Office Music Off
+#
+# If the office is no longer occupied or
+# turns to DnD mode, then stop the music.
+#
+automation:
+  - id: "office_music_off"
+    initial_state: on
+    alias: "Office Music Off"
+    trigger:
+      # Office is no longer occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+        # for:
+        #   minutes: 2
+      # # No motion for 3 minutes
+      # - platform: state
+      #   entity_id: binary_sensor.office_aqara_motion_sensor
+      #   to: "off"
+      #   for:
+      #     minutes: 3
+      # # House is empty
+      # - platform: state
+      #   entity_id: input_boolean.house_occupied
+      #   to: "off"
+      # Office is in DnD Mode
+      - platform: state
+        entity_id: input_select.office
+        to: "DnD"
+      # Office is in Off Mode
+      - platform: state
+        entity_id: input_select.office
+        to: "Off"
+      # My laptop becomes inactive
+      - platform: state
+        entity_id: binary_sensor.johns_macbook_pro_active
+        to: "off"
+    condition:
+      - condition: or
+        conditions:
+          # Office is NOT OCCUPIED
+          - condition: state
+            entity_id: input_boolean.office_occupied
+            state: "off"
+          # OF Office is in DnD Mode
+          - condition: state
+            entity_id: input_select.office
+            state: "DnD"
+          # OR nobody detected via BLE AND no motion in 3 minutes
+          - condition: and
+            conditions:
+              - condition: template
+                value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length == 0 }}"
+              - condition: state
+                entity_id: binary_sensor.office_aqara_motion_sensor
+                state: "off"
+                for:
+                  minutes: 3
+      # Music is playing
+      - condition: state
+        entity_id: media_player.sonos_office
+        state: "playing"
+    action:
+      # Unjoin if it's joined
+      - service: media_player.unjoin
+        entity_id: media_player.sonos_main_bedroom
+
+      # Turn off the Sonos music
+      - service: media_player.media_pause
+        entity_id: media_player.sonos_office
+      # Turn on the music playing boolean so we can
+      # restore next time the room is occupied
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.office_music_playing

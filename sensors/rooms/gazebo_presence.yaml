@@ -1,0 +1,7 @@
+- platform: template
+  sensors:
+    gazebo_presence:
+      friendly_name: "Gazebo Presence"
+      unique_id: "gazebo_presence"
+      value_template: >-
+        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gazebo')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

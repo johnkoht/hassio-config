@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Playroom Occupancy
+    unique_id: playroom_occupancy
+    device_class: occupancy
+    entities:
+      - binary_sensor.playroom_motion_sensor_occupancy
+      - binary_sensor.playroom_entry_motion_sensor_occupancy

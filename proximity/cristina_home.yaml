@@ -1,0 +1,6 @@
+cristina_home:
+  zone: home
+  devices:
+    - device_tracker.cfalb_2
+  unit_of_measurement: km
+  tolerance: 50

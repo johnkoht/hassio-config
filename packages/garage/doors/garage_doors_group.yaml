@@ -1,0 +1,9 @@
+# Garage Door Group
+#
+cover:
+  - platform: group
+    name: Garage Doors
+    unique_id: garage_doors
+    entities:
+      - cover.garage_door_1
+      - cover.garage_door_2

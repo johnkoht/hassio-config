@@ -1,0 +1,69 @@
+# Main Floor Climate to Eco
+#
+# If the house is empty or we're all asleep then
+# turn the first floor Nest to Eco mode
+#
+id: "main_floor_climate_to_eco"
+alias: "Main floor climate to Eco"
+initial_state: "on"
+trigger:
+  # # If the house goes into Bedtime mode
+  # - platform: state
+  #   entity_id: input_boolean.bedtime
+  #   to: "on"
+  # The house is empty for 30 minutes
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+    for:
+      minutes: 30
+  # # The house is empty for 60 minutes
+  # - platform: state
+  #   entity_id: input_boolean.house_occupied
+  #   to: "off"
+  #   for:
+  #     minutes: 60
+  # # We're more than 10 km away from home
+  # - platform: numeric_state
+  #   entity_id:
+  #     - proximity.cristina_home
+  #     - proximity.john_home
+  #   above: 10
+condition:
+  # # The house is empty or in bedtime mode
+  # - condition: or
+  #   conditions:
+  #     - condition: state
+  #       entity_id: input_boolean.bedtime
+  #       state: "on"
+  #     - condition: state
+  #       entity_id: input_boolean.house_occupied
+  #       state: "off"
+  # Guest Mode is disabled
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: "off"
+  # Make sure the Nest isn't set to a preset already
+  - condition: template
+    value_template: "{{ states.climate.nest_main_floor.attributes.preset_mode == 'none' }}"
+action:
+  - service: script.main_floor_climate_to_eco
+    data: {}
+  # # Save the current temperature
+  # - service: input_number.set_value
+  #   data:
+  #     value: "{{ state_attr('climate.nest_main_floor', 'temperature') }}"
+  #   target:
+  #     entity_id: input_number.temperature_main_floor
+  # # Save the current HVAC mode
+  # - service: input_text.set_value
+  #   data:
+  #     value: '{{ states("climate.nest_main_floor") }}'
+  #   target:
+  #     entity_id: input_text.temperature_mode_main_floor
+  # # Set the Nest to Eco mode
+  # - service: climate.set_preset_mode
+  #   target:
+  #     entity_id: climate.nest_main_floor
+  #   data:
+  #     preset_mode: eco

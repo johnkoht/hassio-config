@@ -1,0 +1,6 @@
+- platform: template
+  sensors:
+    family_room_probably_occupied:
+      friendly_name: Family Room Probably Occupied
+      value_template: >-
+        {{ state_attr("binary_sensor.family_room_presence", "probability") > 0.5 }}

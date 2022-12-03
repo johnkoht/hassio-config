@@ -1,0 +1,7 @@
+light:
+  - platform: group
+    name: Kitchen Lights
+    unique_id: kitchen_lights
+    entities:
+      - light.kitchen_main_light_switch
+      - light.kitchen_table_light_switch

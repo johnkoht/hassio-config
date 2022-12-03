@@ -1,0 +1,29 @@
+# Turn mudroom lights to off
+#
+id: "mudroom_lights_to_off"
+initial_state: "on"
+alias: "Mudroom lights to off"
+trigger:
+  # If the mudroom changes to Away
+  - platform: state
+    entity_id: input_select.mudroom
+    to: "Away"
+  # If the house turns to off
+  - platform: state
+    entity_id: input_select.house
+    to: "Off"
+  # If motion is no longer detected
+  - platform: state
+    entity_id: binary_sensor.mudroom_motion_sensor_motion_detection
+    to: "off"
+condition:
+  # Make sure lighting automations are on
+  - condition: state
+    entity_id: input_boolean.lighting_automations
+    state: "on"
+  - condition: state
+    entity_id: light.mudroom_main_lights
+    state: "on"
+action:
+  - service: light.turn_off
+    entity_id: light.mudroom_main_lights

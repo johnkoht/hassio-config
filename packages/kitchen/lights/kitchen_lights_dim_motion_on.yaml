@@ -1,0 +1,54 @@
+# Kitchen Lights Dim Motion On
+#
+automation:
+  - id: "kitchen_lights_dim_motion_on"
+    initial_state: off
+    alias: "Kitchen Lights Dim Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion_sensor_status
+        to: "on"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the bedroom are enabled
+      - condition: state
+        entity_id: input_boolean.kitchen_lighting_automations
+        state: "on"
+      # Kitchen is Dim
+      - condition: state
+        entity_id: input_select.kitchen
+        state: "Dim"
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Lights are currently off
+      - condition: state
+        entity_id:
+          - light.kitchen_main_light_switch
+          - light.kitchen_table_light_switch
+        state: "off"
+      # # Make sure the lights weren't manually turned up
+      # - condition: or
+      #   conditions:
+      #     # Kitchen lights are brighter than motion on setting
+      #     - condition: template
+      #       value_template: "{{ states.light.kitchen_main_light_switch.attributes.brightness < 105 }}"
+      #     - condition: template
+      #       value_template: "{{ states.light.kitchen_table_light_switch.attributes.brightness < 105 }}"
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_lights
+        data:
+          brightness_pct: 40
+          transition: 0.5
+      - service: automation.turn_on
+        # entity_id: automation.kitchen_lights_motion_off
+        entity_id: automation.kitchen_lights_dim_motion_off
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kitchen_lights_auto

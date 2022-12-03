@@ -1,0 +1,53 @@
+# Main Bathroom Bedtime Motion On
+#
+automation:
+  - id: "main_bathroom_bedtime_motion_on"
+    initial_state: on
+    alias: "Main Bathroom Bedtime Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.main_bathroom_motion_sensor_status
+        to: "on"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the bathroom are enabled
+      - condition: state
+        entity_id: input_boolean.main_bathroom_lighting_automations
+        state: "on"
+      # Bathroom is in bedtime mode
+      - condition: state
+        entity_id: input_select.main_bathroom
+        state: "Bedtime"
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # No need to turn on if less than 15 lux
+      - condition: numeric_state
+        entity_id: sensor.main_bathroom_motion_sensor_illuminance
+        below: 15
+      # # Bedroom is occupied
+      # - condition: state
+      #   entity_id: input_boolean.main_bedroom_occupied
+      #   state: "on"
+      # # Make sure the lights weren't manually turned up
+      # - condition: numeric_state
+      #   entity_id: group.main_bathroom_lights
+      #   attribute: brightness_pct
+      #   below: 31
+      # # Make sure the lights weren't manually turned up
+      # - condition: template
+      #   value_template: "{{ states.light.main_bathroom_vanity_lights.attributes.brightness < 5 }}"
+    action:
+      - service: light.turn_on
+        entity_id: light.main_bathroom_vanity_lights
+        data:
+          brightness_pct: 05
+          transition: 0.5
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bathroom_lights_auto

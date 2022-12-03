@@ -1,0 +1,4 @@
+input_boolean:
+  office_occupied:
+    name: Office Occupied
+    icon: mdi:laptop

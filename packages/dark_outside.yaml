@@ -1,0 +1,108 @@
+input_boolean:
+  dark_outside:
+    name: Dark Outside
+    icon: mdi:weather-night
+    initial: off
+
+automation:
+  # Turn ON dark outside boolean
+  - id: "turn_on_dark_outside"
+    alias: "Turn on Dark Outside"
+    mode: "single"
+    trigger:
+      # Sun has set
+      - platform: sun
+        event: sunset
+      # 10 minutes after sunset
+      - platform: sun
+        event: sunset
+        offset: "00:10:00"
+      # Sun elevation below 4
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: -4.0
+      # It's getting dark outside
+      - platform: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        below: 50
+        for:
+          minutes: 2
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # The input boolean is OFF
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "off"
+      # Sun is low
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 2.0
+      # Lux is low in the yard
+      - condition: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        below: 50
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.dark_outside
+
+      - service: notify.mobile_app_jk
+        data:
+          title: Dark Outside
+          message: It's dark outside active
+
+  # Turn OFF dark outside boolean
+  - id: "turn_off_dark_outside"
+    alias: "Turn off Dark Outside"
+    mode: "single"
+    trigger:
+      # Sun is up
+      - platform: sun
+        event: sunrise
+      # 10 before after sunset
+      - platform: sun
+        event: sunrise
+        offset: "-00:10:00"
+      # Sun elevation above 4
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        above: -4.0
+      # It's getting light outside
+      - platform: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        above: 50
+        for:
+          minutes: 2
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # The input boolean is ON
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "on"
+      # Sund is above -4
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        above: -4.0
+      # Lux is not low in the yard
+      - condition: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        above: 50
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.dark_outside
+
+      - service: notify.mobile_app_jk
+        data:
+          title: No Longer Dark Outside
+          message: It's dark outside NOT active

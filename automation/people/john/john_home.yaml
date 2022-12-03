@@ -1,0 +1,37 @@
+# Automation to detect and initiate home for John
+#
+# This automation will detect if John's home based on
+# a bunch of triggers and conditions and then run a
+# script to handle home actions.
+#
+id: "john_home"
+initial_state: "on"
+alias: "John Home"
+trigger:
+  # Bayesian sensor marked as home
+  - platform: state
+    entity_id: binary_sensor.john_presence
+    to: "on"
+  # Entered zone home via mobile app
+  - platform: zone
+    entity_id: person.cristina_falbo
+    zone: zone.home
+    event: enter
+  # HA reload or start
+  - platform: event
+    event_type: automation_reloaded
+  - platform: homeassistant
+    event: start
+condition:
+  # Make sure the bayesian sensor is marked as home
+  - condition: state
+    entity_id: binary_sensor.john_presence
+    state: "on"
+  # Not currently home
+  - condition: state
+    entity_id: input_boolean.john_home
+    state: "off"
+action:
+  # trigger a script to handle the next steps
+  - service: script.turn_on
+    entity_id: script.john_home

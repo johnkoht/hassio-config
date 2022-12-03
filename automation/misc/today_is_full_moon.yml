@@ -1,0 +1,57 @@
+id: "today_is_full_moon"
+initial_state: "on"
+alias: "Today is a full moon"
+trigger:
+  # Check every day 10 mins after sunset
+  - platform: sun
+    event: sunset
+    # offset: "00:10:00"
+  # Or if today is a full moon
+  - platform: state
+    entity_id: sensor.moon
+    to: "full_moon"
+condition:
+  # House is occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Make sure it's a full moon
+  - condition: state
+    entity_id: sensor.moon
+    state: "full_moon"
+  # Sun is below horizon
+  - condition: state
+    entity_id: sun.sun
+    state: "below_horizon"
+  # # Make sure it's an appropriate time
+  # - condition: time
+  #   after: "15:00:00"
+  #   before: "21:00:00"
+action:
+  # Wait for motion in the kitchen
+  - wait_template: "{{ is_state('binary_sensor.kitchen_motion_sensor_main_motion_detection', 'on') }}"
+    # timeout: "00:03:00"
+
+  - alias: "Wait 5 seconds"
+    delay: 5
+
+  # Notify via push
+  - service: notify.mobile_app_jk
+    data:
+      message: Today's a full moon, go check it out!
+      title: Full Moon Reminder
+
+  # Announcement
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "It's a full moon today! Go take a look out the window.",
+            "Guess what? It's a full moon today!",
+            "Hey fam! Today's a full moon, don't forget to check it out.",
+            "Hey Nino! Guess what? Today's a full moon!"
+          ] | random
+        }}
+      media_players: "auto"
+      sound: "chime"

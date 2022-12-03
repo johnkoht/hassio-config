@@ -1,0 +1,39 @@
+# Turn off the family room media if it's on
+id: "family_room_turn_tv_off"
+initial_state: "on"
+alias: "Family Room Turn the TV Off"
+trigger:
+  # Family room is Away mode
+  - platform: state
+    entity_id: input_select.family_room
+    to: "Away"
+  # Family room is Off mode
+  - platform: state
+    entity_id: input_select.family_room
+    to: "Off"
+  # Bedtime is turned on
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "on"
+  # Family room is no longer occupied
+  - platform: state
+    entity_id: input_boolean.family_room_occupied
+    to: "off"
+condition:
+  - condition: or
+    conditions:
+      # Family room is Away
+      - condition: state
+        entity_id: input_select.family_room
+        state: "Away"
+      # OR family room is Off
+      - condition: state
+        entity_id: input_select.family_room
+        state: "Off"
+  # TV is on
+  - condition: state
+    entity_id: media_player.sony_bravia_tv
+    state: "playing"
+action:
+  - service: media_player.turn_off
+    entity_id: media_player.sony_bravia_tv

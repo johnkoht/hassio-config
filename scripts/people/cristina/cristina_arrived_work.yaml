@@ -1,0 +1,15 @@
+# Script to trigger when Cristina arrives at work
+#
+alias: Cristina Arrived at Work
+sequence:
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "Pardon the interruption but Mamma just arrived at the office!",
+            "All right gang, mamma is at work",
+            "Attention! Mamma just got to work."
+          ] | random
+        }}
+      media_players: "auto"

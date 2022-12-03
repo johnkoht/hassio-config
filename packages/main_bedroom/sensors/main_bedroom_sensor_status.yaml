@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Main Bedroom Motion Sensor
+    unique_id: main_bedroom_motion_sensor
+    device_class: motion
+    entities:
+      - binary_sensor.main_bedroom_motion_sensor_entry_motion
+      - binary_sensor.main_bedroom_motion_sensor_back_motion

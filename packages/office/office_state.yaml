@@ -1,0 +1,11 @@
+# input_select.office
+#
+# Stores the current state for the office
+input_select:
+  office:
+    name: Office
+    options:
+      - "Auto"
+      # - "Away"
+      - "Off"
+      - "DnD"

@@ -1,0 +1,34 @@
+# Office Lights Motion Off
+#
+# If motion is no longer detected and the Office
+# is not occupied, let's turn the lights off quickly
+#
+automation:
+  - id: "office_lights_motion_off"
+    initial_state: on
+    alias: "Office lights motion off"
+    trigger:
+      # Motion no longer detected
+      - platform: state
+        entity_id: binary_sensor.office_aqara_motion_sensor
+        to: "off"
+        for:
+          minutes: 1
+    condition:
+      # Office is not occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "off"
+      # Office presence Bayesian sensor is off
+      - condition: state
+        entity_id: binary_sensor.office_presence
+        state: "off"
+      # Lights are currently on
+      - condition: state
+        entity_id: group.office_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: group.office_lights
+      - service: automation.turn_off
+        entity_id: automation.office_lights_motion_off

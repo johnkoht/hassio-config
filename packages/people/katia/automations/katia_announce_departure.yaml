@@ -1,0 +1,37 @@
+automation:
+  - id: "katia_announce_departure"
+    alias: Katia Announce Departure
+    mode: queued
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: person.katia
+        from: "home"
+        to: "not_home"
+        for:
+          minutes: 2
+    condition:
+      # Not home
+      - condition: state
+        entity_id: person.katia
+        state: "not_home"
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    action:
+      # Announcement
+      - service: script.general_announcement
+        data:
+          speech_message: >-
+            {{
+              [
+                "Katia has left the house!",
+                "Arrivederci, Katia! See you next time!",
+                "Ciao! Katia just left!",
+                "Pardon the interruption but Katia just left",
+              ] | random
+            }}
+          media_players: "auto"

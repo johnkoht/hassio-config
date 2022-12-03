@@ -1,0 +1,51 @@
+# Main Bathroom Not Occupied
+#
+automation:
+  - id: "main_bathroom_not_occupied"
+    initial_state: on
+    alias: "Main bathroom not occupied"
+    trigger:
+      # Main bedroom sensor no longer detects occupancy
+      - platform: state
+        entity_id: binary_sensor.main_bathroom_motion_sensor_occupancy
+        to: "off"
+      # Nobody detected via Bluetooth for 2 minutes
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'main_bathroom')|map(attribute='name')|list | length == 0 }}"
+        for:
+          minutes: 2
+      # Bedroom is no longer occupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "off"
+      # Shower is no longer occupied
+      - platform: state
+        entity_id: input_boolean.main_bathroom_shower_occupied
+        to: "off"
+    condition:
+      # Main Bathroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bathroom_occupied
+        state: "on"
+      # Main bathroom sensor no longer detects occupancy
+      - condition: state
+        entity_id: binary_sensor.main_bathroom_motion_sensor_occupancy
+        state: "off"
+      # Nobody detected via BLE
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'main_bathroom')|map(attribute='name')|list | length == 0 }}"
+      # The shower is not occupied
+      - condition: state
+        entity_id: input_boolean.main_bathroom_shower_occupied
+        state: "off"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.main_bathroom_occupied
+
+      # Wati 2 seconds to activate lighting automations
+      - alias: "Wait 2 seconds"
+        delay: 02
+
+      # Enable bedroom lighting automations
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bathroom_lighting_automations

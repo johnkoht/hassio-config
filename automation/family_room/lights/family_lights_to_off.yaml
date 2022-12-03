@@ -1,0 +1,45 @@
+id: "family_room_lights_to_off"
+initial_state: "on"
+alias: "Family room lights to off"
+trigger:
+  # Family room is Off
+  - platform: state
+    entity_id: input_select.family_room
+    to: "Off"
+  # House is Off
+  - platform: state
+    entity_id: input_select.house
+    to: "Off"
+  # # Fmaily room is not occupied for 2 minutes
+  # - platform: state
+  #   entity_id: input_boolean.family_room_occupied
+  #   to: "off"
+  #   for:
+  #     minutes: 2
+condition:
+  - condition: state
+    entity_id: input_boolean.lighting_automations
+    state: "on"
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: input_select.family_room
+        state: "Off"
+      # Family Room is no longer occupied
+      - condition: state
+        entity_id: input_boolean.family_room_occupied
+        state: "off"
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.family_room
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.house
+            state: "Off"
+  - condition: state
+    entity_id: light.family_room_main_lights
+    state: "on"
+action:
+  - service: light.turn_off
+    entity_id: light.family_room_main_lights

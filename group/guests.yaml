@@ -1,0 +1,20 @@
+extended_family:
+  entities:
+    - person.mary_falbo
+    - person.antoun_koht
+    - person.sonia_koht
+
+guests:
+  entities:
+    - person.mary_falbo
+    - person.antoun_koht
+    - person.sonia_koht
+    - person.katia
+
+roommate:
+  entities:
+    - person.joe_falbo
+
+arriving:
+  name: Arriving
+  entities: []

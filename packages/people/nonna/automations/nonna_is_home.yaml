@@ -1,0 +1,32 @@
+# Automation to detect and initiate home for Joe
+#
+# This automation will detect if Joe's home based on
+# a bunch of triggers and conditions and then run a
+# script to handle home actions.
+#
+automation:
+  - id: "nonna_is_home"
+    initial_state: on
+    alias: "Nonna is Home"
+    trigger:
+      # If ESPresense detects her in a room
+      # - platform: template
+      #   value_template: "{{ states.sensor.mary_room_presence.state != 'not_home'}}"
+      - platform: state
+        entity_id: person.mary_falbo
+        to: "home"
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.mary_falbo
+            state: "home"
+          - condition: template
+            value_template: "{{ states.sensor.mary_room_presence.state != 'not_home'}}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.nonna_home

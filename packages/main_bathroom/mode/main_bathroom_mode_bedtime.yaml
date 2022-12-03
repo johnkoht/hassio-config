@@ -1,0 +1,47 @@
+# Main Bathroom Mode Bedtime
+#
+automation:
+  - id: "main_bathroom_mode_bedtime"
+    initial_state: on
+    alias: "Main Bathroom mode bedtime"
+    trigger:
+      # # Bedtime is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Bedtime hours active
+      - platform: state
+        entity_id: binary_sensor.bedtime
+        to: "on"
+      # When the main bedroom goes to Bedtime mode
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Bedtime"
+    condition:
+      # Bathroom is not already Bedtime
+      - condition: template
+        value_template: "{{ not is_state('input_select.main_bathroom','Bedtime') }}"
+      # Bedtime mode is enabled or bedroom is in bedtime mode
+      - condition: or
+        conditions:
+          # Bedtime is enabled
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
+          # Bedroom is in bedtime mode
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Bedtime"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_bathroom
+          option: "Bedtime"
+
+      # Turn on the bedtime motion automation
+      - service: automation.turn_on
+        entity_id: automation.main_bathroom_bedtime_motion_on
+
+      # Turn off the regular motion automation
+      - service: automation.turn_off
+        entity_id: automation.main_bathroom_lights_motion_on

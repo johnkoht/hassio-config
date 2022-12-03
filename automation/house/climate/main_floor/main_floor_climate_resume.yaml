@@ -1,0 +1,45 @@
+# Main Floor Climate Resume
+#
+# If the house becomes occupied or we wake up
+# then resume the main floor temperature
+#
+id: "main_floor_climate_resume"
+alias: "Main floor climate resume"
+initial_state: "on"
+trigger:
+  # If the house goes into auto mode
+  - platform: state
+    entity_id: input_select.house
+    to: "Auto"
+  # The house becomes occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "on"
+  # If somebody woke up and is out of bed
+  - platform: state
+    entity_id:
+      - input_boolean.john_is_in_bed
+      - input_boolean.cristina_in_bed
+    to: "off"
+  # If bedtime turns off
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "off"
+  # At 6am
+  - platform: time
+    at: "00:06:00"
+condition:
+  # The house is not in bedtime mode
+  - condition: state
+    entity_id: input_boolean.bedtime
+    state: "off"
+  # The house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Make sure the Nest is set to a preset already (e.g. Eco)
+  - condition: template
+    value_template: "{{ states.climate.nest_main_floor.attributes.preset_mode != 'none' }}"
+action:
+  - service: script.main_floor_climate_to_resume
+    data: {}

@@ -1,0 +1,44 @@
+id: "guest_mode_off"
+initial_state: "on"
+alias: "Guest mode off"
+trigger:
+  # Guest group is detected not home for 30 minutes
+  - platform: state
+    entity_id: group.guests
+    from: "home"
+    to: "not_home"
+    for:
+      minutes: 5
+  - platform: homeassistant
+    event: start
+condition:
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: "on"
+  - condition: state
+    entity_id: group.guests
+    state: "not_home"
+action:
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.guest_mode
+  # Announcement
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "Arrivederci guests! Guest mode disabled..",
+            "Guests are gone, it's just us now.",
+            "Pardon the interruption but guest mode has been disabled.",
+            "Attention! Guest mode is disabled."
+          ] | random
+        }}
+      media_players: "auto"
+  # If a guest is announced, we skip the generic guest mode
+  # announcement. When guest mode is turned off, we need to
+  # reset this boolean.
+  - condition: state
+    entity_id: input_boolean.guest_mode_announced
+    state: "on"
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.guest_mode_announced

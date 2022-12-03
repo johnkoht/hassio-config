@@ -1,0 +1,5 @@
+input_boolean:
+  dining_room_lights_auto:
+    name: Dining Room Lights auto
+    icon: mdi:lightbulb-auto
+    initial: off

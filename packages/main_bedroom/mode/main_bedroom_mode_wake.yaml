@@ -1,0 +1,63 @@
+# Bedroom Awake
+#
+# When both of us are deteremined to be awake,
+# we'll turn off the bedtime mode for the Bedroom
+#
+automation:
+  - id: "main_bedroom_mode_awake"
+    alias: "Main Bedroom mode awake"
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.cristina_is_awake
+          - input_boolean.john_is_awake
+        to: "on"
+    condition:
+      # After 5am
+      - condition: time
+        after: "05:00:00"
+      - condition: and
+        conditions:
+          # John is away or home and awake
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.john_home
+                state: "off"
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.john_home
+                    state: "on"
+                  - condition: state
+                    entity_id: input_boolean.john_is_awake
+                    state: "on"
+          # Cristina is away or home and awake
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.cristina_home
+                state: "off"
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.cristina_home
+                    state: "on"
+                  - condition: state
+                    entity_id: input_boolean.cristina_is_awake
+                    state: "on"
+      # Main bedroom sensor detects occupancy
+      - condition: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
+        state: "on"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_bedroom
+          option: "Wake"
+      # Turn off some bedtime automations
+      - service: automation.turn_off
+        entity_id:
+          - automation.main_bedroom_john_night_light_off
+          - automation.main_bedroom_night_light_for_john

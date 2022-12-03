@@ -1,0 +1,32 @@
+# Office Camera Light Off
+#
+#
+automation:
+  - id: "office_camera_light_off"
+    initial_state: on
+    alias: "Office Camera Light Off"
+    trigger:
+      # Laptop camera goes off
+      - platform: state
+        entity_id: binary_sensor.john_laptop_camera_active
+        to: "off"
+      # Office no longer occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+      # Laptop is turned off
+      - platform: state
+        entity_id: binary_sensor.johns_macbook_pro_active
+        to: "off"
+    condition:
+      # Laptop camera is off
+      - condition: state
+        entity_id: binary_sensor.john_laptop_camera_active
+        state: "off"
+      # Camera light is ON
+      - condition: state
+        entity_id: light.elgato_key_light_air
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.elgato_key_light_air

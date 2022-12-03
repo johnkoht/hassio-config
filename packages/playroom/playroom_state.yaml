@@ -1,0 +1,9 @@
+# input_select.playroom
+#
+# Stores the current state for the Playroom
+input_select:
+  playroom:
+    name: Playroom
+    options:
+      - "Auto"
+      - "Off"

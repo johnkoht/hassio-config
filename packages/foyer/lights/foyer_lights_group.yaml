@@ -1,0 +1,9 @@
+light:
+  - platform: group
+    name: Foyer Lights
+    unique_id: foyer_lights
+    entities:
+      - light.foyer_ceiling_lights
+      - light.foyer_chandelier
+      - light.foyer_coat_closet
+      - light.stairs_light

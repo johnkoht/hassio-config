@@ -1,0 +1,6 @@
+- platform: mqtt_room
+  device_id: "iBeacon:426c7565-4368-6172-6d42-6561636f6e73-3838-4949"
+  name: "Roscoe Room Presence"
+  state_topic: "espresense/rooms"
+  timeout: 60
+  away_timeout: 120

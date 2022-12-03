@@ -1,0 +1,52 @@
+Playroom_Lights:
+  entities:
+    - light.playroom_1
+    - light.playroom_2
+    - light.playroom_3
+    - light.playroom_4
+    - light.playroom_5
+    - light.playroom_6
+
+Office_lights:
+  entities:
+    - light.office_1
+    - light.office_2
+    - light.office_3
+    - light.office_4
+
+Gianlucas_Room_Lights:
+  entities:
+    - light.gianluca_room_1
+    - light.gianluca_room_2
+    - light.gianluca_room_3
+    - light.gianluca_room_4
+
+# Foyer_lights:
+#   - light.foyer_ceiling_lights
+#   - light.foyer_chandelier
+#   - light.foyer_coat_closet
+
+# First floor only
+First_Floor_Lights:
+  entities:
+    - group.playroom_lights
+    - group.office_lights
+    - light.kitchen_lights
+    - light.garage_lights
+    - light.family_room_main_lights
+    - light.mudroom_main_lights
+    - light.dining_room_main_lights
+    - light.living_room_main_lights
+
+# Second floor only
+Second_Floor_Lights:
+  entities:
+    - group.main_bedroom_lights
+    - group.gianlucas_room_lights
+    - light.upstairs_hallway
+
+# All interior lights
+Interior_Lights:
+  entities:
+    - group.first_floor_lights
+    - group.second_floor_lights

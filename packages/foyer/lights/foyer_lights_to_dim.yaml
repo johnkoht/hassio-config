@@ -1,0 +1,43 @@
+# Turn the foyer lights to dim
+#
+automation:
+  - id: "foyer_lights_to_dim"
+    initial_state: on
+    alias: "Foyer lights to dim"
+    trigger:
+      # If the foyer input_select is turned to dim
+      - platform: state
+        entity_id: input_select.foyer
+        to: "Dim"
+    condition:
+      # Make sure lighting automations are on
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Make sure the house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Foyer is in Dim mode
+      - condition: state
+        entity_id: input_select.foyer
+        state: "Dim"
+      # If either the ceiling lights or chandelier are off
+      - condition: or
+        conditions:
+          # - condition: state
+          #   entity_id: light.foyer_ceiling_lights
+          #   state: "off"
+          - condition: state
+            entity_id: light.foyer_chandelier
+            state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.foyer_chandelier
+        # data:
+        #   brightness_pct: 35
+        #   transition: 0.5
+      - service: switch.turn_on
+        entity_id:
+          - switch.adaptive_lighting_foyer
+          - switch.adaptive_lighting_sleep_mode_foyer

@@ -1,0 +1,103 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Matte
+  style:
+    hui-vertical-stack-card:
+      $: |
+        button-card {
+          align-self: center;
+          padding: 0.2em 0 2em 0;
+        }
+      $hui-map-card:
+        $: |
+          ha-icon-button {
+            color: var(--primary-color);
+            zoom: 112%;
+            margin-top: 0.5em;
+          }
+          ha-card {
+            border-top: 2px solid #1a1a1a;
+            border-radius: 0;
+            transition: none;
+          }
+        $ha-map$: |
+          #map {
+            background-color: #191919 !important;
+          }
+          .leaflet-control-attribution {
+            display: none;
+          }
+          .leaflet-bar a {
+            background-color: rgba(115, 123, 124, 0.2) !important;
+            color: #9da0a2 !important;
+            backdrop-filter: blur(0.25em);
+            zoom: 120%;
+          }
+          a.leaflet-control-zoom-in {
+            border-bottom: 1px solid #181818 !important;
+          }
+          .leaflet-pane.leaflet-tile-pane {
+            filter: contrast(85%);
+          }
+  card:
+    type: vertical-stack
+    cards:
+      - type: entities
+        card_mod:
+          class: content
+        entities:
+          - entity: person.matte
+            secondary_info: last-changed
+
+      - type: history-graph
+        entities:
+          - entity: person.matte
+
+      - type: glance
+        show_state: false
+        entities:
+
+          - entity: device_tracker.mattias_iphone_unifi
+            name: Router
+            icon: mdi:wifi
+            card_mod:
+              style: &state |
+                state-badge {
+                  color: {{ is_state(config.entity, 'home') | iif('#3182b7', '#3c3f3f') }};
+                }
+
+          - entity: device_tracker.mattias_bluetooth
+            name: Bluetooth
+            icon: mdi:bluetooth
+            card_mod:
+              style: *state
+
+          - entity: device_tracker.mattias_iphone_ios
+            name: Position
+            icon: custom:iphone-modern
+            card_mod:
+              style: *state
+
+      - type: custom:button-card
+        name: Spela upp ljud på iPhone X
+        icon: mdi:volume-high
+        template: icon_name
+        tap_action:
+          action: call-service
+          service: notify.mobile_app_mattias_iphone_ios
+          service_data:
+            title: Hitta min iPhone
+            message: Här är jag
+            data:
+              push:
+                sound:
+                  name: findmy.wav
+                  critical: 1
+                  volume: 1
+
+      - type: map
+        default_zoom: 16
+        dark_mode: true
+        entities:
+          - device_tracker.mattias_iphone_ios

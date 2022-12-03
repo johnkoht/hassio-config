@@ -1,0 +1,4 @@
+- platform: tod
+  name: Preschool Hours
+  after: "08:30"
+  before: "13:30"

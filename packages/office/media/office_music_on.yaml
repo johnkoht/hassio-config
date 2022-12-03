@@ -1,0 +1,47 @@
+automation:
+  - id: "office_music_on"
+    initial_state: on
+    alias: "Office Music On"
+    trigger:
+      # Office becomes occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+        for:
+          minutes: 3
+          seconds: 10
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # John is in the office
+      - condition: state
+        entity_id: sensor.john_room_presence
+        state: "office"
+      # Sonos is paused, idle, or off
+      - condition: state
+        entity_id: media_player.sonos_office
+        state:
+          - "paused"
+          - "idle"
+          - "off"
+      # Must be in a suitable time window
+      - condition: time
+        after: "08:01:00"
+        before: "22:00:00"
+      # Office is not in DnD Mode
+      - condition: template
+        value_template: "{{ not is_state('input_select.office','DnD') }}"
+      # Computer is active
+      - condition: state
+        entity_id: binary_sensor.johns_macbook_pro_active
+        state: "on"
+    action:
+      # Resume the music
+      - service: sonos.play_queue
+        entity_id: media_player.sonos_office
+      # Turn off the input_boolean.office_music_playing so
+      # we don't always just keep playing music upon occupancy
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_music_playing

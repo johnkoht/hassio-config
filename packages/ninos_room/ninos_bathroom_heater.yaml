@@ -1,0 +1,103 @@
+automation:
+  #
+  # Automation that simply enables the heater automation
+  # in the evening after kids sleep
+  - id: "enable_nino_bathroom_heater_automation"
+    alias: "Enable Nino's Bathroom Heater Automation"
+    initial_state: on
+    trigger:
+      # Nino's room becomes occupied for 30 mins
+      - platform: state
+        entity_id: input_boolean.ninos_room_occupied
+        to: "on"
+        for:
+          minutes: 30
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # It's after 6pm
+      - condition: time
+        after: "18:00:00"
+      # Automation is off
+      - condition: state
+        entity_id: automation.ninos_bathroom_heater_on
+        state: "off"
+    action:
+      - service: automation.turn_on
+        entity_id: automation.ninos_bathroom_heater_on
+
+  #
+  # Automation that actually listens to triggers and
+  # turns on the plug for the heater
+  - id: "ninos_bathroom_heater_on"
+    alias: "Nino's Bathroom Heater On"
+    initial_state: off
+    trigger:
+      # It's morning time
+      - platform: time
+        at: "06:15:00"
+      # Nino's door is opened
+      - platform: state
+        entity_id: binary_sensor.ninos_door_sensor_status
+        to: "on"
+    condition:
+      # The house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Room is occupied
+      - condition: state
+        entity_id: input_boolean.ninos_room_occupied
+        state: "on"
+      # It's below 71 degrees
+      - condition: template
+        value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
+      # Switch is OFF
+      - condition: state
+        entity_id: switch.lumi_lumi_plug_maus01_switch
+        state: "off"
+    action:
+      # Switch the power plug on
+      - service: switch.turn_on
+        entity_id: switch.lumi_lumi_plug_maus01_switch
+      # Turn off the automation
+      - service: automation.turn_off
+        entity_id: automation.ninos_bathroom_heater_on
+
+  #
+  # Automation that turns off the heater if the ideal
+  # temperature is reached, the room is no longer occupied
+  # or the house is not occupied
+  - id: "ninos_bathroom_heater_off"
+    alias: "Nino's Bathroom Heater Off"
+    initial_state: on
+    trigger:
+      # Bathroom temperature over 75
+      - platform: template
+        value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) > 75.0 }}"
+      # Nino's room is no longer occupied
+      - platform: state
+        entity_id: input_boolean.ninos_room_occupied
+        to: "off"
+        for:
+          minutes: 5
+      # If the house is not occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # If the plug is on for more than 20 minutes
+      - platform: state
+        entity_id: switch.lumi_lumi_plug_maus01_switch
+        to: "on"
+        for:
+          minutes: 20
+    action:
+      # Switch the power plug OFF
+      - service: switch.turn_off
+        entity_id: switch.lumi_lumi_plug_maus01_switch

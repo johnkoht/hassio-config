@@ -1,0 +1,53 @@
+# Automation to detect and initiate away for John
+#
+# This automation will detect if John's away based on
+# a bunch of triggers and conditions and then run a
+# script to handle away actions.
+#
+id: "john_away"
+alias: "John away"
+initial_state: "on"
+trigger:
+  # A change in John's proximity will trigger this
+  # - platform: state
+  #   entity_id: proximity.john_home
+  # John leaves the home zone
+  - platform: zone
+    entity_id: person.john_koht
+    zone: zone.home
+    event: leave
+  # Is the person.john_koht changed to not_home
+  - platform: state
+    entity_id: binary_sensor.john_presence
+    to: "off"
+  # Handle restarts and reloads of HA
+  - platform: event
+    event_type: automation_reloaded
+  - platform: homeassistant
+    event: start
+condition:
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: input_select.john_status
+        state: "Just Left"
+  - condition: state
+    entity_id: binary_sensor.john_presence
+    state: "off"
+  # - condition: or
+  #   conditions:
+  #     # Some away, and not near
+  #     - condition: and
+  #       conditions:
+  #         - condition: state
+  #           entity_id: binary_sensor.john_presence
+  #           state: "off"
+  #         - condition: template
+  #           value_template: "{{ states('proximity.john_home')|float > 300 }}"
+  #     # Far away
+  #     - condition: template
+  #       value_template: "{{ states('proximity.john_home')|float > 600 }}"
+action:
+  - service: script.turn_on
+    data:
+      entity_id: script.john_away

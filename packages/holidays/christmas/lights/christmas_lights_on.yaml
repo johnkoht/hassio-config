@@ -1,0 +1,35 @@
+automation:
+  # Turn on the christmas lights
+  - id: "turn_on_christmas_lights"
+    alias: "Turn ON Christmas Lights"
+    mode: "single"
+    trigger:
+      # Christmas mode is activated
+      - platform: state
+        entity_id: input_boolean.christmas_active
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.christmas_lights
+
+  # Turn OFF the christmas lights
+  - id: "turn_off_christmas_lights"
+    alias: "Turn OFF Christmas Lights"
+    mode: "single"
+    trigger:
+      # Christmas mode is NOT activated
+      - platform: state
+        entity_id: input_boolean.christmas_active
+        to: "off"
+    # condition:
+    #   - condition: state
+    #     entity_id: switch.main_tree
+    #     state: "on"
+    action:
+      - service: switch.turn_off
+        entity_id: switch.christmas_lights

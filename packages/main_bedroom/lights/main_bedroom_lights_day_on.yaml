@@ -1,0 +1,72 @@
+automation:
+  - id: "main_bedroom_lights_day_on"
+    initial_state: on
+    alias: "Main bedroom lights day on"
+    trigger:
+      # The lighting is low in the bedroom
+      - platform: numeric_state
+        entity_id:
+          - sensor.main_bedroom_motion_sensor_entry_illuminance
+          - sensor.main_bedroom_motion_sensor_back_illuminance
+        below: 150
+        for:
+          minutes: 2
+      # The lighting is low in the bedroom
+      - platform: numeric_state
+        entity_id:
+          - sensor.main_bedroom_motion_sensor_entry_illuminance
+          - sensor.main_bedroom_motion_sensor_back_illuminance
+        below: 100
+        for:
+          minutes: 5
+      # The lighting is low in the bedroom
+      - platform: numeric_state
+        entity_id:
+          - sensor.main_bedroom_motion_sensor_entry_illuminance
+          - sensor.main_bedroom_motion_sensor_back_illuminance
+        below: 100
+        for:
+          minutes: 10
+      # The weather is bad outside
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.main_bedroom_lighting_automations
+        to: "on"
+    condition:
+      # Light automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Light automations are enabled
+      - condition: state
+        entity_id: input_boolean.main_bedroom_lighting_automations
+        state: "on"
+      # Bedroom is Auto
+      - condition: state
+        entity_id: input_select.main_bedroom
+        state: "Auto"
+      # Bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
+        below: 150
+      # Lights are currently off
+      - condition: state
+        entity_id: light.main_bedroom_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.main_bedroom_lights
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bedroom_lights_auto

@@ -1,0 +1,12 @@
+# Script to handle Joe away functions
+#
+alias: Joe Away
+sequence:
+  # Turn off the all powerful boolean for Joe home
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.joe_home
+  # - service: mqtt.publish
+  #   data:
+  #     topic: location/joe
+  #     payload: 'not_home'
+  #     retain: true

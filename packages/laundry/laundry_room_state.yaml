@@ -1,0 +1,6 @@
+input_select:
+  laundry_room:
+    name: Laundry Room
+    options:
+      - "Auto"
+      - "Off"

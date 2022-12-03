@@ -1,0 +1,92 @@
+- cal_id: imduq9im577uriq2fk1ichr53g@group.calendar.google.com
+  entities:
+    - device_id: mdh
+      ignore_availability: true
+      name: MDH
+      track: false
+
+- cal_id: aemenhdr9b4r0sj4f2u759a8l0@group.calendar.google.com
+  entities:
+    - device_id: kohbocal
+      ignore_availability: true
+      name: kohboCal
+      track: true
+    - device_id: ninos_soccer
+      ignore_availability: true
+      name: Nino soccer
+      track: true
+      search: "Nino soccer"
+      offset: "!!"
+    - device_id: ninos_italian_class
+      ignore_availability: true
+      name: Nino Italian class
+      track: true
+      search: "Nino Italian class"
+      offset: "!!"
+
+- cal_id: john.koht@gmail.com
+  entities:
+    - device_id: john_koht
+      ignore_availability: true
+      name: John Koht
+      track: true
+
+- cal_id: en.usa#holiday@group.v.calendar.google.com
+  entities:
+    - device_id: holidays_in_united_states
+      ignore_availability: true
+      name: Holidays in United States
+      track: true
+
+- cal_id: addressbook#contacts@group.v.calendar.google.com
+  entities:
+    - device_id: birthdays
+      ignore_availability: true
+      name: Birthdays
+      track: false
+
+- cal_id: family02656020943721194763@group.calendar.google.com
+  entities:
+    - device_id: family
+      ignore_availability: true
+      name: Family
+      track: false
+
+- cal_id: john@kohactive.com
+  entities:
+    - device_id: john_kohactive_com
+      ignore_availability: true
+      name: john@kohactive.com
+      track: true
+
+- cal_id: john@launchpadlab.com
+  entities:
+    - device_id: john_launchpadlab_com
+      ignore_availability: true
+      name: john@launchpadlab.com
+      track: true
+    - device_id: john_gsd
+      ignore_availability: true
+      name: John GSD Time
+      track: true
+      search: "GSD"
+      offset: "!!"
+    - device_id: john_ooo
+      ignore_availability: true
+      name: John OOO Time
+      track: true
+      search: "OOO"
+      offset: "!!"
+    - device_id: john_block
+      ignore_availability: true
+      name: John Block Time
+      track: true
+      search: "Block"
+      offset: "!!"
+
+- cal_id: agnaalurb1vepmv1uf714ifnjbr4b8ng@import.calendar.google.com
+  entities:
+    - device_id: gusto_launchpad_lab_llc_reminders
+      ignore_availability: true
+      name: "Gusto: LaunchPad Lab LLC reminders"
+      track: true

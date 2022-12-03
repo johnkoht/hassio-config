@@ -1,0 +1,17 @@
+# Script to trigger when Cristina leaves work
+#
+alias: Cristina Left Work
+sequence:
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "Guess what? Mamma left work and is headed home!",
+            "Hey hey! Mamma is on her way home!",
+            "Pardon the interruption but Mamma is on her way home!",
+            "All right gang, mamma left the office!",
+            "Mamma is headed home, clean up your mess!"
+          ] | random
+        }}
+      media_players: "auto"

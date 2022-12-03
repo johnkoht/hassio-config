@@ -1,0 +1,46 @@
+automation:
+  - id: "nonna_announce_arrival"
+    alias: Nonna Announce Arrival
+    mode: queued
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: person.mary_falbo
+        from: "not_home"
+        to: "home"
+    condition:
+      # A guest is home
+      - condition: state
+        entity_id: person.mary_falbo
+        state: "home"
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    action:
+      # Announcement
+      - service: script.general_announcement
+        data:
+          speech_message: >-
+            {{
+              [
+                "Guess who's here? It's Nonna!",
+                "Anybody smell pasta? Nonna must be here!",
+                "Nonna is in the house!",
+                "Ciao Ciao! Nonna is here!",
+                "Pardon the interruption but Nonna is home!",
+                "Knock knock. Who's there? Nonna is here!"
+              ] | random
+            }}
+          media_players: "auto"
+
+      # If a guest mode has not been announced, then we'll
+      # set initiate guest_mode_announced so we the generic
+      # guest mode announcement doesn't fire as well
+      - condition: state
+        entity_id: input_boolean.guest_mode_announced
+        state: "off"
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.guest_mode_announced

@@ -1,0 +1,17 @@
+automation:
+  - id: "main_level_dryer_power_button"
+    alias: "Main Level Dryer Power Button"
+    initial_state: on
+    trigger:
+      - platform: device
+        device_id: 055647d59003c9dc03051ef8e575a427
+        domain: zha
+        type: remote_button_short_press
+        subtype: remote_button_short_press
+    condition:
+      - condition: state
+        entity_id: switch.main_level_drying_machine
+        state: "off"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.main_level_drying_machine

@@ -1,0 +1,10 @@
+# input_select.garage
+#
+# Stores the current state for the Garage
+input_select:
+  garage:
+    name: Garage
+    options:
+      - "Auto"
+      - "Off"
+      - "Away"

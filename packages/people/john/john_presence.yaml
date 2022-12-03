@@ -1,0 +1,70 @@
+binary_sensor:
+  - platform: bayesian
+    prior: 0.83
+    name: "John Presence"
+    probability_threshold: 0.91
+    observations:
+      # iOS companion app device
+      #
+      - platform: state
+        entity_id: "device_tracker.johns_iphone_2"
+        prob_given_true: 0.9
+        prob_given_false: 0.025
+        to_state: "home"
+      - platform: state
+        entity_id: "device_tracker.johns_iphone_2"
+        prob_given_true: 0.03
+        prob_given_false: 0.95
+        to_state: "not_home"
+
+      # iPhone Detect Plugin
+      - platform: "state"
+        entity_id: "device_tracker.john_iphone_detect"
+        prob_given_true: 0.7
+        prob_given_false: 0.025
+        to_state: "home"
+      - platform: "state"
+        entity_id: "device_tracker.john_iphone_detect"
+        prob_given_true: 0.03
+        prob_given_false: 0.95
+        to_state: "not_home"
+
+      # # iCloud integration
+      # - entity_id: "device_tracker.jk2"
+      #   prob_given_true: 0.9
+      #   prob_given_false: 0.1
+      #   platform: "state"
+      #   to_state: "home"
+
+      # # Apple watch
+      # - entity_id: "device_tracker.johns_apple_watch"
+      #   prob_given_true: 0.8
+      #   prob_given_false: 0.2
+      #   platform: "state"
+      #   to_state: "home"
+
+      # Router device
+      #
+      - platform: "state"
+        entity_id: "device_tracker.jk"
+        prob_given_true: 0.7
+        prob_given_false: 0.025
+        to_state: "home"
+      - platform: "state"
+        entity_id: "device_tracker.jk"
+        prob_given_true: 0.35
+        prob_given_false: 0.125
+        to_state: "not_home"
+
+      # Nmap device
+      #
+      - platform: "state"
+        entity_id: "device_tracker.johns_iphone_nmap"
+        prob_given_true: 0.5
+        prob_given_false: 0.1
+        to_state: "home"
+      - platform: "state"
+        entity_id: "device_tracker.johns_iphone_nmap"
+        prob_given_true: 0.4
+        prob_given_false: 0.215
+        to_state: "not_home"

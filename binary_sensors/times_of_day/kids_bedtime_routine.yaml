@@ -1,0 +1,4 @@
+- platform: tod
+  name: Kids Bedtime Routine
+  after: "18:00"
+  before: "20:00"

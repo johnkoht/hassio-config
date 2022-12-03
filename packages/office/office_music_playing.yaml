@@ -1,0 +1,4 @@
+input_boolean:
+  office_music_playing:
+    name: Office Music Playing
+    icon: mdi:speaker

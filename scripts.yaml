@@ -1,0 +1,246 @@
+turn_off_interior_lights:
+  alias: Interior Off
+  sequence:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id: group.interior_lights
+  mode: single
+  icon: mdi:power-off
+climate_away:
+  alias: Climate Away
+  sequence:
+  - device_id: 8ff6e575e11c54a1fac5f4e022eee597
+    domain: climate
+    entity_id: climate.nest_main_floor
+    type: set_preset_mode
+    preset_mode: eco
+  - device_id: 4f3598c36421216e7bb6cfbe1b746e3f
+    domain: climate
+    entity_id: climate.nest_2nd_floor
+    type: set_preset_mode
+    preset_mode: eco
+  - service: input_number.set_value
+    data:
+      value: '{{ state_attr(''climate.nest_main_floor'', ''temperature'') }}'
+    target:
+      entity_id: input_number.temperature_main_floor
+  - service: input_number.set_value
+    data:
+      value: '{{ state_attr(''climate.nest_2nd_floor'', ''temperature'') }}'
+    target:
+      entity_id: input_number.temperature_2nd_floor
+  - service: input_text.set_value
+    data:
+      value: '{{ states("climate.nest_main_floor") }}'
+    target:
+      entity_id: input_text.temperature_mode_main_floor
+  - service: input_text.set_value
+    data:
+      value: '{{ states("climate.nest_2nd_floor") }}'
+    target:
+      entity_id: input_text.temperature_mode_2nd_floor
+  mode: single
+  icon: mdi:hvac-off
+garage_close:
+  alias: Garage Close
+  sequence:
+  - device_id: d21fee64f0e0c227432ffa0d1fef645c
+    domain: cover
+    entity_id: cover.garage_door_1
+    type: close
+  - device_id: 74a88108496f76670a72647bd2ae7638
+    domain: cover
+    entity_id: cover.garage_door_2
+    type: close
+  mode: single
+  icon: mdi:garage-variant
+tvs_off:
+  alias: TVs Off
+  sequence:
+  - type: turn_off
+    device_id: 3f4fe812a5d77aa5b461a1658c956f48
+    entity_id: remote.sony_bravia_tv
+    domain: remote
+  mode: single
+  icon: mdi:television-off
+go_sleep:
+  alias: Go Sleep
+  sequence:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id:
+      - group.first_floor_lights
+  - device_id: 8ff6e575e11c54a1fac5f4e022eee597
+    domain: climate
+    entity_id: climate.nest_main_floor
+    type: set_preset_mode
+    preset_mode: eco
+  - device_id: d21fee64f0e0c227432ffa0d1fef645c
+    domain: cover
+    entity_id: cover.garage_door_1
+    type: close
+  mode: single
+  icon: mdi:sleep
+notify_engine:
+  alias: Notify Engine
+  mode: single
+  icon: mdi:bell-badge
+  sequence:
+  - service: "{% if who == 'john' %}\n  notify.mobile_app_jk\n{% elif who == 'cfalb'\
+      \ %}\n  notify.mobile_app_cfalb\n{% elif who == 'family' %}\n  notify.ios_family\n\
+      {% else %}\n  notify.ios_family\n{% endif %}\n"
+    data:
+      title: '{{title}}'
+      message: '{{message}}'
+      data:
+        image: '{{image}}'
+speech_processing:
+  alias: Speech Processing
+  mode: queued
+  icon: mdi:text-to-speech
+  sequence:
+  - condition: and
+    conditions:
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: group.family
+        state: home
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: 'on'
+    - condition: or
+      conditions:
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: input_boolean.quiet_mode
+          state: 'off'
+      - condition: state
+        entity_id: input_boolean.alert_mode
+        state: 'on'
+    - condition: state
+      entity_id: input_boolean.speech_notifications
+      state: 'on'
+  - service: media_player.volume_set
+    data:
+      entity_id: '{{ media_player }}
+
+        '
+      volume_level: "{% if now().strftime('%H')|int < 10 and now().strftime('%H')|int\
+        \ > 6 %}\n  0.3\n{% elif now().strftime('%H')|int > 10 and now().strftime('%H')|int\
+        \ < 20 %}\n  0.5\n{% else %}\n  0.3\n{% endif %}"
+  - service: notify.alexa_media
+    data:
+      data:
+        type: tts
+      target: group.amazon_alexas
+      message: '{{speech_message}}'
+  - service: input_boolean.turn_off
+    data:
+      entity_id:
+      - input_boolean.alert_mode
+  max: 10
+speech_engine:
+  alias: Speech Engine
+  mode: queued
+  icon: mdi:text-to-speech
+  sequence:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: group.family
+      state: home
+    - condition: state
+      entity_id: input_boolean.guest_mode
+      state: 'on'
+  - service: script.speech_processing
+    data:
+      media_player: "{% if media_player | length == 0 %}\n  {% set media_player =\
+        \ [\n    'media_player.john_s_echo_show'\n  ] %}\n{% endif %} {% if media_player\
+        \ is not string and media_player is sequence %}\n  {% set media_player = media_player|join(',\
+        \ ') %}\n{% endif %} {{ media_player }}"
+      speech_message: '{{speech_message}}'
+climate_activate:
+  alias: Climate Activate
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: '{{ states("input_number.temperature_main_floor") }}'
+      hvac_mode: '{{ states("input_text.temperature_mode_main_floor") }}'
+    target:
+      entity_id: climate.nest_main_floor
+  - service: climate.set_temperature
+    data:
+      temperature: '{{ states("input_number.temperature_2nd_floor") }}'
+      hvac_mode: '{{ states("input_text.temperature_mode_2nd_floor") }}'
+    target:
+      entity_id: climate.nest_2nd_floor
+  mode: single
+  icon: mdi:hvac
+display_doorbell_snapshot_on_tvs:
+  mode: single
+  alias: Display Doorbell Snapshot on TVs
+  icon: mdi:doorbell-video
+  sequence:
+  - condition: state
+    entity_id: remote.sony_bravia_tv
+    state: 'on'
+  - service: camera.snapshot
+    target:
+      device_id: 92b464fee4dab94c831b8ff8686f330a
+    data:
+      filename: /config/www/images/doorbell_camera_alert.jpg
+  - service: notify.family_room_tv
+    data:
+      message: Somebody is at the door!
+      data:
+        image:
+          path: /config/www/images/doorbell_camera_alert.jpg
+      title: Bouncer
+play_doorbell:
+  alias: Play Doorbell
+  icon: mdi:doorbell
+  mode: single
+  sequence:
+  - condition: state
+    entity_id: group.family
+    state: home
+  - condition: state
+    entity_id: input_boolean.quiet_mode
+    state: 'off'
+  - service: media_player.play_media
+    data:
+      entity_id:
+      - media_player.sonos_office
+      - media_player.sonos_family_and_kitchen
+      media_content_id: https://raw.githubusercontent.com/johnkoht/hass-config/master/config/sounds/ding-dong.mp3
+      media_content_type: music
+set_doorbell_message:
+  alias: Set Doorbell Message
+  mode: single
+  icon: mdi:android-messages
+  sequence:
+  - service: select.select_option
+    data:
+      entity_id: select.front_door_camera_doorbell_text
+      option: "{% if message == \"quiet_mode\" %}\n  SHHH…KIDS SLEEPING\n{% elif message\
+        \ == \"dnd\" %}\n  DO NOT DISTURB\n{% elif message == \"leave_package\" %}\n\
+        \  LEAVE PACKAGE AT DOOR\n{% elif message == \"welcome\" %}\n  WELCOME!\n\
+        {% else %}\n  WELCOME!\n{% endif %}"
+test_speech_engine:
+  alias: Test speech engine
+  mode: queued
+  icon: mdi:text-to-speech
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.sonos_office
+      volume_level: 0.1
+  - service: tts.google_say
+    entity_id: group.announcements_devices
+    data:
+      message: '{{ speech_message }}'
+  max: 10

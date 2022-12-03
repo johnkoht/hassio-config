@@ -1,0 +1,60 @@
+# Main Bedroom Mode Off
+#
+automation:
+  - id: "main_bedroom_mode_off"
+    initial_state: on
+    alias: "Main Bedroom mode off"
+    trigger:
+      # Main Bedroom is no longer occupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "off"
+      # Light is bright enough
+      - platform: numeric_state
+        entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
+        above: 101
+        for:
+          minutes: 5
+      # Lights are manually turned off
+      # - platform: state
+      #   entity_id: group.main_bedroom_lights
+      #   to: "off"
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Wake"
+        for:
+          minutes: 30
+    condition:
+      # Main bedroom is not occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "off"
+      # # Main bedroom is not in Off or Motion mode
+      # - condition: template
+      #   value_template: "{{ states('input_select.house') not in ('Off', 'Motion') }}"
+      # Main bedroom is not Off
+      - condition: template
+        value_template: "{{ not is_state('input_select.main_bedroom','Off') }}"
+
+      - condition: or
+        conditions:
+          # Turn it off when we're awake
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Wake"
+            for:
+              minutes: 10
+          # Or if the room just became empty
+          - condition: and
+            conditions:
+              - condition: template
+                value_template: "{{ trigger.to_state.entity_id == input_boolean.main_bedroom_occupied }}"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_bedroom
+          option: "Off"
+      - service: notify.mobile_app_jk
+        data:
+          title: Main Bedroom
+          message: The main bedroom turned to Off mode

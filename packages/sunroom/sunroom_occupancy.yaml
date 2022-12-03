@@ -1,0 +1,4 @@
+input_boolean:
+  sunroom_occupied:
+    name: Sunroom Occupied
+    icon: mdi:sun-thermometer-outline

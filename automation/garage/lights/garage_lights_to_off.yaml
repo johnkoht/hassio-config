@@ -1,0 +1,34 @@
+id: "garage_lights_to_off"
+initial_state: "off"
+alias: "Garage lights to off"
+trigger:
+  # House is turned off
+  - platform: state
+    entity_id: input_select.house
+    to: "Off"
+  # House not occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+  # Bedtime is turned on
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "on"
+  # If the garage lights have been on for 15 minutes
+  - platform: state
+    entity_id: light.garage_lights
+    to: "on"
+    for:
+      minutes: 30
+condition:
+  # Lighting automations are on
+  - condition: state
+    entity_id: input_boolean.lighting_automations
+    state: "on"
+  # Lights are currently on
+  - condition: state
+    entity_id: light.garage_lights
+    state: "on"
+action:
+  - service: light.turn_off
+    entity_id: light.garage_lights
