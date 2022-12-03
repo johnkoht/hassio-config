@@ -26,11 +26,11 @@ automation:
         after: "18:00:00"
       # Automation is off
       - condition: state
-        entity_id: automation.ninos_bathroom_heater_on
+        entity_id: automation.nino_s_bathroom_heater_on
         state: "off"
     action:
       - service: automation.turn_on
-        entity_id: automation.ninos_bathroom_heater_on
+        entity_id: automation.nino_s_bathroom_heater_on
 
   #
   # Automation that actually listens to triggers and
@@ -68,7 +68,7 @@ automation:
         entity_id: switch.lumi_lumi_plug_maus01_switch
       # Turn off the automation
       - service: automation.turn_off
-        entity_id: automation.ninos_bathroom_heater_on
+        entity_id: automation.nino_s_bathroom_heater_on
 
   #
   # Automation that turns off the heater if the ideal

@@ -25,7 +25,7 @@ automation:
       # It's getting dark outside
       - platform: numeric_state
         entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        below: 50
+        below: 30
         for:
           minutes: 2
       # Hassio reloads/starts
@@ -46,7 +46,7 @@ automation:
       # Lux is low in the yard
       - condition: numeric_state
         entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        below: 50
+        below: 30
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.dark_outside
@@ -76,7 +76,7 @@ automation:
       # It's getting light outside
       - platform: numeric_state
         entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        above: 50
+        above: 31
         for:
           minutes: 2
       # Hassio reloads/starts
@@ -97,7 +97,7 @@ automation:
       # Lux is not low in the yard
       - condition: numeric_state
         entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        above: 50
+        above: 31
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.dark_outside
