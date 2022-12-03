@@ -1,0 +1,32 @@
+id: people_status_extended_away
+alias: Mark person as extended away
+mode: parallel
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id: input_select.john_status
+    to: "Away"
+    for:
+      hours: 24
+  - platform: state
+    entity_id: input_select.cristina_status_dropdown
+    to: "Away"
+    for:
+      hours: 24
+  - platform: state
+    entity_id: input_select.joe_status_dropdown
+    to: "Away"
+    for:
+      hours: 24
+action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'input_select.john_status' %}
+          input_select.john_status
+        {% elif trigger.entity_id == 'input_select.cristina_status_dropdown' %}
+          input_select.cristina_status_dropdown
+        {% elif trigger.entity_id == 'input_select.joe_status_dropdown' %}
+          input_select.joe_status_dropdown
+        {% endif %}
+      option: Extended Away

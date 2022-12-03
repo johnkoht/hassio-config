@@ -1,0 +1,4 @@
+input_boolean:
+  office_speech_notifications:
+    name: Office Speech Notifications
+    icon: mdi:bullhorn

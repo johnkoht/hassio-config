@@ -1,0 +1,7 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      john_probably_in_meeting:
+        friendly_name: John probably in a meeting
+        value_template: >-
+          {{ state_attr("binary_sensor.john_do_not_disturb", "probability") > 0.65 }}

@@ -1,0 +1,36 @@
+# Playroom Music Off
+#
+# If the Playroom is no longer occupied then stop the music.
+#
+automation:
+  - id: "playroom_music_off"
+    initial_state: on
+    alias: "Playroom Music Off"
+    trigger:
+      # Playroom is no longer occupied
+      - platform: state
+        entity_id: input_boolean.playroom_occupied
+        to: "off"
+      # Playroom is in Off Mode
+      - platform: state
+        entity_id: input_select.playroom
+        to: "Off"
+    condition:
+      # Playroom is NOT OCCUPIED
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "off"
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length == 0 }}"
+      # Music is playing
+      - condition: state
+        entity_id: media_player.sonos_playroom
+        state: "playing"
+    action:
+      # Unjoin if it's joined
+      - service: media_player.unjoin
+        entity_id: media_player.sonos_playroom
+
+      # Turn off the Sonos music
+      - service: media_player.media_pause
+        entity_id: media_player.sonos_playroom

@@ -1,0 +1,52 @@
+automation:
+  - id: "christmas_not_activated"
+    alias: "Christmas NOT Activated"
+    mode: "single"
+    trigger:
+      # It's no longer dark outside
+      - platform: state
+        entity_id: input_boolean.dark_outside
+        to: "off"
+      # House turn to Away mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+      # House turn to Bedtime mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Bedtime"
+      # House is NOT occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: state
+        entity_id: input_boolean.christmas_active
+        state: "on"
+      - condition: or
+        conditions:
+          # House is Away
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+          # OR house is in Bedtime mode
+          - condition: state
+            entity_id: input_select.house
+            state: "Bedtime"
+          # House is NOT occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.christmas_active
+
+      - service: notify.mobile_app_jk
+        data:
+          title: Holidays
+          message: Christmas is NO longer activate

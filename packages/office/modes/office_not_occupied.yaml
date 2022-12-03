@@ -1,0 +1,70 @@
+# Office Not Occupied
+#
+# Automation to mark the office as not occupied
+# if the binary_sensor.office_presence turns off
+#
+automation:
+  - id: "office_not_occupied"
+    initial_state: on
+    alias: "Office not occupied"
+    trigger:
+      # Office Bayesian sensor is off
+      - platform: state
+        entity_id: binary_sensor.office_presence
+        to: "off"
+        for:
+          minutes: 2
+      # No BLE for 2 minutes
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length == 0 }}"
+        for:
+          minutes: 2
+      # # Motion not detected for 3 minutes
+      # - platform: state
+      #   entity_id: binary_sensor.office_aqara_motion_sensor
+      #   to: "off"
+      #   for:
+      #     minutes: 3
+      # Office sensor no longer detects occupancy
+      - platform: state
+        entity_id: binary_sensor.office_aqara_occupancy
+        to: "off"
+      # If the house is unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # Hassio resloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Office is currently occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office Bayesian sensor is off
+      - condition: state
+        entity_id: binary_sensor.office_presence
+        state: "off"
+      # # Either Bluetooth doesn't detect anybody or
+      # # Aqara occupancy is off
+      # - condition: or
+      #   conditions:
+      #     # Neither of us is present via Bluetooth
+      #     - condition: not
+      #       conditions:
+      #         - condition: state
+      #           entity_id: sensor.john_room_presence
+      #           state: "office"
+      #         - condition: state
+      #           entity_id: sensor.cristina_room_presence
+      #           state: "office"
+      #     # Office Aqara sensor detects no occupancy
+      #     - condition: state
+      #       entity_id: binary_sensor.office_aqara_occupancy
+      #       state: "off"
+
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_occupied

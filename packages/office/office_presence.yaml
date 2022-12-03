@@ -1,0 +1,123 @@
+# Is John's office currently occupied?
+#
+binary_sensor:
+  - platform: bayesian
+    prior: 0.42
+    name: "Office Presence"
+    probability_threshold: 0.9
+    observations:
+      # iOS companion app device
+      #
+      # John's home
+      - platform: state
+        entity_id: device_tracker.johns_iphone_2
+        prob_given_true: 0.95
+        prob_given_false: 0.79
+        to_state: "home"
+      # John's NOT home
+      - platform: state
+        entity_id: device_tracker.johns_iphone_2
+        prob_given_true: 0.05
+        prob_given_false: 0.21
+        to_state: "not_home"
+
+      # MacOS app device
+      #
+      # Computer active
+      - platform: state
+        entity_id: binary_sensor.johns_macbook_pro_active
+        prob_given_true: 0.85
+        prob_given_false: 0.21
+        to_state: "on"
+      # Computer NOT active
+      - platform: state
+        entity_id: binary_sensor.johns_macbook_pro_active
+        prob_given_true: 0.15
+        prob_given_false: 0.86
+        to_state: "off"
+
+      # Door Status
+      #
+      # Doors are closed
+      - platform: state
+        entity_id: binary_sensor.office_doors
+        prob_given_true: 0.70
+        prob_given_false: 0.93
+        to_state: "off"
+      # Doors are open
+      - platform: state
+        entity_id: binary_sensor.office_doors
+        prob_given_true: 0.30
+        prob_given_false: 0.11
+        to_state: "on"
+
+      # ESPresence
+      #
+      # Somebody in the room
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length > 0 }}"
+        prob_given_true: 0.95
+        prob_given_false: 0.04
+      # Nobody detected in the room
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length == 0 }}"
+        prob_given_true: 0.05
+        prob_given_false: 0.96
+
+      # Aqara Occupancy
+      #
+      # Occupany ON
+      - platform: state
+        entity_id: binary_sensor.office_aqara_occupancy
+        prob_given_true: 0.60
+        prob_given_false: 0.29
+        to_state: "on"
+      # Occupancy OFF
+      - platform: state
+        entity_id: binary_sensor.office_aqara_occupancy
+        prob_given_true: 0.30
+        prob_given_false: 0.79
+        to_state: "off"
+
+      # Work Hours
+      #
+      # Work Hours hours is ON
+      - platform: state
+        entity_id: binary_sensor.work_hours
+        prob_given_true: 0.60
+        prob_given_false: 0.14
+        to_state: "on"
+      # Work Hours hours is OFF
+      - platform: state
+        entity_id: binary_sensor.work_hours
+        prob_given_true: 0.30
+        prob_given_false: 0.86
+        to_state: "off"
+
+      # Sonos Music
+      #
+      # Music ON
+      - platform: template
+        value_template: "{{ states.media_player.sonos_office.state == 'playing' }}"
+        prob_given_true: 0.25
+        prob_given_false: 0.04
+      # Music OFF
+      - platform: template
+        value_template: "{{ states.media_player.sonos_office.state != 'playing' }}"
+        prob_given_true: 0.80
+        prob_given_false: 0.96
+
+      # Office Lights
+      #
+      # Lights ON
+      - platform: state
+        entity_id: group.office_lights
+        prob_given_true: 0.35
+        prob_given_false: 0.02
+        to_state: "on"
+      # Lights OFF
+      - platform: state
+        entity_id: group.office_lights
+        prob_given_true: 0.70
+        prob_given_false: 0.98
+        to_state: "off"

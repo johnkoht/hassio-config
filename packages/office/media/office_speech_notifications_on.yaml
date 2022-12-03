@@ -1,0 +1,31 @@
+# Office Speech Notifications On
+#
+#
+automation:
+  - id: "office_speech_notifications_on"
+    initial_state: on
+    alias: "Office Speech Notifications On"
+    trigger:
+      # Office becomes occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+      # I'm not in DnD mode
+      - platform: state
+        entity_id: input_select.office
+        from: "DnD"
+        for:
+          minutes: 2
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office is in Auto mode
+      - condition: state
+        entity_id: input_select.office
+        state: "Auto"
+    action:
+      # Turn on the speech notifications boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.office_speech_notifications

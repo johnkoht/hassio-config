@@ -1,0 +1,77 @@
+# Kitchen Lights Day On
+#
+automation:
+  - id: "kitchen_lights_day_on"
+    initial_state: on
+    alias: "Kitchen Lights Day On"
+    trigger:
+      # Light is low in the kitchen
+      - platform: numeric_state
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        below: 150
+        for:
+          minutes: 2
+      - platform: numeric_state
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        below: 125
+        for:
+          minutes: 5
+      - platform: numeric_state
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        below: 100
+        for:
+          minutes: 10
+      # The weather is bad outside
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.kitchen_lighting_automations
+        to: "on"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Kitchen lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.kitchen_lighting_automations
+        state: "on"
+      # Kitchen is Auto
+      - condition: state
+        entity_id: input_select.kitchen
+        state: "Auto"
+      # Kitchen is occupied
+      - condition: state
+        entity_id: input_boolean.kitchen_occupied
+        state: "on"
+      # Sun is above horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "above_horizon"
+      # Light is low in the kitchen
+      - condition: numeric_state
+        entity_id: sensor.kitchen_motion_sensor_main_illuminance
+        below: 150
+      # Lights are currently off
+      - condition: state
+        entity_id: light.kitchen_lights
+        state: "off"
+    action:
+      # Turn the lights on
+      - service: light.turn_on
+        entity_id: light.kitchen_lights
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kitchen_lights_auto

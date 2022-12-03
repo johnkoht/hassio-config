@@ -1,0 +1,17 @@
+name: House
+options:
+  # Auto: let each room do it's own thing
+  - "Auto"
+  # Away: Turn everything off, set all other rooms to away
+  - "Away"
+  # Vacation: Extended away from the house
+  - "Vacation"
+  # Bedtime: turn some things off
+  - "Bedtime"
+  # Quiet: kids are sleeping, so let's quiet
+  # down the sounds (doorbell, notifications, etc)
+  - "Quiet"
+  # - "On"
+  # - "Off"
+  # We're entertaining friends and family
+  - "Entertainment"

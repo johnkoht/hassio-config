@@ -1,0 +1,440 @@
+- id: '1623896972382'
+  alias: Start DnD via Webhook
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: 71c672f8399aad2ccec8769e9ce75f46b7260ddb308de102224b9fe03ebb21f0
+  condition: []
+  action:
+  - type: turn_on
+    device_id: cdddd3246291229c09cb7cc75ff1feb1
+    entity_id: light.hue_play_1
+    domain: light
+  - service: hue.hue_activate_scene
+    data:
+      group_name: Office Signal
+      scene_name: John DnD
+  - repeat:
+      count: '3'
+      sequence:
+      - service: light.turn_on
+        target:
+          area_id: office
+        data:
+          brightness_step_pct: -50
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 0
+          milliseconds: 750
+      - service: light.turn_on
+        target:
+          area_id: office
+        data:
+          brightness_step_pct: 50
+  mode: single
+- id: '1623985104359'
+  alias: Garbage Day Reminder
+  description: ''
+  trigger:
+  - platform: time
+    at: '18:15:00'
+  condition:
+  - condition: time
+    weekday:
+    - thu
+    before: 00:00:00
+    after: 00:00:00
+  action:
+  - service: script.speech_engine
+    data:
+      speech_message: It's garbage day. Don't forget to collect garbage from the bathrooms
+        and diaper bin!
+  mode: single
+- id: '1624048450884'
+  alias: Front Door Alert
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 92b464fee4dab94c831b8ff8686f330a
+    entity_id: binary_sensor.front_door_camera_motion
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: script.set_doorbell_message
+    data:
+      message: "{% if states('input_boolean.quiet_mode') == 'on'  %}\n  quiet_mode\n\
+        {% else %}\n  welcome\n{% endif %}"
+  - service: script.display_doorbell_snapshot_on_tvs
+    data: {}
+  mode: single
+- id: '1644810800643'
+  alias: Vacation Faux Home On
+  description: Make it appear as if people are home when we're out of town
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 00:01:00
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'on'
+  action:
+  - type: turn_on
+    device_id: 44fcccda63e4e38e416babd3f3e1fded
+    entity_id: light.family_room_main_lights
+    domain: light
+  - type: turn_on
+    device_id: 59ca60e52d36629d4f1c5cca974d0cfa
+    entity_id: light.kitchen_main_light_switch
+    domain: light
+  mode: single
+- id: '1644810923409'
+  alias: Vacation Faux Home Off
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:01:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'on'
+  action:
+  - type: turn_off
+    device_id: 59ca60e52d36629d4f1c5cca974d0cfa
+    entity_id: light.kitchen_main_light_switch
+    domain: light
+  - type: turn_off
+    device_id: 44fcccda63e4e38e416babd3f3e1fded
+    entity_id: light.family_room_main_lights
+    domain: light
+  mode: single
+- id: '1645246661438'
+  alias: Mudroom Light Automation
+  description: Automatically turn on the Mudroom lights when motion is detected.
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      light_target:
+        device_id:
+        - 37ab5381dccd0ec08d2043d4cf433d72
+      no_motion_wait: 240
+      motion_entity: binary_sensor.mudroom_trisensor_home_security_motion_detection
+- id: '1645986690212'
+  alias: Water Detected in Basement
+  description: ''
+  trigger:
+  - type: moist
+    platform: device
+    device_id: 49e81b02d6064a7191287e8b6283278c
+    entity_id: binary_sensor.water_sensor_7_pro_water_alarm_water_leak_detected
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: notify.mobile_app_jk
+    data:
+      message: The basement water sensor has detected water!
+      title: Basement Water Sensor
+  - service: notify.family_room_tv
+    data:
+      title: Basement Water Sensor
+      message: The basement water sensor has detected water!
+  - service: notify.mobile_app_cfalb
+    data:
+      message: The basement water sensor has detected water!
+      title: Basement Water Sensor
+  - service: notify.alexa_media_everywhere
+    data:
+      message: The basement water sensor has detected water!
+      data:
+        type: announce
+        method: all
+  mode: single
+- id: '1646251632973'
+  alias: Doorbell Ring (Duplicate)
+  description: ''
+  trigger:
+  - type: occupied
+    platform: device
+    device_id: 92b464fee4dab94c831b8ff8686f330a
+    entity_id: binary_sensor.front_door_camera_doorbell
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: camera.snapshot
+    data:
+      filename: /config/www/images/doorbell_camera_alert.jpg
+    target:
+      device_id: 92b464fee4dab94c831b8ff8686f330a
+  - service: script.display_doorbell_snapshot_on_tvs
+    data: {}
+  - service: script.play_doorbell
+    data: {}
+  - service: notify.ios_family
+    data:
+      message: ' Somebody is at the front door!'
+      title: Kohbo Front Door
+      data:
+        image: /config/www/images/doorbell_camera_alert.jpg
+  mode: single
+- id: '1646272122915'
+  alias: Turn on Outdoor Lights
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 00:15:00
+  condition: []
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: group.exterior_lights
+  - service: script.speech_engine
+    data:
+      speech_message: The sun has set, turning on the exterior lights.
+  mode: single
+- id: '1646272166786'
+  alias: Turn off Outdoor Lights
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: -00:30:00
+  condition: []
+  action:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id: group.exterior_lights
+  mode: single
+- id: '1646274478600'
+  alias: Away mode
+  description: Automatically turn the house into away mode when nobody is home.
+  trigger:
+  - platform: device
+    device_id: 417292d1346b8ae9514e83186be0b755
+    domain: device_tracker
+    entity_id: device_tracker.johns_iphone_2
+    type: leaves
+    zone: zone.home
+  - platform: device
+    device_id: d3a17386e8d525871b55e54e3d58fc64
+    domain: device_tracker
+    entity_id: device_tracker.cfalb_2
+    type: leaves
+    zone: zone.home
+  condition:
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: group.extended_family
+      state: not_home
+    - condition: state
+      entity_id: group.family
+      state: not_home
+  action:
+  - service: script.turn_off_interior_lights
+    data: {}
+  - service: script.climate_away
+    data: {}
+  - service: script.tvs_off
+    data: {}
+  - service: script.garage_close
+    data: {}
+  - service: notify.mobile_app_jk
+    data:
+      title: Away Mode
+      message: Nobody is home so away mode has been activated!
+  mode: single
+- id: '1646280009884'
+  alias: 'Weather: Bad Weather Lighting'
+  description: Extra interior lights when the weather is bad
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: '199'
+    below: '233'
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: '500'
+    below: '532'
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: '761'
+    below: '782'
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: '311'
+    below: '322'
+  condition:
+  - condition: and
+    conditions:
+    - condition: sun
+      before: sunset
+      after: sunset
+    - condition: time
+      before: '22:00:00'
+      after: 07:00:00
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+      - sat
+      - sun
+  - condition: state
+    entity_id: group.family
+    state: home
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id:
+      - group.kitchen_lights
+      - light.family_room_main_lights
+  - service: notify.mobile_app_jk
+    data:
+      title: Weather Automation
+      message: The weather isn't looking to great so turning some interior lights
+        on.
+  - service: script.speech_engine
+    data:
+      speech_message: The weather isn't looking great so turning on the some interior
+        lights.
+  mode: single
+- id: '1646884521741'
+  alias: Nino Pickup
+  description: ''
+  trigger:
+  - platform: time
+    at: '12:30:00'
+  condition:
+  - condition: time
+    before: 00:00:00
+    weekday:
+    - tue
+    - wed
+    - thu
+  action:
+  - service: script.notify_engine
+    data:
+      title: Kohbo Reminder
+      message: Time to pick up Nino from school!
+      who: family
+  - service: script.speech_engine
+    data:
+      speech_message: Time to pick up Nino from school!
+  mode: single
+- id: '1647462190395'
+  alias: Quiet Mode - Enable
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: b68b546103678f1b18954634f33f230b
+    entity_id: binary_sensor.gianlucas_door_sensor_ias_zone
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: input_boolean.quiet_mode
+    state: 'off'
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.quiet_mode
+  mode: single
+- id: '1647462317728'
+  alias: Quite Mode - Disable
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: b68b546103678f1b18954634f33f230b
+    entity_id: binary_sensor.gianlucas_door_sensor_ias_zone
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.quiet_mode
+    state: 'on'
+  action:
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.quiet_mode
+  mode: single
+- id: '1647483168820'
+  alias: Arrival Mode
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 417292d1346b8ae9514e83186be0b755
+    domain: device_tracker
+    entity_id: device_tracker.johns_iphone_2
+    type: enters
+    zone: zone.home
+  - platform: device
+    device_id: d3a17386e8d525871b55e54e3d58fc64
+    domain: device_tracker
+    entity_id: device_tracker.cfalb_2
+    type: enters
+    zone: zone.home
+  condition:
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: group.family
+      state: not_home
+    - condition: state
+      entity_id: group.extended_family
+      state: not_home
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.mudroom_main_lights
+  - device_id: d21fee64f0e0c227432ffa0d1fef645c
+    domain: cover
+    entity_id: cover.garage_door_1
+    type: open
+  - service: notify.ios_family
+    data:
+      title: Arrival Mode
+      message: I noticed that you're arriving home so I've opened the garage and turned
+        on a couple of lights.
+  - service: script.climate_activate
+    data: {}
+  mode: single
+- id: '1647610270810'
+  alias: Arrival Announcement - John
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 417292d1346b8ae9514e83186be0b755
+    domain: device_tracker
+    entity_id: device_tracker.johns_iphone_2
+    type: enters
+    zone: zone.home
+  - platform: state
+    entity_id: person.john_koht
+    from: not_home
+    to: home
+  condition: []
+  action:
+  - service: script.announce_arrival
+    data:
+      who: john
+  mode: single

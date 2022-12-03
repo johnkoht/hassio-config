@@ -1,0 +1,61 @@
+# Playroom Lights Day Off
+#
+# If the lights turned on due to poor lighting or
+# bad weather, this will turn them off when the
+# lighting or weather improves.
+#
+automation:
+  - id: "playroom_lights_day_off"
+    initial_state: on
+    alias: "Playroom lights day off"
+    trigger:
+      # Light is bright enough
+      - platform: numeric_state
+        entity_id:
+          - sensor.playroom_motion_sensor_illuminance
+          - sensor.playroom_entry_motion_sensor_illuminance
+        above: 151
+        for:
+          minutes: 5
+      # The weather not bad anymore
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "off"
+    condition:
+      # Lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Playroom lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.playroom_lighting_automations
+        state: "on"
+      # Playroom is Auto
+      - condition: state
+        entity_id: input_select.playroom
+        state: "Auto"
+      # The weather not bad anymore
+      - condition: state
+        entity_id: input_boolean.bad_weather
+        state: "off"
+      # Ensure lights were turned on automatically
+      - condition: state
+        entity_id: input_boolean.playroom_lights_auto
+        state: "on"
+      # Sun is above horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "above_horizon"
+      # Room is bright enough
+      - condition: numeric_state
+        entity_id:
+          - sensor.playroom_motion_sensor_illuminance
+          - sensor.playroom_entry_motion_sensor_illuminance
+        above: 149
+      # Lights are currently on
+      - condition: state
+        entity_id: light.playroom_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: group.playroom_lights

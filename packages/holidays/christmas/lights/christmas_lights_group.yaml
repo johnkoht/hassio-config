@@ -1,0 +1,24 @@
+switch:
+  - platform: group
+    name: "Christmas Lights"
+    unique_id: christmas_lights
+    entities:
+      - switch.christmas_trees
+      - switch.christmas_playroom_lights
+
+  - platform: group
+    name: "Christmas Trees"
+    unique_id: christmas_trees
+    entities:
+      - switch.smart_plug_1_switch
+      - switch.smart_plug_2_switch
+
+  - platform: group
+    name: "Christmas Playroom Lights"
+    unique_id: christmas_playroom_lights
+    entities:
+      - switch.tradfri_smart_plug_1_switch
+      - switch.tradfri_smart_plug_2_switch
+      - switch.tradfri_smart_plug_3_switch
+      - switch.tradfri_smart_plug_4_switch
+      # - switch.tradfri_smart_plug_5_switch

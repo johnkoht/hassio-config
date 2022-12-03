@@ -1,0 +1,83 @@
+# input_boolean:
+#   office_music_playing:
+#     name: Office Music Playing
+#     icon: mdi:speaker
+
+input_number:
+  echo_kitchen_volume:
+    name: Echo Kitchen Volume
+    min: 0
+    max: 1
+
+automation:
+  - id: "late_night_reminders"
+    alias: "Late Night Reminders"
+    mode: "restart"
+    trigger:
+      # It's 9pm
+      - platform: time
+        at: "21:00:00"
+      # Family room TV turns off
+      - platform: state
+        entity_id: media_player.sony_bravia_tv
+        to: "off"
+      # - platform: state
+      #   entity_id: binary_sensor.kitchen_motion_sensor_main_motion_detection
+      #   to: "on"
+    condition:
+      - condition: time
+        after: "21:00:00"
+      # Motion in kitchen
+      # OR TV was recently turned off
+      - condition: or
+        conditions:
+          # Motion in the kitchen
+          - condition: state
+            entity_id: binary_sensor.kitchen_motion_sensor_main_motion_detection
+            state: "on"
+          # TV was recently turned off
+          - condition: and
+            conditions:
+              # The TV is off
+              - condition: state
+                entity_id: media_player.sony_bravia_tv
+                state: "off"
+              # TV just recently turned off
+              - condition: template
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.media_player.sony_bravia_tv.last_updated)) | int < 360 }}"
+      # # Last motion in the familiy room is less than 5 mins ago
+      # - condition: template
+      #   value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.family_room_motion_sensor.last_updated)) | int < 300 }}"
+    action:
+      # Wait for motion in the kitchen
+      - wait_template: "{{ is_state('binary_sensor.kitchen_motion_sensor_main_motion_detection', 'on') }}"
+        timeout: "00:05:00"
+
+      - alias: "Wait 5 seconds"
+        delay: 5
+
+      # # Save current volume
+      # - service: input_number.set_value
+      #   data:
+      #     entity_id: input_number.echo_kitchen_volume
+      #     value: "{{ states.media_player.john_s_echo_show.attributes.volume_level }}"
+
+      # Set the volume to low
+      - service: media_player.volume_set
+        data:
+          entity_id: media_player.john_s_echo_show
+          volume_level: 0.25
+
+      # Notify Alex device
+      - service: notify.alexa_media
+        data:
+          data:
+            type: tts
+          target: media_player.john_s_echo_show
+          message: "Hey there! Just wanted to remind you to run the dishwasher. Goodnight!"
+
+      # # Restore the volume
+      # - service: media_player.volume_set
+      #   data:
+      #     entity_id: media_player.john_s_echo_show
+      #     volume_level: "{{ states.input_number.echo_kitchen_volume.state }}"

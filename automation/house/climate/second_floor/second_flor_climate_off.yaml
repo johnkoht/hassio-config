@@ -1,0 +1,26 @@
+# Second Floor Climate Off
+#
+# If the house is empty then let's turn the
+# upstairs climate off.
+#
+id: "second_floor_climate_off"
+alias: "Second floor climate Off"
+initial_state: "on"
+trigger:
+  # The house is empty for 30 minutes
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+    for:
+      minutes: 30
+condition:
+  # Guest Mode is disabled
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: "off"
+  # Make sure the Nest isn't set to a preset already
+  - condition: template
+    value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode == 'none' }}"
+action:
+  - service: script.second_floor_climate_to_eco
+    data: {}

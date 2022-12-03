@@ -1,0 +1,65 @@
+automation:
+  - id: "garage_doors_close_when_empty_house"
+    alias: "Garage doors close when empty house"
+    initial_state: on
+    trigger:
+      # If any doors have been open for more than 10 mins
+      - platform: state
+        entity_id: cover.garage_doors
+        to: "open"
+        for:
+          minutes: 10
+      # If the garage is set to Away
+      - platform: state
+        entity_id: input_select.garage
+        to: "Away"
+      # If the garage is set to Off
+      - platform: state
+        entity_id: input_select.garage
+        to: "Off"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # # Garage override is not active
+      # - condition: state
+      #   entity_id: input_boolean.garage_override
+      #   state: "off"
+      # Either garage door is open
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: cover.garage_door_1
+            state: "open"
+          - condition: state
+            entity_id: cover.garage_door_2
+            state: "open"
+      # Garage is in away or off mode
+      - condition: or
+        conditions:
+          # Garage is in Away Mode
+          - condition: state
+            entity_id: input_select.garage
+            state: "Away"
+          # Garage is in Off Mode
+          - condition: state
+            entity_id: input_select.garage
+            state: "Off"
+    action:
+      # Close the garage doors
+      - service: cover.close_cover
+        data: {}
+        target:
+          entity_id: cover.garage_doors
+
+      # Turn off the garage lights
+      - service: light.turn_off
+        entity_id: light.garage_lights
+
+      # Notify the family
+      - service: notify.ios_family
+        data:
+          title: Closing the garage doors!
+          message: The house is empty or off so I'm closing the garage doors

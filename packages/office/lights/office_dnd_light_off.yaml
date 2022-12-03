@@ -1,0 +1,24 @@
+# Office DnD Light Off
+#
+# When DnD mode is off, turn off the DnD light.
+#
+automation:
+  - id: "office_dnd_light_off"
+    initial_state: on
+    alias: "Office DnD Light Off"
+    trigger:
+      # Office goes off DnD Mode
+      - platform: state
+        entity_id: input_select.office
+        from: "DnD"
+    condition:
+      # Lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Office no longer in DnD mode
+      - condition: template
+        value_template: "{{ not is_state('input_select.office','DnD') }}"
+    action:
+      - service: light.turn_off
+        entity_id: light.hue_play_1

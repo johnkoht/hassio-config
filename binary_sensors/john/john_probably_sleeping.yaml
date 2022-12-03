@@ -1,0 +1,6 @@
+- platform: template
+  sensors:
+    john_probably_sleeping:
+      friendly_name: John Probably Sleeping
+      value_template: >-
+        {{ state_attr("binary_sensor.john_sleeping", "probability") > 0.5 }}

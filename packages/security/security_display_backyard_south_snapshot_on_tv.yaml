@@ -1,0 +1,48 @@
+automation:
+  # Backyard South Camera Detected Object
+  #
+  - id: "backyard_south_detected_object"
+    alias: "Backyard South Detected Object"
+    mode: "single"
+    trigger:
+      # Backyard detects an object
+      - platform: state
+        entity_id: sensor.backyard_south_camera_detected_object
+        to: "person"
+    action:
+      - service: script.display_backyard_south_snapshot_on_tv
+        data: {}
+
+script:
+  #
+  #
+  # Display snapshot on TV
+  #
+  display_backyard_south_snapshot_on_tv:
+    mode: single
+    alias: Display Backyard South Snapshot on TV
+    icon: mdi:account-question
+    sequence:
+      # The house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # The TV is on
+      - condition: state
+        entity_id: remote.sony_bravia_tv
+        state: "on"
+
+      # Take a snapshot
+      - service: camera.snapshot
+        data:
+          filename: /config/www/images/backyard_south_camera_alert.jpg
+          entity_id: camera.backyard_south_camera_high
+
+      # Notify the family room TV
+      - service: notify.family_room_tv
+        data:
+          message: Somebody is in the backyard
+          data:
+            image:
+              path: /config/www/images/backyard_south_camera_alert.jpg
+          title: Backyard South Camera

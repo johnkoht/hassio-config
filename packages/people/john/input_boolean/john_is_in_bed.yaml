@@ -1,0 +1,4 @@
+input_boolean:
+  john_is_in_bed:
+    name: John is in bed
+    icon: mdi:bed

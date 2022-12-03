@@ -1,0 +1,7 @@
+- platform: template
+  sensors:
+    playroom_presence:
+      friendly_name: "Playroom Presence"
+      unique_id: "playroom_presence"
+      value_template: >-
+        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

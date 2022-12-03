@@ -1,0 +1,65 @@
+# # binary_sensor:
+# #   - platform: template
+# #     sensors:
+# #       kids_sleeping:
+# #         friendly_name: "Kids Sleeping"
+# #         value_template: >-
+# #           {{
+# #             states.input_boolean.ninos_room_occupied.state == "on"
+# #             and
+# #             states.input_boolean.gianlucas_room_occupied.state == "on"
+# #           }}
+
+# - platform: template
+#   sensors:
+#     family_room_probably_occupied:
+#       friendly_name: Family Room Probably Occupied
+#       value_template: >-
+#         {{ state_attr("binary_sensor.family_room_presence", "probability") > 0.5 }}
+#         {% set guest_mode = states.input_boolean.guest_mode.state == "on" %}
+#         {% set recent_motion = (as_timestamp(now()) - as_timestamp(states.binary_sensor.family_room_motion_sensor.last_updated)) | int < 300 %}
+#         {% set recent_occupancy = (as_timestamp(now()) - as_timestamp(states.binary_sensor.family_room_motion_sensor_occupancy.last_updated)) | int < 300 %}
+
+#         {% if guest_mode and recent_occupancy %}
+#           true
+#         {% elif recent_motion %}
+#           true
+#         {% else %}
+#           false
+#         {% end %}
+
+#         # onditions:
+#         #       # Guest mode enabled
+#         #       - condition: state
+#         #         entity_id: input_boolean.guest_mode
+#         #         state: "on"
+#         #       # No Aqara occupancy for 5 minutes (15 mins total)
+#         #       - condition: state
+#         #         entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+#         #         state: "off"
+#         #         for:
+#         #           minutes: 5
+
+# # # Aqara Occupancy
+# #   #
+# #   # Occupancy ON
+# #   - platform: state
+# #     entity_id: binary_sensor.family_room_motion_sensor_occupancy
+# #     prob_given_true: 0.85
+# #     prob_given_false: 0.05
+# #     to_state: "on"
+# #   # Occupancy OFF
+# #   - platform: state
+# #     entity_id: binary_sensor.family_room_motion_sensor_occupancy
+# #     prob_given_true: 0.05
+# #     prob_given_false: 0.85
+# #     to_state: "off"
+
+# # {{ states.binary_sensor.family_room_motion_sensor_occupancy.state }}
+
+# # {{ states.binary_sensor.family_room_motion_sensor.state }}
+
+# # ----
+# # {{ as_timestamp(states.binary_sensor.family_room_motion_sensor.last_updated) }}
+# # {{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.family_room_motion_sensor.last_updated))3 }}
+# # {{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.family_room_motion_sensor.last_updated)) | int < 360 }}

@@ -1,0 +1,21 @@
+sensor:
+  - platform: mqtt_room
+    # device_id: "apple:1007:11-7"
+    device_id: "John's iPhone"
+    name: "John Room Presence RAW"
+    state_topic: "espresense/rooms"
+    timeout: 60
+    away_timeout: 120
+
+  - platform: template
+    sensors:
+      john_room_presence:
+        friendly_name: John Room Presence
+        unique_id: john_room_presence
+        value_template: >-
+          {% set rp = states.sensor.john_room_presence_raw.state %}
+          {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
+            main_bedroom
+          {% else %}
+            {{rp}}
+          {% endif %}

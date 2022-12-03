@@ -1,0 +1,46 @@
+id: "cristina_away"
+alias: "Cristina away"
+initial_state: "on"
+trigger:
+  # # Cristina's proximity changes
+  # - platform: state
+  #   entity_id: proximity.cristina_home
+  # She leaves the home zone
+  - platform: zone
+    entity_id: person.cristina_falbo
+    zone: zone.home
+    event: leave
+  # She's detected away
+  - platform: state
+    entity_id: binary_sensor.cristina_presence
+    to: "off"
+  # She's detected away
+  - platform: state
+    entity_id: binary_sensor.cristina_presence
+    to: "off"
+    for:
+      minutes: 3
+  # Hassio reloads/starts
+  - platform: event
+    event_type: automation_reloaded
+  - platform: homeassistant
+    event: start
+condition:
+  # Not currently in a Just Left state
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: input_select.cristina_status_dropdown
+        state: "Just Left"
+      # Ensure the companion app says she's not home
+      - condition: state
+        entity_id: person.cristina_falbo
+        state: "home"
+  # Not home vased on Bayesian sensor
+  - condition: state
+    entity_id: binary_sensor.cristina_presence
+    state: "off"
+action:
+  - service: script.turn_on
+    data:
+      entity_id: script.cristina_away

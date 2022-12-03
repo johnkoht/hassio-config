@@ -1,0 +1,4 @@
+input_boolean:
+  main_bedroom_occupied:
+    name: Main Bedroom
+    icon: mdi:bed-king

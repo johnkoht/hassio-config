@@ -1,0 +1,38 @@
+automation:
+  - id: "main_bathroom_lights_motion_on"
+    initial_state: on
+    alias: "Main bathroom lights motion on"
+    trigger:
+      # Motion is detected
+      - platform: state
+        entity_id: binary_sensor.main_bathroom_motion_sensor_status
+        to: "on"
+    condition:
+      # Light automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the bathroom are enabled
+      - condition: state
+        entity_id: input_boolean.main_bathroom_lighting_automations
+        state: "on"
+      # Bathroom is Auto
+      - condition: state
+        entity_id: input_select.main_bathroom
+        state: "Auto"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.main_bathroom_motion_sensor_illuminance
+        below: 80
+      # Lights are currently off
+      - condition: state
+        entity_id: light.main_bathroom_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.main_bathroom_lights
+      # - service: automation.turn_on
+      #   entity_id: automation.main_bathroom_lights_motion_off
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bathroom_lights_auto

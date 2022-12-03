@@ -1,0 +1,87 @@
+# Bad Weather Mode On
+#
+# Listens for a bunch of weather changes and
+# then adjust an input_boolean for bad weather
+#
+id: "bad_weather_mode_on"
+initial_state: "on"
+alias: "Bad Weather Mode On"
+trigger:
+  # House becomes occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "on"
+  # Thunderstorming
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: "199"
+    below: "233"
+  # Drizzling
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: "299"
+    below: "322"
+  # Raining
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: "499"
+    below: "532"
+  # Very cloudly
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_weather_code
+    above: "800"
+  - platform: numeric_state
+    entity_id: sensor.openweathermap_cloud_coverage
+    above: "75"
+condition:
+  # The house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Bad weather not already on
+  - condition: state
+    entity_id: input_boolean.bad_weather
+    state: "off"
+  # The sun is above the horizon
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
+  # There is bad weather outside
+  - condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.openweathermap_weather_code
+        above: "199"
+        below: "233"
+      - condition: numeric_state
+        entity_id: sensor.openweathermap_weather_code
+        above: "311"
+        below: "322"
+      - condition: numeric_state
+        entity_id: sensor.openweathermap_weather_code
+        above: "500"
+        below: "532"
+      - condition: and
+        conditions:
+          - condition: or
+            conditions:
+              # It's drizzling
+              - condition: numeric_state
+                entity_id: sensor.openweathermap_weather_code
+                above: 299
+                below: 311
+              # It's raining lightly
+              - condition: state
+                entity_id: sensor.openweathermap_weather_code
+                state: 500
+              # It's cloudy
+              - condition: numeric_state
+                entity_id: sensor.openweathermap_weather_code
+                above: "802"
+          # AND it's kinda dark outside
+          - condition: numeric_state
+            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+            below: 150
+action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.bad_weather

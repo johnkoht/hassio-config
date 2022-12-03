@@ -1,0 +1,7 @@
+- platform: template
+  sensors:
+    main_bathroom_presence:
+      friendly_name: "Main Bathroom Presence"
+      unique_id: "main_bathroom_presence"
+      value_template: >-
+        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'main_bathroom')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

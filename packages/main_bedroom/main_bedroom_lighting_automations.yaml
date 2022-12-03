@@ -1,0 +1,5 @@
+input_boolean:
+  main_bedroom_lighting_automations:
+    name: Main Bedroom Lighting Automations
+    icon: mdi:motion-sensor
+    initial: on

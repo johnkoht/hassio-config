@@ -1,0 +1,48 @@
+# Office Lights On
+#
+# Turn the lights on when the Office comes
+# occupied or theirs motions and it's dull.
+#
+automation:
+  - id: "office_lights_on"
+    initial_state: on
+    alias: "Office lights On"
+    trigger:
+      # Office becomes occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+      # 15 mins after sunset
+      - platform: sun
+        event: sunset
+        offset: "00:15:00"
+    condition:
+      - condition: or
+        conditions:
+          # Office is Auto
+          - condition: state
+            entity_id: input_select.office
+            state: "Auto"
+          # Office is DnD
+          - condition: state
+            entity_id: input_select.office
+            state: "DnD"
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 150
+      # Lights are currently off
+      - condition: state
+        entity_id: group.office_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: group.office_lights

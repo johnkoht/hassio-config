@@ -1,0 +1,44 @@
+# Office Mode DnD
+#
+# When the Office is occupied and I'm on a call,
+# the Office goes to DnD to silence speech
+# notifications and alerts.
+#
+automation:
+  - id: "office_mode_dnd"
+    initial_state: on
+    alias: "Office Mode DnD"
+    trigger:
+      # Office DnD Boolean turned on
+      - platform: state
+        entity_id: input_boolean.office_dnd
+        to: "on"
+      # # Office is occupied
+      # - platform: state
+      #   entity_id: input_boolean.office_occupied
+      #   to: "on"
+      # # John's DnD is activated
+      # - platform: state
+      #   entity_id: input_boolean.john_dnd
+      #   to: "on"
+      # # John is in the office
+      # - platform: state
+      #   entity_id: sensor.john_room_presence
+      #   to: "office"
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office is not already DnD
+      - condition: template
+        value_template: "{{ not is_state('input_select.office','DnD') }}"
+      # Office DnD is activated
+      - condition: state
+        entity_id: input_boolean.office_dnd
+        state: "on"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.office
+          option: "DnD"

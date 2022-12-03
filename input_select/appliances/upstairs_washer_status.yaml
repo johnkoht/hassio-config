@@ -1,0 +1,7 @@
+name: Upstairs Washer Status
+options:
+  - Idle
+  - Running
+  - Finishing
+  - Clean
+initial: Idle

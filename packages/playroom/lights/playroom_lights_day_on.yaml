@@ -1,0 +1,76 @@
+# Playroom Lights Day On
+#
+# Automatically turn the lights on based at sunset,
+# if it's too dark in the room, or from bad weather.
+#
+automation:
+  - id: "playroom_lights_day_on"
+    initial_state: on
+    alias: "Playroom lights Day On"
+    trigger:
+      # If the lighting is low in the playroom
+      - platform: numeric_state
+        entity_id:
+          - sensor.playroom_motion_sensor_illuminance
+          - sensor.playroom_entry_motion_sensor_illuminance
+        below: 50
+        for:
+          minutes: 2
+      # If the lighting is low in the playroom
+      - platform: numeric_state
+        entity_id:
+          - sensor.playroom_motion_sensor_illuminance
+          - sensor.playroom_entry_motion_sensor_illuminance
+        below: 25
+        for:
+          minutes: 3
+      # If the lighting is low in the playroom
+      - platform: numeric_state
+        entity_id:
+          - sensor.playroom_motion_sensor_illuminance
+          - sensor.playroom_entry_motion_sensor_illuminance
+        below: 15
+        for:
+          minutes: 5
+      # The weather is bad outside
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.playroom_lighting_automations
+        to: "on"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Playroom lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.playroom_lighting_automations
+        state: "on"
+      # Playroom is occupied
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id:
+          - sensor.playroom_motion_sensor_illuminance
+          - sensor.playroom_entry_motion_sensor_illuminance
+        below: 50
+      # Lights are currently off
+      - condition: state
+        entity_id: group.playroom_lights
+        state: "off"
+      # Playroom is Auto
+      - condition: state
+        entity_id: input_select.playroom
+        state: "Auto"
+    action:
+      - service: light.turn_on
+        entity_id: group.playroom_lights

@@ -1,0 +1,33 @@
+id: "family_room_mode_on"
+initial_state: "off"
+alias: "Family room mode on"
+trigger:
+  - platform: state
+    entity_id: input_boolean.family_room_occupied
+    to: "on"
+  # - platform: numeric_state
+  #   entity_id: sensor.sun_elevation
+  #   below: 5
+  # Lights are manually turned on
+  - platform: state
+    entity_id: light.family_room_main_lights
+    to: "on"
+condition:
+  # Family room is occupied
+  - condition: state
+    entity_id: input_boolean.family_room_occupied
+    state: "on"
+  # - condition: numeric_state
+  #   entity_id: sensor.sun_elevation
+  #   below: 5
+  # Not currently On
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: input_select.family_room
+        state: "On"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.family_room
+      option: "On"

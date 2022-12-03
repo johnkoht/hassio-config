@@ -1,0 +1,55 @@
+automation:
+  - id: "main_bathroom_lights_off"
+    initial_state: off
+    alias: "Main bedroom lights off"
+    trigger:
+      # Bedroom is Bedtime
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Bedtime"
+      # Bathroom is Off
+      - platform: state
+        entity_id: input_select.main_bathroom
+        to: "Off"
+      # House is off
+      - platform: state
+        entity_id: input_select.house
+        to: "Off"
+      # Main bedroom is not occupied
+      - platform: state
+        entity_id: input_boolean.main_bathroom_occupied
+        to: "off"
+      # No occupancy
+      - platform: state
+        entity_id: binary_sensor.main_bathroom_motion_sensor_occupancy
+        to: "off"
+      # Bathroom door is closed
+      - platform: state
+        entity_id: binary_sensor.main_bathroom_door_sensor_status
+        to: "off"
+    condition:
+      # Lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the bathroom are enabled
+      - condition: state
+        entity_id: input_boolean.main_bathroom_lighting_automations
+        state: "on"
+      - condition: or
+        conditions:
+          # Main bathroom is not occupied
+          - condition: state
+            entity_id: input_boolean.main_bathroom_occupied
+            state: "off"
+          # Aqara doesn't detect occupancy
+          - condition: state
+            entity_id: input_boolean.main_bathroom_motion_sensor_occupancy
+            state: "off"
+      # Bedroom lights are on
+      - condition: state
+        entity_id: light.main_bathroom_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.main_bathroom_lights

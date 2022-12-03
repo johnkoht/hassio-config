@@ -1,0 +1,75 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Monitorer
+  style:
+    hui-vertical-stack-card:
+      $: |
+        hui-horizontal-stack-card {
+          padding: 0em 2em 2.3em 2em;
+        }
+      $hui-horizontal-stack-card$: |
+        #root {
+          justify-content: space-evenly;
+        }
+  card:
+    type: vertical-stack
+    cards:
+      - type: entities
+        state_color: true
+        card_mod:
+          class: content
+        entities:
+
+          - entity: switch.gosund_monitors_switch
+            secondary_info: last-changed
+
+          - type: custom:slider-entity-row
+            entity: input_number.monitors_volume
+            hide_state: false
+            card_mod:
+              style: >
+                :host {
+                --paper-item-icon-color:
+                  {% if is_state('binary_sensor.monitors_mute_state', 'on') %}
+                    #FFFFFF20
+                  {% elif states(config.entity) | int == 0 %}
+                    #9da0a2
+                  {% elif states(config.entity) | int < 60 %}
+                    #3182b7
+                  {% else %}
+                    red
+                  {% endif %};
+                  }
+
+          - entity: automation.turn_off_monitors
+
+          - entity: automation.eq_calibration
+
+      - type: horizontal-stack
+        cards:
+
+          - type: custom:button-card
+            entity: switch.monitors_mute
+            icon: mdi:volume-mute
+            tap_action:
+              action: toggle
+            template: icon_only
+
+          - type: custom:button-card
+            icon: mdi:volume-minus
+            tap_action:
+              action: call-service
+              service: input_number.decrement
+              service_data:
+                entity_id: input_number.monitors_volume
+            template: icon_only
+
+          - type: custom:button-card
+            icon: mdi:volume-plus
+            tap_action:
+              action: call-service
+              service: input_number.increment
+              service_data:
+                entity_id: input_number.monitors_volume
+            template: icon_only

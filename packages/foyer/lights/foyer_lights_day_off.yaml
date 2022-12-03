@@ -1,0 +1,49 @@
+# Turn the foyer lights off during
+# the day because of weather
+#
+automation:
+  - id: "foyer_lights_days_off"
+    initial_state: on
+    alias: "Foyer Lights Day Off"
+    trigger:
+      # Bad weather boolean is activate for 5 mins
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "off"
+        for:
+          minutes: 5
+      # It's lighter outside
+      - platform: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        above: 250
+        for:
+          minutes: 3
+    condition:
+      # Make sure lighting automations are on
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Make sure the house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Foyer is in Auto mode
+      - condition: state
+        entity_id: input_select.foyer
+        state: "Auto"
+      # Sun is above the horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "above_horizon"
+      # If either the ceiling lights or chandelier are off
+      - condition: or
+        conditions:
+          # - condition: state
+          #   entity_id: light.foyer_ceiling_lights
+          #   state: "off"
+          - condition: state
+            entity_id: light.foyer_chandelier
+            state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.foyer_chandelier

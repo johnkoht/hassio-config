@@ -1,0 +1,26 @@
+# Family Room Arrival
+#
+# If we arrive home, let's dim the lights
+# in the family room to provide a little light
+#
+id: "family_room_arrival"
+alias: Family room arrival
+initial_state: "off"
+trigger:
+  # John arrives home
+  - platform: state
+    entity_id: input_select.john_status
+    to: "Just Arrived"
+  # Cristina just arrived
+  - platform: state
+    entity_id: input_select.cristina_status_dropdown
+    to: "Just Arrived"
+condition:
+  - condition: state
+    entity_id: input_boolean.family_room_occupied
+    state: "off"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.family_room
+      option: "Dim"

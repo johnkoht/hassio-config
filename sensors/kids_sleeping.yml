@@ -1,0 +1,7 @@
+- platform: template
+  sensors:
+    kids_sleeping:
+      friendly_name: "Kids Sleeping"
+      unique_id: "kids_sleeping"
+      value_template: >-
+        {{ states.input_boolean.ninos_room_occupied.state == "on" and states.input_boolean.gianlucas_room_occupied.state == "on" }}

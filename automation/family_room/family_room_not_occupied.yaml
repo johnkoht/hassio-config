@@ -1,0 +1,104 @@
+id: "family_room_not_occupied"
+initial_state: "on"
+alias: "Family room not occupied"
+trigger:
+  # Bayesian sensor turns off
+  - platform: state
+    entity_id: binary_sensor.family_room_presence
+    to: "off"
+    for:
+      minutes: 1
+  # No bluetooth devices detected
+  - platform: template
+    value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+    for:
+      minutes: 2
+  # No motion for 3 minutes
+  - platform: state
+    entity_id: binary_sensor.family_room_motion_sensor
+    to: "off"
+    for:
+      minutes: 3
+  # No motion for 5 minutes
+  - platform: state
+    entity_id: binary_sensor.family_room_motion_sensor
+    to: "off"
+    for:
+      minutes: 5
+  # Aqara occupancy off
+  - platform: state
+    entity_id: binary_sensor.family_room_motion_sensor_occupancy
+    to: "off"
+  # Aqara occupancy off for 15 mins total
+  - platform: state
+    entity_id: binary_sensor.family_room_motion_sensor_occupancy
+    to: "off"
+    for:
+      minutes: 5
+  # # House is not occupied
+  # - platform: state
+  #   entity_id: input_boolean.house_occupied
+  #   to: "off"
+  #   for:
+  #     minutes: 5
+condition:
+  - condition: state
+    entity_id: input_boolean.family_room_occupied
+    state: "on"
+  # # Aqara doesn't detect occupancy
+  # - condition: state
+  #   entity_id: binary_sensor.family_room_motion_sensor_occupancy
+  #   state: "off"
+  #   for:
+  #     minutes: 5
+  # # Nobody detected via bluetooth
+  # - condition: template
+  #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+  - condition: or
+    conditions:
+      # When Guest Mode is enabled
+      # No Aqara occupancy for 5 minutes
+      # No BLE devices detected
+      - condition: and
+        conditions:
+          # Guest mode enabled
+          - condition: state
+            entity_id: input_boolean.guest_mode
+            state: "on"
+          # No Aqara occupancy for 5 minutes (15 total)
+          - condition: state
+            entity_id: binary_sensor.family_room_motion_sensor_occupancy
+            state: "off"
+            for:
+              minutes: 5
+          # # No BLE devices detected
+          # - condition: template
+          #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+      # Only family is home
+      # No motion for 3 minutes
+      # No BLE detected
+      - condition: and
+        conditions:
+          # Guest mode NOT enabled
+          - condition: state
+            entity_id: input_boolean.guest_mode
+            state: "off"
+          # No Aqara motion for 5 minutes
+          - condition: state
+            entity_id: binary_sensor.family_room_motion_sensor
+            state: "off"
+            for:
+              minutes: 5
+          # # No BLE devices detected
+          # - condition: template
+          #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+  # No BLE devices detected
+  - condition: template
+    value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+action:
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.family_room_occupied
+  - service: notify.mobile_app_jk
+    data:
+      title: Family Room
+      message: The familiy room is no longer occupied!

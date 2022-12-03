@@ -1,0 +1,27 @@
+# Automation to detect and initiate home for Joe
+#
+# This automation will detect if Joe's home based on
+# a bunch of triggers and conditions and then run a
+# script to handle home actions.
+#
+id: "joe_home"
+initial_state: "on"
+alias: "Joe Home"
+trigger:
+  - platform: state
+    entity_id: binary_sensor.joe_presence
+    to: "on"
+  - platform: state
+    entity_id: person.joe_falbo
+    to: "home"
+  - platform: event
+    event_type: automation_reloaded
+  - platform: homeassistant
+    event: start
+condition:
+  - condition: state
+    entity_id: binary_sensor.joe_presence
+    state: "on"
+action:
+  - service: script.turn_on
+    entity_id: script.joe_home

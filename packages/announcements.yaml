@@ -1,0 +1,349 @@
+# General Announcement
+#
+# This script will broadcast an announcement across
+# all announcement devices (e.g. sonos). It will first
+# take a snapshot of anything playing, adjust the volume,
+# make the announcement, and then resume.
+#
+# USAGE:
+# service: script.general_announcement
+# data:
+#   speech_message: "Hello, world!"
+#   media_players: ["media_player.sonos_office", "media_player.sonos_playroom"] or "auto"
+#   sound: default
+#
+
+# Inputs Numbers to save the current room volumes
+#
+input_number:
+  sonos_dining_room_volume:
+    name: Sonos Dining Room Volume
+    min: 0
+    max: 1
+  sonos_family_kitchen_volume:
+    name: Sonos Family And Kitchen Volume
+    min: 0
+    max: 1
+  sonos_main_bedroom_volume:
+    name: Sonos Main Bedroom Volume
+    min: 0
+    max: 1
+  sonos_office_volume:
+    name: Sonos Office Volume
+    min: 0
+    max: 1
+  sonos_living_room_volume:
+    name: Sonos Living Room Volume
+    min: 0
+    max: 1
+  sonos_playroom_volume:
+    name: Sonos Playroom Volume
+    min: 0
+    max: 1
+
+# media_player:
+#   - platform: group
+#     name: Currently Announcing
+#     unique_id: currently_announcing
+#     entities: []
+
+# group:
+#   currently_announcing:
+#     name: Currently Announcing
+#     entities: []
+
+# {{ expand('group.currently_announcing') | selectattr('state', 'eq', 'playing') | map(attribute='state') | list }}
+# {{ expand('group.currently_announcing') | selectattr('state', 'eq', 'paused') | map(attribute='state') | list }}
+
+script:
+  # General Announcement Script
+  #
+  # This is the primary script for this package
+  # that is called to make the announcement. This
+  # is primarily a wrapper script for the script
+  # below called announcement_engine. This script
+  # will accept media_players argument or default
+  # to a list of media_players.
+  #
+  general_announcement:
+    alias: General Announcement New
+    mode: "queued"
+    sequence:
+      # Somebody is home
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Speech notifications is enabled
+      - condition: state
+        entity_id: input_boolean.speech_notifications
+        state: "on"
+      # It's between 7am and 10pm
+      - condition: time
+        after: "07:00:00"
+        before: "22:00:00"
+      # Not bedtime
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+
+      # Call the announcement engine and pass the requested media_players
+      # or default to ones in occupied rooms
+      - service: script.announcement_engine
+        data:
+          speech_message: "{{ speech_message }}"
+          sound: >-
+            {% if sound is defined and sound|length %}
+              {{sound}}
+            {% else %}
+              default
+            {% endif %}
+          media_players: >-
+            {% if media_players == "all" or media_players == "auto" %}
+              {% set media_players = [] %}   
+              
+              {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_office"] %}
+              {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" or states.input_boolean.kitchen_occupied.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_family_and_kitchen"] %}
+              {% endif %}{% if states.input_boolean.main_bedroom_occupied.state == "on" and states.input_select.main_bedroom.state != "Bedtime" %}
+                {% set media_players = media_players + ["media_player.sonos_main_bedroom"] %}
+              {% endif %}{% if states.input_boolean.playroom_occupied.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_playroom"] %}
+              {% endif %}
+            {% endif %}
+
+            {{ media_players}}
+
+  # Set Media Player Volume
+  #
+  # Simple reusable script to save the volume
+  # for a media_player
+  set_media_player_volume:
+    alias: "Set media player volume"
+    mode: "parallel"
+    sequence:
+      repeat:
+        count: "{{ media_players | count }}"
+        sequence:
+          - service: input_number.set_value
+            data:
+              entity_id: "input_number.{{ media_players[repeat.index-1].split('.')[1] }}_volume"
+              value: "{{ state_attr(media_players[repeat.index-1], 'volume_level') }}"
+
+  # Restore Media Player Volume
+  #
+  # Simple reusable script to restore the volume
+  # for each media_player
+  restore_media_player_volume:
+    alias: "Restore media player volume"
+    mode: "parallel"
+    sequence:
+      repeat:
+        count: "{{ media_players | count }}"
+        sequence:
+          - service: media_player.volume_set
+            data_template:
+              entity_id: "{{media_players}}"
+              volume_level: >-
+                {% set v = states("input_number." + media_players.split('.')[1] + "_volume") %}
+                {{v}}
+
+  # Announcement Engine
+  #
+  # This script handles the entire announcement functionality.
+  # Here's what this does:
+  #
+  # 1. Validate conditions (we're home and speech enabled)
+  # 2. Take a Sonos snapshot
+  # 3. Save the volumem for applicable current media_player
+  # 4. Play a Ding! (and set the volume appropriately))
+  # 5. Change the volume
+  # 6. Play the TTS message on the applicable media players
+  # 7. Restore the volumen to the media player
+  # 8. Restore Sonos from the snapshot
+
+  announcement_engine:
+    alias: "Announcement Engine"
+    mode: "queued"
+    sequence:
+      # Somebody is home
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Speech notifications is enabled
+      - condition: state
+        entity_id: input_boolean.speech_notifications
+        state: "on"
+
+      # Customize the chime sound
+      - alias: "Sound File"
+        variables:
+          sound_file: >-
+            {% if sound == "default" %}
+              https://github.com/johnkoht/hass-config/blob/master/config/sounds/Notification-sound.mp3?raw=true
+            {% elif sound == "fanfare" %}
+              https://github.com/johnkoht/hass-config/blob/master/config/sounds/medieval-fanfare.mp3?raw=true
+            {% elif sound == "chirp" %}
+              https://github.com/johnkoht/hass-config/blob/master/config/sounds/twitter-chirp.mp3?raw=true
+            {% elif sound == "chime" %}
+              https://github.com/johnkoht/hass-config/blob/master/config/sounds/two-tone-chime.mp3?raw=true
+            {% elif sound == "one-chime" %}
+              https://github.com/johnkoht/hass-config/blob/master/config/sounds/one-tone-chime.mp3?raw=true
+            {% else %}
+              https://github.com/johnkoht/hass-config/blob/master/config/sounds/Notification-sound.mp3?raw=true
+            {% endif %}
+          primary_player: "{{media_players | first}}"
+
+      # Set the group
+      #
+      # - service: group.set
+      #   data:
+      #     object_id: currently_announcing
+      #     add_entities: >-
+      #       {{ media_players }}
+
+      # Take a snapshot of current Sonos Audio
+      - service: sonos.snapshot
+        entity_id: all
+        data:
+          with_group: true
+
+      # Pause the media players
+      - service: media_player.media_pause
+        data:
+          entity_id: "{{media_players}}"
+
+      # # Take a snapshot of current Sonos Audio
+      # - service: sonos.snapshot
+      #   entity_id: all
+      #   data:
+      #     with_group: true
+
+      # Capture the current media player volumes
+      - service: script.set_media_player_volume
+        data:
+          media_player: "{{media_players}}"
+
+      # Set the volume for the ding
+      - service: media_player.volume_set
+        data_template:
+          entity_id: >
+            {{ media_players }}
+        data:
+          volume_level: >-
+            {% if states.input_boolean.quiet_mode.state == "on" %}
+              0.3
+            {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
+              0.5
+            {% else %}
+              0.4
+            {% endif %}
+
+      - service: media_player.join
+        data:
+          entity_id: "{{primary_player}}"
+          group_members: "{{media_players}}"
+
+      - alias: "Wait 1s"
+        delay: 00:00:01
+
+      # Play an announcement ping
+      - service: media_player.play_media
+        data:
+          # entity_id: "{{ media_players }}"
+          entity_id: "{{primary_player}}"
+          # media_content_id: https://github.com/johnkoht/hass-config/blob/master/config/sounds/Notification-sound.mp3?raw=true
+          media_content_id: "{{sound_file}}"
+          media_content_type: music
+
+      - alias: "Wait 1s"
+        delay: 00:00:01
+
+      # - alias: "Wait until the sound has started on the first player"
+      #   wait_template: >-
+      #     {% set mp = media_players | first %}
+      #     {{ is_state(mp, 'playing') }}
+
+      # - alias: "Wait until the sound has stopped playing"
+      #   wait_template: >-
+      #     {% set mp = media_players | last %}
+      #     {{ not is_state(mp, 'playing') }}
+      # - alias: "Wait until the sound has stopped playing"
+      #   wait_template: "{{ not is_state(primary_player, 'playing') }}"
+      - alias: "Wait until the media player is idle"
+        wait_template: "{{ is_state(primary_player, 'idle') }}"
+
+      # Set the volume for the TTS
+      - service: media_player.volume_set
+        data:
+          entity_id: "{{ media_players }}"
+          volume_level: >-
+            {% if states.input_boolean.quiet_mode.state == "on" %}
+              0.3
+            {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
+              0.5
+            {% else %}
+              0.4
+            {% endif %}
+
+      # Play the TTS message
+      - service: tts.google_say
+        data:
+          # entity_id: "{{ media_players }}"
+          entity_id: "{{ primary_player }}"
+          message: "{{ speech_message }}"
+
+      - alias: "Wait 1s"
+        delay: 00:00:01
+      # - alias: "Wait 5s"
+      #   delay: 5
+      # - wait_template: "{{ not is_state(media_players | last, 'playing') }}"
+      # - wait_template: "{{ states(media_players | last) in ['idle', 'off'] }}"
+      # - alias: "Wait until the TTS has stopped playing"
+      #   wait_template: >-
+      #     {% set mp = media_players | last %}
+      #     {{ not is_state(mp, 'playing') }}
+      # - alias: "Wait until the sound has stopped playing"
+      #   wait_template: "{{ not is_state(primary_player, 'playing') }}"
+      - alias: "Wait until the media player is idle"
+        wait_template: "{{ is_state(primary_player, 'idle') }}"
+
+      # # Restore the media player volumes
+      # - service: script.restore_media_player_volume
+      #   data:
+      #     media_player: "{{media_players}}"
+
+      # # - alias: "Wait 5s"
+      # #   delay: 5
+      # # - wait_template: "{{ not is_state(media_players | last, 'playing') }}"
+      # # - wait_template: "{{ states(media_players | last) in ['idle', 'off'] }}"
+      # - alias: "Wait until the TTS has stopped playing"
+      #   wait_template: >-
+      #     {% set mp = media_players | last %}
+      #     {{ not is_state(mp, 'playing') }}
+
+      - service: media_player.unjoin
+        data:
+          entity_id: "{{media_players}}"
+
+      # Restore the media player volumes
+      - service: script.restore_media_player_volume
+        data:
+          media_player: "{{media_players}}"
+
+      # Restore from snapshot
+      - service: sonos.restore
+        entity_id: all
+        # entity_id: "{{ media_players }}"
+        data:
+          with_group: true
+
+      # # Resume playing the media players
+      # - service: media_player.media_play
+      #   data:
+      #     entity_id: "{{media_players}}"
+
+      # - service: group.set
+      #   data:
+      #     object_id: currently_announcing
+      #     entities: []

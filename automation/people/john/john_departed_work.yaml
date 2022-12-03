@@ -1,0 +1,48 @@
+id: "john_departed_work"
+alias: "John has left the office"
+initial_state: "on"
+trigger:
+  # Left the work zone
+  - platform: zone
+    entity_id: person.john_koht
+    zone: zone.john_s_work
+    event: leave
+  # He's more than 3km away from work
+  - platform: numeric_state
+    entity_id: proximity.john_work
+    above: 3
+condition:
+  # John is not home
+  - condition: state
+    entity_id: input_boolean.john_home
+    state: "off"
+  # It's a work day
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: "on"
+  # # He's driving
+  # - condition: state
+  #   entity_id: sensor.cfalb_activity
+  #   state: "Automotive"
+  # After 3pm
+  - condition: time
+    after: "15:00:00"
+  # He's driving away work
+  - condition: template
+    value_template: "{{ states.proximity.john_work.attributes.dir_of_travel == 'away_from' }}"
+  # He's driving towards home
+  - condition: template
+    value_template: "{{ states.proximity.john_home.attributes.dir_of_travel == 'towards' }}"
+action:
+  # Announcement
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "Attention! Baba left the office.",
+            "Pardon the interruption, but Baba just left work.",
+            "Just a friendly note that Baba is headed home from the office."
+          ] | random
+        }}
+      media_players: "auto"

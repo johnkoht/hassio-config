@@ -1,0 +1,4 @@
+input_boolean:
+  katia_home:
+    name: Katia Home
+    icon: mdi:home

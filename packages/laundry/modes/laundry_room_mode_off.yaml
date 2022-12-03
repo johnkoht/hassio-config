@@ -1,0 +1,55 @@
+# Laundry Room Mode Off
+#
+# The Laundry Room becomes Off when we're not home
+# or it's bedtime.
+#
+automation:
+  - id: "laundry_room_mode_off"
+    initial_state: on
+    alias: "Laundry Room mode off"
+    trigger:
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # House is turned to Away
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Hassio restart/relaod
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    condition:
+      # Laundry Room is not already Off
+      - condition: template
+        value_template: "{{ not is_state('input_select.laundry_room','Off') }}"
+      - condition: or
+        conditions:
+          # House is not occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # OR House is in Away mode
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+          # Bedtime mode is enabled
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.laundry_room
+          option: "Off"
+      # Notify for debugging
+      - service: notify.mobile_app_jk
+        data:
+          title: Laundry Room
+          message: The Laundry Room is turned to Off Mode

@@ -1,0 +1,29 @@
+media_players:
+  entities:
+    - media_player.kohbo_echo # playroom
+    - media_player.john_s_echo_show # kitchen
+    - media_player.kohbo_dot_main_bedroom
+    - media_player.sony_bravia_tv
+
+amazon_alexas:
+  entities:
+    - media_player.kohbo_echo # playroom
+    - media_player.john_s_echo_show # kitchen
+    - media_player.kohbo_dot_main_bedroom
+
+sonos_devices:
+  entities:
+    - media_player.sonos_office
+    - media_player.sonos_family_and_kitchen
+    - media_player.sonos_main_bedroom
+    - media_player.sonos_playroom
+    - media_player.sonos_living_room
+
+announcements_devices:
+  entities:
+    - group.sonos_devices
+
+# All media players
+all_media_players:
+  - group.sonos_devices
+  - group.amazon_alexas

@@ -1,0 +1,12 @@
+# John laptop camera active
+#
+# Simple binary sensor to check if the camera is
+# NOT in the "Inactive" state, which means it's
+# probably being used by the laptop or webcam
+binary_sensor:
+  - platform: template
+    sensors:
+      john_laptop_camera_active:
+        friendly_name: John laptop camera active
+        value_template: "{{ states.sensor.johns_macbook_pro_active_camera.state != 'Inactive' }}"
+        delay_on: "00:00:05"

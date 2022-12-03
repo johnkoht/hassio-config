@@ -1,0 +1,49 @@
+# Office Mode On
+#
+# If the office is occupied and the the room is
+# not super bright, turn the room on
+automation:
+  - id: "office_mode_on"
+    initial_state: on
+    alias: "Office mode on"
+    trigger:
+      # Office is occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+      # Lights are manually turned on
+      - platform: state
+        entity_id: group.office_lights
+        to: "on"
+      # Office Aqara motion senses occupancy
+      - platform: state
+        entity_id: binary_sensor.office_aqara_occupancy
+        to: "on"
+      # If the lighting is low in the office
+      - platform: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 130
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office is not already On
+      - condition: template
+        value_template: "{{ not is_state('input_select.office','On') }}"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 130
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.office
+          option: "On"

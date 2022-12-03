@@ -1,0 +1,7 @@
+- platform: mqtt_room
+  # device_id: "apple:1006:10-12"
+  device_id: !secret nino_ipad_irk
+  name: "Nino iPad Room Presence"
+  state_topic: "espresense/rooms"
+  timeout: 60
+  away_timeout: 120

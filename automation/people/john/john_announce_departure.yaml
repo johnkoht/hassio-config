@@ -1,0 +1,31 @@
+id: "john_announce_departure"
+alias: John Announce Departure
+mode: parallel
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id: input_boolean.john_home
+    to: "off"
+condition:
+  # Somebody has been home for 5 minutes
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+    for:
+      minutes: 5
+action:
+  # Announcement
+  - service: script.general_announcement
+    data:
+      # speech_message: "Baba has left the house!"
+      speech_message: >-
+        {{
+          [
+            "Arrivederci! Baba has left the house.",
+            "Baba out.",
+            "Baba left the house.",
+            "Pardon the interruption but babba has left the house!",
+            "Attention! Baba is no longer home."
+          ] | random
+        }}
+      media_players: "auto"

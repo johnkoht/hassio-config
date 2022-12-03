@@ -1,0 +1,44 @@
+# Turn off the family room music off if it's on
+id: "family_room_turn_music_off"
+initial_state: "on"
+alias: "Family room turn the music off"
+trigger:
+  - platform: state
+    entity_id: input_select.family_room
+    to: "Away"
+  - platform: state
+    entity_id: input_select.family_room
+    to: "Off"
+  - platform: state
+    entity_id: input_select.house
+    to: "Away"
+  # Bedtime is turned on
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "on"
+condition:
+  - condition: or
+    conditions:
+      # Family room is away
+      - condition: state
+        entity_id: input_select.family_room
+        state: "Away"
+      # OR Family room is off
+      - condition: state
+        entity_id: input_select.family_room
+        state: "Off"
+      # OR family room is auto and house is away
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.family_room
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+  - condition: state
+    entity_id: media_player.sonos_family_and_kitchen
+    state: "playing"
+action:
+  - service: media_player.turn_off
+    entity_id: media_player.sonos_family_and_kitchen

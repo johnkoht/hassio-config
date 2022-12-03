@@ -1,0 +1,13 @@
+# Playroom Light Group
+#
+light:
+  - platform: group
+    name: Playroom Lights
+    unique_id: playroom_lights
+    entities:
+      - light.playroom_1
+      - light.playroom_2
+      - light.playroom_3
+      - light.playroom_4
+      - light.playroom_5
+      - light.playroom_6

@@ -1,0 +1,5 @@
+input_boolean:
+  playroom_lighting_automations:
+    name: Playroom Lighting Automations
+    icon: mdi:motion-sensor
+    initial: off

@@ -1,0 +1,62 @@
+# Upstairs Washer Complete Alert
+#
+# When the upstairs washer is complete but
+# has not been unloaded (opened) then we'll
+# notify the family
+#
+id: "upstairs_washer_complete_alert"
+alias: "Upstairs washer complete alert"
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id: input_select.upstairs_washer_status
+    to: "Clean"
+  # If the home becomes occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "on"
+    for:
+      minutes: 10
+  # After 8 am
+  - platform: time
+    at: "08:01:00"
+condition:
+  # It's between 8am and 10:30pm
+  - condition: time
+    before: "22:30:00"
+    after: "08:00:00"
+  # The house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Washing machine is clean
+  - condition: state
+    entity_id: input_select.upstairs_washer_status
+    state: "Clean"
+  # Don't send this alert if it was last triggered less than 30 minutes ago (1,800 seconds)
+  - condition: template
+    value_template: >
+      {% if states.automation.upstairs_washer_complete_alert.attributes.last_triggered is not none %}
+        {% if as_timestamp(now()) | int - as_timestamp(states.automation.upstairs_washer_complete_alert.attributes.last_triggered) | int > 3600 %} true {% else %} false
+        {% endif %}
+      {% else %}
+      false
+      {% endif %}
+action:
+  - service: script.general_announcement
+    data:
+      speech_message: "The upstairs washer finished and is ready to be emptied."
+      media_players: "auto"
+      sound: "chirp"
+  # Notify whoever is home
+  - service_template: >
+      {% if (is_state("input_boolean.john_home", "on")) and (is_state("input_boolean.cristina_home", "on"))  %}
+        notify.ios_family
+      {% elif is_state("input_boolean.john_home", "on") %}
+        notify.mobile_app_jk
+      {% elif (is_state("input_boolean.cristina_home", "on")) %}
+        notify.mobile_app_cfalb
+      {% endif %}
+    data:
+      message: "The upstairs washer is finished and ready to be emptied."
+      title: "Upstairs Washing Machine"

@@ -1,0 +1,9 @@
+input_select:
+  main_level_dryer_status:
+    name: Main Level Dryer Status
+    options:
+      - Idle
+      - Running
+      - Finishing
+      - Clean
+    initial: Idle

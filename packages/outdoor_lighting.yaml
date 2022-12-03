@@ -1,0 +1,492 @@
+input_boolean:
+  exterior_house_lights:
+    name: Exterior House Lights
+    icon: mdi:wall-sconce
+    initial: off
+
+  exterior_floor_lights:
+    name: Exterior Flood Lights
+    icon: mdi:wall-sconce
+    initial: off
+
+  exterior_accent_lights:
+    name: Exterior Accent Lights
+    icon: mdi:wall-sconce
+    initial: off
+
+# Exterior Lights
+#
+light:
+  # Exterior House Lights
+  - platform: group
+    name: Exterior House Lights
+    unique_id: exterior_house_lights
+    entities:
+      - light.exterior_back_porch_lights
+      - light.exterior_front_porch_pendant
+      - light.exterior_garage_sconces
+      - light.exterior_driveway_sconces
+
+  # Exterior Flood Lights
+  - platform: group
+    name: Exterior Flood Lights
+    unique_id: exterior_flood_lights
+    entities:
+      - light.exterior_backyard_flood_east
+      - light.exterior_backyard_flood_west
+
+  # Exterior Accent Lights
+  - platform: group
+    name: Exterior Accent Lights
+    unique_id: exterior_accent_lights
+    entities:
+      - light.exterior_hue_outdoor_spot_1
+      - light.exterior_hue_outdoor_spot_2
+      - light.exterior_hue_outdoor_spot_3
+
+  # All Exterior Lights
+  - platform: group
+    name: Exterior Lights
+    unique_id: exterior_lights
+    entities:
+      - light.exterior_house_lights
+      - light.exterior_flood_lights
+      - light.exterior_accent_lights
+
+automation:
+  # Exterior House Lights
+  #
+  # Turn on the exterior lights when the
+  # boolean turns on
+  - id: "turn_on_exterior_lights"
+    alias: "Turn On Exterior Lights"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.exterior_house_lights
+        to: "on"
+    condition:
+      - condition: state
+        # entity_id: light.exterior_lights
+        entity_id: light.exterior_house_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.exterior_lights
+
+  # Turn off the exterior lights when the
+  # boolean turns off
+  - id: "turn_off_exterior_lights"
+    alias: "Turn Off Exterior Lights"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.exterior_house_lights
+        to: "off"
+    condition:
+      - condition: state
+        # entity_id: light.exterior_lights
+        entity_id: light.exterior_house_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.exterior_lights
+
+  # Exterior Flood Lights
+  #
+  # Turn on the exterior flood lights when the
+  # boolean turns on
+  - id: "turn_on_exterior_flood_lights"
+    alias: "Turn On Exterior Flood Lights"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.exterior_floor_lights
+        to: "on"
+    action:
+      - service: light.turn_on
+        entity_id: light.exterior_flood_lights
+
+  # Turn off the exterior flood lights when the
+  # boolean turns off
+  - id: "turn_off_exterior_flood_lights"
+    alias: "Turn Off Exterior Flood Lights"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.exterior_floor_lights
+        to: "off"
+    action:
+      - service: light.turn_off
+        entity_id: light.exterior_flood_lights
+
+  # Exterior Accent Lights
+  #
+  # Turn on the exterior accent lights when the
+  # boolean turns on
+  - id: "turn_on_exterior_accent_lights"
+    alias: "Turn On Exterior Accent Lights"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.exterior_accent_lights
+        to: "on"
+    action:
+      - service: light.turn_on
+        entity_id: light.exterior_accent_lights
+
+  # Turn off the exterior accent lights when the
+  # boolean turns off
+  - id: "turn_off_exterior_accent_lights"
+    alias: "Turn Off Exterior Accent Lights"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.exterior_accent_lights
+        to: "off"
+    action:
+      - service: light.turn_off
+        entity_id: light.exterior_accent_lights
+
+  # Activate Exterior Lighting at Sunset
+  #
+  - id: "activate_exterior_lighting_at_sunset"
+    alias: "Activate Exterior Lighting at Sunset"
+    mode: "single"
+    trigger:
+      # It's sunset
+      - platform: sun
+        event: sunset
+      # It's dark outside
+      - platform: state
+        entity_id: input_boolean.dark_outside
+        to: "on"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Make sure any of the light groups are off
+      - condition: or
+        conditions:
+          # Make sure the boolean is off
+          - condition: state
+            entity_id: input_boolean.exterior_house_lights
+            state: "off"
+          # Make sure the boolean is off
+          - condition: state
+            entity_id: input_boolean.exterior_floor_lights
+            state: "off"
+          # Make sure the boolean is off
+          - condition: state
+            entity_id: input_boolean.exterior_accent_lights
+            state: "off"
+      # It's sunset or it's dark outside
+      - condition: or
+        conditions:
+          # Sun is set
+          - condition: sun
+            after: sunset
+          # It's dark outside
+          - condition: state
+            entity_id: input_boolean.dark_outside
+            state: "on"
+    action:
+      # Activate the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.exterior_house_lights
+      # Activate the flood light boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.exterior_floor_lights
+      # Activate the accent lights boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.exterior_accent_lights
+
+      # Announce throughout the house
+      - service: script.general_announcement
+        data:
+          speech_message: "The sun has set so I'm turning on the exterior lights."
+          media_players: "auto"
+          sound: "chime"
+
+      # Notify the family
+      - service: notify.mobile_app_jk
+        data:
+          message: The sun has set, turning on the exterior lights.
+          title: Exterior Lighting
+
+  # Activate Exterior Lighting Due to Weather
+  #
+  - id: "activate_exterior_lighting_due_to_weather"
+    alias: "Activate Exterior Lighting Due to Weather"
+    mode: "single"
+    trigger:
+      # Bad weather boolean is activated
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+      # Bad weather boolean is active for 5 mins
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+        for:
+          minutes: 5
+      # Bad weather boolean is active for 15 mins
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+        for:
+          minutes: 15
+      # It's getting dark outside
+      - platform: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        below: 38
+        for:
+          minutes: 5
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Make sure the boolean is off
+      - condition: state
+        entity_id: input_boolean.exterior_house_lights
+        state: "off"
+      - condition: or
+        conditions:
+          # It's bad weather outside AND it's dark
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.bad_weather
+                state: "on"
+              # Its dark
+              - condition: numeric_state
+                entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+                below: 75
+          # Is getting dark
+          - condition: numeric_state
+            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+            below: 38
+    action:
+      # Activate the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.exterior_house_lights
+
+      # Announce throughout the house
+      - service: script.general_announcement
+        data:
+          speech_message: "The weather is looking a little dark, I'm turning on the exterior lights."
+          media_players: "auto"
+          sound: "chime"
+
+      # Notify the family
+      - service: notify.mobile_app_jk
+        data:
+          message: It's getting dark outside so I've turned on the exterior lights.
+          title: Exterior Lighting
+
+  # Deactivate Exterior Lighting at Sunrise
+  #
+  - id: "deactivate_exterior_lighting_at_sunrise"
+    alias: "Deactivate Exterior Lighting at Sunrise"
+    mode: "single"
+    trigger:
+      # It's sunset
+      - platform: sun
+        event: sunrise
+      # It's no longer dark outside
+      - platform: state
+        entity_id: input_boolean.dark_outside
+        to: "off"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Make sure the boolean is on
+      - condition: state
+        entity_id: input_boolean.exterior_house_lights
+        state: "on"
+      - condition: or
+        conditions:
+          # Sun is above horizon
+          - condition: state
+            entity_id: sun.sun
+            state: "above_horizon"
+          # It's not dark outside anymore
+          - condition: state
+            entity_id: input_boolean.dark_outside
+            state: "off"
+    action:
+      # Deactivate the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.exterior_house_lights
+      # Deactivate the flood light boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.exterior_floor_lights
+      # Deactivate the accent lights boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.exterior_accent_lights
+
+      # Announce throughout the house
+      - service: script.general_announcement
+        data:
+          speech_message: "The sun is up so I'm turning off the exterior lights."
+          media_players: "auto"
+          sound: "chime"
+
+      # Notify the family
+      - service: notify.mobile_app_jk
+        data:
+          message: The sun is up, turning off the exterior lights.
+          title: Exterior Lighting
+
+  # Deactivate Exterior Lighting Due to Weather
+  #
+  - id: "deactivate_exterior_lighting_due_to_weather"
+    alias: "Deactivate Exterior Lighting Due to Weather"
+    mode: "single"
+    trigger:
+      # Bad weather boolean is off for 5 mins
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "off"
+        for:
+          minutes: 5
+      # Bad weather boolean is off for 15 mins
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "off"
+        for:
+          minutes: 15
+      # It's getting brighter outside
+      - platform: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        above: 250
+        for:
+          minutes: 5
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Make sure the boolean is on
+      - condition: state
+        entity_id: input_boolean.exterior_house_lights
+        state: "on"
+      # It's not dark outside
+      - condition: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        above: 50
+      # Sun is above horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "above_horizon"
+      - condition: or
+        conditions:
+          # It's not bad weather outside anymore
+          - condition: state
+            entity_id: input_boolean.bad_weather
+            state: "off"
+          # It's not dark anymore
+          - condition: numeric_state
+            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+            above: 250
+    action:
+      # Activate the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.exterior_house_lights
+
+      # Announce throughout the house
+      - service: script.general_announcement
+        data:
+          speech_message: "The weather has improved so I'm turning off the exterior lights."
+          media_players: "auto"
+          sound: "chime"
+
+      # Notify the family
+      - service: notify.mobile_app_jk
+        data:
+          message: The weather has improved so I'm turning off the exterior lights.
+          title: Exterior Lighting
+
+  # Deactivate Exterior Accent Lighting Due ad Bedtime
+  #
+  - id: "deactivate_accent_lighting_at_bedtime"
+    alias: "Deactivate Exterior Accent Lighting at Bedtime"
+    mode: "single"
+    trigger:
+      # House goes into bedtime mode
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+    condition:
+      # Make sure the boolean is on
+      - condition: state
+        entity_id: input_boolean.exterior_accent_lights
+        state: "on"
+      # It's bedtime
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "on"
+    action:
+      # Activate the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.exterior_accent_lights
+
+  # Oftentimes, Cristina doesn't know which light switch in the
+  # garage turns off the interior garage or exterior lights so
+  # she turns them both off. This leaves the exterior garage lights
+  # off all night then, which makes the outside very dark. This simply
+  # turns them back on if the exterior lights are on.
+  - id: "garage_lights_accidentally_turned_off_fix"
+    alias: "Garage Lights Accidentally Turned Off Fix"
+    mode: "single"
+    trigger:
+      # Bad weather boolean is off for 5 mins
+      - platform: state
+        entity_id: light.exterior_garage_sconces
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: input_boolean.exterior_house_lights
+        state: "on"
+    action:
+      - service: light.turn_on
+        entity_id: light.exterior_garage_sconces
+
+  # # Turn on the holiday lights
+  # - id: "turn_on_holiday_lights"
+  #   alias: "Turn on Holiday Lights"
+  #   mode: "single"
+  #   trigger:
+  #     - platform: sun
+  #       event: sunrise
+  #   condition:
+  #     - condition: state
+  #       entity_id: switch.main_tree
+  #       state: "off"
+  #   action:
+  #     - service: switch.turn_on
+  #       entity_id: switch.main_tree
+
+  # # Turn OFF the holiday lights
+  # - id: "turn_off_holiday_lights"
+  #   alias: "Turn off Holiday Lights"
+  #   mode: "single"
+  #   trigger:
+  #     - platform: state
+  #       entity_id: input_boolean.bedtime
+  #       to: "on"
+  #   condition:
+  #     - condition: state
+  #       entity_id: switch.main_tree
+  #       state: "on"
+  #   action:
+  #     - service: switch.turn_off
+  #       entity_id: switch.main_tree

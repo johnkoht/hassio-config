@@ -1,0 +1,9 @@
+# Main Bathhroom Light Group
+#
+light:
+  - platform: group
+    name: Main Bathroom Lights
+    unique_id: main_bathroom_lights
+    entities:
+      - light.main_bathroom_vanity_lights
+      - light.main_bathroom_ceiling_lights

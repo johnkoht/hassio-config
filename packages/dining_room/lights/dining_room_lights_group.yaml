@@ -1,0 +1,7 @@
+light:
+  - platform: group
+    name: Dining Room Lights
+    unique_id: dining_room_lights
+    entities:
+      - light.dining_room_main_lights
+      - light.living_room_main_lights

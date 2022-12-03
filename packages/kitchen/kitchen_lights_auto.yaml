@@ -1,0 +1,5 @@
+input_boolean:
+  kitchen_lights_auto:
+    name: Kitchen Lights auto
+    icon: mdi:lightbulb-auto
+    initial: off

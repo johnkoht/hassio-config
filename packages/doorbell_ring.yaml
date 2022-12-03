@@ -1,0 +1,153 @@
+automation:
+  # Doorbell Ring
+  #
+  - id: "doorbell_ring"
+    alias: "Doorbell Ring"
+    mode: "single"
+    trigger:
+      # Doorbell is pressed
+      - platform: state
+        entity_id: binary_sensor.front_door_camera_doorbell
+        to: "on"
+    action:
+      # Sound the doorbell
+      - service: script.activate_doorbell_chime
+        data: {}
+
+      # Display snapshop on the TV
+      - service: script.display_doorbell_snapshot_on_tv
+        data: {}
+
+      # Notify the family
+      - service: notify.ios_family
+        data:
+          message: Somebody is at the front door!
+          title: Front Door
+
+  # Doorbell Detected Object
+  #
+  - id: "doorbell_detected_object"
+    alias: "Doorbell Detected Object"
+    mode: "single"
+    trigger:
+      # Doorbell detects an object
+      - platform: state
+        entity_id: sensor.front_door_camera_detected_object
+        to: "person"
+    action:
+      - service: script.display_doorbell_snapshot_on_tv
+        data: {}
+
+script:
+  # Activate Doorbell Chime
+  #
+  activate_doorbell_chime:
+    alias: "Activate Doorbell Chime"
+    mode: "single"
+    icon: mdi:doorbell
+    sequence:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Not quiet mode
+      - condition: state
+        entity_id: input_boolean.quiet_mode
+        state: "off"
+      # Which rooms should play the doorbell
+      - alias: "Rooms to sound the doorbell"
+        variables:
+          media_players: >-
+            {% set media_players = [] %}   
+
+            {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}
+              {% set media_players = media_players + ["media_player.sonos_office"] %}
+            {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" or states.input_boolean.kitchen_occupied.state == "on" %}
+              {% set media_players = media_players + ["media_player.sonos_family_and_kitchen"] %}
+            {% endif %}{% if states.input_boolean.main_bedroom_occupied.state == "on" and states.input_select.main_bedroom.state != "Bedtime" %}
+              {% set media_players = media_players + ["media_player.sonos_main_bedroom"] %}
+            {% endif %}{% if states.input_boolean.playroom_occupied.state == "on" %}
+              {% set media_players = media_players + ["media_player.sonos_playroom"] %}
+            {% endif %}
+
+            {{ media_players}}
+
+      # Take a snapshot of current Sonos Audio
+      - service: sonos.snapshot
+        entity_id: all
+        data:
+          with_group: true
+
+      # Capture the current media player volumes
+      - service: script.set_media_player_volume
+        data:
+          media_player: "{{media_players}}"
+
+      # Set the volume for the ding
+      - service: media_player.volume_set
+        data_template:
+          entity_id: >
+            {{ media_players }}
+        data:
+          volume_level: >-
+            {% if states.input_boolean.quiet_mode.state == "on" %}
+              0.4
+            {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
+              0.7
+            {% else %}
+              0.5
+            {% endif %}
+
+      # Play an doorbell sound
+      - service: media_player.play_media
+        data:
+          entity_id: "{{ media_players }}"
+          media_content_id: https://raw.githubusercontent.com/johnkoht/hass-config/master/config/sounds/ding-dong.mp3
+          media_content_type: music
+
+      - alias: "Wait 5s"
+        delay: 5
+
+      # Capture the current media player volumes
+      - service: script.restore_media_player_volume
+        data:
+          media_player: "{{media_players}}"
+
+      # Restore from snapshot
+      - service: sonos.restore
+        entity_id: all
+        data:
+          with_group: true
+
+  #
+  #
+  # Display doorbell snapshot on TV
+  #
+  display_doorbell_snapshot_on_tv:
+    mode: single
+    alias: Display Doorbell Snapshot on TV
+    icon: mdi:doorbell-video
+    sequence:
+      # The house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # The TV is on
+      - condition: state
+        entity_id: remote.sony_bravia_tv
+        state: "on"
+
+      # Take a snapshot
+      - service: camera.snapshot
+        data:
+          filename: /config/www/images/doorbell_camera_alert.jpg
+          entity_id: camera.front_door_camera_high
+
+      # Notify the family room TV
+      - service: notify.family_room_tv
+        data:
+          message: Somebody is at the door!
+          data:
+            image:
+              path: /config/www/images/doorbell_camera_alert.jpg
+          title: Front Door

@@ -1,0 +1,49 @@
+# Kitchen Lights to Motion On
+#
+automation:
+  - id: "kitchen_lights_dim_motion_off"
+    initial_state: off
+    alias: "Kitchen Lights Dim Motion Off"
+    trigger:
+      # Motion no longer detected for 3 minutes
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion_sensor_status
+        to: "off"
+        for:
+          minutes: 3
+      # Not occupied
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Kitchen is Dim
+      - condition: state
+        entity_id: input_select.kitchen
+        state: "Dim"
+      - condition: or
+        conditions:
+          # Ensure lights were turned on automatically
+          - condition: state
+            entity_id: input_boolean.kitchen_lights_auto
+            state: "on"
+          # OR the kitchen is not occupied
+          - condition: state
+            entity_id: input_boolean.kitchen_occupied
+            state: "off"
+      # No motion detected
+      - condition: state
+        entity_id: binary_sensor.kitchen_motion_sensor_status
+        state: "off"
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_lights
+        data:
+          brightness_pct: 5
+          transition: 1
+      - service: automation.turn_off
+        # entity_id: automation.kitchen_lights_motion_off
+        entity_id: automation.kitchen_lights_dim_motion_off

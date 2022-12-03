@@ -1,0 +1,11 @@
+# Foyer State
+#
+input_select:
+  foyer:
+    name: Foyer
+    options:
+      - "Auto"
+      - "Away"
+      - "Dim"
+      # - "On"
+      - "Off"

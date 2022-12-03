@@ -1,0 +1,29 @@
+# Automation to detect and initiate home for Katia
+#
+#
+automation:
+  - id: "katia_is_home"
+    initial_state: on
+    alias: "Katia is Home"
+    trigger:
+      # If ESPresense detects her in a room
+      - platform: template
+        value_template: "{{ states.sensor.katia_room_presence.state != 'not_home'}}"
+      - platform: state
+        entity_id: person.katia
+        to: "home"
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.katia
+            state: "home"
+          - condition: template
+            value_template: "{{ states.sensor.katia_room_presence.state != 'not_home'}}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.katia_home

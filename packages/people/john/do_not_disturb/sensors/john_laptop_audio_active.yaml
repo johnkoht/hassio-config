@@ -1,0 +1,16 @@
+# John laptop audio active
+#
+# Simple binary sensor to check if the audio is
+# NOT in the "Inactive" state, which means it's
+# probably being used by zoom, etc
+binary_sensor:
+  - platform: template
+    sensors:
+      john_laptop_audio_active:
+        friendly_name: John laptop audio active
+        value_template: >-
+          {{
+            states.sensor.johns_macbook_pro_active_audio_input.state != 'Inactive'
+            and 
+            states.sensor.johns_macbook_pro_active_audio_output.state != 'Inactive'
+          }}

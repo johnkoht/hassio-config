@@ -1,0 +1,33 @@
+id: "family_room_lights_to_away"
+initial_state: "on"
+alias: "Family room lights to away"
+trigger:
+  - platform: state
+    entity_id: input_select.family_room
+    to: "Away"
+  - platform: state
+    entity_id: input_select.house
+    to: "Away"
+condition:
+  - condition: state
+    entity_id: input_boolean.lighting_automations
+    state: "on"
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: input_select.family_room
+        state: "Away"
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.family_room
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+  - condition: state
+    entity_id: light.family_room_main_lights
+    state: "on"
+action:
+  - service: light.turn_off
+    entity_id: light.family_room_main_lights

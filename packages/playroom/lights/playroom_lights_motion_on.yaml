@@ -1,0 +1,47 @@
+# Playroom Lights Motion On
+#
+# Turn the lights on whenever motion is
+# detected and it's dull in the Playroom
+#
+automation:
+  - id: "playroom_lights_motion_on"
+    initial_state: on
+    alias: "Playroom lights Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.playroom_motion
+        to: "on"
+    condition:
+      # Playroom is Auto
+      - condition: state
+        entity_id: input_select.playroom
+        state: "Auto"
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the playroom are enabled
+      - condition: state
+        entity_id: input_boolean.playroom_lighting_automations
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: 
+          - sensor.playroom_motion_sensor_illuminance
+          - sensor.playroom_entry_motion_sensor_illuminance
+        below: 40
+      # Lights are currently off
+      - condition: state
+        entity_id: group.playroom_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: group.playroom_lights
+
+      # - service: automation.turn_on
+      #   entity_id: automation.playroom_lights_motion_off
+
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.playroom_lights_auto

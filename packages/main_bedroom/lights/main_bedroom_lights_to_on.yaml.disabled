@@ -1,0 +1,37 @@
+automation:
+  - id: "main_bedroom_lights_on"
+    initial_state: off
+    alias: "Main bedroom lights on"
+    trigger:
+      # Bedroom is Auto
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Auto"
+      # 15 mins after sunset
+      - platform: sun
+        event: sunset
+        offset: "00:15:00"
+    condition:
+      # Light automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the bedroom are enabled
+      - condition: state
+        entity_id: input_boolean.main_bedroom_lighting_automations
+        state: "on"
+      # Bedroom is Auto
+      - condition: state
+        entity_id: input_select.main_bedroom
+        state: "Auto"
+      # Bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "on"
+      # Lights are currently off
+      - condition: state
+        entity_id: light.main_bedroom_main_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.main_bedroom_main_lights

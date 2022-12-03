@@ -1,0 +1,59 @@
+input_boolean:
+  # Boolean to identify if the shower is currently
+  # being used/occupied
+  main_bathroom_shower_occupied:
+    name: Main Bathroom Shower Occupied
+    icon: mdi:shower-head
+
+automation:
+  # Main Shower Occupied On
+  #
+  # This automation simply turns on an input_boolean
+  # when the shower is occupied, which is detected by
+  # a humidity sensor
+  #
+  - id: "main_bathroom_shower_occupied"
+    alias: "Main Bathroom Shower Occupied"
+    mode: "single"
+    trigger:
+      # Shower humidity over 75%
+      - platform: numeric_state
+        entity_id: sensor.main_bathroom_humidity
+        above: 75
+    condition:
+      # Main Bathroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bathroom_occupied
+        state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bathroom_shower_occupied
+
+  # Main Shower Not Occupied
+  #
+  # Turns off the shower occupancy
+  #
+  - id: "main_bathroom_shower_not_occupied"
+    alias: "Main Bathroom Shower Not Occupied"
+    mode: "single"
+    trigger:
+      # Shower humidity crosses under 85%
+      - platform: numeric_state
+        entity_id: sensor.main_bathroom_humidity
+        below: 85
+      # Shower humidity crosses under 75%
+      - platform: numeric_state
+        entity_id: sensor.main_bathroom_humidity
+        below: 75
+    condition:
+      # # Main Bathroom is occupied
+      # - condition: state
+      #   entity_id: input_boolean.main_bathroom_occupied
+      #   state: "on"
+      # Shower is currently occupied
+      - condition: state
+        entity_id: input_boolean.main_bathroom_shower_occupied
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.main_bathroom_shower_occupied

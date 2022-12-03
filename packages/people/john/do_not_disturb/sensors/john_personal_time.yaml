@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      john_personal_time:
+        friendly_name: John Personal Time
+        value_template: >-
+          {{
+            states.calendar.john_block.state == "on" or 
+            states.calendar.john_ooo.state == "on" or 
+            states.calendar.john_gsd.state == "on"
+          }}

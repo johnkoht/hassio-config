@@ -1,0 +1,37 @@
+automation:
+  - id: "nonna_announce_departure"
+    alias: Nonna Announce Departure
+    mode: queued
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: person.mary_falbo
+        from: "home"
+        to: "not_home"
+        for:
+          minutes: 2
+    condition:
+      # Not home
+      - condition: state
+        entity_id: person.mary_falbo
+        state: "not_home"
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    action:
+      # Announcement
+      - service: script.general_announcement
+        data:
+          speech_message: >-
+            {{
+              [
+                "Nonna has left the house!",
+                "Arrivederci, Nonna! See you next time!",
+                "Nonna just left!",
+                "Pardon the interruption but Nonna just left",
+              ] | random
+            }}
+          media_players: "auto"

@@ -1,0 +1,64 @@
+# Main Bathroom Mode Auto
+#
+automation:
+  - id: "main_bathroom_mode_auto"
+    initial_state: on
+    alias: "Main Bathroom mode auto"
+    trigger:
+      # House is turned to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # Main Bathroom becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.main_bathroom_occupied
+        to: "off"
+      # Bathroom is Wake for 15 minutes
+      - platform: state
+        entity_id: input_select.main_bathroom
+        to: "Wake"
+        for:
+          minutes: 15
+      # Main bedroom turns to Wake
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Wake"
+      # Main bedroom turns to Auto
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Auto"
+      # It's after 7am
+      - platform: time
+        at: "00:07:00"
+      # Bedtime hours inactive
+      - platform: state
+        entity_id: binary_sensor.bedtime
+        to: "off"
+    condition:
+      # Main Bathroom is not occupied
+      - condition: state
+        entity_id: input_boolean.main_bathroom_occupied
+        state: "off"
+      # Bathroom is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.main_bathroom','Auto') }}"
+      # Not in bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # Main bedroom is not in Bedtime mode
+      - condition: template
+        value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_bathroom
+          option: "Auto"
+
+      # Turn off the bedtime motion
+      - service: automation.turn_off
+        entity_id: automation.main_bathroom_bedtime_motion_on
+
+      # Turn on the regular motion automation
+      - service: automation.turn_on
+        entity_id: automation.main_bathroom_lights_motion_on

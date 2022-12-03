@@ -1,0 +1,4 @@
+input_boolean:
+  john_dnd:
+    name: John Do Not Disturb
+    icon: mdi:calendar-remove

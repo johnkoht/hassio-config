@@ -1,0 +1,93 @@
+automation:
+  - id: "playroom_not_occupied"
+    initial_state: on
+    alias: "Playroom not occupied"
+    trigger:
+      # If anybody is detected out of the room
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length == 0 }}"
+        for:
+          minutes: 2
+      # Playroom sensor no longer detects occupancy
+      - platform: state
+        entity_id: binary_sensor.playroom_occupancy
+        to: "off"
+      # No occupancy for 5 minutes (15 total)
+      - platform: state
+        entity_id: binary_sensor.playroom_occupancy
+        to: "off"
+        for:
+          minutes: 5
+      # No occupancy for 10 minutes (20 total)
+      - platform: state
+        entity_id: binary_sensor.playroom_occupancy
+        to: "off"
+        for:
+          minutes: 10
+      # No motion for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.playroom_motion
+        to: "off"
+        for:
+          minutes: 5
+    condition:
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "on"
+      # # Playroom sensor detects occupancy
+      # - condition: state
+      #   entity_id: binary_sensor.playroom_occupancy
+      #   state: "off"
+      # Entry motion sensor does not detect motion
+      # This sensor goes off after 3 mins, so should definitely be off
+      - condition: state
+        entity_id: binary_sensor.playroom_entry_motion_sensor_motion
+        state: "off"
+      # Nobody via BLE
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length == 0 }}"
+      - condition: or
+        conditions:
+          # When both kids sleeping
+          # AND guest mode off
+          # No Aqara motion for 3 minutes
+          - condition: and
+            conditions:
+              # Guest mode NOT enabled
+              - condition: state
+                entity_id: input_boolean.guest_mode
+                state: "off"
+              # Kids sleeping
+              - condition: state
+                entity_id: binary_sensor.kids_sleeping
+                state: "on"
+              # No Aqara motion for 5 minutes
+              - condition: state
+                entity_id: binary_sensor.playroom_motion
+                state: "off"
+                for:
+                  minutes: 5
+          # No occupancy for 10 minutes
+          - condition: and
+            conditions:
+              # Kids not sleeping
+              - condition: state
+                entity_id: binary_sensor.kids_sleeping
+                state: "off"
+              # No Aqara occupancy for 5 minutes
+              - condition: state
+                entity_id: binary_sensor.playroom_occupancy
+                state: "off"
+                # for:
+                #   minutes: 5
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.playroom_occupied
+
+      # Wait 2 seconds
+      - alias: "Wait 2 seconds"
+        delay: 02
+
+      # Enable playroom lighting automations
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.playroom_lighting_automations

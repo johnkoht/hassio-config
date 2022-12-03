@@ -1,0 +1,44 @@
+automation:
+  - id: "sunroom_not_occupied"
+    initial_state: on
+    alias: "Sunroom Not Occupied"
+    trigger:
+      # If anybody is detected out of the room
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'sunroom')|map(attribute='name')|list | length == 0 }}"
+        for:
+          minutes: 3
+      # Sunroom sensor no longer detects occupancy
+      - platform: state
+        entity_id: binary_sensor.sunroom_motion_sensor_occupancy
+        to: "off"
+      # Media stops playing
+      - platform: state
+        entity_id: media_player.sonos_patio
+        to: "off"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: media_player.sonos_patio
+        to: "idle"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: media_player.sonos_patio
+        to: "paused"
+        for:
+          minutes: 5
+    condition:
+      - condition: state
+        entity_id: input_boolean.sunroom_occupied
+        state: "on"
+      # Sunroom sensor detects occupancy
+      - condition: state
+        entity_id: binary_sensor.sunroom_motion_sensor_occupancy
+        state: "off"
+      # Nobody via BLE
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'sunroom')|map(attribute='name')|list | length == 0 }}"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.sunroom_occupied

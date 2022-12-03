@@ -1,0 +1,34 @@
+# Laundry Room Lights Motion On
+#
+# Turn the lights on whenever motion is
+# detected and it's dull in the Laundry Room
+#
+automation:
+  - id: "laundry_room_lights_motion_on"
+    initial_state: on
+    alias: "Laundry Room lights Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.laundry_room_motion_sensor_motion
+        to: "on"
+    condition:
+      # Laundry Room is Auto
+      - condition: state
+        entity_id: input_select.laundry_room
+        state: "Auto"
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.laundry_room_motion_sensor_illuminance
+        below: 40
+      # Lights are currently off
+      - condition: state
+        entity_id: light.laundry_room_main_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.laundry_room_main_lights

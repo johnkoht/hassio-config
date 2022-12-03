@@ -1,0 +1,57 @@
+# Kitchen Lights Day Off
+#
+automation:
+  - id: "kitchen_lights_day_off"
+    initial_state: off
+    alias: "Kitchen Lights Day Off"
+    trigger:
+      # If the lighting is better in the kitchen
+      - platform: numeric_state
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        above: 149
+        for:
+          minutes: 10
+      # The weather is not bad outside anymore
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "off"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Kitchen lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.kitchen_lighting_automations
+        state: "on"
+      # Kitchen is Auto
+      - condition: state
+        entity_id: input_select.kitchen
+        state: "Auto"
+      # The weather not bad anymore
+      - condition: state
+        entity_id: input_boolean.bad_weather
+        state: "off"
+      # Ensure lights were turned on automatically
+      - condition: state
+        entity_id: input_boolean.kitchen_lights_auto
+        state: "on"
+      # Sun is above horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "above_horizon"
+      # Light is low
+      - condition: numeric_state
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        above: 149
+      # Lights are currently on
+      - condition: state
+        entity_id: light.kitchen_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_lights

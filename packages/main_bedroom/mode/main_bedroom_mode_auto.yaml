@@ -1,0 +1,63 @@
+# Main Bedroom Mode Motion
+#
+automation:
+  - id: "main_bedroom_mode_auto"
+    initial_state: on
+    alias: "Main Bedroom mode auto"
+    trigger:
+      # House is turned to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # Main bedroom becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "off"
+      # Main bedroom door is left open for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_door_sensor_status
+        to: "on"
+        for:
+          minutes: 5
+      # Bedroom is Wake for 15 minutes
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Wake"
+        for:
+          minutes: 15
+      # It's after 7am
+      - platform: time
+        at: "00:07:00"
+      # Bedtime hours inactive
+      - platform: state
+        entity_id: binary_sensor.bedtime
+        to: "off"
+    condition:
+      # Main bedroom is not occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "off"
+      # Bedroom is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.main_bedroom','Auto') }}"
+      # # Main bedroom lighting is low
+      # - condition: numeric_state
+      #   entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
+      #   below: 100
+      # Not in bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_bedroom
+          option: "Auto"
+      # Turn off some bedtime automations
+      - service: automation.turn_off
+        entity_id:
+          - automation.main_bedroom_john_night_light_off
+          - automation.main_bedroom_night_light_for_john
+      # Enable bedroom lighting automations
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bedroom_lighting_automations

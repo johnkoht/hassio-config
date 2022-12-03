@@ -1,0 +1,56 @@
+automation:
+  - id: "christmas_activated"
+    alias: "Christmas Activated"
+    mode: "single"
+    trigger:
+      # It's dark outside
+      - platform: state
+        entity_id: input_boolean.dark_outside
+        to: "on"
+      # At 4pm
+      - platform: time
+        at: "16:00:00"
+      # House turn to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Christmas is not active
+      - condition: state
+        entity_id: input_boolean.christmas_active
+        state: "off"
+      - condition: or
+        conditions:
+          # It's dark outside
+          - condition: state
+            entity_id: input_boolean.dark_outside
+            state: "on"
+          # OR it's after 4pm
+          - condition: time
+            after: "16:00:00"
+      # It's after noon at least. This helps prevent times when
+      # the house goes into Auto mode in the morning when it's
+      # still dark outside
+      - condition: time
+        after: "12:00:00"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.christmas_active
+
+      - service: notify.mobile_app_jk
+        data:
+          title: Holidays
+          message: Christmas is activated

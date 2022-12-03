@@ -1,0 +1,19 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: "Fläkt\u00B2"
+  card:
+    type: vertical-stack
+    cards:
+      - type: entities
+        state_color: true
+        card_mod:
+          class: content
+        entities:
+
+          - entity: fan.studio
+            secondary_info: last-changed
+
+          - type: custom:slider-entity-row
+            entity: input_number.fan_timer
+            hide_state: false

@@ -1,0 +1,28 @@
+# Turn mudroom lights to on but dim
+#
+id: "mudroom_lights_to_dim"
+initial_state: "on"
+alias: "Mudroom lights to dim"
+trigger:
+  # Mudroom motion sensor detects motion
+  - platform: state
+    entity_id: binary_sensor.mudroom_motion_sensor_motion_detection
+    to: "on"
+condition:
+  # Make sure lighting automations are on
+  - condition: state
+    entity_id: input_boolean.lighting_automations
+    state: "on"
+  # Mudroom is set to Night Motion
+  - condition: state
+    entity_id: input_select.mudroom
+    state: "Night Motion"
+  # Mudroom light is off
+  - condition: state
+    entity_id: light.mudroom_main_lights
+    state: "off"
+action:
+  - service: light.turn_on
+    entity_id: light.mudroom_main_lights
+    data:
+      brightness_pct: 30

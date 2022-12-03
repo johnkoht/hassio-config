@@ -1,0 +1,62 @@
+id: "people_status_arrived"
+alias: Mark person as just arrived
+mode: parallel
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id:
+      - input_boolean.john_home
+      - input_boolean.cristina_home
+      - input_boolean.joe_home
+      - input_boolean.nonna_home
+      - input_boolean.katia_home
+    to: "on"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: >
+        {% if trigger.entity_id == 'input_boolean.john_home' %}
+          input_select.john_status
+        {% elif trigger.entity_id == 'input_boolean.cristina_home' %}
+          input_select.cristina_status_dropdown
+        {% elif trigger.entity_id == 'input_boolean.joe_home' %}
+          input_select.joe_status_dropdown
+        {% elif trigger.entity_id == 'input_boolean.nonna_home' %}
+          input_select.nonna_status
+        {% elif trigger.entity_id == 'input_boolean.katia_home' %}
+          input_select.katia_status
+        {% endif %}
+      option: >
+        {% if trigger.entity_id == 'input_boolean.cristina_home' %}
+          {% if states.input_select.cristina_status_dropdown.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% elif trigger.entity_id == 'input_boolean.john_home' %}
+          {% if states.input_select.john_status.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% elif trigger.entity_id == 'input_boolean.joe_home' %}
+          {% if states.input_select.joe_status_dropdown.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% elif trigger.entity_id == 'input_boolean.nonna_home' %}
+          {% if states.input_select.nonna_status.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% elif trigger.entity_id == 'input_boolean.katia_home' %}
+          {% if states.input_select.katia_status.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% endif %}
+  # - service: script.turn_on
+  #   entity_id: script.scan_bt_arrive

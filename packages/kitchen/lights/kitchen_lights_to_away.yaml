@@ -1,0 +1,34 @@
+automation:
+  - id: "kitchen_lights_to_away"
+    initial_state: on
+    alias: "Kitchen lights to away"
+    trigger:
+      - platform: state
+        entity_id: input_select.kitchen
+        to: "Away"
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+    condition:
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.kitchen
+            state: "Away"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_select.kitchen
+                state: "Auto"
+              - condition: state
+                entity_id: input_select.house
+                state: "Away"
+      - condition: state
+        entity_id: light.kitchen_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_lights

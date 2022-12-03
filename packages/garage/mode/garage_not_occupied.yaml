@@ -1,0 +1,35 @@
+automation:
+  - id: "garage_not_occupied"
+    initial_state: on
+    alias: "Garage not occupied"
+    trigger:
+      # If anybody is detected out of the room
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
+      # Garage sensor no longer detects occupancy
+      - platform: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        to: "off"
+      # Garage door is closed
+      - platform: state
+        entity_id: cover.garage_doors
+        to: "closed"
+    condition:
+      - condition: state
+        entity_id: input_boolean.garage_occupied
+        state: "on"
+      # Garage sensor detects occupancy
+      - condition: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        state: "off"
+      # Nobody detected via bluetooth
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.garage_occupied
+      # Waits 3 minutes to enable lighting automations
+      - delay: "00:03:00"
+      # Enable garage lighting automations
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garage_lighting_automations

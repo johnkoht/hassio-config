@@ -1,0 +1,70 @@
+binary_sensor:
+  # Group of leak/water sensors
+  - platform: group
+    name: "Leak Sensors"
+    device_class: "moisture"
+    entities:
+      - binary_sensor.kitchen_sink_leak_sensor
+      - binary_sensor.laundry_room_leak_sensor
+      - binary_sensor.sum_pump_leak_sensor
+      - binary_sensor.upstairs_laundry_leak_sensor
+      - binary_sensor.basement_storage_leak_sensor
+
+  # Binary sensors to track if there is a leak while we're homem or away
+  - platform: template
+    sensors:
+      # Leak while detected while we're away!
+      leak_while_away:
+        friendly_name: "Leak detected while we are away"
+        unique_id: "leak_while_away"
+        value_template: >-
+          {{ is_state('input_boolean.house_occupied','off') and is_state('binary_sensor.leak_sensors','on') }}
+
+      # Leak detected while we're home
+      leak_while_home:
+        friendly_name: "Leak detected while we are home"
+        unique_id: "leak_while_home"
+        value_template: >-
+          {{ is_state('input_boolean.house_occupied','on') and is_state('binary_sensor.leak_sensors','on') }}
+
+# Alerts
+#
+alert:
+  # If there's an alert while we're home, we'll send push
+  # notification as well as announce around the house.
+  water_leak_alert_home:
+    name: Water leak alert while home
+    entity_id: binary_sensor.leak_while_home
+    state: "on"
+    repeat:
+      - 60
+      - 120
+      - 180
+      - 360
+      - 720
+    can_acknowledge: True
+    skip_first: False
+    message: "There is a water leak in the following rooms: {{ expand('binary_sensor.leak_sensors')|selectattr('state', 'eq', 'on')|map(attribute='name')|list|join(', ') }}"
+    done_message: "The water leak has been dealt with"
+    notifiers:
+      - ios_family
+      - tts_announcements_devices
+
+  # If there's a leak while we're away then send us
+  # a push notification.
+  water_leark_alert_away:
+    name: Water leak alert while away
+    entity_id: binary_sensor.flood_while_away
+    state: "on"
+    repeat:
+      - 60
+      - 120
+      - 180
+      - 360
+      - 720
+    can_acknowledge: True
+    skip_first: False
+    message: "There is a water leak in the following rooms: {{ expand('binary_sensor.leak_sensors')|selectattr('state', 'eq', 'on')|map(attribute='name')|list|join(', ') }}"
+    done_message: "The water leak has been dealt with"
+    notifiers:
+      - ios_family

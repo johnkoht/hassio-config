@@ -1,0 +1,45 @@
+automation:
+  - id: "dining_room_mode_off"
+    initial_state: on
+    alias: "Dining Room mode off"
+    trigger:
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # House is turned to Away
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Hassio restart/relaod
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    condition:
+      # Not currently Off
+      - condition: template
+        value_template: "{{ not is_state('input_select.dining_room','Off') }}"
+      - condition: or
+        conditions:
+          # House is not occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # OR House is in Away mode
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+          # Bedtime mode is enabled
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.dining_room
+          option: "Off"

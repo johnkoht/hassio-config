@@ -1,0 +1,4 @@
+- platform: workday
+  country: US
+  name: "Preschool Days"
+  excludes: [mon, fri]

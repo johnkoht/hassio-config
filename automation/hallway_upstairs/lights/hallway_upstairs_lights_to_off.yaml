@@ -1,0 +1,40 @@
+# Turn upstairs hallway lights to off
+#
+id: "hallway_upstairs_lights_to_off"
+initial_state: "off"
+alias: "Hallway upstairs lights to off"
+trigger:
+  # If the house turns to off
+  - platform: state
+    entity_id: input_select.house
+    to: "Off"
+  # If the hallway upstairs changes to Away
+  - platform: state
+    entity_id: input_select.hallway_upstairs
+    to: "Away"
+  # Bedtime is turned on
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "on"
+  # # Hallway motion west no longer detects motion
+  # - platform: state
+  #   entity_id: binary_sensor.upstairs_hallway_west_t2_motion_detection
+  #   to: "off"
+  # Hallway motion east no longer detects motion
+  # - platform: state
+  #   entity_id: binary_sensor.upstairs_hallway_east_t1_motion_detection
+  #   to: "off"
+condition:
+  # Make sure lighting automations are on
+  - condition: state
+    entity_id: input_boolean.lighting_automations
+    state: "on"
+  # Lights are on
+  - condition: state
+    entity_id: light.upstairs_hallway
+    state: "on"
+action:
+  - service: light.turn_off
+    entity_id: light.upstairs_hallway
+    data:
+      transition: 1

@@ -1,0 +1,62 @@
+- platform: bayesian
+  prior: 0.83
+  name: "Cristina Presence"
+  probability_threshold: 0.91
+  observations:
+    # iOS companion app device
+    #
+    - platform: state
+      entity_id: "device_tracker.cfalb_2"
+      prob_given_true: 0.9
+      prob_given_false: 0.025
+      to_state: "home"
+    - platform: state
+      entity_id: "device_tracker.cfalb_2"
+      prob_given_true: 0.03
+      prob_given_false: 0.95
+      to_state: "not_home"
+
+    # # iCloud integration
+    # - entity_id: "device_tracker.cfalb_3"
+    #   prob_given_true: 0.6
+    #   prob_given_false: 0.4
+    #   platform: "state"
+    #   to_state: "home"
+
+    # iPhone Detect Plugin
+    - platform: "state"
+      entity_id: "device_tracker.cristina_iphone_detect"
+      prob_given_true: 0.7
+      prob_given_false: 0.025
+      to_state: "home"
+    - platform: "state"
+      entity_id: "device_tracker.cristina_iphone_detect"
+      prob_given_true: 0.03
+      prob_given_false: 0.95
+      to_state: "not_home"
+
+    # Router device
+    #
+    - platform: "state"
+      entity_id: "device_tracker.cfalb"
+      prob_given_true: 0.5
+      prob_given_false: 0.1
+      to_state: "home"
+    - platform: "state"
+      entity_id: "device_tracker.cfalb"
+      prob_given_true: 0.3
+      prob_given_false: 0.215
+      to_state: "not_home"
+
+    # Nmap device
+    #
+    - platform: "state"
+      entity_id: "device_tracker.cfalb_3"
+      prob_given_true: 0.5
+      prob_given_false: 0.1
+      to_state: "home"
+    - platform: "state"
+      entity_id: "device_tracker.cfalb_3"
+      prob_given_true: 0.3
+      prob_given_false: 0.215
+      to_state: "not_home"

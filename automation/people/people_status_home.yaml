@@ -1,0 +1,40 @@
+id: "people_status_home"
+alias: Mark person as home
+mode: parallel
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id:
+      - input_select.cristina_status_dropdown
+      - input_select.john_status
+      - input_select.joe_status_dropdown
+      - input_select.nonna_status
+      - input_select.katia_status
+    to: "Just Arrived"
+    for:
+      minutes: 5
+  - platform: state
+    entity_id:
+      - input_select.cristina_status_dropdown
+      - input_select.john_status
+      - input_select.joe_status_dropdown
+      - input_select.nonna_status
+      - input_select.katia_status
+    from: "Just Left"
+    to: "Just Arrived"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: >
+        {% if trigger.entity_id == 'input_select.cristina_status_dropdown' %}
+          input_select.cristina_status_dropdown
+        {% elif trigger.entity_id == 'input_select.john_status' %}
+          input_select.john_status
+        {% elif trigger.entity_id == 'input_select.joe_status_dropdown' %}
+          input_select.joe_status_dropdown
+        {% elif trigger.entity_id == 'input_select.nonna_status' %}
+          input_select.nonna_status
+        {% elif trigger.entity_id == 'input_select.katia_status' %}
+          input_select.katia_status
+        {% endif %}
+      option: Home

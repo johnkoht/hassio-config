@@ -1,0 +1,40 @@
+id: "guest_announce_arrival"
+alias: Guest Announce Arrival
+mode: queued
+initial_state: "off"
+trigger:
+  - platform: state
+    entity_id: group.guests
+    to: "home"
+condition:
+  # A guest is home
+  - condition: state
+    entity_id: group.guests
+    state: "home"
+  # We've been home for at least 5 minutes
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+    for:
+      minutes: 5
+action:
+  # Wait 2 mins to make sure nobody was
+  # announced via voice
+  - delay: "00:02"
+
+  # Announcement
+  # - service: script.general_announcement
+  #   data:
+  #     speech_message: "Mamma is back home!"
+  #     media_players: "auto"
+  - service: notify.mobile_app_jk
+    data:
+      # message: "{{trigger.to_state.attributes.friendly_name}} {{trigger.event.data.text}} has arrived!"
+      title: Guest Arrived!
+
+      message: >-
+        {% for entity in trigger.to_state.attributes.entity_id %}
+          {% if states(entity) == 'home' %}
+            {{ state_attr(entity, 'friendly_name') }} has arrived
+          {% endif %}
+        {% endfor %}

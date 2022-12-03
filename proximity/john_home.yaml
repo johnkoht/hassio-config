@@ -1,0 +1,6 @@
+john_home:
+  zone: home
+  devices:
+    - device_tracker.johns_iphone_2
+  unit_of_measurement: km
+  tolerance: 50

@@ -1,0 +1,47 @@
+automation:
+  - id: "kitchen_mode_auto"
+    initial_state: on
+    alias: "Kitchen mode Auto"
+    trigger:
+      # Kitchen is occupied
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "on"
+      # House turn to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Kitchen is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.kitchen','Auto') }}"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # House is in Auto mode
+      - condition: state
+        entity_id: input_select.house
+        state: "Auto"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.kitchen
+          option: "Auto"
+      # # Turn off the dim motion detectors
+      # - service: automation.turn_off
+      #   entity_id:
+      #     - automation.kitchen_lights_dim_motion_on
+      #     - automation.kitchen_lights_dim_motion_off
+      # # Turn on the generic motion detectors
+      # - service: automation.turn_on
+      #   entity_id:
+      #     - automation.kitchen_lights_motion_on

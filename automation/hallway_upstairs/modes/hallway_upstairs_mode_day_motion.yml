@@ -1,0 +1,60 @@
+# Turn the hallway upstairs mode to day motion
+#
+# This is a regular motion triggered light that
+# is activated when it's dark during the day.
+#
+id: "hallway_upstairs_mode_day_motion"
+initial_state: "off"
+alias: "Hallway upstairs mode day motion"
+trigger:
+  # House is turned to Auto mode
+  - platform: state
+    entity_id: input_select.house
+    to: "Auto"
+  # It's dark in the hallway
+  - platform: numeric_state
+    entity_id: sensor.upstairs_hallway_east_t1_illuminance
+    below: 14
+    for: "00:05:00"
+  - platform: numeric_state
+    entity_id: sensor.upstairs_hallway_east_t1_illuminance
+    below: 12
+  - platform: numeric_state
+    entity_id: sensor.upstairs_hallway_east_t1_illuminance
+    above: 8
+    for: "00:10:00"
+  # If the sun is above the horizon
+  - platform: state
+    entity_id: sun.sun
+    to: "above_horizon"
+  # It's after 6am
+  - platform: time
+    at: "06:00:00"
+condition:
+  # Make sure the house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # House is turned to Auto
+  - condition: state
+    entity_id: input_select.house
+    state: "Auto"
+  # Sun is above the horizon
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
+  # Hallway is dark
+  - condition: numeric_state
+    entity_id: sensor.upstairs_hallway_east_t1_illuminance
+    below: 14
+  # Didn't just turn the lights off and we're triggered by the light sensor
+  - condition: template
+    value_template: "{{ ((now() - states.light.upstairs_hallway.last_changed).seconds > 30) and (trigger.entity_id == 'sensor.upstairs_hallway_east_t1_illuminance') }}"
+  # Hallway upstairs isn't already set to motion
+  - condition: template
+    value_template: "{{ not is_state('input_select.hallway_upstairs','Day Motion') }}"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.hallway_upstairs
+      option: "Day Motion"

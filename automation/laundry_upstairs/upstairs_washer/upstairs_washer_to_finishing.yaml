@@ -1,0 +1,16 @@
+id: "upstairs_washer_to_finished"
+alias: "Upstairs washer to finished"
+initial_state: "on"
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.washing_machine_electric_consumption_w
+    below: 3
+condition:
+  - condition: state
+    entity_id: input_select.upstairs_washer_status
+    state: "Running"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.upstairs_washer_status
+      option: "Finishing"

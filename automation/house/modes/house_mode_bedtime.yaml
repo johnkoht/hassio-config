@@ -1,0 +1,18 @@
+id: "house_mode_bedtime"
+alias: "House mode bedtime"
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "on"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.house
+      option: "Bedtime"
+  # Set the doorbell text
+  # This should probably move elsewhere
+  - service: select.select_option
+    data:
+      entity_id: select.front_door_camera_doorbell_text
+      option: DO NOT DISTURB

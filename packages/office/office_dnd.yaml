@@ -1,0 +1,117 @@
+input_boolean:
+  # Boolean to identify if somebody is in the office
+  # and there is some kind of DnD state. This will
+  # trigger the Office Mode DnD to activate/deactivate.
+  office_dnd:
+    name: Office Do Not Disturb
+    icon: mdi:minus-circle
+
+  # If a guest is staying by us and borring my office, I
+  # can use this to activate DnD mode without me.
+  office_guest_mode:
+    name: Office Guest Mode
+    icon: mdi:account-alert
+    initial: false
+
+automation:
+  # Office DnD On
+  #
+  # This automation simply turns on an input_boolean
+  # when my personal DnD is activated and I'm in the office.
+  #
+  - id: "office_dnd_on"
+    alias: "Office DnD On"
+    mode: "single"
+    trigger:
+      # John's DnD is activated
+      - platform: state
+        entity_id: input_boolean.john_dnd
+        to: "on"
+      # Office becomes occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+      # John enters the office
+      - platform: state
+        entity_id: sensor.john_room_presence
+        to: "office"
+      # Office guest mode is enabled
+      - platform: state
+        entity_id: input_boolean.office_guest_mode
+        to: "on"
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      - condition: or
+        conditions:
+          # John is DnD and in the Office
+          - condition: and
+            conditions:
+              # John's DnD is on
+              - condition: state
+                entity_id: input_boolean.john_dnd
+                state: "on"
+              # AND John is in the office
+              - condition: state
+                entity_id: sensor.john_room_presence
+                state: "office"
+          # OR office guest mode is enabled
+          - condition: state
+            entity_id: input_boolean.office_guest_mode
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.office_dnd
+
+  #
+  #
+  # Office DnD Off
+  #
+  # Turn off the Office DnD boolean
+  #
+  - id: "office_dnd_off"
+    alias: "Office DnD Off"
+    mode: "single"
+    trigger:
+      # John's DnD is off
+      - platform: state
+        entity_id: input_boolean.john_dnd
+        to: "off"
+        for:
+          minutes: 2
+      # Office is no longer occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+      # Office guest mode is disabled
+      - platform: state
+        entity_id: input_boolean.office_guest_mode
+        to: "off"
+        for:
+          minutes: 2
+      # John exits the office
+      - platform: state
+        entity_id: sensor.john_room_presence
+        from: "office"
+    condition:
+      - condition: and
+        conditions:
+          # John is not in DnD mode or no longer in the office
+          - condition: or
+            conditions:
+              # John's DnD is off
+              - condition: state
+                entity_id: input_boolean.john_dnd
+                state: "off"
+              # John not in the office anymore
+              - condition: template
+                value_template: "{{ not is_state('sensor.john_room_presence','office') }}"
+          # OR office guest mode is disabled
+          - condition: state
+            entity_id: input_boolean.office_guest_mode
+            state: "off"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_dnd

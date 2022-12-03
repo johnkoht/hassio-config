@@ -1,0 +1,74 @@
+automation:
+  - id: "foyer_mode_dim"
+    initial_state: on
+    alias: "Foyer mode dim"
+    trigger:
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+      # At sunset
+      - platform: sun
+        event: sunset
+      # It's after 9pm
+      - platform: time
+        at: "21:00:00"
+      # It becomes dark outside
+      - platform: state
+        entity_id: input_boolean.dark_outside
+        to: "on"
+      # Bedtime turns off
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+      # House goes from bedtime to auto in the morning
+      - platform: state
+        entity_id: input_select.house
+        from: "Bedtime"
+        to: "Auto"
+    condition:
+      # Lighting automations is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Make sure the house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # House is turned to Auto, Bedtime, or Quiet mode
+      - condition: template
+        value_template: "{{ states('input_select.house') in ('Auto', 'Bedtime', 'Quiet') }}"
+      # It's dark outside
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "on"
+      # - condition: or
+      #   conditions:
+      #     # Sun is going down
+      #     - condition: numeric_state
+      #       entity_id: sensor.sun_elevation
+      #       below: 5
+      #     # Sun is above horizon but it's dark outside
+      #     - condition: and
+      #       conditions:
+      #         # Sun is above the horizon
+      #         - condition: state
+      #           entity_id: sun.sun
+      #           state: "above_horizon"
+      #         # It's dark outside
+      #         - condition: numeric_state
+      #           entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+      #           below: 50
+      # Foyer isn't already set to dim
+      - condition: template
+        value_template: "{{ not is_state('input_select.foyer','Dim') }}"
+    action:
+      # Turn the foyer to dime.
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.foyer
+          option: "Dim"
+      - service: switch.turn_on
+        entity_id:
+          - switch.adaptive_lighting_foyer
+          - switch.adaptive_lighting_sleep_mode_foyer

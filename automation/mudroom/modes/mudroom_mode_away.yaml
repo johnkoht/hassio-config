@@ -1,0 +1,22 @@
+id: "mudroom_mode_away"
+initial_state: "on"
+alias: "Mudroom mode away"
+trigger:
+  # House is not occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+condition:
+  # Mudroom isn't already set to away
+  - condition: template
+    value_template: "{{ not is_state('input_select.mudroom','Away') }}"
+  # House is not occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "off"
+action:
+  # Turn the mudroom to away.
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.mudroom
+      option: "Away"

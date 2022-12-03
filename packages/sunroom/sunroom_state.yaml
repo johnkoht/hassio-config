@@ -1,0 +1,9 @@
+# input_select.sunroom
+#
+# Stores the current state for the Sunroom
+input_select:
+  sunroom:
+    name: Sunroom
+    options:
+      - "Auto"
+      - "Off"

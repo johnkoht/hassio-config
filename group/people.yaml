@@ -1,0 +1,26 @@
+family:
+  entities:
+    - person.john_koht
+    - person.cristina_falbo
+
+router_tracked_devices:
+  name: "Devices tracked by the router"
+  entities:
+    - device_tracker.cfalb
+    - device_tracker.jk
+    - device_tracker.joes_iphone_13
+    - device_tracker.antoun_koht_2
+    - device_tracker.sonia_koht_2
+    - device_tracker.katias_iphone
+
+room_presence_devices:
+  name: "Devices tracked by Room Assistant"
+  entities:
+    - sensor.john_room_presence
+    - sensor.cristina_room_presence
+    - sensor.antoun_room_presence
+    - sensor.sonia_room_presence
+    - sensor.katia_room_presence
+    - sensor.mary_room_presence
+    # - sensor.nino_ipad_room_presence
+    # - sensor.roscoe_room_presence

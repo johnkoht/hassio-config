@@ -1,0 +1,66 @@
+# Office Lights Day On
+#
+# Automatically turn the lights on based at sunset,
+# if it's too dark in the room, or from bad weather.
+#
+automation:
+  - id: "office_lights_day_on"
+    initial_state: on
+    alias: "Office lights Day On"
+    trigger:
+      # If the lighting is low in the office
+      - platform: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 150
+        for:
+          minutes: 3
+      # If the lighting is low in the office
+      - platform: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 125
+        for:
+          minutes: 3
+      # If the lighting is low in the office
+      - platform: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 100
+        for:
+          minutes: 5
+      # The weather is bad outside
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 150
+      # Lights are currently off
+      - condition: state
+        entity_id: group.office_lights
+        state: "off"
+      - condition: or
+        conditions:
+          # Office is Auto
+          - condition: state
+            entity_id: input_select.office
+            state: "Auto"
+          # Office is DnD
+          - condition: state
+            entity_id: input_select.office
+            state: "DnD"
+    action:
+      - service: light.turn_on
+        entity_id: group.office_lights

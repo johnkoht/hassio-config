@@ -1,0 +1,70 @@
+# Playroom Mode Off
+#
+# The Playroom becomes Off when we're not home
+# or it's bedtime.
+#
+automation:
+  - id: "playroom_mode_off"
+    initial_state: on
+    alias: "Playroom mode off"
+    trigger:
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # # Playroom becomes unoccupied
+      # - platform: state
+      #   entity_id: input_boolean.playroom_occupied
+      #   to: "off"
+      # House is turned to Away
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+      # # House is turned to Bedtime
+      # - platform: state
+      #   entity_id: input_select.house
+      #   to: "Bedtime"
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Hassio restart/relaod
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    condition:
+      # Playroom is not already Off
+      - condition: template
+        value_template: "{{ not is_state('input_select.playroom','Off') }}"
+      - condition: or
+        conditions:
+          # House is not occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # OR House is in Away mode
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+          # # OR House is in Bedtime mode
+          # - condition: state
+          #   entity_id: input_select.house
+          #   state: "Bedtime"
+          # Bedtime mode is enabled
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
+          # # Playroom is not occupied
+          # - condition: state
+          #   entity_id: input_boolean.playroom_occupied
+          #   state: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.playroom
+          option: "Off"
+      - service: notify.mobile_app_jk
+        data:
+          title: Playroom
+          message: The Playroom is turned to Off Mode

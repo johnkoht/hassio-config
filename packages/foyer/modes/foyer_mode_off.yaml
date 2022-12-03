@@ -1,0 +1,22 @@
+automation:
+  - id: "foyer_mode_off"
+    initial_state: on
+    alias: "Foyer mode off"
+    trigger:
+      - platform: state
+        entity_id: input_select.house
+        to: "bedtime"
+      # Bedtime is turned on
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+    condition:
+      # Foyer isn't already set to off
+      - condition: template
+        value_template: "{{ not is_state('input_select.foyer','Off') }}"
+    action:
+      # Turn the foyer to off.
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.foyer
+          option: "Off"

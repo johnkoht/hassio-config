@@ -1,0 +1,49 @@
+# Office Lights Sleep Mode On
+#
+# The Office has a few Hue bulbs and uses adaptive
+# lighting, but we need to make sure that sleep mode
+# is on in the evenings after the sun is down
+#
+automation:
+  - id: "office_lights_sleep_mode_on"
+    initial_state: on
+    alias: "Office Lights Sleep Mode On"
+    trigger:
+      # 15 mins after sunset
+      - platform: sun
+        event: sunset
+        offset: "00:15:00"
+      # Or at 8pm
+      - platform: time
+        at: "20:00:00"
+      # It's dark outside
+      - platform: state
+        entity_id: input_boolean.dark_outside
+        to: "on"
+      # Work hours turn off
+      - platform: state
+        entity_id: binary_sensor.work_hours
+        to: "off"
+      # Office state changes from DnD to Auto
+      - platform: state
+        entity_id: input_select.office
+        from: "DnD"
+        to: "Auto"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Sun is down
+      - condition: sun
+        after: sunset
+      # It's dark outside
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "on"
+      # Office is not in DnD mode
+      - condition: template
+        value_template: "{{ not is_state('input_select.office','DnD') }}"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.adaptive_lighting_sleep_mode_office

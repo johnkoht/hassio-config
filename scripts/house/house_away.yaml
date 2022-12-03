@@ -1,0 +1,32 @@
+alias: House Away
+sequence:
+  # Make sure the house is unoccupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "off"
+  # Guest mode is off
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: "off"
+  # Set the house to Away
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.house
+      option: "Away"
+  # Turn off the enterior lights
+  - service: script.turn_off_interior_lights
+    data: {}
+  # Turn off the climate
+  - service: script.climate_away
+    data: {}
+  # Turn off the TVs - handle via all_away_media_off.yaml
+  # - service: script.tvs_off
+  #   data: {}
+  # Close the garage
+  # - service: script.garage_close
+  #   data: {}
+  # Notify John
+  - service: notify.mobile_app_jk
+    data:
+      title: Away Mode
+      message: Nobody is home so away mode has been activated!

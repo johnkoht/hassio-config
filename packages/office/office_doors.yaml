@@ -1,0 +1,7 @@
+binary_sensor:
+  - platform: group
+    name: "Office Doors"
+    device_class: opening
+    entities:
+      - binary_sensor.office_door_left_status
+      - binary_sensor.office_door_right_status

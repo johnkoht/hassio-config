@@ -1,0 +1,57 @@
+# Playroom Occupied
+#
+automation:
+  - id: "playroom_occupied"
+    initial_state: on
+    alias: "Playroom occupied"
+    trigger:
+      # If anybody is detected via Bluetooth
+      # - platform: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length > 0 }}"
+      # # Playroom sensor detects occupancy
+      # - platform: state
+      #   entity_id: binary_sensor.playroom_occupancy
+      #   to: "on"
+      # # Playroom sensor detects motino
+      # - platform: state
+      #   entity_id: binary_sensor.playroom_motion
+      #   to: "on"
+      # Entry motion sensor detects motion
+      - platform: state
+        entity_id: binary_sensor.playroom_entry_motion_sensor_motion
+        to: "on"
+      # Playroom lights are turned on
+      - platform: state
+        entity_id: group.playroom_lights
+        to: "on"
+      # Hassio resloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Playroom is not already occupied
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "off"
+      # Occupancy detetected
+      - condition: or
+        conditions:
+          # ESPresense detects somebody
+          - condition: template
+            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length > 0 }}"
+          # Playroom occpuancy detected
+          - condition: state
+            entity_id: binary_sensor.playroom_occupancy
+            state: "on"
+          # Playroom motion detected
+          - condition: state
+            entity_id: binary_sensor.playroom_motion
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.playroom_occupied

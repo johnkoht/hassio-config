@@ -1,0 +1,41 @@
+# Automation to detect and initiate away for Joe
+#
+# This automation will detect if Joe's away based on
+# a bunch of triggers and conditions and then run a
+# script to handle away actions.
+#
+id: "joe_away"
+alias: "Joe away"
+initial_state: "on"
+trigger:
+  # Is the person.joe_koht changed to not_home
+  - platform: state
+    entity_id: binary_sensor.joe_presence
+    to: "off"
+  - platform: state
+    entity_id: person.joe_falbo
+    to: "not_home"
+  # Handle restarts and reloads of HA
+  - platform: event
+    event_type: automation_reloaded
+  - platform: homeassistant
+    event: start
+condition:
+  # Didn't just leave
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: input_select.joe_status_dropdown
+        state: "Just Left"
+  # Not detected home
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.joe_presence
+        state: "off"
+      - condition: state
+        entity_id: person.joe_falbo
+        state: "not_home"
+action:
+  - service: script.turn_on
+    entity_id: script.joe_away

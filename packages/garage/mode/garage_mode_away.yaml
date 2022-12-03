@@ -1,0 +1,43 @@
+# Garage Mode Away
+#
+# The Garage becomes away when we're not home and
+# the house is not occupied.
+#
+automation:
+  - id: "garage_mode_away"
+    initial_state: on
+    alias: "Garage mode away"
+    trigger:
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # House is turned to Away
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+    condition:
+      # Garage is not already in Away Mode
+      - condition: template
+        value_template: "{{ not is_state('input_select.garage','Away') }}"
+      - condition: or
+        conditions:
+          # House is not occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # House is in Away mode
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.garage
+          option: "Away"
+      # Turn on the garage door automation for empty house
+      - service: automation.turn_on
+        entity_id: automation.garage_doors_close_when_empty_house
+      # Turn off the garage door automation for occupied house
+      - service: automation.turn_off
+        entity_id: automation.garage_doors_close_when_home

@@ -1,0 +1,42 @@
+id: "nino_nap_time_ended"
+alias: "Nino's nap time ended"
+initial_state: "on"
+trigger:
+  # His room is no longer occupied
+  - platform: state
+    entity_id: input_boolean.ninos_room_occupied
+    to: "off"
+condition:
+  # The house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Door is open
+  - condition: state
+    entity_id: binary_sensor.ninos_door_sensor_status
+    state: "on"
+  # Make sure Gianluca's room is not occupied and he's sleeping
+  - condition: state
+    entity_id: input_boolean.gianlucas_room_occupied
+    state: "off"
+  # Quiet mode is currently enabled
+  - condition: state
+    entity_id: input_boolean.quiet_mode
+    state: "on"
+action:
+  # Turn on the quiet mode boolean
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.quiet_mode
+  # # Announcement
+  # - service: script.general_announcement
+  #   data:
+  #     speech_message: >-
+  #       {{
+  #         [
+  #           "Nino's awake. It's time to play!",
+  #           "Guess what? Nino is up!",
+  #           "Pardon the interruption but Nino has woken from his slumber.",
+  #           "Attention! Nino is awake!"
+  #         ] | random
+  #       }}
+  #     media_players: "auto"

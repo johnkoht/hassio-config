@@ -1,0 +1,37 @@
+# Garage Lights Motion Off
+#
+automation:
+  - id: "garage_lights_motion_off"
+    initial_state: on
+    alias: "Garage lights motion off"
+    trigger:
+      # Motion no longer detected
+      - platform: state
+        entity_id: binary_sensor.garage_motion_sensor_motion
+        to: "off"
+        for:
+          minutes: 2
+      # Garage sensor detects occupancy
+      - platform: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        to: "off"
+      # Garage not occupied
+      - platform: state
+        entity_id: input_boolean.garage_occupied
+        to: "off"
+    condition:
+      # Garage is not occupied
+      - condition: state
+        entity_id: input_boolean.garage_occupied
+        state: "off"
+      # Garage sensor detects occupancy
+      - condition: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        state: "off"
+      # Lights are currently on
+      - condition: state
+        entity_id: light.garage_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.garage_lights

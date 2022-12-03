@@ -1,0 +1,13 @@
+device_tracker:
+  - platform: ping
+    count: 2
+    scan_interval: 90
+    hosts:
+      #katia_ping_tracker: 192.168.3.162
+      #katia_backup_ping_tracker: 192.168.3.13
+      katia_ping_tracker: 192.168.3.13
+  - platform: ping
+    count: 2
+    scan_interval: 90
+    hosts:
+      katia_backup_ping_tracker: 192.168.3.13

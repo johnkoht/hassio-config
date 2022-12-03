@@ -1,0 +1,35 @@
+# Wait 8 minutes for us to be in the Finishing state before we
+# decide the washing machine has finished. This way, if the
+# washing machine is in between cycles and the power drops, we
+# won't mark the washing machine cycle as finished too early.
+automation:
+  - id: "main_level_washer_to_clean"
+    alias: "Main Level Washer to Clean"
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: input_select.main_level_washer_status
+        to: "Finishing"
+        for:
+          minutes: 1
+      # - platform: numeric_state
+      #   entity_id: sensor.main_level_washing_machine_electric_consumption_w
+      #   below: 100
+      # - platform: numeric_state
+      #   entity_id: sensor.main_level_washing_machine_electric_consumption_w
+      #   below: 50
+      - platform: numeric_state
+        entity_id: sensor.main_level_washing_machine_electric_consumption_w
+        below: 20
+    condition:
+      - condition: state
+        entity_id: input_select.main_level_washer_status
+        state: "Finishing"
+      - condition: numeric_state
+        entity_id: sensor.main_level_washing_machine_electric_consumption_w
+        below: 50
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_level_washer_status
+          option: "Clean"

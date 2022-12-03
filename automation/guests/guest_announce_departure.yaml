@@ -1,0 +1,52 @@
+id: "guest_announce_departure"
+alias: Guest Announce Departure
+mode: queued
+initial_state: "off"
+trigger:
+  - platform: state
+    entity_id: group.guests
+    to: "not_home"
+condition:
+  # A guest is NOT home
+  - condition: state
+    entity_id: group.guests
+    state: "not_home"
+  # We've been home for at least 5 minutes
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+    for:
+      minutes: 5
+action:
+  # This Group is defined in the groups directory.
+  - service: group.set
+    data:
+      object_id: "arriving"
+      add_entities: >-
+        {{ trigger.to_state.entity_id }}
+
+  # Announcement
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {% set person = expand('group.arriving')|map(attribute='name')|join(' and ') %}
+        {% set peoplecount = expand('group.arriving') | count %}
+        {% if peoplecount == 1 %}
+          {% set is_are = ' is ' %}
+        {% else %}
+          {% set is_are = ' are ' %}
+        {% endif %}
+
+      media_players: "auto"
+
+  - service: notify.mobile_app_jk
+    data:
+      # message: "{{trigger.to_state.attributes.friendly_name}} {{trigger.event.data.text}} has arrived!"
+      title: Guest Arrived!
+
+      message: >-
+        {% for entity in trigger.to_state.attributes.entity_id %}
+          {% if states(entity) == 'not_home' %}
+            {{ state_attr(entity, 'friendly_name') }} has left
+          {% endif %}
+        {% endfor %}

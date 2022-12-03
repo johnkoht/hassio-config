@@ -1,0 +1,16 @@
+# Main Floor Climate Resume
+#
+# If the house becomes occupied or we wake up
+# then resume the main floor temperature
+#
+script:
+  main_floor_climate_to_resume:
+    alias: Main Floor Climate Resume
+    mode: restart
+    sequence:
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.nest_main_floor
+        data:
+          temperature: "{{ states('input_number.temperature_main_floor') }}"
+          hvac_mode: "{{ states('input_text.temperature_mode_main_floor') }}"

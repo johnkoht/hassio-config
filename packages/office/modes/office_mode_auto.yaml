@@ -1,0 +1,48 @@
+# Office Mode Auto
+#
+# Auto mode lets the Office automations do their
+# thing. This will enable the lighting, music,
+# and motion automations.
+#
+automation:
+  - id: "office_mode_auto"
+    initial_state: on
+    alias: "Office Mode Auto"
+    trigger:
+      # Office is occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+      # House turn to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # Office DnD turns off
+      - platform: state
+        entity_id: input_boolean.office_dnd
+        to: "off"
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Office is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.office','Auto') }}"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # Office DnD is not active
+      - condition: state
+        entity_id: input_boolean.office_dnd
+        state: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.office
+          option: "Auto"

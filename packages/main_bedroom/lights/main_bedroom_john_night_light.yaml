@@ -1,0 +1,84 @@
+automation:
+  - id: "main_bedroom_john_night_light"
+    initial_state: on
+    alias: "Main bedroom night light for John"
+    trigger:
+      # Motion is detected
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_motion_sensor_entry_motion
+        to: "on"
+      # The door closes
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_door_sensor_status
+        to: "off"
+      # The door opens
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_door_sensor_status
+        to: "on"
+      # # BLE detected
+      # - platform: state
+      #   entity_id: sensor.john_room_presence
+      #   to: "main_bedroom"
+    condition:
+      # Light automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # John is home
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "on"
+      # Light isn't currently on
+      - condition: state
+        entity_id: light.hue_ambiance_lamp_1
+        state: "off"
+      # Bedroom is in Auto or Bedtime mode
+      - condition: or
+        conditions:
+          # Bedroom is Auto
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Auto"
+          # Bedroom is Bedtime
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Bedtime"
+      # Bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
+        below: 40
+      # Lights are currently off
+      - condition: state
+        entity_id: light.main_bedroom_main_lights
+        state: "off"
+      # Cristina is in bed
+      - condition: state
+        entity_id: input_boolean.cristina_in_bed
+        state: "on"
+      # John is NOT in bed
+      - condition: state
+        entity_id: input_boolean.john_is_in_bed
+        state: "off"
+      # Not in bed
+      - condition: state
+        entity_id: binary_sensor.john_sleeping
+        state: "off"
+      # It's bedtime hours
+      - condition: state
+        entity_id: binary_sensor.bedtime
+        state: "on"
+      - condition: time
+        after: "22:00:00"
+        before: "01:00:00"
+    action:
+      - service: light.turn_on
+        entity_id:
+          - light.hue_ambiance_lamp_1
+          - light.main_bathroom_main_lights
+        data:
+          brightness_pct: 30
+          transition: 0.5

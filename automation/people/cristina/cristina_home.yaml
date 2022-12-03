@@ -1,0 +1,36 @@
+# Automation to detect and initiate home for Cristina
+#
+# This automation will detect if Cristina's home based on
+# a bunch of triggers and conditions and then run a
+# script to handle home actions.
+#
+id: "cristina_home"
+initial_state: "on"
+alias: "Cristina Home"
+trigger:
+  # Detected her devices as home
+  - platform: state
+    entity_id: binary_sensor.cristina_presence
+    to: "on"
+  # She entered the home zone
+  - platform: zone
+    entity_id: person.cristina_falbo
+    zone: zone.home
+    event: enter
+  # Hassio resloads/starts
+  - platform: event
+    event_type: automation_reloaded
+  - platform: homeassistant
+    event: start
+condition:
+  # Not currently home
+  - condition: state
+    entity_id: input_boolean.cristina_home
+    state: "off"
+  # She's seen at home
+  - condition: state
+    entity_id: binary_sensor.cristina_presence
+    state: "on"
+action:
+  - service: script.turn_on
+    entity_id: script.cristina_home

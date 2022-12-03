@@ -1,0 +1,37 @@
+id: "cristina_arrived_work"
+alias: "Cristina arrived at work"
+initial_state: "on"
+trigger:
+  # Entered the work zone
+  - platform: zone
+    entity_id: person.cristina_falbo
+    zone: zone.cristina_s_work
+    event: enter
+  # She's less than .5km
+  - platform: numeric_state
+    entity_id: proximity.cristina_work
+    below: .5
+condition:
+  # Cristina is not home
+  - condition: state
+    entity_id: input_boolean.cristina_home
+    state: "off"
+  # It's a work day
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: "on"
+  # Before 10am
+  - condition: time
+    before: "10:00:00"
+  # She's at work
+  - condition: state
+    entity_id: person.cristina_falbo
+    state: "Cristina's Work"
+action:
+  - service: script.cristina_arrived_work
+    data:
+      who: cfalb
+  - service: notify.mobile_app_jk
+    data:
+      message: Cristina arrived at work
+      title: Cristina arrived at work!

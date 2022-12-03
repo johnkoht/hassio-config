@@ -1,0 +1,10 @@
+input_select:
+  john_status:
+    name: John
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+      - Extended Away
+    initial: Home

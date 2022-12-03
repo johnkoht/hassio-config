@@ -1,0 +1,41 @@
+# Laundry Room Lights Off
+#
+# Automatically turn the lights off based on various
+# triggers like the Laundry Room is off/not occupied
+#
+automation:
+  - id: "laundry_room_lights_off"
+    initial_state: on
+    alias: "Laundry Room lights off"
+    trigger:
+      # Laundry Room is Off
+      - platform: state
+        entity_id: input_select.laundry_room
+        to: "Off"
+      # Laundry Room is not occupied
+      - platform: state
+        entity_id: input_boolean.laundry_room_occupied
+        to: "off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lights are currently on
+      - condition: state
+        entity_id: light.laundry_room_main_lights
+        state: "on"
+      # Laundry Room is Off, not occupied, or the room is bright enough
+      - condition: or
+        conditions:
+          # Laundry Room is Off
+          - condition: state
+            entity_id: input_select.laundry_room
+            state: "Off"
+          # Laundry Room is not occupied
+          - condition: state
+            entity_id: input_boolean.laundry_room_occupied
+            state: "off"
+    action:
+      - service: light.turn_off
+        entity_id: light.laundry_room_main_lights

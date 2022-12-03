@@ -1,0 +1,37 @@
+id: "gianluca_heater_on"
+alias: "Gianluca heater on"
+initial_state: "on"
+trigger:
+  # Gianluca's room is occupied (e.g. door is closed)
+  - platform: state
+    entity_id: input_boolean.gianlucas_room_occupied
+    to: "on"
+  # Gianluca's lights are turned off
+  - platform: state
+    entity_id: group.gianlucas_room_lights
+    to: "off"
+  # # Temperature is below 71 degrees
+  # - platform: numeric_state
+  #   entity_id: sensor.gianluca_room_temperature
+  #   below: 71
+  - platform: template
+    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 71.9 }}"
+condition:
+  # The house is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  # Room is occupied
+  - condition: state
+    entity_id: input_boolean.gianlucas_room_occupied
+    state: "on"
+  # # It's below 75 degrees
+  # - condition: numeric_state
+  #   entity_id: sensor.gianluca_room_temperature
+  #   below: 74
+  - condition: template
+    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 72.0 }}"
+action:
+  # Switch the power plug on
+  - service: light.turn_on
+    entity_id: light.hue_smart_plug_1

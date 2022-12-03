@@ -1,0 +1,13 @@
+# Main Bedroom Presence
+#
+# List of people currently in the room
+sensor:
+  - platform: template
+    sensors:
+      main_bedroom_presence:
+        friendly_name: "Main Bedroom Presence"
+        unique_id: "main_bedroom_presence"
+        value_template: >-
+          {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}
+        # value_template: >-
+        #   {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'main_bedroom')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

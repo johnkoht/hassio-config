@@ -1,0 +1,4 @@
+input_boolean:
+  kitchen_occupied:
+    name: Kitchen
+    icon: mdi:fridge

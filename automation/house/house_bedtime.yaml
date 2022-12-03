@@ -1,0 +1,41 @@
+id: "bedtime"
+initial_state: "on"
+alias: "Bedtime"
+trigger:
+  - platform: state
+    entity_id:
+      - input_boolean.john_is_in_bed
+      - input_boolean.cristina_in_bed
+    to: "on"
+condition:
+  # Home is occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+  - condition: and
+    conditions:
+      # John is in bed OR out of town
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.john_is_in_bed
+            state: "on"
+          # If I'm out of town then the house should
+          # skip my bed detection
+          - condition: state
+            entity_id: input_select.john_status
+            state: "Extended Away"
+      # Cristina is in bed OR out of town
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.cristina_in_bed
+            state: "on"
+          # If Cristina's out of town then the house should
+          # skip my bed detection
+          - condition: state
+            entity_id: input_select.cristina_status_dropdown
+            state: "Extended Away"
+action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.bedtime

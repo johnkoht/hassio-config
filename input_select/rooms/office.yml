@@ -1,0 +1,7 @@
+name: Office
+options:
+  - "Auto"
+  # - "Away"
+  # - "Motion"
+  - "On"
+  - "Off"

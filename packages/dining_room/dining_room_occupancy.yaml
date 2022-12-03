@@ -1,0 +1,4 @@
+input_boolean:
+  dining_room_occupied:
+    name: Dining Room Occupied
+    icon: mdi:table-chair

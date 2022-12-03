@@ -1,0 +1,69 @@
+automation:
+  - id: "kitchen_mode_dim"
+    initial_state: on
+    alias: "Kitchen Mode Dim"
+    trigger:
+      # Evening chill time
+      - platform: state
+        entity_id: binary_sensor.evening_chill
+        to: "on"
+      # Family room TV is turned on
+      - platform: state
+        entity_id: media_player.sony_bravia_tv
+        to: "playing"
+      # Family room lights go off
+      - platform: state
+        entity_id: light.family_room_main_lights
+        to: "off"
+      # Kitchen is no longer occupied
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Kitchen lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.kitchen_lighting_automations
+        state: "on"
+      # Guest mode is not enabled
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      # Sun is below the horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "below_horizon"
+      # Chill time hours
+      - condition: state
+        entity_id: binary_sensor.evening_chill
+        state: "on"
+      # Kitchen is not already Dim
+      - condition: template
+        value_template: "{{ not is_state('input_select.kitchen','Dim') }}"
+      # Kitchen is not occupied
+      - condition: state
+        entity_id: input_boolean.kitchen_occupied
+        state: "off"
+      # Family room TV is turned on
+      - condition: state
+        entity_id: media_player.sony_bravia_tv
+        state: "playing"
+      # Family room lights are off
+      - condition: state
+        entity_id: light.family_room_main_lights
+        state: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.kitchen
+          option: "Dim"
+      # # Turn on the dim motion automations
+      # - service: automation.turn_on
+      #   entity_id: automation.kitchen_lights_dim_motion_on
+      # # Turn off the generic motion sensors
+      # - service: automation.turn_off
+      #   entity_id:
+      #     - automation.kitchen_lights_motion_on

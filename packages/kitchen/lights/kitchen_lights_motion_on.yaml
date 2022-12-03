@@ -1,0 +1,79 @@
+# Kitchen Lights to Motion On
+automation:
+  - id: "kitchen_lights_motion_on"
+    initial_state: on
+    alias: "Kitchen Lights Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion_sensor_status
+        to: "on"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the bedroom are enabled
+      - condition: state
+        entity_id: input_boolean.kitchen_lighting_automations
+        state: "on"
+      # Kitchen is Auto or Dim
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.kitchen
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.kitchen
+            state: "Dim"
+      # Lights are currently off
+      # - condition: state
+      #   entity_id: light.kitchen_lights
+      #   state: "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: light.kitchen_main_light_switch
+            state: "off"
+          - condition: state
+            entity_id: light.kitchen_table_light_switch
+            state: "off"
+      # Light is low
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.kitchen_motion_sensor_main_illuminance
+            below: 150
+          - condition: numeric_state
+            entity_id: sensor.kitchen_motion_sensor_table_illuminance
+            below: 150
+    action:
+      # - service: light.turn_on
+      #   entity_id: light.kitchen_lights
+
+      - choose:
+          # Kitchen is in Auto mode
+          - conditions:
+              - condition: state
+                entity_id: input_select.kitchen
+                state: "Auto"
+            sequence:
+              - service: light.turn_on
+                entity_id: light.kitchen_lights
+          # Kitchen is in Dim mode
+          - conditions:
+              - condition: state
+                entity_id: input_select.kitchen
+                state: "Dim"
+            sequence:
+              - service: light.turn_on
+                entity_id: light.kitchen_lights
+                data:
+                  brightness_pct: 35
+                  transition: 1
+      #
+      # - service: automation.turn_on
+      #   entity_id: automation.kitchen_lights_motion_off
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kitchen_lights_auto

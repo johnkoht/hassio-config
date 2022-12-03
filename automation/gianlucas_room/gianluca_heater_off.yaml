@@ -1,0 +1,42 @@
+id: "gianluca_heater_off"
+alias: "Gianluca heater off"
+initial_state: "on"
+trigger:
+  # Gianluca's door changes
+  - platform: state
+    entity_id: binary_sensor.gianlucas_door_sensor_status
+    to: "on"
+    for:
+      minutes: 1
+  # # Temperature is above 73.5
+  - platform: template
+    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 73.5 }}"
+  # If the house is not occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+  # Room is no longer occupied
+  - platform: state
+    entity_id: input_boolean.gianlucas_room_occupied
+    to: "off"
+condition:
+  - condition: or
+    conditions:
+      - condition: template
+        value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 73.1 }}"
+      # OR house is not occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+      # OR the room is not occupied
+      - condition: state
+        entity_id: input_boolean.gianlucas_room_occupied
+        state: "off"
+  # Plug is currently on
+  - condition: state
+    entity_id: light.hue_smart_plug_1
+    state: "on"
+action:
+  # Switch the power plug of
+  - service: light.turn_off
+    entity_id: light.hue_smart_plug_1

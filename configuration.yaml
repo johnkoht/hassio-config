@@ -1,0 +1,72 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+homeassistant:
+  # packages: !include_dir_named include #theme
+  packages: !include_dir_named packages/
+  allowlist_external_dirs:
+    - "/tmp"
+
+# Text to speech
+tts:
+  - platform: google_translate
+    base_url: !secret base_url
+    service_name: google_say
+
+#group: !include groups.yaml
+group: !include_dir_merge_named group
+automation: !include automations.yaml
+automation mine: !include_dir_list automation/
+script: !include scripts.yaml
+script mine: !include_dir_named scripts/
+scene: !include scenes.yaml
+scene mine: !include_dir_list scenes/
+notify: !include notify.yaml
+# input_select: !include input_select.yaml
+stream:
+proximity: !include_dir_merge_named proximity/
+binary_sensor: !include_dir_merge_list binary_sensors/
+
+input_number: !include_dir_named input_number/
+input_boolean: !include_dir_named input_boolean/
+input_select: !include_dir_named input_select/
+# input_datetime: !include_dir_named input_datetime/
+# input_text: !include_dir_named input_text/
+# timer: !include_dir_named timers/
+sensor: !include_dir_merge_list sensors/
+switch: !include_dir_merge_list switch/
+
+# alert: !include_dir_named alerts/
+
+# device_tracker:
+#   - platform: bluetooth_tracker
+
+device_tracker:
+  # - platform: unifi_direct
+  #   host: 192.168.1.143
+  #   username: 9Qbvn
+  #   password: fe8prndlk6uiNNJVicL1
+
+  - platform: iphonedetect
+    consider_home: 180
+    new_device_defaults:
+      track_new_devices: true
+    hosts:
+      cristina_iphone_detect: !secret cristina_iphone_detect
+      john_iphone_detect: !secret john_iphone_detect
+      katia_iphone_detect: !secret katia_iphone_detect
+      joe_iphone_detect: !secret joe_iphone_detect
+      mary_iphone_detect: !secret mary_iphone_detect
+      antoun_iphone_detect: !secret antoun_iphone_detect
+      sonia_iphone_detect: !secret sonia_iphone_detect
+
+frontend:
+  extra_module_url:
+    - /hacsfiles/hass-hue-icons/hass-hue-icons.js
+
+zone:
+  - name: Home
+    latitude: !secret home_latitude
+    longitude: !secret home_longitude
+    radius: !secret home_radius
+    icon: mdi:home

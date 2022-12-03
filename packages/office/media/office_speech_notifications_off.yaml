@@ -1,0 +1,31 @@
+# Office Speech Notifications Off
+#
+# When the Office is not occupied or in DnD
+# mode, there is no reason for speech notifications
+#
+automation:
+  - id: "office_speech_notifications_off"
+    initial_state: on
+    alias: "Office Speech Notifications Off"
+    trigger:
+      # Office becomes occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+      # Office goes to DnD mode
+      - platform: state
+        entity_id: input_select.office
+        to: "DnD"
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office is in DnD mode
+      - condition: state
+        entity_id: input_select.office
+        state: "DnD"
+    action:
+      # Turn on the speech notifications boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_speech_notifications

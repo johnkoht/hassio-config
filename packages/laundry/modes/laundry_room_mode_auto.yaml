@@ -1,0 +1,38 @@
+automation:
+  - id: "laundry_room_mode_auto"
+    initial_state: on
+    alias: "Laundry Room mode Auto"
+    trigger:
+      # Laundry Room is occupied
+      - platform: state
+        entity_id: input_boolean.laundry_room_occupied
+        to: "on"
+      # House turn to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Laundry Room is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.laundry_room','Auto') }}"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # House is in Auto mode
+      - condition: state
+        entity_id: input_select.house
+        state: "Auto"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.laundry_room
+          option: "Auto"

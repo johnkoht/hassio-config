@@ -1,0 +1,31 @@
+# Office Lights Sleep Mode Off
+#
+# The Office has a few Hue bulbs and uses adaptive
+# lighting, but we need to make sure that sleep mode
+# is off in the morning and during the day
+#
+automation:
+  - id: "office_lights_sleep_mode_off"
+    initial_state: on
+    alias: "Office Lights Sleep Mode Off"
+    trigger:
+      # 15 mins after sunrise
+      - platform: sun
+        event: sunrise
+      # Or at 8am
+      - platform: time
+        at: "08:00:00"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Sun is up
+      - condition: sun
+        after: sunrise
+      # After 8am
+      - condition: time
+        after: "08:00:00"
+    action:
+      - service: switch.turn_off
+        entity_id: switch.adaptive_lighting_sleep_mode_office

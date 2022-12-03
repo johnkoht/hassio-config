@@ -1,0 +1,36 @@
+id: "house_mode_auto"
+alias: "House mode auto"
+initial_state: "on"
+trigger:
+  # House becomes occupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "on"
+  # Bedtime mode turned off
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "off"
+  # Quiet mode turned off
+  - platform: state
+    entity_id: input_boolean.quiet_mode
+    to: "off"
+condition:
+  # House is current occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.house
+      option: "Auto"
+  # - service: script.general_announcement
+  #   data:
+  #     speech_message: "The house has been changed to Auto mode."
+  #     media_players: "auto"
+  # Set the doorbell text
+  # This should probably move elsewhere
+  - service: select.select_option
+    data:
+      entity_id: select.front_door_camera_doorbell_text
+      option: WELCOME!

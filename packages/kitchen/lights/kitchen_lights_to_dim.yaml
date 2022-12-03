@@ -1,0 +1,34 @@
+# Kitchen Lights to Dim
+#
+automation:
+  - id: "kitchen_lights_to_dim"
+    initial_state: off
+    alias: "Kitchen lights to Dim"
+    trigger:
+      # Kitchen is turned to Dim
+      - platform: state
+        entity_id: input_select.kitchen
+        to: "Dim"
+      # The house is turned to Dim
+      - platform: state
+        entity_id: input_select.house
+        to: "Dim"
+    condition:
+      # Lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Kitchen is On
+      - condition: state
+        entity_id: input_select.kitchen
+        state: "Dim"
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_lights
+        data:
+          brightness_pct: 5
+          transition: 0.5

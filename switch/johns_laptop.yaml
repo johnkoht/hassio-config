@@ -1,0 +1,3 @@
+- platform: wake_on_lan
+  name: John's Laptop
+  mac: a0:78:17:79:35:d0

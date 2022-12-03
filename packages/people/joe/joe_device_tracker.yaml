@@ -1,0 +1,4 @@
+device_tracker:
+  - platform: ping
+    hosts:
+      joe_ping_tracker: 192.168.3.52

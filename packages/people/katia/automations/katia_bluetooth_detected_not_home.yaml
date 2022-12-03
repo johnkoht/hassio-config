@@ -1,0 +1,25 @@
+automation:
+  - id: "katie_bluetooth_detected_not_home"
+    alias: Katia Bluetooth Detected Not Home
+    mode: queued
+    initial_state: off
+    trigger:
+      # If ESPresense detects her in a room
+      - platform: template
+        value_template: "{{ states.sensor.katia_room_presence.state == 'not_home'}}"
+        for:
+          minutes: 10
+    condition:
+      # Detected in a room by BLE
+      - condition: template
+        value_template: "{{ states.sensor.katia_room_presence.state == 'not_home'}}"
+      # Katia's person object is not home
+      - condition: state
+        entity_id: person.katia
+        state: "home"
+    action:
+      # Mark Katia as not_home
+      - service: device_tracker.see
+        data:
+          dev_id: katias_iphone
+          location_name: not_home

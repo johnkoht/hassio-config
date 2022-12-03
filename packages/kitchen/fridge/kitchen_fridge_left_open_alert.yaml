@@ -1,0 +1,73 @@
+# Alerts
+#
+# alert:
+#   # If there's an alert while we're home, we'll send push
+#   # notification as well as announce around the house.
+#   kitchen_fridge_open_alert:
+#     name: Kitchen fridge door open alert
+#     entity_id: binary_sensor.kitchen_fridge_door_status
+#     state: "on"
+#     repeat: 1
+#     can_acknowledge: true
+#     skip_first: false
+#     message: "The Kitchen Fridge has been open too long!"
+#     # done_message: "The k"
+#     notifiers:
+#       #- ios_family
+#       - mobile_app_jk
+#       - tts_announcements_devices
+
+automation:
+  - id: "kitchen_fridge_door_left_open"
+    initial_state: on
+    alias: "Kitchen Fridge Door Left Open"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.kitchen_fridge_door_status
+        to: "on"
+        for:
+          minutes: 2
+    condition:
+      - condition: state
+        entity_id: binary_sensor.kitchen_fridge_door_status
+        state: "on"
+    action:
+      - alias: "Repeat until the fridge door is closed"
+        repeat:
+          sequence:
+            # Announcement
+            - service: script.general_announcement
+              data:
+                speech_message: "Fridge is open"
+                media_players: "auto"
+            # Delay 1 minute
+            - delay: "00:01:00"
+
+          until:
+            - condition: state
+              entity_id: binary_sensor.kitchen_fridge_door_status
+              state: "off"
+# automation:
+#   - trigger:
+#       - platform: state
+#         entity_id: binary_sensor.xyz
+#         to: "on"
+#     condition:
+#       - condition: state
+#         entity_id: binary_sensor.something
+#         state: "off"
+#     mode: single
+#     action:
+#       - alias: "Repeat the sequence UNTIL the conditions are true"
+#         repeat:
+#           sequence:
+#             # Run command that for some reason doesn't always work
+#             - service: shell_command.turn_something_on
+#             # Give it time to complete
+#             - delay:
+#                 milliseconds: 200
+#           until:
+#             # Did it work?
+#             - condition: state
+#               entity_id: binary_sensor.something
+#               state: "on"

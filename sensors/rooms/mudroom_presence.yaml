@@ -1,0 +1,7 @@
+- platform: template
+  sensors:
+    mudroom_presence:
+      friendly_name: "Mudroom Presence"
+      unique_id: "mudroom_presence"
+      value_template: >-
+        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'mudroom')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

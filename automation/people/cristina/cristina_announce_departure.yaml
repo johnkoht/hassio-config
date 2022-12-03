@@ -1,0 +1,31 @@
+id: "cristina_announce_departure"
+alias: Cristina Announce Departure
+mode: parallel
+initial_state: "on"
+trigger:
+  - platform: state
+    entity_id: input_boolean.cristina_home
+    to: "off"
+condition:
+  # Somebody has been home for 5 minutes
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "on"
+    for:
+      minutes: 5
+action:
+  # Announcement
+  - service: script.general_announcement
+    data:
+      speech_message: >-
+        {{
+          [
+            "Arrivederci! Mamma has left the house.",
+            "Ciao Mamma! See you later.",
+            "Mamma just left...but she misses you dearly!",
+            "Mamma just left, but don't worry, she'll be back soon.",
+            "Pardon the interruption but Mamma has left the house.",
+            "Attention! Mamma left the house."
+          ] | random
+        }}
+      media_players: "auto"

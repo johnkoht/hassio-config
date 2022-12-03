@@ -1,0 +1,46 @@
+# Playroom Lights to Off"
+#
+automation:
+  - id: "playroom_lights_to_off"
+    initial_state: on
+    alias: "Playroom Lights to Off"
+    trigger:
+      # Playroom turns to Off Mode
+      - platform: state
+        entity_id: input_select.playroom
+        to: "Off"
+      # Playroom is not occupied
+      - platform: state
+        entity_id: input_boolean.playroom_occupied
+        to: "off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lighting automations enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Playroom lighting automations enabled
+      - condition: state
+        entity_id: input_boolean.playroom_lighting_automations
+        state: "on"
+      # Playroom is Off or the playroom is no longer occupied
+      - condition: or
+        conditions:
+          # Playroom is turned to Off mode
+          - condition: state
+            entity_id: input_select.playroom
+            state: "Off"
+          # Playroom is no longer occupied
+          - condition: state
+            entity_id: input_boolean.playroom_occupied
+            state: "off"
+      # Lights are currently on
+      - condition: state
+        entity_id: light.playroom_lights
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.playroom_lights

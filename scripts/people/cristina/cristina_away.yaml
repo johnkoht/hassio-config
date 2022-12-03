@@ -1,0 +1,17 @@
+# Script to handle Cristinas away functions
+#
+alias: Cristina Away
+sequence:
+  # Mark Cristina's boolean for home presence off
+  # This will trigger other automations like people_status_left
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.cristina_home
+  # - service: mqtt.publish
+  #   data:
+  #     topic: location/john_koht
+  #     payload: 'not_home'
+  #     retain: true
+  # - service: script.general_announcement
+  #   data:
+  #     speech_message: "Mamma just left the house."
+  

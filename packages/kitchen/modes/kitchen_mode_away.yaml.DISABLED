@@ -1,0 +1,39 @@
+# Kitchen Mode Away
+#
+automation:
+  - id: "kitchen_mode_away"
+    initial_state: on
+    alias: "Kitchen mode away"
+    trigger:
+      # Kitchen is not occupied
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+      # Is not occupied for 10 minutes
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+        for:
+          minutes: 10
+      # House is not occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # House is turned to away mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+    condition:
+      # Make sure the house is not occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+      # House is in Away mode
+      - condition: state
+        entity_id: input_select.house
+        state: "Away"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.kitchen
+          option: "Away"

@@ -1,0 +1,36 @@
+# Office Lights Motion On
+#
+# Turn the lights on whenever motion is
+# detected and it's dull in the Office
+#
+automation:
+  - id: "office_lights_motion_on"
+    initial_state: on
+    alias: "Office lights Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.office_aqara_motion_sensor
+        to: "on"
+    condition:
+      # Office is Auto
+      - condition: state
+        entity_id: input_select.office
+        state: "Auto"
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.office_aqara_illuminance
+        below: 150
+      # Lights are currently off
+      - condition: state
+        entity_id: group.office_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: group.office_lights
+      - service: automation.turn_on
+        entity_id: automation.office_lights_motion_off

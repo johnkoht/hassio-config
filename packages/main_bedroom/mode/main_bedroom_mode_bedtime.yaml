@@ -1,0 +1,67 @@
+# Main Bedroom Mode Bedtime
+#
+automation:
+  - id: "main_bedroom_mode_bedtime"
+    initial_state: on
+    alias: "Main Bedroom mode bedtime"
+    trigger:
+      # # Bedtime is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Main bedroom becomes occupied for 5 minutes
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "on"
+        for:
+          minutes: 5
+      # Main bedroom door is closed for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_door_sensor_status
+        to: "off"
+        for:
+          minutes: 2
+      # Bedtime hours active
+      - platform: state
+        entity_id: binary_sensor.bedtime
+        to: "on"
+      # If we're in bed
+      - platform: state
+        entity_id:
+          - input_boolean.john_is_in_bed
+          - input_boolean.cristina_in_bed
+        to: "on"
+    condition:
+      # Main bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "on"
+      # Bedroom is not already Bedtime
+      - condition: template
+        value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
+      # Bedtime is enabled or somebody is in bed
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
+          - condition: state
+            entity_id: input_boolean.john_is_in_bed
+            state: "on"
+          - condition: state
+            entity_id: input_boolean.cristina_in_bed
+            state: "on"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_bedroom
+          option: "Bedtime"
+      # Turn on some bedtime automations
+      - service: automation.turn_on
+        entity_id:
+          - automation.main_bedroom_john_night_light_off
+          - automation.main_bedroom_night_light_for_john
+      - service: notify.mobile_app_jk
+        data:
+          title: Main Bedroom
+          message: The main bedroom turned to Bedtime mode

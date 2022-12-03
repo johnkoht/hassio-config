@@ -1,0 +1,4 @@
+title: Home
+views:
+  - strategy:
+      type: original-states

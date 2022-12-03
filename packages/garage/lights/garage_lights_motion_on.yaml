@@ -1,0 +1,38 @@
+# Garage Lights Motion On
+#
+automation:
+  - id: "garage_lights_motion_on"
+    initial_state: on
+    alias: "Garage lights Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.garage_motion_sensor_motion
+        to: "on"
+    condition:
+      # Garage is Auto
+      - condition: state
+        entity_id: input_select.garage
+        state: "Auto"
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the bedroom are enabled
+      - condition: state
+        entity_id: input_boolean.garage_lighting_automations
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.garage_motion_sensor_illuminance
+        below: 100
+      # Lights are currently off
+      - condition: state
+        entity_id: light.garage_lights
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.garage_lights
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garage_lights_auto

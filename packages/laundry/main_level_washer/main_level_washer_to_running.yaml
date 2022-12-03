@@ -1,0 +1,25 @@
+automation:
+  - id: "main_level_washer_to_running"
+    alias: "Main Level Washer to Running"
+    initial_state: on
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.main_level_washing_machine_electric_consumption_w
+        above: 10
+    condition:
+      condition: or
+      conditions:
+        - condition: state
+          entity_id: input_select.main_level_washer_status
+          state: "Idle"
+        - condition: state
+          entity_id: input_select.main_level_washer_status
+          state: "Clean"
+        - condition: state
+          entity_id: input_select.main_level_washer_status
+          state: "Finishing"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.main_level_washer_status
+          option: "Running"
