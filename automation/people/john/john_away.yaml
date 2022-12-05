@@ -20,6 +20,10 @@ trigger:
   - platform: state
     entity_id: binary_sensor.john_presence
     to: "off"
+  # John Person sensor detected not home
+  - platform: state
+    entity_id: person.john_koht
+    to: "not_home"
   # Handle restarts and reloads of HA
   - platform: event
     event_type: automation_reloaded
