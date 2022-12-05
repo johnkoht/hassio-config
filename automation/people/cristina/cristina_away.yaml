@@ -10,6 +10,10 @@ trigger:
     entity_id: person.cristina_falbo
     zone: zone.home
     event: leave
+  # Cristina's person sensor is not home
+  - platform: state
+    entity_id: person.cristina_falbo
+    to: "not_home"
   # She's detected away
   - platform: state
     entity_id: binary_sensor.cristina_presence
