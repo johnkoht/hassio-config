@@ -60,12 +60,12 @@ automation:
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
       # Switch is OFF
       - condition: state
-        entity_id: switch.lumi_lumi_plug_maus01_switch
+        entity_id: switch.smart_plug_6_switch
         state: "off"
     action:
       # Switch the power plug on
       - service: switch.turn_on
-        entity_id: switch.lumi_lumi_plug_maus01_switch
+        entity_id: switch.smart_plug_6_switch
       # Turn off the automation
       - service: automation.turn_off
         entity_id: automation.nino_s_bathroom_heater_on
@@ -93,11 +93,11 @@ automation:
         to: "off"
       # If the plug is on for more than 20 minutes
       - platform: state
-        entity_id: switch.lumi_lumi_plug_maus01_switch
+        entity_id: switch.smart_plug_6_switch
         to: "on"
         for:
           minutes: 20
     action:
       # Switch the power plug OFF
       - service: switch.turn_off
-        entity_id: switch.lumi_lumi_plug_maus01_switch
+        entity_id: switch.smart_plug_6_switch
