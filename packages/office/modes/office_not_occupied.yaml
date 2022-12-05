@@ -19,12 +19,12 @@ automation:
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length == 0 }}"
         for:
           minutes: 2
-      # # Motion not detected for 3 minutes
-      # - platform: state
-      #   entity_id: binary_sensor.office_aqara_motion_sensor
-      #   to: "off"
-      #   for:
-      #     minutes: 3
+      # Motion not detected for 3 minutes
+      - platform: state
+        entity_id: binary_sensor.office_aqara_motion_sensor
+        to: "off"
+        for:
+          minutes: 3
       # Office sensor no longer detects occupancy
       - platform: state
         entity_id: binary_sensor.office_aqara_occupancy
