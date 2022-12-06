@@ -1,0 +1,73 @@
+automation:
+  # Nino's bedroom heater on
+  #
+  - id: "nino_bedroom_heater_on"
+    alias: "Nino bedroom heater on"
+    initial_state: on
+    trigger:
+      # Nino's room is occupied (e.g. door is closed)
+      - platform: state
+        entity_id: input_boolean.ninos_room_occupied
+        to: "on"
+        for:
+          minutes: 3
+      - platform: template
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.9 }}"
+    condition:
+      # The house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Room is occupied
+      - condition: state
+        entity_id: input_boolean.ninos_room_occupied
+        state: "on"
+      - condition: template
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 72.0 }}"
+    action:
+      # Switch the power plug on
+      - service: switch.turn_on
+        entity_id: switch.tradfri_smart_plug_5_switch
+
+  - id: "nino_bedroom_heater_off"
+    alias: "Nino bedroom heater off"
+    initial_state: on
+    trigger:
+      # Nino's door is open for 3 minutes
+      - platform: state
+        entity_id: binary_sensor.ninos_door_sensor_status
+        to: "on"
+        for:
+          minutes: 3
+      # # Temperature is above 73.5
+      - platform: template
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 73.5 }}"
+      # If the house is not occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # Room is no longer occupied
+      - platform: state
+        entity_id: input_boolean.ninos_room_occupied
+        to: "off"
+    condition:
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 73.1 }}"
+          # OR house is not occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # OR the room is not occupied
+          - condition: state
+            entity_id: input_boolean.ninos_room_occupied
+            state: "off"
+      # Plug is currently on
+      - condition: state
+        entity_id: switch.tradfri_smart_plug_5_switch
+        state: "on"
+    action:
+      # Switch the power plug of
+      - service: switch.turn_off
+        entity_id: switch.tradfri_smart_plug_5_switch
