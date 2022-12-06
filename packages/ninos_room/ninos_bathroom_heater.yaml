@@ -16,10 +16,22 @@ automation:
       - platform: state
         entity_id: input_boolean.bedtime
         to: "on"
+      # Just after midnight
+      - platform: time
+        at: "00:01:00"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
     condition:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nino's room is occupied
+      - condition: state
+        entity_id: input_boolean.ninos_room_occupied
         state: "on"
       # It's after 6pm
       - condition: time
@@ -41,7 +53,7 @@ automation:
     trigger:
       # It's morning time
       - platform: time
-        at: "06:15:00"
+        at: "06:20:00"
       # Nino's door is opened
       - platform: state
         entity_id: binary_sensor.ninos_door_sensor_status
@@ -96,7 +108,12 @@ automation:
         entity_id: switch.smart_plug_6_switch
         to: "on"
         for:
-          minutes: 20
+          minutes: 25
+    condition:
+      # Switch is ON
+      - condition: state
+        entity_id: switch.smart_plug_6_switch
+        state: "on"
     action:
       # Switch the power plug OFF
       - service: switch.turn_off
