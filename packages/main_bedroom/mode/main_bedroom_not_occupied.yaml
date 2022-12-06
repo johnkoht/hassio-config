@@ -45,9 +45,9 @@ automation:
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length == 0 }}"
       # Anybody detected via BLE
-      # - condition: state
-      #   entity_id: binary_sensor.main_bedroom_ble_occupancy
-      #   state: "off"
+      - condition: state
+        entity_id: binary_sensor.main_bedroom_ble_occupancy
+        state: "off"
       # Main bathroom is not occupied
       - condition: state
         entity_id: input_boolean.main_bathroom_occupied

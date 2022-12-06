@@ -9,5 +9,6 @@ binary_sensor:
       main_bedroom_ble_occupancy:
         friendly_name: "Main Bedroom BLE occupancy"
         unique_id: "main_bedroom_ble_occupancy"
+        device_class: occupancy
         value_template: >-
-          "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length > 0 }}"
+          {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length > 0 }}
