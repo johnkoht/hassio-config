@@ -39,18 +39,40 @@ automation:
       # Bedroom is not already Bedtime
       - condition: template
         value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
-      # Bedtime is enabled or somebody is in bed
+      # Bedtime is enabled
+      # OR somebody is in bed
+      # OR lights are off door is closed and somebody detected via BLE
       - condition: or
         conditions:
+          # Bedtime mode is active
           - condition: state
             entity_id: input_boolean.bedtime
             state: "on"
+          # John's in bed
           - condition: state
             entity_id: input_boolean.john_is_in_bed
             state: "on"
+          # Cristina's in bed
           - condition: state
             entity_id: input_boolean.cristina_in_bed
             state: "on"
+          # lights are off
+          # AND door is closed
+          # AND somebody detected via BLE
+          - condition: and
+            conditions:
+              # Lights are OFF
+              - condition: state
+                entity_id: light.main_bedroom_main_lights
+                state: "off"
+              # Door is closed
+              - condition: state
+                entity_id: binary_sensor.main_bedroom_door_sensor_status
+                state: "off"
+              # Somebody detected via BLE
+              - condition: state
+                entity_id: binary_sensor.main_bedroom_ble_occupancy
+                state: "on"
     action:
       - service: input_select.select_option
         data:
