@@ -8,7 +8,7 @@ automation:
         entity_id: binary_sensor.laundry_room_motion_sensor_motion
         to: "off"
         for:
-          minutes: 2
+          minutes: 1
       # Laundry Room sensor no longer detects occupancy
       - platform: state
         entity_id: binary_sensor.laundry_room_motion_sensor_occupancy
