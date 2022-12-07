@@ -5,6 +5,8 @@ switch:
     entities:
       - switch.christmas_trees
       - switch.christmas_playroom_lights
+      # Front yard lights
+      - switch.smart_plug_5_switch
 
   - platform: group
     name: "Christmas Trees"

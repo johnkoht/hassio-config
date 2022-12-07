@@ -26,10 +26,14 @@ automation:
       - platform: state
         entity_id: input_boolean.christmas_active
         to: "off"
-    # condition:
-    #   - condition: state
-    #     entity_id: switch.main_tree
-    #     state: "on"
+      # Some of the Ikea smart plugs don't like to respond
+      # So this is just a backup way of ensuring they
+      # turn off
+      - platform: state
+        entity_id: input_boolean.christmas_active
+        to: "off"
+        for:
+          minutes: 3
     action:
       - service: switch.turn_off
         entity_id: switch.christmas_lights
