@@ -5,10 +5,10 @@ trigger:
   # People nearly home
   - platform: numeric_state
     entity_id: proximity.cristina_home
-    below: 1
+    below: .4
   - platform: numeric_state
     entity_id: proximity.john_home
-    below: 1
+    below: .4
   # People just got home
   - platform: state
     entity_id:
