@@ -1,0 +1,24 @@
+# john_s_echo_dot_do_not_disturb_switch
+automation:
+  - id: "office_echo_dnd_off"
+    initial_state: on
+    alias: "Office Echo DnD Off"
+    trigger:
+      # Office turns to Auto mode
+      - platform: state
+        entity_id: input_select.office
+        to: "Auto"
+        for:
+          minutes: 5
+      # Office is no longer occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+    condition:
+      # Echo DnD is on
+      - condition: state
+        entity_id: switch.john_s_echo_dot_do_not_disturb_switch
+        state: "on"
+    action:
+      - service: switch.turn_off
+        entity_id: switch.john_s_echo_dot_do_not_disturb_switch
