@@ -1,0 +1,30 @@
+# john_s_echo_dot_do_not_disturb_switch
+automation:
+  - id: "office_echo_dnd_on"
+    initial_state: on
+    alias: "Office Echo DnD On"
+    trigger:
+      # Office is in DnD Mode
+      - platform: state
+        entity_id: input_select.office
+        to: "DnD"
+      # Office becomes occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+    condition:
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office is in DnD mode
+      - condition: state
+        entity_id: input_select.office
+        state: "DnD"
+      # Computer is ON
+      - condition: state
+        entity_id: binary_sensor.johns_macbook_pro_active
+        state: "on"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.john_s_echo_dot_do_not_disturb_switch
