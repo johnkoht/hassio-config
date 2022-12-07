@@ -46,11 +46,18 @@ automation:
             state: "open"
             for:
               minutes: 30
+          - condition: state
+            entity_id: cover.garage_door_3
+            state: "open"
+            for:
+              minutes: 30
       # Garage is not occupied
       - condition: state
         entity_id: input_boolean.garage_occupied
         state: "off"
-
+      # No BLE devices detected
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
     action:
       # Close the garage doors
       - service: cover.close_cover
