@@ -7,6 +7,7 @@ trigger:
     entity_id:
       - cover.garage_door_1
       - cover.garage_door_2
+      - cover.garage_door_3
     to: "open"
     for:
       minutes: 30
@@ -28,6 +29,9 @@ condition:
         state: "open"
       - condition: state
         entity_id: cover.garage_door_2
+        state: "open"
+      - condition: state
+        entity_id: cover.garage_door_3
         state: "open"
   # The house is unoccupied
   - condition: state
