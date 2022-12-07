@@ -256,8 +256,12 @@ script:
           media_content_id: "{{sound_file}}"
           media_content_type: music
 
-      - alias: "Wait 1s"
-        delay: 00:00:01
+      # - alias: "Wait 1s"
+      #   delay: 00:00:01
+
+      # - alias: "Wait until the media player is paused"
+      #   wait_template: "{{ is_state(primary_player, 'playing') }}"
+      #   timeout: "00:00:01"
 
       # - alias: "Wait until the sound has started on the first player"
       #   wait_template: >-
