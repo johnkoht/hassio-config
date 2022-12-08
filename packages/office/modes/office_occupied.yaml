@@ -30,6 +30,10 @@ automation:
       - platform: state
         entity_id: group.office_lights
         to: "on"
+      # Office guest mode on
+      - platform: state
+        entity_id: input_boolean.office_guest_mode
+        to: "on"
       # Hassio resloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -44,27 +48,35 @@ automation:
       - condition: state
         entity_id: input_boolean.office_occupied
         state: "off"
-      # Either Bluetooth detects people or occupancy detected
-      - condition: or
-        conditions:
-          # BLE detects somebody
-          - condition: template
-            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length > 0 }}"
-          # OR Aqara Occupancy
-          - condition: state
-            entity_id: binary_sensor.office_aqara_occupancy
-            state: "on"
-          # OR bayesian sensor AND motion
-          - condition: and
-            conditions:
-              # Office presence Bayesian sensor is on
-              - condition: state
-                entity_id: binary_sensor.office_presence
-                state: "on"
-              # AND motion is detected
-              - condition: state
-                entity_id: binary_sensor.office_aqara_motion_sensor
-                state: "on"
+      # Motion is detected
+      - condition: state
+        entity_id: binary_sensor.office_aqara_motion_sensor
+        state: "on"
+      # Office preseence bayesian ON
+      - condition: state
+        entity_id: binary_sensor.office_presence
+        state: "on"
+      # # Either Bluetooth detects people or occupancy detected
+      # - condition: or
+      #   conditions:
+      #     # BLE detects somebody
+      #     - condition: template
+      #       value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length > 0 }}"
+      #     # Office presence Bayesian sensor is on
+      #     # - condition: state
+      #     #   entity_id: binary_sensor.office_presence
+      #     #   state: "on"
+      #     # OR bayesian sensor AND motion
+      #     - condition: and
+      #       conditions:
+      #         # Office presence Bayesian sensor is on
+      #         - condition: state
+      #           entity_id: binary_sensor.office_presence
+      #           state: "on"
+      #         # AND motion is detected
+      #         - condition: state
+      #           entity_id: binary_sensor.office_aqara_motion_sensor
+      #           state: "on"
       # # Bluetooth detects somebody or Aqara does
       # - condition: or
       #   conditions:
