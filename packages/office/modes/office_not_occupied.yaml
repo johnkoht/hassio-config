@@ -47,6 +47,10 @@ automation:
       - condition: state
         entity_id: binary_sensor.office_presence
         state: "off"
+      # Office Guest Mode is OFF
+      - condition: state
+        entity_id: input_boolean.office_guest_mode
+        state: "off"
       # # Either Bluetooth doesn't detect anybody or
       # # Aqara occupancy is off
       # - condition: or
