@@ -11,6 +11,7 @@ automation:
       # Motion detected
       - platform: state
         entity_id: binary_sensor.playroom_motion
+        # entity_id: binary_sensor.playroom_entry_motion_sensor_motion
         to: "on"
     condition:
       # Playroom is Auto
@@ -25,9 +26,33 @@ automation:
       - condition: state
         entity_id: input_boolean.playroom_lighting_automations
         state: "on"
+      # The playroom has two motion sensors, one directly across from the
+      # entry and the other above the entry. The far motion sensor sometimes
+      # gets triggered when somebody walks by the playroom, so it's not the
+      # most reliable way of identifying if the playroom is really occupied
+      # and that the lights should turn on. If the far motion sensor detects
+      # motion, we'll check to ensure that the playroom is already occupied.
+      - condition: or
+        conditions:
+          # Entry motion sensor senses motion and can trigger the lights
+          - condition: state
+            entity_id: binary_sensor.playroom_entry_motion_sensor_motion
+            state: "on"
+          # OR the far motion sensor turns on
+          # AND the room has been occupied for a bit
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.playroom_motion_sensor_motion
+                state: "on"
+              # - condition: state
+              #   entity_id: input_boolean.playroom_occupied
+              # Playroom has been occupied for more than 90 seconds
+              - condition: template
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.playroom_occupied.last_updated)) | int > 90 }}"
       # Light is low
       - condition: numeric_state
-        entity_id: 
+        entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
         below: 40
