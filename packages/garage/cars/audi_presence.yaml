@@ -1,0 +1,26 @@
+sensor:
+  - platform: mqtt_room
+    device_id: !secret audi_device_id
+    name: "Audi Presence"
+    state_topic: !secret audi_state_topic
+    timeout: 60
+    away_timeout: 120
+
+  - platform: template
+    sensors:
+      audi_location:
+        friendly_name: Audi Location
+        unique_id: audi_location
+        value_template: >-
+          {% set state = states.sensor.audi_presence.state %}
+
+          {% if state == "not_home" %}
+            Not Home
+          {% else %}
+            {% set dist = states.sensor.audi_presence.attributes.distance %}
+            {% if dist > 5 %}
+              Driveway
+            {% else %}
+              Garage
+            {% endif %}
+          {% endif %}
