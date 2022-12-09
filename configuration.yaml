@@ -38,17 +38,11 @@ switch: !include_dir_merge_list switch/
 
 # alert: !include_dir_named alerts/
 
-# device_tracker:
-#   - platform: bluetooth_tracker
-
 device_tracker:
-  # - platform: unifi_direct
-  #   host: 192.168.1.143
-  #   username: 9Qbvn
-  #   password: fe8prndlk6uiNNJVicL1
-
   - platform: iphonedetect
-    consider_home: 180
+    # consider_home: 180
+    consider_home: 60
+    scan_interval: 12
     new_device_defaults:
       track_new_devices: true
     hosts:
