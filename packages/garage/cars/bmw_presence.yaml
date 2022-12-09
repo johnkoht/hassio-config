@@ -1,0 +1,26 @@
+sensor:
+  - platform: mqtt_room
+    device_id: !secret bmw_device_id
+    name: "BMW Presence"
+    state_topic: !secret bmw_state_topic
+    timeout: 60
+    away_timeout: 120
+
+  - platform: template
+    sensors:
+      bmw_location:
+        friendly_name: BMW Location
+        unique_id: bmw_location
+        value_template: >-
+          {% set state = states.sensor.bmw_presence.state %}
+
+          {% if state == "not_home" %}
+            Not Home
+          {% else %}
+            {% set dist = states.sensor.bmw_presence.attributes.distance %}
+            {% if dist > 5 %}
+              Driveway
+            {% else %}
+              Garage
+            {% endif %}
+          {% endif %}
