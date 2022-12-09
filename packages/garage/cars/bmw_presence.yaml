@@ -18,7 +18,7 @@ sensor:
             Not Home
           {% else %}
             {% set dist = states.sensor.bmw_presence.attributes.distance %}
-            {% if dist > 5 %}
+            {% if dist > 8 %}
               Driveway
             {% else %}
               Garage
