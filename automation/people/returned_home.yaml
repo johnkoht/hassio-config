@@ -5,10 +5,10 @@ trigger:
   # People nearly home
   - platform: numeric_state
     entity_id: proximity.cristina_home
-    below: .4
+    below: 1
   - platform: numeric_state
     entity_id: proximity.john_home
-    below: .4
+    below: 1
   # People just got home
   - platform: state
     entity_id:
@@ -36,14 +36,35 @@ condition:
             - condition: or
               conditions:
                 - condition: template
-                  value_template: "{{ ( (states('proximity.cristina_home')|int) < 1 ) and is_state_attr('proximity.cristina_home', 'dir_of_travel', 'towards') and (not is_state('input_select.cristina_status_dropdown','Home') ) }}"
+                  value_template: >-
+                    {{ 
+                      ( (states('proximity.cristina_home')|int) < 1 ) 
+                      and is_state_attr('proximity.cristina_home', 'dir_of_travel', 'towards') 
+                      and (
+                        not is_state('input_select.cristina_status_dropdown','Home')
+                      )
+                    }}
                 - condition: template
-                  value_template: "{{ ( (states('proximity.john_home')|int) < 1 ) and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards') and (not is_state('input_select.john_status','Home') ) }}"
+                  # value_template: "{{ ( (states('proximity.john_home')|int) < 1 ) and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards') and (not is_state('input_select.john_status','Home') ) }}"
+                  value_template: >-
+                    {{ 
+                      ( (states('proximity.john_home')|int) < 1 )
+                      and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards') 
+                      and (
+                        not is_state('input_select.john_status','Home')
+                      )
+                    }}
         # Cristina is nearly home, but not home yet
         - condition: and
           conditions:
             - condition: template
-              value_template: "{{ ( trigger.entity_id == 'proximity.cristina_home' ) and ( (trigger.from_state.state|int) > 1 ) and ( (trigger.to_state.state|int) < 1 ) and is_state_attr('proximity.cristina_home', 'dir_of_travel', 'towards') }}"
+              value_template: >-
+                {{ 
+                  ( trigger.entity_id == 'proximity.cristina_home' ) 
+                  and ( (trigger.from_state.state|int) > 1 ) 
+                  and ( (trigger.to_state.state|int) < 1 ) 
+                  and is_state_attr('proximity.cristina_home', 'dir_of_travel', 'towards')
+                }}
             - condition: state
               entity_id: input_select.cristina_status_dropdown
               state: Away
@@ -51,7 +72,15 @@ condition:
         - condition: and
           conditions:
             - condition: template
-              value_template: "{{ ( trigger.entity_id == 'proximity.john_home' ) and ( (trigger.from_state.state|int) > 1 ) and ( (trigger.to_state.state|int) < 1 ) and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards') }}"
+              # value_template: "{{ ( trigger.entity_id == 'proximity.john_home' ) and ( (trigger.from_state.state|int) > 1 ) and ( (trigger.to_state.state|int) < 1 ) and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards') }}"
+              value_template: >-
+                {{
+                  ( 
+                    trigger.entity_id == 'proximity.john_home' ) 
+                    and ( (trigger.from_state.state|int) > 1 ) 
+                    and ( (trigger.to_state.state|int) < 1 ) 
+                    and is_state_attr('proximity.john_home', 'dir_of_travel', 'towards')
+                }}
             - condition: state
               entity_id: input_select.john_status
               state: Away
