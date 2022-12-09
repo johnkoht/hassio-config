@@ -53,7 +53,7 @@ automation:
     trigger:
       # It's morning time
       - platform: time
-        at: "06:20:00"
+        at: "06:00:00"
       # Nino's door is opened
       - platform: state
         entity_id: binary_sensor.ninos_door_sensor_status
@@ -67,6 +67,9 @@ automation:
       - condition: state
         entity_id: input_boolean.ninos_room_occupied
         state: "on"
+      # It's after 5:30 am
+      - condition: time
+        after: "05:30:00"
       # It's below 71 degrees
       - condition: template
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
@@ -90,25 +93,25 @@ automation:
     alias: "Nino's Bathroom Heater Off"
     initial_state: on
     trigger:
-      # Bathroom temperature over 75
+      # Bathroom temperature over 73.5
       - platform: template
-        value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) > 75.0 }}"
+        value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) > 73.5 }}"
       # Nino's room is no longer occupied
       - platform: state
         entity_id: input_boolean.ninos_room_occupied
         to: "off"
         for:
-          minutes: 5
+          minutes: 10
       # If the house is not occupied
       - platform: state
         entity_id: input_boolean.house_occupied
         to: "off"
-      # If the plug is on for more than 20 minutes
+      # If the plug is on for more than 45 minutes
       - platform: state
         entity_id: switch.smart_plug_6_switch
         to: "on"
         for:
-          minutes: 25
+          minutes: 45
     condition:
       # Switch is ON
       - condition: state
