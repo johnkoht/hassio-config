@@ -3,14 +3,27 @@ automation:
     initial_state: on
     alias: "Today is a full moon"
     trigger:
-      # Check every day 10 mins after sunset
-      - platform: sun
-        event: sunset
-        # offset: "00:10:00"
-      # Or if today is a full moon
       - platform: state
         entity_id: sensor.moon
         to: "full_moon"
+    action:
+      # - service: input_boolean.turn_on
+      #   entity_id: input_boolean.full_moon
+      - service: automation.turn_on
+        entity_id: automation.full_moon_notification
+
+  - id: "full_moon_notification"
+    initial_state: on
+    alias: "Full Moon Notification"
+    trigger:
+      # 10 mins after sunset
+      - platform: sun
+        event: sunset
+        offset: "00:10:00"
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
     condition:
       # House is occupied
       - condition: state
@@ -26,9 +39,8 @@ automation:
         state: "below_horizon"
     action:
       # Wait for motion in the playroom
-      # - wait_template: "{{ is_state('binary_sensor.kitchen_motion_sensor_main_motion_detection', 'on') }}"
-      - wait_template: "{{ is_state('binary_sensor.playroom_motion', 'on') }}"
-        # timeout: "00:03:00"
+      - wait_template: "{{ is_state('binary_sensor.playroom_motion_sensor_entry_motion_detection', 'on') }}"
+        timeout: "01:00:00"
 
       - alias: "Wait 3 seconds"
         delay: 3
