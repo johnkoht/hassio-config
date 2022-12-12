@@ -57,6 +57,7 @@ device_tracker:
 frontend:
   extra_module_url:
     - /hacsfiles/hass-hue-icons/hass-hue-icons.js
+  themes: !include_dir_merge_named themes
 
 zone:
   - name: Home
