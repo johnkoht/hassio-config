@@ -90,3 +90,23 @@
       ignore_availability: true
       name: "Gusto: LaunchPad Lab LLC reminders"
       track: true
+
+- cal_id: 94e5bdc779f049315e65dc6e3795736027abebb19b1a6986ff3bf96ebf77d775@group.calendar.google.com
+  entities:
+    - device_id: ninos_school
+      ignore_availability: true
+      name: Nino's School
+    # School day specific calendar
+    - device_id: ninos_school_day
+      ignore_availability: true
+      name: Nino School day
+      track: true
+      search: "Nino School Day"
+      offset: "!!"
+    # School reminders
+    - device_id: nino_school_reminder
+      ignore_availability: true
+      name: Nino School Reminder
+      track: true
+      search: "Reminder"
+      offset: "!!"

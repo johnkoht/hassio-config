@@ -19,6 +19,7 @@ automation:
   #
   - id: "nino_school_day_automations_on"
     alias: "Nino School Day Automations On"
+    initial_state: off
     mode: "single"
     trigger:
       # School day sensor turns on
@@ -47,6 +48,7 @@ automation:
   - id: "nino_school_day_automations_off"
     alias: "Nino School Day Automations Off"
     mode: "single"
+    initial_state: off
     trigger:
       # School day sensor turns OFF
       - platform: state
@@ -74,17 +76,24 @@ automation:
   - id: "nino_school_day_reminder"
     alias: "Nino School Day Reminder"
     mode: "single"
-    initial_state: off
+    initial_state: on
     trigger:
-      # At 7:45am
-      - platform: time
-        at: "07:45:00"
+      # # At 7:45am
+      # - platform: time
+      #   at: "07:45:00"
+      # 1 hour and 15 mins before start
+      - platform: calendar
+        event: start
+        entity_id: calendar.ninos_school_day
+        offset: -01:15:00
     condition:
+      # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Nino school day boolean is ON
       - condition: state
-        entity_id: binary_sensor.nino_school_days
+        entity_id: input_boolean.nino_school_day
         state: "on"
     action:
       # Call the announcement engine
@@ -107,17 +116,23 @@ automation:
   - id: "nino_school_departure_reminder"
     alias: "Nino School Departure Reminder"
     mode: "single"
-    initial_state: off
+    initial_state: on
     trigger:
-      # At 8:45am
-      - platform: time
-        at: "08:35:00"
+      # # At 8:45am
+      # - platform: time
+      #   at: "08:35:00"
+      # 20 mins before start
+      - platform: calendar
+        event: start
+        entity_id: calendar.ninos_school_day
+        offset: -00:20:00
     condition:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Nino school day boolean is ON
       - condition: state
-        entity_id: binary_sensor.nino_school_days
+        entity_id: input_boolean.nino_school_day
         state: "on"
     action:
       # Call the announcement engine
@@ -140,14 +155,23 @@ automation:
   - id: "nino_school_pickup_reminder"
     alias: "Nino School Pickup Reminder"
     mode: "single"
-    initial_state: off
+    initial_state: on
     trigger:
-      # At 12:55pm
-      - platform: time
-        at: "12:55:00"
+      # # At 12:55pm
+      # - platform: time
+      #   at: "12:55:00"
+      # 20 mins before end
+      - platform: calendar
+        event: end
+        entity_id: calendar.ninos_school_day
+        offset: -00:20:00
     condition:
+      # - condition: state
+      #   entity_id: binary_sensor.nino_school_days
+      #   state: "on"
+      # Nino school day boolean is ON
       - condition: state
-        entity_id: binary_sensor.nino_school_days
+        entity_id: input_boolean.nino_school_day
         state: "on"
     action:
       # Call the announcement engine

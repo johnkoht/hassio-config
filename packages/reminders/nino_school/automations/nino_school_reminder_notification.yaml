@@ -1,0 +1,27 @@
+automation:
+  - id: "nino_school_reminder_notification"
+    alias: "Nino School Reminder Notification"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # When reminder is triggered
+      - platform: calendar
+        event: end
+        entity_id: calendar.nino_school_reminder
+    condition:
+      # Nino school day boolean is ON
+      - condition: state
+        entity_id: input_boolean.nino_school_day
+        state: "on"
+    action:
+      # Call the announcement engine
+      - service: script.general_announcement
+        data:
+          speech_message: "{{states.calendar.nino_school_reminder.attributes.message}}"
+          media_players: "auto"
+          sound: "one-chime"
+      # Notify the family via push
+      - service: notify.mobile_app_jk
+        data:
+          message: "{{states.calendar.nino_school_reminder.attributes.message}}"
+          title: "Nino School Reminder"
