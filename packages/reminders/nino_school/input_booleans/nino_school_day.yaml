@@ -1,0 +1,4 @@
+input_boolean:
+  nino_school_day:
+    name: Nino School Day
+    icon: mdi:school-outline

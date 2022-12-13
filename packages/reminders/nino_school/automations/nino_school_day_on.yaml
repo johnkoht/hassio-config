@@ -1,0 +1,27 @@
+automation:
+  - id: "nino_school_day_on"
+    alias: "Nino School Day On"
+    mode: "single"
+    trigger:
+      # First thing in the morning
+      - platform: time
+        at: "00:00:01"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Binary sensor is ON
+      - condition: state
+        entity_id: binary_sensor.nino_is_today_school_day
+        state: "on"
+    action:
+      # Turn on the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.nino_school_day
+      # Notify via push
+      - service: notify.mobile_app_jk
+        data:
+          message: "Today's a school school and the boolean has been activated"
+          title: "Nino's School"
