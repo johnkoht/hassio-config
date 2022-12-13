@@ -1,0 +1,48 @@
+# Playroom Media Player Unjoin
+#
+# If the Playroom is no longer occupied or the music stopped
+# and the player is joined in a group then unojoin the group
+#
+automation:
+  - id: "playroom_media_player_unjoin"
+    initial_state: on
+    alias: "Playroom Media Player Unjoin"
+    trigger:
+      # Playroom is no longer occupied
+      - platform: state
+        entity_id: input_boolean.playroom_occupied
+        to: "off"
+      # Playroom is in Off Mode
+      - platform: state
+        entity_id: input_select.playroom
+        to: "Off"
+      # The playroom player pauses for 10 mins
+      - platform: state
+        entity_id: media_player.sonos_playroom
+        to: "paused"
+        for:
+          minutes: 10
+      # The playroom player pauses for 30 mins
+      - platform: state
+        entity_id: media_player.sonos_playroom
+        to: "paused"
+        for:
+          minutes: 30
+    condition:
+      # Playroom is NOT OCCUPIED
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "off"
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length == 0 }}"
+      # Music is paused
+      - condition: state
+        entity_id: media_player.sonos_playroom
+        state: "paused"
+      # The media player is part of a group
+      - condition: template
+        value_template: "{{ states.media_player.sonos_playroom.attributes.group_members | count > 1 }}"
+    action:
+      # Unjoin if it's joined
+      - service: media_player.unjoin
+        entity_id: media_player.sonos_playroom
