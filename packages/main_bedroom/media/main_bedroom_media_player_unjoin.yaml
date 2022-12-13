@@ -1,0 +1,50 @@
+# Main Bedroom Media Player Unjoin
+#
+# If the Main Bedroom is no longer occupied or the music stopped
+# and the player is joined in a group then unojoin the group
+#
+automation:
+  - id: "main_bedroom_media_player_unjoin"
+    initial_state: on
+    alias: "Main Bedroom Media Player Unjoin"
+    trigger:
+      # Main Bedroom is no longer occupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "off"
+      # Main Bedroom is in Off Mode
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Off"
+      # The Main Bedroom player pauses for 10 mins
+      - platform: state
+        entity_id: media_player.sonos_main_bedroom
+        to: "paused"
+        for:
+          minutes: 10
+      # The Main Bedroom player pauses for 30 mins
+      - platform: state
+        entity_id: media_player.sonos_main_bedroom
+        to: "paused"
+        for:
+          minutes: 30
+    condition:
+      # Main Bedroom is NOT OCCUPIED
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "off"
+      # Nobody detected via BLE
+      - condition: state
+        entity_id: binary_sensor.main_bedroom_ble_occupancy
+        state: "off"
+      # Music is paused
+      - condition: state
+        entity_id: media_player.sonos_main_bedroom
+        state: "paused"
+      # The media player is part of a group
+      - condition: template
+        value_template: "{{ states.media_player.sonos_main_bedroom.attributes.group_members | count > 1 }}"
+    action:
+      # Unjoin if it's joined
+      - service: media_player.unjoin
+        entity_id: media_player.sonos_main_bedroom
