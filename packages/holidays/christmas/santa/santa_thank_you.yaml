@@ -1,0 +1,22 @@
+script:
+  santa_thank_you:
+    alias: Santa Thank You
+    mode: "queued"
+    sequence:
+      # Somebody is home
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Speech notifications is enabled
+      - condition: state
+        entity_id: input_boolean.speech_notifications
+        state: "on"
+
+      # Play an announcement ping
+      - service: media_player.play_media
+        data:
+          entity_id:
+            - media_player.sonos_playroom
+            - media_player.sonos_family_and_kitchen
+          media_content_id: https://github.com/johnkoht/hass-config/blob/master/config/sounds/santa/santa-thank-you.mp3?raw=true
+          media_content_type: music
