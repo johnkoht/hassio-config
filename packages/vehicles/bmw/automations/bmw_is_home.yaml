@@ -1,0 +1,26 @@
+automation:
+  - id: "bmw_is_home"
+    initial_state: on
+    alias: "BMW is Home"
+    trigger:
+      - platform: state
+        entity_id: sensor.bmw_presence
+        from: "not_home"
+      - platform: state
+        entity_id: sensor.bmw_presence
+        to: "garage"
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: sensor.bmw_presence
+            state: "garage"
+          - condition: template
+            value_template: "{{ states.sensor.bmw_presence.state != 'not_home'}}"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.bmw_home

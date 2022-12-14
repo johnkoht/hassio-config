@@ -1,0 +1,22 @@
+automation:
+  - id: "bmw_is_away"
+    alias: "BMW is Away"
+    initial_state: on
+    trigger:
+      # BLE detected not_home
+      - platform: state
+        entity_id: sensor.bmw_presence
+        to: "not_home"
+      # Handle restarts and reloads of HA
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Not detected home
+      - condition: state
+        entity_id: sensor.bmw_presence
+        state: "not_home"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.bmw_home
