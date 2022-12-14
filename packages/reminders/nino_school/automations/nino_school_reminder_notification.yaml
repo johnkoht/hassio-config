@@ -6,7 +6,7 @@ automation:
     trigger:
       # When reminder is triggered
       - platform: calendar
-        event: end
+        event: start
         entity_id: calendar.nino_school_reminder
     condition:
       # Nino school day boolean is ON
