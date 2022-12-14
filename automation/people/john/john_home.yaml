@@ -14,7 +14,7 @@ trigger:
     to: "on"
   # Entered zone home via mobile app
   - platform: zone
-    entity_id: person.cristina_falbo
+    entity_id: person.john_koht
     zone: zone.home
     event: enter
   # HA reload or start
@@ -23,10 +23,20 @@ trigger:
   - platform: homeassistant
     event: start
 condition:
-  # Make sure the bayesian sensor is marked as home
-  - condition: state
-    entity_id: binary_sensor.john_presence
-    state: "on"
+  - condition: or
+    conditions:
+      # Make sure the bayesian sensor is marked as home
+      - condition: state
+        entity_id: binary_sensor.john_presence
+        state: "on"
+      # Person state is home
+      - condition: state
+        entity_id: person.john_koht
+        state: "home"
+      # My iOS device is detected home
+      - condition: zone
+        entity_id: device_tracker.johns_iphone_2
+        zone: zone.home
   # Not currently home
   - condition: state
     entity_id: input_boolean.john_home
