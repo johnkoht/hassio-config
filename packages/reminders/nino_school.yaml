@@ -188,8 +188,9 @@ automation:
             }}
           media_players: "auto"
           sound: "one-chime"
+
       # Notify the family via push
       - service: notify.ios_family
         data:
-          message: "School will be over soon, it's time to pick up Nino from school."
-          title: "Almost time to pickup Nino from school"
+          message: School will be over soon, it's time to pick up Nino from school.
+          title: Nino's school is ending soon
