@@ -14,25 +14,25 @@ trigger:
   # Thunderstorming
   - platform: numeric_state
     entity_id: sensor.openweathermap_weather_code
-    above: "199"
-    below: "233"
+    above: 199
+    below: 233
   # Drizzling
   - platform: numeric_state
     entity_id: sensor.openweathermap_weather_code
-    above: "299"
-    below: "322"
+    above: 299
+    below: 322
   # Raining
   - platform: numeric_state
     entity_id: sensor.openweathermap_weather_code
-    above: "499"
-    below: "532"
+    above: 499
+    below: 532
   # Very cloudly
   - platform: numeric_state
     entity_id: sensor.openweathermap_weather_code
-    above: "800"
+    above: 800
   - platform: numeric_state
     entity_id: sensor.openweathermap_cloud_coverage
-    above: "75"
+    above: 75
 condition:
   # The house is occupied
   - condition: state
@@ -51,16 +51,16 @@ condition:
     conditions:
       - condition: numeric_state
         entity_id: sensor.openweathermap_weather_code
-        above: "199"
-        below: "233"
+        above: 199
+        below: 233
       - condition: numeric_state
         entity_id: sensor.openweathermap_weather_code
-        above: "311"
-        below: "322"
+        above: 311
+        below: 322
       - condition: numeric_state
         entity_id: sensor.openweathermap_weather_code
-        above: "500"
-        below: "532"
+        above: 500
+        below: 532
       - condition: and
         conditions:
           - condition: or
@@ -73,11 +73,11 @@ condition:
               # It's raining lightly
               - condition: state
                 entity_id: sensor.openweathermap_weather_code
-                state: 500
+                state: "500"
               # It's cloudy
               - condition: numeric_state
                 entity_id: sensor.openweathermap_weather_code
-                above: "802"
+                above: 802
           # AND it's kinda dark outside
           - condition: numeric_state
             entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
