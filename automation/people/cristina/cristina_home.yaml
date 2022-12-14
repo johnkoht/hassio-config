@@ -27,10 +27,20 @@ condition:
   - condition: state
     entity_id: input_boolean.cristina_home
     state: "off"
-  # She's seen at home
-  - condition: state
-    entity_id: binary_sensor.cristina_presence
-    state: "on"
+  - condition: or
+    conditions:
+      # Make sure the bayesian sensor is marked as home
+      - condition: state
+        entity_id: binary_sensor.cristina_presence
+        state: "on"
+      # Person state is home
+      - condition: state
+        entity_id: person.cristina_falbo
+        state: "home"
+      # My iOS device is detected home
+      - condition: zone
+        entity_id: device_tracker.cfalb_2
+        zone: zone.home
 action:
   - service: script.turn_on
     entity_id: script.cristina_home

@@ -24,12 +24,12 @@
     #   to_state: "home"
 
     # iPhone Detect Plugin
-    - platform: "state"
+    - platform: state
       entity_id: "device_tracker.cristina_iphone_detect"
       prob_given_true: 0.7
       prob_given_false: 0.025
       to_state: "home"
-    - platform: "state"
+    - platform: state
       entity_id: "device_tracker.cristina_iphone_detect"
       prob_given_true: 0.03
       prob_given_false: 0.95
@@ -37,12 +37,12 @@
 
     # Router device
     #
-    - platform: "state"
+    - platform: state
       entity_id: "device_tracker.cfalb"
       prob_given_true: 0.5
       prob_given_false: 0.1
       to_state: "home"
-    - platform: "state"
+    - platform: state
       entity_id: "device_tracker.cfalb"
       prob_given_true: 0.3
       prob_given_false: 0.215
@@ -50,13 +50,25 @@
 
     # Nmap device
     #
-    - platform: "state"
+    - platform: state
       entity_id: "device_tracker.cfalb_3"
       prob_given_true: 0.5
       prob_given_false: 0.1
       to_state: "home"
-    - platform: "state"
+    - platform: state
       entity_id: "device_tracker.cfalb_3"
       prob_given_true: 0.3
       prob_given_false: 0.215
       to_state: "not_home"
+
+    # Room Presence
+    # She's home when ESPresense doesn't mark her as not_home
+    - platform: template
+      value_template: "{{ not is_state('sensor.cristina_room_presence', 'not_home') }}"
+      prob_given_true: 0.5
+      prob_given_false: 0.1
+    # ESPresense detects that she's not home
+    - platform: template
+      value_template: "{{ is_state('sensor.cristina_room_presence', 'not_home') }}"
+      prob_given_true: 0.3
+      prob_given_false: 0.215

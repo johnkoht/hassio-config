@@ -7,7 +7,9 @@ trigger:
   #   entity_id: proximity.cristina_home
   # She leaves the home zone
   - platform: zone
-    entity_id: person.cristina_falbo
+    entity_id:
+      - person.cristina_falbo
+      - device_tracker.cfalb_2
     zone: zone.home
     event: leave
   # Cristina's person sensor is not home
@@ -30,20 +32,53 @@ trigger:
   - platform: homeassistant
     event: start
 condition:
-  # Not currently in a Just Left state
-  - condition: not
+  # Not Just Arrived state
+  - platform: template
+    value_template: "{{ not is_state('input_select.cristina_status_dropdown', 'Just Arrived') }}"
+
+  - condition: or
     conditions:
+      # Not home vased on Bayesian sensor
       - condition: state
-        entity_id: input_select.cristina_status_dropdown
-        state: "Just Left"
-      # Ensure the companion app says she's not home
+        entity_id: binary_sensor.cristina_presence
+        state: "off"
+      # Person is not_home
       - condition: state
         entity_id: person.cristina_falbo
-        state: "home"
-  # Not home vased on Bayesian sensor
-  - condition: state
-    entity_id: binary_sensor.cristina_presence
-    state: "off"
+        state: "not_home"
+      # Companion app is not home
+      - condition: state
+        entity_id: device_tracker.cfalb_2
+        state: "not_home"
+
+  # # Not currently in a Just Left state
+  # - condition: not
+  #   conditions:
+  #     - condition: state
+  #       entity_id: input_select.cristina_status_dropdown
+  #       state: "Just Left"
+  #     # Ensure the companion app says she's not home
+  #     - condition: state
+  #       entity_id: person.cristina_falbo
+  #       state: "home"
+
+  #     # Make sure the bayesian sensor is marked as home
+  #     - condition: state
+  #       entity_id: binary_sensor.cristina_presence
+  #       state: "on"
+  #     # Person state is home
+  #     - condition: state
+  #       entity_id: person.cristina_falbo
+  #       state: "home"
+  #     # My iOS device is detected home
+  #     - condition: zone
+  #       entity_id: device_tracker.cfalb_2
+  #       zone: zone.home
+
+  # # Not home vased on Bayesian sensor
+  # - condition: state
+  #   entity_id: binary_sensor.cristina_presence
+  #   state: "off"
 action:
   - service: script.turn_on
     data:

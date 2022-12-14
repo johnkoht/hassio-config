@@ -13,7 +13,9 @@ trigger:
   #   entity_id: proximity.john_home
   # John leaves the home zone
   - platform: zone
-    entity_id: person.john_koht
+    entity_id:
+      - person.john_koht
+      - device_tracker.johns_iphone_2
     zone: zone.home
     event: leave
   # Is the person.john_koht changed to not_home
@@ -30,14 +32,32 @@ trigger:
   - platform: homeassistant
     event: start
 condition:
-  - condition: not
+  # Not Just Arrived state
+  - platform: template
+    value_template: "{{ not is_state('input_select.john_status', 'Just Arrived') }}"
+
+  - condition: or
     conditions:
+      # Not home vased on Bayesian sensor
       - condition: state
-        entity_id: input_select.john_status
-        state: "Just Left"
-  - condition: state
-    entity_id: binary_sensor.john_presence
-    state: "off"
+        entity_id: binary_sensor.john_presence
+        state: "off"
+      # Person is not_home
+      - condition: state
+        entity_id: person.john_koht
+        state: "not_home"
+      # Companion app is not home
+      - condition: state
+        entity_id: device_tracker.johns_iphone_2
+        state: "not_home"
+  # - condition: not
+  #   conditions:
+  #     - condition: state
+  #       entity_id: input_select.john_status
+  #       state: "Just Left"
+  # - condition: state
+  #   entity_id: binary_sensor.john_presence
+  #   state: "off"
   # - condition: or
   #   conditions:
   #     # Some away, and not near
