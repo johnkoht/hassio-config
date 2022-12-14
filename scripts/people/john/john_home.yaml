@@ -10,11 +10,11 @@ sequence:
   # Turn on the garage and mudroom lights
   - scene: scene.returned_home
 
-  # Open the middle garage door
-  - service: cover.open_cover
-    data: {}
-    target:
-      entity_id: cover.garage_door_2
+  # # Open the middle garage door
+  # - service: cover.open_cover
+  #   data: {}
+  #   target:
+  #     entity_id: cover.garage_door_2
 
   #   # Announcement
   # - service: script.general_announcement
