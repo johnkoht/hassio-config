@@ -4,10 +4,10 @@ automation:
     alias: "John DnD On"
     mode: queued
     trigger:
-      # In a meeting
-      - platform: state
-        entity_id: calendar.john_launchpadlab_com
-        to: "on"
+      # # In a meeting
+      # - platform: state
+      #   entity_id: calendar.john_launchpadlab_com
+      #   to: "on"
       # Webcam turned on
       - platform: state
         entity_id: binary_sensor.john_laptop_camera_active
