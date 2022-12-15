@@ -24,4 +24,3 @@ I use [ZHA](https://www.home-assistant.io/integrations/zha/) for Zigbee and [Z-W
 - [Sonos Amps and Ports](https://www.sonos.com/en-us/shop/wireless-stereo-components) to power the in-ceiling speakers throughout the house.
 - Amazon Echo Devices like [Echo Dot](https://www.amazon.com/gp/product/B07XJ8C8F5/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1)[Echo Show 8](https://www.amazon.com/gp/product/B07PF1Y28C/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1)
 - [Spotify Integration](https://www.home-assistant.io/integrations/spotify/)
-
