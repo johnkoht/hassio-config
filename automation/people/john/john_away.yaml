@@ -18,13 +18,15 @@ trigger:
       - device_tracker.johns_iphone_2
     zone: zone.home
     event: leave
-  # Is the person.john_koht changed to not_home
+  # Bayesian sensor is OFF
   - platform: state
     entity_id: binary_sensor.john_presence
     to: "off"
   # John Person sensor detected not home
   - platform: state
-    entity_id: person.john_koht
+    entity_id:
+      - person.john_koht
+      - device_tracker.johns_iphone_2
     to: "not_home"
   # Handle restarts and reloads of HA
   - platform: event
@@ -35,10 +37,10 @@ condition:
   # Not Just Arrived state
   - platform: template
     value_template: "{{ not is_state('input_select.john_status', 'Just Arrived') }}"
-
+  # At least one sensor reports not home
   - condition: or
     conditions:
-      # Not home vased on Bayesian sensor
+      # Not home based on Bayesian sensor
       - condition: state
         entity_id: binary_sensor.john_presence
         state: "off"

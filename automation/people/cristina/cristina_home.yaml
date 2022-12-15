@@ -14,9 +14,17 @@ trigger:
     to: "on"
   # She entered the home zone
   - platform: zone
-    entity_id: person.cristina_falbo
+    entity_id:
+      - person.cristina_falbo
+      - device_tracker.cfalb_2
     zone: zone.home
     event: enter
+  # Marked as home
+  - platform: state
+    entity_id:
+      - person.cristina_falbo
+      - device_tracker.cfalb_2
+    to: "home"
   # Hassio resloads/starts
   - platform: event
     event_type: automation_reloaded
@@ -38,8 +46,14 @@ condition:
         entity_id: person.cristina_falbo
         state: "home"
       # My iOS device is detected home
-      - condition: zone
+      - condition: state
         entity_id: device_tracker.cfalb_2
+        state: "home"
+      # In the home zone
+      - condition: zone
+        entity_id:
+          - person.cristina_falbo
+          - device_tracker.cfalb_2
         zone: zone.home
 action:
   - service: script.turn_on
