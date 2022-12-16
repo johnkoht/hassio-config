@@ -1,19 +1,11 @@
-#
-# kibibit theme - Default ('White' Cards)
-#
-kibibit:
+kohbo:
   # Global
-  background-image: "center / cover no-repeat fixed url('/local/bg.png'), center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg/abstract/bg.png')"
-  background-image2: "center / cover no-repeat fixed url('/local/bg.png'), center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg/abstract/bg2.png')"
-  background-image3: "center / cover no-repeat fixed url('/local/bg.png'), center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg/abstract/bg3.png')"
-  background-image4: "center / cover no-repeat fixed url('/local/bg.png'), center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg/abstract/bg4.png')"
-  background-image5: "center / cover no-repeat fixed url('/local/bg.png'), center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg/abstract/bg5.png')"
-  background-image6: "center / cover no-repeat fixed url('/local/bg.png'), center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg/abstract/bg6.png')"
-  background-image7: "center / cover no-repeat fixed url('/local/bg.png'), center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg/abstract/bg7.png')"
-  lovelace-background: var(--background-image)
+  # background-image: "center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg-kibibit-theme.png')"
+  # lovelace-background: var(--background-image)
   primary-color: "#209cee"
   light-primary-color: "#B6B6C1"
-  primary-background-color: "#212121"
+  # primary-background-color: "#212121"
+  primary-background-color: "#222732"
   secondary-background-color: rgba(25, 25, 25, 0.7)
   divider-color: var(--primary-background-color)
   accent-color: rgba(255, 159, 9, 1)
@@ -41,7 +33,7 @@ kibibit:
   sidebar-selected-text-color: var(--sidebar-selected-icon-color)
   # States and Badges
   state-icon-color: "#FFF"
-  state-icon-active-color: rgba(255, 214, 10, 1)
+  state-icon-active-color: "#FFF" # or make light icons yellow when active: rgba(255, 214, 10, 1)
   state-icon-unavailable-color: var(--disabled-text-color)
   # Sliders
   paper-slider-knob-color: "#FFF"
@@ -59,8 +51,11 @@ kibibit:
   # Cards
   card-background-color: var(--secondary-background-color) # Unused entities table background
   paper-listbox-background-color: var(--primary-background-color)
+  ha-card-border-width: 0
   ha-card-border-radius: 20px
   ha-card-background: "rgba(150, 150, 150, 0.1)"
+  # ha-card-box-shadow: "0 2px 4px 0 rgba(32, 37, 40, 1), 0 2px 15px 15px rgba(32, 37, 40, 1)"
+  ha-card-box-shadow: "0 1px 3px 0 rgba(32, 37, 40, 1)"
   paper-card-background-color: var(--ha-card-background)
   # Toggles
   paper-toggle-button-checked-button-color: "#484848"
@@ -83,8 +78,6 @@ kibibit:
   mcg-title-letter-spacing: .15em
   mini-media-player-base-color: white
   mini-media-player-icon-color: white
-  fc-neutral-bg-color: var(--primary-background-color)
-  fc-page-bg-color: transparent
 
 #
 # kibibit theme - Dark Cards ('White' Cards)
@@ -123,7 +116,7 @@ kibibit-dark-cards:
   sidebar-selected-text-color: var(--sidebar-selected-icon-color)
   # States and Badges
   state-icon-color: "#FFF"
-  state-icon-active-color: rgba(255, 214, 10, 1)
+  state-icon-active-color: "#FFF" # or make light icons yellow when active: rgba(255, 214, 10, 1)
   state-icon-unavailable-color: var(--disabled-text-color)
   # Sliders
   paper-slider-knob-color: "#FFF"
@@ -139,11 +132,12 @@ kibibit-dark-cards:
   label-badge-text-color: "#F1F1F1"
   label-badge-red: rgba(255, 159, 9, 0.7) # from Apple systemOrange dark mode
   # Cards
-  card-background-color: var(--secondary-background-color) # Unused entities table background
+  # card-background-color: var(--secondary-background-color) # Unused entities table background
+  card-background-color: linear-gradient( 135deg, "#363F50", "#2A3140")
   paper-listbox-background-color: var(--primary-background-color)
   ha-card-border-radius: 20px
-  ha-card-background: "rgba(0, 0, 0, 0.3)"
-  paper-card-background-color: var(--ha-card-background)
+  ha-card-background: linear-gradient( 135deg, "#363F50", "#2A3140")
+  paper-card-background-color: linear-gradient( 135deg, "#363F50", "#2A3140")
   # Toggles
   paper-toggle-button-checked-button-color: "#484848"
   paper-toggle-button-checked-bar-color: "#484848"
@@ -165,5 +159,3 @@ kibibit-dark-cards:
   mcg-title-letter-spacing: .15em
   mini-media-player-base-color: white
   mini-media-player-icon-color: white
-  fc-neutral-bg-color: var(--primary-background-color)
-  fc-page-bg-color: transparent
