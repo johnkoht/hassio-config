@@ -35,7 +35,7 @@ trigger:
     event: start
 condition:
   # Not Just Arrived state
-  - platform: template
+  - condition: template
     value_template: "{{ not is_state('input_select.cristina_status_dropdown', 'Just Arrived') }}"
 
   - condition: or
