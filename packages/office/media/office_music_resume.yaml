@@ -22,6 +22,10 @@ automation:
         from: "DnD"
         for:
           minutes: 2
+      # Laptop becomes active
+      - platform: state
+        entity_id: binary_sensor.johns_macbook_pro_active
+        to: "on"
     condition:
       # Office is occupied
       - condition: state
