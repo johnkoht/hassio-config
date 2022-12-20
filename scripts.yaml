@@ -88,9 +88,9 @@ notify_engine:
   mode: single
   icon: mdi:bell-badge
   sequence:
-  - service: "{% if who == 'john' %}\n  notify.mobile_app_jk\n{% elif who == 'cfalb'\
-      \ %}\n  notify.mobile_app_cfalb\n{% elif who == 'family' %}\n  notify.ios_family\n\
-      {% else %}\n  notify.ios_family\n{% endif %}\n"
+  - service: "{% if who == 'john' %}\n  notify.mobile_app_jk\n{% elif who == 'cfalb'
+      %}\n  notify.mobile_app_cfalb\n{% elif who == 'family' %}\n  notify.ios_family\n{%
+      else %}\n  notify.ios_family\n{% endif %}\n"
     data:
       title: '{{title}}'
       message: '{{message}}'
@@ -129,9 +129,9 @@ speech_processing:
       entity_id: '{{ media_player }}
 
         '
-      volume_level: "{% if now().strftime('%H')|int < 10 and now().strftime('%H')|int\
-        \ > 6 %}\n  0.3\n{% elif now().strftime('%H')|int > 10 and now().strftime('%H')|int\
-        \ < 20 %}\n  0.5\n{% else %}\n  0.3\n{% endif %}"
+      volume_level: "{% if now().strftime('%H')|int < 10 and now().strftime('%H')|int
+        > 6 %}\n  0.3\n{% elif now().strftime('%H')|int > 10 and now().strftime('%H')|int
+        < 20 %}\n  0.5\n{% else %}\n  0.3\n{% endif %}"
   - service: notify.alexa_media
     data:
       data:
@@ -158,10 +158,10 @@ speech_engine:
       state: 'on'
   - service: script.speech_processing
     data:
-      media_player: "{% if media_player | length == 0 %}\n  {% set media_player =\
-        \ [\n    'media_player.john_s_echo_show'\n  ] %}\n{% endif %} {% if media_player\
-        \ is not string and media_player is sequence %}\n  {% set media_player = media_player|join(',\
-        \ ') %}\n{% endif %} {{ media_player }}"
+      media_player: "{% if media_player | length == 0 %}\n  {% set media_player =
+        [\n    'media_player.john_s_echo_show'\n  ] %}\n{% endif %} {% if media_player
+        is not string and media_player is sequence %}\n  {% set media_player = media_player|join(',
+        ') %}\n{% endif %} {{ media_player }}"
       speech_message: '{{speech_message}}'
 climate_activate:
   alias: Climate Activate
@@ -226,10 +226,10 @@ set_doorbell_message:
   - service: select.select_option
     data:
       entity_id: select.front_door_camera_doorbell_text
-      option: "{% if message == \"quiet_mode\" %}\n  SHHH…KIDS SLEEPING\n{% elif message\
-        \ == \"dnd\" %}\n  DO NOT DISTURB\n{% elif message == \"leave_package\" %}\n\
-        \  LEAVE PACKAGE AT DOOR\n{% elif message == \"welcome\" %}\n  WELCOME!\n\
-        {% else %}\n  WELCOME!\n{% endif %}"
+      option: "{% if message == \"quiet_mode\" %}\n  SHHH…KIDS SLEEPING\n{% elif message
+        == \"dnd\" %}\n  DO NOT DISTURB\n{% elif message == \"leave_package\" %}\n
+        \ LEAVE PACKAGE AT DOOR\n{% elif message == \"welcome\" %}\n  WELCOME!\n{%
+        else %}\n  WELCOME!\n{% endif %}"
 test_speech_engine:
   alias: Test speech engine
   mode: queued
@@ -244,3 +244,10 @@ test_speech_engine:
     data:
       message: '{{ speech_message }}'
   max: 10
+text_to_speech_on_sonos_test:
+  alias: Text-to-Speech on Sonos Test
+  use_blueprint:
+    path: Talvish/sonos_say.yaml
+    input:
+      tts_service_name: google_say
+  mode: single
