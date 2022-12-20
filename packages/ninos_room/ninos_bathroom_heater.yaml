@@ -121,3 +121,53 @@ automation:
       # Switch the power plug OFF
       - service: switch.turn_off
         entity_id: switch.smart_plug_6_switch
+
+  - id: "ninos_bathroom_heater_turn_on_upon_arrival"
+    alias: "Nino's Bathroom Heater - Turn On Upon Arrival"
+    initial_state: on
+    trigger:
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+      # We're home
+      - platform: state
+        entity_id: group.family
+        from: "not_home"
+        to: "home"
+      # We just arrived
+      - platform: state
+        entity_id:
+          - person.cristina_falbo
+          - person.john_koht
+        to: "Just Arrived"
+    condition:
+      - condition: or
+        conditions:
+          # House has just become occupied
+          - condition: template
+            value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.house_occupied.last_updated)) | int < 300 }}"
+          - condition: and
+            conditions:
+              # We just got home
+              - condition: state
+                entity_id: group.family
+                state: "home"
+              - condition: template
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.group.familiy.last_updated)) | int < 300 }}"
+              # Person state is Just Arrived
+              - condition: state
+                entity_id:
+                  - person.cristina_falbo
+                  - person.john_koht
+                state: "Just Arrived"
+      # It's not that warm in his room
+      - condition: template
+        value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.5 }}"
+      # After 6:30 PM
+      - condition: time
+        after: "18:30:00"
+    action:
+      # Switch the power plug on
+      - service: switch.turn_on
+        entity_id: switch.smart_plug_6_switch
