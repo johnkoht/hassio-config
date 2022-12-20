@@ -8,7 +8,7 @@ trigger:
     from: "home"
     to: "not_home"
     for:
-      minutes: 5
+      minutes: 2
   - platform: homeassistant
     event: start
 condition:
