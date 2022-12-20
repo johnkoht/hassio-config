@@ -14,12 +14,17 @@ automation:
         entity_id: input_boolean.bmw_home
         to: "home"
     condition:
-      # Just arrived
-      - condition: state
-        entity_id:
-          - input_select.cristina_status_dropdown
-          - input_select.john_status
-        state: "Just Arrived"
+      # Somebody just arrived
+      - condition: or
+        conditions:
+          # Cristina just arrived
+          - condition: state
+            entity_id: input_select.cristina_status_dropdown
+            state: "Just Arrived"
+          # OR John just arrived
+          - condition: state
+            entity_id: input_select.john_status
+            state: "Just Arrived"
       - condition: and
         conditions:
           # BMW is home
