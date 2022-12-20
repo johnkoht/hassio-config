@@ -260,28 +260,28 @@ script:
         timeout:
           seconds: 2
 
-      # - alias: "Wait 1s"
-      #   delay: 00:00:01
+      - alias: "Wait 1s"
+        delay: 00:00:01
 
-      # we then put in a delay that should match the length of the media
-      - delay: >-
-          {# we grab the duration to try to set a wait that is roughly the right amount of time #}
-          {# this is returned in seconds, so not extact accurate #}
-          {% set duration = state_attr(primary_player, 'media_duration') %} 
-          {% if duration == None or duration <= 1 %} 
-            {# this should never happen, though sounds like there can be delays in response #}
-            {# to get the state, so we put a mininum of one second ... the waiting for the state #}
-            {# below should cover BUT if it doesn't than state_delay can make sure we are good #}
-            {{ "00:00:01" }}
-          {% else %} 
-            {# subtracting one to compensate for potential run time and not running extra long #}
-            {# if there is cut-off then the state_delay can cover #}
-            {% set duration = duration - 1 %} 
-            {% set seconds = duration % 60 %} 
-            {% set minutes = (duration / 60)|int % 60 %} 
-            {% set hours = (duration / 3600)|int %} 
-            {{ "{:02d}".format(hours) + ":" + "{:02d}".format(minutes) + ":" + "{:02d}".format(seconds)}}
-          {% endif %}
+      # # we then put in a delay that should match the length of the media
+      # - delay: >-
+      #     {# we grab the duration to try to set a wait that is roughly the right amount of time #}
+      #     {# this is returned in seconds, so not extact accurate #}
+      #     {% set duration = state_attr(primary_player, 'media_duration') %}
+      #     {% if duration == None or duration <= 1 %}
+      #       {# this should never happen, though sounds like there can be delays in response #}
+      #       {# to get the state, so we put a mininum of one second ... the waiting for the state #}
+      #       {# below should cover BUT if it doesn't than state_delay can make sure we are good #}
+      #       {{ "00:00:01" }}
+      #     {% else %}
+      #       {# subtracting one to compensate for potential run time and not running extra long #}
+      #       {# if there is cut-off then the state_delay can cover #}
+      #       {% set duration = duration - 1 %}
+      #       {% set seconds = duration % 60 %}
+      #       {% set minutes = (duration / 60)|int % 60 %}
+      #       {% set hours = (duration / 3600)|int %}
+      #       {{ "{:02d}".format(hours) + ":" + "{:02d}".format(minutes) + ":" + "{:02d}".format(seconds)}}
+      #     {% endif %}
 
       - wait_template: "{{ states( primary_player ) != 'playing' }}"
         timeout:
