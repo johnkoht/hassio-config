@@ -10,13 +10,18 @@ trigger:
     below: 8
     above: 2
 condition:
-  # The house has been empty for 30 minutes
+  # # The house has been empty for 30 minutes
+  # - condition: state
+  #   entity_id: input_boolean.house_occupied
+  #   state: "off"
+  #   for:
+  #     minutes: 30
+  # Family has been away for 20 minutes
   - condition: state
-    entity_id: input_boolean.house_occupied
+    entity_id: group.family
     state: "off"
     for:
-      minutes: 30
-
+      minutes: 20
   # John or Cristina is nearly home
   - condition: or
     conditions:
@@ -24,7 +29,6 @@ condition:
         value_template: '{{ states.proximity.cristina_home.attributes.dir_of_travel == "towards" }}'
       - condition: template
         value_template: '{{ states.proximity.john_home.attributes.dir_of_travel == "towards" }}'
-
 action:
   # - service: homeassistant.turn_on
   #   entity_id: light.mudroom_main_lights

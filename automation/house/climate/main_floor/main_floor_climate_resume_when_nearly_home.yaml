@@ -1,0 +1,18 @@
+# Main Floor Climate Resume When Nearly Home
+#
+#
+id: "main_floor_climate_resume_when_nearly_home"
+alias: "Main Floor Climate Resume When Nearly Home"
+initial_state: "on"
+trigger:
+  # Nearly home boolean is turned on
+  - platform: state
+    entity_id: input_boolean.nearly_home
+    to: "on"
+condition:
+  # Make sure the Nest is set to a preset already (e.g. Eco)
+  - condition: template
+    value_template: "{{ states.climate.nest_main_floor.attributes.preset_mode != 'none' }}"
+action:
+  - service: script.main_floor_climate_to_resume
+    data: {}
