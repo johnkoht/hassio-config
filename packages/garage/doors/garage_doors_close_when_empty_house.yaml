@@ -23,22 +23,10 @@ automation:
       - platform: homeassistant
         event: start
     condition:
-      # # Garage override is not active
-      # - condition: state
-      #   entity_id: input_boolean.garage_override
-      #   state: "off"
-      # Either garage door is open
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: cover.garage_door_1
-            state: "open"
-          - condition: state
-            entity_id: cover.garage_door_2
-            state: "open"
-          - condition: state
-            entity_id: cover.garage_door_3
-            state: "open"
+      # One of the garage doors is open
+      - condition: state
+        entity_id: cover.garage_doors
+        state: "open"
       # Garage is in away or off mode
       - condition: or
         conditions:
@@ -53,13 +41,7 @@ automation:
     action:
       # Close the garage doors
       - service: cover.close_cover
-        data: {}
-        target:
-          entity_id: cover.garage_doors
-
-      # Turn off the garage lights
-      - service: light.turn_off
-        entity_id: light.garage_lights
+        entity_id: cover.garage_doors
 
       # Notify the family
       - service: notify.ios_family

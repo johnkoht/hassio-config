@@ -1,0 +1,5 @@
+input_boolean:
+  audi_home:
+    name: Audi Home
+    icon: mdi:car
+    initial: true

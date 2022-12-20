@@ -39,6 +39,14 @@ automation:
           - condition: state
             entity_id: binary_sensor.garage_motion_sensor_occupancy
             state: "on"
+          # Lights are on
+          - condition: state
+            entity_id: light.garage_lights
+            state: "on"
+          # A garage door is open
+          - condition: state
+            entity_id: cover.garage_doors
+            state: "open"
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.garage_occupied

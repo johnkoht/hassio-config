@@ -37,9 +37,7 @@ automation:
     action:
       # Close the garage doors
       - service: cover.open_cover
-        data: {}
-        target:
-          entity_id: cover.garage_door_3
+        entity_id: cover.garage_door_3
 
       # Notify the family
       - service: notify.mobile_app_jk
