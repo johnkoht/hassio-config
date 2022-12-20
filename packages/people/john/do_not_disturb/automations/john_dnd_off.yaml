@@ -4,10 +4,10 @@ automation:
     alias: "John DnD Off"
     mode: queued
     trigger:
-      # Calendar event ended
-      - platform: state
-        entity_id: calendar.john_launchpadlab_com
-        to: "off"
+      # # Calendar event ended
+      # - platform: state
+      #   entity_id: calendar.john_launchpadlab_com
+      #   to: "off"
       # Calendar event ended
       - platform: calendar
         event: end
@@ -84,7 +84,3 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.john_dnd
-      - service: notify.mobile_app_jk
-        data:
-          message: John's DnD mode has been turned off
-          title: John DnD Off!

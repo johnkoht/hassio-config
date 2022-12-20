@@ -20,7 +20,3 @@ automation:
         data:
           dev_id: nonna_ping_tracker
           location_name: home
-      - service: notify.mobile_app_jk
-        data:
-          title: Nonna is home
-          message: "Nonna detected home via BLE"

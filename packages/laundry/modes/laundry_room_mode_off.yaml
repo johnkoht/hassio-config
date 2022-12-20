@@ -48,8 +48,3 @@ automation:
         data:
           entity_id: input_select.laundry_room
           option: "Off"
-      # Notify for debugging
-      - service: notify.mobile_app_jk
-        data:
-          title: Laundry Room
-          message: The Laundry Room is turned to Off Mode

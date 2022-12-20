@@ -124,12 +124,6 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.kitchen_occupied
 
-      # Notify for loggging
-      - service: notify.mobile_app_jk
-        data:
-          title: Kitchen
-          message: The Kitchen is no longer occupied!
-
       - alias: "Wait 2 seconds"
         delay: 02
       # - wait_template: "{{ is_state('automation.kitchen_lights_manually_turned_off', 'on') }}"
