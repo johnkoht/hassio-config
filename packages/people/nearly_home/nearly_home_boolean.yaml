@@ -1,0 +1,7 @@
+# Nearly Home Boolean
+#
+input_boolean:
+  nearly_home:
+    name: Nearly Home
+    icon: mdi:home
+    initial: off

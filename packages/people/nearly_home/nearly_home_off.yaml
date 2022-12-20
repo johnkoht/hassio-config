@@ -1,0 +1,44 @@
+automation:
+  # Nearly Home
+  # Detect if we're nearly home and turn on a boolean
+  #
+  - id: "nearly_home_off"
+    alias: "Nearly Home - Turn Off"
+    initial_state: on
+    trigger:
+      # We're home
+      - platform: state
+        entity_id: group.family
+        to: "home"
+      - platform: state
+        entity_id:
+          - person.cristina_falbo
+          - person.john_koht
+        to: "home"
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    condition:
+      # Family has been away for 20 minutes
+      - condition: state
+        entity_id: group.family
+        state: "home"
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nearly home boolean is ON
+      - condition: state
+        entity_id: input_boolean.nearly_home
+        state: "on"
+    action:
+      # Turn OFF the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.nearly_home
+
+      # Quick push notificaiton for testing
+      - service: notify.mobile_app_jk
+        data:
+          title: Nearly Home Off
+          message: Nearly Home turned off since you're home
