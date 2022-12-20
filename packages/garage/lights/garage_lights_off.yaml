@@ -9,6 +9,10 @@ automation:
       - platform: state
         entity_id: input_select.garage
         to: "Off"
+      # Garage is Away
+      - platform: state
+        entity_id: input_select.garage
+        to: "Away"
       # Garage is not occupied
       - platform: state
         entity_id: input_boolean.garage_occupied
@@ -29,6 +33,10 @@ automation:
           - condition: state
             entity_id: input_select.garage
             state: "Off"
+          # Garage is Away
+          - condition: state
+            entity_id: input_select.garage
+            state: "Away"
           # Garage is not occupied
           - condition: state
             entity_id: input_boolean.garage_occupied

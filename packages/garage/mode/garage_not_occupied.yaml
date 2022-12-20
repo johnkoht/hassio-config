@@ -28,8 +28,8 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.garage_occupied
-      # Waits 3 minutes to enable lighting automations
-      - delay: "00:03:00"
+      # Waits 30 seconds to enable lighting automations
+      - delay: "00:00:30"
       # Enable garage lighting automations
       - service: input_boolean.turn_on
         entity_id: input_boolean.garage_lighting_automations

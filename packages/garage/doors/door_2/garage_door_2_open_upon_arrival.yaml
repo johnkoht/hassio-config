@@ -1,6 +1,6 @@
 automation:
-  - id: "garage_door_3_open_upon_arrival"
-    alias: "Garage Door 3 - Open Upon Arrival"
+  - id: "garage_door_2_open_upon_arrival"
+    alias: "Garage Door 2 - Open Upon Arrival"
     initial_state: on
     trigger:
       # People just got home
@@ -9,9 +9,9 @@ automation:
           - input_select.cristina_status_dropdown
           - input_select.john_status
         to: "Just Arrived"
-      # BMW just arrived
+      # Audi just arrived
       - platform: state
-        entity_id: input_boolean.bmw_home
+        entity_id: input_boolean.audi_home
         to: "home"
     condition:
       # Just arrived
@@ -22,25 +22,26 @@ automation:
         state: "Just Arrived"
       - condition: and
         conditions:
-          # BMW is home
+          # Audi is home
           - condition: state
-            entity_id: input_boolean.bmw_home
+            entity_id: input_boolean.audi_home
             state: "on"
-          # AND BMW boolean just recently updated
+          # AND Audi boolean just recently updated
           - condition: template
-            value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.bmw_home.last_updated)) | int < 120 }}"
-      # Garage 3 is close
+            value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.audi_home.last_updated)) | int < 120 }}"
+      # Garage 2 is close
       - condition: state
-        entity_id: cover.garage_door_3
+        entity_id: cover.garage_door_2
         state: "closed"
 
     action:
-      # Close the garage doors
-      - service: cover.open_cover
-        entity_id: cover.garage_door_3
+      # Testing for now
+      # # Close the garage doors
+      # - service: cover.open_cover
+      #   entity_id: cover.garage_door_2
 
       # Notify the family
       - service: notify.mobile_app_jk
         data:
-          title: Garage Door 3
+          title: Garage Door 2
           message: Garage door three is opening upon somebody's arrival

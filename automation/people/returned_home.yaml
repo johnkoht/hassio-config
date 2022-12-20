@@ -15,15 +15,9 @@ trigger:
       - input_select.cristina_status_dropdown
       - input_select.john_status
     to: "Just Arrived"
-  # Should also include some travel time magic here
-  # Basically, travel time < 15 for 10 minutes, travelling towards home
 condition:
   condition: and
   conditions:
-    # Lighting automations are enabled
-    - condition: state
-      entity_id: input_boolean.lighting_automations
-      state: "on"
     # House has just become occupied
     - condition: template
       value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.house_occupied.last_updated)) | int < 300 }}"
