@@ -7,7 +7,7 @@ automation:
     trigger:
       # Lights turned off
       - platform: state
-        entity_id: light.main_bedroom_lights
+        entity_id: light.main_bathroom_ceiling_lights
         to: "off"
     condition:
       - condition: state
