@@ -20,7 +20,3 @@ automation:
         data:
           dev_id: katias_iphone
           location_name: home
-      - service: notify.mobile_app_jk
-        data:
-          title: Katia is home
-          message: "Katia detected home via BLE"

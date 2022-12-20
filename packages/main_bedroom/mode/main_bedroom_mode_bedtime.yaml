@@ -83,7 +83,3 @@ automation:
         entity_id:
           - automation.main_bedroom_john_night_light_off
           - automation.main_bedroom_night_light_for_john
-      - service: notify.mobile_app_jk
-        data:
-          title: Main Bedroom
-          message: The main bedroom turned to Bedtime mode
