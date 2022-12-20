@@ -1,0 +1,217 @@
+blueprint:
+  name: Text-to-Speech on Sonos
+  description: 'This blueprint is used to add a script that will say messages on Sonos
+    speakers. The script handles oddities to ensure a proper experience including
+    saving/restore state, handling speaker groups, pausing music, disabling repeat,
+    adding delays, etc.
+
+    I recommend setting the mode to parallel if you will use this script on more than
+    one speaker.'
+  domain: script
+  input:
+    tts_service_name:
+      name: Text-To-Speech Service Name
+      description: The text-to-speech service to use when saying the message. This
+        must match your Home Assistant configuration.
+      default: google_translate_say
+      selector:
+        text: {}
+    tts_language:
+      name: Language
+      description: The language to use with the text-to-speech service.
+      default: en
+      selector:
+        text: {}
+  source_url: https://github.com/Talvish/home-assistant-blueprints/blob/main/script/sonos_say.yaml
+fields:
+  entity_id:
+    description: The entity id of the Sonos speaker that will play the message.
+    name: Entity
+    required: true
+    selector:
+      entity:
+        domain: media_player
+        integration: sonos
+  message:
+    description: The text that will be played.
+    name: Message
+    required: true
+    selector:
+      text:
+  volume_level:
+    name: Volume Level
+    description: Float for volume level. Range 0..1. If value isn't given, volume
+      isn't changed. The volume will revert to the previous level after it plays the
+      message.
+    required: false
+    selector:
+      number:
+        min: 0
+        max: 1
+        step: 0.01
+        mode: slider
+  min_wait:
+    name: Minimum Wait
+    description: The minimum number of seconds that the system will wait for state
+      changes from Sonos. Frequently the Sonos integration reports state changes too
+      early, misses some state quick enough which can result in odd volume changes,
+      cut-off messages and even, when the message is very short, long delays before
+      continuing to play previously running media. Setting this value will help. Defaults
+      to 0 if not set.
+    required: false
+    selector:
+      number:
+        min: 0
+        max: 60
+        step: 0.25
+        unit_of_measurement: seconds
+        mode: slider
+  max_wait:
+    name: Maximum Wait
+    description: After the system starts playing the message the system waits for
+      the message to finish play. This makes sure the systenm never waits forever.
+      Recent changes to this script make this less meaningful than the past. Defaults
+      to 10 seconds if not set.
+    required: false
+    selector:
+      number:
+        min: 1
+        max: 60
+        step: 0.25
+        unit_of_measurement: seconds
+        mode: slider
+variables:
+  entity_group_leader: "{# we see if in a group since the repeat is typically controlled
+    by it #} {# we use this for doing all the work since it is the primary speaker
+    #} {# and everything will be shared across speakers anyhow #} {%- set group_members
+    = state_attr( entity_id, \"group_members\" ) -%} {%- if group_members == None
+    -%}\n  {# we maybe on an older version of HA, so look for a different group name#}\n
+    \ {%- set group_members = state_attr( entity_id, \"sonos_group\" ) -%}\n  {%-
+    if group_members == None -%}\n    {{ entity_id }}\n  {%- else -%}\n    {{ group_members[0]
+    }}\n  {%- endif -%}\n{%- else -%}\n  {# the first seems to be the control, at
+    least on Sonos #}\n  {{ group_members[0] }}\n{%- endif -%}"
+  entity_repeat_state: "{# we grab the repeat state so that if in repeat mode we turn
+    off #} {# and also sanity check that we got a value otherwise default to off #}
+    {%- set repeat = state_attr( entity_group_leader, \"repeat\" ) -%} {%- if repeat
+    == None -%}\n  off\n{%- else -%}\n  {{ repeat }}\n{%- endif -%}"
+  tts_hack: !input tts_service_name
+  tts_engine: "{%- if tts_hack is undefined or tts_hack== None or tts_hack == \"\"
+    -%}\n  tts.google_translate_say\n{%- else -%}\n  tts.{{ tts_hack }}\n{%- endif
+    -%}"
+  lang_hack: !input tts_language
+  tts_language: "{%- if lang_hack is undefined or lang_hack== None or lang_hack ==
+    \"\" -%}\n  \"en\"\n{%- else -%}\n  {{ lang_hack }}\n{%- endif -%}"
+  state_delay: "{%- if min_wait is undefined or min_wait == None or not (min_wait
+    is number) or min_wait < 0 -%}\n  {# bad or missing data means we just use a default
+    of 0 #}\n  0\n{%- else -%}\n  {{ min_wait }}\n{%- endif -%}"
+  message_delay: "{%- if max_wait is undefined or max_wait == None or not (max_wait
+    is number) or max_wait < 10 -%}\n  {# bad or missing data means we just use a
+    default of 10 #}\n  10\n{%- else -%}\n  {{ max_wait }}\n{%- endif -%}"
+sequence:
+- service: sonos.snapshot
+  data:
+    entity_id: '{{ entity_group_leader }}'
+    with_group: true
+- choose:
+  - conditions: '{{ volume_level is defined and volume_level != None and volume_level
+      is number }}
+
+      '
+    sequence:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ is_state(entity_group_leader, ''playing'') }}
+
+            '
+        sequence:
+        - service: media_player.media_pause
+          data:
+            entity_id: '{{ entity_group_leader }}
+
+              '
+        - wait_template: '{{ states( entity_id ) != ''playing'' }}'
+          timeout:
+            seconds: 2
+        - delay:
+            seconds: '{{ state_delay | int }}
+
+              '
+            milliseconds: '{{ ( ( state_delay - ( state_delay | int ) ) * 1000 ) |
+              int }}
+
+              '
+      default: []
+    - service: media_player.volume_set
+      data:
+        volume_level: '{{ volume_level }}'
+        entity_id: '{{ entity_id }}'
+- choose:
+  - conditions: '{{ entity_repeat_state != "off" }}
+
+      '
+    sequence:
+    - service: media_player.repeat_set
+      data:
+        repeat: 'off'
+        entity_id: '{{ entity_group_leader }}'
+    - wait_template: '{{ state_attr( entity_group_leader, ''repeat'' ) == ''off''
+        }}'
+      timeout:
+        seconds: 4
+  default: []
+- service: '{{ tts_engine }}'
+  data:
+    entity_id: '{{ entity_group_leader }}'
+    message: '{{ message }}'
+    language: '{{ tts_language }}'
+- service: media_player.repeat_set
+  data:
+    repeat: 'off'
+    entity_id: '{{ entity_group_leader }}'
+- wait_template: '{{ states( entity_id ) == ''playing'' }}'
+  timeout:
+    seconds: 2
+- delay:
+    seconds: '{{ state_delay | int }}
+
+      '
+    milliseconds: '{{ ( ( state_delay - ( state_delay | int ) ) * 1000 ) | int }}
+
+      '
+- delay: "{# we grab the duration to try to set a wait that is roughly the right amount
+    of time #} {# this is returned in seconds, so not extact accurate #} {% set duration
+    = state_attr(entity_id, 'media_duration') %}  {% if duration == None or duration
+    <= 1 %} \n  {# this should never happen, though sounds like there can be delays
+    in response #}\n  {# to get the state, so we put a mininum of one second ... the
+    waiting for the state #}\n  {# below should cover BUT if it doesn't than state_delay
+    can make sure we are good #}\n  {{ \"00:00:01\" }}\n{% else %} \n  {# subtracting
+    one to compensate for potential run time and not running extra long #}\n  {# if
+    there is cut-off then the state_delay can cover #}\n  {% set duration = duration
+    - 1 %} \n  {% set seconds = duration % 60 %} \n  {% set minutes = (duration /
+    60)|int % 60 %} \n  {% set hours = (duration / 3600)|int %} \n  {{ \"{:02d}\".format(hours)
+    + \":\" + \"{:02d}\".format(minutes) + \":\" + \"{:02d}\".format(seconds)}}\n{%
+    endif %}"
+- wait_template: '{{ states( entity_id ) != ''playing'' }}'
+  timeout:
+    seconds: '{{ message_delay | int }}
+
+      '
+    milliseconds: '{{ ( ( message_delay - ( message_delay | int ) ) * 1000 ) | int
+      }}
+
+      '
+- delay:
+    seconds: '{{ state_delay | int }}
+
+      '
+    milliseconds: '{{ ( ( state_delay - ( state_delay | int ) ) * 1000 ) | int }}
+
+      '
+- service: sonos.restore
+  data:
+    entity_id: '{{ entity_group_leader }}'
+    with_group: true
+mode: parallel
+max_exceeded: silent
+icon: mdi:account-voice
