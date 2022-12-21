@@ -12,7 +12,7 @@ automation:
       # BMW just arrived
       - platform: state
         entity_id: input_boolean.bmw_home
-        to: "home"
+        to: "on"
     condition:
       # Somebody just arrived
       - condition: or
