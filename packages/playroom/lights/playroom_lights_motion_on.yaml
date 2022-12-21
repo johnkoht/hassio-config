@@ -47,9 +47,9 @@ automation:
                 state: "on"
               # - condition: state
               #   entity_id: input_boolean.playroom_occupied
-              # Playroom has been occupied for more than 90 seconds
+              # Playroom has been occupied for more than 180 seconds
               - condition: template
-                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.playroom_occupied.last_updated)) | int > 90 }}"
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.playroom_occupied.last_changed)) | int > 180 }}"
       # Light is low
       - condition: numeric_state
         entity_id:
