@@ -26,6 +26,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.johns_macbook_pro_active
         to: "on"
+        for:
+          minutes: 2
     condition:
       # Office is occupied
       - condition: state
