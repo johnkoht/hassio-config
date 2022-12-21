@@ -95,19 +95,8 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 
 ## <a name="devices">Devices</a>
 
-## Menu
-- [Hubs](#hubs)
-- [Lighting](#lighting)
-- [Climate](#climate)
-- [Outlet & Switches](#outlets)
-- [Locks](#locks)
-- [Voice](#voice)
-- [Media](#media)
-- [Sensors](#sensors)
-- [Cameras](#cameras)
-- [Vacuum](#vacuum)
-- [Energy](#energy)
-- [Network](#network)
+### <a name="menu">Menu</a>
+[Hubs](#hubs) | [Lighting](#lighting) | [Climate](#climate) | [Outlet & Switches](#outlets) | [Locks](#locks) | [Voice](#voice) | [Media](#media) | [Sensors](#sensors) | [Cameras](#cameras) | [Vacuum](#vacuum) | [Energy](#energy) | [Network](#network)
 
 ## <a name="hubs">Hubs</a>
 
