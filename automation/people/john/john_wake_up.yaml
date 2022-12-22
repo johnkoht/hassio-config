@@ -11,6 +11,9 @@ trigger:
   - platform: state
     entity_id: binary_sensor.john_in_bed
     to: "off"
+  - platform: state
+    entity_id: binary_sensor.john_in_bed
+    to: "off"
     for:
       minutes: 3
   # Door is open
@@ -18,10 +21,21 @@ trigger:
     entity_id: binary_sensor.main_bedroom_door_sensor_status
     to: "on"
 condition:
-  # John is not sleeping
-  - condition: state
-    entity_id: binary_sensor.john_in_bed
-    state: "off"
+  # # John is not sleeping
+  # - condition: state
+  #   entity_id: binary_sensor.john_in_bed
+  #   state: "off"
+  - condition: or
+    conditions:
+      # John is not sleeping for 3 mins
+      - condition: state
+        entity_id: binary_sensor.john_in_bed
+        state: "off"
+        for:
+          minutes: 3
+      # OR door was just opened
+      - condition: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.main_bedroom_door_sensor_status.last_changed)) | int > 90 }}"
   # John is home
   - condition: state
     entity_id: input_boolean.john_home
