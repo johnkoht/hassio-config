@@ -13,7 +13,7 @@ trigger:
     entity_id: binary_sensor.john_in_bed
     to: "on"
     for:
-      minutes: 2
+      minutes: 1
   # It's bedtime hours
   - platform: state
     entity_id: binary_sensor.bedtime
@@ -28,7 +28,7 @@ condition:
     entity_id: binary_sensor.john_in_bed
     state: "on"
     for:
-      minutes: 2
+      minutes: 1
   # John is home
   - condition: state
     entity_id: input_boolean.john_home
