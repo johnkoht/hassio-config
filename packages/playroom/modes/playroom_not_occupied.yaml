@@ -66,20 +66,11 @@ automation:
                 entity_id: binary_sensor.playroom_motion
                 state: "off"
                 for:
-                  minutes: 5
-          # No occupancy for 10 minutes
-          - condition: and
-            conditions:
-              # Kids not sleeping
-              - condition: state
-                entity_id: binary_sensor.kids_sleeping
-                state: "off"
-              # No Aqara occupancy for 5 minutes
-              - condition: state
-                entity_id: binary_sensor.playroom_occupancy
-                state: "off"
-                # for:
-                #   minutes: 5
+                  minutes: 3
+          # No occupancy
+          - condition: state
+            entity_id: binary_sensor.playroom_occupancy
+            state: "off"
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.playroom_occupied
