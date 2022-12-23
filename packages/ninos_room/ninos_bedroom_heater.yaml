@@ -13,15 +13,22 @@ automation:
           minutes: 1
       - platform: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.5 }}"
+      # After 6:30 pm
+      - platform: time
+        at: "18:30:00"
     condition:
       # The house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # Room is occupied
-      - condition: state
-        entity_id: input_boolean.ninos_room_occupied
-        state: "on"
+      - condition: or
+        conditions:
+          # Room is occupied
+          - condition: state
+            entity_id: input_boolean.ninos_room_occupied
+            state: "on"
+          - condition: time
+            after: "18:30:00"
       - condition: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 72.0 }}"
     action:
@@ -33,15 +40,15 @@ automation:
     alias: "Nino bedroom heater off"
     initial_state: on
     trigger:
-      # Nino's door is open for 3 minutes
+      # Nino's door is open for 10 minutes
       - platform: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "on"
         for:
-          minutes: 2
-      # # Temperature is above 73.5
+          minutes: 10
+      # # Temperature is above 73.1
       - platform: template
-        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.7 }}"
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 73.1 }}"
       # If the house is not occupied
       - platform: state
         entity_id: input_boolean.house_occupied

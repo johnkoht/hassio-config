@@ -53,23 +53,34 @@ automation:
     trigger:
       # It's morning time
       - platform: time
-        at: "06:00:00"
+        at: "05:00:00"
       # Nino's door is opened
       - platform: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "on"
+      # It's less than 71
+      - platform: template
+        value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
+      # It's less than 61
+      - platform: template
+        value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 61.0 }}"
     condition:
       # The house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # Room is occupied
-      - condition: state
-        entity_id: input_boolean.ninos_room_occupied
-        state: "on"
+      - condition: or
+        conditions:
+          # Room is occupied
+          - condition: state
+            entity_id: input_boolean.ninos_room_occupied
+            state: "on"
+          # It's below 65 degrees
+          - condition: template
+            value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 65.0 }}"
       # It's after 5:30 am
       - condition: time
-        after: "05:30:00"
+        after: "05:00:00"
       # It's below 71 degrees
       - condition: template
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
@@ -101,17 +112,17 @@ automation:
         entity_id: input_boolean.ninos_room_occupied
         to: "off"
         for:
-          minutes: 10
+          minutes: 20
       # If the house is not occupied
       - platform: state
         entity_id: input_boolean.house_occupied
         to: "off"
-      # If the plug is on for more than 45 minutes
+      # If the plug is on for more than 3 hours
       - platform: state
         entity_id: switch.smart_plug_6_switch
         to: "on"
         for:
-          minutes: 45
+          hours: 3
     condition:
       # Switch is ON
       - condition: state
