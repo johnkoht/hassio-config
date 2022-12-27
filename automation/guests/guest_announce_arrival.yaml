@@ -20,7 +20,7 @@ condition:
 action:
   # Wait 2 mins to make sure nobody was
   # announced via voice
-  - delay: "00:02"
+  - delay: "00:02:00"
 
   # Announcement
   # - service: script.general_announcement
