@@ -11,6 +11,8 @@ trigger:
   # # Temperature is above 72.7
   - platform: template
     value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 72.7 }}"
+  - platform: template
+    value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) > 74.1 }}"
   # If the house is not occupied
   - platform: state
     entity_id: input_boolean.house_occupied
@@ -24,6 +26,8 @@ condition:
     conditions:
       - condition: template
         value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 72.5 }}"
+      - condition: template
+        value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) > 74.9 }}"
       # OR house is not occupied
       - condition: state
         entity_id: input_boolean.house_occupied

@@ -16,6 +16,9 @@ trigger:
   #   below: 71
   - platform: template
     value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 71.5 }}"
+  # Door sensor temp is less than 73
+  - platform: template
+    value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) < 72.9 }}"
 condition:
   # The house is occupied
   - condition: state
@@ -29,8 +32,12 @@ condition:
   # - condition: numeric_state
   #   entity_id: sensor.gianluca_room_temperature
   #   below: 74
-  - condition: template
-    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 72.0 }}"
+  - condition: or
+    conditions:
+      - condition: template
+        value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 72.0 }}"
+      - condition: template
+        value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) < 73.0 }}"
 action:
   # Switch the power plug on
   - service: light.turn_on
