@@ -7,6 +7,9 @@ trigger:
       - input_boolean.john_is_in_bed
       - input_boolean.cristina_in_bed
     to: "on"
+  # At 10pm
+  - platform: time
+    at: "22:00:00"
 condition:
   # Home is occupied
   - condition: state

@@ -1,0 +1,21 @@
+id: cristina_extended_away
+alias: Cristina - Extended Away
+mode: parallel
+initial_state: "on"
+trigger:
+  # Away state for 24 hours
+  - platform: state
+    entity_id: input_select.cristina_status_dropdown
+    to: "Away"
+    for:
+      hours: 24
+  # More than 500 kms from home
+  - platform: numeric_state
+    entity_id: proximity.cristina_home
+    above: 500
+action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.cristina_status_dropdown
+    data:
+      option: Extended Away
