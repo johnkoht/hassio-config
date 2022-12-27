@@ -16,10 +16,10 @@ automation:
     alias: "Main Bathroom Shower Occupied"
     mode: "single"
     trigger:
-      # Shower humidity over 75%
+      # Shower humidity over 60%
       - platform: numeric_state
         entity_id: sensor.main_bathroom_humidity
-        above: 75
+        above: 60
     condition:
       # Main Bathroom is occupied
       - condition: state
@@ -45,6 +45,10 @@ automation:
       - platform: numeric_state
         entity_id: sensor.main_bathroom_humidity
         below: 75
+      # Shower humidity crosses under 65%
+      - platform: numeric_state
+        entity_id: sensor.main_bathroom_humidity
+        below: 65
     condition:
       # # Main Bathroom is occupied
       # - condition: state
