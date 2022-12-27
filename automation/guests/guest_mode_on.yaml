@@ -6,15 +6,26 @@ trigger:
     entity_id: group.guests
     from: "not_home"
     to: "home"
+  # More than 10 bluetooth devices detected
+  - platform: numeric_state
+    entity_id: sensor.indoor_bluetooth_device_count
+    above: 10
   - platform: homeassistant
     event: start
 condition:
   - condition: state
     entity_id: input_boolean.guest_mode
     state: "off"
-  - condition: state
-    entity_id: group.guests
-    state: "home"
+  - condition: or
+    conditions:
+      # Guests are home
+      - condition: state
+        entity_id: group.guests
+        state: "home"
+      # OR More than 10 bluetooth devices
+      - condition: numeric_state
+        entity_id: sensor.indoor_bluetooth_device_count
+        above: 10
 action:
   - service: input_boolean.turn_on
     entity_id: input_boolean.guest_mode
