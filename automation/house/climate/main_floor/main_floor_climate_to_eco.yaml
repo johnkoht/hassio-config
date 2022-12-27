@@ -17,18 +17,12 @@ trigger:
     to: "off"
     for:
       minutes: 30
-  # # The house is empty for 60 minutes
-  # - platform: state
-  #   entity_id: input_boolean.house_occupied
-  #   to: "off"
-  #   for:
-  #     minutes: 60
-  # # We're more than 10 km away from home
-  # - platform: numeric_state
-  #   entity_id:
-  #     - proximity.cristina_home
-  #     - proximity.john_home
-  #   above: 10
+  # The house is empty for 60 minutes
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+    for:
+      minutes: 60
 condition:
   # # The house is empty or in bedtime mode
   # - condition: or
@@ -49,21 +43,3 @@ condition:
 action:
   - service: script.main_floor_climate_to_eco
     data: {}
-  # # Save the current temperature
-  # - service: input_number.set_value
-  #   data:
-  #     value: "{{ state_attr('climate.nest_main_floor', 'temperature') }}"
-  #   target:
-  #     entity_id: input_number.temperature_main_floor
-  # # Save the current HVAC mode
-  # - service: input_text.set_value
-  #   data:
-  #     value: '{{ states("climate.nest_main_floor") }}'
-  #   target:
-  #     entity_id: input_text.temperature_mode_main_floor
-  # # Set the Nest to Eco mode
-  # - service: climate.set_preset_mode
-  #   target:
-  #     entity_id: climate.nest_main_floor
-  #   data:
-  #     preset_mode: eco
