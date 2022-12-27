@@ -1,0 +1,21 @@
+id: john_extended_away
+alias: John - Extended Away
+mode: parallel
+initial_state: "on"
+trigger:
+  # Away state for 24 hours
+  - platform: state
+    entity_id: input_select.john_status
+    to: "Away"
+    for:
+      hours: 24
+  # More than 500 kms from home
+  - platform: numeric_state
+    entity_id: proximity.john_home
+    above: 500
+action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.john_status
+    data:
+      option: Extended Away
