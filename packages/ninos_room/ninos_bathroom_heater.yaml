@@ -78,9 +78,9 @@ automation:
           # It's below 65 degrees
           - condition: template
             value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 65.0 }}"
-      # It's after 5:30 am
+      # It's after 4:30 am
       - condition: time
-        after: "05:00:00"
+        after: "04:30:00"
       # It's below 71 degrees
       - condition: template
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
