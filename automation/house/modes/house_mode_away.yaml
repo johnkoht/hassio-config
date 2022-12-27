@@ -6,19 +6,28 @@ trigger:
   - platform: state
     entity_id: input_boolean.house_occupied
     to: "off"
-    for:
-      minutes: 2
+    # for:
+    #   minutes: 2
 action:
-  # - service: input_select.select_option
-  #   data:
-  #     entity_id: input_select.house
-  #     option: "Away"
-  - service: script.turn_on
+  # Set the house to Away
+  - service: input_select.select_option
     data:
-      entity_id: script.house_away
+      entity_id: input_select.house
+      option: "Away"
+
+      # - service: script.turn_on
+  #   data:
+  #     entity_id: script.house_away
+
   # Set the doorbell text
   # This should probably move elsewhere
   - service: select.select_option
     data:
       entity_id: select.front_door_camera_doorbell_text
       option: DO NOT DISTURB
+
+  # Send me a push to log
+  - service: notify.mobile_app_jk
+    data:
+      title: Away Mode
+      message: Nobody is home so away mode has been activated!
