@@ -95,11 +95,11 @@ action:
   # - service: script.climate_activate
   #   data: {}
 
-  # Open the middle garage door
-  - service: cover.open_cover
-    data: {}
-    target:
-      entity_id: cover.garage_door_2
+  # # Open the middle garage door
+  # - service: cover.open_cover
+  #   data: {}
+  #   target:
+  #     entity_id: cover.garage_door_2
 
   # Set the scene based on time of day
   - alias: "If it's late then turn on a late night scene"
@@ -107,9 +107,14 @@ action:
       # If late night
       - alias: "Late night"
         conditions:
-          - condition: state
-            entity_id: sun.sun
-            state: "below_horizon"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: sun.sun
+                state: "below_horizon"
+              # It's after 9pm
+              - condition: time
+                after: "21:00:00"
         sequence:
           - scene: scene.returned_home_late
 
