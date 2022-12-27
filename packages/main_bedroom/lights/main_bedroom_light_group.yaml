@@ -15,7 +15,5 @@ light:
     unique_id: main_bedroom_lights
     entities:
       - light.main_bedroom_main_lights
-      - light.main_bathroom_vanity_lights
-      - light.main_bathroom_ceiling_lights
       - light.hue_ambiance_lamp_1
       - light.hue_ambiance_lamp_1_2

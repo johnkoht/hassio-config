@@ -3,7 +3,7 @@
 automation:
   - id: "garage_lights_turned_off"
     initial_state: on
-    alias: "Main Bedroom lights Manually Turned Off"
+    alias: "Garage lights Manually Turned Off"
     trigger:
       # Lights turned off
       - platform: state
