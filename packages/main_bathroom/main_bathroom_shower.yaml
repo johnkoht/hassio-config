@@ -5,6 +5,14 @@ input_boolean:
     name: Main Bathroom Shower Occupied
     icon: mdi:shower-head
 
+input_number:
+  main_bathroom_initial_humidity:
+    name: Main Bathroom Initial Humidity
+    initial: 30
+    min: 0
+    max: 100
+    step: 1
+
 automation:
   # Main Shower Occupied On
   #
@@ -20,6 +28,12 @@ automation:
       - platform: numeric_state
         entity_id: sensor.main_bathroom_humidity
         above: 60
+      # Humidity spikes more than 20%
+      - platform: template
+        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) > 20 }}"
+      # Humidity spikes more than 40%
+      - platform: template
+        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) > 40 }}"
     condition:
       # Main Bathroom is occupied
       - condition: state
@@ -49,11 +63,27 @@ automation:
       - platform: numeric_state
         entity_id: sensor.main_bathroom_humidity
         below: 65
+      # # Shower humidity crosses under 55%
+      # - platform: numeric_state
+      #   entity_id: sensor.main_bathroom_humidity
+      #   below: 55
+      # # Shower humidity crosses under 45%
+      # - platform: numeric_state
+      #   entity_id: sensor.main_bathroom_humidity
+      #   below: 45
+      # Humidity drops to within 20% of initial humidity
+      - platform: template
+        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) < 20 }}"
+        for:
+          minutes: 4
     condition:
       # # Main Bathroom is occupied
       # - condition: state
       #   entity_id: input_boolean.main_bathroom_occupied
       #   state: "on"
+      # Bathroom humidity within 15% of initial humidity
+      - condition: template
+        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) < 15 }}"
       # Shower is currently occupied
       - condition: state
         entity_id: input_boolean.main_bathroom_shower_occupied
@@ -61,3 +91,21 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.main_bathroom_shower_occupied
+
+  # Record the bathroom humidity when the
+  # bathroom becomes occupied. This will help
+  # figure out if the humidity has spiked since typical
+  # humidity is much lower in the winter than summer.
+  - id: "main_bathroom_set_initial_humidity"
+    alias: "Main bathroom Set Initial Humidity"
+    mode: "single"
+    trigger:
+      # When the bathroom becomes occupied
+      - platform: state
+        entity_id: input_boolean.main_bathroom_occupied
+        to: "on"
+    action:
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.main_bathroom_initial_humidity
+          value: "{{ states.sensor.main_bathroom_humidity.state }}"
