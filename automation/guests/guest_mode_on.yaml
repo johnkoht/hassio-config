@@ -20,13 +20,14 @@ action:
     entity_id: input_boolean.guest_mode
 
   # Wait 2 mins to see if an announcement has been made
-  - delay: "00:20"
+  - delay: "00:02:00"
 
   # If a guest has already been announced then
   # lets skip the guest mode announcement
   - condition: state
     entity_id: input_boolean.guest_mode_announced
     state: "off"
+
   # Announcement
   - service: script.general_announcement
     data:
