@@ -1,0 +1,15 @@
+sensor:
+  - platform: template
+    sensors:
+      indoor_bluetooth_device_count:
+        friendly_name: Indoor Bluetooth Device Count
+        unique_id: indoor_bluetooth_device_count
+        value_template: >-
+          {% set count = 0 %}
+          {% set count = count + (states.sensor.espresense_family_room_count.state | int ) %}
+          {% set count = count + (states.sensor.espresense_kitchen_count.state | int ) %}
+          {% set count = count + (states.sensor.espresense_office_count.state | int ) %}
+          {% set count = count + (states.sensor.espresense_playroom_count.state | int ) %}
+          {% set count = count + (states.sensor.espresense_living_room_count.state | int ) %}
+
+          {{ count }}
