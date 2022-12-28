@@ -71,9 +71,9 @@ automation:
       # - platform: numeric_state
       #   entity_id: sensor.main_bathroom_humidity
       #   below: 45
-      # Humidity drops to within 20% of initial humidity
+      # Humidity drops to within 23% of initial humidity
       - platform: template
-        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) < 25 }}"
+        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) < 23 }}"
         for:
           minutes: 4
     condition:
@@ -83,7 +83,7 @@ automation:
       #   state: "on"
       # Bathroom humidity within 15% of initial humidity
       - condition: template
-        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) < 23 }}"
+        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) < 25 }}"
       # Shower is currently occupied
       - condition: state
         entity_id: input_boolean.main_bathroom_shower_occupied
