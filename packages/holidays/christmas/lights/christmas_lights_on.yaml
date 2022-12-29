@@ -37,3 +37,43 @@ automation:
     action:
       - service: switch.turn_off
         entity_id: switch.christmas_lights
+
+  - id: "handle_ikea_unresponsive"
+    alias: "Handle IKEA Unresponsive"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id:
+          - switch.tradfri_smart_plug_1_switch
+          - switch.tradfri_smart_plug_2_switch
+          - switch.tradfri_smart_plug_3_switch
+          - switch.tradfri_smart_plug_4_switch
+        from: "unresponsive"
+    action:
+      choose:
+        # IF xmas is active then turn ON the lights
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.christmas_active
+              state: "on"
+          sequence:
+            - service: switch.turn_on
+              target:
+                entity_id:
+                  - switch.tradfri_smart_plug_1_switch
+                  - switch.tradfri_smart_plug_2_switch
+                  - switch.tradfri_smart_plug_3_switch
+                  - switch.tradfri_smart_plug_4_switch
+        # ELSE IF xmas is NOT active then turn OFF the lights
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.christmas_active
+              state: "off"
+          sequence:
+            - service: switch.turn_off
+              target:
+                entity_id:
+                  - switch.tradfri_smart_plug_1_switch
+                  - switch.tradfri_smart_plug_2_switch
+                  - switch.tradfri_smart_plug_3_switch
+                  - switch.tradfri_smart_plug_4_switch
