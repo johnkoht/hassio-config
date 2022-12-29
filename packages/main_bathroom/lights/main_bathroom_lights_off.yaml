@@ -1,7 +1,7 @@
 automation:
   - id: "main_bathroom_lights_off"
-    initial_state: off
-    alias: "Main bedroom lights off"
+    initial_state: on
+    alias: "Main Bathroom - Lights Off"
     trigger:
       # Bedroom is Bedtime
       - platform: state
@@ -46,7 +46,7 @@ automation:
           - condition: state
             entity_id: input_boolean.main_bathroom_motion_sensor_occupancy
             state: "off"
-      # Bedroom lights are on
+      # Bathroom lights are on
       - condition: state
         entity_id: light.main_bathroom_lights
         state: "on"
