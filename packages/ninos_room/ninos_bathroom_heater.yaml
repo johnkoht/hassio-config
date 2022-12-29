@@ -4,7 +4,7 @@ automation:
   # in the evening after kids sleep
   - id: "enable_nino_bathroom_heater_automation"
     alias: "Enable Nino's Bathroom Heater Automation"
-    initial_state: on
+    initial_state: off
     trigger:
       # Nino's room becomes occupied for 30 mins
       - platform: state
