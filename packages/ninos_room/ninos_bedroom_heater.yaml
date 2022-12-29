@@ -3,7 +3,7 @@ automation:
   #
   - id: "nino_bedroom_heater_on"
     alias: "Nino bedroom heater on"
-    initial_state: on
+    initial_state: off
     trigger:
       # Nino's room is occupied (e.g. door is closed)
       - platform: state
@@ -38,7 +38,7 @@ automation:
 
   - id: "nino_bedroom_heater_off"
     alias: "Nino bedroom heater off"
-    initial_state: on
+    initial_state: off
     trigger:
       # Nino's door is open for 10 minutes
       - platform: state
