@@ -1,6 +1,6 @@
 id: "gianluca_heater_on"
 alias: "Gianluca heater on"
-initial_state: "off"
+initial_state: "on"
 trigger:
   # Gianluca's room is occupied (e.g. door is closed)
   - platform: state
