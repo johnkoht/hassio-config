@@ -1,6 +1,6 @@
 id: "gianluca_heater_off"
 alias: "Gianluca heater off"
-initial_state: "off"
+initial_state: "on"
 trigger:
   # Gianluca's door changes
   - platform: state
