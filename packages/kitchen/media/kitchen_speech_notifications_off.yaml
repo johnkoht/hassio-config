@@ -16,10 +16,6 @@ automation:
       - condition: state
         entity_id: input_boolean.kitchen_occupied
         state: "on"
-      # # Kitchen is in Entertainment mode
-      # - condition: state
-      #   entity_id: input_select.house
-      #   state: "Entertainment"
     action:
       # Turn on the speech notifications boolean
       - service: input_boolean.turn_off

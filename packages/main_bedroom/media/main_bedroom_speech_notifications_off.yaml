@@ -1,0 +1,33 @@
+# Main Bedroom Speech Notifications Off
+#
+# When the Main Bedroom is not occupied or
+# in Bedtime mode
+#
+automation:
+  - id: "main_bedroom_speech_notifications_off"
+    initial_state: on
+    alias: "Main Bedroom Speech Notifications Off"
+    trigger:
+      # Main Bedroom is NOT occupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "off"
+      # Bedroom is in Bedtime mode
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Bedtime"
+    condition:
+      - condition: or
+        conditions:
+          # Main Bedroom is occupied
+          - condition: state
+            entity_id: input_boolean.main_bedroom_occupied
+            state: "off"
+          # Main Bedroom is in Bedtime mode
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Bedtime"
+    action:
+      # Turn on the speech notifications boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.main_bedroom_speech_notifications
