@@ -1,0 +1,4 @@
+input_boolean:
+  main_bedroom_speech_notifications:
+    name: Main Bedroom Speech Notifications
+    icon: mdi:bullhorn

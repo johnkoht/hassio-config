@@ -17,14 +17,16 @@ automation:
         entity_id: input_select.office
         to: "DnD"
     condition:
-      # Office is occupied
-      - condition: state
-        entity_id: input_boolean.office_occupied
-        state: "on"
-      # Office is in DnD mode
-      - condition: state
-        entity_id: input_select.office
-        state: "DnD"
+      - condition: or
+        conditions:
+          # Office is occupied
+          - condition: state
+            entity_id: input_boolean.office_occupied
+            state: "off"
+          # Office is in DnD mode
+          - condition: state
+            entity_id: input_select.office
+            state: "DnD"
     action:
       # Turn on the speech notifications boolean
       - service: input_boolean.turn_off

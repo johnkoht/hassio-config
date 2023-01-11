@@ -1,0 +1,29 @@
+# Main Bedroom Speech Notifications On
+#
+#
+automation:
+  - id: "main_bedroom_speech_notifications_on"
+    initial_state: on
+    alias: "Main Bedroom Speech Notifications On"
+    trigger:
+      # Main Bedroom becomes occupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "on"
+      # Main bedroom turns to Auto mode
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Auto"
+    condition:
+      # Main Bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.main_bedroom_occupied
+        state: "on"
+      # Main Bedroom is in Auto mode
+      - condition: state
+        entity_id: input_select.kitchen
+        state: "Auto"
+    action:
+      # Turn on the speech notifications boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.main_bedroom_speech_notifications

@@ -10,6 +10,10 @@ automation:
       - platform: state
         entity_id: input_boolean.kitchen_occupied
         to: "on"
+      # Kitchen turns to Auto mode
+      - platform: state
+        entity_id: input_select.kitchen
+        to: "Auto"
     condition:
       # Kitchen is occupied
       - condition: state
