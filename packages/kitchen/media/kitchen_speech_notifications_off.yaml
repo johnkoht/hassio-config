@@ -1,0 +1,26 @@
+# Kitchen Speech Notifications Off
+#
+# When the Kitchen is not occupied
+#
+automation:
+  - id: "kitchen_speech_notifications_off"
+    initial_state: on
+    alias: "Kitchen Speech Notifications Off"
+    trigger:
+      # Kitchen is NOT occupied
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+    condition:
+      # Kitchen is occupied
+      - condition: state
+        entity_id: input_boolean.kitchen_occupied
+        state: "on"
+      # # Kitchen is in Entertainment mode
+      # - condition: state
+      #   entity_id: input_select.house
+      #   state: "Entertainment"
+    action:
+      # Turn on the speech notifications boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kitchen_speech_notifications

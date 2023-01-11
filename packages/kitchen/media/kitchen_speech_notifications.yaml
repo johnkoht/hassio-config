@@ -1,0 +1,4 @@
+input_boolean:
+  kitchen_speech_notifications:
+    name: Kitchen Speech Notifications
+    icon: mdi:bullhorn
