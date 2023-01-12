@@ -11,11 +11,6 @@ automation:
       - platform: state
         entity_id: input_boolean.kitchen_occupied
         to: "off"
-    condition:
-      # Kitchen is occupied
-      - condition: state
-        entity_id: input_boolean.kitchen_occupied
-        state: "on"
     action:
       # Turn on the speech notifications boolean
       - service: input_boolean.turn_off
