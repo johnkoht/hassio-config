@@ -6,7 +6,7 @@
 #
 automation:
   - id: "office_lights_sleep_mode_on"
-    initial_state: on
+    initial_state: off
     alias: "Office Lights Sleep Mode On"
     trigger:
       # 15 mins after sunset
@@ -15,15 +15,15 @@ automation:
         offset: "00:15:00"
       # Or at 8pm
       - platform: time
-        at: "20:00:00"
+        at: "20:00:01"
       # It's dark outside
       - platform: state
         entity_id: input_boolean.dark_outside
         to: "on"
-      # Work hours turn off
-      - platform: state
-        entity_id: binary_sensor.work_hours
-        to: "off"
+      # # Work hours turn off
+      # - platform: state
+      #   entity_id: binary_sensor.work_hours
+      #   to: "off"
       # Office state changes from DnD to Auto
       - platform: state
         entity_id: input_select.office
@@ -41,6 +41,9 @@ automation:
       - condition: state
         entity_id: input_boolean.dark_outside
         state: "on"
+      # After 8pm
+      - condition: time
+        after: "20:00:00"
       # Office is not in DnD mode
       - condition: template
         value_template: "{{ not is_state('input_select.office','DnD') }}"

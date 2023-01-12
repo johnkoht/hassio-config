@@ -6,26 +6,29 @@
 #
 automation:
   - id: "office_lights_sleep_mode_off"
-    initial_state: on
+    initial_state: off
     alias: "Office Lights Sleep Mode Off"
     trigger:
-      # 15 mins after sunrise
+      # 2 hours before sunrise
       - platform: sun
         event: sunrise
+        offset: "-02:00:00"
       # Or at 8am
       - platform: time
-        at: "08:00:00"
+        at: "06:00:01"
     condition:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # Sun is up
-      - condition: sun
-        after: sunrise
-      # After 8am
-      - condition: time
-        after: "08:00:00"
+      - condition: or
+        conditions:
+          # Sun is up
+          - condition: sun
+            after: sunrise
+          # OR it's after 5am
+          - condition: time
+            after: "06:00:00"
     action:
       - service: switch.turn_off
         entity_id: switch.adaptive_lighting_sleep_mode_office
