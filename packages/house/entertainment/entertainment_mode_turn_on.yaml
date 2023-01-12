@@ -1,0 +1,24 @@
+# Turn on Entertainment Mode when more than
+# 20 BLE devices detected in the house
+#
+automation:
+  - id: "entertainment_mode_turn_on"
+    initial_state: on
+    alias: "Entertainment Mode - Turn On"
+    trigger:
+      # More than 20 bluetooth devices detected
+      - platform: numeric_state
+        entity_id: sensor.indoor_bluetooth_device_count
+        above: 20
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      # Turn ON the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.entertainment_mode
+      # Turn on the automation to turn off entertainment mode
+      - service: automation.turn_on
+        entity_id: automation.entertainment_mode_turn_off

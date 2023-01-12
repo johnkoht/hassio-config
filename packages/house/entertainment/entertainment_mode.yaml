@@ -1,0 +1,5 @@
+input_boolean:
+  entertainment_mode:
+    name: Entertainment Mode
+    icon: mdi:liquor
+    initial: off

@@ -1,0 +1,43 @@
+# Turn off Entertainment mode if it's bedtime mode
+# or it's late and there are not as many devices
+#
+automation:
+  - id: "entertainment_mode_turn_off"
+    initial_state: off
+    alias: "Entertainment Mode - Turn Off"
+    trigger:
+      # House goes into bedtime mode
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # House is no longer occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      - platform: time
+        at: "23:00:00"
+      - platform: time
+        at: "23:59:59"
+      # Less than 12 bluetooth devices detected
+      - platform: numeric_state
+        entity_id: sensor.indoor_bluetooth_device_count
+        above: 12
+    condition:
+      # # House is occupied
+      # - condition: state
+      #   entity_id: input_boolean.house_occupied
+      #   state: "on"
+      # Entertainment mode is ON
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "on"
+      # Less than 15 bluetooth devices detected
+      - condition: numeric_state
+        entity_id: sensor.indoor_bluetooth_device_count
+        below: 15
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.entertainment_mode
+      # Turn OFF the automation to turn off entertainment mode
+      - service: automation.turn_off
+        entity_id: automation.entertainment_mode_turn_off

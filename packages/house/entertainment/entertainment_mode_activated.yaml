@@ -1,0 +1,25 @@
+automation:
+  - id: "entertainment_mode_activated"
+    initial_state: off
+    alias: "Entertainment Mode - Activated"
+    trigger:
+      # Entertainment Mode boolean is activated
+      - platform: state
+        entity_id: input_boolean.entertainment_mode
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      # Turn off adaptive lighting
+      - service: switch.turn_off
+        entity_id:
+          - switch.adaptive_lighting_foyer
+          - switch.adaptive_lighting_kitchen
+          - switch.adaptive_lighting_office
+
+      # Turn off speech notifications
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.speech_notifications
