@@ -13,8 +13,14 @@ automation:
       - platform: state
         entity_id: input_boolean.kitchen_occupied
         to: "off"
-        # for:
-        #   minutes: 2
+      # Kitchen is not occupied for 2 mins
+      # This helps handle some lag when the lighting automation
+      # is turned off
+      - platform: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+        for:
+          minutes: 2
       # Lighting automations turn on
       - platform: state
         entity_id: input_boolean.lighting_automations
