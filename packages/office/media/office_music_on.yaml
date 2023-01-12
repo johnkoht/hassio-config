@@ -1,6 +1,6 @@
 automation:
   - id: "office_music_on"
-    initial_state: on
+    initial_state: off
     alias: "Office Music On"
     trigger:
       # Office becomes occupied
