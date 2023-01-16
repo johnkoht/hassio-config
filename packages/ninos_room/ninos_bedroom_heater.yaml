@@ -12,7 +12,7 @@ automation:
         for:
           minutes: 1
       - platform: template
-        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.5 }}"
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.0 }}"
       # After 6:30 pm
       - platform: time
         at: "18:30:00"
@@ -30,7 +30,7 @@ automation:
           - condition: time
             after: "18:30:00"
       - condition: template
-        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 72.0 }}"
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.3 }}"
     action:
       # Switch the power plug on
       - service: switch.turn_on
@@ -46,9 +46,9 @@ automation:
         to: "on"
         for:
           minutes: 10
-      # # Temperature is above 73.1
+      # # Temperature is above 72.1
       - platform: template
-        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 73.1 }}"
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.1 }}"
       # If the house is not occupied
       - platform: state
         entity_id: input_boolean.house_occupied
@@ -61,7 +61,7 @@ automation:
       - condition: or
         conditions:
           - condition: template
-            value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.5 }}"
+            value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.0 }}"
           # OR house is not occupied
           - condition: state
             entity_id: input_boolean.house_occupied
