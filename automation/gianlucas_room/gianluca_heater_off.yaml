@@ -8,11 +8,11 @@ trigger:
     to: "on"
     for:
       minutes: 1
-  # # Temperature is above 72.7
+  # # Temperature is above 72.1
   - platform: template
-    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 72.7 }}"
+    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 72.1 }}"
   - platform: template
-    value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) > 74.1 }}"
+    value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) > 73.1 }}"
   # If the house is not occupied
   - platform: state
     entity_id: input_boolean.house_occupied
@@ -25,9 +25,9 @@ condition:
   - condition: or
     conditions:
       - condition: template
-        value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 72.5 }}"
+        value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) > 72.0 }}"
       - condition: template
-        value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) > 74.9 }}"
+        value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) > 72.9 }}"
       # OR house is not occupied
       - condition: state
         entity_id: input_boolean.house_occupied
