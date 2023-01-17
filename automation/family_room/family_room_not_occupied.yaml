@@ -9,8 +9,13 @@ trigger:
     for:
       minutes: 1
   # No bluetooth devices detected
-  - platform: template
-    value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+  # - platform: template
+  #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+  #   for:
+  #     minutes: 2
+  - platform: state
+    entity_id: binary_sensor.family_room_ble_occupancy
+    to: "off"
     for:
       minutes: 2
   # No motion for 3 minutes
@@ -93,8 +98,11 @@ condition:
           # - condition: template
           #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
   # No BLE devices detected
-  - condition: template
-    value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+  # - condition: template
+  #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+  - condition: state
+    entity_id: binary_sensor.family_room_ble_occupancy
+    state: "off"
 action:
   - service: input_boolean.turn_off
     entity_id: input_boolean.family_room_occupied

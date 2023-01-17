@@ -32,8 +32,12 @@ automation:
       # Either Bluetooth detects people or occupancy detected
       - condition: or
         conditions:
-          - condition: template
-            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length > 0 }}"
+          # - condition: template
+          #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length > 0 }}"
+          # Anybody detected via BLE
+          - condition: state
+            entity_id: binary_sensor.kitchen_ble_occupancy
+            state: "on"
           - condition: state
             entity_id: binary_sensor.kitchen_motion_sensor_occupancy
             state: "on"
