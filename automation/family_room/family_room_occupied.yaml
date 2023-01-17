@@ -36,8 +36,11 @@ condition:
   - condition: or
     conditions:
       # Bluetooth detects somebody
-      - condition: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
+      # - condition: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
+      - condition: state
+        entity_id: binary_sensor.family_room_ble_occupancy
+        state: "on"
       # Aqara occupancy detected
       - condition: state
         entity_id: binary_sensor.family_room_motion_sensor_occupancy

@@ -1,0 +1,14 @@
+# Family Room BLE Occupancy
+#
+# The Family Room has two BLE base stations. This sensor
+# combines them into one to check if anybody is present.
+#
+binary_sensor:
+  - platform: template
+    sensors:
+      family_room_ble_occupancy:
+        friendly_name: "Family Room BLE occupancy"
+        unique_id: "family_room_ble_occupancy"
+        device_class: occupancy
+        value_template: >-
+          {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['family_room', 'family_room_two'])|map(attribute='name')|list | length > 0 }}

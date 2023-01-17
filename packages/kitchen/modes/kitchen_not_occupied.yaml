@@ -9,8 +9,13 @@ automation:
     alias: "Kitchen not occupied"
     trigger:
       # No BLE for 2 minutes
-      - platform: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length == 0 }}"
+      # - platform: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length == 0 }}"
+      #   for:
+      #     minutes: 2
+      - platform: state
+        entity_id: binary_sensor.kitchen_ble_occupancy
+        to: "off"
         for:
           minutes: 2
       # # No motion detected for 3 minutes
@@ -109,8 +114,11 @@ automation:
           #       entity_id: input_boolean.kitchen_lights_auto
           #       state: "off"
       # No BLE devices detected
-      - condition: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length == 0 }}"
+      # - condition: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length == 0 }}"
+      - condition: state
+        entity_id: binary_sensor.kitchen_ble_occupancy
+        state: "off"
       # # Aqara doesn't detect occupancy
       # - condition: state
       #   entity_id: binary_sensor.kitchen_motion_sensor_occupancy
