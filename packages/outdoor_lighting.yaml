@@ -65,11 +65,6 @@ automation:
       - platform: state
         entity_id: input_boolean.exterior_house_lights
         to: "on"
-    condition:
-      - condition: state
-        # entity_id: light.exterior_lights
-        entity_id: light.exterior_house_lights
-        state: "off"
     action:
       - service: light.turn_on
         entity_id: light.exterior_lights
@@ -83,11 +78,6 @@ automation:
       - platform: state
         entity_id: input_boolean.exterior_house_lights
         to: "off"
-    condition:
-      - condition: state
-        # entity_id: light.exterior_lights
-        entity_id: light.exterior_house_lights
-        state: "on"
     action:
       - service: light.turn_off
         entity_id: light.exterior_lights
