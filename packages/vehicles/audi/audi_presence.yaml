@@ -3,8 +3,8 @@ sensor:
     device_id: !secret audi_device_id
     name: "Audi Presence"
     state_topic: !secret audi_state_topic
-    timeout: 60
-    away_timeout: 120
+    timeout: 10
+    away_timeout: 60
 
   - platform: template
     sensors:
