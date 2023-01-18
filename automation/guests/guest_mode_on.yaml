@@ -6,10 +6,12 @@ trigger:
     entity_id: group.guests
     from: "not_home"
     to: "home"
-  # More than 13 bluetooth devices detected
+  # More than 13 bluetooth devices detected for 5 minutes
   - platform: numeric_state
     entity_id: sensor.indoor_bluetooth_device_count
     above: 13
+    for:
+      minutes: 5
   - platform: homeassistant
     event: start
 condition:
