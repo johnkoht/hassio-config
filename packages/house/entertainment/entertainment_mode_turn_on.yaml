@@ -6,10 +6,24 @@ automation:
     initial_state: on
     alias: "Entertainment Mode - Turn On"
     trigger:
-      # More than 20 bluetooth devices detected
+      # More than 30 bluetooth devices detected for 1 min
+      - platform: numeric_state
+        entity_id: sensor.indoor_bluetooth_device_count
+        above: 30
+        for:
+          minutes: 1
+      # More than 25 bluetooth devices detected for 5 minutes
+      - platform: numeric_state
+        entity_id: sensor.indoor_bluetooth_device_count
+        above: 25
+        for:
+          minutes: 5
+      # More than 20 bluetooth devices detected for 10 minutes
       - platform: numeric_state
         entity_id: sensor.indoor_bluetooth_device_count
         above: 20
+        for:
+          minutes: 10
     condition:
       # House is occupied
       - condition: state

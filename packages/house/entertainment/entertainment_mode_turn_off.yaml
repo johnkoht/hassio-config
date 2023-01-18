@@ -22,6 +22,8 @@ automation:
       - platform: numeric_state
         entity_id: sensor.indoor_bluetooth_device_count
         above: 12
+        for:
+          minutes: 3
     condition:
       # # House is occupied
       # - condition: state
