@@ -3,5 +3,5 @@
   device_id: !secret nino_ipad_irk
   name: "Nino iPad Room Presence"
   state_topic: "espresense/rooms"
-  timeout: 60
+  timeout: 10
   away_timeout: 120
