@@ -9,14 +9,14 @@ binary_sensor:
       # Detected in the room
       - platform: state
         entity_id: sensor.john_room_presence
-        prob_given_true: 0.75
-        prob_given_false: 0.1875
+        prob_given_true: 0.65
+        prob_given_false: 0.25
         to_state: "main_bedroom"
       # Not detected in the room
       - platform: template
         value_template: "{{ not is_state('sensor.john_room_presence','main_bedroom') }}"
         prob_given_true: 0.25
-        prob_given_false: 0.875
+        prob_given_false: 0.8
 
       # Phone DnD Status
       #

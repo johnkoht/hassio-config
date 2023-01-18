@@ -15,7 +15,7 @@ automation:
         to: "on"
         for:
           minutes: 5
-      # Main bedroom door is closed for 5 minutes
+      # Main bedroom door is closed for 2 minutes
       - platform: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "off"
