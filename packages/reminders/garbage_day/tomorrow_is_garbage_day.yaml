@@ -1,0 +1,16 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      tomorrow_is_garbage_day:
+        friendly_name: Tomorrow is Garbage Day
+        value_template: >-
+          {% set event = strptime(state_attr('calendar.garbage_day', 'start_time'), '%Y-%m-%d %H:%M:%S') %}
+          {{
+            (
+              event.year == now().year
+              and 
+              event.month == now().month
+              and
+              event.day == now().day + 1
+            )
+          }}

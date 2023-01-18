@@ -23,6 +23,13 @@
       track: true
       search: "Nino Italian class"
       offset: "!!"
+    # Garbage Day
+    - device_id: garbage_day
+      ignore_availability: true
+      name: Garbage day
+      track: true
+      search: "Garbage Day"
+      offset: "!!"
 
 - cal_id: john.koht@gmail.com
   entities:

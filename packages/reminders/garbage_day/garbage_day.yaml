@@ -1,0 +1,4 @@
+input_boolean:
+  garbage_day:
+    name: Garbage Day
+    icon: far:trash-alt

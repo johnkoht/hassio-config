@@ -1,0 +1,30 @@
+automation:
+  - id: "garbage_day_on"
+    alias: "Garbage Day On"
+    mode: "single"
+    trigger:
+      # First thing in the morning
+      - platform: time
+        at: "00:00:01"
+      # Garbage calendar turned ON
+      - platform: calendar
+        event: start
+        entity_id: calendar.garbage_day
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Garbage calendar is ON
+      - condition: state
+        entity_id: calendar.garbage_day
+        state: "on"
+    action:
+      # Turn on the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garbage_day
+
+      # Turn the automation reminder on
+      - service: automation.turn_on
+        entity_id: automation.garbage_day_is_today_reminder
