@@ -3,10 +3,6 @@ automation:
     initial_state: on
     alias: "Main bedroom lights off"
     trigger:
-      # Bedroom is Bedtime
-      - platform: state
-        entity_id: input_select.main_bedroom
-        to: "Bedtime"
       # Bedroom is Off
       - platform: state
         entity_id: input_select.main_bedroom
