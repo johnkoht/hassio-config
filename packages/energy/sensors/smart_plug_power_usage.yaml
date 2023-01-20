@@ -1,0 +1,7 @@
+sensor:
+  # Smart Plug 6 (Nino's heater)
+  - platform: integration
+    source: sensor.lumi_lumi_plug_maus01_active_power
+    name: smart_plug_6_energy_spent
+    unit_prefix: k
+    round: 2
