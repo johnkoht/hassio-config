@@ -26,7 +26,7 @@ automation:
         state: "on"
       # Garbage day boolean is on
       - condition: state
-        entity_id: input_bolean.garbage_day
+        entity_id: input_boolean.garbage_day
         state: "on"
       # After 6am
       - condition: time
