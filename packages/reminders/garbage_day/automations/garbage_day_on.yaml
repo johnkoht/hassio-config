@@ -10,6 +10,11 @@ automation:
       - platform: calendar
         event: start
         entity_id: calendar.garbage_day
+      # Garbage calendar turned ON for 5 minutes
+      - platform: calendar
+        event: start
+        entity_id: calendar.garbage_day
+        offset: "00:05:00"
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
