@@ -10,6 +10,11 @@ automation:
       - platform: calendar
         event: end
         entity_id: calendar.garbage_day
+      # Garbage calendar turned OFF for 5 mins
+      - platform: calendar
+        event: end
+        entity_id: calendar.garbage_day
+        offset: "00:05:00"
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -19,7 +24,7 @@ automation:
       # Garbage calendar is OFF
       - condition: state
         entity_id: calendar.garbage_day
-        state: "of"
+        state: "off"
     action:
       # Turn OFF the boolean
       - service: input_boolean.turn_off
