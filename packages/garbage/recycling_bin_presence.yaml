@@ -1,0 +1,7 @@
+sensor:
+  - platform: mqtt_room
+    device_id: !secret recycling_device_id
+    name: "Recylcing Bin Presence"
+    state_topic: !secret recycling_state_topic
+    timeout: 20
+    away_timeout: 180
