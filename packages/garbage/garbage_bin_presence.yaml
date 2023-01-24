@@ -1,0 +1,7 @@
+sensor:
+  - platform: mqtt_room
+    device_id: !secret garbage_device_id
+    name: "Garbage Bin Presence"
+    state_topic: !secret garbage_state_topic
+    timeout: 20
+    away_timeout: 180
