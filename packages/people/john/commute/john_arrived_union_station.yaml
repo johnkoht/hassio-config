@@ -25,7 +25,7 @@ automation:
         entity_id:
           - automation.john_departed_union_station
           - automation.john_passing_morton_grove_station
-          - automation.john_arrived_glenview_station
+          - automation.john_arrived_at_glenview_station
       # # Announcement
       # - service: script.general_announcement
       #   data:

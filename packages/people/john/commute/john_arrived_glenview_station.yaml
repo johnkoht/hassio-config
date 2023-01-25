@@ -37,8 +37,8 @@ automation:
       #     media_players: "auto"
 
       # Turn off the other automation
-      - service: automation.turn_on
+      - service: automation.turn_off
         entity_id:
           - automation.john_departed_union_station
           - automation.john_passing_morton_grove_station
-          - automation.john_arrived_glenview_station
+          - automation.john_arrived_at_glenview_station
