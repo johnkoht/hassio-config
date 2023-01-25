@@ -1,0 +1,39 @@
+# Off by default, should be turned on if I leave
+# the Golf or Glenview train station
+#
+automation:
+  - id: "cristina_commute_arrived_union_station"
+    alias: "Cristina Commute - Arrived at Union Station"
+    initial_state: on
+    trigger:
+      # Entered the untion station zone
+      - platform: zone
+        entity_id: person.cristina_falbo
+        zone: zone.union_station
+        event: enter
+    condition:
+      # Cristina is not home
+      - condition: state
+        entity_id: input_boolean.cristina_home
+        state: "off"
+      # At the train station
+      - condition: state
+        entity_id: person.cristina_falbo
+        state: "Union Station"
+    action:
+      - service: automation.turn_on
+        entity_id:
+          - automation.cristina_commute_departed_union_station
+          - automation.cristina_commute_passing_morton_grove_station
+          - automation.cristina_commute_arrived_at_glenview_station
+      # Announcement
+      - service: script.general_announcement
+        data:
+          speech_message: >-
+            {{
+              [
+                "Attention! Mamma just arrived at Union Station.",
+                "Pardon the interruption, just wanted to let you know Mamma's train arrived downtown."
+              ] | random
+            }}
+          media_players: "auto"

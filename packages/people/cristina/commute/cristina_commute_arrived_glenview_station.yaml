@@ -1,0 +1,31 @@
+# Off by default, should be turned on if I leave
+# the Golf or Glenview train station
+#
+automation:
+  - id: "cristina_commute_arrived_glenview_station"
+    alias: "Cristina Commute - Arrived at Glenview Station"
+    initial_state: off
+    trigger:
+      # Entered the Glenview Station zone
+      - platform: zone
+        entity_id: person.cristina_falbo
+        zone: zone.glenview_train_station
+        event: enter
+    condition:
+      # Cristina is not home
+      - condition: state
+        entity_id: input_boolean.cristina_home
+        state: "off"
+      # After noon
+      - condition: time
+        after: "12:00:00"
+      # # Traveling towards home
+      # - condition: template
+      #   value_template: "{{ states.proximity.cristina_home.attributes.dir_of_travel == 'towards' }}"
+    action:
+      # Turn off the other automation
+      - service: automation.turn_off
+        entity_id:
+          - automation.cristina_commute_departed_union_station
+          - automation.cristina_commute_passing_morton_grove_station
+          - automation.cristina_commute_arrived_at_glenview_station
