@@ -6,6 +6,9 @@ automation:
       # At 5:30 PM
       - platform: time
         at: "17:30:00"
+      # At 8pm
+      - platform: time
+        at: "20:00:00"
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
