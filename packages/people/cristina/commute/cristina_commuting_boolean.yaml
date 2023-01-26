@@ -1,0 +1,5 @@
+input_boolean:
+  cristina_commuting:
+    name: Cristina Commuting
+    icon: mdi:train-car
+    initial: false
