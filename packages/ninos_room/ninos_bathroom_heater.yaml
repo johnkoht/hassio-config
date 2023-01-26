@@ -81,17 +81,17 @@ automation:
       # It's after 4:30 am
       - condition: time
         after: "04:30:00"
-      # It's below 71 degrees
+      # It's below 71 degree
       - condition: template
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
       # Switch is OFF
       - condition: state
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
         state: "off"
     action:
       # Switch the power plug on
       - service: switch.turn_on
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
       # Turn off the automation
       - service: automation.turn_off
         entity_id: automation.nino_s_bathroom_heater_on
@@ -119,19 +119,19 @@ automation:
         to: "off"
       # If the plug is on for more than 3 hours
       - platform: state
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
         to: "on"
         for:
           hours: 3
     condition:
       # Switch is ON
       - condition: state
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
         state: "on"
     action:
       # Switch the power plug OFF
       - service: switch.turn_off
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
 
   - id: "ninos_bathroom_heater_turn_on_upon_arrival"
     alias: "Nino's Bathroom Heater - Turn On Upon Arrival"
@@ -181,4 +181,4 @@ automation:
     action:
       # Switch the power plug on
       - service: switch.turn_on
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch

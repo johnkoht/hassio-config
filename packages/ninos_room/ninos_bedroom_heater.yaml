@@ -34,7 +34,7 @@ automation:
     action:
       # Switch the power plug on
       - service: switch.turn_on
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
 
   - id: "nino_bedroom_heater_off"
     alias: "Nino bedroom heater off"
@@ -72,12 +72,12 @@ automation:
             state: "off"
       # Plug is currently on
       - condition: state
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
         state: "on"
     action:
       # Switch the power plug of
       - service: switch.turn_off
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
 
   - id: "ninos_bedroom_heater_turn_on_upon_arrival"
     alias: "Nino Bedroom Heater - Turn On Upon Arrival"
@@ -127,4 +127,4 @@ automation:
     action:
       # Switch the power plug on
       - service: switch.turn_on
-        entity_id: switch.smart_plug_6_switch
+        entity_id: switch.smart_plug_2_switch
