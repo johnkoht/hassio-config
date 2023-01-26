@@ -3,7 +3,8 @@ sensor:
     # device_id: "apple:1007:11-7"
     device_id: "John's iPhone"
     name: "John Room Presence RAW"
-    state_topic: "espresense/rooms"
+    # state_topic: "espresense/rooms"
+    state_topic: "espresense/devices/John's iPhone"
     timeout: 10
     away_timeout: 120
 
