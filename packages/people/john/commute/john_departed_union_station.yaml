@@ -19,9 +19,13 @@ automation:
       # It's after noon
       - condition: time
         after: "12:00:00"
-      # Headed towards home
-      - condition: template
-        value_template: "{{ states.proximity.john_home.attributes.dir_of_travel == 'towards' }}"
+      # # Headed towards home
+      # - condition: template
+      #   value_template: "{{ states.proximity.john_home.attributes.dir_of_travel == 'towards' }}"
+      # John is commuting boolean is ON
+      - condition: state
+        entity_id: input_boolean.john_commuting
+        state: "on"
     action:
       # Announcement
       - service: script.general_announcement
