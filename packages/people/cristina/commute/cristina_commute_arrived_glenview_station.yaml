@@ -22,6 +22,10 @@ automation:
       # # Traveling towards home
       # - condition: template
       #   value_template: "{{ states.proximity.cristina_home.attributes.dir_of_travel == 'towards' }}"
+      # Cristina is commuting boolean is ON
+      - condition: state
+        entity_id: input_boolean.cristina_commuting
+        state: "on"
     action:
       # Turn off the other automation
       - service: automation.turn_off

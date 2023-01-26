@@ -1,0 +1,25 @@
+automation:
+  - id: "cristina_is_not_commuting"
+    alias: "Cristina is Not Commuting"
+    initial_state: off
+    trigger:
+      # Location changes to a train station for 2 mins
+      - platform: state
+        entity_id: person.cristina_falbo
+        to: "Home"
+    condition:
+      # Cristina is home
+      - condition: state
+        entity_id: input_boolean.cristina_home
+        state: "on"
+      # Commuting boolean is ON
+      - condition: state
+        entity_id: input_boolean.cristina_commuting
+        state: "on"
+    action:
+      # Turn OFF the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.cristina_commuting
+      # Turn OFF this automatino
+      - service: automation.turn_off
+        entity_id: automation.cristina_is_not_commuting
