@@ -33,8 +33,8 @@ automation:
         after: "06:00:00"
         before: "09:00:00"
     action:
-      # Kitchen has been occupied for more than 30 minutes
-      - wait_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 1800 }}"
+      # Kitchen has been occupied for more than 15 minutes
+      - wait_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 900 }}"
         timeout: "00:15:00"
         continue_on_timeout: false
 
