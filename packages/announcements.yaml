@@ -41,6 +41,21 @@ input_number:
     min: 0
     max: 1
 
+binary_sensor:
+  - platform: template
+    sensors:
+      announceable_rooms_occupied:
+        friendly_name: Announceable Rooms Occupied
+        unique_id: announceable_rooms_occupied
+        value_template: >-
+          {{
+            states.input_boolean.kitchen_occupied.state == "on"
+            or states.input_boolean.family_room_occupied.state == "on"
+            or states.input_boolean.playroom_occupied.state == "on"
+            or states.input_boolean.office_occupied.state == "on"
+            or states.input_boolean.main_bedroom_occupied.state == "on"
+          }}
+
 # media_player:
 #   - platform: group
 #     name: Currently Announcing
@@ -85,6 +100,10 @@ script:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
+      # A room that we can announce to is occupied
+      - condition: state
+        entity_id: binary_sensor.announceable_rooms_occupied
+        state: "on"
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
