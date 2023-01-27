@@ -46,12 +46,12 @@ automation:
               - condition: state
                 entity_id: binary_sensor.playroom_motion_sensor_motion
                 state: "on"
-              # AND the room has been occupied for 3 minutes
+              # AND the room has been occupied for 30 seconds
               - condition: state
                 entity_id: input_boolean.playroom_occupied
                 state: "on"
                 for:
-                  minutes: 3
+                  seconds: 30
               # Playroom has been occupied for more than 180 seconds
               # - condition: template
               #   value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.playroom_occupied.last_changed)) | int > 180 }}"
