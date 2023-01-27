@@ -9,11 +9,6 @@ automation:
       # At 8pm
       - platform: time
         at: "20:00:00"
-      # Hassio reloads/starts
-      - platform: event
-        event_type: automation_reloaded
-      - platform: homeassistant
-        event: start
       # House becomes occupied for 15 minutes
       - platform: state
         entity_id: input_boolean.house_occupied
