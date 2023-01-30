@@ -1,0 +1,4 @@
+input_boolean:
+  christmas_season_active:
+    name: Christmas Season Active
+    icon: mdi:pine-tree
