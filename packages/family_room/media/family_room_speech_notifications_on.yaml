@@ -1,0 +1,29 @@
+# Family Room Speech Notifications On
+#
+#
+automation:
+  - id: "family_room_speech_notifications_on"
+    initial_state: on
+    alias: "Family Room Speech Notifications On"
+    trigger:
+      # Family Room becomes occupied
+      - platform: state
+        entity_id: input_boolean.family_room_occupied
+        to: "on"
+      # Family Room turns to Auto mode
+      - platform: state
+        entity_id: input_select.family_room
+        to: "Auto"
+    condition:
+      # Family Room is occupied
+      - condition: state
+        entity_id: input_boolean.family_room_occupied
+        state: "on"
+      # Family Room is in Auto mode
+      - condition: state
+        entity_id: input_select.family_room
+        state: "Auto"
+    action:
+      # Turn on the speech notifications boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.family_room_speech_notifications

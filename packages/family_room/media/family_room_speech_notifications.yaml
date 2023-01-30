@@ -1,0 +1,4 @@
+input_boolean:
+  family_room_speech_notifications:
+    name: Family room Speech Notifications
+    icon: mdi:bullhorn
