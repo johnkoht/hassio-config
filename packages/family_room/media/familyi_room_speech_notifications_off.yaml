@@ -1,0 +1,17 @@
+# Family Room Speech Notifications Off
+#
+# When the Family Room is not occupied
+#
+automation:
+  - id: "family_room_speech_notifications_off"
+    initial_state: on
+    alias: "Family Room Speech Notifications Off"
+    trigger:
+      # Family Room is NOT occupied
+      - platform: state
+        entity_id: input_boolean.family_room_occupied
+        to: "off"
+    action:
+      # Turn on the speech notifications boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.family_room_speech_notifications
