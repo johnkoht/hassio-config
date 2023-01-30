@@ -17,6 +17,7 @@ script:
         data:
           entity_id:
             - media_player.sonos_playroom
-            - media_player.sonos_family_and_kitchen
+            - media_player.sonos_family_room
+            - media_player.sonos_kitchen
           media_content_id: https://github.com/johnkoht/hass-config/blob/master/config/sounds/santa/santa-goodnight.mp3?raw=true
           media_content_type: music

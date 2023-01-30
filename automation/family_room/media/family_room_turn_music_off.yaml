@@ -37,8 +37,8 @@ condition:
             entity_id: input_select.house
             state: "Away"
   - condition: state
-    entity_id: media_player.sonos_family_and_kitchen
+    entity_id: media_player.sonos_family_room
     state: "playing"
 action:
   - service: media_player.turn_off
-    entity_id: media_player.sonos_family_and_kitchen
+    entity_id: media_player.sonos_family_room
