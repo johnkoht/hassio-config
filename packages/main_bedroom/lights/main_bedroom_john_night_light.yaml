@@ -20,10 +20,10 @@ automation:
       #   entity_id: sensor.john_room_presence
       #   to: "main_bedroom"
     condition:
-      # Light automations are enabled
-      - condition: state
-        entity_id: input_boolean.lighting_automations
-        state: "on"
+      # # Light automations are enabled
+      # - condition: state
+      #   entity_id: input_boolean.lighting_automations
+      #   state: "on"
       # John is home
       - condition: state
         entity_id: input_boolean.john_home
@@ -71,9 +71,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.bedtime
         state: "on"
-      - condition: time
-        after: "22:00:00"
-        before: "01:00:00"
+      # - condition: time
+      #   after: "22:00:00"
+      #   before: "01:00:00"
     action:
       - service: light.turn_on
         entity_id:
