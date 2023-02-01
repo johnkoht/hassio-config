@@ -19,10 +19,15 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
         state: "on"
-      # Main Bedroom is in Auto mode
-      - condition: state
-        entity_id: input_select.kitchen
-        state: "Auto"
+      # Main Bedroom is Auto or Wake
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Wake"
     action:
       # Turn on the speech notifications boolean
       - service: input_boolean.turn_on
