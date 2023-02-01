@@ -35,9 +35,9 @@ condition:
   - condition: or
     conditions:
       - condition: template
-        value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 70.5 }}"
+        value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) <= 70.5 }}"
       - condition: template
-        value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) < 72.0 }}"
+        value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) <= 72.0 }}"
 action:
   # Switch the power plug on
   - service: light.turn_on
