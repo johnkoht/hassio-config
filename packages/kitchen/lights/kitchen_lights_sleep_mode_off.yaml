@@ -1,0 +1,30 @@
+# Kitchen Lights Sleep Mode Off
+#
+automation:
+  - id: "kitchen_lights_sleep_mode_off"
+    initial_state: off
+    alias: "Kitchen Lights Sleep Mode Off"
+    trigger:
+      # 1 hour after sunrise
+      - platform: sun
+        event: sunrise
+        offset: "01:00:00"
+      # Or at 7am
+      - platform: time
+        at: "07:00:00"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: or
+        conditions:
+          # Sun is up
+          - condition: sun
+            after: sunrise
+          # OR it's after 7am
+          - condition: time
+            after: "07:00:00"
+    action:
+      - service: switch.turn_off
+        entity_id: switch.adaptive_lighting_sleep_mode_kitchen

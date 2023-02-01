@@ -1,0 +1,35 @@
+# Kitchen Lights Sleep Mode On
+#
+automation:
+  - id: "kitchen_lights_sleep_mode_on"
+    initial_state: off
+    alias: "Kitchen Lights Sleep Mode On"
+    trigger:
+      # House goes into bedtime mode:
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # At 11pm
+      - platform: time
+        at: "23:00:00"
+      # At 3am
+      - platform: time
+        at: "03:00:00"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Sun is down
+      - condition: sun
+        after: sunset
+      # It's dark outside
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "on"
+      # After 8pm
+      - condition: time
+        after: "20:00:00"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.adaptive_lighting_sleep_mode_kitchen
