@@ -19,10 +19,15 @@ automation:
       - condition: state
         entity_id: input_boolean.kitchen_occupied
         state: "on"
-      # Kitchen is in Auto mode
-      - condition: state
-        entity_id: input_select.kitchen
-        state: "Auto"
+      # Kitchen is Auto or Dim
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.kitchen
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.kitchen
+            state: "Dim"
     action:
       # Turn on the speech notifications boolean
       - service: input_boolean.turn_on
