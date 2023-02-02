@@ -1,0 +1,4 @@
+input_boolean:
+  john_personal_time:
+    name: John Personal Time
+    icon: mdi:account-star-outline

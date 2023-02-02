@@ -41,7 +41,7 @@ automation:
           #       state: "off"
           #     # Personal time (GSD, OOO, etc)
           #     - condition: state
-          #       entity_id: binary_sensor.john_personal_time
+          #       entity_id: input_boolean.john_personal_time
           #       state: "off"
           # OR Only my personal time is on (which is rare)
           - condition: and
@@ -52,7 +52,7 @@ automation:
                 state: "off"
               # Personal time (GSD, OOO, etc)
               - condition: state
-                entity_id: binary_sensor.john_personal_time
+                entity_id: input_boolean.john_personal_time
                 state: "on"
           # OR I have a calendar event but it's personal time
           - condition: and
@@ -63,7 +63,7 @@ automation:
                 state: "on"
               # Personal time (GSD, OOO, etc)
               - condition: state
-                entity_id: binary_sensor.john_personal_time
+                entity_id: input_boolean.john_personal_time
                 state: "on"
           # OR I have a work calendar event and my camera just turned off
           - condition: and
@@ -74,7 +74,7 @@ automation:
                 state: "on"
               # Personal time (GSD, OOO, etc)
               - condition: state
-                entity_id: binary_sensor.john_personal_time
+                entity_id: input_boolean.john_personal_time
                 state: "off"
               # Camera just turned off within 30 seconds
               - condition: template
