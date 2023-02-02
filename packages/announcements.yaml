@@ -216,6 +216,8 @@ script:
               https://github.com/johnkoht/hass-config/blob/master/config/sounds/one-tone-chime.mp3?raw=true
             {% elif sound == "flute-cell-phone-alert" %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/flute-cell-phone-alert.wav?raw=true
+            {% elif sound == "arcade" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/arcade-bonus-alert.wav?raw=true
             {% else %}
               https://github.com/johnkoht/hass-config/blob/master/config/sounds/Notification-sound.mp3?raw=true
             {% endif %}

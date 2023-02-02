@@ -38,4 +38,4 @@ automation:
                 "Just a friendly note that Baba's train has departed."
               ] | random
             }}
-          media_players: "auto"
+          media_players: "arcade"

@@ -21,20 +21,20 @@ automation:
         entity_id: person.john_koht
         state: "Union Station"
     action:
+      # Turn on the return automations
       - service: automation.turn_on
         entity_id:
           - automation.john_departed_union_station
           - automation.john_passing_morton_grove_station
           - automation.john_arrived_at_glenview_station
-      # # Announcement
-      # - service: script.general_announcement
-      #   data:
-      #     speech_message: >-
-      #       {{
-      #         [
-      #           "Attention! Baba just arrived at Union Station.",
-      #           "Pardon the interruption, but Baba just go to work.",
-      #           "Just a friendly note that Baba has arrived at the office."
-      #         ] | random
-      #       }}
-      #     media_players: "auto"
+      # Announcement
+      - service: script.general_announcement
+        data:
+          speech_message: >-
+            {{
+              [
+                "Attention! Baba just arrived at Union Station.",
+                "Pardon the interruption, just wanted to let you know Baba's train arrived downtown."
+              ] | random
+            }}
+          media_players: "arcade"
