@@ -37,7 +37,11 @@ condition:
   # Not Just Arrived state
   - condition: template
     value_template: "{{ not is_state('input_select.cristina_status_dropdown', 'Just Arrived') }}"
-
+  # Cristina home boolean is ON
+  - condition: state
+    entity_id: input_boolean.cristina_home
+    state: "on"
+  #
   - condition: or
     conditions:
       # Not home vased on Bayesian sensor
