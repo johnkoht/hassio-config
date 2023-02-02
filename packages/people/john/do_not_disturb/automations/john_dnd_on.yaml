@@ -44,11 +44,11 @@ automation:
       #           state: "on"
       #         # Not personal time (GSD, OOO, etc)
       #         - condition: state
-      #           entity_id: binary_sensor.john_personal_time
+      #           entity_id: input_boolean.john_personal_time
       #           state: "off"
       # Not personal time (GSD, OOO, etc)
       - condition: state
-        entity_id: binary_sensor.john_personal_time
+        entity_id: input_boolean.john_personal_time
         state: "off"
       # It's working hours
       - condition: state

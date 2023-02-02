@@ -1,0 +1,32 @@
+automation:
+  - id: "john_personal_time_off"
+    initial_state: on
+    alias: "John Personal Time Off"
+    mode: queued
+    trigger:
+      # Block Calendar ended
+      - platform: calendar
+        event: end
+        entity_id: calendar.john_block
+      # GSD Calendar ended
+      - platform: calendar
+        event: end
+        entity_id: calendar.john_gsd
+      # OOO Calendar ended
+      - platform: calendar
+        event: end
+        entity_id: calendar.john_ooo
+    condition:
+      # Personal time boolean is ON
+      - condition: state
+        entity_id: input_boolean.john_personal_time
+        state: "on"
+    action:
+      # Turn OFF the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.john_personal_time
+      # Notification for testing
+      - service: notify.mobile_app_jk
+        data:
+          message: John personal time turned OFF
+          title: John Personal Time
