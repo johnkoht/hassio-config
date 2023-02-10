@@ -12,6 +12,12 @@ trigger:
       - input_boolean.cristina_is_awake
       - input_boolean.john_is_awake
     to: "on"
+  # At 6:30am
+  - platform: time
+    at: "06:30:00"
+  # At sunrise
+  - platform: sun
+    event: sunrise
 condition:
   - condition: time
     after: "05:00:00"
