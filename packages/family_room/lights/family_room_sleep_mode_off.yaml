@@ -28,3 +28,6 @@ automation:
     action:
       - service: switch.turn_off
         entity_id: switch.adaptive_lighting_sleep_mode_family_room
+      # Turn off this automation
+      - service: automation.turn_off
+        entity_id: automation.family_room_lights_sleep_mode_off
