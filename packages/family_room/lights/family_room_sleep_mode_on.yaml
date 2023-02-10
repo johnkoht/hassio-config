@@ -2,7 +2,7 @@
 #
 automation:
   - id: "family_room_lights_sleep_mode_on"
-    initial_state: off
+    initial_state: on
     alias: "Family Room Lights Sleep Mode On"
     trigger:
       # House goes into bedtime mode:
@@ -33,3 +33,6 @@ automation:
     action:
       - service: switch.turn_on
         entity_id: switch.adaptive_lighting_sleep_mode_family_room
+      # Turn on the automation that turns off sleep mode
+      - service: automation.turn_on
+        entity_id: automation.family_room_lights_sleep_mode_off
