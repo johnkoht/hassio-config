@@ -25,6 +25,10 @@ automation:
       - condition: state
         entity_id: calendar.garbage_day
         state: "on"
+      # Garbage day boolean is current OFF
+      - condition: state
+        entity_id: input_boolean.garbage_day
+        state: "off"
     action:
       # Turn on the boolean
       - service: input_boolean.turn_on
