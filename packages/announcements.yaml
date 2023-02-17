@@ -123,10 +123,11 @@ script:
           media_players: >-
             {% if media_players == "all" or media_players == "auto" %}
               {% set media_players = [] %}   
-              
+              {# Check which rooms are occupied and if speech notifications are turned #}
+              {# on for them. If so, add them to an array of announceable rooms #}
               {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}
                 {% set media_players = media_players + ["media_player.sonos_office"] %}
-              {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" %}
+              {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" and states.input_boolean.family_room_speech_notifications.state == "on" %}
                 {% set media_players = media_players + ["media_player.sonos_family_room"] %}
               {% endif %}{% if states.input_boolean.kitchen_occupied.state == "on" and states.input_boolean.kitchen_speech_notifications.state == "on" %}
                 {% set media_players = media_players + ["media_player.sonos_kitchen"] %}
