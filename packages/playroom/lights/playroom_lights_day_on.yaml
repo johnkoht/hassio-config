@@ -24,14 +24,6 @@ automation:
         below: 25
         for:
           minutes: 3
-      # If the lighting is low in the playroom
-      - platform: numeric_state
-        entity_id:
-          - sensor.playroom_motion_sensor_illuminance
-          - sensor.playroom_entry_motion_sensor_illuminance
-        below: 15
-        for:
-          minutes: 5
       # The weather is bad outside
       - platform: state
         entity_id: input_boolean.bad_weather
