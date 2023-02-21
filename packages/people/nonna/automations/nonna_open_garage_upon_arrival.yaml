@@ -13,6 +13,10 @@ automation:
       - condition: state
         entity_id: person.mary_falbo
         state: "home"
+      # Stat us just arrived
+      - condition: state
+        entity_id: input_select.nonna_status
+        state: "Just Arrived"
       # # Motion detected within the last 60 seconds
       # - condition: template
       #   value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.garage_driveway_camera_motion.last_updated)) | int < 60 }}"
