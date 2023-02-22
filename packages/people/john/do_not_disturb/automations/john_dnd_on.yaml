@@ -26,6 +26,10 @@ automation:
       - platform: calendar
         event: start
         entity_id: calendar.john_launchpadlab_com
+      # Personal time turns ON
+      - platform: state
+        entity_id: input_boolean.john_personal_time
+        to: "off"
     condition:
       # # Camera ON
       # # Calendar ON AND Personal Time OFF

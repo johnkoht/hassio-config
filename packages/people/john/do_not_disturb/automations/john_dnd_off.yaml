@@ -24,6 +24,10 @@ automation:
         to: "off"
         for:
           seconds: 90
+      # Personal time turns ON
+      - platform: state
+        entity_id: input_boolean.john_personal_time
+        to: "on"
     condition:
       # Camera is off
       - condition: state
