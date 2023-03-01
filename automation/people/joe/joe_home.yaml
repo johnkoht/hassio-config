@@ -19,9 +19,23 @@ trigger:
   - platform: homeassistant
     event: start
 condition:
+  # - condition: state
+  #   entity_id: binary_sensor.joe_presence
+  #   state: "on"
+  # Not currently home
   - condition: state
-    entity_id: binary_sensor.joe_presence
-    state: "on"
+    entity_id: input_boolean.joe_home
+    state: "off"
+  - condition: or
+    conditions:
+      # Make sure the bayesian sensor is marked as home
+      - condition: state
+        entity_id: binary_sensor.joe_presence
+        state: "on"
+      # Person state is home
+      - condition: state
+        entity_id: person.joe_falbo
+        state: "home"
 action:
   - service: script.turn_on
     entity_id: script.joe_home
