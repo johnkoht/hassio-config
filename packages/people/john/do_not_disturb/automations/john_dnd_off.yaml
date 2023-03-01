@@ -4,27 +4,27 @@ automation:
     alias: "John DnD Off"
     mode: queued
     trigger:
-      # Calendar turns OFF
-      - platform: state
-        entity_id: calendar.john_launchpadlab_com
-        to: "off"
-        for:
-          minutes: 10
+      # # Calendar turns OFF
+      # - platform: state
+      #   entity_id: calendar.john_launchpadlab_com
+      #   to: "off"
+      #   for:
+      #     minutes: 10
       # Calendar event ended
       - platform: calendar
         event: end
         entity_id: calendar.john_launchpadlab_com
         offset: "00:02:00"
-      # Webcam turned OFF
-      - platform: state
-        entity_id: binary_sensor.john_laptop_camera_active
-        to: "off"
-      # Webcam turned OFF for 90 seconds
-      - platform: state
-        entity_id: binary_sensor.john_laptop_camera_active
-        to: "off"
-        for:
-          seconds: 90
+      # # Webcam turned OFF
+      # - platform: state
+      #   entity_id: binary_sensor.john_laptop_camera_active
+      #   to: "off"
+      # # Webcam turned OFF for 90 seconds
+      # - platform: state
+      #   entity_id: binary_sensor.john_laptop_camera_active
+      #   to: "off"
+      #   for:
+      #     seconds: 90
       # Personal time turns ON
       - platform: state
         entity_id: input_boolean.john_personal_time
