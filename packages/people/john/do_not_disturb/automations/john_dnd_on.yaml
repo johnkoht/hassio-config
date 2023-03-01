@@ -26,7 +26,7 @@ automation:
       - platform: calendar
         event: start
         entity_id: calendar.john_launchpadlab_com
-      # Personal time turns ON
+      # Personal time turns OFF
       - platform: state
         entity_id: input_boolean.john_personal_time
         to: "off"

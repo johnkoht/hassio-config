@@ -8,14 +8,17 @@ automation:
       - platform: calendar
         event: start
         entity_id: calendar.john_block
+        offset: "00:00:05"
       # GSD Calendar started
       - platform: calendar
         event: start
         entity_id: calendar.john_gsd
+        offset: "00:00:05"
       # OOO Calendar started
       - platform: calendar
         event: start
         entity_id: calendar.john_ooo
+        offset: "00:00:05"
     condition:
       # Personal time boolean is OFF
       - condition: state
