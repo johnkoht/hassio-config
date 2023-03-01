@@ -62,3 +62,7 @@ automation:
       # Turn on the regular motion automation
       - service: automation.turn_on
         entity_id: automation.main_bathroom_lights_motion_on
+
+      # Turn OFF sleep mode
+      - service: switch.turn_off
+        entity_id: switch.adaptive_lighting_sleep_mode_main_bathroom
