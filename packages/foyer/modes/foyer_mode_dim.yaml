@@ -1,6 +1,6 @@
 automation:
   - id: "foyer_mode_dim"
-    initial_state: on
+    initial_state: off
     alias: "Foyer mode dim"
     trigger:
       # House becomes occupied
@@ -38,32 +38,20 @@ automation:
       # House is turned to Auto, Bedtime, or Quiet mode
       - condition: template
         value_template: "{{ states('input_select.house') in ('Auto', 'Bedtime', 'Quiet') }}"
-      # It's dark outside
-      - condition: state
-        entity_id: input_boolean.dark_outside
-        state: "on"
-      # - condition: or
-      #   conditions:
-      #     # Sun is going down
-      #     - condition: numeric_state
-      #       entity_id: sensor.sun_elevation
-      #       below: 5
-      #     # Sun is above horizon but it's dark outside
-      #     - condition: and
-      #       conditions:
-      #         # Sun is above the horizon
-      #         - condition: state
-      #           entity_id: sun.sun
-      #           state: "above_horizon"
-      #         # It's dark outside
-      #         - condition: numeric_state
-      #           entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-      #           below: 50
+      - condition: or
+        conditions:
+          # It's dark outside
+          - condition: state
+            entity_id: input_boolean.dark_outside
+            state: "on"
+          # Sun is down
+          - condition: sun
+            after: sunset
       # Foyer isn't already set to dim
       - condition: template
         value_template: "{{ not is_state('input_select.foyer','Dim') }}"
     action:
-      # Turn the foyer to dime.
+      # Turn the foyer to dim
       - service: input_select.select_option
         data:
           entity_id: input_select.foyer

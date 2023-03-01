@@ -9,9 +9,10 @@ automation:
     initial_state: on
     alias: "Foyer Lights Sleep Mode Off"
     trigger:
-      # 15 mins after sunrise
+      # At sunrise
       - platform: sun
         event: sunrise
+        offset: "00:15:00"
       # Or at 8am
       - platform: time
         at: "08:00:00"
