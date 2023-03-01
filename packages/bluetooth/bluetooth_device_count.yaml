@@ -7,9 +7,11 @@ sensor:
         value_template: >-
           {% set count = 0 %}
           {% set count = count + (states.sensor.espresense_family_room_count.state | int ) %}
+          {% set count = count + (states.sensor.espresense_family_room_two_count.state | int ) %}
           {% set count = count + (states.sensor.espresense_kitchen_count.state | int ) %}
+          {% set count = count + (states.sensor.espresense_kitchen_two_count.state | int ) %}
           {% set count = count + (states.sensor.espresense_office_count.state | int ) %}
           {% set count = count + (states.sensor.espresense_playroom_count.state | int ) %}
-          {% set count = count + (states.sensor.espresense_living_room_count.state | int ) %}
+          {% set count = count + (states.sensor.espresense_living_room_count.state | int ) %}          
 
           {{ count }}
