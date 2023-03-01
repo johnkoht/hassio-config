@@ -18,12 +18,12 @@ automation:
         at: "23:00:00"
       - platform: time
         at: "23:59:59"
-      # Less than 12 bluetooth devices detected
+      # Less than 5 bluetooth devices detected
       - platform: numeric_state
         entity_id: sensor.indoor_bluetooth_device_count
-        above: 12
+        below: 5
         for:
-          minutes: 3
+          minutes: 10
     condition:
       # # House is occupied
       # - condition: state
@@ -33,10 +33,10 @@ automation:
       - condition: state
         entity_id: input_boolean.entertainment_mode
         state: "on"
-      # Less than 15 bluetooth devices detected
+      # Less than 5 bluetooth devices detected
       - condition: numeric_state
         entity_id: sensor.indoor_bluetooth_device_count
-        below: 15
+        below: 5
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.entertainment_mode
