@@ -5,11 +5,6 @@ automation:
     initial_state: on
     alias: "Main bedroom not occupied"
     trigger:
-      # # Nobody detected via Bluetooth for 2 minutes
-      # - platform: template
-      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length == 0 }}"
-      #   for:
-      #     minutes: 2
       # Anybody detected via BLE
       - platform: state
         entity_id: binary_sensor.main_bedroom_ble_occupancy
@@ -41,9 +36,6 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
         state: "on"
-      # Nobody detected via BLE
-      - condition: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | length == 0 }}"
       # Anybody detected via BLE
       - condition: state
         entity_id: binary_sensor.main_bedroom_ble_occupancy
@@ -56,10 +48,12 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-      # Main bedroom sensor no longer detects occupancy
+      # No motion for 5 minutes
       - condition: state
-        entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
+        entity_id: binary_sensor.main_bedroom_motion_sensor
         state: "off"
+        for:
+          minutes: 5
       # Auto mode between 5-midnight
       # OR bedtime mode and between 6am-9pm
       - condition: or
