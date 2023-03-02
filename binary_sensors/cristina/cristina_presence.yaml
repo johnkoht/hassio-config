@@ -39,13 +39,13 @@
     #
     - platform: state
       entity_id: "device_tracker.cfalb"
-      prob_given_true: 0.5
-      prob_given_false: 0.1
+      prob_given_true: 0.7
+      prob_given_false: 0.025
       to_state: "home"
     - platform: state
       entity_id: "device_tracker.cfalb"
-      prob_given_true: 0.3
-      prob_given_false: 0.215
+      prob_given_true: 0.35
+      prob_given_false: 0.125
       to_state: "not_home"
 
     # Nmap device
@@ -57,7 +57,7 @@
       to_state: "home"
     - platform: state
       entity_id: "device_tracker.cfalb_3"
-      prob_given_true: 0.3
+      prob_given_true: 0.4
       prob_given_false: 0.215
       to_state: "not_home"
 
