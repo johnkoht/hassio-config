@@ -40,10 +40,9 @@ automation:
         state: "Auto"
       - condition: and
         conditions:
-          # Sun is above the horizon
-          - condition: state
-            entity_id: sun.sun
-            state: "above_horizon"
+          # Sun is up
+          - condition: sun
+            after: sunrise
           # AND It's dark outside
           - condition: numeric_state
             entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
