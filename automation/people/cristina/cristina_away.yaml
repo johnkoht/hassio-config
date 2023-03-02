@@ -41,6 +41,10 @@ condition:
   - condition: state
     entity_id: input_boolean.cristina_home
     state: "on"
+  # Person is not_home
+  - condition: state
+    entity_id: person.cristina_falbo
+    state: "not_home"
   #
   - condition: or
     conditions:
@@ -48,10 +52,6 @@ condition:
       - condition: state
         entity_id: binary_sensor.cristina_presence
         state: "off"
-      # Person is not_home
-      - condition: state
-        entity_id: person.cristina_falbo
-        state: "not_home"
       # Companion app is not home
       - condition: state
         entity_id: device_tracker.cfalb_2
