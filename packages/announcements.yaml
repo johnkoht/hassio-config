@@ -60,20 +60,6 @@ binary_sensor:
             or states.input_boolean.main_bedroom_occupied.state == "on"
           }}
 
-# media_player:
-#   - platform: group
-#     name: Currently Announcing
-#     unique_id: currently_announcing
-#     entities: []
-
-# group:
-#   currently_announcing:
-#     name: Currently Announcing
-#     entities: []
-
-# {{ expand('group.currently_announcing') | selectattr('state', 'eq', 'playing') | map(attribute='state') | list }}
-# {{ expand('group.currently_announcing') | selectattr('state', 'eq', 'paused') | map(attribute='state') | list }}
-
 script:
   # General Announcement Script
   #
@@ -226,14 +212,6 @@ script:
             {% endif %}
           primary_player: "{{media_players | first}}"
 
-      # Set the group
-      #
-      # - service: group.set
-      #   data:
-      #     object_id: currently_announcing
-      #     add_entities: >-
-      #       {{ media_players }}
-
       # Take a snapshot of current Sonos Audio
       - service: sonos.snapshot
         entity_id: all
@@ -244,12 +222,6 @@ script:
       - service: media_player.media_pause
         data:
           entity_id: "{{media_players}}"
-
-      # # Take a snapshot of current Sonos Audio
-      # - service: sonos.snapshot
-      #   entity_id: all
-      #   data:
-      #     with_group: true
 
       # Capture the current media player volumes
       - service: script.set_media_player_volume
@@ -282,9 +254,7 @@ script:
       # Play an announcement ping
       - service: media_player.play_media
         data:
-          # entity_id: "{{ media_players }}"
           entity_id: "{{primary_player}}"
-          # media_content_id: https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
           media_content_id: "{{sound_file}}"
           media_content_type: music
 
@@ -319,31 +289,6 @@ script:
         timeout:
           seconds: 2
 
-      # - alias: "Wait until the media player is paused"
-      #   wait_template: "{{ is_state(primary_player, 'playing') }}"
-      #   timeout: "00:00:01"
-      # - alias: "Wait until the sound has started on the first player"
-      #   wait_template: >-
-      #     {% set mp = media_players | first %}
-      #     {{ is_state(mp, 'playing') }}
-      # - alias: "Wait until the sound has stopped playing"
-      #   wait_template: >-
-      #     {% set mp = media_players | last %}
-      #     {{ not is_state(mp, 'playing') }}
-      # - alias: "Wait until the sound has stopped playing"
-      #   wait_template: "{{ not is_state(primary_player, 'playing') }}"
-      # - alias: "Wait until the media player is paused"
-      #   wait_template: "{{ is_state(primary_player, 'paused') }}"
-      # then we wait for it to finish announcing before we continue
-      # - wait_template: "{{ states( primary_player ) != 'playing' }}"
-      #   timeout:
-      #     seconds: 1
-      # timeout:
-      #   seconds: > # timeout so doesn't sit forever
-      #     {{ message_delay | int }}
-      #   milliseconds: >
-      #     {{ ( ( message_delay - ( message_delay | int ) ) * 1000 ) | int }}
-
       # Set the volume for the TTS
       - service: media_player.volume_set
         data:
@@ -371,8 +316,6 @@ script:
       - alias: "Wait 1s"
         delay: 00:00:01
 
-      # - alias: "Wait 1s"
-      #   delay: 00:00:01
       # we then put in a delay that should match the length of the media
       - delay: >-
           {# we grab the duration to try to set a wait that is roughly the right amount of time #}
@@ -393,17 +336,6 @@ script:
             {{ "{:02d}".format(hours) + ":" + "{:02d}".format(minutes) + ":" + "{:02d}".format(seconds)}}
           {% endif %}
 
-      # - alias: "Wait 5s"
-      #   delay: 5
-      # - wait_template: "{{ not is_state(media_players | last, 'playing') }}"
-      # - wait_template: "{{ states(media_players | last) in ['idle', 'off'] }}"
-      # - alias: "Wait until the TTS has stopped playing"
-      #   wait_template: >-
-      #     {% set mp = media_players | last %}
-      #     {{ not is_state(mp, 'playing') }}
-
-      # - alias: "Wait until the sound has stopped playing"
-      #   wait_template: "{{ not is_state(primary_player, 'playing') }}"
       # then we wait for it to finish announcing before we continue
       - wait_template: "{{ states( primary_player ) != 'playing' }}"
         timeout:
@@ -412,36 +344,9 @@ script:
       - alias: "Wait 1s"
         delay: 00:00:01
 
-      # # then we wait for it to finish announcing before we continue
-      # - wait_template: "{{ states( primary_player ) != 'playing' }}"
-      #   timeout:
-      #     seconds: 1
-
-      # - alias: "Wait until the media player is idle"
-      #   wait_template: "{{ is_state(primary_player, 'idle') }}"
-
-      # # Restore the media player volumes
-      # - service: script.restore_media_player_volume
-      #   data:
-      #     media_player: "{{media_players}}"
-
-      # # - alias: "Wait 5s"
-      # #   delay: 5
-      # # - wait_template: "{{ not is_state(media_players | last, 'playing') }}"
-      # # - wait_template: "{{ states(media_players | last) in ['idle', 'off'] }}"
-      # - alias: "Wait until the TTS has stopped playing"
-      #   wait_template: >-
-      #     {% set mp = media_players | last %}
-      #     {{ not is_state(mp, 'playing') }}
-
       - service: media_player.unjoin
         data:
           entity_id: "{{media_players}}"
-
-      # # then we wait for it to finish announcing before we continue
-      # - wait_template: "{{ states( primary_player ) != 'playing' }}"
-      #   timeout:
-      #     seconds: 1
 
       # Restore the media player volumes
       - service: script.restore_media_player_volume
@@ -454,13 +359,3 @@ script:
         # entity_id: "{{ media_players }}"
         data:
           with_group: true
-
-      # # Resume playing the media players
-      # - service: media_player.media_play
-      #   data:
-      #     entity_id: "{{media_players}}"
-
-      # - service: group.set
-      #   data:
-      #     object_id: currently_announcing
-      #     entities: []
