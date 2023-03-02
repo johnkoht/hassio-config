@@ -1,0 +1,24 @@
+automation:
+  - id: "nino_escape_monitor"
+    alias: "Nino Escape Monitor"
+    initial_state: on
+    trigger:
+      # Door is opened
+      - platform: state
+        entity_id: binary_sensor.ninos_door_sensor_status
+        to: "on"
+    condition:
+      # Main bedroom door is closed
+      - condition: state
+        entity_id: binary_sensor.main_bedroom_door_sensor_status
+        state: "off"
+      # Door wasn't just opened and closed
+      # last_updated was not changed in the last 90 seconds
+      - condition: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.main_bedroom_door_sensor_status.last_updated)) | int > 90 }}"
+    action:
+      # Notification for testing
+      - service: notify.mobile_app_jk
+        data:
+          message: Nino is escaping!
+          title: Nino Escape Monitor

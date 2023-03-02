@@ -1,0 +1,25 @@
+automation:
+  - id: "nino_escape_monitor_turn_off"
+    alias: "Nino Escape Monitor - Turn Off"
+    initial_state: on
+    trigger:
+      # Bedtime mode turns off
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+      # Room is no longer occupied
+      - platform: state
+        entity_id: input_boolean.ninos_room_occupied
+        to: "off"
+    condition:
+      # Room is no longer occupied
+      - condition: state
+        entity_id: input_boolean.ninos_room_occupied
+        state: "off"
+      # Bedtime mode is off
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+    action:
+      - service: automation.turn_off
+        entity_id: automation.nino_escape_monitor
