@@ -11,14 +11,14 @@ automation:
       - platform: state
         entity_id: input_select.foyer
         to: "Away"
-      # Or house is turned off
-      - platform: state
-        entity_id: input_select.house
-        to: "Off"
     condition:
+      # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      #
+      # Foyer state changes to OFF
+      # OR Foyer is Auto but house is Off
       - condition: or
         conditions:
           - condition: state
@@ -32,10 +32,12 @@ automation:
               - condition: state
                 entity_id: input_select.house
                 state: "Off"
+      # Lights are ON
+      - condition: state
+        entity_id: light.foyer_lights
+        state: "on"
     action:
       - service: light.turn_off
         entity_id: light.foyer_lights
         data:
           transition: 1
-      - service: switch.turn_off
-        entity_id: switch.adaptive_lighting_foyer
