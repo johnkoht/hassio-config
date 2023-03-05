@@ -8,14 +8,63 @@ automation:
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "on"
     condition:
-      # Main bedroom door is closed
-      - condition: state
-        entity_id: binary_sensor.main_bedroom_door_sensor_status
-        state: "off"
-      # Door wasn't just opened and closed
-      # last_updated was not changed in the last 90 seconds
+      # Nobody is in his room
       - condition: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.main_bedroom_door_sensor_status.last_updated)) | int > 90 }}"
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['nino_bedroom'])|map(attribute='name')|list | length == 0 }}"
+
+      # His room has been occupied for more than 15 minutes
+      - condition: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.ninos_room_occupied.last_updated)) | int > 900 }}"
+
+      # # It's bedtime mode
+      # - condition: or
+      #   conditions:
+      #     # Bedtime mode is ON
+      #     - condition: state
+      #       entity_id: input_boolean.bedtime
+      #       state: "on"
+
+      #     # Main bedroom door is closed and has been for a while
+      #     - condition: and
+      #       conditions:
+      #         # Main bedroom door is closed
+      #         - condition: state
+      #           entity_id: binary_sensor.main_bedroom_door_sensor_status
+      #           state: "off"
+      #         # Door wasn't just opened and closed
+      #         # last_updated was not changed in the last 90 seconds
+      #         - condition: template
+      #           value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.main_bedroom_door_sensor_status.last_updated)) | int > 90 }}"
+
+      # # We're sleeping or going to sleep
+      # - condition: or
+      #   conditions:
+      #     # It's Bedtime hours (9pm-8am)
+      #     - condition: state
+      #       entity_id: binary_sensor.bedtime
+      #       state: "on"
+      #     # Main bedroom door is closed
+      #     - condition: state
+      #       entity_id: binary_sensor.main_bedroom_door_sensor_status
+      #       state: "off"
+      #     - condition: state
+      #       entity_id: input_boolean.ninos_room_occupied
+
+      # # Main bedroom door is closed
+      # - condition: state
+      #   entity_id: binary_sensor.main_bedroom_door_sensor_status
+      #   state: "off"
+      # # Door wasn't just opened and closed
+      # # last_updated was not changed in the last 90 seconds
+      # - condition: template
+      #   value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.main_bedroom_door_sensor_status.last_updated)) | int > 90 }}"
+
+      # - condition: or
+      #   conditions:
+      #     # Bedtime mode is ON
+      #     - condition: state
+      #       entity_id: input_boolean.bedtime
+      #       state: "on"
     action:
       # Notification for testing
       - service: notify.mobile_app_jk
