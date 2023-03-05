@@ -11,6 +11,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "off"
+        for:
+          minutes: 30
     condition:
       # House is occupied
       - condition: state
