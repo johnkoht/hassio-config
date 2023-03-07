@@ -19,12 +19,12 @@ automation:
       # - platform: state
       #   entity_id: binary_sensor.john_laptop_camera_active
       #   to: "off"
-      # # Webcam turned OFF for 90 seconds
-      # - platform: state
-      #   entity_id: binary_sensor.john_laptop_camera_active
-      #   to: "off"
-      #   for:
-      #     seconds: 90
+      # Webcam turned OFF for 90 seconds
+      - platform: state
+        entity_id: binary_sensor.john_laptop_camera_active
+        to: "off"
+        for:
+          seconds: 90
       # Personal time turns ON
       - platform: state
         entity_id: input_boolean.john_personal_time
@@ -70,6 +70,17 @@ automation:
               - condition: state
                 entity_id: input_boolean.john_personal_time
                 state: "on"
+
+          # Camera just turned off and bayesian is OFF
+          - condition: and
+            conditions:
+              # Camera just turned off within 30 seconds
+              - condition: template
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.john_laptop_camera_active.last_updated)) | int < 30 }}"
+              - condition: state
+                entity_id: binary_sensor.john_do_not_disturb
+                state: "off"
+
           # # OR I have a work calendar event and my camera just turned off
           # - condition: and
           #   conditions:
