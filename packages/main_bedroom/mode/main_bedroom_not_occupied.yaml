@@ -31,6 +31,12 @@ automation:
         to: "off"
         for:
           minutes: 5
+      # Main bathroom becomes unoccupied
+      # When somebody showers, the bathroom might take a little
+      # while to register as unoccupied.
+      - platform: state
+        entity_id: input_boolean.main_bathroom_occupied
+        to: "off"
     condition:
       # The bedroom is occupied
       - condition: state
