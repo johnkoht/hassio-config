@@ -22,5 +22,6 @@ room_presence_devices:
     - sensor.sonia_room_presence
     - sensor.katia_room_presence
     - sensor.mary_room_presence
+    - sensor.joe_room_presence
     # - sensor.nino_ipad_room_presence
     # - sensor.roscoe_room_presence
