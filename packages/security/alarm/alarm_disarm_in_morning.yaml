@@ -1,0 +1,27 @@
+automation:
+  - id: "alarm_disarm_in_morning"
+    alias: "Alarm - Disarm in Morning"
+    mode: "single"
+    trigger:
+      # Bedtime mode disabled for 3 minutes
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+        for:
+          minutes: 3
+      # House goes from Bedtime to Auto state
+      - platform: state
+        entity_id: input_select.house
+        from: "Bedtime"
+        to: "Auto"
+    condition:
+      # Alarm is current armed_home
+      - condition: state
+        entity_id: alarm_control_panel.panel
+        state: "armed_home"
+    action:
+      # Notification for testing
+      - service: notify.mobile_app_jk
+        data:
+          message: Home is now disarmed!
+          title: Home Security System

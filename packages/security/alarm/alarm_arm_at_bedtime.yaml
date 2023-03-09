@@ -1,0 +1,22 @@
+automation:
+  - id: "alarm_arm_at_bedtime"
+    alias: "Alarm - Arm at Bedtime"
+    mode: "single"
+    trigger:
+      # Bedtime mode enabled for 5 minutes
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+        for:
+          minutes: 5
+    condition:
+      # Alarm is current disarmed
+      - condition: state
+        entity_id: alarm_control_panel.panel
+        state: "disarmed"
+    action:
+      # Notification for testing
+      - service: notify.mobile_app_jk
+        data:
+          message: Home is armed stay!
+          title: Home Security System
