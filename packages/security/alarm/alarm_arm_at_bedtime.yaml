@@ -15,6 +15,10 @@ automation:
         entity_id: alarm_control_panel.panel
         state: "disarmed"
     action:
+      # Arm Home
+      - service: alarm_control_panel.alarm_arm_home
+        entity_id: alarm_control_panel.panel
+
       # Notification for testing
       - service: notify.mobile_app_jk
         data:
