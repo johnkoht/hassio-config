@@ -60,7 +60,7 @@ automation:
           minutes: 10
       # Temperature is above 72.1
       - platform: template
-        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.1 }}"
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 71.5 }}"
       # Temperature is below 71 degrees
       - platform: numeric_state
         entity_id: sensor.nino_room_temperature
