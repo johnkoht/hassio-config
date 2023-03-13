@@ -15,8 +15,3 @@ automation:
       # Turn OFF the boolean
       - service: input_boolean.turn_off
         entity_id: input_boolean.nino_school_day
-      # Notify via push
-      - service: notify.mobile_app_jk
-        data:
-          message: "School day is deactivated and turning off the boolean"
-          title: "Nino's School"

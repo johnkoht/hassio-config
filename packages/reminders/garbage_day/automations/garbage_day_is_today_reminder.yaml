@@ -58,9 +58,3 @@ automation:
             }}
           media_players: "auto"
           sound: "flute-cell-phone-alert"
-
-      # Notify via push
-      - service: notify.mobile_app_jk
-        data:
-          message: "Today is garbage day"
-          title: "Garbage Day"

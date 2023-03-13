@@ -20,8 +20,3 @@ automation:
           speech_message: "{{states.calendar.nino_school_reminder.attributes.message}}"
           media_players: "auto"
           sound: "one-chime"
-      # Notify the family via push
-      - service: notify.mobile_app_jk
-        data:
-          message: "{{states.calendar.nino_school_reminder.attributes.message}}"
-          title: "Nino School Reminder"
