@@ -1,0 +1,30 @@
+automation:
+  - id: "alarm_arm_when_house_empty"
+    alias: "Alarm - Arm When House is Empty"
+    mode: "single"
+    trigger:
+      # House is in the away state for 5 minutes
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+        for:
+          minutes: 3
+    condition:
+      # Alarm is current disarmed
+      - condition: state
+        entity_id: alarm_control_panel.panel
+        state: "disarmed"
+      # Make sure the house is not occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+    action:
+      # Arm Home
+      - service: alarm_control_panel.alarm_arm_home
+        entity_id: alarm_control_panel.panel
+
+      # Notification for testing
+      - service: notify.mobile_app_jk
+        data:
+          message: Home is armed since nobody is home.
+          title: Home Security System
