@@ -37,9 +37,3 @@ automation:
       # Open garage door 2
       - service: cover.open_cover
         entity_id: cover.garage_door_2
-
-      # Notify via push
-      - service: notify.mobile_app_jk
-        data:
-          message: "The garage automatically opened up for Nonna!"
-          title: "Nonna is home!"

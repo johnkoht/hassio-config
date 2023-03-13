@@ -32,9 +32,3 @@ automation:
       # Turn the automation reminder off
       - service: automation.turn_off
         entity_id: automation.garbage_day_is_today_reminder
-
-      # Notify via push
-      - service: notify.mobile_app_jk
-        data:
-          message: "Garbage day is over!"
-          title: "Garbage Day"

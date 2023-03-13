@@ -42,6 +42,11 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.nearly_home
 
+      # Turn ON the automation that turns off
+      # the input boolean once we're home
+      - service: automation.turn_on
+        entity_id: automation.nearly_home_turn_off
+
       # Push notification for testing
       - service: notify.mobile_app_jk
         data:

@@ -64,7 +64,3 @@ automation:
         data:
           entity_id: input_select.playroom
           option: "Off"
-      - service: notify.mobile_app_jk
-        data:
-          title: Playroom
-          message: The Playroom is turned to Off Mode

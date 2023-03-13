@@ -51,11 +51,6 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.dark_outside
 
-      - service: notify.mobile_app_jk
-        data:
-          title: Dark Outside
-          message: It's dark outside active
-
   # Turn OFF dark outside boolean
   - id: "turn_off_dark_outside"
     alias: "Turn off Dark Outside"
