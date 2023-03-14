@@ -39,7 +39,7 @@ trigger:
   # Kitchen is NOT occupied for 5 mins
   - platform: state
     entity_id: input_boolean.kitchen_occupied
-    state: "off"
+    to: "off"
     for:
       minutes: 5
   # # House is not occupied
