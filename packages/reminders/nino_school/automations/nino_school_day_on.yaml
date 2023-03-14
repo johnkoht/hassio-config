@@ -1,3 +1,9 @@
+# Nino School Day On
+#
+# Every morning, this automation runs to simply check
+# if today is a school day based on the status of
+# binary_sensor.nino_is_today_school_day
+#
 automation:
   - id: "nino_school_day_on"
     alias: "Nino School Day On"
@@ -20,8 +26,10 @@ automation:
       # Turn on the boolean
       - service: input_boolean.turn_on
         entity_id: input_boolean.nino_school_day
-      # Notify via push
-      - service: notify.mobile_app_jk
-        data:
-          message: "Today's a school school and the boolean has been activated"
-          title: "Nino's School"
+
+      # Turn on the school reminder automation
+      - service: automation.turn_on
+        entity_id:
+          - automation.nino_school_day_reminder
+          - automation.nino_school_departure_reminder
+          - automation.nino_school_pickup_reminder

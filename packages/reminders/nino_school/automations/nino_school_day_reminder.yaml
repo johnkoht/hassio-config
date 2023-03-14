@@ -1,0 +1,40 @@
+# Nino School Day Reminder
+#
+# Maybe this is misnamed, but this is the announcement
+# that is broadcast in occupied rooms to let Nino (and us)
+# know it's time for school
+#
+automation:
+  - id: "nino_school_day_reminder"
+    alias: "Nino School Day Reminder"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # 1 hour and 15 mins before start
+      - platform: calendar
+        event: start
+        entity_id: calendar.ninos_school_day
+        offset: -01:15:00
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nino school day boolean is ON
+      - condition: state
+        entity_id: input_boolean.nino_school_day
+        state: "on"
+    action:
+      # Call the announcement engine
+      - service: script.general_announcement
+        data:
+          speech_message: >-
+            {{
+              [
+                "Hey Nino, it's time to eat breakfast and get ready for school!",
+                "Hey there, it's time to get the kids breakfast ready. It's a school day!",
+                "Just at reminder that today's a school day, time for breakfast.",
+              ] | random
+            }}
+          media_players: "auto"
+          sound: "one-chime"
