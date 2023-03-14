@@ -1,0 +1,24 @@
+sensor:
+  - platform: mqtt_room
+    device_id: "apple:1007:11-6"
+    name: "Tayta Room Presence RAW"
+    state_topic: "espresense/rooms"
+    timeout: 10
+    away_timeout: 120
+
+  - platform: template
+    sensors:
+      tayta_room_presence:
+        friendly_name: Tayta Room Presence
+        unique_id: tayta_room_presence
+        value_template: >-
+          {% set rp = states.sensor.tayta_room_presence_raw.state %}
+          {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
+            main_bedroom
+          {% elif rp == "family_room" or rp == "family_room_two" %}
+            family_room
+          {% elif rp == "kitchen" or rp == "kitchen_two" %}
+            kitchen
+          {% else %}
+            {{rp}}
+          {% endif %}
