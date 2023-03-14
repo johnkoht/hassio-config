@@ -207,6 +207,8 @@ script:
               https://github.com/johnkoht/hassio-config/blob/master/sounds/arcade-bonus-alert.wav?raw=true
             {% elif sound == "police-whistle" %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.wav?raw=true
+            {% elif sound == "arabic-intro" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/arabic_intro.wav?raw=true
             {% else %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
             {% endif %}
