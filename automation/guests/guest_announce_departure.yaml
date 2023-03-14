@@ -17,6 +17,12 @@ condition:
     state: "on"
     for:
       minutes: 5
+  # Nobody was just announced as departed
+  # This basically checks if the general announcement script has been run
+  # within 90 seconds..which is a pretty decent way to check if somebody's
+  # departure has been announced.
+  - condition: template
+    value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('script.general_announcement','last_triggered')) ) | int > 90 }}"
 action:
   # This Group is defined in the groups directory.
   - service: group.set
