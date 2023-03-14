@@ -291,10 +291,10 @@ automation:
         state: "on"
       - condition: or
         conditions:
-          # Sun is above horizon
-          - condition: state
-            entity_id: sun.sun
-            state: "above_horizon"
+          # After sunset but before sunrise
+          - condition: sun
+            after: sunrise
+            before: sunset
           # It's not dark outside anymore
           - condition: state
             entity_id: input_boolean.dark_outside
