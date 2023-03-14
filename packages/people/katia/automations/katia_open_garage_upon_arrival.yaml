@@ -1,0 +1,39 @@
+automation:
+  - id: "katia_open_garage_upon_arrival"
+    alias: Katia Open Garage Upon Arrival
+    mode: queued
+    initial_state: on
+    trigger:
+      # Katia is home for 3 seconds
+      # This is to avoid race condition where other
+      # home automations are running
+      - platform: state
+        entity_id: input_boolean.katia_home
+        to: "on"
+        for:
+          seconds: 3
+    condition:
+      # Katia is home
+      - condition: state
+        entity_id: person.mary_falbo
+        state: "home"
+      # Stat us just arrived
+      - condition: state
+        entity_id: input_select.katia_status
+        state: "Just Arrived"
+      # Motion detected within the last 60 seconds
+      - condition: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.garage_driveway_camera_motion.last_updated)) | int < 60 }}"
+    action:
+      # Wait until a person is detected by the garage
+      - alias: "Wait for a person to be detected"
+        wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.garage_driveway_person_detected
+            to: "on"
+        timeout: "00:03:00"
+        continue_on_timeout: false
+
+      # Open garage door 2
+      - service: cover.open_cover
+        entity_id: cover.garage_door_2
