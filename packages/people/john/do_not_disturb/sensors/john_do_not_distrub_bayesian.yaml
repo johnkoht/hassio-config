@@ -23,13 +23,15 @@ binary_sensor:
       #
       # Personal time
       - platform: state
-        entity_id: "binary_sensor.john_personal_time"
+        # entity_id: "binary_sensor.john_personal_time"
+        entity_id: "input_boolean.john_personal_time"
         prob_given_true: 0.20
         prob_given_false: 0.95
         to_state: "on"
       # Not personal time
       - platform: state
-        entity_id: "binary_sensor.john_personal_time"
+        # entity_id: "binary_sensor.john_personal_time"
+        entity_id: "input_boolean.john_personal_time"
         prob_given_true: 0.75
         prob_given_false: 0.40
         to_state: "off"
