@@ -10,7 +10,6 @@ automation:
     trigger:
       # Motion detected
       - platform: state
-        # entity_id: binary_sensor.playroom_motion
         entity_id: binary_sensor.playroom_entry_motion_sensor_motion
         to: "on"
     condition:
@@ -56,11 +55,14 @@ automation:
       #         # - condition: template
       #         #   value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.playroom_occupied.last_changed)) | int > 180 }}"
       # Light is low
-      - condition: numeric_state
-        entity_id:
-          - sensor.playroom_motion_sensor_illuminance
-          - sensor.playroom_entry_motion_sensor_illuminance
-        below: 30
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.playroom_entry_motion_sensor_illuminance
+            below: 30
+          - condition: numeric_state
+            entity_id: sensor.playroom_motion_sensor_illuminance
+            below: 30
       # Lights are currently off
       - condition: state
         entity_id: group.playroom_lights
