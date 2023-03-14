@@ -1,0 +1,31 @@
+# Automation to detect and initiate away for Tayta
+#
+#
+automation:
+  - id: "tayta_is_away"
+    alias: "Tayta is Away"
+    initial_state: on
+    trigger:
+      # Tayta not home
+      - platform: state
+        entity_id: person.mary_falbo
+        to: "not_home"
+      # Handle restarts and reloads of HA
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Didn't just leave
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.tayta_status
+            state: "Just Left"
+      # Not detected home
+      - condition: state
+        entity_id: person.sonia_koht
+        state: "not_home"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.tayta_home

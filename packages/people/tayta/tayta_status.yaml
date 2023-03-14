@@ -1,0 +1,9 @@
+input_select:
+  tayta_status:
+    name: Tayta
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+    initial: Away

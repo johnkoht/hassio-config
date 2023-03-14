@@ -1,0 +1,4 @@
+input_boolean:
+  tayta_home:
+    name: Tayta Home
+    icon: mdi:home
