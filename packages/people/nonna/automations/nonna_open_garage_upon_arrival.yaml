@@ -21,6 +21,10 @@ automation:
       - condition: state
         entity_id: input_select.nonna_status
         state: "Just Arrived"
+      # All garage doors are closed
+      - condition: state
+        entity_id: cover.garage_doors
+        state: "closed"
       # # Motion detected within the last 60 seconds
       # - condition: template
       #   value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.garage_driveway_camera_motion.last_updated)) | int < 60 }}"
