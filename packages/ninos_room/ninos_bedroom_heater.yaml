@@ -11,20 +11,21 @@ automation:
         to: "on"
         for:
           minutes: 1
-      # # Less than 71
-      # - platform: template
-      #   value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.0 }}"
-      # Temperature is below 71 degrees
-      - platform: numeric_state
-        entity_id: sensor.nino_room_temperature
-        below: 71
-      # Less than 69.5 for redundancy
-      - platform: template
-        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 69.5 }}"
       # Temperature is below 70 degrees
       - platform: numeric_state
         entity_id: sensor.nino_room_temperature
         below: 70
+        for:
+          minutes: 5
+      # Less than 69.5 for redundancy
+      - platform: template
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 69.5 }}"
+      # Temperature is below 69 degrees
+      - platform: numeric_state
+        entity_id: sensor.nino_room_temperature
+        below: 69
+        for:
+          minutes: 5
       # After 6:30 pm
       - platform: time
         at: "18:30:00"
@@ -41,6 +42,7 @@ automation:
             state: "on"
           - condition: time
             after: "18:30:00"
+      # Less than 71.3 degrees
       - condition: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.3 }}"
     action:
@@ -58,16 +60,16 @@ automation:
         to: "on"
         for:
           minutes: 10
-      # Temperature is above 72.1
+      # Temperature is above 71.5
       - platform: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 71.5 }}"
-      # Temperature is below 71 degrees
+      # Temperature is above 72 degrees
       - platform: numeric_state
         entity_id: sensor.nino_room_temperature
         above: 72
-      # Temperature is above 72.7
+      # Temperature is above 72.5
       - platform: template
-        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.7 }}"
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.5 }}"
       # If the house is not occupied
       - platform: state
         entity_id: input_boolean.house_occupied
