@@ -25,4 +25,4 @@ automation:
         data:
           speech_message: "{{states.calendar.nino_school_reminder.attributes.message}}"
           media_players: "auto"
-          sound: "one-chime"
+          sound: "school-bell-chime"

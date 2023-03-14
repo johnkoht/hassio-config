@@ -37,4 +37,4 @@ automation:
               ] | random
             }}
           media_players: "auto"
-          sound: "one-chime"
+          sound: "school-bell-chime"

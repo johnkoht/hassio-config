@@ -209,6 +209,10 @@ script:
               https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.wav?raw=true
             {% elif sound == "arabic-intro" %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/arabic_intro.wav?raw=true
+            {% elif sound == "school-bell-chime" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell-chime.wav?raw=true
+            {% elif sound == "school-bell" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell.wav?raw=true
             {% else %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
             {% endif %}
