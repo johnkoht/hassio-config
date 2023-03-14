@@ -1,3 +1,9 @@
+# Nino School Reminder Notification
+#
+# Anything added to the school calendar with a "Reminder:"
+# in the title will activate the calendar and this
+# announcement will broadcast the reminder
+#
 automation:
   - id: "nino_school_reminder_notification"
     alias: "Nino School Reminder Notification"
