@@ -213,6 +213,8 @@ script:
               https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell-chime.wav?raw=true
             {% elif sound == "school-bell" %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell.wav?raw=true
+            {% elif sound == "tarantella" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/tarantella.m4a?raw=true
             {% else %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
             {% endif %}
