@@ -144,9 +144,10 @@ automation:
     alias: "Activate Exterior Lighting at Sunset"
     mode: "single"
     trigger:
-      # It's sunset
+      # 15 minutes after sunset
       - platform: sun
         event: sunset
+        offset: "00:15:00"
       # It's dark outside
       - platform: state
         entity_id: input_boolean.dark_outside
@@ -172,16 +173,13 @@ automation:
           - condition: state
             entity_id: input_boolean.exterior_accent_lights
             state: "off"
-      # It's sunset or it's dark outside
-      - condition: or
-        conditions:
-          # Sun is set
-          - condition: sun
-            after: sunset
-          # It's dark outside
-          - condition: state
-            entity_id: input_boolean.dark_outside
-            state: "on"
+      # Sun is set
+      - condition: sun
+        after: sunset
+      # It's dark outside
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "on"
     action:
       # Activate the boolean
       - service: input_boolean.turn_on
