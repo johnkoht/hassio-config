@@ -5,10 +5,15 @@ automation:
     alias: "Driveway Detected Object"
     mode: "single"
     trigger:
-      # Driveway detects an object
+      # # Driveway detects an object
+      # - platform: state
+      #   entity_id: binary_sensor.garage_driveway_object_detected
+      #   to: "on"
+      # Driveway detects an person
       - platform: state
-        entity_id: sensor.garage_driveway_camera_detected_object
-        to: "person"
+        entity_id: binary_sensor.garage_driveway_person_detected
+        to: "on"
+
     action:
       - service: script.display_driveway_snapshot_on_tv
         data: {}
