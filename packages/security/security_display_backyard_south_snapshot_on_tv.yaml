@@ -5,10 +5,14 @@ automation:
     alias: "Backyard South Detected Object"
     mode: "single"
     trigger:
-      # Backyard detects an object
+      # # Backyard detects an object
+      # - platform: state
+      #   entity_id: binary_sensor.backyard_south_object_detected
+      #   to: "on"
+      # Backyard detects a person
       - platform: state
-        entity_id: sensor.backyard_south_camera_detected_object
-        to: "person"
+        entity_id: binary_sensor.backyard_south_person_detected
+        to: "on"
     action:
       - service: script.display_backyard_south_snapshot_on_tv
         data: {}
