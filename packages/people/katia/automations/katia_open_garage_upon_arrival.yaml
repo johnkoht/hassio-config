@@ -15,9 +15,9 @@ automation:
     condition:
       # Katia is home
       - condition: state
-        entity_id: person.mary_falbo
+        entity_id: person.katia_home
         state: "home"
-      # Stat us just arrived
+      # Status just arrived
       - condition: state
         entity_id: input_select.katia_status
         state: "Just Arrived"
