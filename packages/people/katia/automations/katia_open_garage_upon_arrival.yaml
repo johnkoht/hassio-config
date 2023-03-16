@@ -15,7 +15,7 @@ automation:
     condition:
       # Katia is home
       - condition: state
-        entity_id: person.katia_home
+        entity_id: person.katia
         state: "home"
       # Status just arrived
       - condition: state
@@ -29,14 +29,14 @@ automation:
         entity_id: cover.garage_doors
         state: "closed"
     action:
-      # Wait until a person is detected by the garage
-      - alias: "Wait for a person to be detected"
-        wait_for_trigger:
-          - platform: state
-            entity_id: binary_sensor.garage_driveway_person_detected
-            to: "on"
-        timeout: "00:03:00"
-        continue_on_timeout: false
+      # # Wait until a person is detected by the garage
+      # - alias: "Wait for a person to be detected"
+      #   wait_for_trigger:
+      #     - platform: state
+      #       entity_id: binary_sensor.garage_driveway_person_detected
+      #       to: "on"
+      #   timeout: "00:03:00"
+      #   continue_on_timeout: false
 
       # Open garage door 2
       - service: cover.open_cover
