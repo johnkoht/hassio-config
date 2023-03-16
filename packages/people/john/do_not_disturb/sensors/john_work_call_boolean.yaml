@@ -1,0 +1,4 @@
+input_boolean:
+  john_work_call:
+    name: John Work Call
+    icon: mdi:video-plus
