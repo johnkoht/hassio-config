@@ -1,0 +1,64 @@
+input_text:
+  bedtime_notification_message:
+    name: Bedtime Notification Message
+    icon: mdi:bell-sleep
+
+automation:
+  - id: "bedtime_notifications"
+    alias: "Bedtime Notifications"
+    mode: "single"
+    trigger:
+      # # Bedtime is enaled
+      # - platform: state
+      #   entity_id: input_boolean.bedtime
+      #   to: "on"
+      # Main bedroom enters bedtime mode
+      - platform: state
+        entity_id: input_select.main_bedroom
+        to: "Bedtime"
+    condition:
+      # Main bedroom is in bedtime mode
+      - condition: state
+        entity_id: input_select.main_bathroom
+        state: "Bedtime"
+      # It's bedtime hours
+      - condition: state
+        entity_id: binary_sensor.bedtime
+        state: "on"
+      # - condition: state
+      #   entity_id: input_boolean.main_bedroom_occupied
+      #   state: "on"
+    action:
+      # If the front door is unlocked
+      - if:
+          - condition: state
+            entity_id: lock.front_door
+            state: "unlocked"
+        then:
+          - service: input_text.set_value
+            entity_id: input_text.bedtime_notification_message
+            data:
+              text: "The front door is unlocked."
+
+      # If the jr. suite door is close then the robot
+      # vacuum won't be able to clean so we need to open
+      - if:
+          - condition: state
+            entity_id: binary_sensor.junior_suite_door_status
+            state: "off"
+        then:
+          - service: input_text.set_value
+            entity_id: input_text.bedtime_notification_message
+            data:
+              text: "{{states.input_text.bedtime_notification_message.state}} The front door is unlocked."
+
+      - service: input_text.set_value
+        entity_id: input_text.bedtime_notification_message
+        data:
+          text: "{{states.input_text.bedtime_notification_message.state}} That's the whole message."
+
+      # Notify for testing purposes
+      - service: notify.mobile_app_jk
+        data:
+          message: "{{states.input_text.bedtime_notification_message.state}}"
+          title: Bedtime Notifications
