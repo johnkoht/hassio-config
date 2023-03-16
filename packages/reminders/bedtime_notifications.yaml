@@ -19,7 +19,7 @@ automation:
     condition:
       # Main bedroom is in bedtime mode
       - condition: state
-        entity_id: input_select.main_bathroom
+        entity_id: input_select.main_bedroom
         state: "Bedtime"
       # It's bedtime hours
       - condition: state
