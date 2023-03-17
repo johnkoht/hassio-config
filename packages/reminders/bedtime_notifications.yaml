@@ -1,4 +1,4 @@
-input_text:
+input_value:
   bedtime_notification_message:
     name: Bedtime Notification Message
     icon: mdi:bell-sleep
@@ -38,7 +38,7 @@ automation:
           - service: input_text.set_value
             entity_id: input_text.bedtime_notification_message
             data:
-              text: "The front door is unlocked."
+              value: "The front door is unlocked."
 
       # If the jr. suite door is close then the robot
       # vacuum won't be able to clean so we need to open
@@ -50,12 +50,12 @@ automation:
           - service: input_text.set_value
             entity_id: input_text.bedtime_notification_message
             data:
-              text: "{{states.input_text.bedtime_notification_message.state}} The front door is unlocked."
+              value: "{{states.input_text.bedtime_notification_message.state}} The front door is unlocked."
 
       - service: input_text.set_value
         entity_id: input_text.bedtime_notification_message
         data:
-          text: "{{states.input_text.bedtime_notification_message.state}} That's the whole message."
+          value: "{{states.input_text.bedtime_notification_message.state}} That's the whole message."
 
       # Notify for testing purposes
       - service: notify.mobile_app_jk
