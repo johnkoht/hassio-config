@@ -8,6 +8,7 @@ automation:
       - platform: calendar
         event: end
         entity_id: calendar.john_launchpadlab_com
+        offset: "00:00:10"
     condition:
       # Work call boolean is ON
       - condition: state

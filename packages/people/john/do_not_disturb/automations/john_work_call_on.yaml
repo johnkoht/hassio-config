@@ -8,7 +8,7 @@ automation:
       - platform: calendar
         event: start
         entity_id: calendar.john_launchpadlab_com
-        offset: "00:00:02"
+        # offset: "00:00:02"
     condition:
       # Work Call boolean is OFF
       - condition: state
@@ -24,3 +24,14 @@ automation:
         data:
           message: John's work call has been turned ON
           title: John Work Call ON
+
+      # Turn the Work call off automation temporarily OFF
+      - service: automation.turn_off
+        entity_id: automation.john_work_call_off
+
+      # Delay 1 minutes
+      - delay: "00:01:00"
+
+      # Turn the Work call Off automation back ON
+      - service: automation.turn_on
+        entity_id: automation.john_work_call_off
