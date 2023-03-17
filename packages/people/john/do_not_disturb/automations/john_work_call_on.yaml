@@ -9,11 +9,11 @@ automation:
         event: start
         entity_id: calendar.john_launchpadlab_com
         # offset: "00:00:02"
-    condition:
-      # Work Call boolean is OFF
-      - condition: state
-        entity_id: input_boolean.john_work_call
-        state: "off"
+    # condition:
+    #   # Work Call boolean is OFF
+    #   - condition: state
+    #     entity_id: input_boolean.john_work_call
+    #     state: "off"
     action:
       # Turn ON the boolean
       - service: input_boolean.turn_on
