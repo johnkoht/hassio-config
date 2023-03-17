@@ -1,7 +1,8 @@
-input_value:
+input_text:
   bedtime_notification_message:
     name: Bedtime Notification Message
     icon: mdi:bell-sleep
+    initial: ""
 
 automation:
   - id: "bedtime_notifications"
@@ -50,12 +51,23 @@ automation:
           - service: input_text.set_value
             entity_id: input_text.bedtime_notification_message
             data:
-              value: "{{states.input_text.bedtime_notification_message.state}} The front door is unlocked."
+              value: >-
+                {% set message = states.input_text.bedtime_notification_message.state %}
+                {% set vac_message = "the junior suite door is closed, so the vacuum will get stuck" %}
+                {% if message | length > 0 %}
+                  "{{message}} and {{val_message}}"
+                {% else %}
+                  "{{val_message}}"
+                {% endif %}
+
+      # Make sure there are notifications
+      - condition: template
+        value_template: "{{states.input_text.bedtime_notification_message.state | length > 0}}"
 
       - service: input_text.set_value
         entity_id: input_text.bedtime_notification_message
         data:
-          value: "{{states.input_text.bedtime_notification_message.state}} That's the whole message."
+          value: "Hey there, just wanted to let you know {{states.input_text.bedtime_notification_message.state}}"
 
       # Notify for testing purposes
       - service: notify.mobile_app_jk
