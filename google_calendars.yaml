@@ -88,7 +88,7 @@
       ignore_availability: true
       name: John Block Time
       track: true
-      search: "Block"
+      search: "Block:"
       offset: "!!"
 
 - cal_id: agnaalurb1vepmv1uf714ifnjbr4b8ng@import.calendar.google.com
