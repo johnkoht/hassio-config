@@ -36,9 +36,9 @@ automation:
       - condition: or
         conditions:
           # Sun is down
-          - condition: state
-            entity_id: sun.sun
-            state: "below_horizon"
+          - condition: sun
+            before: sunset
+            before_offset: "-00:15:00"
           # OR it's dark outside
           - condition: state
             entity_id: input_boolean.dark_outside
