@@ -1,0 +1,46 @@
+# Turn the foyer lights in the evening
+# to illuminate the stairs and provide some
+# general light in the housse
+#
+automation:
+  - id: "foyer_lights_nightlight_off"
+    initial_state: on
+    alias: "Foyer Lights Nightlight Off"
+    trigger:
+      # At sunrise
+      - platform: sun
+        event: sunrise
+      # When it's no longer dark outside
+      - platform: state
+        entity_id: input_boolean.dark_outside
+        to: "off"
+    condition:
+      # Make sure lighting automations are on
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Make sure the house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: or
+        conditions:
+          # # Sun is up
+          - condition: sun
+            after: sunrise
+          # OR it's no longer dark outside
+          - condition: state
+            entity_id: input_boolean.dark_outside
+            state: "off"
+      # Light is off
+      - condition: state
+        entity_id: light.foyer_chandelier
+        state: "on"
+    action:
+      # Turn off the light
+      - service: light.turn_off
+        entity_id: light.foyer_chandelier
+
+      # Turn the automation off
+      - service: automation.turn_off
+        entity_id: automation.foyer_lights_nightlight_off

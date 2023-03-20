@@ -48,5 +48,10 @@ automation:
         entity_id: light.foyer_chandelier
         state: "off"
     action:
+      # Turn the light ON
       - service: light.turn_on
         entity_id: light.foyer_chandelier
+
+      # Turn the automation on that will turn off the nightlight
+      - service: automation.turn_on
+        entity_id: automation.foyer_lights_nightlight_off
