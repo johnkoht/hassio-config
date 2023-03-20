@@ -3,27 +3,17 @@
 # general light in the housse
 #
 automation:
-  - id: "foyer_lights_nightlight"
+  - id: "foyer_lights_nightlight_off"
     initial_state: on
-    alias: "Foyer Lights Nightlight"
+    alias: "Foyer Lights Nightlight Off"
     trigger:
-      # 15 mins before sunset
+      # At sunrise
       - platform: sun
-        event: sunset
-        offset: "-00:15:00"
-      # When it gets dark outside
+        event: sunrise
+      # When it's no longer dark outside
       - platform: state
         entity_id: input_boolean.dark_outside
-        to: "on"
-      # Bedtime turns off
-      - platform: state
-        entity_id: input_boolean.bedtime
         to: "off"
-      # House goes from bedtime to auto in the morning
-      - platform: state
-        entity_id: input_select.house
-        from: "Bedtime"
-        to: "Auto"
     condition:
       # Make sure lighting automations are on
       - condition: state
@@ -35,23 +25,22 @@ automation:
         state: "on"
       - condition: or
         conditions:
-          # Sun is down
-          - condition: state
-            entity_id: sun.sun
-            state: "below_horizon"
-          # OR it's dark outside
+          # # Sun is up
+          - condition: sun
+            after: sunrise
+          # OR it's no longer dark outside
           - condition: state
             entity_id: input_boolean.dark_outside
-            state: "on"
+            state: "off"
       # Light is off
       - condition: state
         entity_id: light.foyer_chandelier
-        state: "off"
+        state: "on"
     action:
-      # Turn the light ON
-      - service: light.turn_on
+      # Turn off the light
+      - service: light.turn_off
         entity_id: light.foyer_chandelier
 
-      # Turn the automation on that will turn off the nightlight
-      - service: automation.turn_on
+      # Turn the automation off
+      - service: automation.turn_off
         entity_id: automation.foyer_lights_nightlight_off
