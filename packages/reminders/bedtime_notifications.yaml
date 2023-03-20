@@ -30,6 +30,12 @@ automation:
       #   entity_id: input_boolean.main_bedroom_occupied
       #   state: "on"
     action:
+      # Set the invput text value to nil
+      - service: input_text.set_value
+        entity_id: input_text.bedtime_notification_message
+        data:
+          value: ""
+
       # If the front door is unlocked
       - if:
           - condition: state
@@ -55,9 +61,9 @@ automation:
                 {% set message = states.input_text.bedtime_notification_message.state %}
                 {% set vac_message = "the junior suite door is closed, so the vacuum will get stuck" %}
                 {% if message | length > 0 %}
-                  "{{message}} and {{val_message}}"
+                  "{{message}} and {{vac_message}}"
                 {% else %}
-                  "{{val_message}}"
+                  "{{vac_message}}"
                 {% endif %}
 
       # Make sure there are notifications
