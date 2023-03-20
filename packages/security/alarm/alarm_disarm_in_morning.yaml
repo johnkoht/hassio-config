@@ -14,6 +14,8 @@ automation:
         entity_id: input_select.house
         from: "Bedtime"
         to: "Auto"
+        for:
+          minutes: 3
     condition:
       # Alarm is current armed_home
       - condition: state
