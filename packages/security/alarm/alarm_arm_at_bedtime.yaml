@@ -14,6 +14,10 @@ automation:
       - condition: state
         entity_id: alarm_control_panel.panel
         state: "disarmed"
+      # Between 8pm and 5am
+      - condition: time
+        after: "20:00:00"
+        before: "05:00:00"
     action:
       # Arm Home
       - service: alarm_control_panel.alarm_arm_home
