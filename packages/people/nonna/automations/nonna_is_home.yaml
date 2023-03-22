@@ -9,17 +9,23 @@ automation:
     initial_state: on
     alias: "Nonna is Home"
     trigger:
-      # If ESPresense detects her in a room
-      # - platform: template
-      #   value_template: "{{ states.sensor.mary_room_presence.state != 'not_home'}}"
+      # Nonna detected home
       - platform: state
         entity_id: person.mary_falbo
+        to: "home"
+      # iPhone detect tracker is detected home
+      - platform: state
+        entity_id: device_tracker.mary_iphone_detect
         to: "home"
       - platform: event
         event_type: automation_reloaded
       - platform: homeassistant
         event: start
     condition:
+      # iPhone detect trracker is home
+      - condition: state
+        entity_id: device_tracker.mary_iphone_detect
+        state: "home"
       - condition: or
         conditions:
           - condition: state
