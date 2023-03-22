@@ -14,6 +14,12 @@ automation:
       - platform: state
         entity_id: cover.garage_doors
         to: "closed"
+      # Garage doors have been open for 15 minutes
+      - platform: state
+        entity_id: cover.garage_doors
+        to: "open"
+        for:
+          minutes: 15
     condition:
       - condition: state
         entity_id: input_boolean.garage_occupied

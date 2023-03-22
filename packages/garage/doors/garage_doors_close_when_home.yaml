@@ -29,10 +29,24 @@ automation:
       - platform: homeassistant
         event: start
     condition:
-      # Garage override is not active
-      - condition: state
-        entity_id: input_boolean.garage_override
-        state: "off"
+      - condition: or
+        conditions:
+          # If the house is in bedtime mode, then we can skip
+          # some other conditions.
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
+          # Garage is NOT occupied and override is NOT active
+          - condition: and
+            conditions:
+              # Garage is not occupied
+              - condition: state
+                entity_id: input_boolean.garage_occupied
+                state: "off"
+              # Garage override is not active
+              - condition: state
+                entity_id: input_boolean.garage_override
+                state: "off"
       # Either garage door is open
       - condition: or
         conditions:
@@ -51,10 +65,6 @@ automation:
             state: "open"
             for:
               minutes: 30
-      # Garage is not occupied
-      - condition: state
-        entity_id: input_boolean.garage_occupied
-        state: "off"
       # No BLE devices detected
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
