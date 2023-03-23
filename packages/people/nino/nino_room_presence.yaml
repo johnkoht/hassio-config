@@ -1,0 +1,50 @@
+sensor:
+  # Fitbit
+  - platform: mqtt_room
+    device_id: !secret nino_fitbit_id
+    name: "Nino Room Presence RAW"
+    state_topic: !secret nino_fitbit_state_topic
+    timeout: 10
+    away_timeout: 120
+
+  - platform: template
+    sensors:
+      nino_room_presence:
+        friendly_name: Nino Room Presence
+        unique_id: nino_room_presence
+        value_template: >-
+          {% set rp = states.sensor.nino_room_presence_raw.state %}
+          {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
+            main_bedroom
+          {% elif rp == "family_room" or rp == "family_room_two" %}
+            family_room
+          {% elif rp == "kitchen" or rp == "kitchen_two" %}
+            kitchen
+          {% else %}
+            {{rp}}
+          {% endif %}
+
+  # iPad
+  - platform: mqtt_room
+    device_id: !secret nino_ipad_irk
+    name: "Nino iPad Room Presence"
+    state_topic: !secret nino_ipad_state_topic
+    timeout: 10
+    away_timeout: 120
+
+  - platform: template
+    sensors:
+      nino_ipad_room_presence:
+        friendly_name: Nin iPad Room Presence
+        unique_id: nino_ipad_room_presence
+        value_template: >-
+          {% set rp = states.sensor.nino_ipad_room_presence_raw.state %}
+          {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
+            main_bedroom
+          {% elif rp == "family_room" or rp == "family_room_two" %}
+            family_room
+          {% elif rp == "kitchen" or rp == "kitchen_two" %}
+            kitchen
+          {% else %}
+            {{rp}}
+          {% endif %}

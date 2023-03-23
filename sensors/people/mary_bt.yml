@@ -1,7 +1,0 @@
-- platform: mqtt_room
-  # device_id: "apple:iphone14-5"
-  device_id: !secret mary_irk
-  name: "Mary Room Presence"
-  state_topic: "espresense/rooms"
-  timeout: 60
-  away_timeout: 120

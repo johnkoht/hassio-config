@@ -2,7 +2,7 @@ sensor:
   - platform: mqtt_room
     device_id: !secret mary_irk
     name: "Mary Room Presence RAW"
-    state_topic: "espresense/rooms"
+    state_topic: !secret mary_state_topic
     timeout: 10
     away_timeout: 120
 
