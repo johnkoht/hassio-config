@@ -7,10 +7,10 @@ automation:
     initial_state: on
     alias: "Foyer Lights Nightlight"
     trigger:
-      # 15 mins before sunset
+      # 30 mins before sunset
       - platform: sun
         event: sunset
-        offset: "-00:15:00"
+        offset: "-00:30:00"
       # When it gets dark outside
       - platform: state
         entity_id: input_boolean.dark_outside
@@ -38,7 +38,7 @@ automation:
           # Sun is down
           - condition: sun
             before: sunset
-            before_offset: "-00:15:00"
+            before_offset: "-00:30:00"
           # OR it's dark outside
           - condition: state
             entity_id: input_boolean.dark_outside
