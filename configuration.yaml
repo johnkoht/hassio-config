@@ -65,3 +65,6 @@ zone:
     longitude: !secret home_longitude
     radius: !secret home_radius
     icon: mdi:home
+
+wemo:
+  discovery: true
