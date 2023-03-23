@@ -1,6 +1,0 @@
-- platform: mqtt_room
-  device_id: "Cristina's iPhone"
-  name: "Cristina Room Presence RAW"
-  state_topic: "espresense/rooms"
-  timeout: 60
-  away_timeout: 120
