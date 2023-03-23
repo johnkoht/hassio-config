@@ -26,10 +26,6 @@ trigger:
     entity_id: sensor.openweathermap_weather_code
     above: 499
     below: 532
-  # Very cloudly
-  - platform: numeric_state
-    entity_id: sensor.openweathermap_weather_code
-    above: 800
   - platform: numeric_state
     entity_id: sensor.openweathermap_cloud_coverage
     above: 75
@@ -74,10 +70,6 @@ condition:
               - condition: state
                 entity_id: sensor.openweathermap_weather_code
                 state: "500"
-              # It's cloudy
-              - condition: numeric_state
-                entity_id: sensor.openweathermap_weather_code
-                above: 802
           # AND it's kinda dark outside
           - condition: numeric_state
             entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
