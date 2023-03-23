@@ -6,7 +6,7 @@
 
 - name: Family Room TV
   platform: nfandroidtv
-  host: 192.168.2.63
+  host: 192.168.2.224
 
 # Notify all announcement devices (e.g. sonos)
 - name: tts_announcements_devices
