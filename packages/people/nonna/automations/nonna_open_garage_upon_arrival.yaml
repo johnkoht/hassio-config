@@ -2,7 +2,7 @@ automation:
   - id: "nonna_open_garage_upon_arrival"
     alias: Nonna Open Garage Upon Arrival
     mode: queued
-    initial_state: on
+    initial_state: off
     trigger:
       # Nonna is home for 3 seconds
       # This is to avoid race condition where other
