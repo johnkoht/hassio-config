@@ -4,6 +4,16 @@ input_text:
     max: 255
     initial: '{"text": "This is a test of the alexa actionable notifications skill. Did it work?", "event": "actionable.skill.test"}'
 
+  hello_world_response_type:
+    name: hello world response type
+  hello_world_response:
+    name: hello world response
+
+input_button:
+  hello_world_trigger:
+    name: Yes or no?
+
+# Script to dial out to Alexa's API service
 script:
   activate_alexa_actionable_notification:
     description: "Activates an actionable notification on a specific echo device"
@@ -28,3 +38,26 @@ script:
           media_content_id: amzn1.ask.skill.0a83e419-361d-4f8e-9e60-6daab02c1c16
         target:
           entity_id: "{{ alexa_device }}"
+
+automation:
+  - id: "1672413097885"
+    alias: Hello World Response
+    trigger:
+      - platform: event
+        event_type: alexa_actionable_notification
+        event_data:
+          event_id: hello_world
+    variables:
+      response_type: "{{ trigger.event.data.event_response_type }}"
+      response: "{{ trigger.event.data.event_response }}"
+    action:
+      - service: input_text.set_value
+        data:
+          value: "{{ response_type }}"
+        target:
+          entity_id: input_text.l
+      - service: input_text.set_value
+        data:
+          value: "{{ response }}"
+        target:
+          entity_id: input_text.hello_world_response
