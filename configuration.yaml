@@ -68,3 +68,6 @@ zone:
 
 wemo:
   discovery: true
+  static:
+    - 192.168.2.24
+    - 192.168.2.162
