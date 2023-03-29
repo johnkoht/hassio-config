@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: group
+    name: Exterior Doors
+    unique_id: exterior_doors
+    device_class: door
+    entities:
+      - binary_sensor.basement_exterior_door_status
+      - binary_sensor.guest_bedroom_balcony_door
+      - binary_sensor.interior_garage_door
+      - binary_sensor.kitchen_door
+      - binary_sensor.front_door_statusx
