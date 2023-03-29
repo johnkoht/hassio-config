@@ -15,7 +15,7 @@
       ignore_availability: true
       name: Nino soccer
       track: true
-      search: "Nino soccer"
+      search: "soccer"
       offset: "!!"
     - device_id: ninos_italian_class
       ignore_availability: true
@@ -23,12 +23,17 @@
       track: true
       search: "Nino Italian class"
       offset: "!!"
-    # Garbage Day
-    - device_id: garbage_day
+    - device_id: ninos_swim_lesson
       ignore_availability: true
-      name: Garbage day
+      name: Nino Swim Lesson
       track: true
-      search: "Garbage Day"
+      search: "Nino Swim Lesson"
+      offset: "!!"
+    - device_id: gianluca_little_gym
+      ignore_availability: true
+      name: Gianluca Little Gym
+      track: true
+      search: "Gianluca Little Gym"
       offset: "!!"
 
 - cal_id: john.koht@gmail.com
@@ -116,4 +121,17 @@
       name: Nino School Reminder
       track: true
       search: "Reminder"
+      offset: "!!"
+
+- cal_id: f8fa74d34ea864236bd58d815b69e7b296068a04374d24d6bb9e71cda5e34ea3@group.calendar.google.com
+  entities:
+    - device_id: house_chores
+      ignore_availability: true
+      name: House Chores
+    # Garbage Day
+    - device_id: garbage_day
+      ignore_availability: true
+      name: Garbage day
+      track: true
+      search: "Garbage Day"
       offset: "!!"

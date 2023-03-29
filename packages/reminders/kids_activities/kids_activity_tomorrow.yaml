@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      kids_activity_toorrow:
+        friendly_name: Kids Activity Tomorrow
+        value_template: >-
+          {% set t = now() %}
+          {% set midnight = today_at() %}
+          {% set event = state_attr("calendar.kohbocal", "start_time") | as_datetime | as_local %}
+          {% set delta = event - midnight %}
+          {{ delta.days == 1 }}
