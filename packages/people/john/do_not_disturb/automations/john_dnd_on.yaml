@@ -16,6 +16,8 @@ automation:
       - platform: state
         entity_id: input_boolean.john_work_call
         to: "on"
+        for:
+          seconds: 5
       # # 1 min before event
       # - platform: calendar
       #   event: start
