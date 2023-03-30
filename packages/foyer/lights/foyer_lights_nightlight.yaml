@@ -19,6 +19,9 @@ automation:
       - platform: state
         entity_id: input_boolean.bedtime
         to: "off"
+      # At 6pm
+      - platform: time
+        at: "18:00:00"
       # House goes from bedtime to auto in the morning
       - platform: state
         entity_id: input_select.house
@@ -43,6 +46,9 @@ automation:
           - condition: state
             entity_id: input_boolean.dark_outside
             state: "on"
+          # OR it's after 6pm
+          - condition: time
+            after: "18:00:00"
       # Light is off
       - condition: state
         entity_id: light.foyer_chandelier
