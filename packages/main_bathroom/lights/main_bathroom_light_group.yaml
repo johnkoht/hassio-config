@@ -7,3 +7,4 @@ light:
     entities:
       - light.main_bathroom_vanity_lights
       - light.main_bathroom_ceiling_lights
+      - light.main_bathroom_toilet_light
