@@ -30,10 +30,10 @@ automation:
     alias: "Doorbell Detected Object"
     mode: "single"
     trigger:
-      # Doorbell detects an object
+      # Doorbell detects an person
       - platform: state
-        entity_id: sensor.front_door_camera_detected_object
-        to: "person"
+        entity_id: binary_sensor.g4_doorbell_person_detected
+        to: "on"
     action:
       - service: script.display_doorbell_snapshot_on_tv
         data: {}
@@ -62,7 +62,7 @@ script:
 
             {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}
               {% set media_players = media_players + ["media_player.sonos_office"] %}
-            {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" %}
+            {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" and states.input_boolean.family_room_speech_notifications.state == "on" %}
               {% set media_players = media_players + ["media_player.sonos_family_room"] %}
             {% endif %}{% if states.input_boolean.kitchen_occupied.state == "on" and states.input_boolean.kitchen_speech_notifications.state == "on" %}
               {% set media_players = media_players + ["media_player.sonos_kitchen"] %}
