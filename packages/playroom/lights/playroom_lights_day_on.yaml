@@ -13,17 +13,17 @@ automation:
         entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
-        below: 80
+        below: 100
         for:
-          minutes: 3
+          minutes: 5
       # If the lighting is low in the playroom
       - platform: numeric_state
         entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
-        below: 50
+        below: 75
         for:
-          minutes: 3
+          minutes: 2
       # If the lighting is low in the playroom
       - platform: numeric_state
         entity_id:
@@ -31,7 +31,7 @@ automation:
           - sensor.playroom_entry_motion_sensor_illuminance
         below: 25
         for:
-          minutes: 2
+          minutes: 1
       # The weather is bad outside
       - platform: state
         entity_id: input_boolean.bad_weather
@@ -62,11 +62,11 @@ automation:
           # Light is low
           - condition: numeric_state
             entity_id: sensor.playroom_entry_motion_sensor_illuminance
-            below: 50
+            below: 100
           # Light is low
           - condition: numeric_state
             entity_id: sensor.playroom_motion_sensor_illuminance
-            below: 50
+            below: 100
       # Lights are currently off
       - condition: state
         entity_id: group.playroom_lights
