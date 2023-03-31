@@ -38,13 +38,13 @@ automation:
       - service: script.general_announcement
         data:
           speech_message: >-
-            {% 
-              set intro = [
+            {{ 
+              [
                 "Hey fam, quick calendar reminder for tomorrow: " ~ states.calendar.kohbocal.attributes.message,
                 "Just a quick reminder that " ~ states.calendar.kohbocal.attributes.message ~ " is tomorrow.",
                 "Heads up for tomorrow: " ~ states.calendar.kohbocal.attributes.message
               ] | random
-            %}
+            }}
           media_players: "auto"
           sound: "flute-cell-phone-alert"
 
