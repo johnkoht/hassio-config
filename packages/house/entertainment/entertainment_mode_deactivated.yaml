@@ -7,11 +7,10 @@ automation:
       - platform: state
         entity_id: input_boolean.entertainment_mode
         to: "off"
-    # condition:
-    #   # House is occupied
-    #   - condition: state
-    #     entity_id: input_boolean.house_occupied
-    #     state: "on"
+      # If the house becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
     action:
       # Turn ON adaptive lighting
       - service: switch.turn_on
@@ -25,3 +24,7 @@ automation:
       # Turn ON speech notifications
       - service: input_boolean.turn_on
         entity_id: input_boolean.speech_notifications
+
+      # Turn this automation off
+      - service: automation.turn_off
+        entity_id: automation.entertainment_mode_deactivated

@@ -1,6 +1,6 @@
 automation:
   - id: "entertainment_mode_activated"
-    initial_state: off
+    initial_state: on
     alias: "Entertainment Mode - Activated"
     trigger:
       # Entertainment Mode boolean is activated
@@ -25,3 +25,7 @@ automation:
       # Turn off speech notifications
       - service: input_boolean.turn_off
         entity_id: input_boolean.speech_notifications
+
+      # Turn ON the automation to deactivate entertainment mode
+      - service: automation.turn_on
+        entity_id: automation.entertainment_mode_deactivated
