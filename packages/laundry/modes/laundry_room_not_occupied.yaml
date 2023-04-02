@@ -9,6 +9,12 @@ automation:
         to: "off"
         for:
           minutes: 1
+      # No motion for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.laundry_room_motion_sensor_motion
+        to: "off"
+        for:
+          minutes: 5
       # Laundry Room sensor no longer detects occupancy
       - platform: state
         entity_id: binary_sensor.laundry_room_motion_sensor_occupancy
@@ -21,6 +27,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.laundry_room_motion_sensor_motion
         state: "off"
+      # Nobody via BLE
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'mudroom')|map(attribute='name')|list | length == 0 }}"
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.laundry_room_occupied
