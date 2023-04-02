@@ -1,0 +1,30 @@
+# Jr. Suite Lights Off
+#
+# Automatically turn the lights off based on various
+# triggers like the Jr. Suite is off/not occupied
+#
+automation:
+  - id: "jr_suite_lights_off"
+    initial_state: on
+    alias: "Jr. Suite lights off"
+    trigger:
+      # Jr. Suite is Off
+      - platform: state
+        entity_id: input_select.jr_suite
+        to: "Off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lights are currently on
+      - condition: state
+        entity_id: light.jr_suite_bedroom_main_lights
+        state: "on"
+      # Jr. Suite is Off
+      - condition: state
+        entity_id: input_select.jr_suite
+        state: "Off"
+    action:
+      - service: light.turn_off
+        entity_id: light.jr_suite_bedroom_main_lights

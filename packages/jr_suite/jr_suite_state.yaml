@@ -1,0 +1,6 @@
+input_select:
+  jr_suite:
+    name: Jr. Suite
+    options:
+      - "Auto"
+      - "Off"
