@@ -34,7 +34,7 @@ script:
         state: "on"
       # The TV is on
       - condition: state
-        entity_id: remote.sony_bravia_tv
+        entity_id: media_player.sony_bravia_tv
         state: "on"
 
       # Take a snapshot
