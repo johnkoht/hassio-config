@@ -1,0 +1,6 @@
+input_select:
+  powder_room:
+    name: Powder Room
+    options:
+      - "Auto"
+      - "Off"
