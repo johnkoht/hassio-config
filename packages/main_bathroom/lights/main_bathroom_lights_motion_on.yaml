@@ -26,11 +26,11 @@ automation:
         below: 80
       # Lights are currently off
       - condition: state
-        entity_id: light.main_bathroom_lights
+        entity_id: light.main_bathroom_main_lights
         state: "off"
     action:
       - service: light.turn_on
-        entity_id: light.main_bathroom_lights
+        entity_id: light.main_bathroom_main_lights
       # - service: automation.turn_on
       #   entity_id: automation.main_bathroom_lights_motion_off
       # Toggle the boolean to flag it was auto
