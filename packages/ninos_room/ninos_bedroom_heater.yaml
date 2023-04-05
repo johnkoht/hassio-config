@@ -60,9 +60,9 @@ automation:
         to: "on"
         for:
           minutes: 10
-      # # Temperature is above 71.5
-      # - platform: template
-      #   value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 71.5 }}"
+      # Temperature is above 70.5
+      - platform: template
+        value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 70.15 }}"
       # Temperature is above 71 degrees
       - platform: numeric_state
         entity_id: sensor.nino_room_temperature
