@@ -35,6 +35,10 @@ automation:
       - condition: state
         entity_id: sun.sun
         state: "above_horizon"
+      # Before 6pm: this is because we turn the foyer nightlight on
+      # at 6pm and don't want to turn it off even if the weather improves
+      - condition: time
+        before: "18:00:00"
       # If either the ceiling lights or chandelier are off
       - condition: or
         conditions:
