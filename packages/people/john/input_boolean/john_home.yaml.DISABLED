@@ -1,0 +1,9 @@
+# John Home Boolean
+input_boolean:
+  john_home:
+    name: John Home
+    icon: mdi:home
+
+  john_home_new:
+    name: John Home New
+    icon: mdi:home
