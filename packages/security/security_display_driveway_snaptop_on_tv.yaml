@@ -44,7 +44,7 @@ script:
           entity_id: camera.garage_driveway_camera_high
 
       # Notify the family room TV
-      - service: notify.family_room_tv
+      - service: notify.family_room_sony_bravia_tv
         data:
           message: Somebody is on the driveway
           data:

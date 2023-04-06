@@ -8,6 +8,10 @@
   platform: nfandroidtv
   host: 192.168.2.224
 
+- name: Family Room Sony Bravia TV
+  platform: nfandroidtv
+  host: 192.168.2.224
+
 # Notify all announcement devices (e.g. sonos)
 - name: tts_announcements_devices
   platform: tts
