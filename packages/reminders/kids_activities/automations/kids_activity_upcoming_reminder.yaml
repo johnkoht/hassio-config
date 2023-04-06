@@ -17,12 +17,12 @@ automation:
       - service: script.general_announcement
         data:
           speech_message: >-
-            {% 
-              set intro = [
+            {{ 
+              [
                 "Hey fam, that " ~ states.calendar.kohbocal.attributes.message ~ " is in one hour.",
                 "Just a quick reminder that " ~ states.calendar.kohbocal.attributes.message ~ " is in one hour.",
                 "Pardon the interruption, I just wanted to remind you that " ~ states.calendar.kohbocal.attributes.message ~ " is in one hour."
               ] | random
-            %}
+            }}
           media_players: "auto"
           sound: "flute-cell-phone-alert"
