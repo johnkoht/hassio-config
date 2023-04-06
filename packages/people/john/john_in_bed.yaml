@@ -81,13 +81,13 @@ binary_sensor:
       #
       # Lights are ON
       - platform: state
-        entity_id: light.main_bedroom_lights
+        entity_id: light.main_bedroom_main_lights
         prob_given_true: 0.06
         prob_given_false: 0.125
         to_state: "on"
       # Lights are OFF
       - platform: state
-        entity_id: light.main_bedroom_lights
+        entity_id: light.main_bedroom_main_lights
         prob_given_true: 0.94
         prob_given_false: 0.875
         to_state: "off"
