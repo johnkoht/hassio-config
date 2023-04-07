@@ -75,6 +75,13 @@ automation:
         target:
           entity_id: cover.garage_doors
 
+      # Call the announcement engine
+      - service: script.general_announcement
+        data:
+          speech_message: "{{ trigger.from_state.attributes.friendly_name }} has been open for a while but nobody is around so I'm automaticallly closing."
+          media_players: "auto"
+          sound: "police-whistle"
+
       # Turn off the garage lights
       - service: light.turn_off
         entity_id: light.garage_lights
@@ -83,4 +90,4 @@ automation:
       - service: notify.ios_family
         data:
           title: Closing the garage doors!
-          message: The garage doors have been open for a while but nobody is around so I'm automatically closing them.
+          message: "{{ trigger.from_state.attributes.friendly_name }} has been open for a while but nobody is around so I'm automaticallly closing."
