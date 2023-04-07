@@ -15,6 +15,10 @@ automation:
       - platform: state
         entity_id: input_boolean.dark_outside
         to: "on"
+      # Not so light outside anymore
+      - platform: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        below: 2500
       # Bedtime turns off
       - platform: state
         entity_id: input_boolean.bedtime
@@ -36,6 +40,10 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # It's not super bright outside
+      - condition: numeric_state
+        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        below: 8000
       - condition: or
         conditions:
           # Sun is down
