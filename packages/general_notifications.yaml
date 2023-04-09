@@ -1,0 +1,71 @@
+# General Notification
+#
+#
+# USAGE:
+# service: script.general_notification
+# data:
+#   message: "Hello, world!"
+#   devices: ["notify.mobile_app_jk"] or "all"
+#   priority: "active"
+#   tag: ""
+#
+
+#
+# Priority options:
+# - active: general notification default
+# - passive: logging purposes
+# - time-sensitive: time sensitive
+# - critical: critical iOS alert
+#
+# Tag options:
+# - garage_doors
+# - alarm
+# - ?
+
+script:
+  clear_notifications:
+    alias: "Clear Notifications"
+    mode: "queued"
+    sequence:
+      - service: >
+          {% if devices == "all"  %}
+            notify.ios_family
+          {% elif devices == "jk" %}
+            notify.mobile_app_jk
+          {% elif devices == "cfalb" %}
+            notify.mobile_app_cfalb
+          {% endif %}
+        data:
+          message: "clear_notification"
+          data:
+            tag: "{{ tag }}"
+
+  general_notification:
+    alias: General Notification
+    mode: "queued"
+    sequence:
+      - alias: "Set up variables"
+        variables:
+          tag: "{{ tag }}"
+          priority: >-
+            {% if priority is defined and priority|length %}
+              {{priority}}
+            {% else %}
+              "active"
+            {% endif %}
+
+      - service: >
+          {% if devices == "all"  %}
+            notify.ios_family
+          {% elif devices == "jk" %}
+            notify.mobile_app_jk
+          {% elif devices == "cfalb" %}
+            notify.mobile_app_cfalb
+          {% endif %}
+        data:
+          message: "{{ message }}"
+          title: "{{ title }}"
+          data:
+            tag: "{{ tag }}"
+            push:
+              interruption-level: "{{ priority }}"
