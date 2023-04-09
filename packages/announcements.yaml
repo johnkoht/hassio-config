@@ -244,7 +244,7 @@ script:
         data:
           volume_level: >-
             {% if states.input_boolean.quiet_mode.state == "on" %}
-              0.3
+              0.25
             {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
               0.5
             {% else %}
@@ -303,7 +303,7 @@ script:
           entity_id: "{{ media_players }}"
           volume_level: >-
             {% if states.input_boolean.quiet_mode.state == "on" %}
-              0.3
+              0.25
             {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
               0.5
             {% else %}
