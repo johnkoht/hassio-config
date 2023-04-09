@@ -1,0 +1,48 @@
+automation:
+  - id: "door_left_open"
+    alias: "Door Left Open"
+    mode: "single"
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.interior_garage_door
+          - binary_sensor.front_door_status
+        to: "on"
+        for:
+          minutes: 5
+      - platform: state
+        entity_id:
+          - binary_sensor.interior_garage_door
+          - binary_sensor.front_door_status
+        to: "on"
+        for:
+          minutes: 10
+      - platform: state
+        entity_id:
+          - binary_sensor.interior_garage_door
+          - binary_sensor.front_door_status
+        to: "on"
+        for:
+          minutes: 15
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.interior_garage_door
+            state: "on"
+          - condition: state
+            entity_id: binary_sensor.front_door_status
+            state: "on"
+    action:
+      # Call the announcement engine
+      - service: script.general_announcement
+        data:
+          speech_message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
+          media_players: "auto"
+          sound: "police-whistle"
+
+      # Notify the family
+      - service: notify.ios_family
+        data:
+          title: Exterior House Doors
+          message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
