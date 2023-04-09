@@ -21,10 +21,10 @@ automation:
       - platform: homeassistant
         event: start
     condition:
-      # Garbage calendar is ON
-      - condition: state
-        entity_id: calendar.garbage_day
-        state: "on"
+      # # Garbage calendar is ON
+      # - condition: state
+      #   entity_id: calendar.garbage_day
+      #   state: "on"
       # Garbage day boolean is current OFF
       - condition: state
         entity_id: input_boolean.garbage_day
