@@ -12,6 +12,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.john_laptop_camera_active
         to: "on"
+        for:
+          seconds: 5
       # John's room presence is the office
       - platform: state
         entity_id: sensor.john_room_presence
