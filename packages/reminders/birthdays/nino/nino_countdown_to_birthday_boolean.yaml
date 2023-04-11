@@ -1,0 +1,10 @@
+# Nino Countdown to Birthday Boolean
+#
+# Should we start the countdown? Once this boolean is activated,
+# then the house will start a countdown to Nino's birthday via
+# voice announcements.
+#
+input_boolean:
+  nino_countdown_to_birthday:
+    name: Nino Countdown to Birthday
+    icon: mdi:cake

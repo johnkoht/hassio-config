@@ -1,6 +1,6 @@
 john_work:
   zone: john_s_work
   devices:
-    - device_tracker.johns_iphone_2
+    - device_tracker.jk_2
   tolerance: 100
   unit_of_measurement: km

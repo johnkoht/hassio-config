@@ -15,7 +15,7 @@ trigger:
   - platform: zone
     entity_id:
       - person.john_koht
-      - device_tracker.johns_iphone_2
+      - device_tracker.jk_2
     zone: zone.home
     event: leave
   # Bayesian sensor is OFF
@@ -26,7 +26,7 @@ trigger:
   - platform: state
     entity_id:
       - person.john_koht
-      - device_tracker.johns_iphone_2
+      - device_tracker.jk_2
     to: "not_home"
   # Handle restarts and reloads of HA
   - platform: event
@@ -54,7 +54,7 @@ condition:
         state: "not_home"
       # Companion app is not home
       - condition: state
-        entity_id: device_tracker.johns_iphone_2
+        entity_id: device_tracker.jk_2
         state: "not_home"
   # - condition: not
   #   conditions:
