@@ -6,12 +6,12 @@
     # iOS companion app device
     #
     - platform: state
-      entity_id: "device_tracker.johns_iphone_2"
+      entity_id: "device_tracker.jk_2"
       prob_given_true: 0.9
       prob_given_false: 0.025
       to_state: "home"
     - platform: state
-      entity_id: "device_tracker.johns_iphone_2"
+      entity_id: "device_tracker.jk_2"
       prob_given_true: 0.03
       prob_given_false: 0.95
       to_state: "not_home"
