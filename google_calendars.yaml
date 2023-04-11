@@ -35,6 +35,18 @@
       track: true
       search: "Gianluca Little Gym"
       offset: "!!"
+    - device_id: ninos_bday
+      ignore_availability: true
+      name: "Nino's Birthday"
+      track: true
+      search: "Anthony Birthday"
+      offset: "!!"
+    - device_id: gianluca_bday
+      ignore_availability: true
+      name: "Gianluca's Birthday"
+      track: true
+      search: "Gianluca Birthday"
+      offset: "!!"
 
 - cal_id: john.koht@gmail.com
   entities:

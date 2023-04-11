@@ -1,0 +1,38 @@
+automation:
+  # Nino Countdown to Birthday - Turn Off
+  #
+  # Triggered each day to check if we should activate the
+  # boolean to start the bday countdown
+  - id: "nino_countdown_to_birthday_turn_off"
+    alias: "Nino Countdown to Birthday - Turn Off"
+    mode: "single"
+    initial_state: off
+    trigger:
+      # First thing in the morning
+      - platform: time
+        at: "00:00:01"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.nino_days_to_birthday
+        above: 15
+    action:
+      # Turn on the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.nino_countdown_to_birthday
+
+      # Turn this automation off
+      - service: automation.turn_off
+        entity_id: automation.nino_countdown_to_birthday_turn_off
+
+      # Turn OFF the daily reminder automation
+      - service: automation.turn_off
+        entity_id: automation.nino_birthday_countdown_reminder
+
+      # Turn the other automation ON
+      - service: automation.turn_on
+        entity_id: automation.nino_countdown_to_birthday_turn_on
