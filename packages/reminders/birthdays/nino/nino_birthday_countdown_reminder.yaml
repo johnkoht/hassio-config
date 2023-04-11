@@ -49,7 +49,7 @@ automation:
                 data:
                   speech_message: "Hey, Nino! Guess what? Today's your birthday! Happy Birthday!!!"
                   media_players: "auto"
-                  sound: "flute-cell-phone-alert"
+                  sound: "success-trumpets"
 
           # ELIF 1 more day
           - conditions:
@@ -61,7 +61,7 @@ automation:
                 data:
                   speech_message: "Nino! Guess what tomorrow is? You're birthday!!! Are you super excited to celebrate?"
                   media_players: "auto"
-                  sound: "flute-cell-phone-alert"
+                  sound: "games-sfx"
 
         # ELSE more than 1 day
         default:
@@ -76,4 +76,4 @@ automation:
                   ] | random
                 }}
               media_players: "auto"
-              sound: "flute-cell-phone-alert"
+              sound: "games-sfx"
