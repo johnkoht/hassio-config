@@ -3,12 +3,15 @@ automation:
     alias: "Hourly Dong"
     mode: "single"
     trigger:
-      # # At 7am
-      # - platform: time
-      #   at: "07:00:00"
-      # # At 8am
-      # - platform: time
-      #   at: "08:00:00"
+      # At 7am
+      - platform: time
+        at: "07:00:00"
+      # At 8am
+      - platform: time
+        at: "08:00:00"
+      # At 9am
+      - platform: time
+        at: "09:00:00"
       # At 5pm
       - platform: time
         at: "17:00:00"
@@ -61,11 +64,6 @@ automation:
         data:
           entity_id: "{{media_players}}"
 
-      # # Capture the current media player volumes
-      # - service: script.set_media_player_volume
-      #   data:
-      #     media_player: "{{media_players}}"
-
       # Set the volume for the ding
       - service: media_player.volume_set
         data_template:
@@ -96,20 +94,8 @@ automation:
           media_content_id: "{{sound_file}}"
           media_content_type: music
 
-      - wait_template: "{{ states( primary_player ) != 'playing' }}"
-        timeout:
-          seconds: 4
-
-      # - alias: "Wait 4s"
-      #   delay: 00:00:04
-
-      # # then we wait for it to finish announcing before we continue
-      # - wait_template: "{{ states( primary_player ) != 'playing' }}"
-      #   timeout:
-      #     seconds: 3
-
-      # - alias: "Wait 1s"
-      #   delay: 00:00:01
+      - alias: "Wait 5s"
+        delay: 00:00:05
 
       - service: media_player.unjoin
         data:
