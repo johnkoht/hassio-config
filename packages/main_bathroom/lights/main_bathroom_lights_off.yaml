@@ -44,7 +44,7 @@ automation:
             state: "off"
           # Aqara doesn't detect occupancy
           - condition: state
-            entity_id: input_boolean.main_bathroom_motion_sensor_occupancy
+            entity_id: binary_sensor.main_bathroom_motion_sensor_occupancy
             state: "off"
       # Bathroom lights are on
       - condition: state
