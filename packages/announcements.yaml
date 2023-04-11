@@ -219,6 +219,8 @@ script:
               https://github.com/johnkoht/hassio-config/blob/master/sounds/success-trumpets.mp3?raw=true
             {% elif sound == "games-sfx" %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/games-sfx.wav?raw=true
+            {% elif sound == "fox-nfl" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/fox-nfl.mp3?raw=true
             {% else %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
             {% endif %}
