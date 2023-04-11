@@ -2,6 +2,7 @@ automation:
   - id: "door_left_open"
     alias: "Door Left Open"
     mode: "single"
+    initial_state: off
     trigger:
       - platform: state
         entity_id:
