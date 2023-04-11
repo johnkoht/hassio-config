@@ -3,23 +3,11 @@ automation:
     alias: "Garbage Day Off"
     mode: "single"
     trigger:
-      # # First thing in the morning
-      # - platform: time
-      #   at: "00:00:01"
       # Garbage calendar turned OFF
       - platform: calendar
         event: end
         entity_id: calendar.garbage_day
-      # # Garbage calendar turned OFF for 5 mins
-      # - platform: calendar
-      #   event: end
-      #   entity_id: calendar.garbage_day
-      #   offset: "00:05:00"
     condition:
-      # # Garbage calendar is OFF
-      # - condition: state
-      #   entity_id: calendar.garbage_day
-      #   state: "off"
       # Garbage day boolean is current ON
       - condition: state
         entity_id: input_boolean.garbage_day
