@@ -38,6 +38,10 @@ automation:
         timeout: "00:05:00"
         continue_on_timeout: false
 
+      # Mark announced so we don't repeat all day
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.nino_countdown_announced
+
       - choose:
           # IF today's the day then let's announce it!!!
           - conditions:

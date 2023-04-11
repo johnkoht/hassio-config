@@ -27,15 +27,13 @@ automation:
 
       # Turn on the automation to check if we should turn OFF the boolean
       # And turn on the daily reminder
+      # Turn on the daily reset
       - service: automation.turn_on
         entity_id:
           - automation.nino_countdown_to_birthday_turn_off
           - automation.nino_birthday_countdown_reminder
+          - automation.nino_birthday_daily_reset
 
       # Turn this automation off
       - service: automation.turn_off
         entity_id: automation.nino_countdown_to_birthday_turn_on
-
-      # Turn ON the daily reminder automation
-      - service: automation.turn_on
-        entity_id: automation.nino_birthday_countdown_reminder

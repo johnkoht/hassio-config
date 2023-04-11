@@ -21,18 +21,19 @@ automation:
         entity_id: sensor.nino_days_to_birthday
         above: 15
     action:
-      # Turn on the boolean
-      - service: input_boolean.turn_on
+      # Turn OFF the boolean
+      - service: input_boolean.turn_off
         entity_id: input_boolean.nino_countdown_to_birthday
 
       # Turn this automation off
-      - service: automation.turn_off
-        entity_id: automation.nino_countdown_to_birthday_turn_off
-
       # Turn OFF the daily reminder automation
+      # Turn OFF the daily reset
       - service: automation.turn_off
-        entity_id: automation.nino_birthday_countdown_reminder
+        entity_id:
+          - automation.nino_countdown_to_birthday_turn_off
+          - automation.nino_birthday_countdown_reminder
+          - automation.nino_birthday_daily_reset
 
-      # Turn the other automation ON
+      # Turn the other automation ON to wait for next year
       - service: automation.turn_on
         entity_id: automation.nino_countdown_to_birthday_turn_on
