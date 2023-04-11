@@ -215,6 +215,10 @@ script:
               https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell.wav?raw=true
             {% elif sound == "tarantella" %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/tarantella.mp3?raw=true
+            {% elif sound == "success-trumpets" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/success-trumpets.mp3?raw=true
+            {% elif sound == "games-sfx" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/games-sfx.wav?raw=true
             {% else %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
             {% endif %}
