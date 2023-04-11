@@ -96,12 +96,12 @@ automation:
           media_content_id: "{{sound_file}}"
           media_content_type: music
 
-      - wait_template: "{{ states( primary_player ) == 'playing' }}"
+      - wait_template: "{{ states( primary_player ) != 'playing' }}"
         timeout:
-          seconds: 3
+          seconds: 4
 
-      # - alias: "Wait 3s"
-      #   delay: 00:00:03
+      # - alias: "Wait 4s"
+      #   delay: 00:00:04
 
       # # then we wait for it to finish announcing before we continue
       # - wait_template: "{{ states( primary_player ) != 'playing' }}"
