@@ -22,9 +22,8 @@ action:
         {{
           [
             "Arrivederci! Baba has left the house.",
-            "Baba out.",
             "Baba left the house.",
-            "Pardon the interruption but babba has left the house!",
+            "Pardon the interruption but Baba has left the house!",
             "Attention! Baba is no longer home."
           ] | random
         }}
