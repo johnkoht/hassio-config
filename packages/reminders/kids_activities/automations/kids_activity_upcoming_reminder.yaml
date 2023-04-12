@@ -6,7 +6,7 @@ automation:
       - platform: calendar
         event: start
         entity_id: calendar.kohbocal
-        offset: "01:00:00"
+        offset: "-01:00:00"
     condition:
       # House is occupied
       - condition: state
