@@ -13,6 +13,10 @@ automation:
           - input_boolean.cristina_is_awake
           - input_boolean.john_is_awake
         to: "on"
+      # Lights turn on
+      - platform: state
+        entity_id: light.main_bedroom_main_lights
+        to: "on"
     condition:
       # After 5am
       - condition: time
