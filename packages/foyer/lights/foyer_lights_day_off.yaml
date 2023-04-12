@@ -21,7 +21,7 @@ automation:
       # It's very bright outside
       - platform: numeric_state
         entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        above: 1000
+        above: 500
         for:
           minutes: 3
     condition:
