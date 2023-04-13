@@ -34,3 +34,6 @@ automation:
         entity_id: group.office_lights
       - service: automation.turn_on
         entity_id: automation.office_lights_motion_off
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.office_lights_auto

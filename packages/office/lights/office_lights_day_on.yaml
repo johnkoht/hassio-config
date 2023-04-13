@@ -64,3 +64,6 @@ automation:
     action:
       - service: light.turn_on
         entity_id: group.office_lights
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.office_lights_auto
