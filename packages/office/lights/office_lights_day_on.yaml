@@ -34,10 +34,18 @@ automation:
       - platform: state
         entity_id: input_boolean.lighting_automations
         to: "on"
+      # Light automations is enabled
+      - platform: state
+        entity_id: input_boolean.office_lighting_automations
+        to: "on"
     condition:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Office lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
         state: "on"
       # Office is occupied
       - condition: state
@@ -64,6 +72,7 @@ automation:
     action:
       - service: light.turn_on
         entity_id: group.office_lights
+
       # Toggle the boolean to flag it was auto
       - service: input_boolean.turn_on
         entity_id: input_boolean.office_lights_auto

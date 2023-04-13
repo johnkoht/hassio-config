@@ -30,6 +30,10 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      # Office lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
+        state: "on"
       # Office is not in DnD mode
       - condition: template
         value_template: "{{ not is_state('input_select.office','DnD') }}"

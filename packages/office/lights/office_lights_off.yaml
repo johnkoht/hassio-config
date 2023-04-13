@@ -28,6 +28,10 @@ automation:
       - condition: state
         entity_id: input_boolean.office_occupied
         state: "off"
+      # Office lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
+        state: "on"
       # Office is Off, not occupied, or the room is bright enough
       - condition: or
         conditions:
