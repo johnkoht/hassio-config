@@ -2,7 +2,7 @@
 #
 automation:
   - id: "office_lights_manually_turned_off"
-    initial_state: on
+    initial_state: off
     alias: "Office Lights Manually Turned Off"
     trigger:
       # Lights turned off
