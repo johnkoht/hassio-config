@@ -5,7 +5,7 @@
 #
 automation:
   - id: "office_lights_motion_off"
-    initial_state: on
+    initial_state: off
     alias: "Office lights motion off"
     trigger:
       # Motion no longer detected
