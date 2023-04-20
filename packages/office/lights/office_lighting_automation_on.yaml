@@ -3,7 +3,7 @@
 #
 automation:
   - id: "office_lighting_automation_on"
-    initial_state: on
+    initial_state: off
     alias: "Office Lighting Automation On"
     trigger:
       # Office goes to DnD Mode
