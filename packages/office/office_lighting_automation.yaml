@@ -2,4 +2,4 @@ input_boolean:
   office_lighting_automations:
     name: Office Lighting Automations
     icon: mdi:lightbulb-auto
-    initial: off
+    initial: on
