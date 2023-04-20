@@ -58,5 +58,10 @@ automation:
         entity_id: sensor.office_aqara_illuminance
         above: 151
     action:
+      # Turn off the lights
       - service: light.turn_off
         entity_id: group.office_lights
+
+      # Toggle off the lighting automatically turned on boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_lights_auto
