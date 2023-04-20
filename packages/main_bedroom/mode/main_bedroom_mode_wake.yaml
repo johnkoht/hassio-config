@@ -18,9 +18,10 @@ automation:
         entity_id: light.main_bedroom_main_lights
         to: "on"
     condition:
-      # After 5am
+      # After 5am and before 9am
       - condition: time
         after: "05:00:00"
+        before: "09:00:00"
       - condition: and
         conditions:
           # John is away or home and awake
