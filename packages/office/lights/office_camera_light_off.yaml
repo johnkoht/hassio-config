@@ -11,7 +11,7 @@ automation:
         entity_id: binary_sensor.john_laptop_camera_active
         to: "off"
         for:
-          seconds: 5
+          seconds: 10
       # Office no longer occupied
       - platform: state
         entity_id: input_boolean.office_occupied
