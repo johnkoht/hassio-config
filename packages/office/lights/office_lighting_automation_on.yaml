@@ -1,0 +1,24 @@
+# Office Lighting Automation On
+#
+#
+automation:
+  - id: "office_lighting_automation_on"
+    initial_state: on
+    alias: "Office Lighting Automation On"
+    trigger:
+      # Office goes to DnD Mode
+      - platform: state
+        entity_id: input_select.office
+        from: "DnD"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
+        state: "on"
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_lighting_automations
