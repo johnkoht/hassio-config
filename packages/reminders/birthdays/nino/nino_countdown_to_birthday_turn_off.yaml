@@ -20,6 +20,7 @@ automation:
       - condition: numeric_state
         entity_id: sensor.nino_days_to_birthday
         above: 15
+        below: 0
     action:
       # Turn OFF the boolean
       - service: input_boolean.turn_off
