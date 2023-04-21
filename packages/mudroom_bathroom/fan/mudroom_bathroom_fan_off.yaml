@@ -1,0 +1,25 @@
+# Mudroom Bathroom Fan Fan Off
+#
+# Turn off the fan if the Mudroom Bathroom Fan turns off
+#
+automation:
+  - id: "mudroom_bathroom_fan_off"
+    initial_state: on
+    alias: "Mudroom Bathroom Fan Fan Off"
+    trigger:
+      # Mudroom Bathroom Fan is Off
+      - platform: state
+        entity_id: input_select.mudroom_bathroom
+        to: "Off"
+    condition:
+      # Fan is currently ON
+      - condition: state
+        entity_id: fan.mudroom_bathroom_fan
+        state: "on"
+      # Mudroom Bathroom Fan is Off
+      - condition: state
+        entity_id: input_select.mudroom_bathroom
+        state: "Off"
+    action:
+      - service: fan.turn_off
+        entity_id: fan.mudroom_bathroom_fan
