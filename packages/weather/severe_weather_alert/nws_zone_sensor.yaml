@@ -1,0 +1,4 @@
+sensor:
+  - platform: nws_alerts
+    zone_id: "ILZ103, ILZ014"
+    name: NWS Alerts Sensor

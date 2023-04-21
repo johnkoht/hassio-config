@@ -1,0 +1,13 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      nws_alerts_are_active:
+        friendly_name: NWS Alerts Are Active
+        value_template: >
+          {{ states('sensor.nws_alerts_sensor') | int(0) > 0 }}
+        icon_template: >-
+          {% if states('sensor.nws_alerts_sensor') | int(0) > 0 %}
+            mdi:weather-lightning
+          {% else %}
+            mdi:weather-sunny
+          {% endif %}
