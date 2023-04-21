@@ -1,0 +1,6 @@
+input_select:
+  mudroom_bathroom:
+    name: Mudroom Bathroom
+    options:
+      - "Auto"
+      - "Off"

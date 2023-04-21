@@ -1,0 +1,30 @@
+# Mudroom Bathroom Lights Off
+#
+# Automatically turn the lights off based on various
+# triggers like the Mudroom Bathroom is off/not occupied
+#
+automation:
+  - id: "mudroom_bathroom_lights_off"
+    initial_state: on
+    alias: "Mudroom Bathroom lights off"
+    trigger:
+      # Mudroom Bathroom is Off
+      - platform: state
+        entity_id: input_select.mudroom_bathroom
+        to: "Off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lights are currently on
+      - condition: state
+        entity_id: light.mudroom_bathroom_main_lights
+        state: "on"
+      # Mudroom Bathroom is Off
+      - condition: state
+        entity_id: input_select.mudroom_bathroom
+        state: "Off"
+    action:
+      - service: light.turn_off
+        entity_id: light.mudroom_bathroom_main_lights
