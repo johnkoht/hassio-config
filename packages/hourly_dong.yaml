@@ -12,6 +12,21 @@ automation:
       # At 9am
       - platform: time
         at: "09:00:00"
+      # At 10am
+      - platform: time
+        at: "10:00:00"
+      # At 11am
+      - platform: time
+        at: "11:00:00"
+      # At 12pm
+      - platform: time
+        at: "12:00:00"
+      # At 3pm
+      - platform: time
+        at: "15:00:00"
+      # At 4pm
+      - platform: time
+        at: "16:00:00"
       # At 5pm
       - platform: time
         at: "17:00:00"
