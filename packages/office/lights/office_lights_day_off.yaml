@@ -20,7 +20,7 @@ automation:
         entity_id: sensor.office_aqara_illuminance
         above: 250
         for:
-          minutes: 3
+          minutes: 5
       # The weather not bad anymore
       - platform: state
         entity_id: input_boolean.bad_weather
