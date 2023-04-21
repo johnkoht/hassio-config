@@ -1,0 +1,12 @@
+fan:
+  - platform: template
+    fans:
+      powder_room_fan:
+        friendly_name: "Powder Room Fan"
+        value_template: "{{ states('light.powder_room_fan_switch') }}"
+        turn_on:
+          service: light.turn_on
+          entity_id: light.powder_room_fan_switch
+        turn_off:
+          service: light.turn_off
+          entity_id: light.powder_room_fan_switch
