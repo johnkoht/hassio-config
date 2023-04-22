@@ -1,0 +1,4 @@
+input_boolean:
+  powder_room_occupied:
+    name: Powder Room Occupied
+    icon: mdi:toilet
