@@ -1,0 +1,62 @@
+automation:
+  - id: "powder_room_not_occupied"
+    initial_state: on
+    alias: "Powder Room Not Occupied"
+    trigger:
+      # Door is opened
+      - platform: state
+        entity_id: binary_sensor.powder_room_door
+        to: "on"
+      # Door is opened for 5 mins
+      - platform: state
+        entity_id: binary_sensor.powder_room_door
+        to: "on"
+        for:
+          minutes: 5
+      # Powder Room lights are turned OFF
+      - platform: state
+        entity_id: light.powder_room_main_lights
+        to: "off"
+      # Powder Room lights are turned OFF for 5 mins
+      - platform: state
+        entity_id: light.powder_room_main_lights
+        to: "off"
+        for:
+          minutes: 5
+    condition:
+      # Powder Room is already occupied
+      - condition: state
+        entity_id: input_boolean.powder_room_occupied
+        state: "on"
+      - condition: or
+        conditions:
+          # Door is open AND lights are OFF
+          - condition: and
+            conditions:
+              # Door open
+              - condition: state
+                entity_id: binary_sensor.powder_room_door
+                state: "on"
+              # Lights off
+              - condition: state
+                entity_id: light.powder_room_main_lights
+                state: "on"
+          # OR
+          # Door is open for 5 mins OR lights are OFF for 5 mins
+          - condition: or
+            conditions:
+              # Door closed for 5 mins
+              - condition: state
+                entity_id: binary_sensor.powder_room_door
+                state: "on"
+                for:
+                  minutes: 5
+              # Lights off for 5 mins
+              - condition: state
+                entity_id: light.powder_room_main_lights
+                state: "on"
+                for:
+                  minutes: 5
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.powder_room_occupied
