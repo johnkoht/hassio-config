@@ -60,3 +60,8 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.powder_room_occupied
+      # Push for logging/debugging
+      - service: notify.mobile_app_jk
+        data:
+          title: Powder Room
+          message: The powder room is NO LONGER occupied!

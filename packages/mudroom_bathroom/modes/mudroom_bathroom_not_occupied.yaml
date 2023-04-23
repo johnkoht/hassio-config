@@ -60,3 +60,8 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.mudroom_bathroom_occupied
+      # Push for logging/debugging
+      - service: notify.mobile_app_jk
+        data:
+          title: Mudroom bathroom
+          message: The mudroom bathroom is NO LONGER occupied!
