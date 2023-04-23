@@ -14,9 +14,9 @@ automation:
         entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
-        above: 151
+        above: 115
         for:
-          minutes: 5
+          minutes: 3
       # The weather not bad anymore
       - platform: state
         entity_id: input_boolean.bad_weather
@@ -51,7 +51,7 @@ automation:
         entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
-        above: 149
+        above: 115
       # Lights are currently on
       - condition: state
         entity_id: light.playroom_lights
