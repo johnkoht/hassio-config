@@ -19,12 +19,12 @@ automation:
         to: "on"
         for:
           minutes: 5
-      # Bedroom is Wake for 15 minutes
+      # Bedroom is Wake for 10 minutes
       - platform: state
         entity_id: input_select.main_bedroom
         to: "Wake"
         for:
-          minutes: 15
+          minutes: 10
       # It's after 7am
       - platform: time
         at: "00:07:00"
@@ -32,6 +32,10 @@ automation:
       - platform: state
         entity_id: binary_sensor.bedtime
         to: "off"
+      # If the main ceiling lights turn on
+      - platform: state
+        entity_id: light.main_bedroom_main_lights
+        to: "on"
     condition:
       # Main bedroom is not occupied
       - condition: state
