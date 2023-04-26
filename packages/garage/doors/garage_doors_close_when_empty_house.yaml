@@ -44,7 +44,12 @@ automation:
         entity_id: cover.garage_doors
 
       # Notify the family
-      - service: notify.ios_family
+
+      # Notification for logging
+      - service: script.general_notification
         data:
-          title: Closing the garage doors!
-          message: The house is empty or off so I'm closing the garage doors
+          title: "Garage Doors Open!"
+          message: "The house is empty or off so I'm closing the garage doors"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "garage-doors-closed-empty"

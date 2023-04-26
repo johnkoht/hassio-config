@@ -23,8 +23,10 @@ automation:
       - service: alarm_control_panel.alarm_arm_home
         entity_id: alarm_control_panel.panel
 
-      # Notification for testing
-      - service: notify.mobile_app_jk
+      - service: script.general_notification
         data:
           message: Home is armed since nobody is home.
           title: Home Security System
+          devices: "jk"
+          priority: "active"
+          tag: "home-armed"

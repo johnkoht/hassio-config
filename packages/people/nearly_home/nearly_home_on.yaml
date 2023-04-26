@@ -47,8 +47,10 @@ automation:
       - service: automation.turn_on
         entity_id: automation.nearly_home_turn_off
 
-      # Push notification for testing
-      - service: notify.mobile_app_jk
+      - service: script.general_notification
         data:
           title: Nearly Home On
           message: Nearly home automation turned on
+          devices: "jk"
+          priority: "passive"
+          tag: "nearly-home"

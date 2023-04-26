@@ -31,7 +31,11 @@ action:
   - service: script.cristina_arrived_work
     data:
       who: cfalb
-  - service: notify.mobile_app_jk
+  # Notification for logging
+  - service: script.general_notification
     data:
-      message: Cristina arrived at work
-      title: Cristina arrived at work!
+      title: "Cristina is at work"
+      message: "Cristina has arrived at work!"
+      devices: "jk"
+      priority: "passive"
+      tag: "cristina-arrived-work"

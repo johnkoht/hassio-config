@@ -41,8 +41,11 @@ automation:
       - service: automation.turn_off
         entity_id: automation.nearly_home_turn_off
 
-      # Quick push notificaiton for testing
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - service: script.general_notification
         data:
           title: Nearly Home Off
           message: Nearly Home turned off since you're home
+          devices: "jk"
+          priority: "passive"
+          tag: "nearly-home"

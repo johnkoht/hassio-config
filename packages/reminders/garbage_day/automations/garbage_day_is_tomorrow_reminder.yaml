@@ -53,8 +53,10 @@ automation:
           media_players: "auto"
           sound: "flute-cell-phone-alert"
 
-      # Notify via push
-      - service: notify.mobile_app_jk
+      - service: script.general_notification
         data:
           message: "Tomorrow is garbage day reminder!"
           title: "Garbage Day"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "garbage-day"
