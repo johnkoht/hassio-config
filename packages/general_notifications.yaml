@@ -20,6 +20,17 @@
 # - critical: critical iOS alert
 #
 
+input_select:
+  notification_level:
+    name: Notification Level
+    options:
+      # All priority option levels
+      - "All"
+      # Only time sensitive and critical
+      - "Important"
+      # Turn off push notifications
+      - "None"
+
 script:
   clear_notifications:
     alias: "Clear Notifications"
@@ -51,6 +62,29 @@ script:
             {% else %}
               "active"
             {% endif %}
+
+      # Make sure notifications are not disabled
+      - condition: template
+        value_template: "{{ states.input_select.notification_level.state != 'None' }}"
+
+      - condition: or
+        conditions:
+          # If notification level is all
+          - condition: state
+            entity_id: input_select.notification_level
+            state: "All"
+          # OR important notifications only is enabled and the
+          # priority is time sensitive or critical
+          - condition: template
+            value_template: >-
+              {% 
+                if states.input_select.notification_level.state == 'Important'
+                and (priority == "critical" or priority == "time-sensitive")
+              %}
+                true
+              {% else %}
+                false
+              {% endif %}
 
       # TODO: figure out a better way to solve this. Not sure
       # the best way to handle a dynamic/conditional YAML attribute
