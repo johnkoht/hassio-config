@@ -4,10 +4,12 @@
 # USAGE:
 # service: script.general_notification
 # data:
+#   title: "Home Assistant"
 #   message: "Hello, world!"
 #   devices: ["notify.mobile_app_jk"] or "all"
 #   priority: "active"
 #   tag: ""
+#   group: "example-notification-group"
 #
 
 #
@@ -17,10 +19,6 @@
 # - time-sensitive: time sensitive
 # - critical: critical iOS alert
 #
-# Tag options:
-# - garage_doors
-# - alarm
-# - ?
 
 script:
   clear_notifications:
@@ -46,7 +44,7 @@ script:
     sequence:
       - alias: "Set up variables"
         variables:
-          tag: "{{ tag }}"
+          # tag: "{{ tag }}"
           priority: >-
             {% if priority is defined and priority|length %}
               {{priority}}
@@ -54,18 +52,42 @@ script:
               "active"
             {% endif %}
 
-      - service: >
-          {% if devices == "all"  %}
-            notify.ios_family
-          {% elif devices == "jk" %}
-            notify.mobile_app_jk
-          {% elif devices == "cfalb" %}
-            notify.mobile_app_cfalb
-          {% endif %}
-        data:
-          message: "{{ message }}"
-          title: "{{ title }}"
-          data:
-            tag: "{{ tag }}"
-            push:
-              interruption-level: "{{ priority }}"
+      # TODO: figure out a better way to solve this. Not sure
+      # the best way to handle a dynamic/conditional YAML attribute
+      - if:
+          - alias: "Tag is included"
+            condition: template
+            value_template: "{{ true if tag is defined and tag|length else false}}"
+
+        then:
+          - service: >
+              {% if devices == "all"  %}
+                notify.ios_family
+              {% elif devices == "jk" %}
+                notify.mobile_app_jk
+              {% elif devices == "cfalb" %}
+                notify.mobile_app_cfalb
+              {% endif %}
+            data:
+              message: "{{ message }}"
+              title: "{{ title }}"
+              data:
+                tag: "{{ tag }}"
+                push:
+                  interruption-level: "{{ priority }}"
+
+        else:
+          - service: >
+              {% if devices == "all"  %}
+                notify.ios_family
+              {% elif devices == "jk" %}
+                notify.mobile_app_jk
+              {% elif devices == "cfalb" %}
+                notify.mobile_app_cfalb
+              {% endif %}
+            data:
+              message: "{{ message }}"
+              title: "{{ title }}"
+              data:
+                push:
+                  interruption-level: "{{ priority }}"
