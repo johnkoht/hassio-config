@@ -84,10 +84,14 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.john_dnd
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - service: script.general_notification
         data:
-          message: John's DnD mode has been turned on
-          title: John DnD On!
+          message: "John's DnD mode has been turned on"
+          title: "John DnD On!"
+          devices: "jk"
+          priority: "passive"
+          tag: "john-dnd"
 # automation:
 #   - id: "john_dnd_on"
 #     initial_state: on

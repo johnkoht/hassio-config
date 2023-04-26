@@ -75,8 +75,10 @@ automation:
         data:
           value: "Hey there, just wanted to let you know {{states.input_text.bedtime_notification_message.state}}"
 
-      # Notify for testing purposes
-      - service: notify.mobile_app_jk
+      - service: script.general_notification
         data:
           message: "{{states.input_text.bedtime_notification_message.state}}"
           title: Bedtime Notifications
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "bedtime-notifications"

@@ -1,7 +1,7 @@
 automation:
   - id: "garage_door_2_open_upon_arrival"
     alias: "Garage Door 2 - Open Upon Arrival"
-    initial_state: on
+    initial_state: off
     trigger:
       # People just got home
       - platform: state

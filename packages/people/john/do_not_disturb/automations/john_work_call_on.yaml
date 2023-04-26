@@ -19,11 +19,14 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.john_work_call
 
-      # Notification for testing
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - service: script.general_notification
         data:
-          message: John's work call has been turned ON
-          title: John Work Call ON
+          message: "John's work call has been turned ON"
+          title: "John Work Call ON"
+          devices: "jk"
+          priority: "passive"
+          tag: "john-work-call"
 
       # Turn the Work call off automation temporarily OFF
       - service: automation.turn_off

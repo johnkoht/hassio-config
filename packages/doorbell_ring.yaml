@@ -18,11 +18,14 @@ automation:
       - service: script.display_doorbell_snapshot_on_tv
         data: {}
 
-      # Notify the family
-      - service: notify.ios_family
+      # Notification for logging
+      - service: script.general_notification
         data:
-          message: Somebody is at the front door!
-          title: Front Door
+          title: "Front Door"
+          message: "Somebody is at the front door!"
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "doorbell-ring"
 
   # Doorbell Detected Object
   #
