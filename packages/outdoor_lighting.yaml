@@ -236,6 +236,12 @@ automation:
       - condition: state
         entity_id: input_boolean.exterior_house_lights
         state: "off"
+      # Not 10 minutes before sunset
+      - condition: not
+        conditions:
+          - condition: sun
+            after: sunset
+            after_offset: "-00:10:00"
       - condition: or
         conditions:
           # It's bad weather outside AND it's dark
