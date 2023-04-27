@@ -10,8 +10,12 @@ automation:
       - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
       # - "{{ (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] not in states.variable.nws_alerts_sensor_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] != states('variable.nws_alerts_sensor_event_ids')) }}"
     action:
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - service: script.general_notification
         data:
-          title: Weather Alert
+          title: "Weather Alert"
           message: >
             "NWS: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "doorbell-ring"
