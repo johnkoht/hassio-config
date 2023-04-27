@@ -13,9 +13,9 @@ automation:
       # Notification for logging
       - service: script.general_notification
         data:
-          title: "Weather Alert"
+          title: "Weather Alert: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}"
           message: >
-            "NWS: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}"
+            "NWS: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}. {{state_attr('sensor.nws_alerts_sensor', 'spoken_desc')}}"
           devices: "jk"
           priority: "time-sensitive"
           tag: "doorbell-ring"
