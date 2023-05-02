@@ -40,7 +40,7 @@ automation:
               # Lights off
               - condition: state
                 entity_id: light.mudroom_bathroom_main_lights
-                state: "on"
+                state: "off"
           # OR
           # Door is open for 5 mins OR lights are OFF for 5 mins
           - condition: or
@@ -54,7 +54,7 @@ automation:
               # Lights off for 5 mins
               - condition: state
                 entity_id: light.mudroom_bathroom_main_lights
-                state: "on"
+                state: "off"
                 for:
                   minutes: 5
     action:
