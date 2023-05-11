@@ -3,7 +3,7 @@
 #
 id: "second_floor_climate_resume_when_nearly_home"
 alias: "Second Floor Climate Resume When Nearly Home"
-initial_state: "on"
+initial_state: "off"
 trigger:
   # Nearly home boolean is turned on
   - platform: state
