@@ -8,9 +8,9 @@ script:
     alias: Second Floor Climate to Resume
     mode: restart
     sequence:
-      - service: climate.set_temperature
+      # Turn OFF eco
+      - service: climate.set_preset_mode
         target:
           entity_id: climate.nest_2nd_floor
         data:
-          temperature: "{{ states('input_number.temperature_2nd_floor') }}"
-          hvac_mode: "{{ states('input_text.temperature_mode_2nd_floor') }}"
+          preset_mode: none
