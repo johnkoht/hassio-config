@@ -3,15 +3,11 @@ automation:
     alias: "Cristina is Not Commuting"
     initial_state: off
     trigger:
-      # Location changes to a train station for 2 mins
-      - platform: state
-        entity_id: person.cristina_falbo
-        to: "Home"
-    condition:
       # Cristina is home
-      - condition: state
+      - platform: state
         entity_id: input_boolean.cristina_home
-        state: "on"
+        to: "on"
+    condition:
       # Commuting boolean is ON
       - condition: state
         entity_id: input_boolean.cristina_commuting
