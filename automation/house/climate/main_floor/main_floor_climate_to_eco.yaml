@@ -7,10 +7,10 @@ id: "main_floor_climate_to_eco"
 alias: "Main floor climate to Eco"
 initial_state: "on"
 trigger:
-  # # If the house goes into Bedtime mode
-  # - platform: state
-  #   entity_id: input_boolean.bedtime
-  #   to: "on"
+  # If the house goes into Bedtime mode
+  - platform: state
+    entity_id: input_boolean.bedtime
+    to: "on"
   # The house is empty for 30 minutes
   - platform: state
     entity_id: input_boolean.house_occupied
