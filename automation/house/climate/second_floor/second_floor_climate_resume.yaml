@@ -3,7 +3,7 @@
 #
 id: "second_floor_climate_resume"
 alias: "Second Floor Climate Resume"
-initial_state: "off"
+initial_state: "on"
 trigger:
   # If the house goes into auto mode
   - platform: state
