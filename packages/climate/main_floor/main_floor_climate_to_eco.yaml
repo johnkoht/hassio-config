@@ -26,3 +26,10 @@ script:
           entity_id: climate.nest_main_floor
         data:
           preset_mode: eco
+      # Push notification
+      - service: script.general_notification
+        data:
+          title: "Main Floor Climate"
+          message: "The Main floor climate has turned to ECO. The temperature is ste to {{ state_attr('climate.nest_main_floor', 'temperature') }} and the HVAC mode is {{ states('climate.nest_main_floor') }}"
+          devices: "all"
+          priority: "time-sensitive"
