@@ -5,7 +5,7 @@
 #
 id: "main_floor_climate_resume"
 alias: "Main floor climate resume"
-initial_state: "off"
+initial_state: "on"
 trigger:
   # If the house goes into auto mode
   - platform: state
