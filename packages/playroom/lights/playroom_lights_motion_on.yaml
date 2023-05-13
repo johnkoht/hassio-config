@@ -59,10 +59,10 @@ automation:
         conditions:
           - condition: numeric_state
             entity_id: sensor.playroom_entry_motion_sensor_illuminance
-            below: 30
+            below: 75
           - condition: numeric_state
             entity_id: sensor.playroom_motion_sensor_illuminance
-            below: 30
+            below: 75
       # Lights are currently off
       - condition: state
         entity_id: group.playroom_lights
