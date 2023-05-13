@@ -27,9 +27,9 @@ automation:
       # More than 10 bluetooth devices detected for 10 minutes
       - platform: numeric_state
         entity_id: sensor.indoor_bluetooth_device_count
-        above: 10
+        above: 15
         for:
-          minutes: 10
+          minutes: 5
     condition:
       # House is occupied
       - condition: state
