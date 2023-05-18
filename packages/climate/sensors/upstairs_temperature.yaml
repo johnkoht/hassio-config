@@ -1,0 +1,9 @@
+sensor:
+  - platform: min_max
+    name: Upstairs Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.main_bedroom_temperature
+      - sensor.gianluca_room_temperature
+      - sensor.nino_room_temperature
