@@ -1,0 +1,9 @@
+sensor:
+  - platform: min_max
+    name: Nino Room Mean Temperature
+    unique_id: nino_room_mean_temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.nino_room_temperature
+      - sensor.ninos_door_sensor_temperature

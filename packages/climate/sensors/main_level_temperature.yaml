@@ -1,0 +1,10 @@
+sensor:
+  - platform: min_max
+    name: Main Level Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.main_bedroom_temperature
+      - sensor.kitchen_temperature
+      - sensor.office_weather_temperature
+      - sensor.playroom_temperature

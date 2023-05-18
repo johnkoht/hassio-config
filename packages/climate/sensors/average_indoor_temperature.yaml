@@ -1,0 +1,13 @@
+sensor:
+  - platform: min_max
+    name: Average Indoor Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.main_bedroom_temperature
+      - sensor.kitchen_temperature
+      - sensor.office_weather_temperature
+      - sensor.playroom_temperature
+      - sensor.main_bedroom_temperature
+      - sensor.gianluca_room_temperature
+      - sensor.nino_room_temperature
