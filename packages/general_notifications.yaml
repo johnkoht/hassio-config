@@ -125,3 +125,34 @@ script:
               data:
                 push:
                   interruption-level: "{{ priority }}"
+
+
+automation:
+  # 
+  - id: "notifications_activate_important_only"
+    alias: "Notifications - Activate Important Only"
+    mode: "single"
+    trigger:
+      # Bedtime mode is ON
+      - trigger: platform
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Entertainment mode is ON
+      - trigger: platform
+        entity_id: input_boolean.entertainment_mode
+        to: "on"
+      # House is no longer occupied
+      - trigger: platform
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    conditions:
+      # Notification level is ALL
+      - condition: state
+        entity_id: input_select.notification_level
+        state: "All"
+    actions:
+      # Set the notification level to "Important"
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.notification_level
+          option: "Important"
