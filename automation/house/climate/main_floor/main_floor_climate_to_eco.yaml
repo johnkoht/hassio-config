@@ -24,15 +24,6 @@ trigger:
     for:
       minutes: 60
 condition:
-  # # The house is empty or in bedtime mode
-  # - condition: or
-  #   conditions:
-  #     - condition: state
-  #       entity_id: input_boolean.bedtime
-  #       state: "on"
-  #     - condition: state
-  #       entity_id: input_boolean.house_occupied
-  #       state: "off"
   # Guest Mode is disabled
   - condition: state
     entity_id: input_boolean.guest_mode
@@ -41,5 +32,18 @@ condition:
   - condition: template
     value_template: "{{ states.climate.nest_main_floor.attributes.preset_mode == 'none' }}"
 action:
-  - service: script.main_floor_climate_to_eco
-    data: {}
+  - choose:
+      # If trigger is bedtime mode then lets make sure it's before 4am
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.entity_id == 'input_boolean.bedtime' }}"
+          # Before 4am
+          - condition: time
+            before: "04:00:00"
+        sequence:
+          - service: script.main_floor_climate_to_eco
+            data: {}
+    default:
+      - service: script.main_floor_climate_to_eco
+        data: {}
+      
