@@ -134,23 +134,23 @@ automation:
     mode: "single"
     trigger:
       # Bedtime mode is ON
-      - trigger: platform
+      - platform: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Entertainment mode is ON
-      - trigger: platform
+      - platform: state
         entity_id: input_boolean.entertainment_mode
         to: "on"
       # House is no longer occupied
-      - trigger: platform
+      - platform: state
         entity_id: input_boolean.house_occupied
         to: "off"
-    conditions:
+    condition:
       # Notification level is ALL
       - condition: state
         entity_id: input_select.notification_level
         state: "All"
-    actions:
+    action:
       # Set the notification level to "Important"
       - service: input_select.select_option
         data:
