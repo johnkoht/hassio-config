@@ -25,17 +25,17 @@ automation:
         entity_id: input_boolean.john_personal_time
         to: "off"
     condition:
-      # Not personal time (GSD, OOO, etc)
-      # AND camera is NOT on
-      - condition: and
-        conditions:
-          - condition: state
-            entity_id: input_boolean.john_personal_time
-            state: "off"
-          # Camera is OFF
-          - condition: state
-            entity_id: binary_sensor.john_laptop_camera_active
-            state: "off"
+      # # Not personal time (GSD, OOO, etc)
+      # # AND camera is NOT on
+      # - condition: and
+      #   conditions:
+      #     - condition: state
+      #       entity_id: input_boolean.john_personal_time
+      #       state: "off"
+      #     # Camera is OFF
+      #     - condition: state
+      #       entity_id: binary_sensor.john_laptop_camera_active
+      #       state: "off"
 
       - condition: or
         conditions:
