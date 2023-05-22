@@ -26,7 +26,7 @@ automation:
       - service: script.general_notification
         data:
           message: Home is armed since nobody is home.
-          title: Home Security System
+          title: Security System
           devices: "jk"
           priority: "active"
           tag: "home-armed"

@@ -26,8 +26,11 @@ automation:
       - service: alarm_control_panel.alarm_disarm
         entity_id: alarm_control_panel.panel
 
-      # Notification for testing
-      - service: notify.mobile_app_jk
+      # Notification
+      - service: script.general_notification
         data:
           message: Home is now disarmed!
-          title: Home Security System
+          title: Security System
+          devices: "all"
+          priority: "active"
+          tag: "home-security"
