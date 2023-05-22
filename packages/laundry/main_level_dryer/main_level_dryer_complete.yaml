@@ -16,7 +16,11 @@ automation:
           speech_message: "The main level dryer finished and is ready to be emptied."
           media_players: "auto"
           sound: "chirp"
-      - service: notify.ios_family
+      # Notification
+      - service: script.general_notification
         data:
           message: "The main level dryer is finished and ready to be emptied."
           title: "Main Level Drying Machine"
+          devices: "all"
+          priority: "active"
+          tag: "main-level-dryer"
