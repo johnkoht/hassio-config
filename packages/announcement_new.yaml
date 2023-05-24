@@ -1,0 +1,224 @@
+script:
+  announcement_engine_new:
+    alias: "Announcement Engine New"
+    mode: "queued"
+    sequence:
+      # Customize the chime sound
+      - alias: "Sound File"
+        variables:
+          sound_file: >-
+            {% if sound == "default" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
+            {% elif sound == "fanfare" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/medieval-fanfare.mp3?raw=true
+            {% elif sound == "chirp" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/twitter-chirp.mp3?raw=true
+            {% elif sound == "chime" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/two-tone-chime.mp3?raw=true
+            {% elif sound == "one-chime" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/one-tone-chime.mp3?raw=true
+            {% elif sound == "flute-cell-phone-alert" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/flute-cell-phone-alert.wav?raw=true
+            {% elif sound == "arcade" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/arcade-bonus-alert.wav?raw=true
+            {% elif sound == "police-whistle" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.wav?raw=true
+            {% elif sound == "arabic-intro" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/arabic_intro.wav?raw=true
+            {% elif sound == "school-bell-chime" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell-chime.wav?raw=true
+            {% elif sound == "school-bell" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell.wav?raw=true
+            {% elif sound == "tarantella" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/tarantella.mp3?raw=true
+            {% elif sound == "success-trumpets" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/success-trumpets.mp3?raw=true
+            {% elif sound == "games-sfx" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/games-sfx.wav?raw=true
+            {% elif sound == "fox-nfl" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/fox-nfl.mp3?raw=true
+            {% else %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
+            {% endif %}
+          # Sound file length
+          sound_file_length: >-
+            {% if sound == "default" %}
+              2
+            {% elif sound == "fanfare" %}
+              8
+            {% elif sound == "chirp" %}
+              1
+            {% elif sound == "chime" %}
+              4
+            {% elif sound == "one-chime" %}
+              5
+            {% elif sound == "flute-cell-phone-alert" %}
+              3
+            {% elif sound == "arcade" %}
+              2
+            {% elif sound == "police-whistle" %}
+              1
+            {% elif sound == "arabic-intro" %}
+              3
+            {% elif sound == "school-bell-chime" %}
+              4
+            {% elif sound == "school-bell" %}
+              4
+            {% elif sound == "tarantella" %}
+              4
+            {% elif sound == "success-trumpets" %}
+              4
+            {% elif sound == "games-sfx" %}
+              1
+            {% elif sound == "fox-nfl" %}
+              3
+            {% else %}
+              2
+            {% endif %}
+
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.sonos_office
+          # media_content_id: "media-source://tts/cloud?message='{{sound_file}}'"
+          media_content_id: "{{sound_file}}"
+          media_content_type: music
+          announce: true
+          extra:
+            volume: 30
+
+      # # Take a snapshot of current Sonos Audio
+      # - service: sonos.snapshot
+      #   entity_id: "{{media_players}}"
+      #   data:
+      #     with_group: true
+
+      # # Pause the media players
+      # - service: media_player.media_pause
+      #   data:
+      #     entity_id: "{{media_players}}"
+
+      # # Capture the current media player volumes
+      # - service: script.set_media_player_volume
+      #   data:
+      #     media_player: "{{media_players}}"
+
+      # # Set the volume for the ding
+      # - service: media_player.volume_set
+      #   data_template:
+      #     entity_id: >
+      #       {{ media_players }}
+      #   data:
+      #     volume_level: >-
+      #       {% if states.input_boolean.quiet_mode.state == "on" %}
+      #         0.25
+      #       {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
+      #         0.5
+      #       {% else %}
+      #         0.4
+      #       {% endif %}
+
+      # - service: media_player.join
+      #   target:
+      #     entity_id: "{{primary_player}}"
+      #   data:
+      #     group_members: "{{media_players}}"
+
+      # - alias: "Wait 1s"
+      #   delay: 00:00:01
+
+      # # Play an announcement ping
+      # - service: media_player.play_media
+      #   data:
+      #     entity_id: "{{primary_player}}"
+      #     media_content_id: "{{sound_file}}"
+      #     media_content_type: music
+
+      # - wait_template: "{{ states( primary_player ) == 'playing' }}"
+      #   timeout:
+      #     seconds: 2
+
+      - alias: "Wait for chuime to complete"
+        delay: "{{sound_file_length}}"
+
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.sonos_office
+          media_content_id: "media-source://tts/cloud?message='{{speech_message}}'"
+          media_content_type: music
+          announce: true
+          extra:
+            volume: 30
+
+      # - wait_template: "{{ states( primary_player ) != 'playing' }}"
+      #   timeout:
+      #     seconds: 2
+
+      # # Set the volume for the TTS
+      # - service: media_player.volume_set
+      #   data:
+      #     entity_id: "{{ media_players }}"
+      #     volume_level: >-
+      #       {% if states.input_boolean.quiet_mode.state == "on" %}
+      #         0.25
+      #       {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
+      #         0.5
+      #       {% else %}
+      #         0.4
+      #       {% endif %}
+
+      # # Play the TTS message
+      # - service: tts.google_say
+      #   data:
+      #     # entity_id: "{{ media_players }}"
+      #     entity_id: "{{ primary_player }}"
+      #     message: "{{ speech_message }}"
+
+      # - wait_template: "{{ states( primary_player ) == 'playing' }}"
+      #   timeout:
+      #     seconds: 2
+
+      # - alias: "Wait 1s"
+      #   delay: 00:00:01
+
+      # # we then put in a delay that should match the length of the media
+      # - delay: >-
+      #     {# we grab the duration to try to set a wait that is roughly the right amount of time #}
+      #     {# this is returned in seconds, so not extact accurate #}
+      #     {% set duration = state_attr(primary_player, 'media_duration') %}
+      #     {% if duration == None or duration <= 1 %}
+      #       {# this should never happen, though sounds like there can be delays in response #}
+      #       {# to get the state, so we put a mininum of one second ... the waiting for the state #}
+      #       {# below should cover BUT if it doesn't than state_delay can make sure we are good #}
+      #       {{ "00:00:01" }}
+      #     {% else %}
+      #       {# subtracting one to compensate for potential run time and not running extra long #}
+      #       {# if there is cut-off then the state_delay can cover #}
+      #       {% set duration = duration - 1 %}
+      #       {% set seconds = duration % 60 %}
+      #       {% set minutes = (duration / 60)|int % 60 %}
+      #       {% set hours = (duration / 3600)|int %}
+      #       {{ "{:02d}".format(hours) + ":" + "{:02d}".format(minutes) + ":" + "{:02d}".format(seconds)}}
+      #     {% endif %}
+
+      # # then we wait for it to finish announcing before we continue
+      # - wait_template: "{{ states( primary_player ) != 'playing' }}"
+      #   timeout:
+      #     seconds: 1
+
+      # - alias: "Wait 1s"
+      #   delay: 00:00:01
+
+      # - service: media_player.unjoin
+      #   data:
+      #     entity_id: "{{media_players}}"
+
+      # # Restore the media player volumes
+      # - service: script.restore_media_player_volume
+      #   data:
+      #     media_player: "{{media_players}}"
+
+      # # Restore from snapshot
+      # - service: sonos.restore
+      #   entity_id: "{{media_players}}"
+      #   data:
+      #     with_group: true

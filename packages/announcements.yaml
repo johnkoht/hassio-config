@@ -228,7 +228,7 @@ script:
 
       # Take a snapshot of current Sonos Audio
       - service: sonos.snapshot
-        entity_id: all
+        entity_id: "{{media_players}}"
         data:
           with_group: true
 
@@ -258,8 +258,9 @@ script:
             {% endif %}
 
       - service: media_player.join
-        data:
+        target:
           entity_id: "{{primary_player}}"
+        data:
           group_members: "{{media_players}}"
 
       - alias: "Wait 1s"
@@ -369,7 +370,6 @@ script:
 
       # Restore from snapshot
       - service: sonos.restore
-        entity_id: all
-        # entity_id: "{{ media_players }}"
+        entity_id: "{{media_players}}"
         data:
           with_group: true
