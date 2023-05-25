@@ -1,0 +1,185 @@
+#
+# Sound (optional)
+# Sound length (optional)
+# Speech message (optional)
+# Rooms (required)
+#
+
+script:
+  announcement_engine_new:
+    alias: "Announcement Engine New"
+    mode: "queued"
+
+    fields:
+      #
+      #
+      # Sound File Details
+      #
+      sound_file:
+        name: Sound File
+        description: A URL to a sound file to play
+        example: "https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true"
+        selector:
+          text:
+            type: url
+      # Sound file length
+      sound_length:
+        name: Sound Length
+        description: The lengths of the sound file in seconds
+        example: "2"
+        selector:
+          number:
+            min: 1
+            max: 10
+            mode: box
+      # Sound volume
+      sound_volume:
+        name: Sound Volume
+        description: The volume of the chime sound
+        example: "30"
+        default: 30
+        selector:
+          number:
+            min: 10
+            max: 80
+      #
+      #
+      # Speech Message Details
+      #
+      speech_message:
+        name: Speech Message
+        description: The TTS message that will be broadcast
+        example: "Hello, world!"
+        selector:
+          text:
+            type: text
+      # Speech notification volume
+      speech_volume:
+        name: Speech Message Volume
+        description: The volume of the speech notification
+        example: "30"
+        default: 30
+        selector:
+          number:
+            min: 10
+            max: 80
+      #
+      #
+      # Media Player
+      media_players:
+        name: Media Players
+        description: The media players that should broadcast the announcement
+        selector:
+          entity:
+            include_entities:
+              - media_player.living_room
+              - media_player.sonos_office
+              - media_player.sonos_family_room
+              - media_player.sonos_kitchen
+              - media_player.sonos_main_bedroom
+              - media_player.sonos_playroom
+
+    sequence:
+      # # Customize the chime sound
+      # - alias: "Sound File"
+      #   variables:
+      #     sound_file: >-
+      #       {% if sound == "default" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
+      #       {% elif sound == "fanfare" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/medieval-fanfare.mp3?raw=true
+      #       {% elif sound == "chirp" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/twitter-chirp.mp3?raw=true
+      #       {% elif sound == "chime" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/two-tone-chime.mp3?raw=true
+      #       {% elif sound == "one-chime" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/one-tone-chime.mp3?raw=true
+      #       {% elif sound == "flute-cell-phone-alert" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/flute-cell-phone-alert.wav?raw=true
+      #       {% elif sound == "arcade" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/arcade-bonus-alert.wav?raw=true
+      #       {% elif sound == "police-whistle" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.wav?raw=true
+      #       {% elif sound == "arabic-intro" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/arabic_intro.wav?raw=true
+      #       {% elif sound == "school-bell-chime" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell-chime.wav?raw=true
+      #       {% elif sound == "school-bell" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell.wav?raw=true
+      #       {% elif sound == "tarantella" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/tarantella.mp3?raw=true
+      #       {% elif sound == "success-trumpets" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/success-trumpets.mp3?raw=true
+      #       {% elif sound == "games-sfx" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/games-sfx.wav?raw=true
+      #       {% elif sound == "fox-nfl" %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/fox-nfl.mp3?raw=true
+      #       {% else %}
+      #         https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
+      #       {% endif %}
+      #     # Sound file length
+      #     sound_file_length: >-
+      #       {% if sound == "default" %}
+      #         2
+      #       {% elif sound == "fanfare" %}
+      #         8
+      #       {% elif sound == "chirp" %}
+      #         1
+      #       {% elif sound == "chime" %}
+      #         4
+      #       {% elif sound == "one-chime" %}
+      #         5
+      #       {% elif sound == "flute-cell-phone-alert" %}
+      #         3
+      #       {% elif sound == "arcade" %}
+      #         2
+      #       {% elif sound == "police-whistle" %}
+      #         1
+      #       {% elif sound == "arabic-intro" %}
+      #         3
+      #       {% elif sound == "school-bell-chime" %}
+      #         4
+      #       {% elif sound == "school-bell" %}
+      #         4
+      #       {% elif sound == "tarantella" %}
+      #         4
+      #       {% elif sound == "success-trumpets" %}
+      #         4
+      #       {% elif sound == "games-sfx" %}
+      #         1
+      #       {% elif sound == "fox-nfl" %}
+      #         3
+      #       {% else %}
+      #         2
+      #       {% endif %}
+
+      # Play a chime
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.sonos_office
+          media_content_id: "{{sound_file}}"
+          media_content_type: music
+          announce: true
+          extra:
+            volume: "{{sound_volume}}"
+
+      # Wait for the chime to complete
+      - alias: "Wait for chime to complete"
+        delay: "{{sound_length}}"
+
+      # If there's a TTS message than play it
+      - if:
+          - alias: "If we should play a TTS message as well"
+            condition: template
+            value_template: "{{false if speech_message is defined else true}}"
+
+        then:
+          # Play the TTS message
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.sonos_office
+              media_content_id: "media-source://tts/cloud?message='{{speech_message}}'"
+              media_content_type: music
+              announce: true
+              extra:
+                volume: "{{speech_volume}}"
