@@ -228,7 +228,8 @@ script:
 
       # Take a snapshot of current Sonos Audio
       - service: sonos.snapshot
-        entity_id: "{{media_players}}"
+        # entity_id: "{{media_players}}"
+        entity_id: all
         data:
           with_group: true
 
@@ -370,6 +371,7 @@ script:
 
       # Restore from snapshot
       - service: sonos.restore
-        entity_id: "{{media_players}}"
+        # entity_id: "{{media_players}}"
+        entity_id: all
         data:
           with_group: true
