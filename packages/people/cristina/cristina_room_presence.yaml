@@ -1,8 +1,8 @@
 sensor:
   - platform: mqtt_room
-    device_id: "Cristina's iPhone"
+    device_id: "cfalb_iphone"
     name: "Cristina Room Presence RAW"
-    state_topic: "espresense/rooms"
+    state_topic: "espresense/devices/cfalb_iphone"
     timeout: 10
     away_timeout: 120
 
