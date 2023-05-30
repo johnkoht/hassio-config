@@ -1,0 +1,118 @@
+script:
+  voice_announcement:
+    alias: Voice Announcement
+    mode: "queued"
+    # Fields for dynamic attributes
+    fields:
+      #
+      #
+      # Sound
+      #
+      sound:
+        name: Sound
+        description: The chime sound to play prior to the notification
+        example: "arcade"
+        default: "default"
+        selector:
+          select:
+            options:
+              - default
+              - fanfare
+              - chirp
+              - chime
+              - one-chime
+              - flute-cell-phone-alert
+              - arcade
+              - police-whistle
+              - arabic-intro
+              - school-bell-chime
+              - school-bell
+              - tarantella
+              - success-trumpets
+              - games-sfx
+              - fox-nfl
+      #
+      #
+      # Speech Message Details
+      #
+      speech_message:
+        name: Speech Message
+        description: The TTS message that will be broadcast
+        example: "Hello, world!"
+        selector:
+          text:
+            type: text
+      #
+      #
+      # Media Player
+      media_players:
+        name: Media Players
+        description: The media players that should broadcast the announcement
+        selector:
+          entity:
+            include_entities:
+              - media_player.living_room
+              - media_player.sonos_office
+              - media_player.sonos_family_room
+              - media_player.sonos_kitchen
+              - media_player.sonos_main_bedroom
+              - media_player.sonos_playroom
+              - media_player.sonos_living_room
+
+    # Variables
+    variables:
+      sound_file:
+      sound_length:
+
+    sequence:
+      # Somebody is home
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Speech notifications is enabled
+      - condition: state
+        entity_id: input_boolean.speech_notifications
+        state: "on"
+      # It's between 7am and 10pm
+      - condition: time
+        after: "07:00:00"
+        before: "22:00:00"
+      # Not bedtime
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # A room that we can announce to is occupied
+      - condition: state
+        entity_id: binary_sensor.announceable_rooms_occupied
+        state: "on"
+
+      # Call the announcement engine and pass the requested media_players
+      # or default to ones in occupied rooms
+      - service: script.announcement_engine
+        data:
+          speech_message: "{{ speech_message }}"
+          sound: >-
+            {% if sound is defined and sound|length %}
+              {{sound}}
+            {% else %}
+              default
+            {% endif %}
+          media_players: >-
+            {% if media_players == "all" or media_players == "auto" %}
+              {% set media_players = [] %}   
+              {# Check which rooms are occupied and if speech notifications are turned #}
+              {# on for them. If so, add them to an array of announceable rooms #}
+              {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_office"] %}
+              {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" and states.input_boolean.family_room_speech_notifications.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_family_room"] %}
+              {% endif %}{% if states.input_boolean.kitchen_occupied.state == "on" and states.input_boolean.kitchen_speech_notifications.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_kitchen"] %}
+              {% endif %}{% if states.input_boolean.main_bedroom_occupied.state == "on" and states.input_boolean.main_bedroom_speech_notifications.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_main_bedroom"] %}
+              {% endif %}{% if states.input_boolean.playroom_occupied.state == "on" %}
+                {% set media_players = media_players + ["media_player.sonos_playroom"] %}
+              {% endif %}
+            {% endif %}
+
+            {{ media_players}}

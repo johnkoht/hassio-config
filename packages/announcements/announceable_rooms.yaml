@@ -1,0 +1,15 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      announceable_rooms_occupied:
+        friendly_name: Announceable Rooms Occupied
+        unique_id: announceable_rooms_occupied
+        value_template: >-
+          {{
+            states.input_boolean.kitchen_occupied.state == "on"
+            or states.input_boolean.family_room_occupied.state == "on"
+            or states.input_boolean.playroom_occupied.state == "on"
+            or states.input_boolean.office_occupied.state == "on"
+            or states.input_boolean.main_bedroom_occupied.state == "on"
+            or states.input_boolean.dining_room_occupied.state == "on"
+          }}
