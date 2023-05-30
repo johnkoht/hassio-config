@@ -6,18 +6,18 @@
     # iOS companion app device
     #
     - platform: state
-      entity_id: "device_tracker.cfalb_2"
+      entity_id: "device_tracker.cfalb_iphone_14"
       prob_given_true: 0.9
       prob_given_false: 0.025
       to_state: "home"
     - platform: state
-      entity_id: "device_tracker.cfalb_2"
+      entity_id: "device_tracker.cfalb_iphone_14"
       prob_given_true: 0.03
       prob_given_false: 0.95
       to_state: "not_home"
 
     # # iCloud integration
-    # - entity_id: "device_tracker.cfalb_3"
+    # - entity_id: "device_tracker.cfalb_iphone_14_nmap"
     #   prob_given_true: 0.6
     #   prob_given_false: 0.4
     #   platform: "state"
@@ -38,12 +38,12 @@
     # Router device
     #
     - platform: state
-      entity_id: "device_tracker.cfalb"
+      entity_id: "device_tracker.cristinas_iphone_14_unifi"
       prob_given_true: 0.7
       prob_given_false: 0.025
       to_state: "home"
     - platform: state
-      entity_id: "device_tracker.cfalb"
+      entity_id: "device_tracker.cristinas_iphone_14_unifi"
       prob_given_true: 0.35
       prob_given_false: 0.125
       to_state: "not_home"
@@ -51,12 +51,12 @@
     # Nmap device
     #
     - platform: state
-      entity_id: "device_tracker.cfalb_3"
+      entity_id: "device_tracker.cfalb_iphone_14_nmap"
       prob_given_true: 0.5
       prob_given_false: 0.1
       to_state: "home"
     - platform: state
-      entity_id: "device_tracker.cfalb_3"
+      entity_id: "device_tracker.cfalb_iphone_14_nmap"
       prob_given_true: 0.4
       prob_given_false: 0.215
       to_state: "not_home"

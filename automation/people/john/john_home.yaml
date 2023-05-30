@@ -16,14 +16,14 @@ trigger:
   - platform: zone
     entity_id:
       - person.john_koht
-      - device_tracker.jk_2
+      - device_tracker.jk_iphone_14
     zone: zone.home
     event: enter
   # Marked as home
   - platform: state
     entity_id:
       - person.john_koht
-      - device_tracker.jk_2
+      - device_tracker.jk_iphone_14
     to: "home"
   # HA reload or start
   - platform: event
@@ -43,13 +43,13 @@ condition:
         state: "home"
       # My iOS device is detected home
       - condition: state
-        entity_id: device_tracker.jk_2
+        entity_id: device_tracker.jk_iphone_14
         state: "home"
       # In the home zone
       - condition: zone
         entity_id:
           - person.john_koht
-          - device_tracker.jk_2
+          - device_tracker.jk_iphone_14
         zone: zone.home
   # Not currently home
   - condition: state
