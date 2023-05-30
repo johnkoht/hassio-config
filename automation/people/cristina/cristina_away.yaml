@@ -9,14 +9,14 @@ trigger:
   - platform: zone
     entity_id:
       - person.cristina_falbo
-      - device_tracker.cfalb_2
+      - device_tracker.cfalb_iphone_14
     zone: zone.home
     event: leave
   # Cristina's person sensor is not home
   - platform: state
     entity_id:
       - person.cristina_falbo
-      - device_tracker.cfalb_2
+      - device_tracker.cfalb_iphone_14
     to: "not_home"
   # She's detected away
   - platform: state
@@ -54,7 +54,7 @@ condition:
         state: "off"
       # Companion app is not home
       - condition: state
-        entity_id: device_tracker.cfalb_2
+        entity_id: device_tracker.cfalb_iphone_14
         state: "not_home"
 
   # # Not currently in a Just Left state
@@ -78,7 +78,7 @@ condition:
   #       state: "home"
   #     # My iOS device is detected home
   #     - condition: zone
-  #       entity_id: device_tracker.cfalb_2
+  #       entity_id: device_tracker.cfalb_iphone_14
   #       zone: zone.home
 
   # # Not home vased on Bayesian sensor

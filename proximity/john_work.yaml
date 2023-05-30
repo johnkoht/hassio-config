@@ -1,6 +1,6 @@
 john_work:
   zone: john_s_work
   devices:
-    - device_tracker.jk_2
+    - device_tracker.jk_iphone_14
   tolerance: 100
   unit_of_measurement: km
