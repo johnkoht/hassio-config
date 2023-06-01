@@ -1,6 +1,6 @@
 sensor:
   - platform: min_max
-    name: Upstairs Temperature
+    name: Second Floor Temperature
     type: mean
     round_digits: 1
     entity_ids:

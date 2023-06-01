@@ -4,10 +4,5 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.main_bedroom_humidity
-      - sensor.kitchen_humidity
-      - sensor.office_weather_humidity
-      - sensor.playroom_humidity
-      - sensor.main_bedroom_humidity
-      - sensor.gianluca_room_humidity
-      - sensor.nino_room_humidity
+      - sensor.main_floor_humidity
+      - sensor.second_floor_humidity
