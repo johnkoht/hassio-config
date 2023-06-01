@@ -16,6 +16,9 @@ automation:
       - platform: calendar
         event: end
         entity_id: calendar.john_ooo
+      # At midnight reset
+      - platform: time
+        at: "00:00:00"
     condition:
       # Personal time boolean is ON
       - condition: state
