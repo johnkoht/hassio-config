@@ -46,7 +46,7 @@ automation:
       #   entity_id: cover.garage_door_2
 
       # Notify the family
-      - service: notify.mobile_app_jk
+      - service: notify.mobile_app_jk_2
         data:
           title: Garage Door 2
           message: Garage door three is opening upon somebody's arrival

@@ -52,7 +52,7 @@ action:
   - service: script.second_floor_climate_to_resume
     data: {}
 
-  - service: notify.mobile_app_jk
+  - service: notify.mobile_app_jk_2
     data:
       title: Nearly Home
       message: >-
