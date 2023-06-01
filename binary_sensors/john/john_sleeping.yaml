@@ -21,13 +21,13 @@
     #
     # Phone is in focus mode
     - platform: state
-      entity_id: binary_sensor.jk_focus
+      entity_id: binary_sensor.jk_iphone_14_focus
       prob_given_true: 0.88
       prob_given_false: 0.25
       to_state: "on"
     # Phone is not in focus mode
     - platform: state
-      entity_id: binary_sensor.jk_focus
+      entity_id: binary_sensor.jk_iphone_14_focus
       prob_given_true: 0.13
       prob_given_false: 0.75
       to_state: "off"
@@ -51,13 +51,13 @@
     #
     # Connected to the bedroom router
     - platform: state
-      entity_id: sensor.jk_bssid
+      entity_id: sensor.jk_iphone_14_bssid
       prob_given_true: 0.75
       prob_given_false: 0.125
       to_state: "68:d7:9a:76:c4:ff"
     # # Not connect to the router
     - platform: template
-      value_template: "{{ not is_state('sensor.jk_bssid','68:d7:9a:76:c4:ff') }}"
+      value_template: "{{ not is_state('sensor.jk_iphone_14_bssid','68:d7:9a:76:c4:ff') }}"
       prob_given_true: 0.38
       prob_given_false: 0.875
 
