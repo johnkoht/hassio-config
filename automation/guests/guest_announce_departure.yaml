@@ -45,7 +45,7 @@ action:
 
       media_players: "auto"
 
-  - service: notify.mobile_app_jk
+  - service: notify.mobile_app_jk_2
     data:
       # message: "{{trigger.to_state.attributes.friendly_name}} {{trigger.event.data.text}} has arrived!"
       title: Guest Arrived!

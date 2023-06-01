@@ -14,7 +14,7 @@
 #     # done_message: "The k"
 #     notifiers:
 #       #- ios_family
-#       - mobile_app_jk
+#       - mobile_app_jk_2
 #       - tts_announcements_devices
 
 automation:

@@ -78,7 +78,7 @@ automation:
       #       state: "on"
     action:
       # Notification for testing
-      - service: notify.mobile_app_jk
+      - service: notify.mobile_app_jk_2
         data:
           message: Nino is escaping!
           title: Nino Escape Monitor

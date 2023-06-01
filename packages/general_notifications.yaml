@@ -6,7 +6,7 @@
 # data:
 #   title: "Home Assistant"
 #   message: "Hello, world!"
-#   devices: ["notify.mobile_app_jk"] or "all"
+#   devices: ["notify.mobile_app_jk_2"] or "all"
 #   priority: "active"
 #   tag: ""
 #   group: "example-notification-group"
@@ -40,9 +40,9 @@ script:
           {% if devices == "all"  %}
             notify.ios_family
           {% elif devices == "jk" %}
-            notify.mobile_app_jk
+            notify.mobile_app_jk_2
           {% elif devices == "cfalb" %}
-            notify.mobile_app_cfalb
+            notify.mobile_app_cfalb2
           {% endif %}
         data:
           message: "clear_notification"
@@ -98,9 +98,9 @@ script:
               {% if devices == "all"  %}
                 notify.ios_family
               {% elif devices == "jk" %}
-                notify.mobile_app_jk
+                notify.mobile_app_jk_2
               {% elif devices == "cfalb" %}
-                notify.mobile_app_cfalb
+                notify.mobile_app_cfalb2
               {% endif %}
             data:
               message: "{{ message }}"
@@ -115,9 +115,9 @@ script:
               {% if devices == "all"  %}
                 notify.ios_family
               {% elif devices == "jk" %}
-                notify.mobile_app_jk
+                notify.mobile_app_jk_2
               {% elif devices == "cfalb" %}
-                notify.mobile_app_cfalb
+                notify.mobile_app_cfalb2
               {% endif %}
             data:
               message: "{{ message }}"
@@ -126,9 +126,8 @@ script:
                 push:
                   interruption-level: "{{ priority }}"
 
-
 automation:
-  # 
+  #
   - id: "notifications_activate_important_only"
     alias: "Notifications - Activate Important Only"
     mode: "single"

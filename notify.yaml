@@ -1,8 +1,8 @@
 - name: ios_family
   platform: group
   services:
-    - service: mobile_app_jk
-    - service: mobile_app_cfalb
+    - service: mobile_app_jk_2
+    - service: mobile_app_cfalb2
 
 - name: Family Room TV
   platform: nfandroidtv

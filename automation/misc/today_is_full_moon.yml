@@ -36,7 +36,7 @@ action:
     delay: 5
 
   # Notify via push
-  - service: notify.mobile_app_jk
+  - service: notify.mobile_app_jk_2
     data:
       message: Today's a full moon, go check it out!
       title: Full Moon Reminder
