@@ -4,4 +4,4 @@ input_number:
     min: -100
     max: 100
     unit_of_measurement: °F
-    icon: mdi:thermostat
+    icon: mdi:snowflake-thermometer
