@@ -16,10 +16,10 @@ automation:
     mode: "single"
     trigger:
       - platform: state
-        entity_id: sensor.cfalb_battery_state
+        entity_id: sensor.cfalb_iphone_14_battery_state
         to: "Charging"
       - platform: state
-        entity_id: sensor.cfalb_battery_state
+        entity_id: sensor.cfalb_iphone_14_battery_state
         to: "Full"
     condition:
       - condition: state
@@ -28,10 +28,10 @@ automation:
       - condition: or
         conditions:
           - condition: state
-            entity_id: sensor.cfalb_battery_state
+            entity_id: sensor.cfalb_iphone_14_battery_state
             state: "Charging"
           - condition: state
-            entity_id: sensor.cfalb_battery_state
+            entity_id: sensor.cfalb_iphone_14_battery_state
             state: "Full"
     action:
       - service: input_boolean.turn_on
@@ -43,11 +43,11 @@ automation:
     mode: "single"
     trigger:
       - platform: state
-        entity_id: sensor.cfalb_battery_state
+        entity_id: sensor.cfalb_iphone_14_battery_state
         to: "Not Charging"
     condition:
       - condition: state
-        entity_id: sensor.cfalb_battery_state
+        entity_id: sensor.cfalb_iphone_14_battery_state
         state: "Not Charging"
     action:
       - service: input_boolean.turn_off
@@ -61,10 +61,10 @@ automation:
     mode: "single"
     trigger:
       - platform: state
-        entity_id: sensor.jk_battery_state
+        entity_id: sensor.jk_iphone_14_battery_state
         to: "Charging"
       - platform: state
-        entity_id: sensor.jk_battery_state
+        entity_id: sensor.jk_iphone_14_battery_state
         to: "Full"
     condition:
       - condition: state
@@ -73,10 +73,10 @@ automation:
       - condition: or
         conditions:
           - condition: state
-            entity_id: sensor.jk_battery_state
+            entity_id: sensor.jk_iphone_14_battery_state
             state: "Charging"
           - condition: state
-            entity_id: sensor.jk_battery_state
+            entity_id: sensor.jk_iphone_14_battery_state
             state: "Full"
     action:
       - service: input_boolean.turn_on
@@ -87,11 +87,11 @@ automation:
     mode: "single"
     trigger:
       - platform: state
-        entity_id: sensor.jk_battery_state
+        entity_id: sensor.jk_iphone_14_battery_state
         to: "Not Charging"
     condition:
       - condition: state
-        entity_id: sensor.jk_battery_state
+        entity_id: sensor.jk_iphone_14_battery_state
         state: "Not Charging"
     action:
       - service: input_boolean.turn_off

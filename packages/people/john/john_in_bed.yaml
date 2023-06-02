@@ -22,13 +22,13 @@ binary_sensor:
       #
       # Phone is in focus mode
       - platform: state
-        entity_id: binary_sensor.jk_focus
+        entity_id: binary_sensor.jk_iphone_14_focus
         prob_given_true: 0.88
         prob_given_false: 0.25
         to_state: "on"
       # Phone is not in focus mode
       - platform: state
-        entity_id: binary_sensor.jk_focus
+        entity_id: binary_sensor.jk_iphone_14_focus
         prob_given_true: 0.13
         prob_given_false: 0.75
         to_state: "off"
