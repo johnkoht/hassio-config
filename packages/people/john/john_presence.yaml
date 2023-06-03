@@ -7,12 +7,12 @@ binary_sensor:
       # iOS companion app device
       #
       - platform: state
-        entity_id: "device_tracker.cfalb_iphone_14"
-        prob_given_true: 0.9
+        entity_id: "device_tracker.jk_iphone_14"
+        prob_given_true: 0.85
         prob_given_false: 0.025
         to_state: "home"
       # - platform: state
-      #   entity_id: "device_tracker.cfalb_iphone_14"
+      #   entity_id: "device_tracker.jk_iphone_14"
       #   prob_given_true: 0.03
       #   prob_given_false: 0.95
       #   to_state: "not_home"
@@ -20,8 +20,8 @@ binary_sensor:
       # iPhone Detect Plugin
       - platform: "state"
         entity_id: "device_tracker.john_iphone_detect"
-        prob_given_true: 0.7
-        prob_given_false: 0.025
+        prob_given_true: 0.70
+        prob_given_false: 0.15
         to_state: "home"
       # - platform: "state"
       #   entity_id: "device_tracker.john_iphone_detect"
@@ -47,8 +47,8 @@ binary_sensor:
       #
       - platform: "state"
         entity_id: "device_tracker.john_iphone_14_unifi"
-        prob_given_true: 0.7
-        prob_given_false: 0.025
+        prob_given_true: 0.50
+        prob_given_false: 0.25
         to_state: "home"
       # - platform: "state"
       #   entity_id: "device_tracker.john_iphone_14_unifi"
@@ -60,8 +60,8 @@ binary_sensor:
       #
       - platform: "state"
         entity_id: "device_tracker.jk_iphone_14_nmap"
-        prob_given_true: 0.5
-        prob_given_false: 0.1
+        prob_given_true: 0.50
+        prob_given_false: 0.20
         to_state: "home"
       # - platform: "state"
       #   entity_id: "device_tracker.jk_iphone_14_nmap"

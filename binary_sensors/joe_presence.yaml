@@ -7,16 +7,16 @@
     #
     # Detected home
     - entity_id: "device_tracker.joes_iphone_new"
-      prob_given_true: 0.86
-      prob_given_false: 0.0625
+      prob_given_true: 0.85
+      prob_given_false: 0.25
       platform: "state"
       to_state: "home"
-    # Not detected home
-    - entity_id: "device_tracker.joes_iphone_new"
-      prob_given_true: 0.14
-      prob_given_false: 0.0625
-      platform: "state"
-      to_state: "not_home"
+    # # Not detected home
+    # - entity_id: "device_tracker.joes_iphone_new"
+    #   prob_given_true: 0.14
+    #   prob_given_false: 0.0625
+    #   platform: "state"
+    #   to_state: "not_home"
 
     # NMAP Device
     #
@@ -26,12 +26,12 @@
       prob_given_false: 0.25
       platform: "state"
       to_state: "home"
-    # Not detected home
-    - entity_id: "device_tracker.joes_iphone_new_nmap"
-      prob_given_true: 0.29
-      prob_given_false: 0.125
-      platform: "state"
-      to_state: "not_home"
+    # # Not detected home
+    # - entity_id: "device_tracker.joes_iphone_new_nmap"
+    #   prob_given_true: 0.29
+    #   prob_given_false: 0.125
+    #   platform: "state"
+    #   to_state: "not_home"
 
     # iPhone Detect
     #
@@ -41,9 +41,9 @@
       prob_given_true: 0.86
       prob_given_false: 0.0625
       to_state: "home"
-    # Not detected home
-    - platform: "state"
-      entity_id: "device_tracker.joe_iphone_detect"
-      prob_given_true: 0.14
-      prob_given_false: 0.5
-      to_state: "not_home"
+    # # Not detected home
+    # - platform: "state"
+    #   entity_id: "device_tracker.joe_iphone_detect"
+    #   prob_given_true: 0.14
+    #   prob_given_false: 0.5
+    #   to_state: "not_home"

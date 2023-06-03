@@ -9,7 +9,7 @@
     - platform: state
       entity_id: sensor.cristina_room_presence
       prob_given_true: 0.75
-      prob_given_false: 0.1875
+      prob_given_false: 0.25
       to_state: "main_bedroom"
     # # Not detected in the room
     # - platform: template
@@ -22,8 +22,8 @@
     # Phone is charging
     - platform: state
       entity_id: input_boolean.cristina_phone_plugged_in
-      prob_given_true: 0.75
-      prob_given_false: 0.125
+      prob_given_true: 0.55
+      prob_given_false: 0.35
       to_state: "on"
     # # Phone is not charging
     # - platform: state
@@ -37,7 +37,7 @@
     # Phone is in focus mode
     - platform: state
       entity_id: binary_sensor.cfalb_iphone_14_focus
-      prob_given_true: 0.88
+      prob_given_true: 0.75
       prob_given_false: 0.25
       to_state: "on"
     # # Phone is not in focus mode
@@ -54,7 +54,7 @@
     - platform: state
       entity_id: sensor.cfalb_iphone_14_bssid
       prob_given_true: 0.75
-      prob_given_false: 0.125
+      prob_given_false: 0.35
       to_state: "68:d7:9a:76:c4:ff"
     # # # Not connect to the router
     # - platform: template
@@ -83,8 +83,8 @@
     # Lights are ON
     - platform: state
       entity_id: light.main_bedroom_lights
-      prob_given_true: 0.06
-      prob_given_false: 0.125
+      prob_given_true: 0.10
+      prob_given_false: 0.75
       to_state: "on"
     # # Lights are OFF
     # - platform: state
@@ -99,7 +99,7 @@
     - platform: state
       entity_id: binary_sensor.bedtime
       prob_given_true: 0.88
-      prob_given_false: 0.0625
+      prob_given_false: 0.20
       to_state: "on"
     # # Bedtime hours is OFF (7am-10pm)
     # - platform: state
