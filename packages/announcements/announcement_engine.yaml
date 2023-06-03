@@ -167,19 +167,20 @@ script:
       - alias: "Wait for chime to complete"
         delay: "{{sound_length}}"
 
-      # If there's a TTS message than play it
-      - if:
-          - alias: "If we should play a TTS message as well"
-            condition: template
-            value_template: "{{false if speech_message is defined else true}}"
+      # This engine can be used as simply a chime without a message, so
+      # let's make sure there's a message to cotinue, otherwise abort.
+      - alias: "Check if there's a TTS message"
+        condition: template
+        value_template: "{{true if speech_message is defined else false}}"
 
-        then:
-          # Play the TTS message
-          - service: media_player.play_media
-            data:
-              entity_id: media_player.sonos_office
-              media_content_id: "media-source://tts/cloud?message='{{speech_message}}'"
-              media_content_type: music
-              announce: true
-              extra:
-                volume: "{{speech_volume}}"
+        # {{ quiet_time_volume if quiet_time_volume is defined and quiet_time_volume != none else 0 }}
+
+      # Play the TTS message
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.sonos_office
+          media_content_id: "media-source://tts/cloud?message='{{speech_message}}'"
+          media_content_type: music
+          announce: true
+          extra:
+            volume: "{{speech_volume}}"
