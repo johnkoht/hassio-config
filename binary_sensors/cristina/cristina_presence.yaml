@@ -7,7 +7,7 @@
     #
     - platform: state
       entity_id: "device_tracker.cfalb_iphone_14"
-      prob_given_true: 0.9
+      prob_given_true: 0.85
       prob_given_false: 0.025
       to_state: "home"
     # - platform: state
@@ -26,8 +26,8 @@
     # iPhone Detect Plugin
     - platform: state
       entity_id: "device_tracker.cristina_iphone_detect"
-      prob_given_true: 0.7
-      prob_given_false: 0.025
+      prob_given_true: 0.70
+      prob_given_false: 0.15
       to_state: "home"
     # - platform: state
     #   entity_id: "device_tracker.cristina_iphone_detect"
@@ -39,8 +39,8 @@
     #
     - platform: state
       entity_id: "device_tracker.cristinas_iphone_14_unifi"
-      prob_given_true: 0.7
-      prob_given_false: 0.025
+      prob_given_true: 0.5
+      prob_given_false: 0.25
       to_state: "home"
     # - platform: state
     #   entity_id: "device_tracker.cristinas_iphone_14_unifi"
@@ -52,8 +52,8 @@
     #
     - platform: state
       entity_id: "device_tracker.cfalb_iphone_14_nmap"
-      prob_given_true: 0.5
-      prob_given_false: 0.1
+      prob_given_true: 0.50
+      prob_given_false: 0.20
       to_state: "home"
     # - platform: state
     #   entity_id: "device_tracker.cfalb_iphone_14_nmap"

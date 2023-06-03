@@ -23,7 +23,7 @@ binary_sensor:
       # Phone is in focus mode
       - platform: state
         entity_id: binary_sensor.jk_iphone_14_focus
-        prob_given_true: 0.88
+        prob_given_true: 0.75
         prob_given_false: 0.25
         to_state: "on"
       # # Phone is not in focus mode
@@ -38,8 +38,8 @@ binary_sensor:
       # Phone is charging
       - platform: state
         entity_id: input_boolean.john_phone_plugged_in
-        prob_given_true: 0.75
-        prob_given_false: 0.125
+        prob_given_true: 0.55
+        prob_given_false: 0.35
         to_state: "on"
       # # Phone is not charging
       # - platform: state
@@ -54,7 +54,7 @@ binary_sensor:
       - platform: state
         entity_id: sensor.jk_iphone_14_bssid
         prob_given_true: 0.75
-        prob_given_false: 0.125
+        prob_given_false: 0.35
         to_state: "68:d7:9a:76:c4:ff"
       # # # Not connect to the router
       # - platform: template
@@ -82,8 +82,8 @@ binary_sensor:
       # Lights are ON
       - platform: state
         entity_id: light.main_bedroom_main_lights
-        prob_given_true: 0.06
-        prob_given_false: 0.125
+        prob_given_true: 0.1
+        prob_given_false: 0.75
         to_state: "on"
       # # Lights are OFF
       # - platform: state
@@ -98,7 +98,7 @@ binary_sensor:
       - platform: state
         entity_id: binary_sensor.bedtime
         prob_given_true: 0.88
-        prob_given_false: 0.0625
+        prob_given_false: 0.20
         to_state: "on"
       # # Bedtime hours is OFF (7am-10pm)
       # - platform: state

@@ -9,14 +9,14 @@
     - platform: state
       entity_id: media_player.sony_bravia_tv
       prob_given_true: 0.65
-      prob_given_false: 0.25
+      prob_given_false: 0.42
       to_state: "playing"
-    # If the TV is off
-    - platform: state
-      entity_id: media_player.sony_bravia_tv
-      prob_given_true: 0.42
-      prob_given_false: 0.75
-      to_state: "off"
+    # # If the TV is off
+    # - platform: state
+    #   entity_id: media_player.sony_bravia_tv
+    #   prob_given_true: 0.42
+    #   prob_given_false: 0.75
+    #   to_state: "off"
 
     # ESPresence
     #
@@ -24,12 +24,12 @@
     - platform: template
       value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
       prob_given_true: 0.75
-      prob_given_false: 0.04
-    # Nobody detected in the room
-    - platform: template
-      value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
-      prob_given_true: 0.10
-      prob_given_false: 0.83
+      prob_given_false: 0.15
+    # # Nobody detected in the room
+    # - platform: template
+    #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+    #   prob_given_true: 0.10
+    #   prob_given_false: 0.83
 
     # Lights
     #
@@ -37,27 +37,27 @@
     - platform: state
       entity_id: light.family_room_main_lights
       prob_given_true: 0.50
-      prob_given_false: 0.17
+      prob_given_false: 0.30
       to_state: "on"
-    # Lights are OFF
-    - platform: state
-      entity_id: light.family_room_main_lights
-      prob_given_true: 0.50
-      prob_given_false: 0.83
-      to_state: "off"
+    # # Lights are OFF
+    # - platform: state
+    #   entity_id: light.family_room_main_lights
+    #   prob_given_true: 0.50
+    #   prob_given_false: 0.83
+    #   to_state: "off"
 
     # Sonos Music
     #
     # Music ON
     - platform: template
       value_template: "{{ states.media_player.sonos_family_room.state == 'playing' }}"
-      prob_given_true: 0.08
-      prob_given_false: 0.04
-    # Music OFF
-    - platform: template
-      value_template: "{{ states.media_player.sonos_family_room.state != 'playing' }}"
-      prob_given_true: 0.92
-      prob_given_false: 0.96
+      prob_given_true: 0.30
+      prob_given_false: 0.20
+    # # Music OFF
+    # - platform: template
+    #   value_template: "{{ states.media_player.sonos_family_room.state != 'playing' }}"
+    #   prob_given_true: 0.92
+    #   prob_given_false: 0.96
 
     # # Playroom Occupied
     # #
@@ -78,14 +78,14 @@
     - platform: state
       entity_id: binary_sensor.kids_bedtime_routine
       prob_given_true: 0.17
-      prob_given_false: 0.04
+      prob_given_false: 0.20
       to_state: "on"
-    # Routine Hours OFF
-    - platform: state
-      entity_id: binary_sensor.kids_bedtime_routine
-      prob_given_true: 0.83
-      prob_given_false: 0.04
-      to_state: "off"
+    # # Routine Hours OFF
+    # - platform: state
+    #   entity_id: binary_sensor.kids_bedtime_routine
+    #   prob_given_true: 0.83
+    #   prob_given_false: 0.04
+    #   to_state: "off"
 
     # # Aqara Occupancy
     # #
