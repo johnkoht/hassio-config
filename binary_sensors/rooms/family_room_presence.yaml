@@ -9,7 +9,7 @@
     - platform: state
       entity_id: media_player.sony_bravia_tv
       prob_given_true: 0.65
-      prob_given_false: 0.42
+      prob_given_false: 0.40
       to_state: "playing"
     # # If the TV is off
     # - platform: state
@@ -23,7 +23,7 @@
     # Somebody in the room
     - platform: template
       value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
-      prob_given_true: 0.75
+      prob_given_true: 0.85
       prob_given_false: 0.15
     # # Nobody detected in the room
     # - platform: template
@@ -101,3 +101,12 @@
     #   prob_given_true: 0.05
     #   prob_given_false: 0.85
     #   to_state: "off"
+
+    # Aqara Motion
+    #
+    # Motion
+    - platform: state
+      entity_id: binary_sensor.family_room_motion_sensor
+      prob_given_true: 0.85
+      prob_given_false: 0.10
+      to_state: "on"

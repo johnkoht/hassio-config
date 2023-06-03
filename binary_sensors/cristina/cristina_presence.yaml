@@ -27,7 +27,7 @@
     - platform: state
       entity_id: "device_tracker.cristina_iphone_detect"
       prob_given_true: 0.70
-      prob_given_false: 0.15
+      prob_given_false: 0.10
       to_state: "home"
     # - platform: state
     #   entity_id: "device_tracker.cristina_iphone_detect"
@@ -65,7 +65,7 @@
     # She's home when ESPresense doesn't mark her as not_home
     - platform: template
       value_template: "{{ not is_state('sensor.cristina_room_presence', 'not_home') }}"
-      prob_given_true: 0.5
+      prob_given_true: 0.6
       prob_given_false: 0.1
     # # ESPresense detects that she's not home
     # - platform: template
