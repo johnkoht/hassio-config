@@ -217,6 +217,6 @@ script:
 
       # Save the latest message
       - service: input_text.set_value
-        entity_id: latest_voice_announcement
+        entity_id: input_text.latest_voice_announcement
         data:
           value: "{{ speech_message }}"
