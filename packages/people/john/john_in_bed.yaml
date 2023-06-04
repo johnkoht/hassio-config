@@ -9,7 +9,7 @@ binary_sensor:
       # Detected in the room
       - platform: state
         entity_id: sensor.john_room_presence
-        prob_given_true: 0.65
+        prob_given_true: 0.90
         prob_given_false: 0.25
         to_state: "main_bedroom"
       # # Not detected in the room
@@ -38,7 +38,7 @@ binary_sensor:
       # Phone is charging
       - platform: state
         entity_id: input_boolean.john_phone_plugged_in
-        prob_given_true: 0.55
+        prob_given_true: 0.85
         prob_given_false: 0.35
         to_state: "on"
       # # Phone is not charging
@@ -53,7 +53,7 @@ binary_sensor:
       # Connected to the bedroom router
       - platform: state
         entity_id: sensor.jk_iphone_14_bssid
-        prob_given_true: 0.75
+        prob_given_true: 0.85
         prob_given_false: 0.35
         to_state: "68:d7:9a:76:c4:ff"
       # # # Not connect to the router
@@ -67,7 +67,7 @@ binary_sensor:
       # Door closed
       - platform: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
-        prob_given_true: 0.63
+        prob_given_true: 0.75
         prob_given_false: 0.375
         to_state: "off" # Closed
       # # Door open
@@ -79,12 +79,12 @@ binary_sensor:
 
       # Lights
       #
-      # Lights are ON
+      # Lights are OFF
       - platform: state
         entity_id: light.main_bedroom_main_lights
-        prob_given_true: 0.1
-        prob_given_false: 0.75
-        to_state: "on"
+        prob_given_true: 0.80
+        prob_given_false: 0.65
+        to_state: "off"
       # # Lights are OFF
       # - platform: state
       #   entity_id: light.main_bedroom_main_lights
@@ -98,7 +98,7 @@ binary_sensor:
       - platform: state
         entity_id: binary_sensor.bedtime
         prob_given_true: 0.88
-        prob_given_false: 0.20
+        prob_given_false: 0.30
         to_state: "on"
       # # Bedtime hours is OFF (7am-10pm)
       # - platform: state
