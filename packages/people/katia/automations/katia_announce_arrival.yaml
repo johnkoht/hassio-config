@@ -21,8 +21,9 @@ automation:
           minutes: 5
     action:
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
           speech_message: >-
             {{
               [
@@ -32,7 +33,6 @@ automation:
                 "Knock knock. Who's there? Katia is here!"
               ] | random
             }}
-          media_players: "auto"
       # If a guest mode has not been announced, then we'll
       # set initiate guest_mode_announced so we the generic
       # guest mode announcement doesn't fire as well

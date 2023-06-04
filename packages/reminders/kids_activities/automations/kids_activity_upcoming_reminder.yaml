@@ -14,8 +14,10 @@ automation:
         state: "on"
     action:
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "flute-cell-phone-alert"
           speech_message: >-
             {{ 
               [
@@ -24,5 +26,3 @@ automation:
                 "Pardon the interruption, I just wanted to remind you that " ~ states.calendar.kohbocal.attributes.message ~ " is in one hour."
               ] | random
             }}
-          media_players: "auto"
-          sound: "flute-cell-phone-alert"

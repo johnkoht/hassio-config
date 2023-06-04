@@ -21,8 +21,10 @@ automation:
           minutes: 5
     action:
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "fox-nfl"
           speech_message: >-
             {{
               [
@@ -31,5 +33,3 @@ automation:
                 "Ciao Ciao! Joe G is here!"
               ] | random
             }}
-          media_players: "auto"
-          sound: "fox-nfl"

@@ -47,8 +47,10 @@ automation:
         delay: 2
 
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "flute-cell-phone-alert"
           speech_message: >-
             {{
               [
@@ -56,5 +58,3 @@ automation:
                 "Garbage day! Don't forget to take the trash out."
               ] | random
             }}
-          media_players: "auto"
-          sound: "flute-cell-phone-alert"

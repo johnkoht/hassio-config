@@ -55,8 +55,10 @@ automation:
           tag: "full-moon-reminder"
 
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "chime"
           speech_message: >-
             {{
               [
@@ -66,5 +68,3 @@ automation:
                 "Hey Nino! Guess what? Today's a full moon!"
               ] | random
             }}
-          media_players: "auto"
-          sound: "chime"
