@@ -7,3 +7,4 @@ sensor:
       - sensor.kitchen_humidity
       - sensor.office_weather_humidity
       - sensor.playroom_humidity
+      - sensor.jr_suite_humidity

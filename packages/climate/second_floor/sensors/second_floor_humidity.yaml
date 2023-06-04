@@ -7,3 +7,4 @@ sensor:
       - sensor.main_bedroom_humidity
       - sensor.gianluca_room_humidity
       - sensor.nino_room_humidity
+      - sensor.guest_bedroom_humidity

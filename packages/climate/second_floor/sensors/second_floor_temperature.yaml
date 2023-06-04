@@ -7,3 +7,4 @@ sensor:
       - sensor.main_bedroom_temperature
       - sensor.gianluca_room_temperature
       - sensor.nino_room_temperature
+      - sensor.guest_bedroom_temperature
