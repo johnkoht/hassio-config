@@ -138,11 +138,17 @@ script:
           {% set vol = 20 %}
         {% elif sound == "arcade" %}
           {% set vol = 40 %}
+        {% elif sound == "fanfare" %}
+          {% set vol = 30 %}
+        {% elif sound == "tarantella" %}
+          {% set vol = 30 %}
+        {% elif sound == "tarantella" %}
+          {% set vol = 40 %}
         {% endif %}
 
         {# Adjust the volume based on house mode #}
         {% if states.input_boolean.quiet_mode.state == "on" %}
-          {% set vol = vol * 0.65 %}
+          {% set vol = vol * 0.5 %}
         {% endif %}
 
         {{ vol }}
@@ -153,7 +159,7 @@ script:
 
         {# Adjust the volume based on house mode #}
         {% if states.input_boolean.quiet_mode.state == "on" %}
-          {% set vol = vol * 0.65 %}
+          {% set vol = vol * 0.60%}
         {% endif %}
 
         {{ vol }}
