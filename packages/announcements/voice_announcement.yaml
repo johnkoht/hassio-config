@@ -214,3 +214,9 @@ script:
             {% endif %}
 
             {{ media_players}}
+
+      # Save the latest message
+      - service: input_text.set_value
+        entity_id: latest_voice_announcement
+        data:
+          value: "{{ speech_message }}"
