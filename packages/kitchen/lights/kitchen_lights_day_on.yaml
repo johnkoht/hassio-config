@@ -7,23 +7,17 @@ automation:
     trigger:
       # Light is low in the kitchen
       - platform: numeric_state
-        entity_id:
-          - sensor.kitchen_motion_sensor_main_illuminance
-          - sensor.kitchen_motion_sensor_table_illuminance
+        entity_id: sensor.kitchen_illuminance
         below: 150
         for:
           minutes: 2
       - platform: numeric_state
-        entity_id:
-          - sensor.kitchen_motion_sensor_main_illuminance
-          - sensor.kitchen_motion_sensor_table_illuminance
+        entity_id: sensor.kitchen_illuminance
         below: 125
         for:
           minutes: 5
       - platform: numeric_state
-        entity_id:
-          - sensor.kitchen_motion_sensor_main_illuminance
-          - sensor.kitchen_motion_sensor_table_illuminance
+        entity_id: sensor.kitchen_illuminance
         below: 100
         for:
           minutes: 10
