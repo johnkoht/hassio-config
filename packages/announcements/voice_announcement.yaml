@@ -155,7 +155,7 @@ script:
       # Sound file volume
       speech_volume: >-
         {# Sound volumes vary so this is a way to compensate #}
-        {% set vol = 35 %}
+        {% set vol = 40 %}
 
         {# Adjust the volume based on house mode #}
         {% if states.input_boolean.quiet_mode.state == "on" %}
