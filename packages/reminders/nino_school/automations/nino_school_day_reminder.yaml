@@ -26,8 +26,10 @@ automation:
         state: "on"
     action:
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "school-bell-chime"
           speech_message: >-
             {{
               [
@@ -36,5 +38,3 @@ automation:
                 "Just at reminder that today's a school day, time for breakfast.",
               ] | random
             }}
-          media_players: "auto"
-          sound: "school-bell-chime"

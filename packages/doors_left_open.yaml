@@ -36,11 +36,12 @@ automation:
             state: "on"
     action:
       # Call the announcement engine
-      - service: script.general_announcement
+      # Announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
-          media_players: "auto"
+          media_players: auto
           sound: "police-whistle"
+          speech_message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
 
       # Notification for logging
       - service: script.general_notification

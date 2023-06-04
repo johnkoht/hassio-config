@@ -35,8 +35,10 @@ automation:
         delay: 2
 
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "flute-cell-phone-alert"
           speech_message: >-
             {{ 
               [
@@ -45,8 +47,6 @@ automation:
                 "Heads up for tomorrow: " ~ states.calendar.kohbocal.attributes.message
               ] | random
             }}
-          media_players: "auto"
-          sound: "flute-cell-phone-alert"
 
       - service: script.general_notification
         data:

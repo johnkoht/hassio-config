@@ -21,8 +21,8 @@ automation:
         state: "on"
     action:
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "{{states.calendar.nino_school_reminder.attributes.message}}"
-          media_players: "auto"
+          media_players: auto
           sound: "school-bell-chime"
+          speech_message: "{{states.calendar.nino_school_reminder.attributes.message}}"

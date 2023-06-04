@@ -20,8 +20,11 @@ condition:
       minutes: 5
 action:
   # Announcement
-  - service: script.general_announcement
+  # Announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
+      sound: "arcade"
       speech_message: >-
         {{
           [
@@ -35,4 +38,3 @@ action:
             "Fear not! Baba is home!"
           ] | random
         }}
-      media_players: "auto"

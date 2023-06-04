@@ -192,11 +192,12 @@ automation:
         entity_id: input_boolean.exterior_accent_lights
 
       # Announce throughout the house
-      - service: script.general_announcement
+      # Announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The sun has set so I'm turning on the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The sun has set so I'm turning on the exterior lights."
 
   # Activate Exterior Lighting Due to Weather
   #
@@ -264,11 +265,11 @@ automation:
         entity_id: input_boolean.exterior_house_lights
 
       # Announce throughout the house
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The weather is looking a little dark, I'm turning on the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The weather is looking a little dark, I'm turning on the exterior lights."
 
   # Deactivate Exterior Lighting at Sunrise
   #
@@ -314,11 +315,11 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.exterior_accent_lights
       # Announce throughout the house
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The sun is up so I'm turning off the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The sun is up so I'm turning off the exterior lights."
 
   # Deactivate Exterior Lighting Due to Weather
   #
@@ -378,11 +379,11 @@ automation:
         entity_id: input_boolean.exterior_house_lights
 
       # Announce throughout the house
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The weather has improved so I'm turning off the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The weather has improved so I'm turning off the exterior lights."
 
   # Deactivate Exterior Accent Lighting Due ad Bedtime
   #
