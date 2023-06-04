@@ -8,3 +8,4 @@ sensor:
       - sensor.kitchen_temperature
       - sensor.office_weather_temperature
       - sensor.playroom_temperature
+      - sensor.jr_suite_temperature
