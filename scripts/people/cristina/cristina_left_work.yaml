@@ -2,7 +2,7 @@
 #
 alias: Cristina Left Work
 sequence:
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
       speech_message: >-
         {{

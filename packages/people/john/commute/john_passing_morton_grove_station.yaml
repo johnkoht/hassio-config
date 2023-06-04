@@ -28,7 +28,7 @@ automation:
         state: "on"
     action:
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
           speech_message: >-
             {{

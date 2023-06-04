@@ -27,16 +27,3 @@ action:
   # Turn on the quiet mode boolean
   - service: input_boolean.turn_off
     entity_id: input_boolean.quiet_mode
-  # # Announcement
-  # - service: script.general_announcement
-  #   data:
-  #     speech_message: >-
-  #       {{
-  #         [
-  #           "Nino's awake. It's time to play!",
-  #           "Guess what? Nino is up!",
-  #           "Pardon the interruption but Nino has woken from his slumber.",
-  #           "Attention! Nino is awake!"
-  #         ] | random
-  #       }}
-  #     media_players: "auto"

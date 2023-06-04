@@ -24,10 +24,6 @@ action:
     data:
       entity_id: input_select.house
       option: "Auto"
-  # - service: script.general_announcement
-  #   data:
-  #     speech_message: "The house has been changed to Auto mode."
-  #     media_players: "auto"
   # Set the doorbell text
   # This should probably move elsewhere
   - service: select.select_option

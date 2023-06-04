@@ -29,8 +29,10 @@ condition:
     state: "John's Work"
 action:
   # Announcement
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
+      sound: "one-chime"
       speech_message: >-
         {{
           [
@@ -39,4 +41,3 @@ action:
             "Just a friendly note that Baba has arrived at the office."
           ] | random
         }}
-      media_players: "auto"
