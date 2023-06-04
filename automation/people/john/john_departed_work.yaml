@@ -35,8 +35,10 @@ condition:
     value_template: "{{ states.proximity.john_home.attributes.dir_of_travel == 'towards' }}"
 action:
   # Announcement
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
+      sound: "chime"
       speech_message: >-
         {{
           [
@@ -45,4 +47,3 @@ action:
             "Just a friendly note that Baba is headed home from the office."
           ] | random
         }}
-      media_players: "auto"

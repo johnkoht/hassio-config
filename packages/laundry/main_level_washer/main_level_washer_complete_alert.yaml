@@ -47,11 +47,12 @@ automation:
             false
           {% endif %}
     action:
-      - service: script.general_announcement
+      # Announce throughout the house
+      - service: script.voice_announcement
         data:
-          speech_message: "The main level washer finished and is ready to be emptied."
-          media_players: "auto"
+          media_players: auto
           sound: "chirp"
+          speech_message: "The main level washer finished and is ready to be emptied."
       # Notify whoever is home
       - service: >
           {% if (is_state("input_boolean.john_home", "on")) and (is_state("input_boolean.cristina_home", "on"))  %}

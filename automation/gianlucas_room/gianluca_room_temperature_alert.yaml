@@ -48,8 +48,9 @@ condition:
           - sensor.gianlucas_door_sensor_temperature
         above: 78
 action:
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
       speech_message: >-
         {% set temp = states.sensor.gianluca_room_temperature.state %}
         {% set door_temp = states.sensor.gianlucas_door_sensor_temperature.state %}
@@ -61,4 +62,3 @@ action:
         {% else %}
           "Attention, Gianluca's room is too hot at {{high}} degrees!"
         {% endif %}
-      media_players: "auto"
