@@ -17,6 +17,10 @@ automation:
       - platform: state
         entity_id: light.main_bedroom_main_lights
         to: "on"
+      # Door is opened
+      - platform: state
+        entity_id: binary_sensor.main_bedroom_door_sensor_status
+        to: "on"
     condition:
       # After 5am and before 9am
       - condition: time
@@ -56,6 +60,16 @@ automation:
       - condition: state
         entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
         state: "on"
+      - condition: or
+        conditions:
+          # Door is open
+          - condition: state
+            entity_id: binary_sensor.main_bedroom_door_sensor_status
+            state: "on"
+          # Lights are ON
+          - condition: state
+            entity_id: light.main_bedroom_main_lights
+            state: "on"
     action:
       - service: input_select.select_option
         data:
