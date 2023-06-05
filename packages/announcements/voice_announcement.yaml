@@ -104,7 +104,7 @@ script:
         {% elif sound == "chirp" %}
           1
         {% elif sound == "chime" %}
-          4l
+          4
         {% elif sound == "one-chime" %}
           5
         {% elif sound == "flute-cell-phone-alert" %}
