@@ -60,9 +60,21 @@ script:
       # Which rooms should play the doorbell
       - alias: "Rooms to sound the doorbell"
         variables:
+          sound_file: "https://raw.githubusercontent.com/johnkoht/hass-config/master/config/sounds/ding-dong.mp3"
+          sound_file_length: 5
+          sound_file_volume: >-
+            {% if states.input_boolean.quiet_mode.state == "on" %}
+              25
+            {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
+              55
+            {% else %}
+              40
+            {% endif %}
           media_players: >-
             {% set media_players = [] %}   
 
+            {# Check which rooms are occupied and if speech notifications are turned #}
+            {# on for them. If so, add them to an array of announceable rooms #}
             {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}
               {% set media_players = media_players + ["media_player.sonos_office"] %}
             {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" and states.input_boolean.family_room_speech_notifications.state == "on" %}
@@ -73,49 +85,22 @@ script:
               {% set media_players = media_players + ["media_player.sonos_main_bedroom"] %}
             {% endif %}{% if states.input_boolean.playroom_occupied.state == "on" %}
               {% set media_players = media_players + ["media_player.sonos_playroom"] %}
+            {% endif %}{% if states.input_boolean.dining_room_occupied.state == "on" %}
+              {% set media_players = media_players + ["media_player.sonos_living_room"] %}
             {% endif %}
 
             {{ media_players}}
 
-      # Take a snapshot of current Sonos Audio
-      - service: sonos.snapshot
-        entity_id: all
+      # Call the announcement engine and pass the requested media_players
+      # or default to ones in occupied rooms
+      - service: script.announcement_engine_new
         data:
-          with_group: true
-
-      # Capture the current media player volumes
-      - service: script.set_media_player_volume
-        data:
-          media_player: "{{media_players}}"
-
-      # Set the volume for the ding
-      - service: media_player.volume_set
-        data_template:
-          entity_id: >
-            {{ media_players }}
-        data:
-          volume_level: 0.7
-
-      # Play an doorbell sound
-      - service: media_player.play_media
-        data:
-          entity_id: "{{ media_players }}"
-          media_content_id: https://raw.githubusercontent.com/johnkoht/hass-config/master/config/sounds/ding-dong.mp3
-          media_content_type: music
-
-      - alias: "Wait 5s"
-        delay: 5
-
-      # Capture the current media player volumes
-      - service: script.restore_media_player_volume
-        data:
-          media_player: "{{media_players}}"
-
-      # Restore from snapshot
-      - service: sonos.restore
-        entity_id: all
-        data:
-          with_group: true
+          sound_file: "{{sound_file}}"
+          sound_length: "{{sound_file_length}}"
+          sound_volume: "{{sound_file_volume}}"
+          # media_players: "{{ media_players}}"
+          media_players:
+            - media_player.sonos_office
 
   #
   #
