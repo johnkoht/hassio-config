@@ -76,11 +76,11 @@ automation:
           sound_file_length: 4
           sound_file_volume: >-
             {% if states.input_boolean.quiet_mode.state == "on" %}
-              25
+              30
             {% elif now().strftime('%H')|int > 8 and now().strftime('%H')|int < 20 %}
               55
             {% else %}
-              40
+              45
             {% endif %}
 
       # Call the announcement engine and pass the requested media_players
