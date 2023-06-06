@@ -418,7 +418,7 @@ automation:
     alias: "Garage Lights Accidentally Turned Off Fix"
     mode: "single"
     trigger:
-      # Bad weather boolean is off for 5 mins
+      # Garage lights turned OFF
       - platform: state
         entity_id: light.exterior_garage_sconces
         to: "off"
@@ -428,6 +428,25 @@ automation:
         state: "on"
     action:
       - service: light.turn_on
+        entity_id: light.exterior_garage_sconces
+
+  # Opposite of the above, Cristina will accidentally turn the
+  # garage exterior lights ON when trying to turn the interior
+  # garage lights on. This will address that mistake
+  - id: "garage_lights_accidentally_turned_on_fix"
+    alias: "Garage Lights Accidentally Turned On Fix"
+    mode: "single"
+    trigger:
+      # Garage lights turned ON
+      - platform: state
+        entity_id: light.exterior_garage_sconces
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_boolean.exterior_house_lights
+        state: "off"
+    action:
+      - service: light.turn_off
         entity_id: light.exterior_garage_sconces
 
   # # Turn on the holiday lights
