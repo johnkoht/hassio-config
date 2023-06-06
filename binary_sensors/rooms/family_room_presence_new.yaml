@@ -51,7 +51,7 @@
     # Music ON
     - platform: template
       value_template: "{{ states.media_player.sonos_family_room.state == 'playing' }}"
-      prob_given_true: 0..06
+      prob_given_true: 0.06
       prob_given_false: 0.03
     # # Music OFF
     # - platform: template
