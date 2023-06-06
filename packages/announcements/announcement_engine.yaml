@@ -108,7 +108,8 @@ script:
         data:
           entity_id: "{{ media_players }}"
           # media_content_id: "media-source://tts/cloud?message='{{speech_message}}'"
-          media_content_id: "media-source://tts/google_translate?message='{{speech_message}}'&language=en-GB&gender=female"
+          # media_content_id: "media-source://tts/google_translate?message='{{speech_message}}'"
+          media_content_id: "media-source://tts/cloud?message={{speech_message}}&language=en-GB&gender=female"
           # media-source://tts/cloud?message=Hello+John+Koht%2C+you+can+play+any+text+on+any+supported+media+player%21&language=en-GB&gender=female
           media_content_type: music
           announce: true
