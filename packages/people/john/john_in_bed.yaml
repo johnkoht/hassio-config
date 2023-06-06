@@ -9,8 +9,8 @@ binary_sensor:
       # Detected in the room
       - platform: state
         entity_id: sensor.john_room_presence
-        prob_given_true: 0.90
-        prob_given_false: 0.25
+        prob_given_true: 0.88
+        prob_given_false: 0.13
         to_state: "main_bedroom"
       # # Not detected in the room
       # - platform: template
@@ -23,8 +23,8 @@ binary_sensor:
       # Phone is in focus mode
       - platform: state
         entity_id: binary_sensor.jk_iphone_14_focus
-        prob_given_true: 0.75
-        prob_given_false: 0.25
+        prob_given_true: 0.88
+        prob_given_false: 0.19
         to_state: "on"
       # # Phone is not in focus mode
       # - platform: state
@@ -38,8 +38,8 @@ binary_sensor:
       # Phone is charging
       - platform: state
         entity_id: input_boolean.john_phone_plugged_in
-        prob_given_true: 0.85
-        prob_given_false: 0.35
+        prob_given_true: 0.94
+        prob_given_false: 0.19
         to_state: "on"
       # # Phone is not charging
       # - platform: state
@@ -53,8 +53,8 @@ binary_sensor:
       # Connected to the bedroom router
       - platform: state
         entity_id: sensor.jk_iphone_14_bssid
-        prob_given_true: 0.85
-        prob_given_false: 0.35
+        prob_given_true: 0.94
+        prob_given_false: 0.13
         to_state: "68:d7:9a:76:c4:ff"
       # # # Not connect to the router
       # - platform: template
@@ -67,8 +67,8 @@ binary_sensor:
       # Door closed
       - platform: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
-        prob_given_true: 0.75
-        prob_given_false: 0.375
+        prob_given_true: 0.88
+        prob_given_false: 0.50
         to_state: "off" # Closed
       # # Door open
       # - platform: state
@@ -82,8 +82,8 @@ binary_sensor:
       # Lights are OFF
       - platform: state
         entity_id: light.main_bedroom_main_lights
-        prob_given_true: 0.80
-        prob_given_false: 0.65
+        prob_given_true: 0.98
+        prob_given_false: 0.75
         to_state: "off"
       # # Lights are OFF
       # - platform: state
@@ -97,8 +97,8 @@ binary_sensor:
       # Bedtime hours is ON (10pm-7am)
       - platform: state
         entity_id: binary_sensor.bedtime
-        prob_given_true: 0.88
-        prob_given_false: 0.30
+        prob_given_true: 0.75
+        prob_given_false: 0.13
         to_state: "on"
       # # Bedtime hours is OFF (7am-10pm)
       # - platform: state
