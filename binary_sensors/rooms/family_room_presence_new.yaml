@@ -1,0 +1,112 @@
+- platform: bayesian
+  prior: 0.5
+  name: "Family Room Presence New"
+  probability_threshold: 0.85
+  observations:
+    # TV
+    #
+    # If the TV is on
+    - platform: state
+      entity_id: media_player.sony_bravia_tv
+      prob_given_true: 0.50
+      prob_given_false: 0.09
+      to_state: "playing"
+    # # If the TV is off
+    # - platform: state
+    #   entity_id: media_player.sony_bravia_tv
+    #   prob_given_true: 0.42
+    #   prob_given_false: 0.75
+    #   to_state: "off"
+
+    # ESPresence
+    #
+    # Somebody in the room
+    - platform: template
+      value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
+      prob_given_true: 0.98
+      prob_given_false: 0.03
+    # # Nobody detected in the room
+    # - platform: template
+    #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
+    #   prob_given_true: 0.10
+    #   prob_given_false: 0.83
+
+    # Lights
+    #
+    # Lights are ON
+    - platform: state
+      entity_id: light.family_room_main_lights
+      prob_given_true: 0.50
+      prob_given_false: 0.09
+      to_state: "on"
+    # # Lights are OFF
+    # - platform: state
+    #   entity_id: light.family_room_main_lights
+    #   prob_given_true: 0.50
+    #   prob_given_false: 0.83
+    #   to_state: "off"
+
+    # Sonos Music
+    #
+    # Music ON
+    - platform: template
+      value_template: "{{ states.media_player.sonos_family_room.state == 'playing' }}"
+      prob_given_true: 0..06
+      prob_given_false: 0.03
+    # # Music OFF
+    # - platform: template
+    #   value_template: "{{ states.media_player.sonos_family_room.state != 'playing' }}"
+    #   prob_given_true: 0.92
+    #   prob_given_false: 0.96
+
+    # # Playroom Occupied
+    # #
+    # # Somebody in the playroom
+    # - platform: template
+    #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length > 0 }}"
+    #   prob_given_true: 0.33
+    #   prob_given_false: 0.08
+    # # Nobody detected in the playroom
+    # - platform: template
+    #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length == 0 }}"
+    #   prob_given_true: 0.233
+    #   prob_given_false: 0.92
+
+    # Bedtime Routine
+    #
+    # Routine Hours ON
+    - platform: state
+      entity_id: binary_sensor.kids_bedtime_routine
+      prob_given_true: 0.06
+      prob_given_false: 0.06
+      to_state: "on"
+    # # Routine Hours OFF
+    # - platform: state
+    #   entity_id: binary_sensor.kids_bedtime_routine
+    #   prob_given_true: 0.83
+    #   prob_given_false: 0.04
+    #   to_state: "off"
+
+    # Aqara Occupancy
+    #
+    # Occupancy ON
+    - platform: state
+      entity_id: binary_sensor.family_room_motion_sensor_occupancy
+      prob_given_true: 0.88
+      prob_given_false: 0.06
+      to_state: "on"
+    # # Occupancy OFF
+    # - platform: state
+    #   entity_id: binary_sensor.family_room_motion_sensor_occupancy
+    #   prob_given_true: 0.05
+    #   prob_given_false: 0.85
+    #   to_state: "off"
+
+    # Aqara Motion
+    #
+    # Motion
+    - platform: state
+      entity_id: binary_sensor.family_room_motion_sensor
+      prob_given_true: 0.91
+      prob_given_false: 0.03
+      to_state: "on"
