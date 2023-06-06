@@ -85,12 +85,14 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 
 - Exterior lights turning on/off
 - Quiet mode is enabled
-- Guest mode enabled/disabled
+- Announce arrival and departure of family 
 - Washer or Dryer is finished
 - Kitchen fridge has been open too long
 - School day announcement, dropoff/pickup reminders
-
-
+- Calendar reminder (upcoming or next day)
+- Commuting notifications (arrived at station, heading home, train five mins away)
+- Garbage day
+- Severe weather warnings
 
 
 ## <a name="devices">Devices</a>
@@ -119,9 +121,11 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | [Philips Hue White A19 LED Smart Bulb](https://a.co/d/iKgG44w) | 2 | Hue Hub (Zigbee) | [Philips Hue Light](https://www.home-assistant.io/components/light.hue/) | Bedside lamps |
 | [Philips Hue White A19 LED Smart Bulb](https://a.co/d/iKgG44w) | 2 | Hue Hub (Zigbee) | [Philips Hue Light](https://www.home-assistant.io/components/light.hue/) | Bedside lamps |
 | [Philips Hue Gradient Ambiance Lightstrip](https://a.co/d/6Nmw8ew) | 9 | Hue Hub (Zigbee) | [Philips Hue Light](https://www.home-assistant.io/components/light.hue/) | Office shelves lighting |
-| [Lutron Caseta Wireless Dimmer](https://a.co/d/0RrGOTN) | 25 | Lutron Smart Bridge | [Lutron Caséta](https://www.home-assistant.io/integrations/lutron_caseta) | Smart dimmer switches that do not require a neutral wire|
+| [Lutron Caseta Wireless Dimmer](https://a.co/d/0RrGOTN) | 26 | Lutron Smart Bridge | [Lutron Caséta](https://www.home-assistant.io/integrations/lutron_caseta) | Smart dimmer switches that do not require a neutral wire|
 | [Lutron Caseta Pico Wireless Dimmer Switch](https://a.co/d/2GGVlQF) | 21 | Lutron Smart Bridge | [Lutron Caséta](https://www.home-assistant.io/integrations/lutron_caseta) | Decora wall mountable remote (that looks like a dimmer switch). Controls various lights |
 | [Lutron Caseta Wireless Lighting Switch](https://a.co/d/5Tg1Qs8) | 1 | Lutron Smart Bridge | [Lutron Caséta](https://www.home-assistant.io/integrations/lutron_caseta) | Smart on / off light switches |
+| [Enbrighten Zigbee Dimmer QuickFit 43080](https://a.co/d/ilngexF) | 2 | Zigbee | [Jasco](https://www.home-
+| [Enbrighten Zigbee QuickFit 43078](https://a.co/d/boxstCr) | 2 | Zigbee | [Jasco](https://www.home-assistant.io/integrations/jasco/) | Smart on / off light switches |assistant.io/integrations/jasco/) | Smart on / off light switches |
 
 
 ## <a name="climate">Climate</a>
@@ -131,7 +135,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Google Nest Learning Thermostat](https://a.co/d/eFNSURb) | 2 | WiFi | [Google Nest](https://www.home-assistant.io/integrations/nest/) | Thermostats for main and upper levels |
-| [Aqara Temperature and Humidity Sensor](https://a.co/d/b1M2cvC) | 8 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Provides-specific room temperature and humidity reporting |
+| [Aqara Temperature and Humidity Sensor](https://a.co/d/b1M2cvC) | 12 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Provides-specific room temperature and humidity reporting |
 
 ## <a name="outlets">Outlets & Switches</a>
 
@@ -143,6 +147,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | [Aqara Smart Plug](https://a.co/d/8I8Xggp) | 8 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet used to control various devices like space heaters, Christmas lights/tree, etc. I also have a couple of these specifically to extend the mesh network. |
 | [IKEA Trådfri Smart Outlet](https://a.co/d/eOCkQjT) | 5 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet used to control random devices, currently Christmas lights and a space heater. |
 | [Wemo Mini Smart Plug](https://a.co/d/ixGGnvO) | 3 | Wi-Fi | [Belkin WeMo](https://www.home-assistant.io/components/wemo/) | Smart outlets, but I don't really use these as they haven't been very reliable for me. |
+| [THIRDREALITY ZigBee Smart Plug with Energy Monitoring]([https://a.co/d/ixGGnvO](https://a.co/d/flUVOir)) | 1 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet, just trying these out |
 
 
 ## <a name="locks">Locks</a>
@@ -181,10 +186,13 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Aeotec Trisensor](https://a.co/d/aBDiA55) | 3 | Z-Wave | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js) | Motion, temperature and illuminance |
-| [Aqara Motion Sensor](https://a.co/d/cJdMbla) | 14 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Motion and Light Level sensor used to automate around motion events and current room brightness. |
+| [Aqara Motion Sensor](https://a.co/d/cJdMbla) | 15 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Motion and Light Level sensor used to automate around motion events and current room brightness. |
 | [Aeotec Multipurpose Sensor](https://a.co/d/4crXFL6) | 2 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Door sensor for kids bedroom, includes temperature readings. |
 | [XFINITY Security Visonic ZigBee Door Window Sensor](https://www.ebay.com/itm/203254885008) | 13 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Internal door sensors used for occupancy and automations. One is used for the fridge since it doesn't beep when left open. |
 | [Aqara Water Leak Sensor](https://a.co/d/fWywZmF) | 2 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors in the basement | [Aeotec Water Leak Sensor](https://a.co/d/cStIB4z) | 4 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors for the sinks and laundry room. |
+} [Aeotec Water Leak Sensor](https://a.co/d/cStIB4z) | 4 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors for the sinks and laundry room. |
+| [Aqara Door and Window Sensor](https://a.co/d/1vx2SIL) | 5 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Window magnetic open/close sensors |
+
 
 ## <a name="cameras">Cameras</a>
 
@@ -218,7 +226,8 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Ubiquiti Unifi Dream Machine Pro](https://a.co/d/h8PQdfZ) | 1 | Ethernet | [Unifi Network](https://www.home-assistant.io/integrations/unifi) | Unifi OS, switch and security gateway. UniFi Protect video surveillance NVR. Presence detection for non-household members and devices. |
-| [Ubiquiti Networks UniFi Switch PRO PoE - 24 Ports (USW-Pro-24-POE)](https://a.co/d/1F1iUsA) | 1 | Ethernet | [Ubiquiti Unifi WAP](https://www.home-assistant.io/components/device_tracker.unifi/)| Primary Network Switch. Presence detection for non-household members and devices |
+| [Ubiquiti Networks UniFi Switch PoE - 48 Ports (USW-48-POE)](https://store.ui.com/us/en/collections/unifi-switching-standard-power-over-ethernet/products/usw-48-poe) | 1 | Ethernet | [Ubiquiti Unifi WAP](https://www.home-assistant.io/components/device_tracker.unifi/)| Primary Network Switch. Presence detection for non-household members and devices |
+| [Ubiquiti Networks UniFi Switch PRO PoE - 24 Ports (USW-Pro-24-POE)](https://a.co/d/1F1iUsA) | 1 | Ethernet | [Ubiquiti Unifi WAP](https://www.home-assistant.io/components/device_tracker.unifi/)| Media Network Switch. Upgraded to a 48 so moved this to manage my media rack |
 | [Ubiquiti Networks UniFi Switch Lite 8 PoE (USW-Lite-8-PoE)](https://a.co/d/600W5KJ) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional PoE Network Switches. Mostly used for the two G4 bullet cameras and an AP. |
 | [Ubiquiti Networks UniFi USW-Flex-Mini (USW-Flex-Mini-5)](https://a.co/d/0xHbnSd) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional Network Switch for Hue and Lutron smart hubs. |
 | [Ubiquiti Networks Unifi Switch Flex (USW-Flex)](https://a.co/d/10XP8Mi) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional PoE Network Switch that powers an AP and eventually more PoE cameras. |
