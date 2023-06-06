@@ -10,7 +10,7 @@
       entity_id: media_player.sony_bravia_tv
       prob_given_true: 0.65
       prob_given_false: 0.40
-      to_state: "playing"
+      to_state: "on"
     # # If the TV is off
     # - platform: state
     #   entity_id: media_player.sony_bravia_tv

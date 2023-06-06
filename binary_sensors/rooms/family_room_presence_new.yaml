@@ -8,9 +8,9 @@
     # If the TV is on
     - platform: state
       entity_id: media_player.sony_bravia_tv
-      prob_given_true: 0.50
-      prob_given_false: 0.09
-      to_state: "playing"
+      prob_given_true: 0.40
+      prob_given_false: 0.04
+      to_state: "on"
     # # If the TV is off
     # - platform: state
     #   entity_id: media_player.sony_bravia_tv
@@ -23,8 +23,8 @@
     # Somebody in the room
     - platform: template
       value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length > 0 }}"
-      prob_given_true: 0.98
-      prob_given_false: 0.03
+      prob_given_true: 0.97
+      prob_given_false: 0.01
     # # Nobody detected in the room
     # - platform: template
     #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'family_room')|map(attribute='name')|list | length == 0 }}"
@@ -36,8 +36,8 @@
     # Lights are ON
     - platform: state
       entity_id: light.family_room_main_lights
-      prob_given_true: 0.50
-      prob_given_false: 0.09
+      prob_given_true: 0.20
+      prob_given_false: 0.05
       to_state: "on"
     # # Lights are OFF
     # - platform: state
@@ -51,8 +51,8 @@
     # Music ON
     - platform: template
       value_template: "{{ states.media_player.sonos_family_room.state == 'playing' }}"
-      prob_given_true: 0.06
-      prob_given_false: 0.03
+      prob_given_true: 0.05
+      prob_given_false: 0.04
     # # Music OFF
     # - platform: template
     #   value_template: "{{ states.media_player.sonos_family_room.state != 'playing' }}"
@@ -77,8 +77,8 @@
     # Routine Hours ON
     - platform: state
       entity_id: binary_sensor.kids_bedtime_routine
-      prob_given_true: 0.06
-      prob_given_false: 0.06
+      prob_given_true: 0.08
+      prob_given_false: 0.11
       to_state: "on"
     # # Routine Hours OFF
     # - platform: state
@@ -92,8 +92,8 @@
     # Occupancy ON
     - platform: state
       entity_id: binary_sensor.family_room_motion_sensor_occupancy
-      prob_given_true: 0.88
-      prob_given_false: 0.06
+      prob_given_true: 0.90
+      prob_given_false: 0.01
       to_state: "on"
     # # Occupancy OFF
     # - platform: state
@@ -107,6 +107,15 @@
     # Motion
     - platform: state
       entity_id: binary_sensor.family_room_motion_sensor
-      prob_given_true: 0.91
-      prob_given_false: 0.03
+      prob_given_true: 0.90
+      prob_given_false: 0.04
+      to_state: "on"
+
+    # Evening Chill Hours
+    #
+    # Routine Hours ON
+    - platform: state
+      entity_id: binary_sensor.evening_chill
+      prob_given_true: 0.02
+      prob_given_false: 0.07
       to_state: "on"
