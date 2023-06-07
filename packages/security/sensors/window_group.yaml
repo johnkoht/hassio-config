@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: group
+    name: Windows
+    unique_id: windows
+    device_class: window
+    entities:
+      - binary_sensor.kitchen_window_sensor
+      - binary_sensor.kitchen_window_west_middle_sensor
+      - binary_sensor.playroom_window_sensor
+      - binary_sensor.playroom_window_west_left_opening
+      - binary_sensor.office_window_sensor
