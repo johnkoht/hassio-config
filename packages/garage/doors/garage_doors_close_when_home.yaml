@@ -17,12 +17,12 @@ automation:
       - platform: state
         entity_id: input_boolean.bedtime
         to: "on"
-      # Garage is no longer occupied for 30 minutes
+      # Garage is no longer occupied for 20 minutes
       - platform: state
         entity_id: input_boolean.garage_occupied
         to: "off"
         for:
-          minutes: 30
+          minutes: 20
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -36,13 +36,15 @@ automation:
           - condition: state
             entity_id: input_boolean.bedtime
             state: "on"
-          # Garage is NOT occupied and override is NOT active
+          # Garage is NOT occupied for at least 20 mins and override is NOT active
           - condition: and
             conditions:
               # Garage is not occupied
               - condition: state
                 entity_id: input_boolean.garage_occupied
                 state: "off"
+                for:
+                  minutes: 20
               # Garage override is not active
               - condition: state
                 entity_id: input_boolean.garage_override
