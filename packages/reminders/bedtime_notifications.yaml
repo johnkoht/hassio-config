@@ -66,6 +66,27 @@ automation:
                   "{{vac_message}}"
                 {% endif %}
 
+      # If any of the windows are open, then let us
+      # know so we can close them.
+      - if:
+          - condition: state
+            entity_id: binary_sensor.windows
+            state: "on"
+        then:
+          - service: input_text.set_value
+            entity_id: input_text.bedtime_notification_message
+            data:
+              value: >-
+                {% set open_windows = expand('binary_sensor.windows')|selectattr('state', 'eq', 'on')|map(attribute='name')|list|unique|join(', ') %}
+                {% set window_message = "The following windows are still open: {{ open_windows }}" %}
+
+                {% set message = states.input_text.bedtime_notification_message.state %}
+                {% if message | length > 0 %}
+                  "{{message}} and {{window_message}}"
+                {% else %}
+                  "{{window_message}}"
+                {% endif %}
+
       # Make sure there are notifications
       - condition: template
         value_template: "{{states.input_text.bedtime_notification_message.state | length > 0}}"
@@ -82,3 +103,17 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "bedtime-notifications"
+
+      # Set the volume to low
+      - service: media_player.volume_set
+        data:
+          entity_id: media_player.kohbo_dot_main_bedroom
+          volume_level: 0.25
+
+      # Notify Alex device
+      - service: notify.alexa_media
+        data:
+          data:
+            type: tts
+          target: media_player.kohbo_dot_main_bedroom
+          message: "{{states.input_text.bedtime_notification_message.state}}"
