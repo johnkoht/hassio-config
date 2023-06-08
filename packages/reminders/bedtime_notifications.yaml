@@ -63,7 +63,7 @@ automation:
                 {% if message | length > 0 %}
                   "{{message}} and {{vac_message}}"
                 {% else %}
-                  "{{vac_message}}"
+                  {{vac_message}}
                 {% endif %}
 
       # If any of the windows are open, then let us
@@ -78,13 +78,13 @@ automation:
             data:
               value: >-
                 {% set open_windows = expand('binary_sensor.windows')|selectattr('state', 'eq', 'on')|map(attribute='name')|list|unique|join(', ') %}
-                {% set window_message = "The following windows are still open: {{ open_windows }}" %}
+                {% set window_message = "The following windows are still open: " + open_windows %}
 
                 {% set message = states.input_text.bedtime_notification_message.state %}
                 {% if message | length > 0 %}
                   "{{message}} and {{window_message}}"
                 {% else %}
-                  "{{window_message}}"
+                  {{window_message}}
                 {% endif %}
 
       # Make sure there are notifications
@@ -107,7 +107,7 @@ automation:
       # Set the volume to low
       - service: media_player.volume_set
         data:
-          entity_id: media_player.kohbo_dot_main_bedroom
+          entity_id: media_player.main_bedroom
           volume_level: 0.25
 
       # Notify Alex device
