@@ -8,19 +8,19 @@ automation:
       # If the lighting is better in the kitchen
       - platform: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 250
+        above: 350
         for:
           minutes: 10
       # If the lighting is better in the kitchen
       - platform: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 350
+        above: 450
         for:
           minutes: 5
       # If the lighting is better in the kitchen
       - platform: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 500
+        above: 600
         for:
           minutes: 3
       # The weather is not bad outside anymore
