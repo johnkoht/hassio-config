@@ -35,11 +35,11 @@
     # Phone DnD Status
     #
     # Phone is in focus mode
-    - platform: state
-      entity_id: binary_sensor.cfalb_iphone_14_focus
-      prob_given_true: 0.88
-      prob_given_false: 0.19
-      to_state: "on"
+    #- platform: state
+    #  entity_id: binary_sensor.cfalb_iphone_14_focus
+    #  prob_given_true: 0.88
+    #  prob_given_false: 0.19
+    #  to_state: "on"
     # # Phone is not in focus mode
     # - platform: state
     #   entity_id: binary_sensor.cfalb_iphone_14_focus
@@ -51,11 +51,11 @@
     # Bedroom Router Detection
     #
     # Connected to the bedroom router
-    - platform: state
-      entity_id: sensor.cfalb_iphone_14_bssid
-      prob_given_true: 0.94
-      prob_given_false: 0.13
-      to_state: "68:d7:9a:76:c4:ff"
+    #- platform: state
+    #  entity_id: sensor.cfalb_iphone_14_bssid
+    #  prob_given_true: 0.94
+    #  prob_given_false: 0.13
+    #  to_state: "68:d7:9a:76:c4:ff"
     # # # Not connect to the router
     # - platform: template
     #   value_template: "{{ not is_state('sensor.cfalb_iphone_14_bssid','68:d7:9a:76:c4:ff') }}"

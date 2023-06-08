@@ -1,0 +1,82 @@
+automation:
+  - id: "robot_vacuum_reorder_reminder"
+    alias: "Robot Vacuum Reorder Reminder"
+    mode: "single"
+    trigger:
+      # # At 6:30am
+      # - platform: time
+      #   at: "06:30:00"
+      # # When house transitions from bedtime to auto
+      # - platform: state
+      #   entity_id: input_select.house
+      #   from: "Bedtime"
+      #   to: "Auto"
+      # Main brush life (less than 20 hours)
+      - platform: numeric_state
+        entity_id: sensor.roborock_s7_main_brush_left
+        below: 72000
+      # Side brush life (less than 20 hours)
+      - platform: numeric_state
+        entity_id: sensor.roborock_s7_side_brush_left
+        below: 72000
+      # Filter life (less than 20 hours)
+      - platform: numeric_state
+        entity_id: sensor.roborock_s7_filter_left
+        below: 72000
+    # condition:
+    #   # One of the maintenance items needs a reorder
+    #   - condition: or
+    #     conditions:
+    #       # Main brush life (less than 20 hours)
+    #       - condition: numeric_state
+    #         entity_id: sensor.roborock_s7_main_brush_left
+    #         below: 72000
+    #       # Side brush life (less than 20 hours)
+    #       - condition: numeric_state
+    #         entity_id: sensor.roborock_s7_side_brush_left
+    #         below: 72000
+    #       # Filter life (less than 20 hours)
+    #       - condition: numeric_state
+    #         entity_id: sensor.roborock_s7_filter_left
+    #         below: 72000
+    action:
+      # Wait until 6:30am
+      - wait_for_trigger:
+          - platform: time
+            at: "06:30:00"
+
+      # Wait for the kitchen to be occupied for 10 minutes
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+            to: "on"
+            for:
+              minutes: 10
+        timeout:
+          minutes: 10
+        continue_on_timeout: true
+
+      # Wait for John to be present or wait 5 mins
+      - wait_for_trigger:
+          - platform: state
+            entity_id: sensor.john_room_presence
+            to: "Kitchen"
+        timeout:
+          minutes: 5
+        continue_on_timeout: true
+
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "one-chime"
+          speech_message: "The robot vacuum needs some maintenance. Please replace the {{trigger.from_state.attributes.friendly_name}}"
+
+      # Send a push notification
+      - service: script.general_notification
+        data:
+          message: "The robot vacuum needs some maintenance. Please replace the {{trigger.from_state.attributes.friendly_name}}"
+          title: Robot Vacuum Maintenance
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "vacuum-notifications"
