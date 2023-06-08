@@ -60,6 +60,8 @@ automation:
             sequence:
               - service: light.turn_on
                 entity_id: light.kitchen_lights
+                data:
+                  transition: 5
           # Kitchen is in Dim mode
           - conditions:
               - condition: state

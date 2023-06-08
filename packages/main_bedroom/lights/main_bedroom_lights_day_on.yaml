@@ -62,11 +62,14 @@ automation:
         below: 150
       # Lights are currently off
       - condition: state
-        entity_id: light.main_bedroom_lights
+        entity_id: light.main_bedroom_main_lights
         state: "off"
     action:
       - service: light.turn_on
-        entity_id: light.main_bedroom_lights
+        target:
+          entity_id: light.main_bedroom_main_lights
+        data:
+          transition: 5
       # Toggle the boolean to flag it was auto
       - service: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lights_auto
