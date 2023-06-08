@@ -1,7 +1,7 @@
 binary_sensor:
   - platform: bayesian
     prior: 0.33
-    probability_threshold: 0.85
+    probability_threshold: 0.8
     name: "John in bed"
     observations:
       # Room Assisstant Presence

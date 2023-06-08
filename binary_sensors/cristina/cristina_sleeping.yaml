@@ -1,6 +1,6 @@
 - platform: bayesian
   prior: 0.33
-  probability_threshold: 0.87
+  probability_threshold: 0.80
   name: "Cristina Sleeping"
   observations:
     # Room Assisstant Presence
