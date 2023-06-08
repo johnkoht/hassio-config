@@ -66,6 +66,8 @@ automation:
       # Turn the lights on
       - service: light.turn_on
         entity_id: light.kitchen_lights
+        data:
+          transition: 5
       # Toggle the boolean to flag it was auto
       - service: input_boolean.turn_on
         entity_id: input_boolean.kitchen_lights_auto
