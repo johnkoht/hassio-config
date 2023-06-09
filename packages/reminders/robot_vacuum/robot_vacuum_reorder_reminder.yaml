@@ -60,7 +60,7 @@ automation:
       - wait_for_trigger:
           - platform: state
             entity_id: sensor.john_room_presence
-            to: "Kitchen"
+            to: "kitchen"
         timeout:
           minutes: 5
         continue_on_timeout: true
