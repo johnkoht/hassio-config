@@ -55,7 +55,7 @@ automation:
       - service: script.general_notification
         data:
           message: >-
-            {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" }
+            {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" %}
               "The robot vacuum is water tank is empty, please refill it as soon as possible."
             {% elif trigger.entity_id == "sensor.roborock_s7_sensor_dirty_left" %}
               "The robot vacuum sensors are dirty and need to be cleaned."
