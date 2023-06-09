@@ -1,0 +1,68 @@
+automation:
+  - id: "robot_vacuum_maintenance_reminder"
+    alias: "Robot Vacuum Maintenance Reminder"
+    mode: "single"
+    trigger:
+      # Low on water
+      - platform: state
+        entity_id: binary_sensor.roborock_s7_water_shortage
+        to: "on"
+      # Sensors need to be cleaned (less than 2 hours)
+      - platform: numeric_state
+        entity_id: sensor.roborock_s7_sensor_dirty_left
+        below: 7200
+    action:
+      # Wait until 6:30am
+      - wait_for_trigger:
+          - platform: time
+            at: "06:30:00"
+
+      # Wait for the kitchen to be occupied for 10 minutes
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+            to: "on"
+            for:
+              minutes: 10
+        timeout:
+          minutes: 10
+        continue_on_timeout: true
+
+      # Wait for John to be present or wait 5 mins
+      - wait_for_trigger:
+          - platform: state
+            entity_id: sensor.john_room_presence
+            to: "kitchen"
+        timeout:
+          minutes: 5
+        continue_on_timeout: true
+
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "one-chime"
+          speech_message: >-
+            {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" %}
+              "The robot vacuum is water tank is empty, please refill it as soon as possible."
+            {% elif trigger.entity_id == "sensor.roborock_s7_sensor_dirty_left" %}
+              "The robot vacuum sensors are dirty and need to be cleaned."
+            {% else %}
+              "The robot vacuum needs maintenance, please check the app for more details."
+            {% endif %}
+
+      # Send a push notification
+      - service: script.general_notification
+        data:
+          message: >-
+            {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" }
+              "The robot vacuum is water tank is empty, please refill it as soon as possible."
+            {% elif trigger.entity_id == "sensor.roborock_s7_sensor_dirty_left" %}
+              "The robot vacuum sensors are dirty and need to be cleaned."
+            {% else %}
+              "The robot vacuum needs maintenance, please check the app for more details."
+            {% endif %}
+          title: Robot Vacuum Maintenance
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "vacuum-notifications"
