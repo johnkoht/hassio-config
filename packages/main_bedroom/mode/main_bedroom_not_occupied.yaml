@@ -54,12 +54,10 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-      # No motion for 5 minutes
+      # No occupancy for 5 minutes
       - condition: state
-        entity_id: binary_sensor.main_bedroom_motion_sensor
+        entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
         state: "off"
-        for:
-          minutes: 5
       # Auto mode between 5-midnight
       # OR bedtime mode and between 6am-9pm
       - condition: or
