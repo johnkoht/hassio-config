@@ -77,7 +77,7 @@ script:
         {% elif sound == "arcade" %}
           https://github.com/johnkoht/hassio-config/blob/master/sounds/arcade-bonus-alert.wav?raw=true
         {% elif sound == "police-whistle" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.wav?raw=true
+          https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.mp3?raw=true
         {% elif sound == "arabic-intro" %}
           https://github.com/johnkoht/hassio-config/blob/master/sounds/arabic_intro.wav?raw=true
         {% elif sound == "school-bell-chime" %}
