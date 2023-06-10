@@ -15,8 +15,9 @@ condition:
       minutes: 5
 action:
   # Announcement
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
       speech_message: >-
         {{
           [
@@ -28,4 +29,3 @@ action:
             "Attention! Mamma left the house."
           ] | random
         }}
-      media_players: "auto"

@@ -2,6 +2,6 @@ proximity:
   john_home:
     zone: home
     devices:
-      - device_tracker.jk_2
+      - device_tracker.jk_iphone_14
     unit_of_measurement: km
     tolerance: 50

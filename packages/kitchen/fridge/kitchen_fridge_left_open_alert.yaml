@@ -14,7 +14,7 @@
 #     # done_message: "The k"
 #     notifiers:
 #       #- ios_family
-#       - mobile_app_jk
+#       - mobile_app_jk_2
 #       - tts_announcements_devices
 
 automation:
@@ -35,12 +35,11 @@ automation:
       - alias: "Repeat until the fridge door is closed"
         repeat:
           sequence:
-            # Announcement
-            - service: script.general_announcement
+            - service: script.voice_announcement
               data:
-                speech_message: "Fridge is open"
-                media_players: "auto"
+                media_players: auto
                 sound: "police-whistle"
+                speech_message: "Fridge is open"
             # Delay 1 minute
             - delay: "00:01:00"
 

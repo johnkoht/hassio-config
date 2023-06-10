@@ -1,0 +1,37 @@
+# Powder Room Fan Off
+#
+# Turn off the fan if the powder room turns off
+#
+automation:
+  - id: "powder_room_fan_off"
+    initial_state: on
+    alias: "Powder Room Fan Off"
+    trigger:
+      # Powder Room is Off
+      - platform: state
+        entity_id: input_select.powder_room
+        to: "Off"
+      # Bathroom is not occupied for 5 minutes
+      - platform: state
+        entity_id: input_boolean.powder_room_occupied
+        to: "off"
+        for:
+          minutes: 5
+    condition:
+      # Fan is currently ON
+      - condition: state
+        entity_id: fan.powder_room_fan
+        state: "on"
+      - condition: or
+        conditions:
+          # Powder Room is Off
+          - condition: state
+            entity_id: input_select.powder_room
+            state: "Off"
+          # Powder Room not occupied
+          - condition: state
+            entity_id: input_boolean.powder_room_occupied
+            state: "off"
+    action:
+      - service: fan.turn_off
+        entity_id: fan.powder_room_fan

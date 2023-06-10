@@ -1,0 +1,22 @@
+# Office Lights Manually Turned Off
+#
+automation:
+  - id: "office_lights_manually_turned_off"
+    initial_state: off
+    alias: "Office Lights Manually Turned Off"
+    trigger:
+      # Lights turned off
+      - platform: state
+        entity_id: group.office_lights
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: input_boolean.office_lights_auto
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_lights_auto
+
+      # Turn off the office lighting automation
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_lighting_automations

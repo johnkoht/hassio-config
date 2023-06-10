@@ -6,8 +6,8 @@ family:
 router_tracked_devices:
   name: "Devices tracked by the router"
   entities:
-    - device_tracker.cfalb
-    - device_tracker.jk
+    - device_tracker.cristinas_iphone_14_unifi
+    - device_tracker.john_iphone_14_unifi
     - device_tracker.joes_iphone_13
     - device_tracker.antoun_koht_2
     - device_tracker.sonia_koht_2

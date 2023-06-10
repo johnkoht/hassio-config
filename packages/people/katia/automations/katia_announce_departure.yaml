@@ -23,8 +23,9 @@ automation:
           minutes: 5
     action:
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
           speech_message: >-
             {{
               [
@@ -34,4 +35,3 @@ automation:
                 "Pardon the interruption but Katia just left",
               ] | random
             }}
-          media_players: "auto"

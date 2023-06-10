@@ -1,0 +1,9 @@
+sensor:
+  - platform: min_max
+    name: Gianluca Room Mean Temperature
+    unique_id: gianluca_room_mean_temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.gianluca_room_temperature
+      - sensor.gianlucas_door_sensor_temperature

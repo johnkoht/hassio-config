@@ -1,0 +1,35 @@
+automation:
+  - id: "joe_announce_arrival"
+    alias: Joe Announce Arrival
+    mode: queued
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: person.joe_falbo
+        from: "not_home"
+        to: "home"
+    condition:
+      # Joe is home
+      - condition: state
+        entity_id: person.joe_falbo
+        state: "home"
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    action:
+      # Announcement
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "fox-nfl"
+          speech_message: >-
+            {{
+              [
+                "Guess who's here? It's Joe G!",
+                "Whatcha got? Joe G Gots is home!",
+                "Ciao Ciao! Joe G is here!"
+              ] | random
+            }}

@@ -11,7 +11,7 @@ trigger:
     entity_id: binary_sensor.cristina_sleeping
     to: "off"
     for:
-      minutes: 3
+      minutes: 2
   # Door is open
   - platform: state
     entity_id: binary_sensor.main_bedroom_door_sensor_status
@@ -19,6 +19,13 @@ trigger:
   # Room presence changes
   - platform: state
     entity_id: sensor.cristina_room_presence
+    from: "main_bedroom"
+    to: "kitchen"
+  # Room presence changes
+  - platform: state
+    entity_id: sensor.cristina_room_presence
+    from: "main_bedroom"
+    to: "family_room"
 condition:
   # Cristina is sleeping
   - condition: state

@@ -1,0 +1,5 @@
+input_boolean:
+  office_lights_auto:
+    name: Office Lights auto
+    icon: mdi:lightbulb-auto
+    initial: off

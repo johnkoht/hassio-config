@@ -1,7 +1,7 @@
 automation:
   - id: "garage_doors_close_when_empty_house"
     alias: "Garage doors close when empty house"
-    initial_state: on
+    initial_state: off
     trigger:
       # If any doors have been open for more than 10 mins
       - platform: state
@@ -13,10 +13,16 @@ automation:
       - platform: state
         entity_id: input_select.garage
         to: "Away"
-      # If the garage is set to Off
+      # If the garage is set to Away for 2 mins
       - platform: state
         entity_id: input_select.garage
-        to: "Off"
+        to: "Away"
+        for: 
+          minutes: 2
+      # # If the garage is set to Off
+      # - platform: state
+      #   entity_id: input_select.garage
+      #   to: "Off"
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -44,7 +50,12 @@ automation:
         entity_id: cover.garage_doors
 
       # Notify the family
-      - service: notify.ios_family
+
+      # Notification for logging
+      - service: script.general_notification
         data:
-          title: Closing the garage doors!
-          message: The house is empty or off so I'm closing the garage doors
+          title: "Garage Doors Open!"
+          message: "The house is empty or off so I'm closing the garage doors"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "garage-doors-closed-empty"

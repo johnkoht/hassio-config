@@ -1,6 +1,6 @@
 - platform: bayesian
   prior: 0.33
-  probability_threshold: 0.87
+  probability_threshold: 0.80
   name: "Cristina Sleeping"
   observations:
     # Room Assisstant Presence
@@ -8,102 +8,102 @@
     # Detected in the room
     - platform: state
       entity_id: sensor.cristina_room_presence
-      prob_given_true: 0.75
-      prob_given_false: 0.1875
+      prob_given_true: 0.88
+      prob_given_false: 0.13
       to_state: "main_bedroom"
-    # Not detected in the room
-    - platform: template
-      value_template: "{{ not is_state('sensor.cristina_room_presence','main_bedroom') }}"
-      prob_given_true: 0.25
-      prob_given_false: 0.875
+    # # Not detected in the room
+    # - platform: template
+    #   value_template: "{{ not is_state('sensor.cristina_room_presence','main_bedroom') }}"
+    #   prob_given_true: 0.25
+    #   prob_given_false: 0.875
 
     # Phone Charging Status
     #
     # Phone is charging
     - platform: state
       entity_id: input_boolean.cristina_phone_plugged_in
-      prob_given_true: 0.75
-      prob_given_false: 0.125
+      prob_given_true: 0.94
+      prob_given_false: 0.19
       to_state: "on"
-    # Phone is not charging
-    - platform: state
-      entity_id: input_boolean.cristina_phone_plugged_in
-      prob_given_true: 0.13
-      prob_given_false: 0.875
-      to_state: "off"
+    # # Phone is not charging
+    # - platform: state
+    #   entity_id: input_boolean.cristina_phone_plugged_in
+    #   prob_given_true: 0.13
+    #   prob_given_false: 0.875
+    #   to_state: "off"
 
     # Phone DnD Status
     #
     # Phone is in focus mode
-    - platform: state
-      entity_id: binary_sensor.cfalb_focus
-      prob_given_true: 0.88
-      prob_given_false: 0.25
-      to_state: "on"
-    # Phone is not in focus mode
-    - platform: state
-      entity_id: binary_sensor.cfalb_focus
-      prob_given_true: 0.13
-      # prob_given_false: 0.75
-      prob_given_false: 0.55
-      to_state: "off"
+    #- platform: state
+    #  entity_id: binary_sensor.cfalb_iphone_14_focus
+    #  prob_given_true: 0.88
+    #  prob_given_false: 0.19
+    #  to_state: "on"
+    # # Phone is not in focus mode
+    # - platform: state
+    #   entity_id: binary_sensor.cfalb_iphone_14_focus
+    #   prob_given_true: 0.13
+    #   # prob_given_false: 0.75
+    #   prob_given_false: 0.55
+    #   to_state: "off"
 
     # Bedroom Router Detection
     #
     # Connected to the bedroom router
-    - platform: state
-      entity_id: sensor.cfalb_bssid
-      prob_given_true: 0.75
-      prob_given_false: 0.125
-      to_state: "68:d7:9a:76:c4:ff"
-    # # Not connect to the router
-    - platform: template
-      value_template: "{{ not is_state('sensor.cfalb_bssid','68:d7:9a:76:c4:ff') }}"
-      prob_given_true: 0.38
-      prob_given_false: 0.875
+    #- platform: state
+    #  entity_id: sensor.cfalb_iphone_14_bssid
+    #  prob_given_true: 0.94
+    #  prob_given_false: 0.13
+    #  to_state: "68:d7:9a:76:c4:ff"
+    # # # Not connect to the router
+    # - platform: template
+    #   value_template: "{{ not is_state('sensor.cfalb_iphone_14_bssid','68:d7:9a:76:c4:ff') }}"
+    #   prob_given_true: 0.38
+    #   prob_given_false: 0.875
 
     # Bedroom Door Status
     #
     # Door closed
     - platform: state
       entity_id: binary_sensor.main_bedroom_door_sensor_status
-      prob_given_true: 0.63
-      prob_given_false: 0.375
+      prob_given_true: 0.88
+      prob_given_false: 0.50
       to_state: "off" # Closed
-    # Door open
-    - platform: state
-      entity_id: binary_sensor.main_bedroom_door_sensor_status
-      prob_given_true: 0.38
-      # prob_given_false: 0.625
-      prob_given_false: 0.45
-      to_state: "on" # Open
+    # # Door open
+    # - platform: state
+    #   entity_id: binary_sensor.main_bedroom_door_sensor_status
+    #   prob_given_true: 0.38
+    #   # prob_given_false: 0.625
+    #   prob_given_false: 0.45
+    #   to_state: "on" # Open
 
     # Lights
     #
-    # Lights are ON
-    - platform: state
-      entity_id: light.main_bedroom_lights
-      prob_given_true: 0.06
-      prob_given_false: 0.125
-      to_state: "on"
     # Lights are OFF
     - platform: state
       entity_id: light.main_bedroom_lights
-      prob_given_true: 0.94
-      prob_given_false: 0.875
+      prob_given_true: 0.98
+      prob_given_false: 0.75
       to_state: "off"
+    # # Lights are OFF
+    # - platform: state
+    #   entity_id: light.main_bedroom_lights
+    #   prob_given_true: 0.94
+    #   prob_given_false: 0.875
+    #   to_state: "off"
 
     # Bedtime Hours
     #
     # Bedtime hours is ON (10pm-7am)
     - platform: state
       entity_id: binary_sensor.bedtime
-      prob_given_true: 0.88
-      prob_given_false: 0.0625
+      prob_given_true: 0.75
+      prob_given_false: 0.13
       to_state: "on"
-    # Bedtime hours is OFF (7am-10pm)
-    - platform: state
-      entity_id: binary_sensor.bedtime
-      prob_given_true: 0.19
-      prob_given_false: 0.875
-      to_state: "off"
+    # # Bedtime hours is OFF (7am-10pm)
+    # - platform: state
+    #   entity_id: binary_sensor.bedtime
+    #   prob_given_true: 0.19
+    #   prob_given_false: 0.875
+    #   to_state: "off"

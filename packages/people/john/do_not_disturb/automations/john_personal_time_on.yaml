@@ -28,8 +28,11 @@ automation:
       # Turn ON the boolean
       - service: input_boolean.turn_on
         entity_id: input_boolean.john_personal_time
-      # Notification for testing
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - service: script.general_notification
         data:
-          message: John personal time turned ON
-          title: John Personal Time
+          message: "John personal time turned ON"
+          title: "John Personal Time"
+          devices: "jk"
+          priority: "passive"
+          tag: "john-personal-time"

@@ -16,7 +16,3 @@ action:
     data:
       entity_id: input_select.house
       option: "Auto"
-  # - service: script.general_announcement
-  #   data:
-  #     speech_message: "Quiet mode is disabled."
-  #     media_players: "auto"

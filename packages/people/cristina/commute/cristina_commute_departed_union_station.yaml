@@ -28,8 +28,9 @@ automation:
         state: "on"
     action:
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
           speech_message: >-
             {{
               [
@@ -38,4 +39,3 @@ automation:
                 "Just a friendly note that Mamma's train has departed."
               ] | random
             }}
-          media_players: "auto"

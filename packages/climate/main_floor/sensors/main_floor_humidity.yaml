@@ -1,0 +1,10 @@
+sensor:
+  - platform: min_max
+    name: Main Floor Humidity
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_humidity
+      - sensor.office_weather_humidity
+      - sensor.playroom_humidity
+      - sensor.jr_suite_humidity

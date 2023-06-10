@@ -11,12 +11,17 @@ automation:
         entity_id: input_select.main_level_dryer_status
         state: "Clean"
     action:
-      - service: script.general_announcement
+      # Voice Announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The main level dryer finished and is ready to be emptied."
-          media_players: "auto"
+          media_players: auto
           sound: "chirp"
-      - service: notify.ios_family
+          speech_message: "The main level dryer finished and is ready to be emptied."
+      # Notification
+      - service: script.general_notification
         data:
           message: "The main level dryer is finished and ready to be emptied."
           title: "Main Level Drying Machine"
+          devices: "all"
+          priority: "active"
+          tag: "main-level-dryer"

@@ -48,7 +48,11 @@ condition:
 action:
   - service: input_boolean.turn_on
     entity_id: input_boolean.family_room_occupied
-  - service: notify.mobile_app_jk
+  # Notification for logging
+  - service: script.general_notification
     data:
-      title: Family Room
-      message: The familiy room is now occupied!
+      title: "Family Room Logger"
+      message: "The family room is occupied"
+      devices: "jk"
+      priority: "passive"
+      tag: "family-room-occupied"

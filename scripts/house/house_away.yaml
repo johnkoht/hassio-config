@@ -25,8 +25,10 @@ sequence:
   # Close the garage
   # - service: script.garage_close
   #   data: {}
-  # Notify John
-  - service: notify.mobile_app_jk
+  - service: script.general_notification
     data:
       title: Away Mode
       message: Nobody is home so away mode has been activated!
+      devices: "jk"
+      priority: "active"
+      tag: "house-mode-away"

@@ -1,0 +1,7 @@
+input_number:
+  weather_day_low:
+    name: Weather - Day Low
+    min: -100
+    max: 100
+    unit_of_measurement: °F
+    icon: mdi:snowflake-thermometer

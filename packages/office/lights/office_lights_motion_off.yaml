@@ -5,7 +5,7 @@
 #
 automation:
   - id: "office_lights_motion_off"
-    initial_state: on
+    initial_state: off
     alias: "Office lights motion off"
     trigger:
       # Motion no longer detected
@@ -28,7 +28,14 @@ automation:
         entity_id: group.office_lights
         state: "on"
     action:
+      # Turn off the lights
       - service: light.turn_off
         entity_id: group.office_lights
+
+      # Turn off this automation
       - service: automation.turn_off
         entity_id: automation.office_lights_motion_off
+
+      # Toggle off the lighting automatically turned on boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_lights_auto

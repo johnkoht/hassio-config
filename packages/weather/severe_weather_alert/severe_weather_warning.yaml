@@ -1,0 +1,28 @@
+automation:
+  - id: "severe_weather_warning"
+    alias: Severe Weather Warning
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: sensor.nws_alerts_sensor
+    condition:
+      - "{{states('sensor.nws_alerts_sensor') | int > 0}}"
+      - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
+      # - "{{ (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] not in states.variable.nws_alerts_sensor_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] != states('variable.nws_alerts_sensor_event_ids')) }}"
+    action:
+      # Announce to the house
+      - service: script.voice_announcement
+        data:
+          speech_message: "{{ state_attr('sensor.nws_alerts_sensor', 'Headline')}}"
+          sound: "one-chime"
+          media_players: auto
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Weather Alert: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}"
+          message: >
+            "NWS: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}. {{state_attr('sensor.nws_alerts_sensor', 'spoken_desc')}}"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "doorbell-ring"

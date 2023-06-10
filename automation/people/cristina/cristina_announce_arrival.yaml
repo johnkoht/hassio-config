@@ -20,8 +20,10 @@ condition:
       minutes: 5
 action:
   # Announcement
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
+      sound: "fanfare"
       speech_message: >-
         {{
           [
@@ -36,5 +38,3 @@ action:
             "Ciao! Mamma is home!"
           ] | random
         }}
-      media_players: "auto"
-      sound: "fanfare"

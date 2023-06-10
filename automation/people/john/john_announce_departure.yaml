@@ -15,17 +15,16 @@ condition:
       minutes: 5
 action:
   # Announcement
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
-      # speech_message: "Baba has left the house!"
+      media_players: auto
+      sound: "arcade"
       speech_message: >-
         {{
           [
             "Arrivederci! Baba has left the house.",
-            "Baba out.",
             "Baba left the house.",
-            "Pardon the interruption but babba has left the house!",
+            "Pardon the interruption but Baba has left the house!",
             "Attention! Baba is no longer home."
           ] | random
         }}
-      media_players: "auto"

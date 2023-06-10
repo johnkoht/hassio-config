@@ -1,0 +1,10 @@
+sensor:
+  - platform: min_max
+    name: Second Floor Humidity
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.main_bedroom_humidity
+      - sensor.gianluca_room_humidity
+      - sensor.nino_room_humidity
+      - sensor.guest_bedroom_humidity

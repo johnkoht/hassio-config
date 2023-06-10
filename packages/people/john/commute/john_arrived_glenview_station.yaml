@@ -27,19 +27,6 @@ automation:
         entity_id: input_boolean.john_commuting
         state: "on"
     action:
-      # Announcement
-      # - service: script.general_announcement
-      #   data:
-      #     speech_message: >-
-      #       {{
-      #         [
-      #           "Attention! Baba just arrived at Glenview Station.",
-      #           "Pardon the interruption, but Baba just go to work.",
-      #           "Just a friendly note that Baba has arrived at the office."
-      #         ] | random
-      #       }}
-      #     media_players: "auto"
-
       # Turn off the other automation
       - service: automation.turn_off
         entity_id:

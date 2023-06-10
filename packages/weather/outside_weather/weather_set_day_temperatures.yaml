@@ -1,0 +1,35 @@
+automation:
+  - id: "weather_set_day_temperature"
+    alias: Weather - Set day Temperature
+    initial_state: on
+    trigger:
+      # KPWK Changes
+      - platform: state
+        entity_id: weather.kpwk_daynight
+      # At 1am
+      - platform: time
+        at: "01:00:00"
+    action:
+      # Set HIGH temp
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.weather_day_high
+          value: >
+            {{ 
+              (state_attr('weather.kpwk_daynight', 'forecast')
+              | map(attribute="temperature")
+              | list)[0:2]
+              | max
+            }}
+
+      # Set LOW temp
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.weather_day_low
+          value: >
+            {{ 
+              (state_attr('weather.kpwk_daynight', 'forecast')
+              | map(attribute="temperature")
+              | list)[0:2]
+              | min
+            }}

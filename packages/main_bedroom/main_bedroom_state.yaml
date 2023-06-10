@@ -6,9 +6,6 @@ input_select:
     name: Main Bedroom
     options:
       - "Auto"
-      - "Away"
       - "Bedtime"
       - "Wake"
-      - "Motion"
       - "Off"
-      - "On"

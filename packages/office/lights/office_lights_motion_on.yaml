@@ -21,6 +21,10 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      # Office lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
+        state: "on"
       # Light is low
       - condition: numeric_state
         entity_id: sensor.office_aqara_illuminance
@@ -34,3 +38,6 @@ automation:
         entity_id: group.office_lights
       - service: automation.turn_on
         entity_id: automation.office_lights_motion_off
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.office_lights_auto

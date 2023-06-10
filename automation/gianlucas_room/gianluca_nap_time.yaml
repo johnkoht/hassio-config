@@ -35,8 +35,10 @@ action:
   # Turn on the quiet mode boolean
   - service: input_boolean.turn_on
     entity_id: input_boolean.quiet_mode
-  - service: script.general_announcement
+  # Announcement throughout the house
+  - service: script.voice_announcement
     data:
+      media_players: auto
       speech_message: >-
         {{
           [
@@ -46,4 +48,3 @@ action:
             "Attention! Quiet mode has been enabled for Gianluca's nap."
           ] | random
         }}
-      media_players: "auto"

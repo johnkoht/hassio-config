@@ -1,0 +1,12 @@
+fan:
+  - platform: template
+    fans:
+      mudroom_bathroom_fan:
+        friendly_name: "Mudroom Bathroom Fan"
+        value_template: "{{ states('light.mudroom_bathroom_fan') }}"
+        turn_on:
+          service: light.turn_on
+          entity_id: light.mudroom_bathroom_fan
+        turn_off:
+          service: light.turn_off
+          entity_id: light.mudroom_bathroom_fan

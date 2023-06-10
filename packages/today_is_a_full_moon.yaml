@@ -45,15 +45,20 @@ automation:
       - alias: "Wait 3 seconds"
         delay: 3
 
-      # Notify via push
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - service: script.general_notification
         data:
-          message: Today's a full moon, go check it out!
-          title: Full Moon Reminder
+          message: "Today's a full moon, go check it out!"
+          title: "Full Moon Reminder"
+          devices: "jk"
+          priority: "passive"
+          tag: "full-moon-reminder"
 
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "chime"
           speech_message: >-
             {{
               [
@@ -63,5 +68,3 @@ automation:
                 "Hey Nino! Guess what? Today's a full moon!"
               ] | random
             }}
-          media_players: "auto"
-          sound: "chime"

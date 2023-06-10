@@ -1,0 +1,4 @@
+input_text:
+  latest_voice_announcement:
+    name: Latest Voice Announcement
+    icon: mdi:bullhorn
