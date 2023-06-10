@@ -175,7 +175,7 @@ script:
         state: "on"
       # It's between 7am and 10pm
       - condition: time
-        after: "07:00:00"
+        after: "06:00:00"
         before: "22:00:00"
       # Not bedtime
       - condition: state
