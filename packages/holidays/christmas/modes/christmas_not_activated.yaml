@@ -46,7 +46,7 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.christmas_active
 
-      - service: notify.mobile_app_jk
+      - service: notify.mobile_app_jk_2
         data:
           title: Holidays
           message: Christmas is NO longer activate

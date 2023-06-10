@@ -1,0 +1,8 @@
+sensor:
+  - platform: min_max
+    name: Average Indoor Humidity
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.main_floor_humidity
+      - sensor.second_floor_humidity

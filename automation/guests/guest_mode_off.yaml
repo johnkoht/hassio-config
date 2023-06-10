@@ -28,11 +28,13 @@ action:
       # within 90 seconds..which is a pretty decent way to check if somebody's
       # departure has been announced.
       - condition: template
-        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('script.general_announcement','last_triggered')) ) | int > 90 }}"
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('script.voice_announcement','last_triggered')) ) | int > 90 }}"
     then:
       # Announcement
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "chime"
           speech_message: >-
             {{
               [
@@ -42,7 +44,6 @@ action:
                 "Attention! Guest mode is disabled."
               ] | random
             }}
-          media_players: "auto"
 
   - if:
       # If a guest is announced, we skip the generic guest mode

@@ -1,0 +1,4 @@
+input_boolean:
+  mudroom_bathroom_occupied:
+    name: Mudroom Bathoom Occupied
+    icon: mdi:toilet

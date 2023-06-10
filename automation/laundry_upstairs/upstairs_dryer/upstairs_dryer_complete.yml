@@ -10,10 +10,6 @@ condition:
     entity_id: input_select.upstairs_dryer_status
     state: "Clean"
 action:
-  - service: script.general_announcement
-    data:
-      speech_message: "The upstairs dryer finished and is ready to be emptied."
-      media_players: "auto"
   - service: notify.ios_family
     data:
       message: "The upstairs dryer is finished and ready to be emptied."

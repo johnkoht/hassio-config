@@ -46,4 +46,3 @@ automation:
         entity_id:
           - light.hue_ambiance_lamp_1
           - light.hue_ambiance_lamp_1_2
-          - light.main_bathroom_vanity_lights

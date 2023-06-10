@@ -1,0 +1,30 @@
+automation:
+  - id: "joe_announce_departure"
+    alias: Joe Announce Departure
+    mode: queued
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: input_boolean.joe_home
+        to: "off"
+    condition:
+      # Somebody has been home for 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    action:
+      # Announcement
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "fox-nfl"
+          speech_message: >-
+            {{
+              [
+                "Arrivederci! Joe G has left the house.",
+                "Pardon the interruption but Joe G has left the house!",
+                "Attention! Joe G is no longer home."
+              ] | random
+            }}

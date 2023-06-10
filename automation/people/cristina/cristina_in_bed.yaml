@@ -12,13 +12,13 @@ trigger:
     entity_id: binary_sensor.cristina_sleeping
     to: "on"
     for:
-      minutes: 2
+      minutes: 1
   # Cristina is most likley in bed
   - platform: state
     entity_id: binary_sensor.cristina_probably_sleeping
     to: "on"
     for:
-      minutes: 2
+      minutes: 3
   # It's bedtime hours
   - platform: state
     entity_id: binary_sensor.bedtime
@@ -28,12 +28,24 @@ trigger:
     entity_id: binary_sensor.main_bedroom_door_sensor_status
     to: "off"
 condition:
-  # Cristina is probably sleeping
-  - condition: state
-    entity_id: binary_sensor.cristina_probably_sleeping
-    state: "on"
-    for:
-      minutes: 2
+  - condition: or
+    conditions:
+      # Cristina is sleeping
+      - condition: state
+        entity_id: binary_sensor.cristina_sleeping
+        state: "on"
+      # OR
+      # Cristina is probably sleeping
+      # AND it's between 10-6am
+      - condition: and
+        conditions:
+          # Cristina is probably sleeping
+          - condition: state
+            entity_id: binary_sensor.cristina_probably_sleeping
+            state: "on"
+          - condition: time
+            after: "20:00:00"
+            before: "06:00:00"
   # Cristina is home
   - condition: state
     entity_id: input_boolean.cristina_home

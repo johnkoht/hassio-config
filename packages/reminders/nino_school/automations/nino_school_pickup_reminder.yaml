@@ -18,8 +18,10 @@ automation:
         state: "on"
     action:
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "school-bell-chime"
           speech_message: >-
             {{
               [
@@ -29,8 +31,6 @@ automation:
                 "Nino's school day is almost over, time to pick him up."
               ] | random
             }}
-          media_players: "auto"
-          sound: "school-bell-chime"
 
       # Notify the family via push
       - service: notify.ios_family

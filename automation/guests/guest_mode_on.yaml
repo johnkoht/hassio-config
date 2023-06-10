@@ -42,8 +42,10 @@ action:
     state: "off"
 
   # Announcement
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
+      sound: "chime"
       speech_message: >-
         {{
           [
@@ -54,4 +56,3 @@ action:
             "Attention! Guest mode has been enabled."
           ] | random
         }}
-      media_players: "auto"

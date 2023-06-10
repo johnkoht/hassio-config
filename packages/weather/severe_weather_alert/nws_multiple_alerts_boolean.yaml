@@ -1,0 +1,3 @@
+input_boolean:
+  nws_multi_alert:
+    name: NWS Multiple Alerts At Once

@@ -22,17 +22,3 @@ action:
     data:
       entity_id: select.front_door_camera_doorbell_text
       option: SHHH…KIDS SLEEPING
-  # - service: script.general_announcement
-  #   data:
-  #     # speech_message: "Shhh...Quiet mode has been enabled."
-  #     speech_message: >-
-  #       {{
-  #         [
-  #           "Shhh...Quiet mode has been enabled.",
-  #           "Quiet time,",
-  #           "Baba left the house.",
-  #           "Pardon the interruption but babba has left the house!",
-  #           "Attention! Baba is no longer home."
-  #         ] | random
-  #       }}
-  #     media_players: "auto"

@@ -30,7 +30,10 @@ automation:
         state: "off"
     action:
       - service: light.turn_on
-        entity_id: light.main_bedroom_main_lights
+        target:
+          entity_id: light.main_bedroom_main_lights
+        data:
+          transition: 5
       # - service: automation.turn_on
       #   entity_id: automation.main_bedroom_lights_motion_off
       # Toggle the boolean to flag it was auto

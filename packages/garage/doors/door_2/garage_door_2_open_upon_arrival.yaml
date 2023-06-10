@@ -1,7 +1,7 @@
 automation:
   - id: "garage_door_2_open_upon_arrival"
     alias: "Garage Door 2 - Open Upon Arrival"
-    initial_state: on
+    initial_state: off
     trigger:
       # People just got home
       - platform: state
@@ -46,7 +46,7 @@ automation:
       #   entity_id: cover.garage_door_2
 
       # Notify the family
-      - service: notify.mobile_app_jk
+      - service: notify.mobile_app_jk_2
         data:
           title: Garage Door 2
           message: Garage door three is opening upon somebody's arrival

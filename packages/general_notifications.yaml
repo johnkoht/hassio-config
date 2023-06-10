@@ -4,10 +4,12 @@
 # USAGE:
 # service: script.general_notification
 # data:
+#   title: "Home Assistant"
 #   message: "Hello, world!"
-#   devices: ["notify.mobile_app_jk"] or "all"
+#   devices: ["notify.mobile_app_jk_2"] or "all"
 #   priority: "active"
 #   tag: ""
+#   group: "example-notification-group"
 #
 
 #
@@ -17,10 +19,17 @@
 # - time-sensitive: time sensitive
 # - critical: critical iOS alert
 #
-# Tag options:
-# - garage_doors
-# - alarm
-# - ?
+
+input_select:
+  notification_level:
+    name: Notification Level
+    options:
+      # All priority option levels
+      - "All"
+      # Only time sensitive and critical
+      - "Important"
+      # Turn off push notifications
+      - "None"
 
 script:
   clear_notifications:
@@ -31,9 +40,9 @@ script:
           {% if devices == "all"  %}
             notify.ios_family
           {% elif devices == "jk" %}
-            notify.mobile_app_jk
+            notify.mobile_app_jk_2
           {% elif devices == "cfalb" %}
-            notify.mobile_app_cfalb
+            notify.mobile_app_cfalb2
           {% endif %}
         data:
           message: "clear_notification"
@@ -46,7 +55,7 @@ script:
     sequence:
       - alias: "Set up variables"
         variables:
-          tag: "{{ tag }}"
+          # tag: "{{ tag }}"
           priority: >-
             {% if priority is defined and priority|length %}
               {{priority}}
@@ -54,18 +63,95 @@ script:
               "active"
             {% endif %}
 
-      - service: >
-          {% if devices == "all"  %}
-            notify.ios_family
-          {% elif devices == "jk" %}
-            notify.mobile_app_jk
-          {% elif devices == "cfalb" %}
-            notify.mobile_app_cfalb
-          {% endif %}
+      # Make sure notifications are not disabled
+      - condition: template
+        value_template: "{{ states.input_select.notification_level.state != 'None' }}"
+
+      - condition: or
+        conditions:
+          # If notification level is all
+          - condition: state
+            entity_id: input_select.notification_level
+            state: "All"
+          # OR important notifications only is enabled and the
+          # priority is time sensitive or critical
+          - condition: template
+            value_template: >-
+              {% 
+                if states.input_select.notification_level.state == 'Important'
+                and (priority == "critical" or priority == "time-sensitive")
+              %}
+                true
+              {% else %}
+                false
+              {% endif %}
+
+      # TODO: figure out a better way to solve this. Not sure
+      # the best way to handle a dynamic/conditional YAML attribute
+      - if:
+          - alias: "Tag is included"
+            condition: template
+            value_template: "{{ true if tag is defined and tag|length else false}}"
+
+        then:
+          - service: >
+              {% if devices == "all"  %}
+                notify.ios_family
+              {% elif devices == "jk" %}
+                notify.mobile_app_jk_2
+              {% elif devices == "cfalb" %}
+                notify.mobile_app_cfalb2
+              {% endif %}
+            data:
+              message: "{{ message }}"
+              title: "{{ title }}"
+              data:
+                tag: "{{ tag }}"
+                push:
+                  interruption-level: "{{ priority }}"
+
+        else:
+          - service: >
+              {% if devices == "all"  %}
+                notify.ios_family
+              {% elif devices == "jk" %}
+                notify.mobile_app_jk_2
+              {% elif devices == "cfalb" %}
+                notify.mobile_app_cfalb2
+              {% endif %}
+            data:
+              message: "{{ message }}"
+              title: "{{ title }}"
+              data:
+                push:
+                  interruption-level: "{{ priority }}"
+
+automation:
+  #
+  - id: "notifications_activate_important_only"
+    alias: "Notifications - Activate Important Only"
+    mode: "single"
+    trigger:
+      # Bedtime mode is ON
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Entertainment mode is ON
+      - platform: state
+        entity_id: input_boolean.entertainment_mode
+        to: "on"
+      # House is no longer occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    condition:
+      # Notification level is ALL
+      - condition: state
+        entity_id: input_select.notification_level
+        state: "All"
+    action:
+      # Set the notification level to "Important"
+      - service: input_select.select_option
         data:
-          message: "{{ message }}"
-          title: "{{ title }}"
-          data:
-            tag: "{{ tag }}"
-            push:
-              interruption-level: "{{ priority }}"
+          entity_id: input_select.notification_level
+          option: "Important"

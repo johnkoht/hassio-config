@@ -43,19 +43,19 @@ condition:
       false
       {% endif %}
 action:
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
-      speech_message: "The upstairs washer finished and is ready to be emptied."
-      media_players: "auto"
+      media_players: auto
       sound: "chirp"
+      speech_message: "The upstairs washer finished and is ready to be emptied."
   # Notify whoever is home
   - service_template: >
       {% if (is_state("input_boolean.john_home", "on")) and (is_state("input_boolean.cristina_home", "on"))  %}
         notify.ios_family
       {% elif is_state("input_boolean.john_home", "on") %}
-        notify.mobile_app_jk
+        notify.mobile_app_jk_2
       {% elif (is_state("input_boolean.cristina_home", "on")) %}
-        notify.mobile_app_cfalb
+        notify.mobile_app_cfalb2
       {% endif %}
     data:
       message: "The upstairs washer is finished and ready to be emptied."

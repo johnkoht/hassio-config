@@ -21,8 +21,10 @@ automation:
         state: "on"
     action:
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "school-bell"
           speech_message: >-
             {{
               [
@@ -32,5 +34,3 @@ automation:
                 "Pack it up, pack it in, time to drop Nino at school."
               ] | random
             }}
-          media_players: "auto"
-          sound: "school-bell"

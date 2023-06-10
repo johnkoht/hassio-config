@@ -16,6 +16,9 @@ automation:
       - platform: calendar
         event: end
         entity_id: calendar.john_ooo
+      # At midnight reset
+      - platform: time
+        at: "00:00:00"
     condition:
       # Personal time boolean is ON
       - condition: state
@@ -25,8 +28,11 @@ automation:
       # Turn OFF the boolean
       - service: input_boolean.turn_off
         entity_id: input_boolean.john_personal_time
-      # Notification for testing
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - service: script.general_notification
         data:
-          message: John personal time turned OFF
-          title: John Personal Time
+          message: "John personal time turned OFF"
+          title: "John Personal Time"
+          devices: "jk"
+          priority: "passive"
+          tag: "john-personal-time"

@@ -20,7 +20,7 @@ automation:
         entity_id: sensor.office_aqara_illuminance
         above: 250
         for:
-          minutes: 3
+          minutes: 5
       # The weather not bad anymore
       - platform: state
         entity_id: input_boolean.bad_weather
@@ -29,6 +29,10 @@ automation:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Office lighting automation is enabled
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
         state: "on"
       # Office is not in DnD mode
       - condition: template
@@ -54,5 +58,10 @@ automation:
         entity_id: sensor.office_aqara_illuminance
         above: 151
     action:
+      # Turn off the lights
       - service: light.turn_off
         entity_id: group.office_lights
+
+      # Toggle off the lighting automatically turned on boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_lights_auto

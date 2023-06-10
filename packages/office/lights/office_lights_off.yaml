@@ -28,6 +28,10 @@ automation:
       - condition: state
         entity_id: input_boolean.office_occupied
         state: "off"
+      # Office lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
+        state: "on"
       # Office is Off, not occupied, or the room is bright enough
       - condition: or
         conditions:
@@ -44,5 +48,10 @@ automation:
             entity_id: sensor.office_aqara_illuminance
             above: 151
     action:
+      # Turn off the lights
       - service: light.turn_off
         entity_id: group.office_lights
+
+      # Toggle off the lighting automatically turned on boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.office_lights_auto

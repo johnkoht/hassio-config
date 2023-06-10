@@ -45,21 +45,6 @@ input_number:
     min: 0
     max: 1
 
-binary_sensor:
-  - platform: template
-    sensors:
-      announceable_rooms_occupied:
-        friendly_name: Announceable Rooms Occupied
-        unique_id: announceable_rooms_occupied
-        value_template: >-
-          {{
-            states.input_boolean.kitchen_occupied.state == "on"
-            or states.input_boolean.family_room_occupied.state == "on"
-            or states.input_boolean.playroom_occupied.state == "on"
-            or states.input_boolean.office_occupied.state == "on"
-            or states.input_boolean.main_bedroom_occupied.state == "on"
-          }}
-
 script:
   # General Announcement Script
   #
@@ -219,6 +204,8 @@ script:
               https://github.com/johnkoht/hassio-config/blob/master/sounds/success-trumpets.mp3?raw=true
             {% elif sound == "games-sfx" %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/games-sfx.wav?raw=true
+            {% elif sound == "fox-nfl" %}
+              https://github.com/johnkoht/hassio-config/blob/master/sounds/fox-nfl.mp3?raw=true
             {% else %}
               https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
             {% endif %}
@@ -226,6 +213,7 @@ script:
 
       # Take a snapshot of current Sonos Audio
       - service: sonos.snapshot
+        # entity_id: "{{media_players}}"
         entity_id: all
         data:
           with_group: true
@@ -256,8 +244,9 @@ script:
             {% endif %}
 
       - service: media_player.join
-        data:
+        target:
           entity_id: "{{primary_player}}"
+        data:
           group_members: "{{media_players}}"
 
       - alias: "Wait 1s"
@@ -367,7 +356,7 @@ script:
 
       # Restore from snapshot
       - service: sonos.restore
+        # entity_id: "{{media_players}}"
         entity_id: all
-        # entity_id: "{{ media_players }}"
         data:
           with_group: true

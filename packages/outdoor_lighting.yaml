@@ -192,11 +192,12 @@ automation:
         entity_id: input_boolean.exterior_accent_lights
 
       # Announce throughout the house
-      - service: script.general_announcement
+      # Announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The sun has set so I'm turning on the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The sun has set so I'm turning on the exterior lights."
 
   # Activate Exterior Lighting Due to Weather
   #
@@ -236,6 +237,12 @@ automation:
       - condition: state
         entity_id: input_boolean.exterior_house_lights
         state: "off"
+      # Not 10 minutes before sunset
+      - condition: not
+        conditions:
+          - condition: sun
+            after: sunset
+            after_offset: "-00:10:00"
       - condition: or
         conditions:
           # It's bad weather outside AND it's dark
@@ -258,11 +265,11 @@ automation:
         entity_id: input_boolean.exterior_house_lights
 
       # Announce throughout the house
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The weather is looking a little dark, I'm turning on the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The weather is looking a little dark, I'm turning on the exterior lights."
 
   # Deactivate Exterior Lighting at Sunrise
   #
@@ -308,11 +315,11 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.exterior_accent_lights
       # Announce throughout the house
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The sun is up so I'm turning off the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The sun is up so I'm turning off the exterior lights."
 
   # Deactivate Exterior Lighting Due to Weather
   #
@@ -372,11 +379,11 @@ automation:
         entity_id: input_boolean.exterior_house_lights
 
       # Announce throughout the house
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
-          speech_message: "The weather has improved so I'm turning off the exterior lights."
-          media_players: "auto"
+          media_players: auto
           sound: "chime"
+          speech_message: "The weather has improved so I'm turning off the exterior lights."
 
   # Deactivate Exterior Accent Lighting Due ad Bedtime
   #
@@ -411,7 +418,7 @@ automation:
     alias: "Garage Lights Accidentally Turned Off Fix"
     mode: "single"
     trigger:
-      # Bad weather boolean is off for 5 mins
+      # Garage lights turned OFF
       - platform: state
         entity_id: light.exterior_garage_sconces
         to: "off"
@@ -421,6 +428,25 @@ automation:
         state: "on"
     action:
       - service: light.turn_on
+        entity_id: light.exterior_garage_sconces
+
+  # Opposite of the above, Cristina will accidentally turn the
+  # garage exterior lights ON when trying to turn the interior
+  # garage lights on. This will address that mistake
+  - id: "garage_lights_accidentally_turned_on_fix"
+    alias: "Garage Lights Accidentally Turned On Fix"
+    mode: "single"
+    trigger:
+      # Garage lights turned ON
+      - platform: state
+        entity_id: light.exterior_garage_sconces
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_boolean.exterior_house_lights
+        state: "off"
+    action:
+      - service: light.turn_off
         entity_id: light.exterior_garage_sconces
 
   # # Turn on the holiday lights

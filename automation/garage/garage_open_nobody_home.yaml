@@ -43,9 +43,12 @@ action:
     data: {}
   # Turn off the garage lights
   - service: light.turn_off
-    entity_id: light.garage_lights
-  # Notify the family
-  - service: notify.ios_family
+    entity_id: light.garage_lights!
+  # Push notification
+  - service: script.general_notification
     data:
-      title: Closing the garage doors!
-      message: The garage doors have been open for 30 minutes but nobody is home so I'm automatically closing them.
+      title: "Garage Doors Open!"
+      message: "The garage doors have been open for 30 minutes but nobody is home so I'm automatically closing them."
+      devices: "all"
+      priority: "time-sensitive"
+      tag: "garage-door-closed-nobody-home"

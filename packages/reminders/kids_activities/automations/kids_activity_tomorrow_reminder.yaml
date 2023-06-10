@@ -35,8 +35,10 @@ automation:
         delay: 2
 
       # Call the announcement engine
-      - service: script.general_announcement
+      - service: script.voice_announcement
         data:
+          media_players: auto
+          sound: "flute-cell-phone-alert"
           speech_message: >-
             {{ 
               [
@@ -45,11 +47,11 @@ automation:
                 "Heads up for tomorrow: " ~ states.calendar.kohbocal.attributes.message
               ] | random
             }}
-          media_players: "auto"
-          sound: "flute-cell-phone-alert"
 
-      # Notify via push
-      - service: notify.mobile_app_jk
+      - service: script.general_notification
         data:
           message: "Tomorrow is {{states.calendar.kohbocal.attributes.message}}"
           title: "Kids Activity Reminder"
+          devices: "jk"
+          priority: "active"
+          tag: "kids-activity-reminder"

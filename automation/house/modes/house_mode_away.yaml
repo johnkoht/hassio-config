@@ -26,8 +26,11 @@ action:
       entity_id: select.front_door_camera_doorbell_text
       option: DO NOT DISTURB
 
-  # Send me a push to log
-  - service: notify.mobile_app_jk
+  # Notification for logging
+  - service: script.general_notification
     data:
-      title: Away Mode
-      message: Nobody is home so away mode has been activated!
+      title: "Away Mode"
+      message: "Nobody is home so away mode has been activated!"
+      devices: "jk"
+      priority: "passive"
+      tag: "house-mode-away"

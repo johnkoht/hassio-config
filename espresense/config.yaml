@@ -1,0 +1,199 @@
+# MQTT Connection, if empty will query and use hassio provided mqtt
+mqtt:
+  host:
+  port: 1883
+  ssl: false
+  username:
+  password:
+
+# This gets added to the x,y,z to derive a gps location
+gps:
+  latitude: 40.1153354
+  longitude: -75.7742686
+  elevation: 146
+
+# How long before device considered stale
+timeout: 30
+# How long before device is considered away
+away_timeout: 120
+
+optimization:
+  enabled: true
+  interval_secs: 60
+  limits:
+    absorption_min: 2
+    absorption_max: 4
+    tx_ref_rssi_min: -70
+    tx_ref_rssi_max: -50
+    rx_adj_rssi_min: -20
+    rx_adj_rssi_max: 20
+
+weighting:
+  algorithm: gaussian
+  props:
+    sigma: 0.10
+
+# Floors w/ the points to draw it in meters
+floors:
+  - id: first
+    name: First Floor
+  # Bounds (x,y,z) of map in meters
+    bounds: [[0, 0, 0], [18.5, 19.2, 1.5]]
+    rooms:
+      - name: Powder
+        points:
+          - [4, 12]
+          - [6.6, 12]
+          - [6.6, 10]
+          - [6, 9]
+          - [4, 9]
+          - [4, 12]
+      - name: Office
+        points:
+          - [4, 16.5]
+          - [7.6, 16.5]
+          - [7.6, 13.5]
+          - [6.6, 12]
+          - [4, 12]
+          - [4, 14.5]
+      - name: Family
+        points:
+          - [0, 0.5]
+          - [0, 5.5]
+          - [5, 5.5]
+          - [6, 4.5]
+          - [6, 0.5]
+          - [5.5, 0]
+          - [0.5, 0]
+          - [0, 0.5]
+      - name: Kitchen
+        points:
+          - [6, 2]
+          - [6, 6]
+          - [7, 9]
+          - [10, 9]
+          - [12.5, 9]
+          - [12.5, 2]
+          - [6, 2]
+      - name: Garage
+        points:
+          - [0, 18]
+          - [1.5, 18]
+          - [1.5, 19.2]
+          - [4, 19.2]
+          - [4, 9]
+          - [0, 9]
+          - [0, 18]
+      - name: Living
+        points:
+          - [18.5, 13.25]
+          - [18.5, 7.75]
+          - [14.5, 7.75]
+          - [14.5, 13.25]
+          - [18.5, 13.25]
+      - name: Dining
+        points:
+          - [18.5, 2.75]
+          - [18.5, 7.75]
+          - [14.5, 7.75]
+          - [14.5, 2.75]
+          - [18.5, 2.75]
+      - name: Foyer
+        points:
+          - [7.6, 13.5]
+          - [7.6, 15]
+          - [12.5, 15]
+          - [12.5, 10]
+          - [9.6, 10]
+          - [6.6, 10]
+          - [6.6, 12]
+      - name: Laundry
+        points:
+          - [0, 9]
+          - [3, 9]
+          - [3, 5.5]
+          - [0, 5.5]
+          - [0, 9]
+  - id: second
+    name: Second Floor
+    bounds: [[0, 0, 3.1], [18.5, 19.2, 4.6]]
+    rooms:
+      - name: Master
+        points:
+          - [2, 15]
+          - [4, 15]
+          - [4, 16.5]
+          - [7.6, 16.5]
+          - [7.6, 13.5]
+          - [6.6, 12]
+          - [6.6, 10]
+          - [6, 9]
+          - [2, 9]
+          - [2, 15]
+      - name: Master Bathroom
+        points:
+          - [0, 15]
+          - [2, 15]
+          - [2, 9]
+          - [0, 9]
+          - [0, 15]
+      - name: Master Closet
+        points:
+          - [0, 18]
+          - [1.5, 18]
+          - [1.5, 19.2]
+          - [4, 19.2]
+          - [4, 15]
+          - [0, 15]
+          - [0, 18]
+  - id: outside
+    name: Outside
+    bounds: [[-10, -10, -10], [28, 30, 20]]
+
+# Locations of espresense nodes in meters
+nodes:
+  - name: Master
+    point: [6.5, 12, 3.6]
+    floors: ["second"]
+  - name: Bathroom
+    point: [0.1, 10, 3.9]
+    floors: ["second", "outside"]
+  - name: Upstairs Hallway
+    point: [10, 10, 3.2]
+    floors: ["second"]
+  - name: Garage
+    point: [0.75, 17.9, 0.5]
+    floors: ["first", "second", "outside"]
+  - name: Office
+    point: [5, 15.25, 0.5]
+    floors: ["first"]
+  - name: Family
+    point: [0.5, 0.5, 0.25]
+    floors: ["first", "outside"]
+  - name: Kitchen
+    point: [8, 7.5, 0.5]
+    floors: ["first"]
+  - name: Dining
+    point: [18.25, 3.1, 0.5]
+    floors: ["first", "outside"]
+  - name: Basement
+    point: [17, 12.5, -0.8]
+    floors: ["first", "second", "outside"]
+  - name: Laundry
+    point: [5, 9, 1]
+    floors: ["first"]
+  - name: VW EOS
+    stationary: false
+    point: [-2, 15, 0.5]
+    floors: ["outside"]
+
+# Devices to track
+devices:
+  - id: "tile:*" # Track all tiles
+  - id: "irk:*" # Track all IRKs
+  - id: "apple:*" # Track all apple devices
+  - name: "*" # Track all named devices
+  - id: darrells-watch
+    name: Darrell's Watch
+  - id: darrells-iphone
+    name: Darrell's iPhone

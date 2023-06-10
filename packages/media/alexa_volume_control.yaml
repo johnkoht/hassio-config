@@ -1,0 +1,23 @@
+automation:
+  - id: "alexa_volume_control"
+    initial_state: on
+    alias: "Alexa Volume Control"
+    trigger:
+      # Quiet mode is enabled
+      - platform: state
+        entity_id: input_boolean.quiet_mode
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      - service: media_player.volume_set
+        data:
+          entity_id:
+            - media_player.john_s_echo_dot
+            - media_player.john_s_2nd_echo_dot
+            - media_player.kohbo_dot_main_bedroom
+            - media_player.john_s_echo_show
+          volume_level: .3

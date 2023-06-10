@@ -22,7 +22,7 @@ condition:
   # within 90 seconds..which is a pretty decent way to check if somebody's
   # departure has been announced.
   - condition: template
-    value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('script.general_announcement','last_triggered')) ) | int > 90 }}"
+    value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('script.voice_announcement','last_triggered')) ) | int > 90 }}"
 action:
   # This Group is defined in the groups directory.
   - service: group.set
@@ -32,8 +32,10 @@ action:
         {{ trigger.to_state.entity_id }}
 
   # Announcement
-  - service: script.general_announcement
+  - service: script.voice_announcement
     data:
+      media_players: auto
+      sound: chime
       speech_message: >-
         {% set person = expand('group.arriving')|map(attribute='name')|join(' and ') %}
         {% set peoplecount = expand('group.arriving') | count %}
@@ -43,9 +45,7 @@ action:
           {% set is_are = ' are ' %}
         {% endif %}
 
-      media_players: "auto"
-
-  - service: notify.mobile_app_jk
+  - service: notify.mobile_app_jk_2
     data:
       # message: "{{trigger.to_state.attributes.friendly_name}} {{trigger.event.data.text}} has arrived!"
       title: Guest Arrived!
