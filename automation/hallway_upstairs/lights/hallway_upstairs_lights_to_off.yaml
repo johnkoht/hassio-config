@@ -8,7 +8,7 @@ trigger:
   - platform: state
     entity_id: input_select.house
     to: "Away"
-  - platform: - platform: state
+  - platform: state
     entity_id: input_boolean.house_occupied
     to: "off"
   # # If the hallway upstairs changes to Away
@@ -34,13 +34,12 @@ condition:
   #   state: "on"
   # Lights are on
   - condition: state
-    entity_id: 
+    entity_id:
       - light.upstairs_hallway
       - light.stairs_light
     state: "on"
 action:
   - service: light.turn_off
-    entity_id: 
+    entity_id:
       - light.upstairs_hallway
       - light.stairs_light
-
