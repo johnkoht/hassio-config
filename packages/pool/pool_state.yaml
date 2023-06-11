@@ -1,0 +1,9 @@
+# input_select.pool
+#
+# Stores the current state for the Pool
+input_select:
+  pool:
+    name: Pool
+    options:
+      - "Auto"
+      - "Off"
