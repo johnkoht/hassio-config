@@ -63,37 +63,37 @@ script:
     variables:
       sound_file: >-
         {% if sound == "default" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
+          /local/sounds/Notification-sound.mp3
         {% elif sound == "fanfare" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/medieval-fanfare.mp3?raw=true
+          /local/sounds/medieval-fanfare.mp3
         {% elif sound == "chirp" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/twitter-chirp.mp3?raw=true
+          /local/sounds/twitter-chirp.mp3
         {% elif sound == "chime" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/two-tone-chime.mp3?raw=true
+          /local/sounds/two-tone-chime.mp3
         {% elif sound == "one-chime" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/one-tone-chime.mp3?raw=true
+          /local/sounds/one-tone-chime.mp3
         {% elif sound == "flute-cell-phone-alert" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/flute-cell-phone-alert.wav?raw=true
+          /local/sounds/flute-cell-phone-alert.wav
         {% elif sound == "arcade" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/arcade-bonus-alert.wav?raw=true
+          /local/sounds/arcade-bonus-alert.wav
         {% elif sound == "police-whistle" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.mp3?raw=true
+          /local/sounds/police-short-whistle.mp3
         {% elif sound == "arabic-intro" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/arabic_intro.wav?raw=true
+          /local/sounds/arabic_intro.wav
         {% elif sound == "school-bell-chime" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell-chime.wav?raw=true
+          /local/sounds/school-bell-chime.wav
         {% elif sound == "school-bell" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/school-bell.wav?raw=true
+          /local/sounds/school-bell.wav
         {% elif sound == "tarantella" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/tarantella.mp3?raw=true
+          /local/sounds/tarantella.mp3
         {% elif sound == "success-trumpets" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/success-trumpets.mp3?raw=true
+          /local/sounds/success-trumpets.mp3
         {% elif sound == "games-sfx" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/games-sfx.wav?raw=true
+          /local/sounds/games-sfx.wav
         {% elif sound == "fox-nfl" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/fox-nfl.mp3?raw=true
+          /local/sounds/fox-nfl.mp3
         {% else %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true
+          /local/sounds/Notification-sound.mp3
         {% endif %}
       # Sound file length
       sound_file_length: >-

@@ -18,7 +18,7 @@ script:
       sound_file:
         name: Sound File
         description: A URL to a sound file to play
-        example: "https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true"
+        example: "/local/sounds/Notification-sound.mp3"
         selector:
           text:
             type: url
