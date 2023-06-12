@@ -29,4 +29,4 @@ automation:
           title: Security System
           devices: "jk"
           priority: "active"
-          tag: "home-armed"
+          tag: "home-security"
