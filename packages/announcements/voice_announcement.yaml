@@ -77,7 +77,7 @@ script:
         {% elif sound == "arcade" %}
           https://github.com/johnkoht/hassio-config/blob/master/sounds/arcade-bonus-alert.wav?raw=true
         {% elif sound == "police-whistle" %}
-          https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.wav?raw=true
+          https://github.com/johnkoht/hassio-config/blob/master/sounds/police-short-whistle.mp3?raw=true
         {% elif sound == "arabic-intro" %}
           https://github.com/johnkoht/hassio-config/blob/master/sounds/arabic_intro.wav?raw=true
         {% elif sound == "school-bell-chime" %}
@@ -175,7 +175,7 @@ script:
         state: "on"
       # It's between 7am and 10pm
       - condition: time
-        after: "07:00:00"
+        after: "06:00:00"
         before: "22:00:00"
       # Not bedtime
       - condition: state
