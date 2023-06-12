@@ -1,0 +1,18 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      john_calendar_personal_time:
+        friendly_name: John Calendar Personal Time
+        value_template: >-
+          {# Check if the calendar is ON #}
+          {% if states.calendar.john_launchpadlab_com.state == "on" %}
+            {% set message = states.calendar.john_launchpadlab_com.attributes.message %}
+            
+            {{
+              message.startswith('Block') or
+              message.startswith('GSD') or
+              message.startswith('OOO')
+            }}
+          {% else %}
+            false
+          {% endif %}

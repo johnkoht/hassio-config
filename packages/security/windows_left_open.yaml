@@ -1,0 +1,28 @@
+automation:
+  - id: "window_left_open"
+    alias: "Window Left Open"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # House is no longer occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # House goes into Away mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+    condition:
+      # Window is open
+      - condition: state
+        entity_id: binary_sensor.window
+        state: "on"
+    action:
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: Windows Left Open.
+          message: "The house is empty, but some windows are still open: {{ expand('binary_sensor.windows')|selectattr('state', 'eq', 'on')|map(attribute='name')|list|join(', ') }}"
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "window-open"
