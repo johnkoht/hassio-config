@@ -1,0 +1,40 @@
+automation:
+  - id: "camera_notifications_disable_when_home"
+    alias: "Camera Notifications - Disable When Home"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    condition:
+      # One of us is home
+      - condition: state
+        entity_id: group.family
+        state: "home"
+    action:
+      - service: switch.turn_off
+        entity_id:
+          # Backyard south camera
+          - switch.backyard_south_camera_detections_motion
+          - switch.backyard_south_camera_detections_person
+          - switch.backyard_south_camera_detections_vehicle
+          # Driveway camera
+          - switch.garage_driveway_camera_detections_motion
+          - switch.garage_driveway_camera_detections_person
+          - switch.garage_driveway_camera_detections_vehicle
+          # Front door camear
+          # - switch.front_door_camera_detections_person
+          - switch.front_door_camera_detections_vehicle
+          - switch.front_door_camera_detections_motion
+          - switch.front_door_camera_detections_package
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: Security Cameras
+          message: "I'm turning off camera notifications since the house is occupied"
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "camera-notifications"
