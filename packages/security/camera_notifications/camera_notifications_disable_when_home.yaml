@@ -8,11 +8,19 @@ automation:
       - platform: state
         entity_id: input_boolean.house_occupied
         to: "on"
+      # House goes into Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
     condition:
       # One of us is home
       - condition: state
         entity_id: group.family
         state: "home"
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
     action:
       - service: switch.turn_off
         entity_id:
