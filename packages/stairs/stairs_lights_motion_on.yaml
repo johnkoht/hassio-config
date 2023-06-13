@@ -1,6 +1,6 @@
 automation:
   - id: "stairs_lights_motion_on"
-    initial_state: on
+    initial_state: off
     alias: "Stairs lights Motion On"
     trigger:
       # Motion detected
