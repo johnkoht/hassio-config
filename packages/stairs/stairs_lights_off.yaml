@@ -1,0 +1,23 @@
+automation:
+  - id: "stairs_lights_off"
+    initial_state: on
+    alias: "Stairs lights off"
+    trigger:
+      # Stairs is not occupied
+      - platform: state
+        entity_id: binary_sensor.stairs_motion_sensor_status
+        to: "off"
+        for:
+          minutes: 10
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lights are currently on
+      - condition: state
+        entity_id: light.stairs_light
+        state: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.stairs_light
