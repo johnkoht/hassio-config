@@ -1,0 +1,4 @@
+input_boolean:
+  camera_notifications:
+    name: Camera Notifications
+    icon: mdi:bell-ring
