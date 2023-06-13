@@ -6,7 +6,7 @@ binary_sensor:
     observations:
       # Garage interior door opened in the last 10 mins
       - platform: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.interior_garage_door.last_updated)) | int > 600 }}"
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.interior_garage_door.last_changed)) | int < 600 }}"
         prob_given_true: 0.25
         prob_given_false: 0.02
 
@@ -26,19 +26,19 @@ binary_sensor:
 
       # Kitchen door opened in the last 10 mins
       - platform: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_door.last_updated)) | int > 600 }}"
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_door.last_changed)) | int < 600 }}"
         prob_given_true: 0.25
         prob_given_false: 0.09
 
       # Backyard motion detected in last 5 minutes
       - platform: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.hue_outdoor_motion_sensor_1_motion.last_updated)) | int > 300 }}"
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.hue_outdoor_motion_sensor_1_motion.last_changed)) | int < 300 }}"
         prob_given_true: 0.38
         prob_given_false: 0.01
 
       # Backyard gate recently opened (5 mins)
       - platform: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.backyard_main_entry_gate_opening.last_updated)) | int > 300 }}"
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.backyard_main_entry_gate_opening.last_changed)) | int < 300 }}"
         prob_given_true: 0.38
         prob_given_false: 0.01
 
