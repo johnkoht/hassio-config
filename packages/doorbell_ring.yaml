@@ -98,9 +98,7 @@ script:
           sound_file: "{{sound_file}}"
           sound_length: "{{sound_file_length}}"
           sound_volume: "{{sound_file_volume}}"
-          # media_players: "{{ media_players}}"
-          media_players:
-            - media_player.sonos_office
+          media_players: "{{ media_players}}"
 
   #
   #
