@@ -1,6 +1,12 @@
+# Camera Notifications - Activate
+#
+# This automation listens to a few sensors and
+# when triggered, simply turns ON a boolean that
+# enables camera notifications
+#
 automation:
-  - id: "camera_notifications_enable"
-    alias: "Camera Notifications - Enable"
+  - id: "camera_notifications_activate"
+    alias: "Camera Notifications - Activate"
     mode: "single"
     initial_state: on
     trigger:
@@ -25,22 +31,15 @@ automation:
       - platform: state
         entity_id: input_boolean.bedtime
         to: "on"
+    condition:
+      # Make sure the notifications are already OFF
+      - condition: state
+        entity_id: input_boolean.camera_notifications
+        state: "off"
     action:
-      - service: switch.turn_on
-        entity_id:
-          # Backyard south camera
-          - switch.backyard_south_camera_detections_motion
-          - switch.backyard_south_camera_detections_person
-          - switch.backyard_south_camera_detections_vehicle
-          # Driveway camera
-          - switch.garage_driveway_camera_detections_motion
-          - switch.garage_driveway_camera_detections_person
-          - switch.garage_driveway_camera_detections_vehicle
-          # Front door camear
-          - switch.front_door_camera_detections_person
-          - switch.front_door_camera_detections_vehicle
-          - switch.front_door_camera_detections_motion
-          - switch.front_door_camera_detections_package
+      # Turn OFF the camera notification boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.camera_notifications
 
       # Notification for logging
       - service: script.general_notification
