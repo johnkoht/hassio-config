@@ -1,17 +1,25 @@
 automation:
-  - id: "camera_notifications_disable_when_home"
-    alias: "Camera Notifications - Disable When Home"
+  - id: "camera_notifications_disable"
+    alias: "Camera Notifications - Disable"
     mode: "single"
     initial_state: on
     trigger:
-      # House becomes occupied
+      # House becomes occupied for 15 mins
       - platform: state
         entity_id: input_boolean.house_occupied
         to: "on"
-      # House goes into Auto mode
+        for:
+          minutes: 15
+      # House goes into Auto mode for 30 mins
       - platform: state
         entity_id: input_select.house
         to: "Auto"
+        for:
+          minutes: 30
+      # 15 mins after sunrise
+      - platform: sun
+        event: sunrise
+        offset: "00:15:00"
     condition:
       # One of us is home
       - condition: state
@@ -21,6 +29,14 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # Sun is above horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "above_horizon"
     action:
       - service: switch.turn_off
         entity_id:
@@ -42,7 +58,7 @@ automation:
       - service: script.general_notification
         data:
           title: Security Cameras
-          message: "I'm turning off camera notifications since the house is occupied"
+          message: "Camera detections have been disabled to cut down on notification overload."
           devices: "all"
           priority: "time-sensitive"
           tag: "camera-notifications"
