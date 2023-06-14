@@ -73,23 +73,23 @@ script:
         {% elif sound == "one-chime" %}
           /local/sounds/one-tone-chime.mp3
         {% elif sound == "flute-cell-phone-alert" %}
-          /local/sounds/flute-cell-phone-alert.wav
+          /local/sounds/flute-cell-phone-alert.mp3
         {% elif sound == "arcade" %}
-          /local/sounds/arcade-bonus-alert.wav
+          /local/sounds/arcade-bonus-alert.mp3
         {% elif sound == "police-whistle" %}
           /local/sounds/police-short-whistle.mp3
         {% elif sound == "arabic-intro" %}
-          /local/sounds/arabic_intro.wav
+          /local/sounds/arabic_intro.mp3
         {% elif sound == "school-bell-chime" %}
-          /local/sounds/school-bell-chime.wav
+          /local/sounds/school-bell-chime.mp3
         {% elif sound == "school-bell" %}
-          /local/sounds/school-bell.wav
+          /local/sounds/school-bell.mp3
         {% elif sound == "tarantella" %}
           /local/sounds/tarantella.mp3
         {% elif sound == "success-trumpets" %}
           /local/sounds/success-trumpets.mp3
         {% elif sound == "games-sfx" %}
-          /local/sounds/games-sfx.wav
+          /local/sounds/games-sfx.mp3
         {% elif sound == "fox-nfl" %}
           /local/sounds/fox-nfl.mp3
         {% else %}
