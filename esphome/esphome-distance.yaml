@@ -35,5 +35,6 @@ sensor:
     echo_pin: GPIO18
     name: "Ultrasonic Sensor"
     update_interval: 1s
+    timeout: 20m
     filters:
       delta: 20%
