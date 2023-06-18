@@ -43,6 +43,13 @@ light:
       - light.exterior_hue_outdoor_spot_1
       - light.exterior_hue_outdoor_spot_2
       - light.exterior_hue_outdoor_spot_3
+      - light.hue_outdoor_spot_4
+      - light.hue_outdoor_spot_5
+      - light.hue_outdoor_spot_6
+      - light.hue_outdoor_spot_7
+      - light.hue_outdoor_spot_8
+      - light.hue_outdoor_spot_9
+      - light.hue_outdoor_spot_10
 
   # All Exterior Lights
   - platform: group
