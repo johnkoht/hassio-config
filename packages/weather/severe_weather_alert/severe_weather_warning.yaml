@@ -13,7 +13,7 @@ automation:
       # Announce to the house
       - service: script.voice_announcement
         data:
-          speech_message: "{{ state_attr('sensor.nws_alerts_sensor', 'Headline')}}"
+          speech_message: "{{ state_attr('sensor.nws_alerts_sensor', 'spoken_desc')}}"
           sound: "one-chime"
           media_players: auto
 
