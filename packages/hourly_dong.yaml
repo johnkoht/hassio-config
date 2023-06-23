@@ -72,7 +72,7 @@ automation:
             {% endif %}
             {{ media_players}}
           primary_player: "{{media_players | first}}"
-          sound_file: "https://github.com/johnkoht/hassio-config/blob/master/sounds/dong.mp3?raw=true"
+          sound_file: "/local/sounds/dong.mp3"
           sound_file_length: 4
           sound_file_volume: >-
             {% if states.input_boolean.quiet_mode.state == "on" %}
