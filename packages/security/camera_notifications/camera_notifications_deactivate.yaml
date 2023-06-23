@@ -26,6 +26,10 @@ automation:
       - platform: sun
         event: sunrise
         offset: "00:15:00"
+      # Exterior doors are opened
+      - platform: state
+        entity_id: binary_sensor.exterior_doors
+        to: "on"
     condition:
       # Make sure the notifications are already ON
       - condition: state
