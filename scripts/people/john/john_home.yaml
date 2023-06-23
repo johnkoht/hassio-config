@@ -9,27 +9,3 @@ sequence:
 
   # Turn on the garage and mudroom lights
   - scene: scene.returned_home
-
-  # # Open the middle garage door
-  # - service: cover.open_cover
-  #   data: {}
-  #   target:
-  #     entity_id: cover.garage_door_2
-
-  #   # Announcement
-  # - service: script.general_announcement
-  #   data:
-  #     speech_message: "Baba is back home!"
-
-  # - service: mqtt.publish
-  #   data:
-  #     topic: location/john
-  #     payload: 'home'
-  #     retain: true
-  # - service: automation.turn_on
-  #   entity_id: automation.john_at_work
-  # - service: script.turn_on
-  #   entity_id: script.john_traveltime
-  # - service: script.announce_arrival
-  #   data:
-  #     who: john
