@@ -13,8 +13,8 @@ automation:
       # Announce to the house
       - service: script.voice_announcement
         data:
-          speech_message: "{{ state_attr('sensor.nws_alerts_sensor', 'spoken_desc')}}"
-          sound: "one-chime"
+          speech_message: "{{ state_attr('sensor.nws_alerts_sensor', 'spoken_desc').split('\n')[0] }}"
+          sound: "chirp"
           media_players: auto
 
       # Notification for logging
@@ -22,7 +22,8 @@ automation:
         data:
           title: "Weather Alert: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}"
           message: >
-            "NWS: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}. {{state_attr('sensor.nws_alerts_sensor', 'spoken_desc')}}"
+            {% set desc = state_attr('sensor.nws_alerts_sensor', 'spoken_desc').split("\n")[0] %}
+            "NWS: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}. {{desc}}"
           devices: "jk"
           priority: "time-sensitive"
           tag: "doorbell-ring"
