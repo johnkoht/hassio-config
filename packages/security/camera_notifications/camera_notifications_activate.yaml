@@ -21,12 +21,12 @@ automation:
       - platform: sun
         event: sunset
         offset: "00:15:00"
-      # Exterior doors have been closed for 30 minutes
+      # Exterior doors have been closed for 45 minutes
       - platform: state
         entity_id: binary_sensor.exterior_doors
         to: "off"
         for:
-          minutes: 30
+          minutes: 45
       # Bedtime mode is enabled
       - platform: state
         entity_id: input_boolean.bedtime
