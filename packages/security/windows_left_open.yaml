@@ -13,9 +13,9 @@ automation:
         entity_id: input_select.house
         to: "Away"
     condition:
-      # Window is open
+      # A window is open
       - condition: state
-        entity_id: binary_sensor.window
+        entity_id: binary_sensor.windows
         state: "on"
     action:
       # Notification for logging
