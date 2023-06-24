@@ -147,3 +147,9 @@
       track: true
       search: "Garbage Day"
       offset: "!!"
+
+- cal_id: 7583a825638fbc627de2e755f0bf0086936fdd0606acecaeaee61a10b54ac954@group.calendar.google.com
+  entities:
+  - device_id: golf_acres
+    ignore_availability: true
+    name: Golf Acres
