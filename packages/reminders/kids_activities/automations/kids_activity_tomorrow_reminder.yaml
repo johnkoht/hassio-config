@@ -16,7 +16,7 @@ automation:
         state: "on"
       # Binary sensor is ON
       - condition: state
-        entity_id: binary_sensor.kids_activity_toorrow
+        entity_id: binary_sensor.kids_activity_tomorrow
         state: "on"
       # After 5pm
       - condition: time
