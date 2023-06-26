@@ -8,13 +8,13 @@ automation:
       # If the lighting is better in the kitchen
       - platform: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 350
+        above: 450
         for:
           minutes: 10
       # If the lighting is better in the kitchen
       - platform: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 450
+        above: 500
         for:
           minutes: 5
       # If the lighting is better in the kitchen
@@ -55,7 +55,7 @@ automation:
       # Light is low
       - condition: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 250
+        above: 450
       # Lights are currently on
       - condition: state
         entity_id: light.kitchen_lights
