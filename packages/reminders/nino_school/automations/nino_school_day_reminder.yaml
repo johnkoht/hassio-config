@@ -34,7 +34,7 @@ automation:
           media_players: auto
           sound: "school-bell-chime"
           speech_message: >-
-            {% set event = trigger.calendar_event.summary %}
+            {% set event = trigger.calendar_event.summary | lower %}
 
             {% if "giggle gang" in event %}
               {% set event_label = "Giggle Gang" %}
