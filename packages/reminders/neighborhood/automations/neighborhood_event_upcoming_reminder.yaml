@@ -1,0 +1,28 @@
+automation:
+  - id: "neighborhood_event_upcoming_reminder"
+    alias: "Neighborhood Event Upcoming Reminder"
+    mode: "single"
+    trigger:
+      - platform: calendar
+        event: start
+        entity_id: calendar.golf_acres
+        offset: "-01:00:00"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "success-trumpets"
+          speech_message: >-
+            {{ 
+              [
+                "Hey fam, " ~ states.calendar.golf_acres.attributes.message ~ " is in one hour.",
+                "Just a quick reminder that " ~ states.calendar.golf_acres.attributes.message ~ " is in one hour.",
+                "Pardon the interruption, I just wanted to remind you that " ~ states.calendar.golf_acres.attributes.message ~ " is in one hour."
+              ] | random
+            }}

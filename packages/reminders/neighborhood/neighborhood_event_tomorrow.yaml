@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      neighborhood_event_tomorrow:
+        friendly_name: Neighborhood Event Tomorrow
+        value_template: >-
+          {% set t = now() %}
+          {% set midnight = today_at() %}
+          {% set event = state_attr("calendar.golf_acres", "start_time") | as_datetime | as_local %}
+          {% set delta = event - midnight %}
+          {{ delta.days == 1 }}
