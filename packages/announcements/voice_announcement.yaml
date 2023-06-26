@@ -208,7 +208,7 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - service: script.announcement_engine_new
+      - service: script.announcement_engine
         data:
           speech_message: "{{ speech_message }}"
           sound_file: "{{sound_file}}"

@@ -6,8 +6,8 @@
 #
 
 script:
-  announcement_engine_new:
-    alias: "Announcement Engine New"
+  announcement_engine:
+    alias: "Announcement Engine"
     mode: "queued"
 
     fields:
