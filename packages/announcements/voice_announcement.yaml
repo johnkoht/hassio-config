@@ -31,6 +31,10 @@ script:
               - success-trumpets
               - games-sfx
               - fox-nfl
+              - harp-flourish
+              - message-alert
+              - musical-flute
+              - success-trumpets
       #
       #
       # Speech Message Details
@@ -92,6 +96,14 @@ script:
           /local/sounds/games-sfx.mp3
         {% elif sound == "fox-nfl" %}
           /local/sounds/fox-nfl.mp3
+        {% elif sound == "harp-flourish" %}
+          /local/sounds/harp-flourish.mp3
+        {% elif sound == "message-alert" %}
+          /local/sounds/Message-alert-tone.mp3
+        {% elif sound == "musical-flute" %}
+          /local/sounds/musical-flute-alert.mp3
+        {% elif sound == "success-trumpets" %}
+          /local/sounds/success-trumpets.mp3
         {% else %}
           /local/sounds/Notification-sound.mp3
         {% endif %}
@@ -127,6 +139,14 @@ script:
           1
         {% elif sound == "fox-nfl" %}
           3
+        {% elif sound == "harp-flourish" %}
+          3
+        {% elif sound == "message-alert" %}
+          2
+        {% elif sound == "musical-flute" %}
+          2
+        {% elif sound == "success-trumpets" %}
+          4
         {% else %}
           2
         {% endif %}
