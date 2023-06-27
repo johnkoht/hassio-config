@@ -4,15 +4,14 @@ frontend:
 
   themes:
     tablet:
-
       #default dark mode
-      primary-text-color: '#e1e1e1'
-      primary-background-color: '#111111'
-      secondary-background-color: '#202020'
-      card-background-color: '#1c1c1c'
-      primary-color: '#03a9f4'
+      primary-text-color: "#e1e1e1"
+      primary-background-color: "#111111"
+      secondary-background-color: "#202020"
+      card-background-color: "#1c1c1c"
+      primary-color: "#03a9f4"
       app-header-text-color: var(--primary-text-color)
-      app-header-background-color: '#101e24'
+      app-header-background-color: "#101e24"
       table-row-background-color: var(--primary-background-color)
       table-row-alternative-background-color: var(--secondary-background-color)
       sidebar-background-color: var(--card-background-color)
@@ -23,19 +22,19 @@ frontend:
       ha-card-background: none
       grid-card-gap: 5%
       masonry-view-card-margin: 0px
-      state-icon-color: '#9da0a2'
-      state-icon-active-color: '#3182b7'
-      switch-checked-color: '#7a7d7f'
-      switch-unchecked-button-color: '#3b4041'
-      switch-unchecked-track-color: '#0c0d0d'
-      paper-slider-knob-color: '#a4abb1'
-      paper-slider-knob-start-color: '#a4abb1'
-      paper-slider-pin-color: '#626a6f'
-      paper-slider-active-color: '#626a6f'
-      paper-slider-container-color: '#202020'
+      state-icon-color: "#9da0a2"
+      state-icon-active-color: "#3182b7"
+      switch-checked-color: "#7a7d7f"
+      switch-unchecked-button-color: "#3b4041"
+      switch-unchecked-track-color: "#0c0d0d"
+      paper-slider-knob-color: "#a4abb1"
+      paper-slider-knob-start-color: "#a4abb1"
+      paper-slider-pin-color: "#626a6f"
+      paper-slider-active-color: "#626a6f"
+      paper-slider-container-color: "#202020"
       mdc-dialog-scrim-color: rgba(0, 0, 0, 0.5)
       paper-toast-color: var(--primary-text-color)
-      paper-toast-background-color: '#1b1b1bf2'
+      paper-toast-background-color: "#1b1b1bf2"
       vertical-stack-card-margin: 0
 
       #custom variables
@@ -49,13 +48,13 @@ frontend:
       sidebar-line-height: 2.1vw
       media-blur-height: 24.5%
       card-content-padding: 1.4em 2.2em 1.6em 1.5em
-      bar-card-color: '#303435'
+      bar-card-color: "#303435"
 
-    ####################################################
-    #                                                  #
-    #                     CARD-MOD                     #
-    #                                                  #
-    ####################################################
+      ####################################################
+      #                                                  #
+      #                     CARD-MOD                     #
+      #                                                  #
+      ####################################################
 
       card-mod-theme: tablet
 
