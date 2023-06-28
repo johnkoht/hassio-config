@@ -1,0 +1,8 @@
+# input_number:
+#   john_bed_trigger_level:
+#     name: John Bed Trigger Level
+#     min: 0
+#     max: 3.5
+#     step: 0.05
+#     unit_of_measurement: V
+#     icon: mdi:arrow-collapse-down
