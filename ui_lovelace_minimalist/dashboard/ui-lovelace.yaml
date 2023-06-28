@@ -27,6 +27,10 @@ views:
             variables:
               ulm_chip_mdi_icon_state_entity: input_select.house
               ulm_chip_mdi_icon_state_icon: mdi:lightbulb
+            label: >
+              [[[
+                return states[variables.ulm_chip_mdi_icon_state_entity].state + ' Mode';
+              ]]]
             icon: >
               [[[
                 var state = states[variables.ulm_chip_mdi_icon_state_entity].state;
@@ -57,12 +61,194 @@ views:
                 }
               ]]]
 
-      #  OLD STUFF
       - type: "vertical-stack"
         cards:
           - type: "custom:button-card"
-            template: chip_alarm
-            entity: alarm_control_panel.alarm
+            template: card_weather
+            entity: weather.kpwk_hourly
+            variables:
+              ulm_card_weather_name: "Weather"
+              ulm_card_weather_primary_info: extrema
+              ulm_card_weather_secondary_info: precipitation_probability
+              ulm_card_weather_backdrop: false
+          - type: "horizontal-stack"
+            cards:
+              - type: "custom:button-card"
+                template: card_person
+                entity: person.john_koht
+                variables:
+                  ulm_card_person_entity: person.john_koht
+                  ulm_card_person_use_entity_picture: true
+                  ulm_card_person_icon: mdi:face-man
+                  ulm_card_person_battery: sensor.jk_iphone_14_battery_level
+              - type: "custom:button-card"
+                template: card_person
+                entity: person.cristina_falbo
+                variables:
+                  ulm_card_person_entity: person.cristina_falbo
+                  ulm_card_person_use_entity_picture: true
+                  ulm_card_person_icon: mdi:face-woman
+                  ulm_card_person_battery: sensor.cfalb_iphone_14_battery_level
+          - type: "grid"
+            columns: 2
+            cards:
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - red_no_state
+                name: Kitchen
+                entity: input_boolean.kitchen_occupied
+                icon: mdi:fridge
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: light.kitchen_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: binary_sensor.kitchen_motion_sensor_status
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_3:
+                    entity_id: media_player.sonos_kitchen
+                    templates:
+                      - green_on
+                      - red_off
+                    tap_action:
+                      action: none
+              # Family Room
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - red_no_state
+                name: Kitchen
+                entity: input_boolean.family_room_occupied
+                icon: mdi:sofa
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: light.family_room_main_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: binary_sensor.family_room_motion_sensor
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_3:
+                    entity_id: media_player.sonos_family_room
+                    templates:
+                      - green_on
+                      - red_off
+                    tap_action:
+                      action: none
+                  entity_4:
+                    entity_id: media_player.sony_bravia_tv
+                    templates:
+                      - green_on
+                      - red_off
+                    tap_action:
+                      action: none
+              # Playroom
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - red_no_state
+                name: Playroom
+                entity: input_boolean.playroom_occupied
+                icon: hue:room-nursery
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: group.playroom_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: binary_sensor.playroom_motion
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_3:
+                    entity_id: media_player.sonos_playroom
+                    templates:
+                      - green_on
+                      - red_off
+                    tap_action:
+                      action: none
+              # Office
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - red_no_state
+                name: Office
+                entity: input_boolean.office_occupied
+                icon: mdi:laptop
+                label: >
+                  [[[
+                    var state = (entity.state == "on" ? "Occupied" : "Empty");
+                    var duration = entity.last_updated;
+                    return state + " - " + duration;
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: group.office_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: binary_sensor.office_aqara_motion_sensor
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_3:
+                    entity_id: media_player.sonos_office
+                    templates:
+                      - green_on
+                      - red_off
+                    tap_action:
+                      action: none
+
           - type: "custom:button-card"
             template: "card_title"
             name: "NEW WORKING Congrats with your installation 🎉"
