@@ -1,4 +1,5 @@
 Playroom_Lights:
+  icon: mdi:ceiling-light
   entities:
     - light.playroom_1
     - light.playroom_2
@@ -8,6 +9,7 @@ Playroom_Lights:
     - light.playroom_6
 
 Office_lights:
+  icon: mdi:ceiling-light
   entities:
     - light.office_1
     - light.office_2
@@ -15,6 +17,7 @@ Office_lights:
     - light.office_4
 
 Gianlucas_Room_Lights:
+  icon: mdi:ceiling-light
   entities:
     - light.gianluca_room_1
     - light.gianluca_room_2

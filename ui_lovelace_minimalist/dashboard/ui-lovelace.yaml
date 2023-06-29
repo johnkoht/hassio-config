@@ -89,13 +89,19 @@ views:
                   ulm_card_person_use_entity_picture: true
                   ulm_card_person_icon: mdi:face-woman
                   ulm_card_person_battery: sensor.cfalb_iphone_14_battery_level
+          #
+          #
+          # Rooms
+          #
           - type: "grid"
             columns: 2
             cards:
+              # Kitchen
+              #
               - type: "custom:button-card"
                 template:
                   - card_room
-                  - red_no_state
+                  - blue_on
                 name: Kitchen
                 entity: input_boolean.kitchen_occupied
                 icon: mdi:fridge
@@ -124,16 +130,19 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_kitchen
                     templates:
-                      - green_on
-                      - red_off
+                      - green_playing
                     tap_action:
                       action: none
+                styles:
+                  img_cell:
+                    - background: "none"
+
               # Family Room
               - type: "custom:button-card"
                 template:
                   - card_room
-                  - red_no_state
-                name: Kitchen
+                  - blue_on
+                name: Family Room
                 entity: input_boolean.family_room_occupied
                 icon: mdi:sofa
                 label: >
@@ -161,8 +170,7 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_family_room
                     templates:
-                      - green_on
-                      - red_off
+                      - green_playing
                     tap_action:
                       action: none
                   entity_4:
@@ -172,11 +180,16 @@ views:
                       - red_off
                     tap_action:
                       action: none
+                styles:
+                  img_cell:
+                    - background: "none"
+              #
               # Playroom
+              #
               - type: "custom:button-card"
                 template:
                   - card_room
-                  - red_no_state
+                  - blue_on
                 name: Playroom
                 entity: input_boolean.playroom_occupied
                 icon: hue:room-nursery
@@ -209,19 +222,20 @@ views:
                       - red_off
                     tap_action:
                       action: none
+                styles:
+                  img_cell:
+                    - background: "none"
               # Office
               - type: "custom:button-card"
                 template:
                   - card_room
-                  - red_no_state
+                  - blue_on
                 name: Office
                 entity: input_boolean.office_occupied
                 icon: mdi:laptop
                 label: >
                   [[[
-                    var state = (entity.state == "on" ? "Occupied" : "Empty");
-                    var duration = entity.last_updated;
-                    return state + " - " + duration;
+                    return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
                 # tap_action:
                 #   action: navigate
@@ -244,10 +258,290 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_office
                     templates:
-                      - green_on
-                      - red_off
+                      - green_playing
                     tap_action:
                       action: none
+                styles:
+                  img_cell:
+                    - background: "none"
+              #
+              #
+              # Main Bedroom
+              #
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - blue_on
+                name: Main Bedroom
+                entity: input_boolean.main_bedroom_occupied
+                icon: mdi:bed-king
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: light.main_bedroom_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: binary_sensor.main_bedroom_motion_sensor
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_3:
+                    entity_id: media_player.sonos_main_bedroom
+                    templates:
+                      - green_playing
+                    tap_action:
+                      action: none
+                styles:
+                  img_cell:
+                    - background: "none"
+              #
+              #
+              # Nino's Bedroom
+              #
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - blue_on
+                name: Nino's Room
+                entity: input_boolean.ninos_room_occupied
+                icon: mdi:bed-single
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: light.nino_bedroom_lamp
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: switch.smart_plug_2_switch
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                styles:
+                  img_cell:
+                    - background: "none"
+              #
+              #
+              # Gianluca's Bedroom
+              #
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - red_on
+                name: Gianluca's Room
+                entity: input_boolean.gianlucas_room_occupied
+                icon: mdi:cradle
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: group.gianlucas_room_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: light.hue_smart_plug_1
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                styles:
+                  img_cell:
+                    - background: "none"
+                  # card:
+                  #   - background-color: "[[[ rgba(var(--color-background-red), var(--opacity-bg)) ]]]"
+              #
+              #
+              # Dining Room
+              #
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - blue_on
+                name: Dining Room
+                entity: input_boolean.dining_room_occupied
+                icon: mdi:table-chair
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: light.dining_room_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: binary_sensor.dining_room_north_motion_sensor_motion
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_3:
+                    entity_id: media_player.sonos_living_room
+                    templates:
+                      - green_playing
+                    tap_action:
+                      action: none
+                styles:
+                  img_cell:
+                    - background: "none"
+              #
+              # Jr. Suite
+              #
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - blue_on
+                name: Jr. Suite
+                entity: light.jr_suite_bedroom_main_lights
+                icon: mdi:bed-double
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: light.jr_suite_bedroom_main_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                styles:
+                  img_cell:
+                    - background: "none"
+              #
+              # Laundry Room
+              #
+              - type: "custom:button-card"
+                template:
+                  - card_room
+                  - blue_on
+                name: Laundry Room
+                entity: input_boolean.laundry_room_occupied
+                icon: hue:room-laundry
+                label: >
+                  [[[
+                    return (entity.state == "on" ? "Occupied" : "Empty");
+                  ]]]
+                # tap_action:
+                #   action: navigate
+                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                variables:
+                  label_use_temperature: false
+                  label_use_brightness: false
+                  entity_1:
+                    entity_id: light.laundry_room_main_lights
+                    templates:
+                      - yellow_on
+                    tap_action:
+                      action: toggle
+                  entity_2:
+                    entity_id: binary_sensor.laundry_room_motion_sensor_motion
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_3:
+                    entity_id: binary_sensor.main_level_washer_running
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                  entity_4:
+                    entity_id: binary_sensor.main_level_dryer_running
+                    templates:
+                      - blue_on
+                    tap_action:
+                      action: none
+                # #
+                # # Foyer
+                # #
+                # - type: "custom:button-card"
+                #   template:
+                #     - card_room
+                #     - blue_on
+                #   name: Foyer
+                #   entity: binary_sensor.foyer_occupancy
+                #   icon: mdi:home-lock
+                #   label: >
+                #     [[[
+                #       return (entity.state == "on" ? "Occupied" : "Empty");
+                #     ]]]
+                #   # tap_action:
+                #   #   action: navigate
+                #   #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                #   variables:
+                #     label_use_temperature: false
+                #     label_use_brightness: false
+                #     entity_1:
+                #       entity_id: light.foyer_lights
+                #       templates:
+                #         - yellow_on
+                #       tap_action:
+                #         action: toggle
+                #     entity_2:
+                #       entity_id: binary_sensor.foyer_motion
+                #       templates:
+                #         - blue_on
+                #       tap_action:
+                #         action: none
+                #     # entity_3:
+                #     #   entity_id: binary_sensor.front_door
+                #     #   templates:
+                #     #     - blue_on
+                #     #   tap_action:
+                #     #     action: none
+                #     # entity_4:
+                #     #   entity_id: lock.front_door
+                #     #   templates:
+                #     #     - blue_on
+                #     #   tap_action:
+                #     #     action: none
+                styles:
+                  img_cell:
+                    - background: "none"
 
           - type: "custom:button-card"
             template: "card_title"
