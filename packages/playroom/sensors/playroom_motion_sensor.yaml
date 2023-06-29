@@ -2,7 +2,7 @@ binary_sensor:
   - platform: group
     name: Playroom Motion
     unique_id: playroom_motion
-    device_class: occupancy
+    device_class: motion
     entities:
       - binary_sensor.playroom_motion_sensor_motion
       - binary_sensor.playroom_entry_motion_sensor_motion

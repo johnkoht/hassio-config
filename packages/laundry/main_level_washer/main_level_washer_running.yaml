@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      main_level_washer_running:
+        friendly_name: Main Level Washer Running
+        unique_id: main_level_washer_running
+        value_template: >-
+          {{ 
+            states.main_level_washer_status.state == "Running" or 
+            states.main_level_washer_status.state == "Finishing"
+          }}
