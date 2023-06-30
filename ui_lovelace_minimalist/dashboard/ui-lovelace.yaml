@@ -109,9 +109,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/ui-lovelace-minimalist/kitchen"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
