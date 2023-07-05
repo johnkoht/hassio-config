@@ -59,6 +59,24 @@ frontend:
     - /hacsfiles/hass-hue-icons/hass-hue-icons.js
   themes: !include_dir_merge_named themes
 
+lovelace:
+  mode: storage
+  dashboards:
+    lovelace-kitchen:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-kitchen.yaml
+      title: Kitchen
+      icon: mdi:fridge
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-family-room:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-family-room.yaml
+      title: Family Room
+      icon: mdi:sofa
+      show_in_sidebar: true
+      require_admin: false
+
 zone:
   - name: Home
     latitude: !secret home_latitude
