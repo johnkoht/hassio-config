@@ -111,7 +111,7 @@ views:
                   ]]]
                 tap_action:
                   action: navigate
-                  navigation_path: "/ui-lovelace-minimalist/kitchen"
+                  navigation_path: "/lovelace-kitchen/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
