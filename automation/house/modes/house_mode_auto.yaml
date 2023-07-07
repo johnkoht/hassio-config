@@ -31,6 +31,13 @@ action:
       entity_id: select.front_door_camera_doorbell_text
       option: WELCOME!
 
-  # Turn ON speech notifications
-  - service: input_boolean.turn_on
-    entity_id: input_boolean.speech_notifications
+  # Turn ON speech notifications if they are off
+  - if:
+      - alias: "If speech notifications are off"
+        condition: state
+        entity_id: input_boolean.speech_notifications
+        state: "off"
+    then:
+      # Turn on speech notifications
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.speech_notifications
