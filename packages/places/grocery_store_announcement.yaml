@@ -1,0 +1,32 @@
+automation:
+  - id: "grocery_store_announcement"
+    alias: "Grocery Store Announcement"
+    mode: "single"
+    trigger:
+      # One of us is at the grocery store
+      - platform: state
+        entity_id:
+          - person.john_koht
+          - person.cristina_falbo
+        to:
+          - "Marianos"
+          - "Heinen's Grocery Store"
+        for:
+          minutes: 5
+    # condition:
+    action:
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: musical-flute
+          speech_message: >
+            {% set person = "" %}
+            {% set ent = trigger.entity_id %}
+            {% if ent = "person.john_koht" %}
+              {% set person = "Baba" %}
+            {% else %}
+              {% set person = "Mama" %}
+
+            {% set store = trigger.to_state.name %}
+
+            "Just a friendly reminder that {{person}} is at {{store}} in case you need anything!"
