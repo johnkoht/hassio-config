@@ -15,6 +15,7 @@ automation:
           minutes: 5
     # condition:
     action:
+      # Voice announcement
       - service: script.voice_announcement
         data:
           media_players: auto
