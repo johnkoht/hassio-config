@@ -22,10 +22,12 @@ automation:
           speech_message: >
             {% set person = "" %}
             {% set ent = trigger.entity_id %}
-            {% if ent = "person.john_koht" %}
+
+            {% if ent == "person.john_koht" %}
               {% set person = "Baba" %}
             {% else %}
               {% set person = "Mama" %}
+            {% endif %}
 
             {% set store = trigger.to_state.name %}
 
