@@ -28,7 +28,7 @@ action:
       - alias: "It's an afternoon nap"
         condition: time
         after: "12:00:00"
-        before: "02:00:00"
+        before: "14:00:00"
     then:
       # Turn off speech notifications
       - service: input_boolean.turn_off
