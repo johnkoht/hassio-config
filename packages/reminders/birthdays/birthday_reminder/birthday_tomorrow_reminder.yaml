@@ -1,0 +1,57 @@
+automation:
+  - id: "birthday_tomorrow_reminder"
+    alias: "Birthday Tomorrow Reminder"
+    mode: "single"
+    trigger:
+      # At 6:30 PM
+      - platform: time
+        at: "18:30:00"
+      # At 8:05pm
+      - platform: time
+        at: "20:05:00"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Binary sensor is ON
+      - condition: state
+        entity_id: binary_sensor.kids_activity_tomorrow
+        state: "on"
+      # After 5pm
+      - condition: time
+        after: "17:00:00"
+    action:
+      # Wait for motion in the kitchen or family room
+      - wait_template: >-
+          {{ 
+            is_state('binary_sensor.kitchen_motion_sensor_status', 'on')
+            or
+            is_state('binary_sensor.family_room_motion_sensor', 'on')
+          }}
+        timeout: "00:05:00"
+
+      - alias: "Wait 2 seconds"
+        delay: 2
+
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "success-trumpets"
+          speech_message: >-
+            {{ 
+              [
+                "Hey fam, just wanted to remind you that tomorrow is " ~ states.calendar.birthdays_2.attributes.message,
+                "Just a quick reminder that " ~ states.calendar.birthdays_2.attributes.message ~ " is tomorrow.",
+                "Pardon the interruption, don't forget that tomorrow is " ~ states.calendar.birthdays_2.attributes.message
+              ] | random
+            }}
+
+      - service: script.general_notification
+        data:
+          message: "Tomorrow is {{states.calendar.birthdays_2.attributes.message}}"
+          title: "Kids Activity Reminder"
+          devices: "jk"
+          priority: "active"
+          tag: "birthday-reminder"

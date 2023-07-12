@@ -47,6 +47,12 @@
       track: true
       search: "Gianluca Birthday"
       offset: "!!"
+    - device_id: birthdays
+      ignore_availability: true
+      name: "Birthdays"
+      track: true
+      search: "Birthday"
+      offset: "!!"
 
 - cal_id: john.koht@gmail.com
   entities:
@@ -150,6 +156,6 @@
 
 - cal_id: 7583a825638fbc627de2e755f0bf0086936fdd0606acecaeaee61a10b54ac954@group.calendar.google.com
   entities:
-  - device_id: golf_acres
-    ignore_availability: true
-    name: Golf Acres
+    - device_id: golf_acres
+      ignore_availability: true
+      name: Golf Acres
