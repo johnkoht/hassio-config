@@ -58,7 +58,7 @@ automation:
           # ELIF 1 more day
           - conditions:
               - condition: template
-                value_template: "{{ states.sensor.nino_days_to_birthday.state >= 1 }}"
+                value_template: "{{ states.sensor.nino_days_to_birthday.state == 1 }}"
             sequence:
               # Call the announcement engine
               - service: script.voice_announcement
