@@ -30,6 +30,6 @@ automation:
               {% set person = "Mama" %}
             {% endif %}
 
-            {% set store = trigger.to_state.name %}
+            {% set store = trigger.to_state.state %}
 
             "Just a friendly reminder that {{person}} is at {{store}} in case you need anything!"
