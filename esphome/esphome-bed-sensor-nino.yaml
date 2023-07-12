@@ -1,6 +1,6 @@
 esphome:
-  name: "esphome-bed-sensor-gianluca"
-  friendly_name: Gianluca Bed
+  name: "esphome-bed-sensor-nino"
+  friendly_name: Nino Bed
 
 esp32:
   board: esp32dev
@@ -34,7 +34,7 @@ binary_sensor:
     name: "Occupied"
     id: mb_o
     lambda: |-
-      if (id(gianluca_bed_sensor).state < id(gianluca_trigger_level).state) {
+      if (id(nino_bed_sensor).state < id(nino_trigger_level).state) {
         return true;
       } else {
         return false;
@@ -44,7 +44,7 @@ sensor:
   - platform: adc
     pin: GPIO35
     name: "Sensor"
-    id: "gianluca_bed_sensor"
+    id: "nino_bed_sensor"
     icon: mdi:bed
     attenuation: 11db
     update_interval: 0.5s
@@ -59,7 +59,7 @@ sensor:
 number:
   - platform: template
     name: "Trigger Level"
-    id: "gianluca_trigger_level"
+    id: "nino_trigger_level"
     icon: mdi:arrow-collapse-down
     min_value: 0
     max_value: 3.5
