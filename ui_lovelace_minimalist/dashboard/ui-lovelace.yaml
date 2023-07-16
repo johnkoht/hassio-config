@@ -149,9 +149,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/lovelace-family-room/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
@@ -197,9 +197,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/lovelace-playroom/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
@@ -237,9 +237,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/lovelace-office/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
@@ -321,9 +321,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/lovelace-ninos-bedroom/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
@@ -357,9 +357,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/lovelace-gianluca-bedroom/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
@@ -436,9 +436,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/lovelace-jr-suite/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
@@ -465,9 +465,9 @@ views:
                   [[[
                     return (entity.state == "on" ? "Occupied" : "Empty");
                   ]]]
-                # tap_action:
-                #   action: navigate
-                #   navigation_path: '/ui-lovelace-minimalist/bathroom'
+                tap_action:
+                  action: navigate
+                  navigation_path: "/lovelace-laundry-room/"
                 variables:
                   label_use_temperature: false
                   label_use_brightness: false
