@@ -76,6 +76,62 @@ lovelace:
       icon: mdi:sofa
       show_in_sidebar: true
       require_admin: false
+    lovelace-dining-room:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-dining-room.yaml
+      title: Dining Room
+      icon: mdi:table-chair
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-gianlucas-bedroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-gianlucas-bedroom.yaml
+      title: Gianluca's Room
+      icon: mdi:cradle
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-jr-suite:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-jr-suite.yaml
+      title: Jr. Suite
+      icon: mdi:bed-double
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-laundry-room:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-laundry-room.yaml
+      title: Laundry Room
+      icon: hue:room-laundry
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-main-bedroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-main-bedroom.yaml
+      title: Main Bedroom
+      icon: mdi:bed-king
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-ninos-bedroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-ninos-bedroom.yaml
+      title: Nino's Bedroom
+      icon: mdi:bed-single
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-office:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-office.yaml
+      title: Office
+      icon: mdi:laptop
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-playroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-playroom.yaml
+      title: Playroom
+      icon: hue:room-nursery
+      show_in_sidebar: true
+      require_admin: false
 
 zone:
   - name: Home
