@@ -16,7 +16,7 @@ automation:
         state: "on"
       # Binary sensor is ON
       - condition: state
-        entity_id: binary_sensor.kids_activity_tomorrow
+        entity_id: binary_sensor.birthday_tomorrow
         state: "on"
       # After 5pm
       - condition: time
@@ -51,7 +51,7 @@ automation:
       - service: script.general_notification
         data:
           message: "Tomorrow is {{states.calendar.birthdays_2.attributes.message}}"
-          title: "Kids Activity Reminder"
+          title: "Birthday Reminder"
           devices: "jk"
           priority: "active"
           tag: "birthday-reminder"
