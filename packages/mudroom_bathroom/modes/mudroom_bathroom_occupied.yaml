@@ -5,10 +5,10 @@ automation:
     initial_state: on
     alias: "Mudroom Bathroom Occupied"
     trigger:
-      # Mudroom Bathroom door is closed
+      # Motion detected
       - platform: state
-        entity_id: binary_sensor.mudroom_bathroom_door
-        to: "off"
+        entity_id: binary_sensor.mudroom_bathroom_motion
+        to: "on"
       # Mudroom Bathroom lights are turned on
       - platform: state
         entity_id: light.mudroom_bathroom_main_lights
@@ -25,6 +25,10 @@ automation:
       # Occupancy detetected
       - condition: or
         conditions:
+          # Motion is detected
+          - condition: state
+            entity_id: light.mudroom_bathroom_motion
+            state: "on"
           # Mudroom Bathroom door is closed
           - condition: state
             entity_id: binary_sensor.mudroom_bathroom_door

@@ -1,62 +1,100 @@
+# No motion AND door has been opened since last motion
+
 automation:
   - id: "mudroom_bathroom_not_occupied"
     initial_state: on
     alias: "Mudroom Bathroom Not Occupied"
     trigger:
-      # Door is opened
+      # # Door is opened
+      # - platform: state
+      #   entity_id: binary_sensor.mudroom_bathroom_door
+      #   to: "on"
+      # No motion for 3 mins
       - platform: state
-        entity_id: binary_sensor.mudroom_bathroom_door
-        to: "on"
-      # Door is opened for 5 mins
-      - platform: state
-        entity_id: binary_sensor.mudroom_bathroom_door
-        to: "on"
-        for:
-          minutes: 5
-      # Mudroom Bathroom lights are turned OFF
-      - platform: state
-        entity_id: light.mudroom_bathroom_main_lights
-        to: "off"
-      # Mudroom Bathroom lights are turned OFF for 5 mins
-      - platform: state
-        entity_id: light.mudroom_bathroom_main_lights
+        entity_id: binary_sensor.mudroom_bathroom_motion
         to: "off"
         for:
-          minutes: 5
+          minutes: 3
+      # Not motion for 7 mins
+      - platform: state
+        entity_id: binary_sensor.mudroom_bathroom_motion
+        to: "off"
+        for:
+          minutes: 7
+      # No aqara occupancy
+      - platform: state
+        entity_id: binary_sensor.mudroom_bathroom_occupancy
+        to: "off"
+      # # Door is opened for 5 mins
+      # - platform: state
+      #   entity_id: binary_sensor.mudroom_bathroom_door
+      #   to: "on"
+      #   for:
+      #     minutes: 5
+      # # Mudroom Bathroom lights are turned OFF
+      # - platform: state
+      #   entity_id: light.mudroom_bathroom_main_lights
+      #   to: "off"
+      # # Mudroom Bathroom lights are turned OFF for 5 mins
+      # - platform: state
+      #   entity_id: light.mudroom_bathroom_main_lights
+      #   to: "off"
+      #   for:
+      #     minutes: 5
     condition:
-      # Mudroom Bathroom is already occupied
+      # Mudroom Bathroom is occupied
       - condition: state
         entity_id: input_boolean.mudroom_bathroom_occupied
         state: "on"
       - condition: or
         conditions:
-          # Door is open AND lights are OFF
+          # NO motion AND door has been opened since after latest motion
           - condition: and
             conditions:
-              # Door open
               - condition: state
-                entity_id: binary_sensor.mudroom_bathroom_door
-                state: "on"
-              # Lights off
-              - condition: state
-                entity_id: light.mudroom_bathroom_main_lights
+                entity_id: binary_sensor.mudroom_bathroom_motion
                 state: "off"
-          # OR
-          # Door is open for 5 mins OR lights are OFF for 5 mins
-          - condition: or
-            conditions:
-              # Door closed for 5 mins
-              - condition: state
-                entity_id: binary_sensor.mudroom_bathroom_door
-                state: "on"
-                for:
-                  minutes: 5
-              # Lights off for 5 mins
-              - condition: state
-                entity_id: light.mudroom_bathroom_main_lights
-                state: "off"
-                for:
-                  minutes: 5
+              # Door was opened in the past 3 mins
+              - condition: template
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.mudroom_bathroom_door.last_changed)) | int < 180 }}"
+          # Aqara occupancy is OFF
+          - condition: state
+            entity_id: binary_sensor.mudroom_bathroom_occupancy
+            state: "off"
+
+      # # Aqara occupancy is OFF
+      # - condition: state
+      #   entity_id: binary_sensor.mudroom_bathroom_occupancy
+      #   state: "off"
+      # - condition: or
+      #   conditions:
+      #     # Door is open AND lights are OFF
+      #     - condition: and
+      #       conditions:
+      #         # Door open
+      #         - condition: state
+      #           entity_id: binary_sensor.mudroom_bathroom_door
+      #           state: "on"
+      #         # Lights off
+      #         - condition: state
+      #           entity_id: light.mudroom_bathroom_main_lights
+      #           state: "off"
+      #     # OR
+      #     # Door is open for 5 mins OR lights are OFF for 5 mins
+      #     - condition: or
+      #       conditions:
+      #         # Door closed for 5 mins
+      #         - condition: state
+      #           entity_id: binary_sensor.mudroom_bathroom_door
+      #           state: "on"
+      #           for:
+      #             minutes: 5
+      #         # Lights off for 5 mins
+      #         - condition: state
+      #           entity_id: light.mudroom_bathroom_main_lights
+      #           state: "off"
+      #           for:
+      #             minutes: 5
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.mudroom_bathroom_occupied
