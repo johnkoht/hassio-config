@@ -4,7 +4,16 @@ binary_sensor:
     probability_threshold: 0.8
     name: "John in bed"
     observations:
-      # Room Assisstant Presence
+      # Bed occupied
+      #
+      # Detected in the room
+      - platform: state
+        entity_id: binary_sensor.john_bed_occupied
+        prob_given_true: 0.98
+        prob_given_false: 0.05
+        to_state: "on"
+
+      # ESPresence
       #
       # Detected in the room
       - platform: state
@@ -12,11 +21,6 @@ binary_sensor:
         prob_given_true: 0.88
         prob_given_false: 0.13
         to_state: "main_bedroom"
-      # # Not detected in the room
-      # - platform: template
-      #   value_template: "{{ not is_state('sensor.john_room_presence','main_bedroom') }}"
-      #   prob_given_true: 0.25
-      #   prob_given_false: 0.8
 
       # Phone DnD Status
       #
@@ -26,12 +30,6 @@ binary_sensor:
         prob_given_true: 0.88
         prob_given_false: 0.19
         to_state: "on"
-      # # Phone is not in focus mode
-      # - platform: state
-      #   entity_id: binary_sensor.jk_iphone_14_focus
-      #   prob_given_true: 0.13
-      #   prob_given_false: 0.75
-      #   to_state: "off"
 
       # Phone Charging Status
       #
@@ -41,12 +39,6 @@ binary_sensor:
         prob_given_true: 0.94
         prob_given_false: 0.19
         to_state: "on"
-      # # Phone is not charging
-      # - platform: state
-      #   entity_id: input_boolean.john_phone_plugged_in
-      #   prob_given_true: 0.13
-      #   prob_given_false: 0.875
-      #   to_state: "off"
 
       # Bedroom Router Detection
       #
@@ -56,11 +48,6 @@ binary_sensor:
         prob_given_true: 0.94
         prob_given_false: 0.13
         to_state: "68:d7:9a:76:c4:ff"
-      # # # Not connect to the router
-      # - platform: template
-      #   value_template: "{{ not is_state('sensor.jk_iphone_14_bssid','68:d7:9a:76:c4:ff') }}"
-      #   prob_given_true: 0.38
-      #   prob_given_false: 0.875
 
       # Bedroom Door Status
       #
@@ -70,12 +57,6 @@ binary_sensor:
         prob_given_true: 0.88
         prob_given_false: 0.50
         to_state: "off" # Closed
-      # # Door open
-      # - platform: state
-      #   entity_id: binary_sensor.main_bedroom_door_sensor_status
-      #   prob_given_true: 0.38
-      #   prob_given_false: 0.625
-      #   to_state: "on" # Open
 
       # Lights
       #
@@ -85,12 +66,6 @@ binary_sensor:
         prob_given_true: 0.98
         prob_given_false: 0.75
         to_state: "off"
-      # # Lights are OFF
-      # - platform: state
-      #   entity_id: light.main_bedroom_main_lights
-      #   prob_given_true: 0.94
-      #   prob_given_false: 0.875
-      #   to_state: "off"
 
       # Bedtime Hours
       #
@@ -100,9 +75,3 @@ binary_sensor:
         prob_given_true: 0.75
         prob_given_false: 0.13
         to_state: "on"
-      # # Bedtime hours is OFF (7am-10pm)
-      # - platform: state
-      #   entity_id: binary_sensor.bedtime
-      #   prob_given_true: 0.19
-      #   prob_given_false: 0.875
-      #   to_state: "off"
