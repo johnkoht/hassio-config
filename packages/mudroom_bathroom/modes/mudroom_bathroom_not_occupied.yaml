@@ -15,6 +15,12 @@ automation:
         to: "off"
         for:
           minutes: 3
+      # Not motion for 5 mins
+      - platform: state
+        entity_id: binary_sensor.mudroom_bathroom_motion
+        to: "off"
+        for:
+          minutes: 5
       # Not motion for 7 mins
       - platform: state
         entity_id: binary_sensor.mudroom_bathroom_motion
@@ -48,6 +54,7 @@ automation:
         state: "on"
       - condition: or
         conditions:
+          #
           # NO motion AND door has been opened since after latest motion
           - condition: and
             conditions:
@@ -57,10 +64,24 @@ automation:
               # Door was opened in the past 3 mins
               - condition: template
                 value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.mudroom_bathroom_door.last_changed)) | int < 180 }}"
+          #
           # Aqara occupancy is OFF
           - condition: state
             entity_id: binary_sensor.mudroom_bathroom_occupancy
             state: "off"
+          #
+          # No motion for 5 minutes
+          # AND door is open
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.mudroom_bathroom_motion
+                state: "off"
+                for:
+                  minutes: 5
+              - condition: state
+                entity_id: binary_sensor.mudroom_bathroom_door
+                state: "on"
 
       # # Aqara occupancy is OFF
       # - condition: state
