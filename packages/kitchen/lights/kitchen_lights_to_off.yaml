@@ -30,10 +30,26 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # Kitchen lighting automations enabled
-      - condition: state
-        entity_id: input_boolean.kitchen_lighting_automations
-        state: "on"
+      #
+      # If kitchen lighting automation enabled
+      # OR
+      # If kitchen lighting automation NOT enabled
+      # AND trigger was kitchen not occupied
+      - condition: or
+        conditions:
+          # Kitchen lighting automations enabled
+          - condition: state
+            entity_id: input_boolean.kitchen_lighting_automations
+            state: "on"
+          - condition: and
+            conditions:
+              # Kitchen lighting automations enabled
+              - condition: state
+                entity_id: input_boolean.kitchen_lighting_automations
+                state: "off"
+              # Trigger was kitchen occupied OFF
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'input_boolean.kitchen_occupied' }}"
       # Kitchen is Off or the kitchen is no longer occupied
       - condition: or
         conditions:
