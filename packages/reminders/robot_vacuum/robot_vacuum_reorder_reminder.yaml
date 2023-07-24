@@ -58,12 +58,12 @@ automation:
         data:
           media_players: auto
           sound: "one-chime"
-          speech_message: "The robot vacuum needs some maintenance. Please replace the {{trigger.from_state.attributes.friendly_name}}"
+          speech_message: "The robot vacuum will need some maintenance soon. Please reoder {{trigger.from_state.attributes.friendly_name}}"
 
       # Send a push notification
       - service: script.general_notification
         data:
-          message: "The robot vacuum needs some maintenance. Please replace the {{trigger.from_state.attributes.friendly_name}}"
+          message: "The robot vacuum will need some maintenance soon. Please reorder {{trigger.from_state.attributes.friendly_name}}"
           title: Robot Vacuum Maintenance
           devices: "jk"
           priority: "time-sensitive"
