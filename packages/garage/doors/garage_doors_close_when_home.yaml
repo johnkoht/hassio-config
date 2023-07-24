@@ -71,18 +71,18 @@ automation:
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
     action:
-      # Close the garage doors
-      - service: cover.close_cover
-        data: {}
-        target:
-          entity_id: cover.garage_doors
-
       # Call the announcement engine
       - service: script.voice_announcement
         data:
           media_players: auto
           sound: "police-whistle"
           speech_message: "{{ expand('cover.garage_doors')|selectattr('state', 'eq', 'open')|map(attribute='name')|list|join(', ') }} has been open for a while but nobody is around so I'm automaticallly closing."
+
+      # Close the garage doors
+      - service: cover.close_cover
+        data: {}
+        target:
+          entity_id: cover.garage_doors
 
       # Turn off the garage lights
       - service: light.turn_off
