@@ -8,10 +8,10 @@ homeassistant:
     - "/tmp"
 
 # Text to speech
-tts:
-  - platform: google_translate
-    base_url: !secret base_url
-    service_name: google_say
+# tts:
+#   - platform: google_translate
+#     #base_url: !secret base_url
+#     service_name: google_say
 
 #group: !include groups.yaml
 group: !include_dir_merge_named group
