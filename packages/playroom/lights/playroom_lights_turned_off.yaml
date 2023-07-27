@@ -13,9 +13,20 @@ automation:
       - condition: state
         entity_id: input_boolean.playroom_lights_auto
         state: "on"
+      - condition: template
+        value_template: "{{ trigger.to_state.context.parent_id == none }}"
     action:
+      # Turn off the lights automatically turned on boolean
       - service: input_boolean.turn_off
         entity_id: input_boolean.playroom_lights_auto
-      # Deactivate the motion sensors
+      # Deactivate the lighting automations
       - service: input_boolean.turn_off
         entity_id: input_boolean.playroom_lighting_automations
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Playroom Lights"
+          message: "The playroom lights have been turned off. The parent id is {{trigger.to_state.context.parent_id}} and the user_id is {{trigger.to_state.context.user_id}}."
+          devices: "jk"
+          priority: "passive"
+          tag: "playroom-lighting-automation"
