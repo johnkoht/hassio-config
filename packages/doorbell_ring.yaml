@@ -81,8 +81,6 @@ script:
               {% set media_players = media_players + ["media_player.sonos_family_room"] %}
             {% endif %}{% if states.input_boolean.kitchen_occupied.state == "on" and states.input_boolean.kitchen_speech_notifications.state == "on" %}
               {% set media_players = media_players + ["media_player.sonos_kitchen"] %}
-            {% endif %}{% if states.input_boolean.main_bedroom_occupied.state == "on" and states.input_boolean.main_bedroom_speech_notifications.state == "on" %}
-              {% set media_players = media_players + ["media_player.sonos_main_bedroom"] %}
             {% endif %}{% if states.input_boolean.playroom_occupied.state == "on" %}
               {% set media_players = media_players + ["media_player.sonos_playroom"] %}
             {% endif %}{% if states.input_boolean.dining_room_occupied.state == "on" %}
