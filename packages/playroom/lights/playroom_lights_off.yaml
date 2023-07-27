@@ -6,7 +6,7 @@
 #
 automation:
   - id: "playroom_lights_off"
-    initial_state: on
+    initial_state: off
     alias: "Playroom lights off"
     trigger:
       # Playroom is Off
