@@ -76,9 +76,7 @@ automation:
         before: "05:00:00"
     action:
       - service: light.turn_on
-        entity_id:
-          - light.hue_ambiance_lamp_1
-          - light.main_bathroom_main_lights
+        entity_id: light.hue_ambiance_lamp_1
         data:
           brightness_pct: 30
           transition: 0.5
