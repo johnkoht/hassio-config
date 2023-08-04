@@ -6,7 +6,7 @@
 #
 automation:
   - id: "foyer_lights_sleep_mode_on"
-    initial_state: on
+    initial_state: off
     alias: "Foyer Lights Sleep Mode On"
     trigger:
       # House goes into bedtime mode:
