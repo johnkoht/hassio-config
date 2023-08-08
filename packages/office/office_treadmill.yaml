@@ -1,5 +1,12 @@
-# switch.smart_plug_11_switch
-
+# When walking at my desk, my iphone and apple watch don't seem
+# to accurately measure the distance that I walk. Luckily, my
+# treadmill measure steps. Unfortunately, this the counter increments
+# to 10k steps and then resets and I usually don't document the
+# count before/after a walk. To make this approach a bit cleaner,
+# I'll just turn off the treadmill each night, which will reset the
+# counter in the morning...now to remember to document the steps
+# in the health app.
+#
 automation:
   # Treadmill OFF
   #
