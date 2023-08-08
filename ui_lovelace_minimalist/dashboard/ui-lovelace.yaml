@@ -204,7 +204,7 @@ views:
                   label_use_temperature: false
                   label_use_brightness: false
                   entity_1:
-                    entity_id: group.playroom_lights
+                    entity_id: light.playroom_lights
                     templates:
                       - yellow_on
                     tap_action:

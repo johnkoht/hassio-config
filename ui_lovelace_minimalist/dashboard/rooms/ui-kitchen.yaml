@@ -83,7 +83,7 @@ views:
                   ]]]
 
           - type: "horizontal-stack"
-            title: "Lights"
+            title: "Kitchen Lights"
             cards:
               - type: "custom:button-card"
                 template: card_light
@@ -92,6 +92,7 @@ views:
                   ulm_card_light_enable_slider: true
                   ulm_card_light_enable_color: true
                   ulm_card_light_force_background_color: true
+                  ulm_card_light_name: "Main Lights"
               - type: "custom:button-card"
                 template: card_light
                 entity: light.kitchen_table_light_switch
@@ -99,6 +100,7 @@ views:
                   ulm_card_light_enable_slider: true
                   ulm_card_light_enable_color: true
                   ulm_card_light_force_background_color: true
+                  ulm_card_light_name: "Table Lights"
 
           # Climate
           - type: "vertical-stack"

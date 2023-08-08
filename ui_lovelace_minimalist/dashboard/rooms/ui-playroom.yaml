@@ -1,32 +1,6 @@
 ---
 button_card_templates: !include_dir_merge_named "../../../custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/"
 
-# Mode
-# Occupancy / motion
-# Who's here
-#
-# Lighting
-#   - Main lights
-#   - Table lights
-#
-# Temperature
-#   - Temperature
-#   - Humidity
-#   - Illuminance
-#   - Pressure
-#
-# Media Player / Sonos
-#
-# Misc.
-#   - Windows
-#   - Doors
-#   - Leak sensor
-#
-# Settings
-#   - Lighting automations
-#   - Speech notifications
-#   - Adaptive lighting
-
 title: "Playroom"
 theme: "minimalist-desktop"
 background: "var(--background-image)"
@@ -34,7 +8,7 @@ background: "var(--background-image)"
 views:
   - title: "Playroom"
     path: 0
-    icon: "mdi:flower"
+    icon: "hue:room-nursery"
     cards:
       - type: "vertical-stack"
         cards:
@@ -48,13 +22,13 @@ views:
               - type: "custom:button-card"
                 template: chip_mdi_icon_state
                 variables:
-                  ulm_chip_mdi_icon_state_entity: input_boolean.family_room_occupied
-                  ulm_chip_mdi_icon_state_icon: mdi:sofa
+                  ulm_chip_mdi_icon_state_entity: input_boolean.playroom_occupied
+                  ulm_chip_mdi_icon_state_icon: hue:room-nursery
                 label: >
                   [[[
                     return states[variables.ulm_chip_mdi_icon_state_entity].state == "on" ? "Occupied" : "Empty";
                   ]]]
-                icon: mdi:sofa
+                icon: hue:room-nursery
                 styles:
                   icon:
                     - color: "[[[ return states[variables.ulm_chip_mdi_icon_state_entity].state == 'on' ? 'primary-text-color' : 'color-grey' ]]]"
@@ -62,8 +36,8 @@ views:
               - type: "custom:button-card"
                 template: chip_mdi_icon_state
                 variables:
-                  ulm_chip_mdi_icon_state_entity: input_select.family_room
-                  ulm_chip_mdi_icon_state_icon: mdi:sofa
+                  ulm_chip_mdi_icon_state_entity: input_select.playroom
+                  ulm_chip_mdi_icon_state_icon: hue:room-nursery
                 label: >
                   [[[
                     return states[variables.ulm_chip_mdi_icon_state_entity].state + ' Mode';
@@ -87,11 +61,12 @@ views:
             cards:
               - type: "custom:button-card"
                 template: card_light
-                entity: light.family_room_main_lights
+                entity: light.playroom_lights
                 variables:
                   ulm_card_light_enable_slider: true
                   ulm_card_light_enable_color: true
                   ulm_card_light_force_background_color: true
+                  ulm_card_light_name: "Main Lights"
 
           # Climate
           - type: "vertical-stack"
@@ -104,11 +79,11 @@ views:
                   # Temperature
                   - type: "custom:button-card"
                     template: card_graph
-                    entity: sensor.kitchen_temperature
+                    entity: sensor.playroom_temperature
                     variables:
                       ulm_card_graph_color: "var(--google-blue)"
                       ulm_card_graph_name: Temperature
-                      ulm_card_graph_entity: sensor.kitchen_temperature
+                      ulm_card_graph_entity: sensor.playroom_temperature
                       ulm_card_graph_type: fill
                       ulm_card_graph_hours: 24
                       ulm_card_graph_group_by: interval
@@ -116,11 +91,11 @@ views:
                   # Humidity
                   - type: "custom:button-card"
                     template: card_graph
-                    entity: sensor.kitchen_humidity
+                    entity: sensor.playroom_humidity
                     variables:
                       ulm_card_graph_color: "var(--google-blue)"
                       ulm_card_graph_name: Humidity
-                      ulm_card_graph_entity: sensor.kitchen_humidity
+                      ulm_card_graph_entity: sensor.playroom_humidity
                       ulm_card_graph_type: fill
                       ulm_card_graph_hours: 24
                       ulm_card_graph_group_by: interval
@@ -128,11 +103,11 @@ views:
                   # Illuminance
                   - type: "custom:button-card"
                     template: card_graph
-                    entity: sensor.kitchen_illuminance
+                    entity: sensor.playroom_motion_sensor_illuminance
                     variables:
                       ulm_card_graph_color: "var(--google-blue)"
                       ulm_card_graph_name: Illuminance
-                      ulm_card_graph_entity: sensor.kitchen_illuminance
+                      ulm_card_graph_entity: sensor.playroom_motion_sensor_illuminance
                       ulm_card_graph_type: fill
                       ulm_card_graph_hours: 24
                       ulm_card_graph_group_by: interval
@@ -140,37 +115,22 @@ views:
                   # Pressure
                   - type: "custom:button-card"
                     template: card_graph
-                    entity: sensor.kitchen_pressure
+                    entity: sensor.playroom_pressure
                     variables:
                       ulm_card_graph_color: "var(--google-blue)"
                       ulm_card_graph_name: Pressure
-                      ulm_card_graph_entity: sensor.kitchen_pressure
+                      ulm_card_graph_entity: sensor.playroom_pressure
                       ulm_card_graph_type: fill
                       ulm_card_graph_hours: 24
                       ulm_card_graph_group_by: interval
                       ulm_card_graph_line_width: 5
-
-          # TV
-          - type: "vertical-stack"
-            title: TV
-            cards:
-              - type: "custom:button-card"
-                template: card_media_player
-                entity: media_player.sony_bravia_tv
-                variables:
-                  ulm_card_media_player_name: Family Room TV
-                  ulm_card_media_player_enable_controls: true
-                  ulm_card_media_player_enable_volume_slider: true
-                  ulm_card_media_player_enable_volume_buttons: true
-                  ulm_card_media_player_more_info: true
-                  ulm_card_media_player_power_button: true
 
           # Sonos Player
           - type: "vertical-stack"
             title: Music
             cards:
               - type: custom:sonos-card
-                entityId: media_player.sonos_family_room
+                entityId: media_player.sonos_playroom
                 entityNameRegexToReplace: "SONOS "
                 entityNameReplacement: ""
                 entities:
@@ -223,17 +183,44 @@ views:
                   - My Bad Playlist
                 mediaBrowserItemsAsList: true
 
+          # Misc
+          - type: "vertical-stack"
+            title: Sensors
+            cards:
+              - type: "grid"
+                columns: 2
+                square: false
+                cards:
+                  # Outside Door
+                  - type: "custom:button-card"
+                    template: card_binary_sensor
+                    variables:
+                      ulm_card_binary_sensor_alert: true
+                      ulm_show_last_changed: true
+                      ulm_card_binary_sensor_name: Window
+                      ulm_card_binary_sensor_force_background_color: true
+                    entity: binary_sensor.playroom_window_sensor
+                  # Fridge Door
+                  - type: "custom:button-card"
+                    template: card_binary_sensor
+                    variables:
+                      ulm_card_binary_sensor_alert: true
+                      ulm_show_last_changed: true
+                      ulm_card_binary_sensor_name: Window West Left
+                      ulm_card_binary_sensor_force_background_color: true
+                    entity: binary_sensor.playroom_window_west_left_opening
+
           - type: "vertical-stack"
             title: "Settings"
             cards:
               - type: entities
                 entities:
-                  - entity: input_boolean.family_room_speech_notifications
-                    secondary_info: last-changed
-                    name: Speech Notifications
-                  # - entity: input_boolean.kitchen_lighting_automations
+                  # - entity: input_boolean.family_room_speech_notifications
                   #   secondary_info: last-changed
-                  #   name: Lighting Automations
-                  - entity: switch.adaptive_lighting_family_room
+                  #   name: Speech Notifications
+                  - entity: input_boolean.playroom_lighting_automations
+                    secondary_info: last-changed
+                    name: Lighting Automations
+                  - entity: switch.adaptive_lighting_playroom
                     secondary_info: last-changed
                     name: Adaptive Lighting
