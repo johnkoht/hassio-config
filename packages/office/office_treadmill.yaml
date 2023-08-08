@@ -1,0 +1,44 @@
+# switch.smart_plug_11_switch
+
+automation:
+  # Treadmill OFF
+  #
+  - id: "office_treadmill_off"
+    alias: "Office - Treadmill Off"
+    mode: "single"
+    trigger:
+      # At midnight
+      - platform: time
+        at: "00:00:01"
+      # Bedtime mode enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+    condition:
+      # Switch is ON
+      - condition: state
+        entity_id: switch.smart_plug_11_switch
+        state: "on"
+    action:
+      # Turn OFF the switch
+      - service: switch.turn_off
+        entity_id: switch.smart_plug_11_switch
+
+  # Treadmill ON
+  - id: "office_treadmill_on"
+    alias: "Office - Treadmill On"
+    mode: "single"
+    trigger:
+      # Office becomes occupied
+      - platform: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
+    condition:
+      # Switch is OFF
+      - condition: state
+        entity_id: switch.smart_plug_11_switch
+        state: "off"
+    action:
+      # Turn ON the switch
+      - service: switch.turn_on
+        entity_id: switch.smart_plug_11_switch
