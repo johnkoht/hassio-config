@@ -12,6 +12,10 @@ trigger:
   - platform: state
     entity_id: group.gianlucas_room_lights
     to: "off"
+  # Door is closed
+  - platform: state
+    entity_id: binary_sensor.gianlucas_door_sensor_status
+    to: "off"
 condition:
   # The house is occupied
   - condition: state
