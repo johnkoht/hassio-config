@@ -9,6 +9,10 @@ automation:
       - platform: state
         entity_id: binary_sensor.garage_motion_sensor_motion
         to: "on"
+      # Garage interior door is opened
+      - platform: state
+        entity_id: binary_sensor.interior_garage_door
+        to: "on"
     condition:
       # Garage is Auto
       - condition: state
@@ -18,7 +22,7 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # And lighting automations for the bedroom are enabled
+      # And lighting automations for the garage are enabled
       - condition: state
         entity_id: input_boolean.garage_lighting_automations
         state: "on"
