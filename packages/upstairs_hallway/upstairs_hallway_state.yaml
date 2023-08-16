@@ -1,0 +1,10 @@
+# Upstairs Hallway State
+#
+input_select:
+  upstairs_hallway:
+    name: Upstairs Hallway
+    options:
+      - "Auto"
+      - "Away"
+      - "Bedtime"
+      - "Off"

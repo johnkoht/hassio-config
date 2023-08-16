@@ -1,0 +1,28 @@
+automation:
+  - id: "upstairs_hallway_mode_off"
+    initial_state: on
+    alias: "Upstairs Hallway - Mode Off"
+    trigger:
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # House is turned to Away
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+      # Hassio restart/relaod
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    condition:
+      # Upstairs Hallway isn't already set to off
+      - condition: template
+        value_template: "{{ not is_state('input_select.upstairs_hallway','Off') }}"
+    action:
+      # Turn the Upstairs Hallway to off.
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.upstairs_hallway
+          option: "Off"
