@@ -69,5 +69,10 @@ automation:
         entity_id: light.kitchen_lights
         state: "on"
     action:
+      # Turn OFF the lights
       - service: light.turn_off
         entity_id: light.kitchen_lights
+      # Turn OFF the boolean that identifies lights
+      # automatically turned on
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kitchen_lights_auto
