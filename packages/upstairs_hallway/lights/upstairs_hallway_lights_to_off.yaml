@@ -1,0 +1,28 @@
+# Turn upstairs hallway lights to off
+#
+automation:
+  - id: "upstairs_hallway_lights_to_off"
+    initial_state: on
+    alias: "Upstairs Hallway Lights to Off"
+    trigger:
+      # If the upstairs hallway turns to Off mode
+      - platform: state
+        entity_id: input_select.upstairs_hallway
+        to: "Off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Lights are on
+      - condition: state
+        entity_id: light.upstairs_hallway
+        state: "on"
+    action:
+      # Turn OFF the upstairs hallway lights
+      - service: light.turn_off
+        entity_id: light.upstairs_hallway

@@ -1,0 +1,29 @@
+# Upstairs Hallway Mode Auto
+#
+automation:
+  - id: "upstairs_hallway_mode_auto"
+    initial_state: on
+    alias: "Upstairs Hallway - Mode Auto"
+    trigger:
+      # House turn to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Upstairs Hallway is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.upstairs_hallway','Auto') }}"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+    action:
+      # Turn the upstairs hwallway to Auto.
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.upstairs_hallway
+          option: "Auto"
