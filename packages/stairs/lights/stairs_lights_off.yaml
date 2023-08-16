@@ -1,6 +1,6 @@
 automation:
   - id: "stairs_lights_off"
-    initial_state: off
+    initial_state: on
     alias: "Stairs lights off"
     trigger:
       # Stairs is not occupied
