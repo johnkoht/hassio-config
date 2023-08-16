@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Stairs Motion Status
+    unique_id: stairs_motion_status
+    device_class: motion
+    entities:
+      - binary_sensor.stairs_up_motion_sensor_motion
+      - binary_sensor.stairs_down_motion_sensor_status

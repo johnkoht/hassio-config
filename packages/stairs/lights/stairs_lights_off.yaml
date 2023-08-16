@@ -5,10 +5,14 @@ automation:
     trigger:
       # Stairs is not occupied
       - platform: state
-        entity_id: binary_sensor.stairs_motion_sensor_status
+        entity_id: binary_sensor.stairs_motion_status
         to: "off"
         for:
-          minutes: 10
+          minutes: 3
+      # House is no longer occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
       # Lighting automations turn on
       - platform: state
         entity_id: input_boolean.lighting_automations
@@ -19,5 +23,6 @@ automation:
         entity_id: light.stairs_light
         state: "on"
     action:
+      # Turn OFF the lights
       - service: light.turn_off
         entity_id: light.stairs_light
