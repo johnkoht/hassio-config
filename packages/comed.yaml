@@ -8,4 +8,4 @@ template:
   - sensor:
       - name: Energy Price
         unit_of_measurement: "$/kWh"
-        state: "{{states.sensor.comed_5_minute_price.state | float / 100}}"
+        state: "{{states.sensor.comed_current_hour_average_price.state | float / 100}}"
