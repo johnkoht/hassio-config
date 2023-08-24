@@ -1,7 +1,0 @@
-name: Upstairs Dryer Status
-options:
-  - Idle
-  - Running
-  - Finishing
-  - Clean
-initial: Idle
