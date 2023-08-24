@@ -11,10 +11,9 @@ trigger:
   - platform: time
     at: "22:00:00"
 condition:
-  # Home is occupied
-  - condition: state
-    entity_id: input_boolean.house_occupied
-    state: "on"
+  # After 10pm
+  - condition: time
+    after: "22:00:00"
   - condition: and
     conditions:
       # John is in bed OR out of town
