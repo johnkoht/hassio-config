@@ -11,6 +11,9 @@ automation:
         to:
           - "Marianos"
           - "Heinen's Grocery Store"
+          - "Costco"
+          - "Costco Glenview"
+          - "Costco Niles"
         for:
           minutes: 5
     # condition:
