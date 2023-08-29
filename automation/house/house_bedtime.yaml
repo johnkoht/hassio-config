@@ -11,9 +11,10 @@ trigger:
   - platform: time
     at: "22:00:00"
 condition:
-  # After 10pm
+  # After 10pm and before 5am
   - condition: time
     after: "22:00:00"
+    before: "05:00:00"
   - condition: and
     conditions:
       # John is in bed OR out of town
