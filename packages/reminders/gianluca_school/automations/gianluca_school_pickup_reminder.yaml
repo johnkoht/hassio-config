@@ -1,0 +1,52 @@
+# Gianluca school pickup reminder
+#
+automation:
+  - id: "gianluca_school_pickup_reminder"
+    alias: "Gianluca School Pickup Reminder"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # 20 mins before end
+      - platform: calendar
+        event: end
+        entity_id: calendar.gianluca_school
+        offset: -00:20:00
+    condition:
+      # Gianluca school day boolean is ON
+      - condition: state
+        entity_id: input_boolean.gianluca_school_day
+        state: "on"
+      # Not a reminder
+      - condition: template
+        value_template: "{{ 'reminder' not in trigger.calendar_event.summary }}"
+    action:
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "school-bell-chime"
+          speech_message: >-
+            {% set event = trigger.calendar_event.summary | lower %}
+
+            {% if "giggle gang" in event %}
+              {% set event_label = "Giggle Gang" %}
+            {% elif "little acorns" in event %}
+              {% set event_label = "Little Acorns" %}
+            {% else %}
+              {% set event_label = "school" %}
+            {% endif %}
+
+            {{
+              [
+                event_label ~ " is done! Time to pick up Gianluca!",
+                "Hey there! It's time to pickup Gianluca from " ~ event_label,
+                "Dont forget to pick up Gianluca from " ~ event_label,
+                "Quick reminder that " ~ event_label ~ " is almost over, time to pick Gianluca up."
+              ] | random
+            }}
+
+      # Notify the family via push
+      - service: notify.ios_family
+        data:
+          message: "School will be over soon, it's time to pick up Gianluca from school."
+          title: "Gianluca's school is ending soon"
