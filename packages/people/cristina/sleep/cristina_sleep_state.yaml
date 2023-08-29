@@ -1,0 +1,8 @@
+input_select:
+  cristina_sleep_state:
+    name: Cristina Sleep State
+    options:
+      - Awake
+      - Sleep
+      - Just Laid Down
+      - Just Got Up
