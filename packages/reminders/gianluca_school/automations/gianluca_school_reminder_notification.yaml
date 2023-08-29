@@ -1,0 +1,31 @@
+# Gianluca School Reminder Notification
+#
+# Anything added to the school calendar with a "Reminder:"
+# in the title will activate the calendar and this
+# announcement will broadcast the reminder
+#
+automation:
+  - id: "gianluca_school_reminder_notification"
+    alias: "Gianluca School Reminder Notification"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # When reminder is triggered
+      - platform: calendar
+        event: start
+        entity_id: calendar.gianluca_school
+    condition:
+      # Gianluca school day boolean is ON
+      - condition: state
+        entity_id: input_boolean.gianluca_school_day
+        state: "on"
+      # Is a reminder
+      - condition: template
+        value_template: "{{ 'reminder' in trigger.calendar_event.summary }}"
+    action:
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "school-bell-chime"
+          speech_message: "{{states.calendar.gianluca_school.attributes.message}}"
