@@ -1,0 +1,14 @@
+automation:
+  - id: cristina_bed_just_got_up
+    alias: "Cristina Bed - Just Got Up"
+    mode: single
+    trigger:
+      # Cristina's side of the bed is NOT occupied
+      - platform: state
+        entity_id: binary_sensor.cristina_bed_occupied
+        to: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.cristina_sleep_state
+          option: "Just Got Up"

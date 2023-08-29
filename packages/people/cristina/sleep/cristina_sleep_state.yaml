@@ -1,6 +1,6 @@
 input_select:
-  john_sleep_state:
-    name: John Sleep State
+  cristina_sleep_state:
+    name: Cristina Sleep State
     options:
       - Awake
       - Sleep
