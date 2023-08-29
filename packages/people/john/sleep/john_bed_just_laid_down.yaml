@@ -1,0 +1,14 @@
+automation:
+  - id: john_bed_just_laid_down
+    alias: "John Bed - Just Laid Down"
+    mode: parallel
+    trigger:
+      # John's side of the bed is occupied
+      - platform: state
+        entity_id: binary_sensor.john_bed_occupied
+        to: "on"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.john_sleep_state
+          option: "Just Laid Down"

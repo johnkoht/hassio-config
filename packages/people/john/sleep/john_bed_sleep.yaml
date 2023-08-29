@@ -1,0 +1,16 @@
+automation:
+  - id: john_bed_sleep
+    alias: "John Bed - Sleep"
+    mode: parallel
+    trigger:
+      # John's been in bed for 5 minutes
+      - platform: state
+        entity_id: input_select.john_sleep_state
+        to: "Just Laid Down"
+        for:
+          minutes: 5
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.john_sleep_state
+          option: "Sleep"
