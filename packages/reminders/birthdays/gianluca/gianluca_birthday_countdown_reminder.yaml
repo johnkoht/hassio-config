@@ -7,6 +7,15 @@ automation:
       # At 7am
       - platform: time
         at: "07:05:00"
+      # At 7:35am
+      - platform: time
+        at: "07:35:00"
+      # At 8am
+      - platform: time
+        at: "08:05:00"
+      # At 8:35am
+      - platform: time
+        at: "08:35:00"
       # At 6pm
       - platform: time
         at: "18:05:00"
