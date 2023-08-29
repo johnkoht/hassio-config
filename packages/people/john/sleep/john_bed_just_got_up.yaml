@@ -1,7 +1,7 @@
 automation:
   - id: john_bed_just_got_up
     alias: "John Bed - Just Got Up"
-    mode: parallel
+    mode: single
     trigger:
       # John's side of the bed is NOT occupied
       - platform: state

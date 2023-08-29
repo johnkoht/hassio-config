@@ -1,7 +1,7 @@
 automation:
   - id: john_bed_sleep
     alias: "John Bed - Sleep"
-    mode: parallel
+    mode: single
     trigger:
       # John's been in bed for 5 minutes
       - platform: state
