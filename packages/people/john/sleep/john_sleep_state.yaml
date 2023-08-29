@@ -1,0 +1,53 @@
+input_select:
+  john_sleep_state:
+    name: John Sleep State
+    options:
+      - Awake
+      - Sleep
+      - Just Laid Down
+      - Just Got Up
+
+automation:
+  # Sets the sleep state of the persons
+  - id: set_person_sleep_state
+    alias: "Bestimme Schlafstatus Personen"
+    mode: parallel
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bed_dimitri
+        for:
+          seconds: 10
+      - platform: state
+        entity_id: input_boolean.bed_dimitri
+      - platform: state
+        entity_id: input_select.sleep_state_dimitri
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: input_boolean.bed_sabrina
+      - platform: state
+        entity_id: input_select.sleep_state_sabrina
+        for:
+          minutes: 5
+    action:
+      - variables:
+          person: "{{ trigger.to_state.entity_id.split('_')[-1] }}"
+          input_select: "input_select.sleep_state_{{ person }}"
+          new: "{{ trigger.to_state.state }}"
+      - service: input_select.select_option
+        data:
+          entity_id: "{{ input_select }}"
+          option: >
+            {% if new == 'on' and is_state(input_select, 'Just got up') %}
+              back in bed
+            {% elif new == 'on' %}
+              just laid down
+            {% elif new == 'off' %}
+              Just got up
+            {% elif new == 'Just got up' %}
+              wake
+            {% elif new in ['back in bed', 'just laid down'] %}
+              sleep
+            {% else %}
+              {{ states(input_select) }}
+            {% endif %}

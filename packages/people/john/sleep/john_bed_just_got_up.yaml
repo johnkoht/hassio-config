@@ -1,0 +1,14 @@
+automation:
+  - id: john_bed_just_got_up
+    alias: "John Bed - Just Got Up"
+    mode: parallel
+    trigger:
+      # John's side of the bed is NOT occupied
+      - platform: state
+        entity_id: binary_sensor.john_bed_occupied
+        to: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.john_sleep_state
+          option: "Just Got Up"
