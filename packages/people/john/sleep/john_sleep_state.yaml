@@ -11,7 +11,7 @@ automation:
   # Sets the sleep state of the persons
   - id: set_person_sleep_state
     alias: "Bestimme Schlafstatus Personen"
-    mode: parallel
+    mode: single
     trigger:
       - platform: state
         entity_id: binary_sensor.bed_dimitri
