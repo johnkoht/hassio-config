@@ -4,18 +4,12 @@ automation:
     mode: "single"
     initial_state: off
     trigger:
-      # Playroom is occupied for 10 minutes
-      - platform: state
-        entity_id: input_boolean.playroom_occupied
-        to: "on"
-        for:
-          minutes: 10
       # At 7am
       - platform: time
-        at: "07:00:00"
+        at: "07:05:00"
       # At 6pm
       - platform: time
-        at: "18:00:00"
+        at: "18:05:00"
     condition:
       # House is occupied
       - condition: state
@@ -28,15 +22,18 @@ automation:
       # After 7am
       - condition: time
         after: "07:00:00"
-      # Playroom is occupied
-      - condition: state
-        entity_id: input_boolean.playroom_occupied
-        state: "on"
     action:
-      # Wait for motion in the playroom
-      - wait_template: "{{ is_state('binary_sensor.playroom_motion', 'on') }}"
+      # Wait for motion in the kitchen or family room
+      - wait_template: >-
+          {{ 
+            is_state('binary_sensor.kitchen_motion_sensor_status', 'on')
+            or
+            is_state('binary_sensor.family_room_motion_sensor', 'on')
+          }}
         timeout: "00:05:00"
-        continue_on_timeout: false
+
+      - alias: "Wait 2 seconds"
+        delay: 2
 
       # Mark announced so we don't repeat all day
       - service: input_boolean.turn_on
