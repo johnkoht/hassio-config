@@ -46,7 +46,7 @@ automation:
 
             {{
               [
-                "Hey Nino, it's time to eat breakfast and get ready for " ~ event_label,
+                "Hey gang, it's time to eat breakfast and get ready for " ~ event_label,
                 "Hey there, it's time to get the kids breakfast ready. Today is " ~ event_label,
                 "Just at reminder that there's " ~ event_label ~ " today, so it's time for breakfast.",
               ] | random
