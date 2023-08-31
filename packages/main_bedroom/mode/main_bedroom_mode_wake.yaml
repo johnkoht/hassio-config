@@ -22,6 +22,10 @@ automation:
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "on"
     condition:
+      # Only move to Wake if we're currently in bedtime mode
+      - condition: state
+        entity_id: input_select.main_bedroom
+        state: "Bedtime"
       # After 5am and before 9am
       - condition: time
         after: "05:00:00"
