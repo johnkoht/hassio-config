@@ -46,7 +46,7 @@ automation:
           # IF today's the day then let's announce it!!!
           - conditions:
               - condition: template
-                value_template: "{{ states.sensor.nino_days_to_birthday.state == 0 }}"
+                value_template: "{{ states.sensor.nino_days_to_birthday.state | int == 0 }}"
             sequence:
               # Call the announcement engine
               - service: script.voice_announcement
@@ -58,7 +58,7 @@ automation:
           # ELIF 1 more day
           - conditions:
               - condition: template
-                value_template: "{{ states.sensor.nino_days_to_birthday.state == 1 }}"
+                value_template: "{{ states.sensor.nino_days_to_birthday.state | int == 1 }}"
             sequence:
               # Call the announcement engine
               - service: script.voice_announcement
