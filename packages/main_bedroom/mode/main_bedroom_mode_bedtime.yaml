@@ -64,18 +64,6 @@ automation:
           - condition: state
             entity_id: input_boolean.cristina_in_bed
             state: "on"
-          # door is closed
-          # AND somebody detected via BLE
-          - condition: and
-            conditions:
-              # Door is closed
-              - condition: state
-                entity_id: binary_sensor.main_bedroom_door_sensor_status
-                state: "off"
-              # Somebody detected via BLE
-              - condition: state
-                entity_id: binary_sensor.main_bedroom_ble_occupancy
-                state: "on"
     action:
       - service: input_select.select_option
         data:
