@@ -33,7 +33,7 @@ light:
     unique_id: exterior_flood_lights
     entities:
       - light.exterior_backyard_flood_east
-      # - light.exterior_backyard_flood_west
+      - light.exterior_backyard_flood_west
 
   # Exterior Accent Lights
   - platform: group
