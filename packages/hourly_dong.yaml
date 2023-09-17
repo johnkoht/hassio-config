@@ -41,6 +41,10 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # House is in Auto mode
+      - condition: state
+        entity_id: input_select.house
+        state: "Auto"
       # Speech notifications are enabled
       - condition: state
         entity_id: input_boolean.speech_notifications
