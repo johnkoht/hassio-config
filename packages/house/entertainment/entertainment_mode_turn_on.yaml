@@ -29,7 +29,7 @@ automation:
         entity_id: sensor.indoor_bluetooth_device_count
         above: 15
         for:
-          minutes: 5
+          minutes: 10
     condition:
       # House is occupied
       - condition: state
