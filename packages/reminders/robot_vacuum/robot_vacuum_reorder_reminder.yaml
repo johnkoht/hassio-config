@@ -3,26 +3,26 @@ automation:
     alias: "Robot Vacuum Reorder Reminder"
     mode: "single"
     trigger:
-      # Main brush life (less than 50 hours)
-      - platform: numeric_state
-        entity_id: sensor.roborock_s7_main_brush_left
-        below: 180000
+      # # Main brush life (less than 50 hours)
+      # - platform: numeric_state
+      #   entity_id: sensor.roborock_s7_main_brush_left
+      #   below: 180000
       # Main brush life (less than 20 hours)
       - platform: numeric_state
         entity_id: sensor.roborock_s7_main_brush_left
         below: 72000
-      # Side brush life (less than 50 hours)
-      - platform: numeric_state
-        entity_id: sensor.roborock_s7_side_brush_left
-        below: 180000
+      # # Side brush life (less than 50 hours)
+      # - platform: numeric_state
+      #   entity_id: sensor.roborock_s7_side_brush_left
+      #   below: 180000
       # Side brush life (less than 20 hours)
       - platform: numeric_state
         entity_id: sensor.roborock_s7_side_brush_left
         below: 72000
-      # Filter life (less than 50 hours)
-      - platform: numeric_state
-        entity_id: sensor.roborock_s7_filter_left
-        below: 180000
+      # # Filter life (less than 50 hours)
+      # - platform: numeric_state
+      #   entity_id: sensor.roborock_s7_filter_left
+      #   below: 180000
       # Filter life (less than 20 hours)
       - platform: numeric_state
         entity_id: sensor.roborock_s7_filter_left
