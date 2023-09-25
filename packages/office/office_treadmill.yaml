@@ -13,6 +13,7 @@ automation:
   - id: "office_treadmill_off"
     alias: "Office - Treadmill Off"
     mode: "single"
+    initial_state: off
     trigger:
       # At midnight
       - platform: time
@@ -35,6 +36,7 @@ automation:
   - id: "office_treadmill_on"
     alias: "Office - Treadmill On"
     mode: "single"
+    initial_state: off
     trigger:
       # Office becomes occupied
       - platform: state
