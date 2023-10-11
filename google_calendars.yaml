@@ -159,3 +159,9 @@
     - device_id: golf_acres
       ignore_availability: true
       name: Golf Acres
+
+- cal_id: 0014d514270baa0fe124a48aa1baa92fc4be65e0271e3d8b6ae604e9d005bb9f@group.calendar.google.com
+  entities:
+  - device_id: gianluca_school
+    ignore_availability: true
+    name: Gianluca School
