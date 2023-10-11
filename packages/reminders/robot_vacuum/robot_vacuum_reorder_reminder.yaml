@@ -31,7 +31,7 @@ automation:
       # Wait until 6:30am
       - wait_for_trigger:
           - platform: time
-            at: "06:30:00"
+            at: "07:05:00"
 
       # Wait for the kitchen to be occupied for 10 minutes
       - wait_for_trigger:
