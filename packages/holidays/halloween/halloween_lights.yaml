@@ -1,0 +1,41 @@
+# automation:
+#   - id: "halloween_lights_turn_on"
+#     alias: Halloween Lights - Turn On
+#     mode: "single"
+#     trigger:
+#       - platform: homeassistant
+#         event: start
+#       # At 2am
+#       - platform: time
+#         at: "02:00:00"
+#     condition:
+#       # Between 12/1 - 1/07
+#       - condition: template
+#         value_template: >
+#           {% set d = now() %}
+#           {{ d.month == 12 or (d.month == 1 and ( 1<= d.day <= 7)) }}
+#       # Boolean is disabled
+#       - condition: state
+#         entity_id: input_boolean.christmas_season_active
+#         state: "off"
+#     action:
+#       # Turn the script to enable the booleans and automations
+#       - service: script.turn_on
+#         entity_id: script.christmas_enable_automations
+
+# script:
+#   christmas_enable_automations:
+#     alias: Christmas - Enable Automations
+#     mode: "queued"
+#     sequence:
+#       # Turn on the Christmas Season boolean
+#       - service: input_boolean.turn_on
+#         entity_id: input_boolean.christmas_season_active
+
+#       # Turn on a bunch of automations
+#       - service: automation.turn_on
+#         entity_id:
+#           - automation.christmas_activated
+#           - automation.christmas_not_activated
+#           - automation.turn_on_christmas_lights
+#           - automation.turn_off_christmas_lights
