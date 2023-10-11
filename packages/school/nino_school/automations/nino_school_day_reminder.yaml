@@ -8,7 +8,7 @@ automation:
   - id: "nino_school_day_reminder"
     alias: "Nino School Day Reminder"
     mode: "single"
-    initial_state: on
+    initial_state: off
     trigger:
       # 1 hour and 15 mins before start
       - platform: calendar
