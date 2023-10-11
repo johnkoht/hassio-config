@@ -1,0 +1,32 @@
+# Nino's nightlight
+#
+automation:
+  - id: "nino_nightlight_turn_on"
+    initial_state: on
+    alias: "Nino Nightlight - Turn On"
+    trigger:
+      # Room is occupied for an hour
+      - platform: state
+        entity_id: input_boolean.ninos_room_occupied
+        to: "on"
+        for:
+          hours: 1
+      # At 10pm
+      - platform: time
+        at: "22:00:00"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nino's lamp is currently ON
+      - condition: state
+        entity_id: light.nino_bedroom_lamp
+        state: "on"
+      # After 7pm
+      - condition: time
+        after: "19:00:00"
+    action:
+      - service: scene.turn_on
+        target:
+          entity_id: scene.ninos_room_nino_nightlight
