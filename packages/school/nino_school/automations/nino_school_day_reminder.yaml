@@ -26,7 +26,7 @@ automation:
         state: "on"
       # Not a reminder
       - condition: template
-        value_template: "{{ 'reminder' not in trigger.calendar_event.summary }}"
+        value_template: "{{ 'reminder' not in (trigger.calendar_event.summary | lower) }}"
     action:
       # Call the announcement engine
       - service: script.voice_announcement

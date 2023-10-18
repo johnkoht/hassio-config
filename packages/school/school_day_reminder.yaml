@@ -26,7 +26,16 @@ automation:
         state: "on"
       # Make sure the automation wasn't recently trigger (last 5 mins)
       - condition: template
-        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.school_day_reminder','last_triggered')) ) | int > 300 }}"
+        value_template: >
+          {% if states.automation.school_day_reminder.attributes.last_triggered is not none %}
+            {% if as_timestamp(now()) | int - as_timestamp(states.automation.school_day_reminder.attributes.last_triggered) | int > 300 %}
+              true 
+            {% else %}
+              false
+            {% endif %}
+          {% else %}
+            true
+          {% endif %}
       # One of the kid's has school
       - condition: or
         conditions:
@@ -40,7 +49,7 @@ automation:
             state: "on"
       # Not a reminder
       - condition: template
-        value_template: "{{ 'reminder' not in trigger.calendar_event.summary }}"
+        value_template: "{{ 'reminder' not in (trigger.calendar_event.summary | lower) }}"
     action:
       # Call the announcement engine
       - service: script.voice_announcement
