@@ -36,7 +36,7 @@ automation:
         event: start
       # At 10pm
       - platform: time
-        at: "10:00:00"
+        at: "22:00:00"
       # Bedtime mode is enabled
       - platform: state
         entity_id: input_boolean.bedtime
