@@ -9,12 +9,12 @@ automation:
     alias: "John in Bed"
     initial_state: on
     trigger:
-      # # Bayesian sensor is on for 2 minutes
-      # - platform: state
-      #   entity_id: binary_sensor.john_in_bed
-      #   to: "on"
-      #   for:
-      #     minutes: 1
+      # Bayesian sensor is on for 2 minutes
+      - platform: state
+        entity_id: binary_sensor.john_in_bed
+        to: "on"
+        for:
+          minutes: 1
       # # It's bedtime hours
       # - platform: state
       #   entity_id: binary_sensor.bedtime
@@ -36,8 +36,17 @@ automation:
       - condition: state
         entity_id: binary_sensor.john_in_bed
         state: "on"
-        # for:
-        #   minutes: 1
+      # Sleep statate is sleep or just laid down
+      - condition: or
+        conditions:
+          # Sleep state is SLEEP
+          - condition: state
+            entity_id: input_select.john_sleep_state
+            state: "Sleep"
+          # Sleep state is "Just Laid Down"
+          - condition: state
+            entity_id: input_select.john_sleep_state
+            state: "Just Laid Down"
       # John is home
       - condition: state
         entity_id: input_boolean.john_home
