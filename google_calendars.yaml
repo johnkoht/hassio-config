@@ -39,7 +39,7 @@
       ignore_availability: true
       name: "Nino's Birthday"
       track: true
-      search: "Anthony Birthday"
+      search: "Nino's Birthday"
       offset: "!!"
     - device_id: gianluca_bday
       ignore_availability: true
@@ -162,6 +162,6 @@
 
 - cal_id: 0014d514270baa0fe124a48aa1baa92fc4be65e0271e3d8b6ae604e9d005bb9f@group.calendar.google.com
   entities:
-  - device_id: gianluca_school
-    ignore_availability: true
-    name: Gianluca School
+    - device_id: gianluca_school
+      ignore_availability: true
+      name: Gianluca School
