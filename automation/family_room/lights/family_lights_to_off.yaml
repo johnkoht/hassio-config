@@ -10,12 +10,10 @@ trigger:
   - platform: state
     entity_id: input_select.house
     to: "Off"
-  # # Fmaily room is not occupied for 2 minutes
-  # - platform: state
-  #   entity_id: input_boolean.family_room_occupied
-  #   to: "off"
-  #   for:
-  #     minutes: 2
+  # Fmaily room is not occupied
+  - platform: state
+    entity_id: input_boolean.family_room_occupied
+    to: "off"
 condition:
   - condition: state
     entity_id: input_boolean.lighting_automations
