@@ -11,30 +11,30 @@
       ignore_availability: true
       name: kohboCal
       track: true
-    - device_id: ninos_soccer
-      ignore_availability: true
-      name: Nino soccer
-      track: true
-      search: "soccer"
-      offset: "!!"
-    - device_id: ninos_italian_class
-      ignore_availability: true
-      name: Nino Italian class
-      track: true
-      search: "Nino Italian class"
-      offset: "!!"
-    - device_id: ninos_swim_lesson
-      ignore_availability: true
-      name: Nino Swim Lesson
-      track: true
-      search: "Nino Swim Lesson"
-      offset: "!!"
-    - device_id: gianluca_little_gym
-      ignore_availability: true
-      name: Gianluca Little Gym
-      track: true
-      search: "Gianluca Little Gym"
-      offset: "!!"
+    # - device_id: ninos_soccer
+    #   ignore_availability: true
+    #   name: Nino soccer
+    #   track: true
+    #   search: "soccer"
+    #   offset: "!!"
+    # - device_id: ninos_italian_class
+    #   ignore_availability: true
+    #   name: Nino Italian class
+    #   track: true
+    #   search: "Nino Italian class"
+    #   offset: "!!"
+    # - device_id: ninos_swim_lesson
+    #   ignore_availability: true
+    #   name: Nino Swim Lesson
+    #   track: true
+    #   search: "Nino Swim Lesson"
+    #   offset: "!!"
+    # - device_id: gianluca_little_gym
+    #   ignore_availability: true
+    #   name: Gianluca Little Gym
+    #   track: true
+    #   search: "Gianluca Little Gym"
+    #   offset: "!!"
     - device_id: ninos_bday
       ignore_availability: true
       name: "Nino's Birthday"
