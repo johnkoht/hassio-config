@@ -3,4 +3,7 @@
     cristina_probably_sleeping:
       friendly_name: Cristina Probably Sleeping
       value_template: >-
-        {{ state_attr("binary_sensor.cristina_sleeping", "probability") > 0.75 }}
+        {{ 
+          states.binary_sensor.cristina_bed_occupied.state == "on" and
+          state_attr("binary_sensor.cristina_sleeping", "probability") > 0.6
+        }}
