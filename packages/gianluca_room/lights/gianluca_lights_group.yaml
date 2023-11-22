@@ -1,0 +1,9 @@
+light:
+  - platform: group
+    name: Gianluca Bedroom Lights
+    unique_id: gianluca_bedroom_lights
+    entities:
+      - light.gianluca_room_1
+      - light.gianluca_room_2
+      - light.gianluca_room_3
+      - light.gianluca_room_4
