@@ -89,25 +89,35 @@ views:
                 template: card_light
                 entity: light.office_lights
                 variables:
-                  ulm_card_light_enable_slider: true
-                  ulm_card_light_enable_horizontal: true
-                  ulm_card_light_enable_color: true
-                  ulm_card_light_force_background_color: true
-                # Card configuration starts here
-              - type: "custom:rgb-light-card"
-                entity: light.office_lights
-                colors:
-                  # Any option of the light.turn_on service can be used in each color
-                  - rgb_color:
-                      - 255
-                      - 127
-                      - 255
-                    brightness: 220
-                    transition: 1
-                  - hs_color:
-                      - 60
-                      - 30
-                    icon_color: "#fff8b0" # Override icon color
+                  ulm_card_light_enable_popup: true
+                  ulm_card_light_enable_popup_tap: true
+                  # ulm_card_light_enable_slider: true
+                  # ulm_card_light_enable_horizontal: true
+                  # ulm_card_light_enable_color: true
+                  # ulm_card_light_force_background_color: true
+
+              # - type: "custom:button-card"
+              #   template:
+              #     - card_light
+              #   entity: light.cuisine
+              #   variables:
+              #     ulm_card_light_enable_popup: true
+              #     ulm_card_light_color_palette: select.wled_color_palette
+              #   # Card configuration starts here
+              # - type: "custom:rgb-light-card"
+              #   entity: light.office_lights
+              #   colors:
+              #     # Any option of the light.turn_on service can be used in each color
+              #     - rgb_color:
+              #         - 255
+              #         - 127
+              #         - 255
+              #       brightness: 220
+              #       transition: 1
+              #     - hs_color:
+              #         - 60
+              #         - 30
+              #       icon_color: "#fff8b0" # Override icon color
               - type: "custom:button-card"
                 template: card_light
                 entity: light.hue_play_1
