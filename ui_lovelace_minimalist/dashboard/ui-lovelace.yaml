@@ -130,7 +130,7 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_kitchen
                     templates:
-                      - green_playing
+                      - blue_on
                     tap_action:
                       action: none
                 styles:
@@ -170,7 +170,7 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_family_room
                     templates:
-                      - green_playing
+                      - blue_on
                     tap_action:
                       action: none
                   entity_4:
@@ -258,7 +258,7 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_office
                     templates:
-                      - green_playing
+                      - blue_on
                     tap_action:
                       action: none
                 styles:
@@ -300,7 +300,7 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_main_bedroom
                     templates:
-                      - green_playing
+                      - blue_on
                     tap_action:
                       action: none
                 styles:
@@ -416,7 +416,7 @@ views:
                   entity_3:
                     entity_id: media_player.sonos_living_room
                     templates:
-                      - green_playing
+                      - blue_on
                     tap_action:
                       action: none
                 styles:
@@ -542,108 +542,3 @@ views:
                 styles:
                   img_cell:
                     - background: "none"
-
-          - type: "custom:button-card"
-            template: "card_title"
-            name: "NEW WORKING Congrats with your installation 🎉"
-            label: "Explore some of the wonderful 'Minimalistic-UI' cards we offer here"
-          - type: "custom:auto-entities"
-            card:
-              type: "grid"
-              columns: 1
-              square: false
-            card_param: "cards"
-            sort:
-              count: 1
-            filter:
-              include:
-                - domain: "weather"
-                  options:
-                    type: "custom:button-card"
-                    template: "card_welcome_scenes"
-                    variables:
-                      ulm_weather: "this.entity_id"
-          - type: "custom:button-card"
-            template: "card_title"
-            name: "[[[ hass.resources[hass['language']]['ui.panel.lovelace.editor.card.light.name'] ]]]"
-            label: "This is the Minimalist-light-card"
-          - type: "custom:auto-entities"
-            card:
-              type: "grid"
-              columns: 2
-              square: false
-            card_param: "cards"
-            sort:
-              count: 4
-            filter:
-              include:
-                - domain: "light"
-                  options:
-                    type: "custom:button-card"
-                    template: "card_light"
-                    variables:
-                      ulm_card_light_enable_slider: true
-                      ulm_card_light_enable_color: true
-                      ulm_card_light_enable_popup: true
-          - type: "custom:button-card"
-            template: "card_title"
-            name: "Binary Sensors"
-            label: "This is the Minimalist-binary_sensor-card"
-          - type: "custom:auto-entities"
-            card:
-              type: "grid"
-              columns: 2
-              square: false
-            card_param: "cards"
-            sort:
-              count: 4
-            filter:
-              include:
-                - domain: "binary_sensor"
-                  options:
-                    type: "custom:button-card"
-                    template: "card_binary_sensor_alert"
-                    variables:
-                      - ulm_card_binary_sensor_alert: true
-          - type: "custom:button-card"
-            template: "card_title"
-            name: "[[[ hass.resources[hass['language']]['ui.panel.lovelace.editor.card.sensor.name'] ]]]"
-            label: "This is the Minimalist-sensor-card"
-          - type: "custom:auto-entities"
-            card:
-              type: "grid"
-              columns: 2
-              square: false
-            card_param: "cards"
-            sort:
-              count: 4
-            filter:
-              include:
-                - domain: "sensor"
-                  options:
-                    type: "custom:button-card"
-                    template: "card_generic"
-          - type: "custom:button-card"
-            template: "card_title"
-            name: "[[[ hass.resources[hass['language']]['ui.dialogs.entity_registry.editor.device_classes.binary_sensor.battery'] ]]]"
-            label: "This is the Minimalist-battery-card"
-          - type: "custom:auto-entities"
-            card:
-              type: "grid"
-              columns: 2
-              square: false
-            card_param: "cards"
-            sort:
-              count: 4
-            filter:
-              include:
-                - attributes:
-                    unit_of_measurement: "%"
-                    device_class: "battery"
-                  options:
-                    type: "custom:button-card"
-                    template: "card_battery"
-                    variables:
-                      ulm_card_battery_battery_state_entity_id: "this.entity_id"
-                      ulm_card_battery_battery_level_danger: 30
-                      ulm_card_battery_battery_level_warning: 80
