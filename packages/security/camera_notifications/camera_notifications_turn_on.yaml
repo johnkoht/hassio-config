@@ -31,3 +31,8 @@ automation:
           - switch.front_door_camera_detections_vehicle
           - switch.front_door_camera_detections_motion
           - switch.front_door_camera_detections_package
+          # Driveway Front Camera
+          - switch.driveway_front_detections_motion
+          - switch.driveway_front_detections_person
+          - switch.driveway_front_detections_vehicle
+          - switch.driveway_front_detections_license_plate
