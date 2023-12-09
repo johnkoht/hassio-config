@@ -261,11 +261,11 @@ automation:
               # Its dark
               - condition: numeric_state
                 entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-                below: 75
+                below: 45
           # Is getting dark
           - condition: numeric_state
             entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-            below: 38
+            below: 35
     action:
       # Activate the boolean
       - service: input_boolean.turn_on
@@ -349,9 +349,9 @@ automation:
       # It's getting brighter outside
       - platform: numeric_state
         entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        above: 250
+        above: 150
         for:
-          minutes: 5
+          minutes: 3
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -379,7 +379,7 @@ automation:
           # It's not dark anymore
           - condition: numeric_state
             entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-            above: 250
+            above: 150
     action:
       # Activate the boolean
       - service: input_boolean.turn_off
