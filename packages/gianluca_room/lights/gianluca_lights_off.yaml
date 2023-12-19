@@ -1,6 +1,6 @@
 automation:
   - id: "gianluca_bedroom_lights_off"
-    initial_state: off
+    initial_state: on
     alias: "Gianluca Bedroom - Lights Off"
     trigger:
       # Gianluca's Bedroom is Off
@@ -33,4 +33,4 @@ automation:
             state: "off"
     action:
       - service: light.turn_off
-        entity_id: lights.gianluca_bedroom_lights
+        entity_id: light.gianluca_bedroom_lights
