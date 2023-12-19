@@ -7,7 +7,7 @@ automation:
     trigger:
       # Nino's room is occupied (e.g. door is closed)
       - platform: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         to: "on"
         for:
           minutes: 1
@@ -38,7 +38,7 @@ automation:
         conditions:
           # Room is occupied
           - condition: state
-            entity_id: input_boolean.ninos_room_occupied
+            entity_id: input_boolean.ninos_bedroom_occupied
             state: "on"
           - condition: time
             after: "18:30:00"
@@ -92,7 +92,7 @@ automation:
         to: "off"
       # Room is no longer occupied
       - platform: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"
     condition:
       - condition: or
@@ -105,7 +105,7 @@ automation:
             state: "off"
           # OR the room is not occupied
           - condition: state
-            entity_id: input_boolean.ninos_room_occupied
+            entity_id: input_boolean.ninos_bedroom_occupied
             state: "off"
       # Plug is currently on
       - condition: state

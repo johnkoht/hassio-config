@@ -7,7 +7,7 @@ automation:
     trigger:
       # Room is occupied for an hour
       - platform: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         to: "on"
         for:
           hours: 1

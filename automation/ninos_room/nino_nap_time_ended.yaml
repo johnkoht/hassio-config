@@ -4,7 +4,7 @@ initial_state: "on"
 trigger:
   # His room is no longer occupied
   - platform: state
-    entity_id: input_boolean.ninos_room_occupied
+    entity_id: input_boolean.ninos_bedroom_occupied
     to: "off"
 condition:
   # The house is occupied

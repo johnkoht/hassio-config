@@ -5,7 +5,7 @@ binary_sensor:
         friendly_name: "Kids Sleeping"
         value_template: >-
           {{ 
-            states.input_boolean.ninos_room_occupied.state == "on" 
+            states.input_boolean.ninos_bedroom_occupied.state == "on" 
             and
             states.input_boolean.gianlucas_room_occupied.state == "on"
           }}
