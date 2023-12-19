@@ -1,0 +1,36 @@
+automation:
+  - id: "gianluca_bedroom_lights_off"
+    initial_state: off
+    alias: "Gianluca Bedroom - Lights Off"
+    trigger:
+      # Gianluca's Bedroom is Off
+      - platform: state
+        entity_id: input_select.gianlucas_bedroom
+        to: "Off"
+      # Gianluca's Bedroom is not occupied
+      - platform: state
+        entity_id: input_boolean.gianlucas_room_occupied
+        to: "off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Gianluca's Bedroom is not occupied
+      - condition: state
+        entity_id: input_boolean.gianlucas_room_occupied
+        state: "off"
+      # Gianluca's Bedroom is Off, not occupied, or the room is bright enough
+      - condition: or
+        conditions:
+          # Gianluca's Bedroom is Off
+          - condition: state
+            entity_id: input_select.gianlucas_bedroom
+            state: "Off"
+          # Gianluca's Bedroom is not occupied
+          - condition: state
+            entity_id: input_boolean.gianlucas_room_occupied
+            state: "off"
+    action:
+      - service: light.turn_off
+        entity_id: lights.gianluca_bedroom_lights
