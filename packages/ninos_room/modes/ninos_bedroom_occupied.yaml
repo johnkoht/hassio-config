@@ -7,15 +7,25 @@ automation:
       - platform: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "off"
+      # Lights turned ON
+      - platform: state
+        entity_id: light.ninos_bedroom_main_lights
+        to: "on"
     condition:
       # Not currently occupied
       - condition: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         state: "off"
-      # Nino's door is closed
-      - condition: state
-        entity_id: binary_sensor.ninos_door_sensor_status
-        state: "off"
+      - condition: or
+        conditions:
+          # Nino's door is closed
+          - condition: state
+            entity_id: binary_sensor.ninos_door_sensor_status
+            state: "off"
+          # Lights are ON
+          - condition: state
+            entity_id: light.ninos_bedroom_main_lights
+            state: "on"
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied

@@ -9,12 +9,12 @@ automation:
         to: "off"
       # Room is no longer occupied
       - platform: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"
     condition:
       # Room is no longer occupied
       - condition: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         state: "off"
       # Bedtime mode is off
       - condition: state

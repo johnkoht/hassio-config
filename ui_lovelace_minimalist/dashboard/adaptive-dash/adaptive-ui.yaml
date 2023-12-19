@@ -289,7 +289,7 @@ views:
                   - card_room
                   - blue_on
                 name: Nino's Room
-                entity: input_boolean.ninos_room_occupied
+                entity: input_boolean.ninos_bedroom_occupied
                 icon: mdi:bed-single
                 label: >
                   [[[

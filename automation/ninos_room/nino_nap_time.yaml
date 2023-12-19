@@ -4,7 +4,7 @@ initial_state: "on"
 trigger:
   # Nino's room is occupied, e.g. he's sleeping
   - platform: state
-    entity_id: input_boolean.ninos_room_occupied
+    entity_id: input_boolean.ninos_bedroom_occupied
     to: "on"
     for:
       minutes: 3
@@ -15,7 +15,7 @@ condition:
     state: "on"
   # Room is occupied (e.g. door is closed)
   - condition: state
-    entity_id: input_boolean.ninos_room_occupied
+    entity_id: input_boolean.ninos_bedroom_occupied
     state: "on"
     for:
       minutes: 3

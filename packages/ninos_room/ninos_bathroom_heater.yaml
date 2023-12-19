@@ -8,7 +8,7 @@ automation:
     trigger:
       # Nino's room becomes occupied for 30 mins
       - platform: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         to: "on"
         for:
           minutes: 30
@@ -31,7 +31,7 @@ automation:
         state: "on"
       # Nino's room is occupied
       - condition: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         state: "on"
       # It's after 6pm
       - condition: time
@@ -73,7 +73,7 @@ automation:
         conditions:
           # Room is occupied
           - condition: state
-            entity_id: input_boolean.ninos_room_occupied
+            entity_id: input_boolean.ninos_bedroom_occupied
             state: "on"
           # It's below 65 degrees
           - condition: template
@@ -109,7 +109,7 @@ automation:
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) > 73.5 }}"
       # Nino's room is no longer occupied
       - platform: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"
         for:
           minutes: 20

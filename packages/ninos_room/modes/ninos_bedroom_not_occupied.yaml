@@ -12,8 +12,8 @@ automation:
     condition:
       # Currently occupied
       - condition: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         state: "on"
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied

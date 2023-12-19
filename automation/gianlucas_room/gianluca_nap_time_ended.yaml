@@ -21,7 +21,7 @@ condition:
     state: "on"
   # Make sure Nino's room is not occupied and he's sleeping
   - condition: state
-    entity_id: input_boolean.ninos_room_occupied
+    entity_id: input_boolean.ninos_bedroom_occupied
     state: "off"
   # Quiet mode is currently enabled
   - condition: state

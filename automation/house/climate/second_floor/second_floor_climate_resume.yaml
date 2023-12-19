@@ -19,7 +19,7 @@ trigger:
     to: "on"
   # Nino's room becomes occupied
   - platform: state
-    entity_id: input_boolean.ninos_room_occupied
+    entity_id: input_boolean.ninos_bedroom_occupied
     to: "on"
   # Gianluca's bedroom becomes occupied
   - platform: state
@@ -39,7 +39,7 @@ condition:
         state: "Quiet"
       # Nino's room is occupied
       - condition: state
-        entity_id: input_boolean.ninos_room_occupied
+        entity_id: input_boolean.ninos_bedroom_occupied
         state: "on"
       # Gianluca's room is occupied
       - condition: state
