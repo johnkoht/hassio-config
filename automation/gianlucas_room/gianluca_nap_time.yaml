@@ -21,12 +21,10 @@ condition:
   - condition: state
     entity_id: input_boolean.house_occupied
     state: "on"
-  # Room is occupied (e.g. door is closed)
+  # Room is occupied
   - condition: state
     entity_id: input_boolean.gianlucas_room_occupied
     state: "on"
-    for:
-      minutes: 3
   # Gianluca's door is closed
   - condition: state
     entity_id: binary_sensor.gianlucas_door_sensor_status
