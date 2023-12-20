@@ -6,15 +6,15 @@
 #
 automation:
   - id: "upstairs_hallway_lights_sleep_mode_off"
-    initial_state: off
+    initial_state: on
     alias: "Upstairs Hallway Lights Sleep Mode Off"
     trigger:
       # At sunrise
       - platform: sun
         event: sunrise
-      # Or at 8am
+      # Or at 7am
       - platform: time
-        at: "08:00:00"
+        at: "07:00:00"
       # Upstairs hallways goes into Auto mode
       - platform: state
         entity_id: input_select.upstairs_hallway

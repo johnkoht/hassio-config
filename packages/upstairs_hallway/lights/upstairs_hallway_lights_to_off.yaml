@@ -13,6 +13,12 @@ automation:
       - platform: state
         entity_id: input_boolean.lighting_automations
         to: "on"
+      # No motion for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.upstairs_hallway_motion
+        to: "off"
+        for:
+          minutes: 5
     condition:
       # Lighting automations are enabled
       - condition: state
