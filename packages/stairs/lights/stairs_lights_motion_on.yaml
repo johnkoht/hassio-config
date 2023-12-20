@@ -1,6 +1,6 @@
 automation:
   - id: "stairs_lights_motion_on"
-    initial_state: off
+    initial_state: on
     alias: "Stairs lights Motion On"
     trigger:
       # Motion detected
@@ -13,9 +13,16 @@ automation:
         entity_id: input_boolean.lighting_automations
         state: "on"
       # Light is low
-      - condition: numeric_state
-        entity_id: sensor.foyer_motion_illuminance
-        below: 100
+      - condition: or
+        conditions:
+          # Foyer light is low
+          - condition: numeric_state
+            entity_id: sensor.foyer_motion_illuminance
+            below: 50
+          # Upstairs light is low
+          - condition: numeric_state
+            entity_id: sensor.stairs_up_motion_sensor_illuminance
+            below: 50
       # Lights are currently off
       - condition: state
         entity_id: light.stairs_light
