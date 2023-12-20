@@ -5,4 +5,4 @@ binary_sensor:
     device_class: motion
     entities:
       - binary_sensor.stairs_up_motion_sensor_motion
-      - binary_sensor.stairs_down_motion_sensor_status
+      - binary_sensor.stairs_down_motion_sensor_motion
