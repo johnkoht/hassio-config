@@ -8,17 +8,27 @@ trigger:
     to: "on"
     for:
       minutes: 3
+  # Lights turned off
+  - platform: state
+    entity_id: light.ninos_bedroom_main_lights
+    to: "off"
+  # His nightlight lamp turned on
+  - platform: state
+    entity_id: light.nino_bedroom_lamp
+    to: "on"
 condition:
   # The house is occupied
   - condition: state
     entity_id: input_boolean.house_occupied
     state: "on"
-  # Room is occupied (e.g. door is closed)
+  # Room is occupied
   - condition: state
     entity_id: input_boolean.ninos_bedroom_occupied
     state: "on"
-    for:
-      minutes: 3
+  # Door is closed
+  - condition: state
+    entity_id: binary_sensor.ninos_door_sensor_status
+    state: "off"
   # Quiet mode is not currently enabled
   - condition: state
     entity_id: input_boolean.quiet_mode
@@ -36,7 +46,7 @@ action:
         {{
           [
             "Shhh...Nino is going to sleep.",
-            "Quiet time, Nino is going to nap!",
+            "Quiet time, Nino is going to sleep!",
             "Pardon the interruption but Nino is going to sleep, please be quiet!",
             "Attention! Quiet mode has been enabled for Nino's nap."
           ] | random
