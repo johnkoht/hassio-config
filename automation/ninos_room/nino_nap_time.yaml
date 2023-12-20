@@ -33,6 +33,9 @@ condition:
   - condition: state
     entity_id: input_boolean.quiet_mode
     state: "off"
+  # After 5pm
+  - condition: time
+    after: "17:00:00"
 action:
   # Turn on the quiet mode boolean
   - service: input_boolean.turn_on
