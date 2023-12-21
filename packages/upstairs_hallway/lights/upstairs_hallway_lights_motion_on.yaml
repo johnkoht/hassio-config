@@ -24,6 +24,10 @@ automation:
       - condition: state
         entity_id: light.upstairs_hallway
         state: "off"
+      # Quiet mode is NOT enabled
+      - condition: state
+        entity_id: input_boolean.quiet_mode
+        state: "off"
     action:
       - service: light.turn_on
         entity_id: light.upstairs_hallway
