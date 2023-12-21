@@ -27,7 +27,7 @@ automation:
         conditions:
           # Motion is detected
           - condition: state
-            entity_id: light.upstairs_hallway_motion
+            entity_id: binary_sensor.upstairs_hallway_motion
             state: "on"
           # OR lights are ON
           - condition: state
