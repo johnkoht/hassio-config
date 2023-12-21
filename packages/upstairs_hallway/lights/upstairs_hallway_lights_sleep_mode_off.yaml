@@ -24,6 +24,10 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      # Upstairs hallway is Auto mode
+      - condition: state
+        entity_id: input_select.upstairs_hallway
+        state: "Auto"
       # # Sun is up
       - condition: sun
         after: sunrise
