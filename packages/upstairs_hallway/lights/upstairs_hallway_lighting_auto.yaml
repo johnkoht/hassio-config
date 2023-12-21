@@ -1,0 +1,5 @@
+input_boolean:
+  upstairs_hallway_lights_auto:
+    name: Upstairs Hallway Lights auto
+    icon: mdi:lightbulb-auto
+    initial: off

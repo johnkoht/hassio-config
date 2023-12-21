@@ -32,3 +32,6 @@ automation:
       # Turn OFF the upstairs hallway lights
       - service: light.turn_off
         entity_id: light.upstairs_hallway
+      # Toggle the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.upstairs_hallway_lights_auto
