@@ -1,0 +1,19 @@
+automation:
+  - id: "upstairs_hallway_not_occupied"
+    initial_state: on
+    alias: "Upstairs Hallway Not Occupied"
+    trigger:
+      # No motion for 10 mins
+      - platform: state
+        entity_id: binary_sensor.upstairs_hallway_motion
+        to: "off"
+        for:
+          minutes: 10
+    condition:
+      # Upstairs Hallway is occupied
+      - condition: state
+        entity_id: input_boolean.upstairs_hallway_occupied
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.upstairs_hallway_occupied

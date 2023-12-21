@@ -1,0 +1,38 @@
+# Upstairs Hallway Occupied
+#
+automation:
+  - id: "upstairs_hallway_occupied"
+    initial_state: on
+    alias: "Upstairs Hallway Occupied"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.upstairs_hallway_motion
+        to: "on"
+      # Upstairs Hallway lights are turned on
+      - platform: state
+        entity_id: light.upstairs_hallway
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Upstairs Hallway is not already occupied
+      - condition: state
+        entity_id: input_boolean.upstairs_hallway_occupied
+        state: "off"
+      # Occupancy detetected
+      - condition: or
+        conditions:
+          # Motion is detected
+          - condition: state
+            entity_id: light.upstairs_hallway_motion
+            state: "on"
+          # OR lights are ON
+          - condition: state
+            entity_id: light.upstairs_hallway
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.upstairs_hallway_occupied

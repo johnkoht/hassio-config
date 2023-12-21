@@ -5,6 +5,5 @@ input_select:
     name: Upstairs Hallway
     options:
       - "Auto"
-      - "Away"
       - "Bedtime"
       - "Off"
