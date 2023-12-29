@@ -6,6 +6,8 @@ automation:
       # If anybody is detected out of the room
       - platform: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
+        for:
+          minutes: 5
       # Garage sensor no longer detects occupancy
       - platform: state
         entity_id: binary_sensor.garage_motion_sensor_occupancy
