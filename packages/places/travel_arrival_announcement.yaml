@@ -1,0 +1,34 @@
+automation:
+  - id: "travel_arrival_announcement"
+    alias: "Travel - Arrival Announcement"
+    mode: "single"
+    trigger:
+      # Arrive to a location
+      - platform: state
+        entity_id:
+          - person.john_koht
+          - person.cristina_falbo
+        to:
+          - "Waldorf Astoria Hotel"
+        for:
+          minutes: 1
+    # condition:
+    action:
+      # Voice announcement
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: musical-flute
+          speech_message: >
+            {% set person = "" %}
+            {% set ent = trigger.entity_id %}
+
+            {% if ent == "person.john_koht" %}
+              {% set person = "Baba" %}
+            {% else %}
+              {% set person = "Mama" %}
+            {% endif %}
+
+            {% set store = trigger.to_state.state %}
+
+            "Just wanted to let you know that {{person}} safely arrived at {{store}}!"
