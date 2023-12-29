@@ -146,3 +146,24 @@ wemo:
     - 192.168.2.24
     - 192.168.2.162
     - 192.168.2.230
+
+logger:
+  default: info
+  logs:
+    serialpy: debug
+
+    homeassistant.core: debug
+    homeassistant.components.zha: debug
+
+    bellows.zigbee.application: debug
+    bellows.ezsp: debug
+    zigpy: debug
+    zigpy_deconz.zigbee.application: debug
+    zigpy_deconz.api: debug
+    zigpy_deconz.uart: debug
+    zigpy_xbee.zigbee.application: debug
+    zigpy_xbee.api: debug
+    zigpy_zigate: debug
+    zigpy_znp: debug
+    zhaquirks: debug
+    asyncio: debug
