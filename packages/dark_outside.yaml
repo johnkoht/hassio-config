@@ -24,7 +24,7 @@ automation:
         below: -4.0
       # It's getting dark outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         below: 30
         for:
           minutes: 2
@@ -45,7 +45,7 @@ automation:
         below: 2.0
       # Lux is low in the yard
       - condition: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         below: 30
     action:
       - service: input_boolean.turn_on
@@ -70,7 +70,7 @@ automation:
         above: -4.0
       # It's getting light outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 31
         for:
           minutes: 2
@@ -91,7 +91,7 @@ automation:
         above: -4.0
       # Lux is not low in the yard
       - condition: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 31
     action:
       - service: input_boolean.turn_off
