@@ -230,7 +230,7 @@ automation:
           minutes: 15
       # It's getting dark outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         below: 38
         for:
           minutes: 5
@@ -260,11 +260,11 @@ automation:
                 state: "on"
               # Its dark
               - condition: numeric_state
-                entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+                entity_id: sensor.tempest_illuminance
                 below: 45
           # Is getting dark
           - condition: numeric_state
-            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+            entity_id: sensor.tempest_illuminance
             below: 35
     action:
       # Activate the boolean
@@ -348,7 +348,7 @@ automation:
           minutes: 15
       # It's getting brighter outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 150
         for:
           minutes: 3
@@ -364,7 +364,7 @@ automation:
         state: "on"
       # It's not dark outside
       - condition: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 50
       # Sun is above horizon
       - condition: state
@@ -378,7 +378,7 @@ automation:
             state: "off"
           # It's not dark anymore
           - condition: numeric_state
-            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+            entity_id: sensor.tempest_illuminance
             above: 150
     action:
       # Activate the boolean

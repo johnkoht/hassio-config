@@ -14,13 +14,13 @@ automation:
           minutes: 5
       # It's lighter outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 250
         for:
           minutes: 3
       # It's very bright outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 500
         for:
           minutes: 3

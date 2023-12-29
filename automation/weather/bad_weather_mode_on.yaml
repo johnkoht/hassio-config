@@ -72,7 +72,7 @@ condition:
                 state: "500"
           # AND it's kinda dark outside
           - condition: numeric_state
-            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+            entity_id: sensor.tempest_illuminance
             below: 150
 action:
   - service: input_boolean.turn_on
