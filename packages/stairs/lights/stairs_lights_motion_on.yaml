@@ -34,7 +34,7 @@ automation:
           - condition: template
             value_template: "{{ (as_timestamp(now()) - as_timestamp(states.light.stairs_light.last_updated)) | int > 180 }}"
       # Don't turn on if the foyer chandelier is ON
-      - condition:
+      - condition: state
         entity_id: light.foyer_chandelier
         state: "off"
     action:
