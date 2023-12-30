@@ -13,16 +13,16 @@ automation:
         entity_id: input_boolean.lighting_automations
         state: "on"
       # Light is low
-      - condition: or
+      - condition: and
         conditions:
           # Foyer light is low
           - condition: numeric_state
             entity_id: sensor.foyer_motion_illuminance
-            below: 50
+            below: 15
           # Upstairs light is low
           - condition: numeric_state
             entity_id: sensor.stairs_up_motion_sensor_illuminance
-            below: 50
+            below: 10
       # Lights are currently off
       - condition: and
         conditions:
