@@ -13,6 +13,12 @@ automation:
       - platform: state
         entity_id: input_select.upstairs_hallway
         to: "Bedtime"
+      # Kids are going to sleep
+      - platform: state
+        entity_id:
+          - input_boolean.gianlucas_room_occupied
+          - input_boolean.ninos_bedroom_occupied
+        to: "on"
     condition:
       # Lighting automations must be enabled
       - condition: state
@@ -25,9 +31,6 @@ automation:
       - condition: state
         entity_id: input_boolean.dark_outside
         state: "on"
-      # # After 8pm
-      # - condition: time
-      #   after: "20:00:00"
     action:
       - service: switch.turn_on
         entity_id: switch.adaptive_lighting_sleep_mode_upstairs_hallway
