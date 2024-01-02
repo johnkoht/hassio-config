@@ -20,7 +20,7 @@ automation:
           minutes: 5
       - platform: numeric_state
         entity_id: sensor.foyer_motion_illuminance
-        below: 10
+        below: 5
         for:
           minutes: 5
       # At Sunrise
@@ -55,7 +55,7 @@ automation:
       # AND It's dark outside
       - condition: numeric_state
         entity_id: sensor.foyer_motion_illuminance
-        below: 10
+        below: 5
       # If either the ceiling lights or chandelier are off
       - condition: or
         conditions:
