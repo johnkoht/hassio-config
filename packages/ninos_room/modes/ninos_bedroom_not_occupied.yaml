@@ -9,11 +9,37 @@ automation:
         to: "on"
         for:
           minutes: 5
+      # Lights turned OFF
+      - platform: state
+        entity_id: light.ninos_bedroom_main_lights
+        to: "off"
+        for:
+          minutes: 3
+      # Bed occupied
+      - platform: state
+        entity_id: binary_sensor.nino_bed_occupied
+        to: "off"
+        for:
+          minutes: 3
     condition:
       # Currently occupied
       - condition: state
         entity_id: input_boolean.ninos_bedroom_occupied
         state: "on"
+      - condition: and
+        conditions:
+          # Nino's door is OPEN
+          - condition: state
+            entity_id: binary_sensor.ninos_door_sensor_status
+            state: "on"
+          # AND Lights turned OFF
+          - condition: state
+            entity_id: light.ninos_bedroom_main_lights
+            state: "off"
+          # Bed NOT occupied
+          - condition: state
+            entity_id: binary_sensor.nino_bed_occupied
+            state: "off"
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.ninos_bedroom_occupied
