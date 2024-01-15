@@ -98,7 +98,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 ## <a name="devices">Devices</a>
 
 ### <a name="menu">Menu</a>
-[Hubs](#hubs) | [Lighting](#lighting) | [Climate](#climate) | [Outlet & Switches](#outlets) | [Locks](#locks) | [Voice](#voice) | [Media](#media) | [Sensors](#sensors) | [Cameras](#cameras) | [Vacuum](#vacuum) | [Energy](#energy) | [Network](#network)
+[Hubs](#hubs) | [Lighting](#lighting) | [Climate](#climate) | [Outlet & Switches](#outlets) | [Locks](#locks) | [Garage Doors](#garage) | [Voice](#voice) | [Media](#media) | [Sensors](#sensors) | [Cameras](#cameras) | [Vacuum](#vacuum) | [Energy](#energy) | [Network](#network) | 
 
 ## <a name="hubs">Hubs</a>
 
@@ -157,7 +157,16 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [August Smart Lock Pro](https://a.co/d/6bLXSqm) | 1 | Cloud Push | [August](https://www.home-assistant.io/integrations/august/) | Smart lock for the front door |
+| [August Smart Lock Pro](https://a.co/d/6bLXSqm) | 3 | Wi-Fi | [MQTT](https://www.home-assistant.io/integrations/mqtt/) | Local MQTT & dry contact control over garage doors |
+
+
+## <a name="garage">Garage Doors</a>
+
+| [Go to Menu](#menu) |
+
+| Device  | Quantity | Connection | Home Assistant | Notes |
+| ------------- | :---: | ------------- | ------------- | ------------- |
+| [ratgdo](https://paulwieland.github.io/ratgdo/) | 1 | Cloud Push | [August](https://www.home-assistant.io/integrations/august/) | Smart lock for the front door |
 
 ## <a name="voice">Voice Assistant</a>
 
