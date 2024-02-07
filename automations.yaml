@@ -471,3 +471,17 @@
       entity_id: light.playroom_lights
     data: {}
   mode: single
+- id: '1705228787929'
+  alias: New automation
+  description: ''
+  trigger:
+  - platform: time
+    at: 05:05:00
+  condition: []
+  action:
+  - service: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.hue_smart_plug_1
+  mode: single
