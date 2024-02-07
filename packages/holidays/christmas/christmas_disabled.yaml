@@ -24,7 +24,7 @@ automation:
           {{ (d.month == 1 and d.day > 7) or (d.month > 2 and d.month < 12) }}
     action:
       # Turn the script to DISABLE the booleans and automations
-      - service: script.turn_off
+      - service: script.turn_on
         entity_id: script.christmas_disable_automations
 
 script:
