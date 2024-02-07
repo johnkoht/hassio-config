@@ -11,7 +11,7 @@ automation:
         to: "on"
 
     action:
-      - service: script.display_driveway_snapshot_on_tv
+      - service: script.display_driveway_front_snapshot_on_tv
         data: {}
 
 script:
