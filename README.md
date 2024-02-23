@@ -98,7 +98,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 ## <a name="devices">Devices</a>
 
 ### <a name="menu">Menu</a>
-[Hubs](#hubs) | [Lighting](#lighting) | [Climate](#climate) | [Outlet & Switches](#outlets) | [Locks](#locks) | [Voice](#voice) | [Media](#media) | [Sensors](#sensors) | [Cameras](#cameras) | [Vacuum](#vacuum) | [Energy](#energy) | [Network](#network)
+[Hubs](#hubs) | [Lighting](#lighting) | [Climate](#climate) | [Outlet & Switches](#outlets) | [Locks](#locks) | [Garage Doors](#garage) | [Voice](#voice) | [Media](#media) | [Sensors](#sensors) | [Cameras](#cameras) | [Vacuum](#vacuum) | [Energy](#energy) | [Network](#network) | 
 
 ## <a name="hubs">Hubs</a>
 
@@ -136,6 +136,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Google Nest Learning Thermostat](https://a.co/d/eFNSURb) | 2 | WiFi | [Google Nest](https://www.home-assistant.io/integrations/nest/) | Thermostats for main and upper levels |
 | [Aqara Temperature and Humidity Sensor](https://a.co/d/b1M2cvC) | 12 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Provides-specific room temperature and humidity reporting |
+| [Awair Element](https://www.getawair.com/products/element) | 2 | Local API | [Awair](https://www.home-assistant.io/integrations/awair/) | Monitors air quality |
 
 ## <a name="outlets">Outlets & Switches</a>
 
@@ -147,7 +148,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | [Aqara Smart Plug](https://a.co/d/8I8Xggp) | 8 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet used to control various devices like space heaters, Christmas lights/tree, etc. I also have a couple of these specifically to extend the mesh network. |
 | [IKEA Trådfri Smart Outlet](https://a.co/d/eOCkQjT) | 5 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet used to control random devices, currently Christmas lights and a space heater. |
 | [Wemo Mini Smart Plug](https://a.co/d/ixGGnvO) | 3 | Wi-Fi | [Belkin WeMo](https://www.home-assistant.io/components/wemo/) | Smart outlets, but I don't really use these as they haven't been very reliable for me. |
-| [THIRDREALITY ZigBee Smart Plug with Energy Monitoring]([https://a.co/d/ixGGnvO](https://a.co/d/flUVOir)) | 1 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet, just trying these out |
+| [THIRDREALITY ZigBee Smart Plug with Energy Monitoring]([https://a.co/d/ixGGnvO](https://a.co/d/flUVOir)) | 11 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet, just trying these out |
 
 
 ## <a name="locks">Locks</a>
@@ -157,6 +158,14 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [August Smart Lock Pro](https://a.co/d/6bLXSqm) | 1 | Cloud Push | [August](https://www.home-assistant.io/integrations/august/) | Smart lock for the front door |
+
+## <a name="garage">Garage Doors</a>
+
+| [Go to Menu](#menu) |
+
+| Device  | Quantity | Connection | Home Assistant | Notes |
+| ------------- | :---: | ------------- | ------------- | ------------- |
+| [ratgdo](https://paulwieland.github.io/ratgdo/) | 3 | Wi-Fi | [MQTT](https://www.home-assistant.io/integrations/mqtt/) | Local MQTT & dry contact control over garage doors |
 
 ## <a name="voice">Voice Assistant</a>
 
@@ -174,8 +183,11 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Sonos Amp](https://a.co/d/b4xG58W) | 6 | Ethernet | [Sonos](https://www.home-assistant.io/components/media_player.sonos/) | Audio playback and Home Assistant TTS |
-| [Sonos Port](https://a.co/d/fTuZPDU) | 2 | Ethernet | [Sonos](https://www.home-assistant.io/components/media_player.sonos/) | Audio playback and Home Assistant TTS. One port controls an amp to a 5.1 speaker system in the Playroom, and the other powers the outdoor Sonance system. |
-| Sony Bravia SmartTV | 1 | WiFi | [Sony Bravia TV](https://www.home-assistant.io/integrations/braviatv/) | Family room TV |
+| [Sonos Port](https://a.co/d/fTuZPDU) | 3 | Ethernet | [Sonos](https://www.home-assistant.io/components/media_player.sonos/) | Audio playback and Home Assistant TTS. One port controls an amp to a 5.1 speaker system in the Playroom, and the other powers the outdoor Sonance system. |
+| [Sonance Patio Series 8x2](https://www.sonance.com/outdoor/patio-series) | 1 | Audio Cables | | Outdoor audio system around the pool |
+| [Sonance Mariner 64](https://www.sonance.com/outdoor/rocks-mariners-extreme/mariners-medium) | 2 | Audio Cables | | Outdoor audio system in the gazebo |
+| Sony Bravia SmartTV | 1 | Ethernet | [Sony Bravia TV](https://www.home-assistant.io/integrations/braviatv/) | Family room TV |
+| [TCL 75-Inch Q7 QLED 4K Smart Google TV](https://a.co/d/28XUorw) | 1 | Ethernet | [Android TV Remote](https://www.home-assistant.io/integrations/androidtv_remote) | Basement TV |
 
 The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly used, or open boxes from OfferUp.
 
@@ -186,12 +198,12 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Aeotec Trisensor](https://a.co/d/aBDiA55) | 3 | Z-Wave | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js) | Motion, temperature and illuminance |
-| [Aqara Motion Sensor](https://a.co/d/cJdMbla) | 15 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Motion and Light Level sensor used to automate around motion events and current room brightness. |
+| [Aqara Motion Sensor](https://a.co/d/cJdMbla) | 26 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Motion and Light Level sensor used to automate around motion events and current room brightness. |
 | [Aeotec Multipurpose Sensor](https://a.co/d/4crXFL6) | 2 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Door sensor for kids bedroom, includes temperature readings. |
 | [XFINITY Security Visonic ZigBee Door Window Sensor](https://www.ebay.com/itm/203254885008) | 13 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Internal door sensors used for occupancy and automations. One is used for the fridge since it doesn't beep when left open. |
 | [Aqara Water Leak Sensor](https://a.co/d/fWywZmF) | 2 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors in the basement | [Aeotec Water Leak Sensor](https://a.co/d/cStIB4z) | 4 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors for the sinks and laundry room. |
-} [Aeotec Water Leak Sensor](https://a.co/d/cStIB4z) | 4 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors for the sinks and laundry room. |
-| [Aqara Door and Window Sensor](https://a.co/d/1vx2SIL) | 5 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Window magnetic open/close sensors |
+| [Aeotec Water Leak Sensor](https://a.co/d/cStIB4z) | 5 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors for the sinks and laundry room. |
+| [Aqara Door and Window Sensor](https://a.co/d/1vx2SIL) | 7 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Window magnetic open/close sensors |
 
 
 ## <a name="cameras">Cameras</a>
@@ -202,6 +214,7 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Ubiquiti Unifi G4 Bullet](https://a.co/d/hqaAlr3) | 2 | Ethernet | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | 1440p POE Camera. |
 | [Ubiquiti UniFi Protect G4 Doorbell (UVC-G4-DoorBell)](https://a.co/d/1i8B5Y2) | 1 | WiFI | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | Front door doorbell camera |
+| [Ubiquiti Unifi AI Pro](https://store.ui.com/us/en/pro/category/all-cameras-nvrs/products/uvc-ai-pro) | 1 | Ethernet | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | 4K Camera looking down the driveway and front of the house |
 
 ## <a name="vacuum">Vacuum</a>
 
@@ -209,7 +222,8 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [Roborock S7 Vacuum and Mop](https://a.co/d/5Ka98xg) | 1 | Wi-Fi | [Xiaomi Miio](https://www.home-assistant.io/integrations/xiaomi_miio)| Smart Vacuum and Mop |
+| [Roborock S7 Vacuum and Mop](https://a.co/d/5Ka98xg) | 1 | Wi-Fi | [Xiaomi Miio](https://www.home-assistant.io/integrations/xiaomi_miio)| Smart Vacuum and Mop for the main floor |
+| [Roborock Q7 Max+ Vacuum and Mop](https://a.co/d/a1rRzZ4) | 1 | Wi-Fi | [Xiaomi Miio](https://www.home-assistant.io/integrations/xiaomi_miio)| Smart Vacuum and Mop for the upper floor |
 
 ## <a name="energy">Energy</a>
 
@@ -231,7 +245,7 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | [Ubiquiti Networks UniFi Switch Lite 8 PoE (USW-Lite-8-PoE)](https://a.co/d/600W5KJ) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional PoE Network Switches. Mostly used for the two G4 bullet cameras and an AP. |
 | [Ubiquiti Networks UniFi USW-Flex-Mini (USW-Flex-Mini-5)](https://a.co/d/0xHbnSd) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional Network Switch for Hue and Lutron smart hubs. |
 | [Ubiquiti Networks Unifi Switch Flex (USW-Flex)](https://a.co/d/10XP8Mi) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional PoE Network Switch that powers an AP and eventually more PoE cameras. |
-| [Ubiquiti Networks UniFi in-Wall Access Point (UAP-IW-HD-US)](https://a.co/d/hPZd3j4) | 3 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/) | Wireless Access Point for interior use. Presence detection for non-household members and devices. |
+| [Ubiquiti Networks UniFi in-Wall Access Point (UAP-IW-HD-US)](https://a.co/d/hPZd3j4) | 5 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/) | Wireless Access Point for interior use. Presence detection for non-household members and devices. |
 | [Ubiquiti Networks UniFi nanoHD (UAP-nanoHD-US)](https://a.co/d/5H1ZePB) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/) | Wireless Access Point for interior use. Presence detection for non-household members and devices. |
 | [Ubiquiti Networks UniFi Access Point AC Pro (UAP-AC-PRO-US)](https://store.ui.com/collections/unifi-network-wireless/products/uap-ac-pro) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/) | Wireless Access Point for interior use. Presence detection for non-household members and devices. |
 | [Ubiquiti Networks UniFi Access Point WiFi 6 Long-Range (U6-LR-US)](https://a.co/d/1JAJFyC) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Wireless Access Point for interior and exterior use. Presence detection for non-household members and devices. |
