@@ -178,7 +178,7 @@ script:
 
         {# Adjust the volume based on house mode #}
         {% if states.input_boolean.quiet_mode.state == "on" %}
-          {% set vol = vol * 0.60%}
+          {% set vol = vol * 0.50%}
         {% endif %}
 
         {{ vol }}
