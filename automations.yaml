@@ -485,3 +485,19 @@
     target:
       entity_id: light.hue_smart_plug_1
   mode: single
+- id: '1708464366923'
+  alias: Toggle Jumpy House
+  description: ''
+  trigger:
+  - device_id: d98b081e7991a6e9ce1672128dad93ae
+    domain: zha
+    platform: device
+    type: remote_button_short_press
+    subtype: turn_on
+  condition: []
+  action:
+  - type: toggle
+    device_id: 7468fd0c889aba8fcd895aa3387c3795
+    entity_id: e96ec63d4a34cf5ed92370e69442c31c
+    domain: switch
+  mode: single
