@@ -30,6 +30,19 @@ automation:
       - platform: state
         entity_id: binary_sensor.exterior_doors
         to: "on"
+      # Somebody arrived home
+      - platform: state
+        entity_id:
+          - input_boolean.cristina_home
+          - input_boolean.john_home
+          - input_boolean.joe_home
+          - input_boolean.nonna_home
+          - input_boolean.katia_home
+        to: "on"
+      # If any garage door opens
+      - platform: state
+        entity_id: cover.garage_doors
+        to: "open"
     condition:
       # Make sure the notifications are already ON
       - condition: state
