@@ -19,18 +19,18 @@ automation:
       - platform: numeric_state
         entity_id: sensor.tempest_illuminance
         below: 250
-      # Bedtime turns off
-      - platform: state
-        entity_id: input_boolean.bedtime
-        to: "off"
+      # # Bedtime turns off
+      # - platform: state
+      #   entity_id: input_boolean.bedtime
+      #   to: "off"
       # At 6pm
       - platform: time
         at: "18:00:00"
-      # House goes from bedtime to auto in the morning
-      - platform: state
-        entity_id: input_select.house
-        from: "Bedtime"
-        to: "Auto"
+      # # House goes from bedtime to auto in the morning
+      # - platform: state
+      #   entity_id: input_select.house
+      #   from: "Bedtime"
+      #   to: "Auto"
     condition:
       # Make sure lighting automations are on
       - condition: state
