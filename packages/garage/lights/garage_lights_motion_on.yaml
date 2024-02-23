@@ -13,6 +13,10 @@ automation:
       - platform: state
         entity_id: binary_sensor.interior_garage_door
         to: "on"
+      # If any garage door is opened
+      - platform: state
+        entity_id: cover.garage_doors
+        to: "open"
     condition:
       # Garage is Auto
       - condition: state
