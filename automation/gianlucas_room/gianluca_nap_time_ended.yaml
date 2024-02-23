@@ -27,6 +27,11 @@ condition:
   - condition: state
     entity_id: input_boolean.quiet_mode
     state: "on"
+  # Make sure Nino's room is not occupied, otherwise we
+  # don't want to disable quiet mode
+  - condition: state
+    entity_id: input_boolean.ninos_bedroom_occupied
+    state: "off"
 action:
   # Turn on the quiet mode boolean
   - service: input_boolean.turn_off
