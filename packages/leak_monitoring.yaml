@@ -12,6 +12,7 @@ binary_sensor:
       - binary_sensor.storage_room_leak_sensor
       - binary_sensor.basement_exterior_door_leak_sensor
       - binary_sensor.basement_window_leak_sensor_moisture
+      - binary_sensor.furnace_pan_leak_sensor_moisture
 
   # Binary sensors to track if there is a leak while we're homem or away
   - platform: template
