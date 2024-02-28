@@ -1,6 +1,6 @@
 substitutions:
   name: everything-presence-lite-88aae4
-  friendly_name: 'Everything Presence Lite kitchen '
+  friendly_name: 'EPL Kitchen '
 packages:
   EverythingSmartTechnology.Everything_Presence_Lite: github://everythingsmarthome/everything-presence-lite/everything-presence-lite-ha.yaml@main
 esphome:
