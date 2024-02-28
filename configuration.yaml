@@ -169,9 +169,22 @@ logger:
     asyncio: debug
 
 camera:
+  # Main Level Vacuum
   - platform: xiaomi_cloud_map_extractor
-    host: !secret xiaomi_vacuum_host
-    token: !secret xiaomi_vacuum_token
+    name: Main Level Vacuum
+    host: !secret main_level_xiaomi_vacuum_host
+    token: !secret main_level_xiaomi_vacuum_token
+    username: !secret xiaomi_cloud_username
+    password: !secret xiaomi_cloud_password
+    draw: ["all"]
+    attributes:
+      - calibration_points
+  #
+  # Upper Level vacuum
+  - platform: xiaomi_cloud_map_extractor
+    name: Upper Level Vacuum
+    host: !secret upper_level_xiaomi_vacuum_host
+    token: !secret upper_level_xiaomi_vacuum_token
     username: !secret xiaomi_cloud_username
     password: !secret xiaomi_cloud_password
     draw: ["all"]
