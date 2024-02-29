@@ -60,13 +60,19 @@ views:
             title: "Lights"
             cards:
               - type: "custom:button-card"
-                template: card_light
+                template: card_light_color
                 entity: light.playroom_lights
                 variables:
                   ulm_card_light_enable_slider: true
                   ulm_card_light_enable_color: true
                   ulm_card_light_force_background_color: true
-                  ulm_card_light_name: "Main Lights"
+                  ulm_card_light_name: "Ceiling Lights"
+              - type: "custom:button-card"
+                template: card_power_outlet
+                entity: switch.christmas_playroom_lights
+                variables:
+                  # ulm_card_power_outlet_consumption_sensor: sensor.power_outlet_livingroom_consumption
+                  ulm_card_power_outlet_name: Window Christmas Lights
 
           # Climate
           - type: "vertical-stack"
