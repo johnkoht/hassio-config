@@ -244,7 +244,7 @@ views:
                   label_use_temperature: false
                   label_use_brightness: false
                   entity_1:
-                    entity_id: group.office_lights
+                    entity_id: light.office_lights
                     templates:
                       - yellow_on
                     tap_action:
