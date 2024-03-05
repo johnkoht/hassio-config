@@ -1,0 +1,34 @@
+automation:
+  - id: "main_bathroom_turn_off_outlets"
+    initial_state: on
+    alias: "Main Bathroom - Turn Off Outlets"
+    trigger:
+      # Bathroom is Off
+      - platform: state
+        entity_id: input_select.main_bathroom
+        to: "Off"
+      # Bathroom is no longer occupied
+      - platform: state
+        entity_id: input_boolean.main_bathroom_occupied
+        to: "off"
+    condition:
+      # Main bathroom is not occupied
+      - condition: state
+        entity_id: input_boolean.main_bathroom_occupied
+        state: "off"
+      # Bathroom lights are on
+      - condition: or
+        conditions:
+          # Steamer Outlet
+          - condition: state
+            entity_id: switch.smart_plug_12_switch
+            state: "on"
+          # Hair Dryer Outlet
+          - condition: state
+            entity_id: switch.smart_plug_13_switch
+            state: "on"
+    action:
+      - service: light.turn_off
+        entity_id:
+          - switch.smart_plug_12_switch
+          - switch.smart_plug_13_switch
