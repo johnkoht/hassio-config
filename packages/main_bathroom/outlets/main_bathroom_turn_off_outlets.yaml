@@ -28,7 +28,7 @@ automation:
             entity_id: switch.smart_plug_13_switch
             state: "on"
     action:
-      - service: light.turn_off
+      - service: switch.turn_off
         entity_id:
           - switch.smart_plug_12_switch
           - switch.smart_plug_13_switch

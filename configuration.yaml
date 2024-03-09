@@ -177,6 +177,8 @@ camera:
     username: !secret xiaomi_cloud_username
     password: !secret xiaomi_cloud_password
     draw: ["all"]
+    scan_interval: 60
+    auto_update: false
     attributes:
       - calibration_points
   #
@@ -188,5 +190,7 @@ camera:
     username: !secret xiaomi_cloud_username
     password: !secret xiaomi_cloud_password
     draw: ["all"]
+    scan_interval: 60
+    auto_update: false
     attributes:
       - calibration_points
