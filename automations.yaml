@@ -517,3 +517,15 @@
     entity_id: e96ec63d4a34cf5ed92370e69442c31c
     domain: switch
   mode: single
+- id: '1710176506867'
+  alias: Playroom button Test
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: cd626e869b9ddd77c680a7c1b1bd9bfc
+    context: {}
+  condition: []
+  action: []
+  mode: single
