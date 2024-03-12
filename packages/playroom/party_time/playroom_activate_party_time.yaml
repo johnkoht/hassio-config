@@ -1,0 +1,30 @@
+# Playroom Party Time
+#
+automation:
+  - id: "playroom_activate_party_time"
+    initial_state: on
+    alias: "Playroom - Activate Party Time"
+    mode: "single"
+    trigger:
+      - platform: event
+        event_type: zwave_js_value_notification
+        event_data:
+          device_id: cd626e869b9ddd77c680a7c1b1bd9bfc
+          # value: KeyPressed
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Playroom is occupied
+      - condition: state
+        entity_id: input_boolean.playroom_occupied
+        state: "on"
+    action:
+      - service: script.general_notification
+        data:
+          title: "Playroom Party Time"
+          message: "Playroom party time has been turned on!"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "playroom-party-time"
