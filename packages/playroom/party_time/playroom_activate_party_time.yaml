@@ -21,6 +21,17 @@ automation:
         entity_id: input_boolean.playroom_occupied
         state: "on"
     action:
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.sonos_playroom
+        data:
+          media_content_type: "playlist"
+          media_content_id: "spotify:playlist:0DSw040Fn3W2uodatu4Fdn"
+          extra:
+            volume: 60
+      - service: scene.turn_on
+        target:
+          entity_id: scene.playroom_osaka
       - service: script.general_notification
         data:
           title: "Playroom Party Time"
