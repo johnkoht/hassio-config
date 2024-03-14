@@ -1,0 +1,4 @@
+input_boolean:
+  sylvia_home:
+    name: Sylvia Home
+    icon: mdi:home

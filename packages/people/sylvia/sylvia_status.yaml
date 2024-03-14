@@ -1,0 +1,9 @@
+input_select:
+  sylvia_status:
+    name: Sylvia
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+    initial: Away

@@ -16,6 +16,7 @@ trigger:
       - input_boolean.joe_home
       - input_boolean.nonna_home
       - input_boolean.katia_home
+      - input_boolean.sylvia_home
     to: "off"
 action:
   - service: input_select.select_option
@@ -31,6 +32,8 @@ action:
           input_select.nonna_status
         {% elif trigger.entity_id == 'input_boolean.katia_home' %}
           input_select.katia_status
+        {% elif trigger.entity_id == 'input_boolean.sylvia_home' %}
+          input_select.sylvia_status
         {% endif %}
       option: Just Left
   # - service: script.turn_on
