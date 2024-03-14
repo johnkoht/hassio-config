@@ -10,6 +10,7 @@ trigger:
       - input_select.joe_status_dropdown
       - input_select.nonna_status
       - input_select.katia_status
+      - input_select.sylvia_status
     to: "Just Arrived"
     for:
       minutes: 5
@@ -36,5 +37,7 @@ action:
           input_select.nonna_status
         {% elif trigger.entity_id == 'input_select.katia_status' %}
           input_select.katia_status
+        {% elif trigger.entity_id == 'input_select.sylvia_status' %}
+          input_select.sylvia_status
         {% endif %}
       option: Home

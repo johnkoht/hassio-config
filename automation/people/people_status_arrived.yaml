@@ -10,6 +10,7 @@ trigger:
       - input_boolean.joe_home
       - input_boolean.nonna_home
       - input_boolean.katia_home
+      - input_boolean.sylvia_home
     to: "on"
 action:
   - service: input_select.select_option
