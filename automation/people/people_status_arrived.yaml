@@ -26,6 +26,8 @@ action:
           input_select.nonna_status
         {% elif trigger.entity_id == 'input_boolean.katia_home' %}
           input_select.katia_status
+        {% elif trigger.entity_id == 'input_boolean.sylvia_home' %}
+          input_select.sylvia_status
         {% endif %}
       option: >
         {% if trigger.entity_id == 'input_boolean.cristina_home' %}
@@ -54,6 +56,12 @@ action:
           {% endif %}
         {% elif trigger.entity_id == 'input_boolean.katia_home' %}
           {% if states.input_select.katia_status.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% elif trigger.entity_id == 'input_boolean.sylvia_home' %}
+          {% if states.input_select.sylvia_status.state == 'Just Left' %}
             Home
           {% else %}
             Just Arrived
