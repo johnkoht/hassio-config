@@ -11,17 +11,22 @@ automation:
       - platform: numeric_state
         entity_id: sensor.tempest_rain_amount
         above: 3
+      # Tempest rain rate above 2 inches per hour
+      - platform: numeric_state
+        entity_id: sensor.tempest_rain_rate
+        above: 2
     action:
       # Announce to the house
       - service: script.voice_announcement
         data:
           speech_message: >-
             {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
+            {% set rain_rate = state_attr('sensor.tempest_rain_rate') %}
 
-            {% if rain_amount > 3 %}
-              "Warning! There has been over 3 inches of rain accumulation. Make sure to check the basement and other possible leak areas."
+            {% if rain_amount > 3 or rain_rate > 3 %}
+              "Warning! Rain is accumulating quickly, please make sure to check the basement for any leaks."
             {% else %}
-              "Attention! There has been over 1 inch of rain accumulation, make sure to keep an eye on the basement."
+              "Attention! There's quite a bit of rain so make sure to keep an eye on the basement."
             {% endif %}
           sound: "police-whistle"
           media_players: auto
@@ -32,11 +37,12 @@ automation:
           title: "Rain Accumulation Alert!"
           message: >-
             {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
+            {% set rain_rate = state_attr('sensor.tempest_rain_rate') %}
 
-            {% if rain_amount > 3 %}
-              "Warning! There has been over 3 inches of rain accumulation. Make sure to check the basement and other possible leak areas."
+            {% if rain_amount > 3 or rain_rate > 3 %}
+              "Warning! Rain is accumulating quickly, please make sure to check the basement for any leaks."
             {% else %}
-              "Attention! There has been over 1 inch of rain accumulation, make sure to keep an eye on the basement."
+              "Attention! There's quite a bit of rain so make sure to keep an eye on the basement."
             {% endif %}
           devices: "jk"
           priority: "time-sensitive"
