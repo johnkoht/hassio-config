@@ -1,0 +1,43 @@
+automation:
+  - id: "tempest_high_uv_alert"
+    alias: Tempest - High UV Alert
+    initial_state: on
+    trigger:
+      # Tempest rain amount over 1 inch
+      - platform: numeric_state
+        entity_id: sensor.tempest_rain_amount
+        above: 1
+      # Tempest rain amount over 3 inch
+      - platform: numeric_state
+        entity_id: sensor.tempest_rain_amount
+        above: 3
+    action:
+      # Announce to the house
+      - service: script.voice_announcement
+        data:
+          speech_message: >-
+            {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
+
+            {% if rain_amount > 3 %}
+              "Warning! There has been over 3 inches of rain accumulation. Make sure to check the basement and other possible leak areas."
+            {% else %}
+              "Attention! There has been over 1 inch of rain accumulation, make sure to keep an eye on the basement."
+            {% endif %}
+          sound: "police-whistle"
+          media_players: auto
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Rain Accumulation Alert!"
+          message: >-
+            {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
+
+            {% if rain_amount > 3 %}
+              "Warning! There has been over 3 inches of rain accumulation. Make sure to check the basement and other possible leak areas."
+            {% else %}
+              "Attention! There has been over 1 inch of rain accumulation, make sure to keep an eye on the basement."
+            {% endif %}
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "tempest-rain-alert"
