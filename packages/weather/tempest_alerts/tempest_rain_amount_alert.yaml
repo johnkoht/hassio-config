@@ -1,6 +1,6 @@
 automation:
-  - id: "tempest_high_uv_alert"
-    alias: Tempest - High UV Alert
+  - id: "tempest_rain_alert"
+    alias: Tempest - Rain Alert
     initial_state: on
     trigger:
       # Tempest rain amount over 1 inch
