@@ -27,8 +27,8 @@ automation:
         state: "off"
       # Camera light is ON
       - condition: state
-        entity_id: light.elgato_key_light_air
+        entity_id: light.office_el_gato_light
         state: "on"
     action:
       - service: light.turn_off
-        entity_id: light.elgato_key_light_air
+        entity_id: light.office_el_gato_light
