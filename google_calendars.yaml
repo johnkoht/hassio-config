@@ -165,3 +165,9 @@
     - device_id: gianluca_school
       ignore_availability: true
       name: Gianluca School
+
+- cal_id: c0tsvhvgsh8j2lpn7gvvgkku0abp5s0c@import.calendar.google.com
+  entities:
+  - device_id: 5u_marauders
+    ignore_availability: true
+    name: 5U Marauders
