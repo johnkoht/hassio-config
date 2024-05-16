@@ -17,10 +17,14 @@ automation:
         for:
           minutes: 3
     condition:
-      # Alarm is current armed_home
+      # Alarm is currently armed_home
       - condition: state
         entity_id: alarm_control_panel.panel
         state: "armed_home"
+      # House is currently occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
     action:
       # Disarm the alarm
       - service: alarm_control_panel.alarm_disarm
