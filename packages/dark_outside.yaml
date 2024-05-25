@@ -25,9 +25,7 @@ automation:
       # It's getting dark outside
       - platform: numeric_state
         entity_id: sensor.tempest_illuminance
-        below: 30
-        for:
-          minutes: 2
+        below: 50
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -71,7 +69,7 @@ automation:
       # It's getting light outside
       - platform: numeric_state
         entity_id: sensor.tempest_illuminance
-        above: 31
+        above: 51
         for:
           minutes: 2
       # Hassio reloads/starts

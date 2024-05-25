@@ -159,6 +159,10 @@ automation:
       - platform: state
         entity_id: input_boolean.dark_outside
         to: "on"
+      # Sun elevation below 4
+      - platform: numeric_state
+        entity_id: sensor.sun_elevation
+        below: 4
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -180,9 +184,14 @@ automation:
           - condition: state
             entity_id: input_boolean.exterior_accent_lights
             state: "off"
-      # Sun is set
-      - condition: sun
-        after: sunset
+      # Sun is set or setting (below 5)
+      - condition: or
+        conditions:
+          - condition: sun
+            after: sunset
+          - condition: numberic_state
+            entity_id: sensor.sun_elevation
+            below: 5
       # It's dark outside
       - condition: state
         entity_id: input_boolean.dark_outside
