@@ -21,7 +21,7 @@ automation:
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: -4.0
+        below: 4.0
       # It's getting dark outside
       - platform: numeric_state
         entity_id: sensor.tempest_illuminance
