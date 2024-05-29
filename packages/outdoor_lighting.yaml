@@ -189,7 +189,7 @@ automation:
         conditions:
           - condition: sun
             after: sunset
-          - condition: numberic_state
+          - condition: numeric_state
             entity_id: sensor.sun_elevation
             below: 5
       # It's dark outside
