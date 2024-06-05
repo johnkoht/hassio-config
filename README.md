@@ -98,7 +98,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 ## <a name="devices">Devices</a>
 
 ### <a name="menu">Menu</a>
-[Hubs](#hubs) | [Lighting](#lighting) | [Climate](#climate) | [Outlet & Switches](#outlets) | [Locks](#locks) | [Garage Doors](#garage) | [Voice](#voice) | [Media](#media) | [Sensors](#sensors) | [Cameras](#cameras) | [Vacuum](#vacuum) | [Energy](#energy) | [Network](#network) | 
+[Hubs](#hubs) | [Lighting](#lighting) | [Climate & Weather](#climate) | [Outlet, Switches, & Repeaters](#outlets) | [Locks](#locks) | [Garage Doors](#garage) | [Voice](#voice) | [Media](#media) | [Sensors](#sensors) | [Cameras](#cameras) | [Vacuum](#vacuum) | [Energy](#energy) | [Lawn & Garden](#lawn) | [Network](#network) | 
 
 ## <a name="hubs">Hubs</a>
 
@@ -106,10 +106,10 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [Nortek HubZ Controller](https://a.co/d/2AWruQV) | 1 | USB | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js/) [ZHA](https://www.home-assistant.io/integrations/zha/) | Used to control all Zigbee and Z-Wave devices. |
+| [UZG-01](https://a.co/d/2AWruQV) | 1 | USB | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js/) | Used to control Z-Wave devices. |
+| [ZigStar UZG-01](https://uzg.zig-star.com/product/) | 1 | Ethernet / POE | [ZHA](https://www.home-assistant.io/integrations/zha/) | Used to control Zigbee devices. |
 | [Hue Hub](https://a.co/d/jhxXDpy) | 2 | Ethernet | [Philips Hue](https://www.home-assistant.io/components/hue/) | Used to control all Philip Hue products (lights, motion sensors, switches) |
 | [Lutron Caseta Smart Bridge](https://a.co/d/56Hyw8D) | 2 | Ethernet | [Lutron Caséta](https://www.home-assistant.io/integrations/lutron_caseta) | Controls Lutron Caseta light switches, dimmers, and Pico remotes |
-| [myQ Chamberlain Smart Garage Hub](https://a.co/d/3Xdt5u4) | 2 | WiFi | [MyQ](https://www.home-assistant.io/integrations/myq) | Used to control the garage doors |
 
 ## <a name="lighting">Lighting</a>
 
@@ -128,7 +128,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | [Enbrighten Zigbee QuickFit 43078](https://a.co/d/boxstCr) | 2 | Zigbee | [Jasco](https://www.home-assistant.io/integrations/jasco/) | Smart on / off light switches |assistant.io/integrations/jasco/) | Smart on / off light switches |
 
 
-## <a name="climate">Climate</a>
+## <a name="climate">Climate & Weather</a>
 
 | [Go to Menu](#menu) |
 
@@ -137,8 +137,10 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | [Google Nest Learning Thermostat](https://a.co/d/eFNSURb) | 2 | WiFi | [Google Nest](https://www.home-assistant.io/integrations/nest/) | Thermostats for main and upper levels |
 | [Aqara Temperature and Humidity Sensor](https://a.co/d/b1M2cvC) | 12 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Provides-specific room temperature and humidity reporting |
 | [Awair Element](https://www.getawair.com/products/element) | 2 | Local API | [Awair](https://www.home-assistant.io/integrations/awair/) | Monitors air quality |
+| [Tempest Weather Station](https://tempest.earth/tempest-home-weather-system/) | 1 | Local | [WeatherFlow](https://www.home-assistant.io/integrations/weatherflow/) | Local weather station |
 
-## <a name="outlets">Outlets & Switches</a>
+
+## <a name="outlets">Outlets, Switches, & Repeaters</a>
 
 | [Go to Menu](#menu) |
 
@@ -148,7 +150,8 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | [Aqara Smart Plug](https://a.co/d/8I8Xggp) | 8 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet used to control various devices like space heaters, Christmas lights/tree, etc. I also have a couple of these specifically to extend the mesh network. |
 | [IKEA Trådfri Smart Outlet](https://a.co/d/eOCkQjT) | 5 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet used to control random devices, currently Christmas lights and a space heater. |
 | [Wemo Mini Smart Plug](https://a.co/d/ixGGnvO) | 3 | Wi-Fi | [Belkin WeMo](https://www.home-assistant.io/components/wemo/) | Smart outlets, but I don't really use these as they haven't been very reliable for me. |
-| [THIRDREALITY ZigBee Smart Plug with Energy Monitoring]([https://a.co/d/ixGGnvO](https://a.co/d/flUVOir)) | 11 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet, just trying these out |
+| [THIRDREALITY ZigBee Smart Plug with Energy Monitoring](https://a.co/d/flUVOir) | 12 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Smart outlet, just trying these out |
+| [Aeotec Range Extender Zi](https://aeotec.com/products/aeotec-range-extender-zi/) | 2 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Zigbee range extender to help stabilize my network. |
 
 
 ## <a name="locks">Locks</a>
@@ -157,7 +160,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [August Smart Lock Pro](https://a.co/d/6bLXSqm) | 1 | Cloud Push | [August](https://www.home-assistant.io/integrations/august/) | Smart lock for the front door |
+| [August Smart Lock Pro](https://a.co/d/6bLXSqm) | 1 | Cloud Push | [August](https://www.home-assistant.io/integrations/august/) | Smart lock for the front door (currently doesn't work!) |
 
 ## <a name="garage">Garage Doors</a>
 
@@ -204,7 +207,9 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | [Aqara Water Leak Sensor](https://a.co/d/fWywZmF) | 2 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors in the basement | [Aeotec Water Leak Sensor](https://a.co/d/cStIB4z) | 4 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors for the sinks and laundry room. |
 | [Aeotec Water Leak Sensor](https://a.co/d/cStIB4z) | 5 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Water sensors for the sinks and laundry room. |
 | [Aqara Door and Window Sensor](https://a.co/d/1vx2SIL) | 7 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Window magnetic open/close sensors |
-
+| [Aqara FP2](https://www.aqara.com/us/product/presence-sensor-fp2/) | 3 | Homekit | [Homekit bridge](https://www.home-assistant.io/integrations/homekit/) | mmWave presence detection |
+| [Everything Presence Lite](https://shop.everythingsmart.io/en-us/products/everything-presence-lite) | 2 | ESPHome | [ESPHome](https://www.home-assistant.io/integrations/esphome/) | mmWave presence detection |
+| [Bed Occupancy Sensor](https://community.home-assistant.io/t/fsr-the-best-bed-occupancy-sensor/365795) | 3 | ESPHome | [ESPHome](https://www.home-assistant.io/integrations/esphome/) | Force sensitive resistor sensor to detect bed occupancy |
 
 ## <a name="cameras">Cameras</a>
 
@@ -232,6 +237,16 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Aeotec Smart Home Energy Meter 5](https://a.co/d/giAIoJi) | 2 | Z-Wave | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js) | 200 Amp CT Clamps. I have one installed and the other sitting in a cabinet waiting to be installed |
+
+
+
+## <a name="lawn">Lawn & Garden</a>
+| [Go to Menu](#menu) |
+
+| Device  | Quantity | Connection | Home Assistant | Notes |
+| ------------- | :---: | ------------- | ------------- | ------------- |
+| [Rachio 3 Smart Sprinkler System](https://rachio.com/products/rachio-3/) | 1 | Cloud Push | [Rachio Integration](https://rachio.com/products/rachio-3/) | Smart sprinkler system |
+
 
 ## <a name="network">Network</a>
 
