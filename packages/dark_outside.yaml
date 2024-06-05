@@ -40,7 +40,7 @@ automation:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 2.0
+        below: 4.0
       # Lux is low in the yard
       - condition: numeric_state
         entity_id: sensor.tempest_illuminance
