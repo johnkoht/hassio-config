@@ -25,7 +25,7 @@ automation:
       # It's getting dark outside
       - platform: numeric_state
         entity_id: sensor.tempest_illuminance
-        below: 50
+        below: 30
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -44,7 +44,7 @@ automation:
       # Lux is low in the yard
       - condition: numeric_state
         entity_id: sensor.tempest_illuminance
-        below: 50
+        below: 30
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.dark_outside
