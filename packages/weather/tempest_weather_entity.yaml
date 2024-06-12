@@ -1,0 +1,8 @@
+weather:
+  - platform: template
+    name: "Tempest Weather Station"
+    condition_template: "{{ states('weather.kpwk_daynight') }}"
+    temperature_template: "{{ states('sensor.tempest_temperature') | float }}"
+    temperature_unit: "°F"
+    humidity_template: "{{ states('sensor.tempest_humidity') | float }}"
+    forecast_daily_template: "{{ state_attr('weather.kpwk_daynight', 'forecast_data') }}"
