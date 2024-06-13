@@ -36,18 +36,20 @@ automation:
           speech_message: >-
             {% set event = trigger.calendar_event.summary | lower %}
 
-            {% if "giggle gang" in event %}
-              {% set event_label = "Giggle Gang" %}
-            {% elif "little acorns" in event %}
-              {% set event_label = "Little Acorns" %}
+            {% if "school day" in event %}
+              {{
+                [
+                  "Hey gang, it's time to eat breakfast and get ready for school",
+                  "Hey there, it's time to get the kids breakfast ready. Today is a school day!",
+                  "Just at reminder that there's school today, so it's time for breakfast.",
+                ] | random
+              }}
             {% else %}
-              {% set event_label = "school" %}
+              {{
+                [
+                  "Hey gang, it's time to eat breakfast and get ready for " ~ event,
+                  "Hey there, it's time to get the kids breakfast ready. Today is " ~ event,
+                  "Just at reminder that there's " ~ event ~ " today, so it's time for breakfast.",
+                ] | random
+              }}
             {% endif %}
-
-            {{
-              [
-                "Hey gang, it's time to eat breakfast and get ready for " ~ event_label,
-                "Hey there, it's time to get the kids breakfast ready. Today is " ~ event_label,
-                "Just at reminder that there's " ~ event_label ~ " today, so it's time for breakfast.",
-              ] | random
-            }}
