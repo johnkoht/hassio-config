@@ -10,7 +10,7 @@ automation:
       - platform: calendar
         event: start
         entity_id: calendar.ninos_school
-        offset: -00:20:00
+        offset: -00:15:00
     condition:
       - condition: state
         entity_id: input_boolean.house_occupied
