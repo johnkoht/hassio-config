@@ -1,4 +1,5 @@
-# kohbo:
+kohbo:
+  primary-font-family: "Nunito Sans"
 #   # Global
 #   # background-image: "center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg-kibibit-theme.png')"
 #   # lovelace-background: var(--background-image)
