@@ -21,21 +21,43 @@ automation:
         entity_id: input_boolean.playroom_occupied
         state: "on"
     action:
-      - service: media_player.play_media
-        target:
-          entity_id: media_player.sonos_playroom
-        data:
-          media_content_type: "playlist"
-          media_content_id: "spotify:playlist:0DSw040Fn3W2uodatu4Fdn"
-          extra:
-            volume: 60
-      - service: scene.turn_on
-        target:
-          entity_id: scene.playroom_osaka
-      - service: script.general_notification
-        data:
-          title: "Playroom Party Time"
-          message: "Playroom party time has been turned on!"
-          devices: "jk"
-          priority: "time-sensitive"
-          tag: "playroom-party-time"
+      - if:
+          # If party mode is already enabled then
+          # simply go to the next song
+          - alias: "Party mode is already enabled"
+            condition: state
+            entity_id: input_boolean.playroom_party_time_boolean
+            state: "on"
+        then:
+          - alias: "Skip to the next track"
+            service: media_player.media_next_track
+            target:
+              entity_id: media_player.sonos_playroom
+        #
+        # Else party time mode!
+        else:
+          # Play Music!
+          - service: media_player.play_media
+            target:
+              entity_id: media_player.sonos_playroom
+            data:
+              media_content_type: "playlist"
+              media_content_id: "spotify:playlist:0DSw040Fn3W2uodatu4Fdn"
+              extra:
+                volume: 60
+          # Turn on a scene
+          - service: scene.turn_on
+            target:
+              entity_id: scene.playroom_osaka
+          # Turn on the boolean
+          - service: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.playroom_party_time_boolean
+          # Notification for debug
+          - service: script.general_notification
+            data:
+              title: "Playroom Party Time"
+              message: "Playroom party time has been turned on!"
+              devices: "jk"
+              priority: "time-sensitive"
+              tag: "playroom-party-time"
