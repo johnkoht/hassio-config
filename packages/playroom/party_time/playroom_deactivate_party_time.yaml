@@ -12,13 +12,17 @@ automation:
           device_id: cd626e869b9ddd77c680a7c1b1bd9bfc
           value: KeyReleased
     condition:
-      # House is occupied
+      # # House is occupied
+      # - condition: state
+      #   entity_id: input_boolean.house_occupied
+      #   state: "on"
+      # # Playroom is occupied
+      # - condition: state
+      #   entity_id: input_boolean.playroom_occupied
+      #   state: "on"
+      # Party time is enabled
       - condition: state
-        entity_id: input_boolean.house_occupied
-        state: "on"
-      # Playroom is occupied
-      - condition: state
-        entity_id: input_boolean.playroom_occupied
+        entity_id: input_boolean.playroom_party_time_boolean
         state: "on"
     action:
       # Turn off the Sonos music
@@ -28,6 +32,11 @@ automation:
       - service: scene.turn_off
         target:
           entity_id: scene.playroom_osaka
+      # Turn OFF the boolean
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.playroom_party_time_boolean
+      # Notification for debugging
       - service: script.general_notification
         data:
           title: "Playroom Party Time Off"
