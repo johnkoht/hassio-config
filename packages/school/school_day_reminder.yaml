@@ -24,6 +24,8 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      - condition: time
+        before: "10:00:00"
       # Make sure the automation wasn't recently trigger (last 5 mins)
       - condition: template
         value_template: >
