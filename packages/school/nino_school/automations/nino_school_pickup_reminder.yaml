@@ -28,20 +28,18 @@ automation:
           speech_message: >-
             {% set event = trigger.calendar_event.summary | lower %}
 
-            {% if "giggle gang" in event %}
-              {% set event_label = "Giggle Gang" %}
-            {% elif "little acorns" in event %}
-              {% set event_label = "Little Acorns" %}
+            {% if "school day" in event %}
+              {% set label = "school" %}
             {% else %}
-              {% set event_label = "school" %}
-            {% endif %}
+              {% set label = event %}
+            {% end %}
 
             {{
               [
-                event_label ~ " is done! Time to pick up Nino!",
-                "Hey there! It's time to pickup Nino from " ~ event_label,
-                "Dont forget to pick up Nino from " ~ event_label,
-                "Quick reminder that " ~ event_label ~ " is almost over, time to pick Nino up."
+                label ~ " is done! Time to pick up Nino!",
+                "Hey there! It's time to pickup Nino from " ~ label,
+                "Dont forget to pick up Nino from " ~ label,
+                "Quick reminder that " ~ label ~ " is almost over, time to pick Nino up."  
               ] | random
             }}
 
