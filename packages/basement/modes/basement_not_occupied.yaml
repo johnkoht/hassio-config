@@ -1,0 +1,73 @@
+# Basement not occupied
+#
+# Since the Basement and living room are pretty much
+# one large room, we'll kind of treat them as such
+#
+automation:
+  - id: "basement_not_occupied"
+    initial_state: on
+    alias: "Basement not occupied"
+    trigger:
+      # No BLE for 2 minutes
+      - platform: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'basement')|map(attribute='name')|list | length == 0 }}"
+        for:
+          minutes: 5
+      # No motion detected for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.basement_motion_sensor
+        to: "off"
+        for:
+          minutes: 5
+      # No aqara occupancy
+      - platform: state
+        entity_id: binary_sensor.basement_occupancy_sensor
+        to: "off"
+      # No aqara occupancy for 5 minutes
+      - platform: state
+        entity_id: binary_sensor.basement_occupancy_sensor
+        to: "off"
+        for:
+          minutes: 5
+    condition:
+      # Basement is occupied
+      - condition: state
+        entity_id: input_boolean.basement_occupied
+        state: "on"
+      - condition: or
+        conditions:
+          # When Guest Mode is enabled
+          # No Aqara occupancy for 5 minutes
+          - condition: and
+            conditions:
+              # Guest mode enabled
+              - condition: state
+                entity_id: input_boolean.guest_mode
+                state: "on"
+              # No Aqara occupancy for 5 minutes
+              - condition: state
+                entity_id: binary_sensor.basement_occupancy_sensor
+                state: "off"
+                for:
+                  minutes: 5
+          # Only family is home
+          # No motion for 3 minutes
+          # AND lights were automatically turned on
+          - condition: and
+            conditions:
+              # Guest mode NOT enabled
+              - condition: state
+                entity_id: input_boolean.guest_mode
+                state: "off"
+              # No Aqara occupancy for 2 minutes
+              - condition: state
+                entity_id: binary_sensor.basement_occupancy_sensor
+                state: "off"
+                for:
+                  minutes: 2
+      # No BLE devices detected
+      - condition: template
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'basement')|map(attribute='name')|list | length == 0 }}"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.basement_occupied

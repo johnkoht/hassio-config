@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Basement Occupancy Sensor
+    unique_id: basement_occupancy_sensor
+    device_class: occupancy
+    entities:
+      - binary_sensor.fp2_basement_north_presence_sensor_1
+      - binary_sensor.fp2_basement_south_presence_sensor_1
