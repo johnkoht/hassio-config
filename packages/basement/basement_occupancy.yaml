@@ -1,0 +1,4 @@
+input_boolean:
+  basement_occupied:
+    name: Basement
+    icon: mdi:home-floor-b

@@ -1,0 +1,7 @@
+input_select:
+  basement:
+    name: Basement
+    options:
+      - "Auto"
+      - "Away"
+      - "Off"

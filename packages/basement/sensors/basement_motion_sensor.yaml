@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Basement Motion Sensor
+    unique_id: basement_motion_sensor
+    device_class: motion
+    entities:
+      - binary_sensor.basement_east_motion_detector
+      - binary_sensor.basement_west_motion_detector

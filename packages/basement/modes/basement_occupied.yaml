@@ -1,0 +1,35 @@
+# Basement Occupied
+#
+automation:
+  - id: "basement_occupied"
+    initial_state: on
+    alias: "Basement occupied"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.basement_motion_sensor
+        to: "on"
+      # Occupancy detected
+      - platform: state
+        entity_id: binary_sensor.basement_occupancy_sensor
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Basement is not occupied
+      - condition: state
+        entity_id: input_boolean.basement_occupied
+        state: "off"
+      # Either Bluetooth detects people or occupancy detected
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'basement')|map(attribute='name')|list | length > 0 }}"
+          - condition: state
+            entity_id: binary_sensor.basement_occupancy_sensor
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.basement_occupied
