@@ -2,13 +2,13 @@ id: "guest_mode_off"
 initial_state: "on"
 alias: "Guest mode off"
 trigger:
-  # Guest group is detected not home for 30 minutes
+  # Guest group is detected not home for 5 minutes
   - platform: state
     entity_id: group.guests
     from: "home"
     to: "not_home"
     for:
-      minutes: 2
+      minutes: 5
   - platform: homeassistant
     event: start
 condition:
