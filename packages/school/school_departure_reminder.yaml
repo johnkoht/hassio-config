@@ -59,7 +59,7 @@ automation:
             {% if "school day" in event %}
               {% set event_label = "school" %}
             {% else %}
-              {% set event_label = "event" %}
+              {% set event_label = event %}
             {% endif %}
 
             {{
