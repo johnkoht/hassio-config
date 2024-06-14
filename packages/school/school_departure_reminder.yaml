@@ -55,19 +55,17 @@ automation:
           sound: "school-bell"
           speech_message: >-
             {% set event = trigger.calendar_event.summary | lower %}
-            {% set nino_school = states.input_boolean.nino_school_day.state %}
-            {% set gianluca_school = states.input_boolean.gianluca_school_day.state %}
 
             {% if "school day" in event %}
-              {% set label = "school" %}
+              {% set event_label = "school" %}
             {% else %}
-              {% set label = event %}
-            {% end %}
+              {% set event_label = "event" %}
+            {% endif %}
 
             {{
               [
-                label ~ " starts soon. Time to pack up and head out!",
-                "Hey boys! Time to start heading over to " ~ label,
-                "Pack it up, pack it in, time to drop the kids at " ~ label
+                event_label ~ " starts soon. Time to pack up and head out!",
+                "Hey boys! Time to start heading over to " ~ event_label,
+                "Pack it up, pack it in, time to drop the kids at " ~ event_label
               ] | random
             }}

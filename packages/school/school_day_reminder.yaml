@@ -60,19 +60,17 @@ automation:
           sound: "school-bell-chime"
           speech_message: >-
             {% set event = trigger.calendar_event.summary | lower %}
-            {#% set nino_school = states.input_boolean.nino_school_day.state %}
-            {#% set gianluca_school = states.input_boolean.gianluca_school_day.state %}
 
             {% if "school day" in event %}
               {% set label = "school" %}
             {% else %}
               {% set label = event %}
-            {% end %}
+            {% endif %}
 
             {{
               [
                 "Hey gang, it's time to eat breakfast and get ready for " ~ label,
                 "Hey there, it's time to get the kids breakfast ready. Today is " ~ label,
-                "Just at reminder that there's " ~ label ~ " today, so it's time for breakfast.",
+                "Just at reminder that there's " ~ label ~ " today, so it's time for breakfast."
               ] | random
             }}

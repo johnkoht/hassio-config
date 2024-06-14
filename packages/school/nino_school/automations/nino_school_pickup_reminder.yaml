@@ -32,7 +32,7 @@ automation:
               {% set label = "school" %}
             {% else %}
               {% set label = event %}
-            {% end %}
+            {% endif %}
 
             {{
               [
