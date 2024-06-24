@@ -77,13 +77,12 @@ alert:
 notify:
   - name: leak_voice_announcement
     platform: rest
-    resource: "http://localhost:8123/api/services/script/voice_announcement"
+    resource: "http://localhost:8123/api/services/script/critical_announcement"
     method: POST_JSON
     headers:
       authorization: !secret restapi_notify
       content-type: "application/json"
     message_param_name: speech_message
     data:
-      sound: "police-whistle"
-      #speech_message: "{{message}}"
-      media_players: "media_player.sonos_office"
+      sound: "nuclear"
+      media_players: "auto"
