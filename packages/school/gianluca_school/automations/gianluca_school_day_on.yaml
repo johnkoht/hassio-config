@@ -1,0 +1,35 @@
+# Gianluca School Day On
+#
+# Every morning, this automation runs to simply check
+# if today is a school day based on the status of
+# binary_sensor.gianluca_is_today_school_day
+#
+automation:
+  - id: "gianluca_school_day_on"
+    alias: "Gianluca School Day On"
+    mode: "single"
+    trigger:
+      # First thing in the morning
+      - platform: time
+        at: "00:00:01"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Binary sensor is ON
+      - condition: state
+        entity_id: binary_sensor.gianluca_is_today_school_day
+        state: "on"
+    action:
+      # Turn on the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.gianluca_school_day
+
+      # Turn on the school reminder automation
+      - service: automation.turn_on
+        entity_id:
+          - automation.gianluca_school_day_reminder
+          - automation.gianluca_school_departure_reminder
+          - automation.gianluca_school_pickup_reminder

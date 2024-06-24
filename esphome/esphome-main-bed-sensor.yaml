@@ -1,0 +1,111 @@
+esphome:
+  name: "esphome-main-bed-sensor"
+  friendly_name: Main Bedroom Bed
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "oz5KdRJlPxhVC/Z+TnWBvuCbvM0QNuVXyoMicV6jBkM="
+
+ota:
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esphome-Web-105C90"
+    password: "WNb8Tno5NvWP"
+
+captive_portal:
+
+binary_sensor:
+  # John Bed Occupied Sensor
+  - platform: template
+    name: "John Bed Occupied"
+    id: john_bed_occupied
+    lambda: |-
+      if (id(john_bed_sensor).state < id(john_trigger_level).state) {
+        return true;
+      } else {
+        return false;
+      }
+
+  # Cristina Bed Occupied Sensor
+  - platform: template
+    name: "Cristina Bed Occupied"
+    id: cristina_bed_occupied
+    lambda: |-
+      if (id(cristina_bed_sensor).state < id(cristina_trigger_level).state) {
+        return true;
+      } else {
+        return false;
+      }
+
+sensor:
+  # John Sensor
+  - platform: adc
+    pin: GPIO35
+    name: "John Bed Sensor"
+    id: "john_bed_sensor"
+    icon: mdi:bed
+    attenuation: 11db
+    update_interval: 0.5s
+    filters:
+      - sliding_window_moving_average:
+          window_size: 10
+          send_every: 1
+      - or:
+          - throttle: 180s
+          - delta: 0.02
+
+  # Cristina Sensor
+  - platform: adc
+    pin: GPIO34
+    name: "Cristina Bed Sensor"
+    id: "cristina_bed_sensor"
+    icon: mdi:bed
+    attenuation: 11db
+    update_interval: 0.5s
+    filters:
+      - sliding_window_moving_average:
+          window_size: 10
+          send_every: 1
+      - or:
+          - throttle: 180s
+          - delta: 0.02
+
+number:
+  # John Trigger Level
+  - platform: template
+    name: "John Trigger Level"
+    id: "john_trigger_level"
+    icon: mdi:arrow-collapse-down
+    min_value: 0
+    max_value: 3.5
+    step: 0.05
+    optimistic: true
+    initial_value: 2.8
+    restore_value: true
+
+  # Cristina Trigger Level
+  - platform: template
+    name: "Cristina Trigger Level"
+    id: "cristina_trigger_level"
+    icon: mdi:arrow-collapse-down
+    min_value: 0
+    max_value: 3.5
+    step: 0.05
+    optimistic: true
+    initial_value: 2.8
+    restore_value: true

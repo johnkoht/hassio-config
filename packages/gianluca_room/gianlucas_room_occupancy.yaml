@@ -1,0 +1,4 @@
+input_boolean:
+  gianlucas_room_occupied:
+    name: Gianluca's Room Occupied
+    icon: mdi:bed-double

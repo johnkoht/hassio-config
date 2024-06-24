@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      birthday_tomorrow:
+        friendly_name: Birthday Tomorrow
+        value_template: >-
+          {% set t = now() %}
+          {% set midnight = today_at() %}
+          {% set event = state_attr("calendar.birthdays_2", "start_time") | as_datetime | as_local %}
+          {% set delta = event - midnight %}
+          {{ delta.days == 1 }}

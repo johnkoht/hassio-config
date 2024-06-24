@@ -21,13 +21,11 @@ automation:
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: -4.0
+        below: 4.0
       # It's getting dark outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        below: 30
-        for:
-          minutes: 2
+        entity_id: sensor.tempest_illuminance
+        below: 50
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -42,11 +40,11 @@ automation:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 2.0
+        below: 4.0
       # Lux is low in the yard
       - condition: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        below: 30
+        entity_id: sensor.tempest_illuminance
+        below: 50
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.dark_outside
@@ -70,8 +68,8 @@ automation:
         above: -4.0
       # It's getting light outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        above: 31
+        entity_id: sensor.tempest_illuminance
+        above: 51
         for:
           minutes: 2
       # Hassio reloads/starts
@@ -91,7 +89,7 @@ automation:
         above: -4.0
       # Lux is not low in the yard
       - condition: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 31
     action:
       - service: input_boolean.turn_off

@@ -20,6 +20,9 @@ automation:
       - condition: state
         entity_id: person.john_koht
         state: "Union Station"
+      # It's before noon
+      - condition: time
+        before: "12:00:00"
     action:
       # Turn on the return automations
       - service: automation.turn_on

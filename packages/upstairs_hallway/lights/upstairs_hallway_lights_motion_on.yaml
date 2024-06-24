@@ -1,0 +1,36 @@
+automation:
+  - id: "upstairs_hallway_lights_motion_on"
+    initial_state: on
+    alias: "Upstairs Hallway Lights - Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.upstairs_hallway_motion
+        to: "on"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # And lighting automations for the hallway are enabled
+      - condition: state
+        entity_id: input_boolean.upstairs_hallway_lighting_automations
+        state: "on"
+      # Light is low
+      - condition: numeric_state
+        entity_id: sensor.stairs_up_motion_sensor_illuminance
+        below: 30
+      # Lights are currently off
+      - condition: state
+        entity_id: light.upstairs_hallway
+        state: "off"
+      # Quiet mode is NOT enabled
+      - condition: state
+        entity_id: input_boolean.quiet_mode
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.upstairs_hallway
+      # Toggle the boolean to flag it was auto
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.upstairs_hallway_lights_auto

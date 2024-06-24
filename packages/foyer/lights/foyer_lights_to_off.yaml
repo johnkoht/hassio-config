@@ -24,6 +24,9 @@ automation:
           - condition: state
             entity_id: input_select.foyer
             state: "Off"
+          - condition: state
+            entity_id: input_select.foyer
+            state: "Away"
           - condition: and
             conditions:
               - condition: state

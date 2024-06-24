@@ -1,0 +1,4 @@
+input_boolean:
+  playroom_party_time_boolean:
+    name: Playroom Party Time
+    icon: mdi:party-popper

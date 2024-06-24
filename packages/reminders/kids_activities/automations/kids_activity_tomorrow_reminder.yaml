@@ -16,7 +16,7 @@ automation:
         state: "on"
       # Binary sensor is ON
       - condition: state
-        entity_id: binary_sensor.kids_activity_toorrow
+        entity_id: binary_sensor.kids_activity_tomorrow
         state: "on"
       # After 5pm
       - condition: time
@@ -40,17 +40,23 @@ automation:
           media_players: auto
           sound: "flute-cell-phone-alert"
           speech_message: >-
+            {% set time =  states.calendar.kohbocal.attributes.start_time | as_datetime | as_local %}
+            {% set time = time.timestamp() | timestamp_custom('%-I:%M %p') %}
+
             {{ 
               [
-                "Hey fam, quick calendar reminder for tomorrow: " ~ states.calendar.kohbocal.attributes.message,
-                "Just a quick reminder that " ~ states.calendar.kohbocal.attributes.message ~ " is tomorrow.",
-                "Heads up for tomorrow: " ~ states.calendar.kohbocal.attributes.message
+                "Hey fam, quick calendar reminder for tomorrow: " ~ states.calendar.kohbocal.attributes.message ~ " at " ~ time,
+                "Just a quick reminder that " ~ states.calendar.kohbocal.attributes.message ~ " is tomorrow at " ~ time,
+                "Heads up for tomorrow: " ~ states.calendar.kohbocal.attributes.message ~ " at " ~ time
               ] | random
             }}
 
       - service: script.general_notification
         data:
-          message: "Tomorrow is {{states.calendar.kohbocal.attributes.message}}"
+          message: >-
+            {% set time =  states.calendar.kohbocal.attributes.start_time | as_datetime | as_local %}
+            {% set time = time.timestamp() | timestamp_custom('%-I:%M %p') %}
+            "Tomorrow is {{states.calendar.kohbocal.attributes.message}} at {{time}}"
           title: "Kids Activity Reminder"
           devices: "jk"
           priority: "active"

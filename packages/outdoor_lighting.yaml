@@ -33,7 +33,7 @@ light:
     unique_id: exterior_flood_lights
     entities:
       - light.exterior_backyard_flood_east
-      # - light.exterior_backyard_flood_west
+      - light.exterior_backyard_flood_west
 
   # Exterior Accent Lights
   - platform: group
@@ -43,6 +43,13 @@ light:
       - light.exterior_hue_outdoor_spot_1
       - light.exterior_hue_outdoor_spot_2
       - light.exterior_hue_outdoor_spot_3
+      - light.hue_outdoor_spot_4
+      - light.hue_outdoor_spot_5
+      - light.hue_outdoor_spot_6
+      - light.hue_outdoor_spot_7
+      - light.hue_outdoor_spot_8
+      - light.hue_outdoor_spot_9
+      - light.hue_outdoor_spot_10
 
   # All Exterior Lights
   - platform: group
@@ -152,6 +159,10 @@ automation:
       - platform: state
         entity_id: input_boolean.dark_outside
         to: "on"
+      # Sun elevation below 4
+      - platform: numeric_state
+        entity_id: sensor.sun_elevation
+        below: 4
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -173,9 +184,14 @@ automation:
           - condition: state
             entity_id: input_boolean.exterior_accent_lights
             state: "off"
-      # Sun is set
-      - condition: sun
-        after: sunset
+      # Sun is set or setting (below 5)
+      - condition: or
+        conditions:
+          - condition: sun
+            after: sunset
+          - condition: numeric_state
+            entity_id: sensor.sun_elevation
+            below: 5
       # It's dark outside
       - condition: state
         entity_id: input_boolean.dark_outside
@@ -223,7 +239,7 @@ automation:
           minutes: 15
       # It's getting dark outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         below: 38
         for:
           minutes: 5
@@ -253,12 +269,12 @@ automation:
                 state: "on"
               # Its dark
               - condition: numeric_state
-                entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-                below: 75
+                entity_id: sensor.tempest_illuminance
+                below: 45
           # Is getting dark
           - condition: numeric_state
-            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-            below: 38
+            entity_id: sensor.tempest_illuminance
+            below: 35
     action:
       # Activate the boolean
       - service: input_boolean.turn_on
@@ -341,10 +357,10 @@ automation:
           minutes: 15
       # It's getting brighter outside
       - platform: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-        above: 250
+        entity_id: sensor.tempest_illuminance
+        above: 150
         for:
-          minutes: 5
+          minutes: 3
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -357,7 +373,7 @@ automation:
         state: "on"
       # It's not dark outside
       - condition: numeric_state
-        entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+        entity_id: sensor.tempest_illuminance
         above: 50
       # Sun is above horizon
       - condition: state
@@ -371,8 +387,8 @@ automation:
             state: "off"
           # It's not dark anymore
           - condition: numeric_state
-            entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
-            above: 250
+            entity_id: sensor.tempest_illuminance
+            above: 150
     action:
       # Activate the boolean
       - service: input_boolean.turn_off

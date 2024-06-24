@@ -1,0 +1,16 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      gianluca_is_today_school_day:
+        friendly_name: Gianluca Is Today School Day
+        value_template: >-
+          {% set event = strptime(state_attr('calendar.gianluca_school', 'start_time'), '%Y-%m-%d %H:%M:%S') %}
+          {{
+            (
+              event.year == now().year
+              and 
+              event.month == now().month
+              and
+              event.day == now().day
+            )
+          }}

@@ -34,9 +34,9 @@ automation:
         data:
           entity_id: input_select.garage
           option: "Auto"
-      # Turn off the garage door automation for empty house
-      - service: automation.turn_off
-        entity_id: automation.garage_doors_close_when_empty_house
-      # Turn on the garage door automation for occupied house
-      - service: automation.turn_on
-        entity_id: automation.garage_doors_close_when_home
+      # # Turn off the garage door automation for empty house
+      # - service: automation.turn_off
+      #   entity_id: automation.garage_doors_close_when_empty_house
+      # # Turn on the garage door automation for occupied house
+      # - service: automation.turn_on
+      #   entity_id: automation.garage_doors_close_when_home

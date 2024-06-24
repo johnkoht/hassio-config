@@ -1,0 +1,8 @@
+input_select:
+  john_sleep_state:
+    name: John Sleep State
+    options:
+      - Awake
+      - Sleep
+      - Just Laid Down
+      - Just Got Up

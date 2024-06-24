@@ -1,0 +1,9 @@
+sensor:
+  - platform: min_max
+    name: Pool Outside Temperature
+    unique_id: pool_outside_temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.pool_motion_west_temperature
+      - sensor.pool_motion_east_entry_temperature

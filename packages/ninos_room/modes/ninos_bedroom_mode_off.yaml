@@ -1,0 +1,39 @@
+# Nino's Bedroom Mode Off
+#
+automation:
+  - id: "ninos_bedroom_mode_off"
+    initial_state: on
+    alias: "Nino's Bedroom - Mode Off"
+    trigger:
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # House is turned to Away
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+      # Hassio restart/relaod
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    condition:
+      # Not currently Off
+      - condition: template
+        value_template: "{{ not is_state('input_select.ninos_bedroom','Off') }}"
+      - condition: or
+        conditions:
+          # House is not occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # OR House is in Away mode
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ninos_bedroom
+          option: "Off"

@@ -1,0 +1,31 @@
+# Kitchen Lights Manually Turned On
+#
+automation:
+  - id: "kitchen_lights_manually_turned_on"
+    initial_state: on
+    alias: "Kitchen lights Manually Turned On"
+    trigger:
+      # Lights turned on
+      - platform: state
+        entity_id: light.kitchen_lights
+        to: "on"
+    condition:
+      # - condition: state
+      #   entity_id: input_boolean.kitchen_lights_auto
+      #   state: "off"
+      - condition: template
+        value_template: "{{ trigger.to_state.context.parent_id == none }}"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kitchen_lights_auto
+      # Turn OFF the kitchen lighting automations
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kitchen_lighting_automations
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Kitchen Lights"
+          message: "The kitchen lights have been manually turned ON. The parent id is {{trigger.to_state.context.parent_id}} and the user_id is {{trigger.to_state.context.user_id}}."
+          devices: "jk"
+          priority: "passive"
+          tag: "kitchen-lighting-automation"

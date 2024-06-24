@@ -1,0 +1,42 @@
+automation:
+  - id: "stairs_lights_motion_on"
+    initial_state: on
+    alias: "Stairs lights Motion On"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.stairs_motion_status
+        to: "on"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Light is low
+      - condition: and
+        conditions:
+          # Foyer light is low
+          - condition: numeric_state
+            entity_id: sensor.foyer_motion_illuminance
+            below: 15
+          # Upstairs light is low
+          - condition: numeric_state
+            entity_id: sensor.stairs_up_motion_sensor_illuminance
+            below: 10
+      # Lights are currently off
+      - condition: and
+        conditions:
+          # Stair lights are OFF
+          - condition: state
+            entity_id: light.stairs_light
+            state: "off"
+          # AND haven't been updated in 3 minutes
+          - condition: template
+            value_template: "{{ (as_timestamp(now()) - as_timestamp(states.light.stairs_light.last_updated)) | int > 180 }}"
+      # Don't turn on if the foyer chandelier is ON
+      - condition: state
+        entity_id: light.foyer_chandelier
+        state: "off"
+    action:
+      - service: light.turn_on
+        entity_id: light.stairs_light

@@ -1,0 +1,36 @@
+# Upstairs Hallway Lights Sleep Mode On
+#
+# The Upstairs Hallway has a few lights and uses adaptive
+# lighting, but we need to make sure that sleep mode
+# is on in the evenings after the sun is down
+#
+automation:
+  - id: "upstairs_hallway_lights_sleep_mode_on"
+    initial_state: on
+    alias: "Upstairs Hallway Lights Sleep Mode On"
+    trigger:
+      # Upstairs hallways goes into Bedtime mode
+      - platform: state
+        entity_id: input_select.upstairs_hallway
+        to: "Bedtime"
+      # Kids are going to sleep
+      - platform: state
+        entity_id:
+          - input_boolean.gianlucas_room_occupied
+          - input_boolean.ninos_bedroom_occupied
+        to: "on"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Sun is set
+      - condition: sun
+        after: sunset
+      # It's dark outside
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "on"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.adaptive_lighting_sleep_mode_upstairs_hallway

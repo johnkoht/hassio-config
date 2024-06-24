@@ -1,0 +1,51 @@
+# Camera Notifications - Activate
+#
+# This automation listens to a few sensors and
+# when triggered, simply turns ON a boolean that
+# enables camera notifications
+#
+automation:
+  - id: "camera_notifications_activate"
+    alias: "Camera Notifications - Activate"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # House is in the Away mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Away"
+      # At 10pm
+      - platform: time
+        at: "22:00:00"
+      # 15 mins after sunset
+      - platform: sun
+        event: sunset
+        offset: "00:15:00"
+      # Exterior doors have been closed for 45 minutes
+      - platform: state
+        entity_id: binary_sensor.exterior_doors
+        to: "off"
+        for:
+          minutes: 45
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+    condition:
+      # Make sure the notifications are already OFF
+      - condition: state
+        entity_id: input_boolean.camera_notifications
+        state: "off"
+    action:
+      # Turn OFF the camera notification boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.camera_notifications
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: Security Cameras
+          message: "Camera detections have been enabled."
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "camera-notifications"

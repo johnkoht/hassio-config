@@ -1,0 +1,79 @@
+# Camera Notifications - Deactivate
+#
+# This automation listens to a few sensors and
+# when triggered, simply turns OFF a boolean that
+# disables camera notifications
+#
+automation:
+  - id: "camera_notifications_deactivate"
+    alias: "Camera Notifications - Deactivate"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # House becomes occupied for 15 mins
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+        for:
+          minutes: 15
+      # House goes into Auto mode for 30 mins
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+        for:
+          minutes: 30
+      # 15 mins after sunrise
+      - platform: sun
+        event: sunrise
+        offset: "00:15:00"
+      # Exterior doors are opened
+      - platform: state
+        entity_id: binary_sensor.exterior_doors
+        to: "on"
+      # Somebody arrived home
+      - platform: state
+        entity_id:
+          - input_boolean.cristina_home
+          - input_boolean.john_home
+          - input_boolean.joe_home
+          - input_boolean.nonna_home
+          - input_boolean.katia_home
+        to: "on"
+      # If any garage door opens
+      - platform: state
+        entity_id: cover.garage_doors
+        to: "open"
+    condition:
+      # Make sure the notifications are already ON
+      - condition: state
+        entity_id: input_boolean.camera_notifications
+        state: "on"
+      # One of us is home
+      - condition: state
+        entity_id: group.family
+        state: "home"
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # Sun is above horizon
+      - condition: state
+        entity_id: sun.sun
+        state: "above_horizon"
+    action:
+      # Turn OFF the camera notification boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.camera_notifications
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: Security Cameras
+          message: "Camera detections have been disabled to cut down on notification overload."
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "camera-notifications"

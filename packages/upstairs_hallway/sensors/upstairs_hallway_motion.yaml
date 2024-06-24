@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Upstairs Hallway Motion
+    unique_id: upstairs_hallway_motion
+    device_class: motion
+    entities:
+      - binary_sensor.upstairs_hallway_north_motion
+      - binary_sensor.upstairs_hallway_south_motion

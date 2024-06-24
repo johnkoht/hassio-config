@@ -1,0 +1,40 @@
+esphome:
+  name: "esphome-distance"
+  friendly_name: Distance Sensor
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "WQeicQroBb3tqlWq2wLK+8JGdGEdWBy/Y63rw5cMSio="
+
+ota:
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esphome-Web-0Eb920"
+    password: "lZaVPZcDv6Ko"
+
+captive_portal:
+    
+sensor:
+  - platform: ultrasonic
+    trigger_pin: GPIO5
+    echo_pin: GPIO18
+    name: "Ultrasonic Sensor"
+    update_interval: 1s
+    timeout: 20m
+    filters:
+      delta: 20%

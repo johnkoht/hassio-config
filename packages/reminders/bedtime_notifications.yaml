@@ -51,7 +51,7 @@ automation:
       # vacuum won't be able to clean so we need to open
       - if:
           - condition: state
-            entity_id: binary_sensor.junior_suite_door_status
+            entity_id: binary_sensor.jr_suite_door_status
             state: "off"
         then:
           - service: input_text.set_value

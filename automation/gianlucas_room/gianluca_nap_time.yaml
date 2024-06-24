@@ -12,17 +12,19 @@ trigger:
   - platform: state
     entity_id: group.gianlucas_room_lights
     to: "off"
+  # Door is closed
+  - platform: state
+    entity_id: binary_sensor.gianlucas_door_sensor_status
+    to: "off"
 condition:
   # The house is occupied
   - condition: state
     entity_id: input_boolean.house_occupied
     state: "on"
-  # Room is occupied (e.g. door is closed)
+  # Room is occupied
   - condition: state
     entity_id: input_boolean.gianlucas_room_occupied
     state: "on"
-    for:
-      minutes: 3
   # Gianluca's door is closed
   - condition: state
     entity_id: binary_sensor.gianlucas_door_sensor_status
@@ -39,11 +41,12 @@ action:
   - service: script.voice_announcement
     data:
       media_players: auto
+      sound: harp-flourish
       speech_message: >-
         {{
           [
             "Shhh...Gianluca is going to sleep.",
-            "Quiet time, baby Gianluca is going to nap!",
+            "Quiet time, Gianluca is going to nap!",
             "Pardon the interruption but Gianluca is going to sleep, please be quiet.",
             "Attention! Quiet mode has been enabled for Gianluca's nap."
           ] | random

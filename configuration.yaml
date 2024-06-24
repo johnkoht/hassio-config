@@ -8,10 +8,10 @@ homeassistant:
     - "/tmp"
 
 # Text to speech
-tts:
-  - platform: google_translate
-    base_url: !secret base_url
-    service_name: google_say
+# tts:
+#   - platform: google_translate
+#     #base_url: !secret base_url
+#     service_name: google_say
 
 #group: !include groups.yaml
 group: !include_dir_merge_named group
@@ -59,6 +59,80 @@ frontend:
     - /hacsfiles/hass-hue-icons/hass-hue-icons.js
   themes: !include_dir_merge_named themes
 
+lovelace:
+  mode: storage
+  dashboards:
+    lovelace-kitchen:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-kitchen.yaml
+      title: Kitchen
+      icon: mdi:fridge
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-family-room:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-family-room.yaml
+      title: Family Room
+      icon: mdi:sofa
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-dining-room:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-dining-room.yaml
+      title: Dining Room
+      icon: mdi:table-chair
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-gianlucas-bedroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-gianlucas-bedroom.yaml
+      title: Gianluca's Room
+      icon: mdi:cradle
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-jr-suite:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-jr-suite.yaml
+      title: Jr. Suite
+      icon: mdi:bed-double
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-laundry-room:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-laundry-room.yaml
+      title: Laundry Room
+      icon: hue:room-laundry
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-main-bedroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-main-bedroom.yaml
+      title: Main Bedroom
+      icon: mdi:bed-king
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-ninos-bedroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-ninos-bedroom.yaml
+      title: Nino's Bedroom
+      icon: mdi:bed-single
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-office:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-office.yaml
+      title: Office
+      icon: mdi:laptop
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-playroom:
+      mode: yaml
+      filename: ui_lovelace_minimalist/dashboard/rooms/ui-playroom.yaml
+      title: Playroom
+      icon: hue:room-nursery
+      show_in_sidebar: true
+      require_admin: false
+
 zone:
   - name: Home
     latitude: !secret home_latitude
@@ -72,3 +146,51 @@ wemo:
     - 192.168.2.24
     - 192.168.2.162
     - 192.168.2.230
+
+logger:
+  default: info
+  logs:
+    serialpy: debug
+
+    homeassistant.core: debug
+    homeassistant.components.zha: debug
+
+    bellows.zigbee.application: debug
+    bellows.ezsp: debug
+    zigpy: debug
+    zigpy_deconz.zigbee.application: debug
+    zigpy_deconz.api: debug
+    zigpy_deconz.uart: debug
+    zigpy_xbee.zigbee.application: debug
+    zigpy_xbee.api: debug
+    zigpy_zigate: debug
+    zigpy_znp: debug
+    zhaquirks: debug
+    asyncio: debug
+
+camera:
+  # Main Level Vacuum
+  - platform: xiaomi_cloud_map_extractor
+    name: Main Level Vacuum
+    host: !secret main_level_xiaomi_vacuum_host
+    token: !secret main_level_xiaomi_vacuum_token
+    username: !secret xiaomi_cloud_username
+    password: !secret xiaomi_cloud_password
+    draw: ["all"]
+    scan_interval: 60
+    auto_update: false
+    attributes:
+      - calibration_points
+  #
+  # Upper Level vacuum
+  - platform: xiaomi_cloud_map_extractor
+    name: Upper Level Vacuum
+    host: !secret upper_level_xiaomi_vacuum_host
+    token: !secret upper_level_xiaomi_vacuum_token
+    username: !secret xiaomi_cloud_username
+    password: !secret xiaomi_cloud_password
+    draw: ["all"]
+    scan_interval: 60
+    auto_update: false
+    attributes:
+      - calibration_points

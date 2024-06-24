@@ -1,0 +1,48 @@
+# Nino school departure reminder
+#
+automation:
+  - id: "nino_school_departure_reminder"
+    alias: "Nino School Departure Reminder"
+    mode: "single"
+    initial_state: off
+    trigger:
+      # 20 mins before start
+      - platform: calendar
+        event: start
+        entity_id: calendar.ninos_school
+        offset: -00:20:00
+    condition:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nino school day boolean is ON
+      - condition: state
+        entity_id: input_boolean.nino_school_day
+        state: "on"
+      # Not a reminder
+      - condition: template
+        value_template: "{{ 'reminder' not in (trigger.calendar_event.summary | lower) }}"
+    action:
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "school-bell"
+          speech_message: >-
+            {% set event = trigger.calendar_event.summary | lower %}
+
+            {% if "giggle gang" in event %}
+              {% set event_label = "Giggle Gang" %}
+            {% elif "little acorns" in event %}
+              {% set event_label = "Little Acorns" %}
+            {% else %}
+              {% set event_label = "school" %}
+            {% endif %}
+
+            {{
+              [
+                event_label ~ " starts soon. Time to pack up and head out!",
+                "Hey gang, time to start heading over to " ~ event_label,
+                "Pack it up, pack it in, time to drop Nino at " ~ event_label
+              ] | random
+            }}

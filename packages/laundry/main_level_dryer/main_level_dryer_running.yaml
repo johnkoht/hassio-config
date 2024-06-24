@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      main_level_dryer_running:
+        friendly_name: Main Level Dryer Running
+        unique_id: main_level_dryer_running
+        value_template: >-
+          {{ 
+            states.main_level_dryer_status.state == "Running" or 
+            states.main_level_dryer_status.state == "Finishing"
+          }}

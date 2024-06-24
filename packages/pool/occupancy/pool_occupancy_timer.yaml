@@ -1,0 +1,6 @@
+timer:
+  pool_occupancy:
+    name: Pool Occupancy
+    duration: "00:05:00"
+    icon: mdi:home
+    restore: true

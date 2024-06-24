@@ -1,0 +1,36 @@
+# Upstairs Hallway Lights Sleep Mode Off
+#
+# The Upstairs Hallway uses adaptive
+# lighting, but we need to make sure that sleep mode
+# is off in the morning and during the day
+#
+automation:
+  - id: "upstairs_hallway_lights_sleep_mode_off"
+    initial_state: on
+    alias: "Upstairs Hallway Lights Sleep Mode Off"
+    trigger:
+      # At sunrise
+      - platform: sun
+        event: sunrise
+      # Or at 7am
+      - platform: time
+        at: "07:00:00"
+      # Upstairs hallways goes into Auto mode
+      - platform: state
+        entity_id: input_select.upstairs_hallway
+        to: "Auto"
+    condition:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      # Upstairs hallway is Auto mode
+      - condition: state
+        entity_id: input_select.upstairs_hallway
+        state: "Auto"
+      # # Sun is up
+      - condition: sun
+        after: sunrise
+    action:
+      - service: switch.turn_off
+        entity_id: switch.adaptive_lighting_sleep_mode_upstairs_hallway

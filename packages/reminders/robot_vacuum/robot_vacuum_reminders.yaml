@@ -6,6 +6,7 @@ automation:
       # Low on water
       - platform: state
         entity_id: binary_sensor.roborock_s7_water_shortage
+        from: "off"
         to: "on"
       # Sensors need to be cleaned (less than 2 hours)
       - platform: numeric_state
@@ -15,7 +16,7 @@ automation:
       # Wait until 6:30am
       - wait_for_trigger:
           - platform: time
-            at: "06:30:00"
+            at: "07:05:00"
 
       # Wait for the kitchen to be occupied for 10 minutes
       - wait_for_trigger:

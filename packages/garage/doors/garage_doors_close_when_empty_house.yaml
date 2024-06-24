@@ -1,28 +1,12 @@
 automation:
   - id: "garage_doors_close_when_empty_house"
     alias: "Garage doors close when empty house"
-    initial_state: off
+    initial_state: on
     trigger:
-      # If any doors have been open for more than 10 mins
-      - platform: state
-        entity_id: cover.garage_doors
-        to: "open"
-        for:
-          minutes: 10
       # If the garage is set to Away
       - platform: state
         entity_id: input_select.garage
         to: "Away"
-      # If the garage is set to Away for 2 mins
-      - platform: state
-        entity_id: input_select.garage
-        to: "Away"
-        for: 
-          minutes: 2
-      # # If the garage is set to Off
-      # - platform: state
-      #   entity_id: input_select.garage
-      #   to: "Off"
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
@@ -33,17 +17,10 @@ automation:
       - condition: state
         entity_id: cover.garage_doors
         state: "open"
-      # Garage is in away or off mode
-      - condition: or
-        conditions:
-          # Garage is in Away Mode
-          - condition: state
-            entity_id: input_select.garage
-            state: "Away"
-          # Garage is in Off Mode
-          - condition: state
-            entity_id: input_select.garage
-            state: "Off"
+      # Garage is in Away Mode
+      - condition: state
+        entity_id: input_select.garage
+        state: "Away"
     action:
       # Close the garage doors
       - service: cover.close_cover

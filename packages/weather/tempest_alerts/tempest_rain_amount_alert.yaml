@@ -1,0 +1,49 @@
+automation:
+  - id: "tempest_rain_alert"
+    alias: Tempest - Rain Alert
+    initial_state: on
+    trigger:
+      # Tempest rain amount over 1 inch
+      - platform: numeric_state
+        entity_id: sensor.tempest_rain_amount
+        above: 1
+      # Tempest rain amount over 3 inch
+      - platform: numeric_state
+        entity_id: sensor.tempest_rain_amount
+        above: 3
+      # Tempest rain rate above 2 inches per hour
+      - platform: numeric_state
+        entity_id: sensor.tempest_rain_rate
+        above: 2
+    action:
+      # Announce to the house
+      - service: script.voice_announcement
+        data:
+          speech_message: >-
+            {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
+            {% set rain_rate = state_attr('sensor.tempest_rain_rate') %}
+
+            {% if rain_amount > 3 or rain_rate > 3 %}
+              "Warning! Rain is accumulating quickly, please make sure to check the basement for any leaks."
+            {% else %}
+              "Attention! There's quite a bit of rain so make sure to keep an eye on the basement."
+            {% endif %}
+          sound: "police-whistle"
+          media_players: auto
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Rain Accumulation Alert!"
+          message: >-
+            {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
+            {% set rain_rate = state_attr('sensor.tempest_rain_rate') %}
+
+            {% if rain_amount > 3 or rain_rate > 3 %}
+              "Warning! Rain is accumulating quickly, please make sure to check the basement for any leaks."
+            {% else %}
+              "Attention! There's quite a bit of rain so make sure to keep an eye on the basement."
+            {% endif %}
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "tempest-rain-alert"

@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Pool Motion Sensor Status
+    unique_id: pool_motion_sensor_status
+    device_class: motion
+    entities:
+      - binary_sensor.pool_motion_east_entry_occupancy
+      - binary_sensor.pool_motion_west_occupancy

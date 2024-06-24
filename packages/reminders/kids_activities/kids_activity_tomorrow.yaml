@@ -1,7 +1,7 @@
 binary_sensor:
   - platform: template
     sensors:
-      kids_activity_toorrow:
+      kids_activity_tomorrow:
         friendly_name: Kids Activity Tomorrow
         value_template: >-
           {% set t = now() %}

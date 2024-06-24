@@ -1,0 +1,4 @@
+input_boolean:
+  ninos_bedroom_occupied:
+    name: Nino's Bedroom Occupied
+    icon: mdi:bed-double

@@ -1,0 +1,57 @@
+binary_sensor:
+  - platform: bayesian
+    prior: 0.08
+    name: "Backyard Occupied"
+    probability_threshold: 0.60
+    observations:
+      # Garage interior door opened in the last 10 mins
+      - platform: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.interior_garage_door.last_changed)) | int < 600 }}"
+        prob_given_true: 0.25
+        prob_given_false: 0.02
+
+      # Garage occupancy
+      - platform: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        to_state: "on"
+        prob_given_true: 0.13
+        prob_given_false: 0.05
+
+      # Garage door is open
+      - platform: state
+        entity_id: cover.garage_doors
+        to_state: "open"
+        prob_given_true: 0.38
+        prob_given_false: 0.09
+
+      # Kitchen door opened in the last 10 mins
+      - platform: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_door.last_changed)) | int < 600 }}"
+        prob_given_true: 0.25
+        prob_given_false: 0.09
+
+      # Backyard motion detected in last 5 minutes
+      - platform: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.hue_outdoor_motion_sensor_1_motion.last_changed)) | int < 300 }}"
+        prob_given_true: 0.38
+        prob_given_false: 0.01
+
+      # Backyard gate recently opened (5 mins)
+      - platform: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.backyard_main_entry_gate_opening.last_changed)) | int < 300 }}"
+        prob_given_true: 0.38
+        prob_given_false: 0.01
+
+      # Sun is above horizon
+      - platform: state
+        entity_id: "sun.sun"
+        to_state: "above_horizon"
+        prob_given_true: 0.95
+        prob_given_false: 0.45
+
+      # House occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to_state: "on"
+        prob_given_true: 0.95
+        prob_given_false: 0.73

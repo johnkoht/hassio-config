@@ -19,14 +19,19 @@ condition:
   - condition: state
     entity_id: binary_sensor.gianlucas_door_sensor_status
     state: "on"
-  # Make sure Nino's room is not occupied and he's sleeping
+  # Make sure Gianluca's room is not occupied and he's sleeping
   - condition: state
-    entity_id: input_boolean.ninos_room_occupied
+    entity_id: input_boolean.gianlucas_room_occupied
     state: "off"
   # Quiet mode is currently enabled
   - condition: state
     entity_id: input_boolean.quiet_mode
     state: "on"
+  # Make sure Nino's room is not occupied, otherwise we
+  # don't want to disable quiet mode
+  - condition: state
+    entity_id: input_boolean.ninos_bedroom_occupied
+    state: "off"
 action:
   # Turn on the quiet mode boolean
   - service: input_boolean.turn_off

@@ -38,6 +38,16 @@ automation:
           entity_id: input_select.main_bathroom
           option: "Bedtime"
 
+      # Wait until the bathroom is no longer occupied
+      # before we actually turn on bedtime mode automations
+      - wait_for_trigger:
+          - platform: state
+            entity_id: input_boolean.main_bathroom_occupied
+            to: "off"
+        timeout:
+          minutes: 10
+        continue_on_timeout: true
+
       # Turn on the bedtime motion automation
       - service: automation.turn_on
         entity_id: automation.main_bathroom_bedtime_motion_on

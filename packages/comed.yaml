@@ -1,0 +1,11 @@
+sensor:
+  - platform: comed_hourly_pricing
+    monitored_feeds:
+      - type: five_minute
+      - type: current_hour_average
+
+template:
+  - sensor:
+      - name: Energy Price
+        unit_of_measurement: "$/kWh"
+        state: "{{states.sensor.comed_current_hour_average_price.state | float / 100}}"
