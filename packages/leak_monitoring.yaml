@@ -52,7 +52,8 @@ alert:
     done_message: "The water leak has been dealt with"
     notifiers:
       - ios_family
-      - tts_announcements_devices
+      #- tts_announcements_devices
+      - leak_voice_announcement
 
   # If there's a leak while we're away then send us
   # a push notification.
@@ -72,3 +73,17 @@ alert:
     done_message: "The water leak has been dealt with"
     notifiers:
       - ios_family
+
+notify:
+  - name: leak_voice_announcement
+    platform: rest
+    resource: "http://localhost:8123/api/services/script/voice_announcement"
+    method: POST_JSON
+    headers:
+      authorization: !secret restapi_notify
+      content-type: "application/json"
+    message_param_name: speech_message
+    data:
+      sound: "police-whistle"
+      #speech_message: "{{message}}"
+      media_players: "media_player.sonos_office"
