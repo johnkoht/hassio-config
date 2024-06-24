@@ -1,0 +1,10 @@
+# Gianluca Countdown to Birthday Boolean
+#
+# Should we start the countdown? Once this boolean is activated,
+# then the house will start a countdown to Gianluca's birthday via
+# voice announcements.
+#
+input_boolean:
+  gianluca_countdown_to_birthday:
+    name: Gianluca Countdown to Birthday
+    icon: mdi:cake

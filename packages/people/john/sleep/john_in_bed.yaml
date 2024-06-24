@@ -1,0 +1,64 @@
+# John In Bed
+#
+# Listens to the Bayesian sleep sensor
+# and simply toggles a few input_booleans
+# to indicate in bed and not awake
+#
+automation:
+  - id: "john_in_bed"
+    alias: "John in Bed"
+    initial_state: on
+    trigger:
+      # Bayesian sensor is on for 2 minutes
+      - platform: state
+        entity_id: binary_sensor.john_in_bed
+        to: "on"
+        for:
+          minutes: 1
+      # # It's bedtime hours
+      # - platform: state
+      #   entity_id: binary_sensor.bedtime
+      #   to: "on"
+      # # Door is closed
+      # - platform: state
+      #   entity_id: binary_sensor.main_bedroom_door_sensor_status
+      #   to: "off"
+      # Sleep state changes to sleep
+      - platform: state
+        entity_id: input_select.john_sleep_state
+        to: "Sleep"
+      # Sleep state changes to just laid down
+      - platform: state
+        entity_id: input_select.john_sleep_state
+        to: "Just Laid Down"
+    condition:
+      # Bayesian sleep sensor is on
+      - condition: state
+        entity_id: binary_sensor.john_in_bed
+        state: "on"
+      # Sleep statate is sleep or just laid down
+      - condition: or
+        conditions:
+          # Sleep state is SLEEP
+          - condition: state
+            entity_id: input_select.john_sleep_state
+            state: "Sleep"
+          # Sleep state is "Just Laid Down"
+          - condition: state
+            entity_id: input_select.john_sleep_state
+            state: "Just Laid Down"
+      # John is home
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "on"
+      # It's bedtime hours
+      - condition: state
+        entity_id: binary_sensor.bedtime
+        state: "on"
+    action:
+      # Turn ON the john in bed input_boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.john_is_in_bed
+      # Turn OFF the john is awake input boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.john_is_awake

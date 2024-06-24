@@ -1,0 +1,4 @@
+input_boolean:
+  halloween_season_active:
+    name: Halloween Season Active
+    icon: mdi:halloween

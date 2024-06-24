@@ -11,41 +11,47 @@
       ignore_availability: true
       name: kohboCal
       track: true
-    - device_id: ninos_soccer
-      ignore_availability: true
-      name: Nino soccer
-      track: true
-      search: "soccer"
-      offset: "!!"
-    - device_id: ninos_italian_class
-      ignore_availability: true
-      name: Nino Italian class
-      track: true
-      search: "Nino Italian class"
-      offset: "!!"
-    - device_id: ninos_swim_lesson
-      ignore_availability: true
-      name: Nino Swim Lesson
-      track: true
-      search: "Nino Swim Lesson"
-      offset: "!!"
-    - device_id: gianluca_little_gym
-      ignore_availability: true
-      name: Gianluca Little Gym
-      track: true
-      search: "Gianluca Little Gym"
-      offset: "!!"
+    # - device_id: ninos_soccer
+    #   ignore_availability: true
+    #   name: Nino soccer
+    #   track: true
+    #   search: "soccer"
+    #   offset: "!!"
+    # - device_id: ninos_italian_class
+    #   ignore_availability: true
+    #   name: Nino Italian class
+    #   track: true
+    #   search: "Nino Italian class"
+    #   offset: "!!"
+    # - device_id: ninos_swim_lesson
+    #   ignore_availability: true
+    #   name: Nino Swim Lesson
+    #   track: true
+    #   search: "Nino Swim Lesson"
+    #   offset: "!!"
+    # - device_id: gianluca_little_gym
+    #   ignore_availability: true
+    #   name: Gianluca Little Gym
+    #   track: true
+    #   search: "Gianluca Little Gym"
+    #   offset: "!!"
     - device_id: ninos_bday
       ignore_availability: true
       name: "Nino's Birthday"
       track: true
-      search: "Anthony Birthday"
+      search: "Nino's Birthday"
       offset: "!!"
     - device_id: gianluca_bday
       ignore_availability: true
       name: "Gianluca's Birthday"
       track: true
       search: "Gianluca Birthday"
+      offset: "!!"
+    - device_id: birthdays
+      ignore_availability: true
+      name: "Birthdays"
+      track: true
+      search: "Birthday"
       offset: "!!"
 
 - cal_id: john.koht@gmail.com
@@ -147,3 +153,21 @@
       track: true
       search: "Garbage Day"
       offset: "!!"
+
+- cal_id: 7583a825638fbc627de2e755f0bf0086936fdd0606acecaeaee61a10b54ac954@group.calendar.google.com
+  entities:
+    - device_id: golf_acres
+      ignore_availability: true
+      name: Golf Acres
+
+- cal_id: 0014d514270baa0fe124a48aa1baa92fc4be65e0271e3d8b6ae604e9d005bb9f@group.calendar.google.com
+  entities:
+    - device_id: gianluca_school
+      ignore_availability: true
+      name: Gianluca School
+
+- cal_id: c0tsvhvgsh8j2lpn7gvvgkku0abp5s0c@import.calendar.google.com
+  entities:
+  - device_id: 5u_marauders
+    ignore_availability: true
+    name: 5U Marauders

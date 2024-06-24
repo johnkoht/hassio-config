@@ -50,7 +50,7 @@ automation:
       - service: script.voice_announcement
         data:
           media_players: auto
-          sound: "flute-cell-phone-alert"
+          sound: "message-alert"
           speech_message: >-
             {{
               [

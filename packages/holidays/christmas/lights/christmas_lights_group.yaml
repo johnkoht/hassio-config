@@ -6,21 +6,22 @@ switch:
       - switch.christmas_trees
       - switch.christmas_playroom_lights
       # Front yard lights
-      - switch.smart_plug_5_switch
+      - switch.z_wave_outdoor_smart_plug
 
   - platform: group
     name: "Christmas Trees"
     unique_id: christmas_trees
     entities:
-      - switch.smart_plug_1_switch
-      - switch.smart_plug_2_switch
+      # Family Room Tree
+      - switch.smart_plug_14_switch
+      # Dining Room Tree
+      - switch.smart_plug_9_switch
 
   - platform: group
     name: "Christmas Playroom Lights"
     unique_id: christmas_playroom_lights
     entities:
-      - switch.tradfri_smart_plug_1_switch
-      - switch.tradfri_smart_plug_2_switch
-      - switch.tradfri_smart_plug_3_switch
-      - switch.tradfri_smart_plug_4_switch
-      # - switch.tradfri_smart_plug_5_switch
+      - switch.smart_plug_15_switch
+      - switch.smart_plug_16_switch
+      - switch.smart_plug_17_switch
+      - switch.tradfri_smart_plug_5_switch

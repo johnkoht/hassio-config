@@ -71,28 +71,28 @@ automation:
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
     action:
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "police-whistle"
+          speech_message: "{{ expand('cover.garage_doors')|selectattr('state', 'eq', 'open')|map(attribute='name')|list|join(', ') }} has been open for a while but nobody is around so I'm automaticallly closing."
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Garage Doors Open!"
+          message: "{{ expand('cover.garage_doors')|selectattr('state', 'eq', 'open')|map(attribute='name')|list|join(', ') }} has been open for a while but nobody is around so I'm automaticallly closing."
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "garage-doors-open-home"
+
       # Close the garage doors
       - service: cover.close_cover
         data: {}
         target:
           entity_id: cover.garage_doors
 
-      # Call the announcement engine
-      - service: script.voice_announcement
-        data:
-          media_players: auto
-          sound: "police-whistle"
-          speech_message: "{{ trigger.from_state.attributes.friendly_name }} has been open for a while but nobody is around so I'm automaticallly closing."
-
       # Turn off the garage lights
       - service: light.turn_off
         entity_id: light.garage_lights
-
-      # Notification for logging
-      - service: script.general_notification
-        data:
-          title: "Garage Doors Open!"
-          message: "{{ trigger.from_state.attributes.friendly_name }} has been open for a while but nobody is around so I'm automaticallly closing."
-          devices: "all"
-          priority: "time-sensitive"
-          tag: "garage-doors-open-home"

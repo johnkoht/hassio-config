@@ -12,6 +12,10 @@
   platform: nfandroidtv
   host: 192.168.2.224
 
+- name: Basement TV
+  platform: nfandroidtv
+  host: 192.168.1.127
+
 # Notify all announcement devices (e.g. sonos)
 - name: tts_announcements_devices
   platform: tts

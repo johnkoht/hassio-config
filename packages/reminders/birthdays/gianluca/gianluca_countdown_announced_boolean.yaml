@@ -1,0 +1,6 @@
+# Has the countdown been announce for the day?
+input_boolean:
+  gianluca_countdown_announced:
+    name: Gianluca Countdown Announced
+    icon: mdi:bullhorn-outline
+    initial: false

@@ -1,0 +1,89 @@
+automation:
+  - id: "gianluca_birthday_countdown_reminder"
+    alias: "Gianluca Birthday Countdown Reminder"
+    mode: "single"
+    initial_state: off
+    trigger:
+      # At 7am
+      - platform: time
+        at: "07:05:00"
+      # At 7:35am
+      - platform: time
+        at: "07:35:00"
+      # At 8am
+      - platform: time
+        at: "08:05:00"
+      # At 8:35am
+      - platform: time
+        at: "08:35:00"
+      # At 6pm
+      - platform: time
+        at: "18:05:00"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Not already announced
+      - condition: state
+        entity_id: input_boolean.gianluca_countdown_announced
+        state: "off"
+      # After 7am
+      - condition: time
+        after: "07:00:00"
+    action:
+      # Wait for motion in the kitchen or family room
+      - wait_template: >-
+          {{ 
+            is_state('binary_sensor.kitchen_motion_sensor_status', 'on')
+            or
+            is_state('binary_sensor.family_room_motion_sensor', 'on')
+          }}
+        timeout: "00:05:00"
+
+      - alias: "Wait 2 seconds"
+        delay: 2
+
+      # Mark announced so we don't repeat all day
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.gianluca_countdown_announced
+
+      - choose:
+          # IF today's the day then let's announce it!!!
+          - conditions:
+              - condition: template
+                value_template: "{{ states.sensor.gianluca_days_to_birthday.state | int == 0 }}"
+            sequence:
+              # Call the announcement engine
+              - service: script.voice_announcement
+                data:
+                  speech_message: "Hey, Gianluca! Guess what? Today's your birthday! Happy Birthday!!!"
+                  media_players: "auto"
+                  sound: "success-trumpets"
+
+          # ELIF 1 more day
+          - conditions:
+              - condition: template
+                value_template: "{{ states.sensor.gianluca_days_to_birthday.state | int == 1 }}"
+            sequence:
+              # Call the announcement engine
+              - service: script.voice_announcement
+                data:
+                  speech_message: "Gianluca! Guess what tomorrow is? You're birthday!!! Are you super excited to celebrate?"
+                  media_players: "auto"
+                  sound: "games-sfx"
+
+        # ELSE more than 1 day
+        default:
+          # Call the announcement engine
+          - service: script.voice_announcement
+            data:
+              speech_message: >-
+                {{
+                  [
+                    "Hey Gianluca! Guess what? There's " ~ states.sensor.gianluca_days_to_birthday.state ~ " days until your birthday!",
+                    "Gianluca! I'm so excited! You're birthday is in " ~ states.sensor.gianluca_days_to_birthday.state ~ " days! How exciting is that?"
+                  ] | random
+                }}
+              media_players: "auto"
+              sound: "games-sfx"

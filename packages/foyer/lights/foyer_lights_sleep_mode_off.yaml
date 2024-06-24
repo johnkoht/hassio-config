@@ -6,7 +6,7 @@
 #
 automation:
   - id: "foyer_lights_sleep_mode_off"
-    initial_state: on
+    initial_state: off
     alias: "Foyer Lights Sleep Mode Off"
     trigger:
       # At sunrise

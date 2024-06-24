@@ -1,0 +1,39 @@
+automation:
+  - id: "ninos_bedroom_occupied"
+    initial_state: on
+    alias: "Nino's Bedroom - Occupied"
+    trigger:
+      # Nino's door is closed
+      - platform: state
+        entity_id: binary_sensor.ninos_door_sensor_status
+        to: "off"
+      # Lights turned ON
+      - platform: state
+        entity_id: light.ninos_bedroom_main_lights
+        to: "on"
+      # Bed occupied
+      - platform: state
+        entity_id: binary_sensor.nino_bed_occupied
+        to: "on"
+    condition:
+      # Not currently occupied
+      - condition: state
+        entity_id: input_boolean.ninos_bedroom_occupied
+        state: "off"
+      - condition: or
+        conditions:
+          # Nino's door is closed
+          - condition: state
+            entity_id: binary_sensor.ninos_door_sensor_status
+            state: "off"
+          # Lights are ON
+          - condition: state
+            entity_id: light.ninos_bedroom_main_lights
+            state: "on"
+          # Bed occupied
+          - condition: state
+            entity_id: binary_sensor.nino_bed_occupied
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.ninos_bedroom_occupied

@@ -28,7 +28,7 @@ automation:
       - platform: numeric_state
         entity_id: sensor.main_bathroom_humidity
         above: 60
-      # Humidity spikes more than 20%
+      # Humidity spikes more than 25%
       - platform: template
         value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) > 25 }}"
       # Humidity spikes more than 40%
@@ -39,6 +39,8 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bathroom_occupied
         state: "on"
+      - condition: template
+        value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) > 25 }}"
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.main_bathroom_shower_occupied

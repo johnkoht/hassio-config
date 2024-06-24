@@ -1,0 +1,52 @@
+automation:
+  # Halloween Lights - TURN ON
+  #
+  - id: "halloween_lights_turn_on"
+    alias: Halloween Lights - Turn On
+    mode: "single"
+    trigger:
+      - platform: homeassistant
+        event: start
+      # At 8am
+      - platform: time
+        at: "08:00:00"
+    condition:
+      # Halloween season is ACTIVE
+      - condition: state
+        entity_id: input_boolean.halloween_season_active
+        state: "on"
+      # Switch is currently OFF
+      - condition: state
+        entity_id: switch.z_wave_outdoor_smart_plug
+        state: "off"
+    action:
+      # Turn the smart plug switch ON
+      - service: switch.turn_on
+        entity_id: switch.z_wave_outdoor_smart_plug
+
+  #
+  #
+  # Halloween Lights - TURN OFF
+  #
+  - id: "halloween_lights_turn_off"
+    alias: Halloween Lights - Turn Off
+    mode: "single"
+    trigger:
+      - platform: homeassistant
+        event: start
+      # At 10pm
+      - platform: time
+        at: "22:00:00"
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+    condition:
+      # Switch is currently ON
+      - condition: state
+        entity_id: switch.z_wave_outdoor_smart_plug
+        state: "on"
+    action:
+      # Turn the smart plug switch ON
+      - service: switch.turn_off
+        entity_id: switch.z_wave_outdoor_smart_plug

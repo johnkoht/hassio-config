@@ -6,18 +6,3 @@ sequence:
     entity_id: input_boolean.cristina_home
   # Turn on the garage and mudroom lights
   - scene: scene.returned_home
-  # - service: mqtt.publish
-  #   data:
-  #     topic: location/cristina
-  #     payload: 'home'
-  #     retain: true
-  # - service: automation.turn_on
-  #   entity_id: automation.cristina_at_work
-  # - service: script.turn_on
-  #   entity_id: script.cristina_traveltime
-  # - service: script.announce_arrival
-  #   data:
-  #     who: cfalb
-  # - service: script.general_announcement
-  #   data:
-  #     speech_message: "Mamma is back home!"

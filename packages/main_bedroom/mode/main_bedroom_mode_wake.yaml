@@ -22,40 +22,54 @@ automation:
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "on"
     condition:
+      # Only move to Wake if we're currently in bedtime mode
+      - condition: state
+        entity_id: input_select.main_bedroom
+        state: "Bedtime"
       # After 5am and before 9am
       - condition: time
         after: "05:00:00"
         before: "09:00:00"
+      # Bed is empty
       - condition: and
         conditions:
-          # John is away or home and awake
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: input_boolean.john_home
-                state: "off"
-              - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: input_boolean.john_home
-                    state: "on"
-                  - condition: state
-                    entity_id: input_boolean.john_is_awake
-                    state: "on"
-          # Cristina is away or home and awake
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: input_boolean.cristina_home
-                state: "off"
-              - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: input_boolean.cristina_home
-                    state: "on"
-                  - condition: state
-                    entity_id: input_boolean.cristina_is_awake
-                    state: "on"
+          # John sleep state is not sleep or just laid down
+          - condition: template
+            value_template: "{{ states('input_select.john_sleep_state') not in ('Sleep', 'Just Laid Down') }}"
+          # Cristina sleep state is not sleep or just laid down
+          - condition: template
+            value_template: "{{ states('input_select.cristina_sleep_state') not in ('Sleep', 'Just Laid Down') }}"
+
+      # - condition: and
+      #   conditions:
+      #     # John is away or home and awake
+      #     - condition: or
+      #       conditions:
+      #         - condition: state
+      #           entity_id: input_boolean.john_home
+      #           state: "off"
+      #         - condition: and
+      #           conditions:
+      #             - condition: state
+      #               entity_id: input_boolean.john_home
+      #               state: "on"
+      #             - condition: state
+      #               entity_id: input_boolean.john_is_awake
+      #               state: "on"
+      #     # Cristina is away or home and awake
+      #     - condition: or
+      #       conditions:
+      #         - condition: state
+      #           entity_id: input_boolean.cristina_home
+      #           state: "off"
+      #         - condition: and
+      #           conditions:
+      #             - condition: state
+      #               entity_id: input_boolean.cristina_home
+      #               state: "on"
+      #             - condition: state
+      #               entity_id: input_boolean.cristina_is_awake
+      #               state: "on"
       # Main bedroom sensor detects occupancy
       - condition: state
         entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy

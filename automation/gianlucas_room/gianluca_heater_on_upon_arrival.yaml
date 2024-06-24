@@ -39,7 +39,7 @@ condition:
             state: "Just Arrived"
   # It's not that warm in his room
   - condition: template
-    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 71.5 }}"
+    value_template: "{{ (states.sensor.gianluca_room_temperature.state | float) < 69.5 }}"
   # After 6:30 PM
   - condition: time
     after: "18:30:00"

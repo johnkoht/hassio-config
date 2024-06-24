@@ -1,0 +1,4 @@
+input_boolean:
+  gianluca_school_day:
+    name: Gianluca School Day
+    icon: mdi:school-outline

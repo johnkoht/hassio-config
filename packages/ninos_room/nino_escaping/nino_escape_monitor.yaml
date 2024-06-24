@@ -25,7 +25,7 @@ automation:
                 state: "off"
               # His room has been occupied for more than 15 minutes
               - condition: template
-                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.ninos_room_occupied.last_updated)) | int > 900 }}"
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.ninos_bedroom_occupied.last_updated)) | int > 900 }}"
               # His door has been closed for 15 minutes
               - condition: state
                 entity_id: binary_sensor.ninos_door_sensor_status
@@ -59,7 +59,7 @@ automation:
       #       entity_id: binary_sensor.main_bedroom_door_sensor_status
       #       state: "off"
       #     - condition: state
-      #       entity_id: input_boolean.ninos_room_occupied
+      #       entity_id: input_boolean.ninos_bedroom_occupied
 
       # # Main bedroom door is closed
       # - condition: state

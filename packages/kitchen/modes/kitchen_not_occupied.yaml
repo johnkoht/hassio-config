@@ -40,11 +40,19 @@ automation:
         to: "off"
         for:
           minutes: 5
+      # EPL Occupancy NOT Detected
+      - platform: state
+        entity_id: binary_sensor.epl_kitchen_occupancy
+        to: "off"
     condition:
       # Kitchen is occupied
       - condition: state
         entity_id: input_boolean.kitchen_occupied
         state: "on"
+      # EPL Occupancy Detected
+      - condition: state
+        entity_id: binary_sensor.epl_kitchen_occupancy
+        state: "off"
       - condition: or
         conditions:
           # When Guest Mode is enabled

@@ -1,0 +1,40 @@
+# Nino's Room Mode Auto
+#
+automation:
+  - id: "ninos_bedroom_mode_auto"
+    initial_state: on
+    alias: "Nino's Bedroom - Mode Auto"
+    trigger:
+      # Nino's Bedroom is occupied
+      - platform: state
+        entity_id: input_boolean.ninos_bedroom_occupied
+        to: "on"
+      # House turn to Auto mode
+      - platform: state
+        entity_id: input_select.house
+        to: "Auto"
+      # House becomes occupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nino's Bedroom is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.ninos_room_occupied','Auto') }}"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # House is in Auto mode
+      - condition: state
+        entity_id: input_select.house
+        state: "Auto"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ninos_bedroom
+          option: "Auto"

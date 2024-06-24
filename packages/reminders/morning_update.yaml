@@ -1,0 +1,78 @@
+# automation:
+#   - id: "morning_update"
+#     alias: "Morning Update"
+#     mode: "single"
+#     trigger:
+#       # Main bedroom enters bedtime mode
+#       - platform: time
+#         at: "08:05:00"
+#     condition:
+#       # House is occupied
+#       - condition: state
+#         entity_id: input_boolean.house_occupied
+#         state: "on"
+#     action:
+
+script:
+  morning_update_announcement:
+    alias: "Morning Update Announcement"
+    mode: "single"
+    icon: mdi:air-horn
+
+    # Variables
+    variables:
+      kohbo_calendar_events:
+      school:
+
+    sequence:
+      # Get the Kohbo calendar and set to the
+      # variable kohbo_cal_agenda
+      - service: calendar.list_events
+        target:
+          entity_id: calendar.kohbocal
+        data:
+          duration:
+            hours: 24
+        response_variable: kohbocal_agenda
+
+      - service: logbook.log
+        data:
+          name: Morning Update
+          # message: "this is the event: {{kohbocal_agenda}} and after"
+          # message: >-
+          #   {% for event in kohbocal_agenda.events %}
+          #     {{ event.start}}: {{ event.summary }}<br>
+          #   {% endfor %}
+          message: >-
+            {% set update = "Hey fam, here's today's morning update: " %}
+
+            {% if kohbocal_agenda.events %}
+              {% set update = update + "We have " %}
+              {% set ns = namespace(kc_update="") %}
+
+              {% for event in kohbocal_agenda.events %}
+                {% set summary = event.summary %}
+                {% set ns.kc_update = ns.kc_update + summary + "," %}
+              {% endfor %}
+
+              {{ ns.kc_update.split(",") }}
+
+              {% set update = update + ns.kc_update %}
+            {% else %}
+              {% set update = update + " there's nothing else" %}
+            {% endif %}
+
+            "{{ update }}!!!"
+
+        # Morning Update this is the event: {'events': [{'start': '2023-09-26T09:00:00-05:00', 'end': '2023-09-26T14:00:00-05:00', 'summary': 'Pool closing'}, {'start': '2023-09-26T16:00:00-05:00', 'end': '2023-09-26T17:00:00-05:00', 'summary': 'Nino Little Legends Soccer'}]} and after
+
+        # # Optional
+        # entity_id: light.kitchen
+        # domain: light
+
+    #    Your agenda for today:
+    # <p>
+    # {% for event in agenda.events %}
+    # {{ event.start}}: {{ event.summary }}<br>
+    # {% endfor %}
+    # </p>

@@ -1,0 +1,5 @@
+input_boolean:
+  upstairs_hallway_lighting_automations:
+    name: Upstairs Hallway Lighting Automations
+    icon: mdi:motion-sensor
+    initial: on

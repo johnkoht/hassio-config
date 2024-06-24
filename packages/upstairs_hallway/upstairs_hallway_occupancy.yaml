@@ -1,0 +1,4 @@
+input_boolean:
+  upstairs_hallway_occupied:
+    name: Upstairs Hallway Occupied
+    icon: mdi:image-frame

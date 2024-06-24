@@ -1,0 +1,28 @@
+automation:
+  - id: "sylvia_is_away"
+    alias: "Sylvia is Away"
+    initial_state: on
+    trigger:
+      # Sylvia not home
+      - platform: state
+        entity_id: person.sylvia
+        to: "not_home"
+      # Handle restarts and reloads of HA
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # Didn't just leave
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.sylvia_status
+            state: "Just Left"
+      # Not detected home
+      - condition: state
+        entity_id: person.sylvia
+        state: "not_home"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.sylvia_home

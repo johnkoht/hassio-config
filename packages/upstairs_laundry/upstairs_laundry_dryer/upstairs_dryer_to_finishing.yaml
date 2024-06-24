@@ -1,0 +1,17 @@
+automation:
+  - id: "upstairs_dryer_to_finished"
+    alias: "Upstairs Dryer to Finishing"
+    initial_state: on
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.upstairs_drying_machine_active_power
+        below: 150
+    condition:
+      - condition: state
+        entity_id: input_select.upstairs_dryer_status
+        state: Running
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.upstairs_dryer_status
+          option: Finishing

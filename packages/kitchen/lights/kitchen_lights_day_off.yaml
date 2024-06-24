@@ -8,13 +8,13 @@ automation:
       # If the lighting is better in the kitchen
       - platform: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 350
+        above: 450
         for:
           minutes: 10
       # If the lighting is better in the kitchen
       - platform: numeric_state
         entity_id: sensor.kitchen_illuminance
-        above: 450
+        above: 500
         for:
           minutes: 5
       # If the lighting is better in the kitchen
@@ -52,14 +52,26 @@ automation:
       - condition: state
         entity_id: sun.sun
         state: "above_horizon"
-      # Light is low
-      - condition: numeric_state
-        entity_id: sensor.kitchen_illuminance
-        above: 250
+      # Light is low on both sensors
+      - condition: and
+        conditions:
+          # Table sensor light is low
+          - condition: numeric_state
+            entity_id: sensor.kitchen_motion_sensor_table_illuminance
+            above: 450
+          # Main sensor light is low
+          - condition: numeric_state
+            entity_id: sensor.kitchen_motion_sensor_main_illuminance
+            above: 450
       # Lights are currently on
       - condition: state
         entity_id: light.kitchen_lights
         state: "on"
     action:
+      # Turn OFF the lights
       - service: light.turn_off
         entity_id: light.kitchen_lights
+      # Turn off the boolean that identifies if the
+      # lights were automatically turned on
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kitchen_lights_auto

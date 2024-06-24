@@ -6,8 +6,8 @@
 #
 
 script:
-  announcement_engine_new:
-    alias: "Announcement Engine New"
+  announcement_engine:
+    alias: "Announcement Engine"
     mode: "queued"
 
     fields:
@@ -18,7 +18,7 @@ script:
       sound_file:
         name: Sound File
         description: A URL to a sound file to play
-        example: "https://github.com/johnkoht/hassio-config/blob/master/sounds/Notification-sound.mp3?raw=true"
+        example: "/local/sounds/Notification-sound.mp3"
         selector:
           text:
             type: url
@@ -76,7 +76,6 @@ script:
               - media_player.sonos_office
               - media_player.sonos_family_room
               - media_player.sonos_kitchen
-              - media_player.sonos_main_bedroom
               - media_player.sonos_playroom
 
     sequence:

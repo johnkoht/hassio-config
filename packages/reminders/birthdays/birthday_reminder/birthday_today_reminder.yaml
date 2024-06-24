@@ -1,0 +1,54 @@
+automation:
+  - id: "birthday_today_reminder"
+    alias: "Birthday Today Reminder"
+    mode: "single"
+    trigger:
+      # At 7:30 am
+      - platform: time
+        at: "07:35:00"
+      # At 5:15pm
+      - platform: time
+        at: "17:15:00"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Birthday calendar is ON
+      - condition: state
+        entity_id: calendar.birthdays_2
+        state: "on"
+    action:
+      # Wait for motion in the kitchen or family room
+      - wait_template: >-
+          {{ 
+            is_state('binary_sensor.kitchen_motion_sensor_status', 'on')
+            or
+            is_state('binary_sensor.family_room_motion_sensor', 'on')
+          }}
+        timeout: "00:05:00"
+
+      - alias: "Wait 2 seconds"
+        delay: 2
+
+      # Call the announcement engine
+      - service: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "success-trumpets"
+          speech_message: >-
+            {{ 
+              [
+                "Hey fam, just wanted to remind you that today is " ~ states.calendar.birthdays_2.attributes.message,
+                "Just a quick reminder that it's " ~ states.calendar.birthdays_2.attributes.message ~ " today!",
+                "Pardon the interruption, don't forget that today is " ~ states.calendar.birthdays_2.attributes.message
+              ] | random
+            }}
+
+      - service: script.general_notification
+        data:
+          message: "Today is {{states.calendar.birthdays_2.attributes.message}}"
+          title: "Birthday Reminder"
+          devices: "jk"
+          priority: "active"
+          tag: "birthday-reminder"

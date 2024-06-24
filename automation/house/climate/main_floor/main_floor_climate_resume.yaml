@@ -27,12 +27,18 @@ trigger:
     to: "off"
   # At 6am
   - platform: time
-    at: "00:06:00"
+    at: "06:00:00"
 condition:
-  # The house is not in bedtime mode
-  - condition: state
-    entity_id: input_boolean.bedtime
-    state: "off"
+  # Bedtime mode is OFF OR it's after 6am
+  - condition: or
+    conditions:
+      # The house is not in bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # It's after 6am
+      - condition: time
+        after: "06:00:00"
   # The house is occupied
   - condition: state
     entity_id: input_boolean.house_occupied

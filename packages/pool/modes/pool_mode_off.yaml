@@ -1,0 +1,42 @@
+# Pool Mode Off
+#
+# The Pool becomes Off when we're not home
+# or it's bedtime.
+#
+automation:
+  - id: "pool_mode_off"
+    initial_state: on
+    alias: "Pool Mode Off"
+    trigger:
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # Hassio restart/relaod
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    condition:
+      # Pool is not already Off
+      - condition: template
+        value_template: "{{ not is_state('input_select.pool','Off') }}"
+      - condition: or
+        conditions:
+          # House is not occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # Bedtime mode is enabled
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.pool
+          option: "Off"

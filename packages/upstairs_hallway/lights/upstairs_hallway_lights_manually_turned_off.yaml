@@ -1,0 +1,33 @@
+# Upstairs Hallway Lights Manually Turned Off
+#
+automation:
+  - id: "upstairs_hallway_lights_manually_turned_off"
+    initial_state: on
+    alias: "Upstairs Hallway Lights - Manually Turned Off"
+    trigger:
+      # Lights turned off
+      - platform: state
+        entity_id: light.upstairs_hallway
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: input_boolean.upstairs_hallway_lights_auto
+        state: "on"
+      # - condition: template
+      #   value_template: "{{ trigger.to_state.context.user_id == none }}"
+      - condition: template
+        value_template: "{{ trigger.to_state.context.parent_id == none }}"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.upstairs_hallway_lights_auto
+      # Deactivate the motion sensors
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.upstairs_hallway_lighting_automations
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Upstairs Hallway Lights"
+          message: "The upstairs hallway lights have been turned off. The parent id is {{trigger.to_state.context.parent_id}} and the user_id is {{trigger.to_state.context.user_id}}."
+          devices: "jk"
+          priority: "passive"
+          tag: "upstairs-hallway-lighting-automation"

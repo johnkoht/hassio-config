@@ -1,0 +1,25 @@
+automation:
+  - id: "upstairs_dryer_to_running"
+    alias: "Upstairs Dryer to Running"
+    initial_state: on
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.upstairs_drying_machine_active_power
+        above: 10
+    condition:
+      condition: or
+      conditions:
+        - condition: state
+          entity_id: input_select.upstairs_dryer_status
+          state: "Idle"
+        - condition: state
+          entity_id: input_select.upstairs_dryer_status
+          state: "Clean"
+        - condition: state
+          entity_id: input_select.upstairs_dryer_status
+          state: "Finishing"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.upstairs_dryer_status
+          option: "Running"

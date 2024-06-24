@@ -42,5 +42,9 @@ automation:
         entity_id: light.playroom_lights
         state: "on"
     action:
+      # Turn OFF the lights
       - service: light.turn_off
         entity_id: light.playroom_lights
+      # Turn off the lights automatically turned on boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.playroom_lights_auto

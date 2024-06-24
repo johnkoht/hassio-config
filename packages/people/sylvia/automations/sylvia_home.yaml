@@ -1,0 +1,30 @@
+automation:
+  - id: "sylvia_is_home"
+    initial_state: on
+    alias: "Sylvia is Home"
+    trigger:
+      # Sylvia detected home
+      - platform: state
+        entity_id: person.sylvia
+        to: "home"
+      # Unifi presence detection
+      - platform: state
+        entity_id: device_tracker.sylvia_android_phone
+        to: "home"
+      # Hassio restart/reload
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.sylvia
+            state: "home"
+          - condition: state
+            entity_id: device_tracker.sylvia_android_phone
+            state: "home"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.sylvia_home

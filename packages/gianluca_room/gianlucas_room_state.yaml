@@ -1,0 +1,10 @@
+# input_select.gianlucas_bedroom
+#
+# Stores the current state for the Gianluca's Bedroom
+input_select:
+  gianlucas_bedroom:
+    name: Gianluca's Bedroom
+    options:
+      - "Auto"
+      - "Bedtime"
+      - "Off"

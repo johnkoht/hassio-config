@@ -1,0 +1,12 @@
+# Gianluca - Days to Birthday
+#
+# How many days until Gianluca's birthday?
+template:
+  - sensor:
+      - name: Gianluca - Days to Birthday
+        state: >
+          {% set t = now() %}
+          {% set midnight = today_at() %}
+          {% set event = state_attr('calendar.gianluca_bday', 'start_time') | as_datetime | as_local %}
+          {% set delta = event - midnight %}
+          {{ delta.days }}

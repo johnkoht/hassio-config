@@ -24,7 +24,7 @@ trigger:
     above: "41"
   # It's getting brighter outside
   - platform: numeric_state
-    entity_id: sensor.hue_outdoor_motion_sensor_1_illuminance
+    entity_id: sensor.tempest_illuminance
     above: 250
     for:
       minutes: 5

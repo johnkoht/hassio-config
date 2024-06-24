@@ -44,6 +44,9 @@ automation:
           - "paused"
           - "idle"
           - "off"
+      # Sonos Office didnt' recently change state, e.g. I manually paused it
+      - condition: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.media_player.sonos_office.last_updated)) | int > 180 }}"
       # Must be in a suitable time window
       - condition: time
         after: "08:01:00"

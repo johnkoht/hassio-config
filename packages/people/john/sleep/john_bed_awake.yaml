@@ -1,0 +1,16 @@
+automation:
+  - id: john_bed_awake
+    alias: "John Bed - Awake"
+    mode: single
+    trigger:
+      # John's been in bed for 5 minutes
+      - platform: state
+        entity_id: input_select.john_sleep_state
+        to: "Just Got Up"
+        for:
+          minutes: 5
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.john_sleep_state
+          option: "Awake"

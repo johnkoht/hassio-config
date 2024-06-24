@@ -1,0 +1,52 @@
+automation:
+  - id: "tempest_high_uv_alert"
+    alias: Tempest - High UV Alert
+    initial_state: on
+    trigger:
+      # Tempest UV Sensor above 7
+      - platform: numeric_state
+        entity_id: sensor.tempest_uv
+        above: 7
+      # Tempest UV Sensor above 8
+      - platform: numeric_state
+        entity_id: sensor.tempest_uv
+        above: 8
+      # Tempest UV Sensor above 10
+      - platform: numeric_state
+        entity_id: sensor.tempest_uv
+        above: 10
+    action:
+      # Announce to the house
+      - service: script.voice_announcement
+        data:
+          speech_message: >-
+            {% set uv = state_attr('sensor.tempest_uv') %}
+
+            {% if uv > 10 %}
+              "Warning! UV levels are extremely high. Please take precautions and avoid unprotected sun exposure."
+            {% elif uv > 8 %}
+              "Attention! UV levels are very high so please take precautions when going outside."
+            {% else %}
+              "Attention! UV levels are elevated today, please take precautions."
+            {% endif %}
+          sound: "police-whistle"
+          media_players: auto
+
+      # Notification for logging
+      - service: script.general_notification
+        data:
+          title: "Outdoor UV Alert!"
+          message: >-
+            {% set uv = state_attr('sensor.tempest_uv') %}
+
+            {% if uv > 10 %}
+              "Warning! UV levels are extremely high. Please take precautions and avoid unprotected sun exposure."
+            {% elif uv > 8 %}
+              "Attention! UV levels are very high so please take precautions when going outside."
+            {% else %}
+              "Attention! UV levels are elevated today, please take precautions."
+            {% endif %}
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "tempest-uv-alert"
+      

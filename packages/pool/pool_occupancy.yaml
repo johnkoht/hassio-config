@@ -1,0 +1,4 @@
+input_boolean:
+  pool_occupied:
+    name: Pool Occupied
+    icon: mdi:pool

@@ -6,11 +6,13 @@ binary_sensor:
     entities:
       - binary_sensor.kitchen_sink_leak_sensor
       - binary_sensor.laundry_room_leak_sensor
-      - binary_sensor.sum_pump_leak_sensor
+      - binary_sensor.basement_sum_pump_leak_sensor
       - binary_sensor.upstairs_laundry_leak_sensor
-      - binary_sensor.basement_storage_leak_sensor
+      - binary_sensor.storage_room_leak_sensor
       - binary_sensor.storage_room_leak_sensor
       - binary_sensor.basement_exterior_door_leak_sensor
+      - binary_sensor.basement_window_leak_sensor_moisture
+      - binary_sensor.furnace_pan_leak_sensor_moisture
 
   # Binary sensors to track if there is a leak while we're homem or away
   - platform: template

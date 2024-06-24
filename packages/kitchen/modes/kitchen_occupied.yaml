@@ -20,6 +20,10 @@ automation:
       - platform: state
         entity_id: light.kitchen_lights
         to: "on"
+      # EPL Occupancy Detected
+      - platform: state
+        entity_id: binary_sensor.epl_kitchen_occupancy
+        to: "on"
     condition:
       # House is occupied
       - condition: state
@@ -40,6 +44,10 @@ automation:
             state: "on"
           - condition: state
             entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+            state: "on"
+          # EPL Occupancy Detected
+          - condition: state
+            entity_id: binary_sensor.epl_kitchen_occupancy
             state: "on"
     action:
       - service: input_boolean.turn_on

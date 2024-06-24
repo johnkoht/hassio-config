@@ -1,0 +1,34 @@
+id: "house_mode_vacation"
+alias: "House Mode Vacation"
+initial_state: "on"
+trigger:
+  # Vacation mode boolean turns ON
+  - platform: state
+    entity_id: input_boolean.vacation_mode
+    to: "on"
+  # House becomes unoccupied
+  - platform: state
+    entity_id: input_boolean.house_occupied
+    to: "off"
+condition:
+  # House is currently NOT occupied
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: "off"
+  # Vacation mode is ON
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: "on"
+action:
+  # Set the house state dropdown to Vacation
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.house
+      option: "Vacation"
+
+  # Set the doorbell text
+  # This should probably move elsewhere
+  - service: select.select_option
+    data:
+      entity_id: select.front_door_camera_doorbell_text
+      option: Please do not disturb!

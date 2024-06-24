@@ -1,0 +1,278 @@
+---
+button_card_templates: !include_dir_merge_named "../../../custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/"
+
+# Mode
+# Occupancy / motion
+# Who's here
+#
+# Lighting
+#   - Main lights
+#   - Table lights
+#
+# Temperature
+#   - Temperature
+#   - Humidity
+#   - Illuminance
+#   - Pressure
+#
+# Media Player / Sonos
+#
+# Misc.
+#   - Windows
+#   - Doors
+#   - Leak sensor
+#
+# Settings
+#   - Lighting automations
+#   - Speech notifications
+#   - Adaptive lighting
+
+title: "Kitchen"
+theme: "minimalist-desktop"
+background: "var(--background-image)"
+# views: !include_dir_merge_list "views/"
+views:
+  - title: "Kitchen"
+    path: 0
+    icon: "mdi:flower"
+    cards:
+      - type: "vertical-stack"
+        cards:
+          - type: "horizontal-stack"
+            cards:
+              - type: "custom:button-card"
+                template: chip_back
+                variables:
+                  ulm_chip_back_path: /ui-lovelace-minimalist/home
+              # Occupancy
+              - type: "custom:button-card"
+                template: chip_mdi_icon_state
+                variables:
+                  ulm_chip_mdi_icon_state_entity: input_boolean.kitchen_occupied
+                  ulm_chip_mdi_icon_state_icon: mdi:fridge
+                label: >
+                  [[[
+                    return states[variables.ulm_chip_mdi_icon_state_entity].state == "on" ? "Occupied" : "Empty";
+                  ]]]
+                icon: mdi:fridge
+                styles:
+                  icon:
+                    - color: "[[[ return states[variables.ulm_chip_mdi_icon_state_entity].state == 'on' ? 'primary-text-color' : 'color-grey' ]]]"
+
+              - type: "custom:button-card"
+                template: chip_mdi_icon_state
+                variables:
+                  ulm_chip_mdi_icon_state_entity: input_select.kitchen
+                  ulm_chip_mdi_icon_state_icon: mdi:fridge
+                label: >
+                  [[[
+                    return states[variables.ulm_chip_mdi_icon_state_entity].state + ' Mode';
+                  ]]]
+                icon: >
+                  [[[
+                    var state = states[variables.ulm_chip_mdi_icon_state_entity].state;
+                    if (state == "Auto") {
+                      return "mdi:home-lightning-bolt"
+                    } else if (state == "Off") {
+                      return "mdi:home-off"
+                    } else if (state == "Away") {
+                      return "mdi:shield-lock" 
+                    } else {
+                      return "mdi:home-lightning-bolt"
+                    }
+                  ]]]
+
+          - type: "horizontal-stack"
+            title: "Kitchen Lights"
+            cards:
+              - type: "custom:button-card"
+                template: card_light
+                entity: light.kitchen_main_light_switch
+                variables:
+                  ulm_card_light_enable_slider: true
+                  ulm_card_light_enable_color: true
+                  ulm_card_light_force_background_color: true
+                  ulm_card_light_name: "Main Lights"
+              - type: "custom:button-card"
+                template: card_light
+                entity: light.kitchen_table_light_switch
+                variables:
+                  ulm_card_light_enable_slider: true
+                  ulm_card_light_enable_color: true
+                  ulm_card_light_force_background_color: true
+                  ulm_card_light_name: "Table Lights"
+
+          # Climate
+          - type: "vertical-stack"
+            title: Climate
+            cards:
+              - type: "grid"
+                columns: 2
+                square: false
+                cards:
+                  # Temperature
+                  - type: "custom:button-card"
+                    template: card_graph
+                    entity: sensor.kitchen_temperature
+                    variables:
+                      ulm_card_graph_color: "var(--google-blue)"
+                      ulm_card_graph_name: Temperature
+                      ulm_card_graph_entity: sensor.kitchen_temperature
+                      ulm_card_graph_type: fill
+                      ulm_card_graph_hours: 24
+                      ulm_card_graph_group_by: interval
+                      ulm_card_graph_line_width: 5
+                  # Humidity
+                  - type: "custom:button-card"
+                    template: card_graph
+                    entity: sensor.kitchen_humidity
+                    variables:
+                      ulm_card_graph_color: "var(--google-blue)"
+                      ulm_card_graph_name: Humidity
+                      ulm_card_graph_entity: sensor.kitchen_humidity
+                      ulm_card_graph_type: fill
+                      ulm_card_graph_hours: 24
+                      ulm_card_graph_group_by: interval
+                      ulm_card_graph_line_width: 5
+                  # Illuminance
+                  - type: "custom:button-card"
+                    template: card_graph
+                    entity: sensor.kitchen_illuminance
+                    variables:
+                      ulm_card_graph_color: "var(--google-blue)"
+                      ulm_card_graph_name: Illuminance
+                      ulm_card_graph_entity: sensor.kitchen_illuminance
+                      ulm_card_graph_type: fill
+                      ulm_card_graph_hours: 24
+                      ulm_card_graph_group_by: interval
+                      ulm_card_graph_line_width: 5
+                  # Pressure
+                  - type: "custom:button-card"
+                    template: card_graph
+                    entity: sensor.kitchen_pressure
+                    variables:
+                      ulm_card_graph_color: "var(--google-blue)"
+                      ulm_card_graph_name: Pressure
+                      ulm_card_graph_entity: sensor.kitchen_pressure
+                      ulm_card_graph_type: fill
+                      ulm_card_graph_hours: 24
+                      ulm_card_graph_group_by: interval
+                      ulm_card_graph_line_width: 5
+
+          # Sonos Player
+          - type: "vertical-stack"
+            title: Music
+            cards:
+              - type: custom:sonos-card
+                entityId: media_player.sonos_kitchen
+                entityNameRegexToReplace: "SONOS "
+                entityNameReplacement: ""
+                entities:
+                  - media_player.sonos_kitchen
+                  - media_player.sonos_family_room
+                  - media_player.sonos_living_room
+                  - media_player.sonos_main_bedroom
+                  - media_player.sonos_office
+                  - media_player.sonos_patio
+                  - media_player.sonos_playroom
+                  - media_player.sonos_pool
+                  - media_player.sonos_gazebo
+                name: ""
+                groupsTitle: ""
+                hideGroupCurrentTrack: true
+                groupingTitle: ""
+                predefinedGroups:
+                  - name: Inside
+                    entities:
+                      - media_player.matrum
+                      - media_player.hall
+                predefinedGroupsTitle: My predefined groups
+                predefinedGroupsNoSeparateSection: true
+                noMediaText: No media selected
+                allVolumesText: All volumes
+                mediaArtworkOverrides:
+                  - mediaTitleEquals: TV
+                    imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
+                    sizePercentage: 40
+                  - mediaContentIdEquals: x-sonos-htastream:RINCON_949F3EC2E15B01400:spdif
+                    imageUrl: https://cdn-icons-png.flaticon.com/512/4108/4108783.png
+                  - mediaTitleEquals: p4malmo-aac-192
+                    imageUrl: >-
+                      https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
+                  - ifMissing: true
+                    imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
+                customSources:
+                  media_player.tv:
+                    - title: TV
+                      thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
+                skipAdditionalPlayerSwitches: true
+                disableDynamicVolumeSlider: true
+                mediaTitle: ""
+                shuffleFavorites: false
+                customThumbnailIfMissing:
+                  Ed Sheeran Radio: https://i.scdn.co/image/ab6761610000e5eb4d2f80ceffc6c70a432ccd7c
+                  Legendary: https://i.scdn.co/image/ab67706f000000027b2e7ee752dc222ff2fd466f
+                mediaBrowserTitlesToIgnore:
+                  - Local Media
+                  - My Bad Playlist
+                mediaBrowserItemsAsList: true
+
+          # Misc
+          - type: "vertical-stack"
+            title: Sensors
+            cards:
+              - type: "grid"
+                columns: 2
+                square: false
+                cards:
+                  # Outside Door
+                  - type: "custom:button-card"
+                    template: card_binary_sensor
+                    variables:
+                      ulm_card_binary_sensor_alert: true
+                      ulm_show_last_changed: true
+                      ulm_card_binary_sensor_name: Doors
+                      ulm_card_binary_sensor_force_background_color: true
+                    entity: binary_sensor.kitchen_door
+                  # Fridge Door
+                  - type: "custom:button-card"
+                    template: card_binary_sensor
+                    variables:
+                      ulm_card_binary_sensor_alert: true
+                      ulm_show_last_changed: true
+                      ulm_card_binary_sensor_name: Fridge Door
+                      ulm_card_binary_sensor_force_background_color: true
+                    entity: binary_sensor.kitchen_fridge_door_status
+                  # Window
+                  - type: "custom:button-card"
+                    template: card_binary_sensor
+                    variables:
+                      ulm_card_binary_sensor_alert: true
+                      ulm_show_last_changed: true
+                      ulm_card_binary_sensor_name: Window
+                      ulm_card_binary_sensor_force_background_color: true
+                    entity: binary_sensor.kitchen_window_sensor
+                  # Fridge Door
+                  - type: "custom:button-card"
+                    template: card_binary_sensor
+                    variables:
+                      ulm_card_binary_sensor_alert: true
+                      ulm_show_last_changed: true
+                      ulm_card_binary_sensor_name: Window West
+                      ulm_card_binary_sensor_force_background_color: true
+                    entity: binary_sensor.kitchen_window_west_middle_sensor
+
+          - type: "vertical-stack"
+            title: "Settings"
+            cards:
+              - type: entities
+                entities:
+                  - entity: input_boolean.kitchen_speech_notifications
+                    secondary_info: last-changed
+                    name: Speech Notifications
+                  - entity: input_boolean.kitchen_lighting_automations
+                    secondary_info: last-changed
+                    name: Lighting Automations
+                  - entity: switch.adaptive_lighting_kitchen
+                    secondary_info: last-changed
+                    name: Adaptive Lighting
