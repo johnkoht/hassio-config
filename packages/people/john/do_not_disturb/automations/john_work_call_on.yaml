@@ -10,10 +10,21 @@ automation:
         entity_id: calendar.john_launchpadlab_com
         # offset: "00:00:02"
     condition:
-      # Personal time is OFF
-      - condition: state
-        entity_id: binary_sensor.john_calendar_personal_time
-        state: "off"
+      # # Personal time is OFF
+      # - condition: state
+      #   entity_id: binary_sensor.john_calendar_personal_time
+      #   state: "off"
+      # Event title doesn't include GSD, Block, or OOO, which are used
+      # to identify personal time
+      - condition: template
+        value_template: >-
+          {% set summary = trigger.calendar_event.summary | lower %}
+
+          {{
+            "gsd" not in summary or
+            "ooo" not in summary or
+            "block:" not in summary
+          }}
     action:
       # Turn ON the boolean
       - service: input_boolean.turn_on
