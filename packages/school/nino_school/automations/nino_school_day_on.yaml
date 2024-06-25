@@ -30,6 +30,6 @@ automation:
       # Turn on the school reminder automation
       - service: automation.turn_on
         entity_id:
-          - automation.nino_school_day_reminder
-          - automation.nino_school_departure_reminder
+          #- automation.nino_school_day_reminder
+          #- automation.nino_school_departure_reminder
           - automation.nino_school_pickup_reminder
