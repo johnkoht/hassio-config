@@ -3,11 +3,17 @@ automation:
     alias: Severe Weather Warning
     initial_state: on
     trigger:
-      - platform: state
-        entity_id: sensor.nws_alerts_sensor
+      # - platform: state
+      #   entity_id: sensor.nws_alerts_sensor
+      - platform: webhook
+        webhook_id: "tomorrow_io_sw_alert"
+        allowed_methods:
+          - POST
+          - PUT
+        local_only: false
     condition:
-      - "{{states('sensor.nws_alerts_sensor') | int > 0}}"
-      - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
+      # - "{{states('sensor.nws_alerts_sensor') | int > 0}}"
+      # - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
       # - "{{ (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] not in states.variable.nws_alerts_sensor_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] != states('variable.nws_alerts_sensor_event_ids')) }}"
     action:
       # Announce to the house
