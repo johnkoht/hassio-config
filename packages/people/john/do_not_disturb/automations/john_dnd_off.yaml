@@ -4,17 +4,6 @@ automation:
     alias: "John DnD Off"
     mode: queued
     trigger:
-      # # Calendar turns OFF
-      # - platform: state
-      #   entity_id: calendar.john_launchpadlab_com
-      #   to: "off"
-      #   for:
-      #     minutes: 10
-      # # Calendar event ended
-      # - platform: calendar
-      #   event: end
-      #   entity_id: calendar.john_launchpadlab_com
-      #   offset: "00:02:00"
       # Work call boolean is OFF
       - platform: state
         entity_id: input_boolean.john_work_call
@@ -25,12 +14,18 @@ automation:
         to: "off"
         for:
           seconds: 60
-      # Webcam turned OFF for 90 seconds
+      # Webcam turned OFF for 30 seconds
       - platform: state
         entity_id: binary_sensor.john_laptop_camera_active
         to: "off"
         for:
-          seconds: 90
+          seconds: 30
+      # Computer audio OFF for 30 seconds
+      - platform: state
+        entity_id: binary_sensor.john_laptop_audio_active
+        to: "off"
+        for:
+          seconds: 30
       # Personal time turns ON
       - platform: state
         entity_id: input_boolean.john_personal_time
@@ -40,51 +35,55 @@ automation:
       - condition: state
         entity_id: binary_sensor.john_laptop_camera_active
         state: "off"
-      # More complicated ORs
-      - condition: or
-        conditions:
-          # Only my personal time is on (which is rare)
-          - condition: and
-            conditions:
-              # Work calendar is OFF
-              - condition: state
-                entity_id: input_boolean.john_work_call
-                state: "off"
-              # Personal time (GSD, OOO, etc)
-              - condition: state
-                entity_id: input_boolean.john_personal_time
-                state: "on"
-          # OR I have a calendar event but it's personal time
-          - condition: and
-            conditions:
-              # Work calendar is ON
-              - condition: state
-                entity_id: input_boolean.john_work_call
-                state: "on"
-              # Personal time (GSD, OOO, etc)
-              - condition: state
-                entity_id: input_boolean.john_personal_time
-                state: "on"
-          # Camera just turned off and bayesian is OFF
-          - condition: and
-            conditions:
-              # Camera just turned off within 30 seconds
-              - condition: template
-                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.john_laptop_camera_active.last_updated)) | int < 30 }}"
-              - condition: state
-                entity_id: binary_sensor.john_do_not_disturb
-                state: "off"
-          # OR both calendars are off
-          - condition: and
-            conditions:
-              # Work calendar is OFF
-              - condition: state
-                entity_id: input_boolean.john_work_call
-                state: "off"
-              # Personal time (GSD, OOO, etc) is OFF
-              - condition: state
-                entity_id: input_boolean.john_personal_time
-                state: "off"
+      # Computer audio is inactive
+      - condition: state
+        entity_id: binary_sensor.john_laptop_audio_active
+        state: "off"
+      # # More complicated ORs
+      # - condition: or
+      #   conditions:
+      #     # Only my personal time is on (which is rare)
+      #     - condition: and
+      #       conditions:
+      #         # Work calendar is OFF
+      #         - condition: state
+      #           entity_id: input_boolean.john_work_call
+      #           state: "off"
+      #         # Personal time (GSD, OOO, etc)
+      #         - condition: state
+      #           entity_id: input_boolean.john_personal_time
+      #           state: "on"
+      #     # OR I have a calendar event but it's personal time
+      #     - condition: and
+      #       conditions:
+      #         # Work calendar is ON
+      #         - condition: state
+      #           entity_id: input_boolean.john_work_call
+      #           state: "on"
+      #         # Personal time (GSD, OOO, etc)
+      #         - condition: state
+      #           entity_id: input_boolean.john_personal_time
+      #           state: "on"
+      #     # Camera just turned off and bayesian is OFF
+      #     - condition: and
+      #       conditions:
+      #         # Camera just turned off within 30 seconds
+      #         - condition: template
+      #           value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.john_laptop_camera_active.last_updated)) | int < 30 }}"
+      #         - condition: state
+      #           entity_id: binary_sensor.john_do_not_disturb
+      #           state: "off"
+      #     # OR both calendars are off
+      #     - condition: and
+      #       conditions:
+      #         # Work calendar is OFF
+      #         - condition: state
+      #           entity_id: input_boolean.john_work_call
+      #           state: "off"
+      #         # Personal time (GSD, OOO, etc) is OFF
+      #         - condition: state
+      #           entity_id: input_boolean.john_personal_time
+      #           state: "off"
       # DnD is currently ON
       - condition: state
         entity_id: input_boolean.john_dnd
