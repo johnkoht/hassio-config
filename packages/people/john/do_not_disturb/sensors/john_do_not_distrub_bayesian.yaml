@@ -52,6 +52,16 @@ binary_sensor:
       #   prob_given_false: 0.80
       #   to_state: "off"
 
+
+      # Macbook Audio
+      #
+      # Audio Active
+      - platform: state
+        entity_id: "binary_sensor.john_laptop_audio_active"
+        prob_given_true: 0.85
+        prob_given_false: 0.20
+        to_state: "on"
+
       # Room Presence
       #
       # Detected in the office

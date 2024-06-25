@@ -11,6 +11,6 @@ binary_sensor:
         value_template: >-
           {{
             states.sensor.johns_macbook_pro_active_audio_input.state != 'Inactive'
-            and 
+            or
             states.sensor.johns_macbook_pro_active_audio_output.state != 'Inactive'
           }}

@@ -4,16 +4,18 @@ automation:
     alias: "John DnD On"
     mode: queued
     trigger:
-      # # In a meeting
-      # - platform: state
-      #   entity_id: calendar.john_launchpadlab_com
-      #   to: "on"
       # Webcam turned on
       - platform: state
         entity_id: binary_sensor.john_laptop_camera_active
         to: "on"
         for:
           seconds: 3
+      # Computer audio turned ON for 5 seconds
+      - platform: state
+        entity_id: binary_sensor.john_laptop_audio_active
+        to: "on"
+        for:
+          seconds: 5
       # On a work call
       - platform: state
         entity_id: input_boolean.john_work_call
@@ -46,6 +48,10 @@ automation:
           # Camera is ON
           - condition: state
             entity_id: binary_sensor.john_laptop_camera_active
+            state: "on"
+          # Computer audio is ON
+          - condition: state
+            entity_id: binary_sensor.john_laptop_audio_active
             state: "on"
 
       # It's working hours
