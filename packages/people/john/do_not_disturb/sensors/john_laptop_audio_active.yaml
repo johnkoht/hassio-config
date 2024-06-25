@@ -10,7 +10,7 @@ binary_sensor:
         friendly_name: John laptop audio active
         value_template: >-
           {{
-            states.sensor.johns_macbook_pro_active_audio_input.state != 'Inactive'
+            "airpod" in (states.sensor.johns_macbook_pro_active_audio_input.state | lower)
             or
-            states.sensor.johns_macbook_pro_active_audio_output.state != 'Inactive'
+            "airpod" in (states.sensor.johns_macbook_pro_active_audio_output.state | lower)
           }}
