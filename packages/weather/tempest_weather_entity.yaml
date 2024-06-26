@@ -1,8 +1,8 @@
 weather:
   - platform: template
     name: "Tempest Weather Station"
-    condition_template: "{{ states('weather.tomorrow_io_home_daily') }}"
+    condition_template: "{{ states('weather.pirateweather') }}"
     temperature_template: "{{ states('sensor.tempest_temperature') | float }}"
     temperature_unit: "°F"
     humidity_template: "{{ states('sensor.tempest_humidity') | float }}"
-    forecast_daily_template: "{{ state_attr('weather.tomorrow_io_home_daily', 'forecast_data') }}"
+    forecast_daily_template: "{{ state_attr('weather.pirateweather', 'forecast_data') }}"
