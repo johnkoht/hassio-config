@@ -7,9 +7,6 @@ automation:
       - platform: state
         entity_id: person.mary_falbo
         from: "home"
-        to: "not_home"
-        for:
-          minutes: 2
     condition:
       # Not home
       - condition: state
