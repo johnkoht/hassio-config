@@ -19,12 +19,7 @@ automation:
       - condition: template
         value_template: >-
           {% set summary = trigger.calendar_event.summary | lower %}
-
-          {{
-            "gsd" not in summary or
-            "ooo" not in summary or
-            "block:" not in summary
-          }}
+          {{ false if "gsd" in summary or "ooo" in summary or "block" in summary else true }}
     action:
       # Turn ON the boolean
       - service: input_boolean.turn_on
