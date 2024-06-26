@@ -12,22 +12,16 @@ trigger:
     entity_id: input_boolean.house_occupied
     to: "off"
   - platform: state
-    entity_id: sensor.openweathermap_condition
+    entity_id: sensor.pirateweather_summary
     to: "sunny"
-  # Clear skies or just a few clouds
-  - platform: numeric_state
-    entity_id: sensor.openweathermap_weather_code
-    above: "799"
   # Not that cloudy
   - platform: numeric_state
-    entity_id: sensor.openweathermap_cloud_coverage
+    entity_id: sensor.pirateweather_cloud_coverage
     above: "41"
   # It's getting brighter outside
   - platform: numeric_state
     entity_id: sensor.tempest_illuminance
-    above: 250
-    for:
-      minutes: 5
+    above: 150
 condition:
   # The house is occupied
   - condition: state
@@ -41,20 +35,23 @@ condition:
   - condition: state
     entity_id: sun.sun
     state: "above_horizon"
-  # There is bad weather outside
+  # Weather isn't too bad anymore
   - condition: or
     conditions:
-      - condition: numeric_state
-        entity_id: sensor.openweathermap_weather_code
-        above: "799"
       - condition: state
-        entity_id: sensor.openweathermap_condition
+        entity_id: sensor.pirateweather_summary
         state: "sunny"
+      - condition: state
+        entity_id: sensor.pirateweather_summary
+        state: "clear"
+      - condition: state
+        entity_id: sensor.pirateweather_summary
+        state: "party cloudy"
       - condition: numeric_state
-        entity_id: sensor.openweathermap_forecast_cloud_coverage
+        entity_id: sensor.sensor.pirateweather_cloud_coverage_1h
         below: "40"
       - condition: numeric_state
-        entity_id: sensor.openweathermap_cloud_coverage
+        entity_id: sensor.pirateweather_cloud_coverage
         above: "41"
 action:
   - service: input_boolean.turn_off
