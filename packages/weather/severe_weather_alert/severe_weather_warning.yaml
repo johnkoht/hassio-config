@@ -3,33 +3,41 @@ automation:
     alias: Severe Weather Warning
     initial_state: on
     trigger:
-      # - platform: state
-      #   entity_id: sensor.nws_alerts_sensor
-      - platform: webhook
-        webhook_id: "tomorrow_io_sw_alert"
-        allowed_methods:
-          - POST
-          - PUT
-        local_only: false
+      - platform: state
+        entity_id: sensor.pirateweather_alerts
+      # - platform: webhook
+      #   webhook_id: "tomorrow_io_sw_alert"
+      #   allowed_methods:
+      #     - POST
+      #     - PUT
+      #   local_only: false
     condition:
-      # - "{{states('sensor.nws_alerts_sensor') | int > 0}}"
-      # - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
-      # - "{{ (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] not in states.variable.nws_alerts_sensor_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] != states('variable.nws_alerts_sensor_event_ids')) }}"
+      - "{{ states('sensor.pirateweather_alerts') | int > 0 }}"
+      - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
+      # Alert is severe or extreme
+      - condition: template
+        value_template: >-
+          {{ 
+            (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "severe" or
+            (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "extreme" 
+          }}
+      # - "{{ (state_attr('sensor.pirateweather_alerts', 'event_id').split('-')[0] not in states.variable.nws_alerts_sensor_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts_sensor', 'event_id').split('-')[0] != states('variable.nws_alerts_sensor_event_ids')) }}"
+
     action:
       # Announce to the house
       - service: script.voice_announcement
         data:
-          speech_message: "{{ state_attr('sensor.nws_alerts_sensor', 'spoken_desc').split('\n')[0] }}"
-          sound: "chirp"
+          speech_message: "{{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+          sound: "default"
           media_players: auto
 
       # Notification for logging
       - service: script.general_notification
         data:
-          title: "Weather Alert: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}"
+          title: "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title') }}"
           message: >
-            {% set desc = state_attr('sensor.nws_alerts_sensor', 'spoken_desc').split("\n")[0] %}
-            "NWS: {{ state_attr('sensor.nws_alerts_sensor', 'title').split(' - ')[0] }}. {{desc}}"
+            {% set desc = state_attr('sensor.pirateweather_alerts', 'title').split("\n")[0] %}
+            "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description').split(' - ')[0] }}. {{desc}}"
           devices: "jk"
           priority: "time-sensitive"
-          tag: "doorbell-ring"
+          tag: "weather-alert"
