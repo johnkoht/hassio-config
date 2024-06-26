@@ -8,8 +8,6 @@ automation:
         entity_id: person.sonia_koht
         from: "home"
         to: "not_home"
-        for:
-          minutes: 2
     condition:
       # Not home
       - condition: state
