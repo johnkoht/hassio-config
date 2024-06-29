@@ -1,0 +1,30 @@
+# Dining Room Lights Off
+#
+# Automatically turn the lights off based on various
+# triggers like the house is unoccupied
+#
+automation:
+  - id: "dining_room_lights_off"
+    initial_state: on
+    alias: "Dining Room lights off"
+    trigger:
+      # Dining Room is Off
+      - platform: state
+        entity_id: input_select.dining_room
+        to: "Off"
+      # Lighting automations turn on
+      - platform: state
+        entity_id: input_boolean.lighting_automations
+        to: "on"
+    condition:
+      # Lights are currently on
+      - condition: state
+        entity_id: light.dining_room_lights
+        state: "on"
+      # Dining Room is Off
+      - condition: state
+        entity_id: input_select.dining_room
+        state: "Off"
+    action:
+      - service: light.turn_off
+        entity_id: light.dining_room_lights
