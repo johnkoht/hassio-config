@@ -20,10 +20,18 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # And lighting automations for the bedroom are enabled
-      - condition: state
-        entity_id: input_boolean.main_bedroom_lighting_automations
-        state: "on"
+      # Make sure lighting automations are enabled
+      # OR the bedroom is turned off (in case leave)
+      - condition: or
+        conditions:
+          # And lighting automations for the bedroom are enabled
+          - condition: state
+            entity_id: input_boolean.main_bedroom_lighting_automations
+            state: "on"
+          # OR the bedroom is turned OFF
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state: "Off"
       - condition: or
         conditions:
           # Main bedroom is not occupied
