@@ -1,0 +1,19 @@
+automation:
+  - id: nino_bed_sleep
+    alias: "Nino Bed - Sleep"
+    mode: single
+    trigger:
+      # Nino's been in bed for 5 minutes
+      - platform: state
+        entity_id: input_select.nino_sleep_state
+        to: "Just Laid Down"
+        for:
+          minutes: 5
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.nino_sleep_state
+          option: "Sleep"
+      # Turn ON the Nino in Bed boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.nino_in_bed

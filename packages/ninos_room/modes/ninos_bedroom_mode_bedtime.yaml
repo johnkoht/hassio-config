@@ -1,0 +1,24 @@
+# Nino's Room Mode Bedtime
+#
+automation:
+  - id: "ninos_bedroom_mode_bedtime"
+    initial_state: on
+    alias: "Nino's Bedroom - Mode Bedtime"
+    trigger:
+      # Nino is in bed
+      - platform: state
+        entity_id: input_boolean.nino_in_bed
+        to: "on"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nino's Bedroom is not already Bedtime
+      - condition: template
+        value_template: "{{ not is_state('input_select.ninos_room_occupied','Bedtime') }}"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ninos_bedroom
+          option: "Bedtime2"

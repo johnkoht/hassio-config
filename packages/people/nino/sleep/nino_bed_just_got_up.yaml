@@ -1,0 +1,14 @@
+automation:
+  - id: nino_bed_just_got_up
+    alias: "Nino Bed - Just Got Up"
+    mode: single
+    trigger:
+      # Nion's bed is NOT occupied
+      - platform: state
+        entity_id: binary_sensor.nino_bed_occupied
+        to: "off"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.nino_sleep_state
+          option: "Just Got Up"

@@ -1,0 +1,4 @@
+input_boolean:
+  nino_in_bed:
+    name: Nino in bed
+    icon: mdi:bed
