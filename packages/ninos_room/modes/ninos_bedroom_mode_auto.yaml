@@ -5,10 +5,10 @@ automation:
     initial_state: on
     alias: "Nino's Bedroom - Mode Auto"
     trigger:
-      # Nino's Bedroom is occupied
+      # Nino's Bedroom is NOT occupied
       - platform: state
         entity_id: input_boolean.ninos_bedroom_occupied
-        to: "on"
+        to: "off"
       # House turn to Auto mode
       - platform: state
         entity_id: input_select.house
@@ -17,6 +17,16 @@ automation:
       - platform: state
         entity_id: input_boolean.house_occupied
         to: "on"
+      # Nino is out of bed for 10 minutes
+      - platform: state
+        entity_id: input_boolean.nino_in_bed
+        to: "off"
+        for:
+          minutes: 10
+      # Bedtime mode turned off
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "off"
     condition:
       # House is occupied
       - condition: state
@@ -33,6 +43,15 @@ automation:
       - condition: state
         entity_id: input_select.house
         state: "Auto"
+      # Bedroom is NOT occupied
+      # We don't want ot change state if the bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.ninos_bedroom_occupied
+        state: "off"
+      # Nino is NOT in bed
+      - condition: state
+        entity_id: input_boolean.nino_in_bed
+        state: "off"
     action:
       - service: input_select.select_option
         data:

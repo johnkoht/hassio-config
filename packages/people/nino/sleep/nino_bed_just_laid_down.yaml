@@ -1,0 +1,19 @@
+automation:
+  - id: nino_bed_just_laid_down
+    alias: "Nino Bed - Just Laid Down"
+    mode: single
+    trigger:
+      # Nino's bed IS occupied
+      - platform: state
+        entity_id: binary_sensor.nino_bed_occupied
+        to: "on"
+    condition:
+      # If the network restarts or device disconnects, we don't want to
+      # go from unavailable to just laid down
+      - condition: template
+        value_template: "{{ not is_state('input_select.nino_sleep_state','Sleep') }}"
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.nino_sleep_state
+          option: "Just Laid Down"
