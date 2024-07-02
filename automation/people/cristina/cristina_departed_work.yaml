@@ -7,10 +7,10 @@ trigger:
     entity_id: person.cristina_falbo
     zone: zone.cristina_s_work
     event: leave
-  # She's more than 2km away from work
+  # She's more than 1 mile away from work
   - platform: numeric_state
-    entity_id: proximity.cristina_work
-    above: 2
+    entity_id: sensor.paramount_cristina_distance
+    above: 1
 condition:
   # Cristina is not home
   - condition: state
@@ -20,19 +20,13 @@ condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: "on"
-  # # She's driving
-  # - condition: state
-  #   entity_id: sensor.cfalb_activity
-  #   state: "Automotive"
   # After 4pm
   - condition: time
     after: "16:00:00"
-  # She's driving away work
-  - condition: template
-    value_template: "{{ states.proximity.cristina_work.attributes.dir_of_travel == 'away_from' }}"
-  # She's driving towards home
-  - condition: template
-    value_template: "{{ states.proximity.cristina_home.attributes.dir_of_travel == 'towards' }}"
+  # She's traveling away from the office
+  - condition: state
+    entity_id: sensor.paramount_cristina_direction_of_travel
+    state: "away_from"
 action:
   - service: script.cristina_left_work
     data:

@@ -7,10 +7,10 @@ trigger:
     entity_id: person.john_koht
     zone: zone.john_s_work
     event: enter
-  # He's less than .5km
+  # He's less than a quarter mile
   - platform: numeric_state
-    entity_id: proximity.john_work
-    below: .5
+    entity_id: sensor.lpl_john_distance
+    below: .25
 condition:
   # John is not home
   - condition: state

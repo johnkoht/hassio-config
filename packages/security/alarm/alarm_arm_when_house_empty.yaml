@@ -16,12 +16,10 @@ automation:
           - person.cristina_falbo
         zone: zone.neighborhood
         event: leave
-      # We're more than 10 kms away
+      # We're more than 5 miles away
       - platform: numeric_state
-        entity_id:
-          - proximity.cristina_home
-          - proximity.john_home
-        above: 10
+        entity_id: sensor.home_nearest_distance
+        above: 5
     condition:
       # Alarm is current disarmed
       - condition: state

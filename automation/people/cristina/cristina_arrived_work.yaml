@@ -7,10 +7,6 @@ trigger:
     entity_id: person.cristina_falbo
     zone: zone.cristina_s_work
     event: enter
-  # # She's less than .5km
-  # - platform: numeric_state
-  #   entity_id: proximity.cristina_work
-  #   below: .5
 condition:
   # Cristina is not home
   - condition: state

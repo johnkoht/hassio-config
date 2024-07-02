@@ -8,9 +8,6 @@ id: "john_away"
 alias: "John away"
 initial_state: "on"
 trigger:
-  # A change in John's proximity will trigger this
-  # - platform: state
-  #   entity_id: proximity.john_home
   # John leaves the home zone
   - platform: zone
     entity_id:
@@ -56,27 +53,6 @@ condition:
       - condition: state
         entity_id: device_tracker.jk_iphone_14
         state: "not_home"
-  # - condition: not
-  #   conditions:
-  #     - condition: state
-  #       entity_id: input_select.john_status
-  #       state: "Just Left"
-  # - condition: state
-  #   entity_id: binary_sensor.john_presence
-  #   state: "off"
-  # - condition: or
-  #   conditions:
-  #     # Some away, and not near
-  #     - condition: and
-  #       conditions:
-  #         - condition: state
-  #           entity_id: binary_sensor.john_presence
-  #           state: "off"
-  #         - condition: template
-  #           value_template: "{{ states('proximity.john_home')|float > 300 }}"
-  #     # Far away
-  #     - condition: template
-  #       value_template: "{{ states('proximity.john_home')|float > 600 }}"
 action:
   - service: script.turn_on
     data:
