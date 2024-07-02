@@ -2,9 +2,6 @@ id: "cristina_away"
 alias: "Cristina away"
 initial_state: "on"
 trigger:
-  # # Cristina's proximity changes
-  # - platform: state
-  #   entity_id: proximity.cristina_home
   # She leaves the home zone
   - platform: zone
     entity_id:

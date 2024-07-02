@@ -9,10 +9,11 @@ automation:
       # Not far from home
       - platform: numeric_state
         entity_id:
-          - proximity.cristina_home
-          - proximity.john_home
-        below: 8
-        above: 2
+          #- sensor.home_cristina_distance
+          #- sensor.home_john_distance
+          - sensor.home_nearest_distance
+        below: 5
+        above: 1
     condition:
       # Nearly home boolean is OFF
       - condition: state
@@ -29,14 +30,11 @@ automation:
         entity_id: group.family
         state: "not_home"
         for:
-          minutes: 20
+          minutes: 10
       # John or Cristina is nearly home
-      - condition: or
-        conditions:
-          - condition: template
-            value_template: '{{ states.proximity.cristina_home.attributes.dir_of_travel == "towards" }}'
-          - condition: template
-            value_template: '{{ states.proximity.john_home.attributes.dir_of_travel == "towards" }}'
+      - condition: state
+        entity_id: sensor.home_nearest_direction_of_travel
+        state: "towards"
     action:
       # Turn on the boolean
       - service: input_boolean.turn_on

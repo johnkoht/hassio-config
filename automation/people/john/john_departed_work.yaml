@@ -7,10 +7,10 @@ trigger:
     entity_id: person.john_koht
     zone: zone.john_s_work
     event: leave
-  # He's more than 3km away from work
+  # He's more than 2 miles away from work
   - platform: numeric_state
-    entity_id: proximity.john_work
-    above: 3
+    entity_id: sensor.lpl_john_distance
+    above: 2
 condition:
   # John is not home
   - condition: state
@@ -20,19 +20,9 @@ condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: "on"
-  # # He's driving
-  # - condition: state
-  #   entity_id: sensor.cfalb_activity
-  #   state: "Automotive"
   # After 3pm
   - condition: time
     after: "15:00:00"
-  # He's driving away work
-  - condition: template
-    value_template: "{{ states.proximity.john_work.attributes.dir_of_travel == 'away_from' }}"
-  # He's driving towards home
-  - condition: template
-    value_template: "{{ states.proximity.john_home.attributes.dir_of_travel == 'towards' }}"
 action:
   # Announcement
   - service: script.voice_announcement

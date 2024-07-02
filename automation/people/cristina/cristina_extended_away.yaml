@@ -9,10 +9,10 @@ trigger:
     to: "Away"
     for:
       hours: 24
-  # More than 500 kms from home
+  # More than 200 miles from home
   - platform: numeric_state
-    entity_id: proximity.cristina_home
-    above: 500
+    entity_id: sensor.home_cristina_distance
+    above: 200
 action:
   - service: input_select.select_option
     target:
