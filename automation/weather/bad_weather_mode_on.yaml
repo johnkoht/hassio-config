@@ -25,7 +25,7 @@ trigger:
     entity_id: sensor.pirateweather_cloud_coverage
     above: 75
   # It's getting dark outside
-  - platform: state
+  - platform: numeric_state
     entity_id: sensor.tempest_illuminance
     below: 50
 condition:
@@ -66,7 +66,7 @@ condition:
                 entity_id: sensor.tempest_precipitation
                 above: ".01"
               # Rain is becoming more intense
-              - condition: state
+              - condition: numeric_state
                 entity_id: sensor.tempest_precipitation_intensity
                 above: ".25"
           # AND it's kinda dark outside

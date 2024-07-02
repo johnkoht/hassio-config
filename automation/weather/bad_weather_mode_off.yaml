@@ -48,7 +48,7 @@ condition:
         entity_id: sensor.pirateweather_summary
         state: "party cloudy"
       - condition: numeric_state
-        entity_id: sensor.sensor.pirateweather_cloud_coverage_1h
+        entity_id: sensor.pirateweather_cloud_coverage_1h
         below: "40"
       - condition: numeric_state
         entity_id: sensor.pirateweather_cloud_coverage
