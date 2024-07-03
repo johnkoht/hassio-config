@@ -13,7 +13,7 @@ automation:
       # so let's just turn it off when work hours are OFF
       - platform: state
         entity_id: binary_sensor.work_hours
-        state: "off"
+        to: "off"
     condition:
       # Work call boolean is ON
       - condition: state
