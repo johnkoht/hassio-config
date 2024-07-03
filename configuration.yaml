@@ -24,7 +24,7 @@ scene mine: !include_dir_list scenes/
 notify: !include notify.yaml
 # input_select: !include input_select.yaml
 stream:
-proximity: !include_dir_merge_named proximity/
+#proximity: !include_dir_merge_named proximity/
 binary_sensor: !include_dir_merge_list binary_sensors/
 
 input_number: !include_dir_named input_number/

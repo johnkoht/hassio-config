@@ -1,6 +1,0 @@
-cristina_work:
-  zone: cristina_s_work
-  devices:
-    - device_tracker.cfalb_iphone_14
-  tolerance: 100
-  unit_of_measurement: km
