@@ -27,11 +27,11 @@ condition:
     entity_id: input_boolean.house_occupied
     state: "on"
   # Bedtime mode enabled
-  - conditino: state
+  - condition: state
     entity_id: input_boolean.bedtime
     state: "on"
   # Bedtime hours are active
-  - conditino: state
+  - condition: state
     entity_id: binary_sensor.bedtime
     state: "on"
   # Mudroom isn't already set to motion
