@@ -38,16 +38,40 @@ automation:
           entity_id: input_select.main_bathroom
           option: "Bedtime"
 
-      # Wait until the bathroom is no longer occupied
-      # before we actually turn on bedtime mode automations
-      - wait_for_trigger:
-          - platform: state
-            entity_id: input_boolean.main_bathroom_occupied
-            to: "off"
-        timeout:
-          minutes: 10
-        continue_on_timeout: true
+      - choose:
+          # Bathroom is currently occupied
+          # Wait until the bathroom is no longer occupied
+          # before we actually turn on bedtime mode automations
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.main_bathroom_occupied
+                state: "on"
+            sequence:
+              - wait_for_trigger:
+                  - platform: state
+                    entity_id: input_boolean.main_bathroom_occupied
+                    to: "off"
+                timeout:
+                  minutes: 10
+                continue_on_timeout: true
+              - service: script.turn_on
+                entity_id: script.main_bathroom_activate_bedtime_lighting_mode
+        #
+        # If bathroom is NOT occupied then just
+        # run the script to activate bedtime lighting mode
+        default:
+          - service: script.turn_on
+            entity_id: script.main_bathroom_activate_bedtime_lighting_mode
 
+#
+#
+# Script: Activate Bedtime Lighting Mode
+#
+script:
+  main_bathroom_activate_bedtime_lighting_mode:
+    alias: Main Bedroom - Activate Bedtime Lighting Mode
+    mode: restart
+    sequence:
       # Turn on the bedtime motion automation
       - service: automation.turn_on
         entity_id: automation.main_bathroom_bedtime_motion_on
