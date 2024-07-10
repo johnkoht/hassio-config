@@ -1,0 +1,23 @@
+substitutions:
+  name: atom-bluetooth-proxy-aceb64
+  friendly_name: Bluetooth Proxy - Family Room
+packages:
+  esphome.bluetooth-proxy: github://esphome/firmware/bluetooth-proxy/m5stack-atom-lite.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: TF8YSwNaqBjkHcD7Bm8jGD4u4kyEQY4Gt5XyledSOiY=
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+#esp32_ble_tracker:
+#  scan_parameters:
+#    active: True 
+#    interval: 1000ms
+#    window:   900ms
