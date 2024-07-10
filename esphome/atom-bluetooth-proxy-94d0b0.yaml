@@ -1,0 +1,23 @@
+substitutions:
+  name: atom-bluetooth-proxy-94d0b0
+  friendly_name: Bluetooth Proxy - Office Test
+packages:
+  esphome.bluetooth-proxy: github://esphome/firmware/bluetooth-proxy/m5stack-atom-lite.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: p0SNC1PY8stAhub1ARQhvbH03nr/PZYBLzDlYycsrJ4=
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: True 
+    interval: 1000ms
+    window:   900ms
