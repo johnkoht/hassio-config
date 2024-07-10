@@ -22,10 +22,6 @@ automation:
       - platform: time
         at: "08:01:00"
     condition:
-      # It's between 8am and 10:30pm
-      - condition: time
-        before: "22:30:00"
-        after: "08:00:00"
       # The house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -63,5 +59,24 @@ automation:
             notify.mobile_app_cfalb2
           {% endif %}
         data:
-          message: "The main level washer is finished and ready to be emptied."
+          message: "The main level washer is finished and is ready to be emptied."
           title: "Main Level Washing Machine"
+      #
+      # Display a message on the TV
+      - if:
+          - alias: "TV is ON"
+            condition: state
+            entity_id: media_player.sony_bravia_tv
+            state: "on"
+        then:
+          - service: notify.family_room_sony_bravia_tv
+            data:
+              message: The main level washer is finished and is ready to be emptied.
+              title: Laundry is complete!
+              data:
+                duration: 5
+                position: bottom-right
+                fontsize: large
+                transparency: 25%
+                interrupt: 0
+                color: black
