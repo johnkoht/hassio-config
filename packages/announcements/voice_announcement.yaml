@@ -195,7 +195,7 @@ script:
       # It's between 7am and 10pm
       - condition: time
         after: "06:00:00"
-        before: "22:00:00"
+        before: "23:00:00"
       # Not bedtime
       - condition: state
         entity_id: input_boolean.bedtime
