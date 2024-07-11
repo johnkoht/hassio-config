@@ -53,10 +53,10 @@ script:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # Not quiet mode
-      - condition: state
-        entity_id: input_boolean.quiet_mode
-        state: "off"
+      # # Not quiet mode
+      # - condition: state
+      #   entity_id: input_boolean.quiet_mode
+      #   state: "off"
       # Which rooms should play the doorbell
       - alias: "Rooms to sound the doorbell"
         variables:
