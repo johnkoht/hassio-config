@@ -7,16 +7,13 @@ automation:
       # If ESPresense detects her in a room
       - platform: template
         value_template: "{{ states.sensor.mary_room_presence.state != 'not_home'}}"
-    condition:
-      # Detected in a room by BLE
-      - condition: template
-        value_template: "{{ states.sensor.mary_room_presence.state != 'not_home'}}"
-      # Nonna's person object is not home
-      - condition: state
-        entity_id: person.mary_falbo
-        state: "not_home"
     action:
       - service: device_tracker.see
         data:
-          dev_id: nonna_ping_tracker
-          location_name: home
+          dev_id: nonna_iphone_ble_device_tracker
+          location_name: >-
+            {% if not is_state('sensor.mary_room_presence', 'not_home') %}
+              home
+            {% else %}
+              not_home
+            {% endif %}
