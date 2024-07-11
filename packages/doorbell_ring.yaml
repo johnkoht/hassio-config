@@ -53,6 +53,10 @@ script:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Not Bedtime Mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
       # # Not quiet mode
       # - condition: state
       #   entity_id: input_boolean.quiet_mode
