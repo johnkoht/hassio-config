@@ -1,17 +1,30 @@
-# automation:
-#   - id: "morning_update"
-#     alias: "Morning Update"
-#     mode: "single"
-#     trigger:
-#       # Main bedroom enters bedtime mode
-#       - platform: time
-#         at: "08:05:00"
-#     condition:
-#       # House is occupied
-#       - condition: state
-#         entity_id: input_boolean.house_occupied
-#         state: "on"
-#     action:
+automation:
+  - id: "morning_update"
+    alias: "Morning Update"
+    mode: "single"
+    trigger:
+      # Bedtime mode is disabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        from: "on"
+        to: "off"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      # Kitchen has been occupied for more than 15 minutes
+      - wait_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 900 }}"
+        timeout: "00:15:00"
+        continue_on_timeout: false
+      # Wait for motion in the kitchen
+      - wait_template: "{{ is_state('binary_sensor.kitchen_motion_sensor_status', 'on') }}"
+        timeout: "00:15:00"
+        continue_on_timeout: false
+      - alias: "Wait 2 seconds"
+        delay: 2
+      - service: script.morning_update_announcement
 
 script:
   morning_update_announcement:
@@ -19,60 +32,229 @@ script:
     mode: "single"
     icon: mdi:air-horn
 
-    # Variables
-    variables:
-      kohbo_calendar_events:
-      school:
-
     sequence:
-      # Get the Kohbo calendar and set to the
-      # variable kohbo_cal_agenda
-      - service: calendar.list_events
-        target:
-          entity_id: calendar.kohbocal
+      #
+      # Use ChatGPT to get the daily briefing
+      #
+      - service: conversation.process
+        data:
+          agent_id: conversation.chatgpt
+          text: >-
+            You're part of my smart home! Every morning, I'd like to provide the family with an overview of the day, including weather, calendar events, and birthdays. I'll send you a bunch of information that you can parse to provide text-based overview that can be broadcast on a text-to-speech system throughout my house.
+
+            While each day's information might change, the general information that I'd like you to extract and send back including:
+
+            - Weather for the day, including the current temperature, the daily high and low, as well as the temperature at 9am and 12pm CT. 
+            - A list of events from the calendar including only the start time, you can ignore the end time.
+            - Any birthdays that are on the calendar.
+
+            We're the Koht family. We're a family of four. My name is John, my wife is Cristina, and our kids Nino and Gianluca are 5 and 2, respectively. 
+
+            Be fun, playful, and delightful. 
+
+            Some things to note and consider when responding:
+            - Don't use emojis as this will be a voice-activated TTS message
+            - Use full sentences instead of using special characters, lists or bullet points, and making it easily readable
+            - If there are no birthdays then you can skip this part altogether and not mention that there are not birthdays
+            - If there are no calendar invites, you can simply let us know there's nothing on the calendar
+
+            Please read the carefully and ensure you follow the instructions. Remember, this should be plain text sentences that a computer can read and generate a text-to-speech message from.
+
+            Reminder to make sure your response is one single paragraph without any line breaks or bullet points! This is important!
+
+            Here is the information for today's daily briefing:
+
+            Here are the calendar events:
+            {{ states.sensor.calendar_events_today.attributes.events }}
+
+            Here is the temperature and weather information:
+            Today's High: {{ states.sensor.pirateweather_daytime_high_temperature_0d.state }}
+            Today's Low: {{ states.sensor.pirateweather_overnight_low_temperature_0d.state }}
+            Current Weather: {{ states.weather.pirateweather }}
+            Hourly Forecast: {{ states.sensor.weather_forecast_today.attributes.forecast }}
+        response_variable: chatgpt
+      #
+      # TTS Message
+      #
+      - service: script.general_notification
+        data:
+          title: "Daily Update!"
+          message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "daily-update"
+      #
+      # Voice Announcement
+      #
+      - service: script.voice_announcement
+        data:
+          media_players: "auto"
+          sound: "default"
+          speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+
+    #   # Get the Kohbo calendar and set to the
+    #   # variable kohbo_cal_agenda
+    #   - service: calendar.list_events
+    #     target:
+    #       entity_id: calendar.kohbocal
+    #     data:
+    #       duration:
+    #         hours: 24
+    #     response_variable: kohbocal_agenda
+
+    #   - service: logbook.log
+    #     data:
+    #       name: Morning Update
+    #       # message: "this is the event: {{kohbocal_agenda}} and after"
+    #       # message: >-
+    #       #   {% for event in kohbocal_agenda.events %}
+    #       #     {{ event.start}}: {{ event.summary }}<br>
+    #       #   {% endfor %}
+    #       message: >-
+    #         {% set update = "Hey fam, here's today's morning update: " %}
+
+    #         {% if kohbocal_agenda.events %}
+    #           {% set update = update + "We have " %}
+    #           {% set ns = namespace(kc_update="") %}
+
+    #           {% for event in kohbocal_agenda.events %}
+    #             {% set summary = event.summary %}
+    #             {% set ns.kc_update = ns.kc_update + summary + "," %}
+    #           {% endfor %}
+
+    #           {{ ns.kc_update.split(",") }}
+
+    #           {% set update = update + ns.kc_update %}
+    #         {% else %}
+    #           {% set update = update + " there's nothing else" %}
+    #         {% endif %}
+
+    #         "{{ update }}!!!"
+
+    #     # Morning Update this is the event: {'events': [{'start': '2023-09-26T09:00:00-05:00', 'end': '2023-09-26T14:00:00-05:00', 'summary': 'Pool closing'}, {'start': '2023-09-26T16:00:00-05:00', 'end': '2023-09-26T17:00:00-05:00', 'summary': 'Nino Little Legends Soccer'}]} and after
+
+    #     # # Optional
+    #     # entity_id: light.kitchen
+    #     # domain: light
+
+    # #    Your agenda for today:
+    # # <p>
+    # # {% for event in agenda.events %}
+    # # {{ event.start}}: {{ event.summary }}<br>
+    # # {% endfor %}
+    # # </p>
+
+#
+#
+# Calendar Events for Today Template Sensor
+#
+template:
+  - trigger:
+      - platform: time_pattern
+        hours: /1
+    action:
+      - service: calendar.get_events
         data:
           duration:
             hours: 24
-        response_variable: kohbocal_agenda
+        target:
+          entity_id:
+            - calendar.gianluca_school
+            - calendar.ninos_school
+            - calendar.kohbocal
+        response_variable: calendar
+      - variables:
+          e: |-
+            {% set ns = namespace(cal_events=[]) %}
 
-      - service: logbook.log
+            {%- for key, value in calendar.items() %}
+              {%- for event in value.events %}
+                {%- set ns.cal_events = ns.cal_events + [event] %}
+              {%- endfor %}
+            {%- endfor %}
+
+            {{ ns.cal_events | sort(attribute='start') | list }}
+    #
+    # This is the sensor that will provide a list of events
+    sensor:
+      - name: Calendar Events Today
+        unique_id: calendar_events_today
+        state: "{{ now().isoformat() }}"
+        attributes:
+          events: "{{ e }}"
+
+  #
+  #
+  # Weather Forecast Sensor
+  #
+  - trigger:
+      # - platform: state
+      #   entity_id: weather.pirateweather
+      - platform: time_pattern
+        minutes: /1
+    action:
+      - service: weather.get_forecasts
         data:
-          name: Morning Update
-          # message: "this is the event: {{kohbocal_agenda}} and after"
-          # message: >-
-          #   {% for event in kohbocal_agenda.events %}
-          #     {{ event.start}}: {{ event.summary }}<br>
-          #   {% endfor %}
-          message: >-
-            {% set update = "Hey fam, here's today's morning update: " %}
+          type: hourly
+        target:
+          entity_id: weather.pirateweather
+        response_variable: weather_forecast
+    #
+    # This is the sensor that provide the forecast data (first 10)
+    sensor:
+      - name: Weather Forecast Today
+        unique_id: weather_forecast_today
+        state: "{{ now().isoformat() }}"
+        attributes:
+          forecast: "{{ weather_forecast['weather.pirateweather'].forecast[:10] }}" # note the array index with the weather provider name. This is what is different with get_forecasts (plural)
 
-            {% if kohbocal_agenda.events %}
-              {% set update = update + "We have " %}
-              {% set ns = namespace(kc_update="") %}
+# # Example configuration.yaml entry
+# sensor:
+#   - platform: rest
+#     unique_id: openai_rest_call
+#     resource: "https://api.openai.com/v1/chat/completions"
+#     method: POST
+#     headers:
+#       authorization: !secret openai_api_key
+#       content-type: "application/json"
+#     payload: >-
+#       "
+#       {
+#         'model': 'gpt-4o',
+#         'messages': [
+#           {
+#             'role': 'system',
+#             content: ''
+#           }
+#         ]
+#       }
+#       "
 
-              {% for event in kohbocal_agenda.events %}
-                {% set summary = event.summary %}
-                {% set ns.kc_update = ns.kc_update + summary + "," %}
-              {% endfor %}
+# - name: leak_voice_announcement
+#   platform: rest
+#   resource: "http://localhost:8123/api/services/script/critical_announcement"
+#   method: POST_JSON
+#   headers:
+#     authorization: !secret restapi_notify
+#     content-type: "application/json"
+#   message_param_name: speech_message
+#   data:
+#     sound: "nuclear"
+#     media_players: "auto"
 
-              {{ ns.kc_update.split(",") }}
-
-              {% set update = update + ns.kc_update %}
-            {% else %}
-              {% set update = update + " there's nothing else" %}
-            {% endif %}
-
-            "{{ update }}!!!"
-
-        # Morning Update this is the event: {'events': [{'start': '2023-09-26T09:00:00-05:00', 'end': '2023-09-26T14:00:00-05:00', 'summary': 'Pool closing'}, {'start': '2023-09-26T16:00:00-05:00', 'end': '2023-09-26T17:00:00-05:00', 'summary': 'Nino Little Legends Soccer'}]} and after
-
-        # # Optional
-        # entity_id: light.kitchen
-        # domain: light
-
-    #    Your agenda for today:
-    # <p>
-    # {% for event in agenda.events %}
-    # {{ event.start}}: {{ event.summary }}<br>
-    # {% endfor %}
-    # </p>
+# curl https://api.openai.com/v1/chat/completions \
+#   -H "Content-Type: application/json" \
+#   -H "Authorization: Bearer $OPENAI_API_KEY" \
+#   -d '{
+#     "model": "gpt-4o",
+#     "messages": [
+#       {
+#         "role": "system",
+#         "content": "You are a helpful assistant."
+#       },
+#       {
+#         "role": "user",
+#         "content": "Hello!"
+#       }
+#     ]
+#   }'
