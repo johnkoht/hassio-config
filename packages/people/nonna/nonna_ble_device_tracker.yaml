@@ -1,6 +1,7 @@
-nonna_iphone_ble_device_tracker:
-  name: Nonna iPhone - BLE Device Tracker
-  mac:
-  icon: mdi:bluetooth-connect
-  picture:
-  track: true
+device_tracker:
+  nonna_iphone_ble_device_tracker:
+    name: Nonna iPhone - BLE Device Tracker
+    mac:
+    icon: mdi:bluetooth-connect
+    picture:
+    track: true
