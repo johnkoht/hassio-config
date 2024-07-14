@@ -73,5 +73,5 @@ action:
             position: bottom-right
             fontsize: large
             transparency: 25%
-            interrupt: 0
+            interrupt: false
             color: black
