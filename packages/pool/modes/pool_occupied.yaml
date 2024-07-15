@@ -1,0 +1,44 @@
+# Pool Area Occupied
+#
+# Automation to mark the pool area as occupied
+#
+automation:
+  - id: "pool_occupied"
+    initial_state: on
+    alias: "Pool Occupied"
+    trigger:
+      # Motion detected
+      - platform: state
+        entity_id: binary_sensor.pool_motion_sensor_status
+        to: "on"
+      # The pool gate changes state
+      - platform: state
+        entity_id: binary_sensor.pool_main_gate_opening
+      # Hassio resloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Pool is NOT occupied
+      - condition: state
+        entity_id: input_boolean.pool_occupied
+        state: "off"
+      # BLE or Occupancy detected somebody
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gazebo')|map(attribute='name')|list | length > 0 }}"
+          # The pool occupancy timer is active
+          # e.g. it was triggered by one of the motion sensors
+          - condition: state
+            entity_id: timer.pool_occupancy
+            state: "active"
+    action:
+      # Turn ON the pool occupied boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.pool_occupied
