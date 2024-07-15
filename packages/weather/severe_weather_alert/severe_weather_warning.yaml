@@ -4,67 +4,160 @@ automation:
     initial_state: on
     trigger:
       - platform: state
-        entity_id: sensor.pirateweather_alerts
-      # - platform: webhook
-      #   webhook_id: "tomorrow_io_sw_alert"
-      #   allowed_methods:
-      #     - POST
-      #     - PUT
-      #   local_only: false
+        entity_id: sensor.nws_alerts
     condition:
-      - "{{ states('sensor.pirateweather_alerts') | int > 0 }}"
-      # Alert is severe or extreme
-      - condition: template
-        value_template: >-
-          {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
-
-          {% if alert_count > 1 %}
-            {{
-              (state_attr('sensor.pirateweather_alerts', 'severity_0' | string) | lower) == "severe" or
-              (state_attr('sensor.pirateweather_alerts', 'severity_0') | lower) == "extreme" 
+      condition: and
+      conditions:
+        - "{{states('sensor.nws_alerts') | int > 0}}"
+        - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
+        - condition: template
+          value_template: >
+            {{ 
+              ('Severe Thunderstorm Warning' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Tornado Warning' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Freeze Watch' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Blizzard Warning' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Winter Storm Watch' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Extreme Wind Warning' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Flood Watch' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Flood Warning' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Excessive Heat Warning' in state_attr('sensor.nws_alerts', 'title')) or
             }}
-          {% else %}
-            {{
-              (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "severe" or
-              (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "extreme" 
-            }}
-          {% endif %}
+        - "{{ (state_attr('sensor.nws_alerts', 'event_id').split('-')[0] not in states.sensor.nws_alerts_event_ids.attributes.values()|list) }}"
+        - "{{ (state_attr('sensor.nws_alerts', 'event_id').split('-')[0] != states('sensor.nws_alerts_event_ids')) }}"
     action:
-      # Announce to the house
-      - service: script.voice_announcement
+      #
+      # Use ChatGPT to get the daily briefing
+      #
+      - service: conversation.process
         data:
-          speech_message: >
-            {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+          agent_id: conversation.chatgpt
+          text: >-
+            You're part of my smart home. I subscribe to severe weather alerts from the NWS and need your help parsing and summarizing the alert details.
 
-            {% if alert_count > 1 %}
-              "{{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
-            {% else %}
-              "{{ state_attr('sensor.pirateweather_alerts', 'title') }}"
-            {% endif %}
+            I will share a severe weather alert message that is provided by the NWS. I need you to review the details and then summarize it as clearly and succinctly as possible. Your response will be provided to my text-to-speech software and will broadcast the message throughout the house over the speakers. 
 
-          sound: "default"
-          media_players: auto
+            Some rules:
+            - Be clear and concise
+            - No special characters or emojis
 
-      # Notification for logging
+            Here is the alert:
+            {{ state_attr('sensor.nws_alerts', 'title') }}
+            {{ state_attr('sensor.nws_alerts', 'display_desc') }}
+        response_variable: chatgpt
+
+      #
+      # TTS Message
+      #
       - service: script.general_notification
         data:
-          title: >
-            {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
-            {% if alert_count > 1 %}
-              "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
-            {% else %}
-              "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title') }}"
-            {% endif %}
-
-          message: >
-            {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
-            {% if alert_count > 1 %}
-              {% set desc = state_attr('sensor.pirateweather_alerts', 'title_0').split("\n")[0] %}
-              "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description_0').split(' - ')[0] }}. {{desc}}"
-            {% else %}
-              {% set desc = state_attr('sensor.pirateweather_alerts', 'title').split("\n")[0] %}
-              "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description').split(' - ')[0] }}. {{desc}}"
-            {% endif %}
+          title: "Daily Update!"
+          message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
           devices: "jk"
           priority: "time-sensitive"
-          tag: "weather-alert"
+          tag: "daily-update"
+      #
+      # Voice Announcement
+      #
+      - service: script.voice_announcement
+        data:
+          media_players: "auto"
+          sound: "default"
+          speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+
+      # # Announce to the house
+      # - service: script.voice_announcement
+      #   data:
+      #     speech_message: >
+      #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+
+      #       {% if alert_count > 1 %}
+      #         "{{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
+      #       {% else %}
+      #         "{{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+      #       {% endif %}
+
+      #     sound: "default"
+      #     media_players: auto
+
+      # # Notification for logging
+      # - service: script.general_notification
+      #   data:
+      #     title: >
+      #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+      #       {% if alert_count > 1 %}
+      #         "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
+      #       {% else %}
+      #         "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+      #       {% endif %}
+
+      #     message: >
+      #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+      #       {% if alert_count > 1 %}
+      #         {% set desc = state_attr('sensor.pirateweather_alerts', 'title_0').split("\n")[0] %}
+      #         "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description_0').split(' - ')[0] }}. {{desc}}"
+      #       {% else %}
+      #         {% set desc = state_attr('sensor.pirateweather_alerts', 'title').split("\n")[0] %}
+      #         "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description').split(' - ')[0] }}. {{desc}}"
+      #       {% endif %}
+      #     devices: "jk"
+      #     priority: "time-sensitive"
+      #     tag: "weather-alert"
+
+  #
+  #
+  # Check for multie alerts
+  #
+  - alias: "NWS Check for Multi Alerts"
+    initial_state: "on"
+    trigger:
+      - platform: state
+        entity_id: sensor.nws_alerts
+    condition:
+      - "{{ states('sensor.nws_alerts') | int > 0 }}"
+      - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
+    action:
+      - choose:
+          - conditions:
+              - "{{ (trigger.to_state.state | int - trigger.from_state.state|int) > 1 }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.nws_multi_alert
+              - delay:
+                  seconds: 30
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.nws_multi_alert
+          - conditions:
+              - "{{ (trigger.to_state.state | int - trigger.from_state.state|int) == 1 }}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.nws_multi_alert
+
+  #
+  #
+  # Update the Event ID Variable
+  #
+  - alias: NWS Update Event ID Variable
+    initial_state: "on"
+    trigger:
+      - platform: state
+        entity_id: sensor.nws_alerts
+    action:
+      - service: variable.set_variable
+        data:
+          variable: nws_alerts_event_ids
+          attributes:
+            history_1: "{{ states('sensor.nws_alerts_event_ids') }}"
+            history_2: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_1') }}"
+            history_3: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_2') }}"
+            history_4: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_3') }}"
+            history_5: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_4') }}"
+            history_6: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_5') }}"
+            history_7: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_6') }}"
+            history_8: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_7') }}"
+            history_9: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_8') }}"
+            history_10: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_9') }}"
+      - service: variable.set_variable
+        data:
+          variable: nws_alerts_event_ids
+          value: "{{ (trigger.to_state.attributes.event_id).split('-')[0] }}"
