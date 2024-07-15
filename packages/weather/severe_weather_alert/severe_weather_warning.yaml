@@ -16,25 +16,55 @@ automation:
       # Alert is severe or extreme
       - condition: template
         value_template: >-
-          {{ 
-            (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "severe" or
-            (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "extreme" 
-          }}
+          {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+
+          {% if alert_count > 1 %}
+            {{
+              (state_attr('sensor.pirateweather_alerts', 'severity_0' | string) | lower) == "severe" or
+              (state_attr('sensor.pirateweather_alerts', 'severity_0') | lower) == "extreme" 
+            }}
+          {% else %}
+            {{
+              (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "severe" or
+              (state_attr('sensor.pirateweather_alerts', 'severity') | lower) == "extreme" 
+            }}
+          {% endif %}
     action:
       # Announce to the house
       - service: script.voice_announcement
         data:
-          speech_message: "{{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+          speech_message: >
+            {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+
+            {% if alert_count > 1 %}
+              "{{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
+            {% else %}
+              "{{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+            {% endif %}
+
           sound: "default"
           media_players: auto
 
       # Notification for logging
       - service: script.general_notification
         data:
-          title: "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+          title: >
+            {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+            {% if alert_count > 1 %}
+              "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
+            {% else %}
+              "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+            {% endif %}
+
           message: >
-            {% set desc = state_attr('sensor.pirateweather_alerts', 'title').split("\n")[0] %}
-            "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description').split(' - ')[0] }}. {{desc}}"
+            {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+            {% if alert_count > 1 %}
+              {% set desc = state_attr('sensor.pirateweather_alerts', 'title_0').split("\n")[0] %}
+              "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description_0').split(' - ')[0] }}. {{desc}}"
+            {% else %}
+              {% set desc = state_attr('sensor.pirateweather_alerts', 'title').split("\n")[0] %}
+              "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description').split(' - ')[0] }}. {{desc}}"
+            {% endif %}
           devices: "jk"
           priority: "time-sensitive"
           tag: "weather-alert"

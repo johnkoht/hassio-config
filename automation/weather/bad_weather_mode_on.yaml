@@ -20,6 +20,8 @@ trigger:
       - "rainy"
       - "snowy"
       - "snowy rainy"
+  - platform: state
+    entity_id: sensor.pirateweather_alerts
   # It's getting cloudy outside
   - platform: numeric_state
     entity_id: sensor.pirateweather_cloud_coverage
