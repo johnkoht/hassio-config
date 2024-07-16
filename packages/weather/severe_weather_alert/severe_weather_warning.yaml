@@ -21,7 +21,7 @@ automation:
               ('Extreme Wind Warning' in state_attr('sensor.nws_alerts', 'title')) or
               ('Flood Watch' in state_attr('sensor.nws_alerts', 'title')) or
               ('Flood Warning' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Excessive Heat Warning' in state_attr('sensor.nws_alerts', 'title')) or
+              ('Excessive Heat Warning' in state_attr('sensor.nws_alerts', 'title'))
             }}
         - "{{ (state_attr('sensor.nws_alerts', 'event_id').split('-')[0] not in states.sensor.nws_alerts_event_ids.attributes.values()|list) }}"
         - "{{ (state_attr('sensor.nws_alerts', 'event_id').split('-')[0] != states('sensor.nws_alerts_event_ids')) }}"
