@@ -13,14 +13,6 @@ trigger:
     to: "on"
     for:
       minutes: 1
-  # # It's bedtime hours
-  # - platform: state
-  #   entity_id: binary_sensor.bedtime
-  #   to: "on"
-  # # Door is closed
-  # - platform: state
-  #   entity_id: binary_sensor.main_bedroom_door_sensor_status
-  #   to: "off"
   # Sleep state changes to sleep
   - platform: state
     entity_id: input_select.cristina_sleep_state
@@ -30,10 +22,6 @@ trigger:
     entity_id: input_select.cristina_sleep_state
     to: "Just Laid Down"
 condition:
-  # Cristina is probably sleeping (bayesian)
-  - condition: state
-    entity_id: binary_sensor.cristina_probably_sleeping
-    state: "on"
   # Sleep statate is sleep or just laid down
   - condition: or
     conditions:
@@ -45,24 +33,6 @@ condition:
       - condition: state
         entity_id: input_select.cristina_sleep_state
         state: "Just Laid Down"
-  # - condition: or
-  #   conditions:
-  #     # Cristina is sleeping (bayesian)
-  #     - condition: state
-  #       entity_id: binary_sensor.cristina_sleeping
-  #       state: "on"
-  #     # OR
-  #     # Cristina is probably sleeping
-  #     # AND it's between 10-6am
-  #     - condition: and
-  #       conditions:
-  #         # Cristina is probably sleeping
-  #         - condition: state
-  #           entity_id: binary_sensor.cristina_probably_sleeping
-  #           state: "on"
-  #         - condition: time
-  #           after: "20:00:00"
-  #           before: "06:00:00"
   # Cristina is home
   - condition: state
     entity_id: input_boolean.cristina_home
