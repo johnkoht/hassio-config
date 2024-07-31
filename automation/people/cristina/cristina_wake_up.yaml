@@ -12,20 +12,24 @@ trigger:
     to: "off"
     for:
       minutes: 2
-  # Door is open
+  # Sleep state changes to Awake
   - platform: state
-    entity_id: binary_sensor.main_bedroom_door_sensor_status
-    to: "on"
-  # Room presence changes
+    entity_id: input_select.cristina_sleep_state
+    to: "Awake"
+  # Sleep state changes to just got up
   - platform: state
-    entity_id: sensor.cristina_room_presence
-    from: "main_bedroom"
-    to: "kitchen"
-  # Room presence changes
-  - platform: state
-    entity_id: sensor.cristina_room_presence
-    from: "main_bedroom"
-    to: "family_room"
+    entity_id: input_select.cristina_sleep_state
+    to: "Just Got Up"
+  # # Room presence changes
+  # - platform: state
+  #   entity_id: sensor.cristina_room_presence
+  #   from: "main_bedroom"
+  #   to: "kitchen"
+  # # Room presence changes
+  # - platform: state
+  #   entity_id: sensor.cristina_room_presence
+  #   from: "main_bedroom"
+  #   to: "family_room"
 condition:
   # Cristina is sleeping
   - condition: state
