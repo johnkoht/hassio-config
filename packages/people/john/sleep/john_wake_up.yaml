@@ -26,6 +26,8 @@ automation:
       - platform: state
         entity_id: input_select.john_sleep_state
         to: "Just Got Up"
+        for:
+          minutes: 2
       # Sleep state changes to Awake
       - platform: state
         entity_id: input_select.john_sleep_state
@@ -66,10 +68,10 @@ automation:
       - condition: state
         entity_id: input_boolean.john_is_in_bed
         state: "on"
-      # It's within the timeframe of wake up
-      - condition: time
-        after: "05:30:00"
-        before: "21:00:00"
+      # # It's within the timeframe of wake up
+      # - condition: time
+      #   after: "05:30:00"
+      #   before: "21:00:00"
     action:
       # Turn OFF the john in bed input_boolean
       - service: input_boolean.turn_off
