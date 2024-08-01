@@ -15,15 +15,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "on"
-      # # BLE detected
-      # - platform: state
-      #   entity_id: sensor.john_room_presence
-      #   to: "main_bedroom"
     condition:
-      # # Light automations are enabled
-      # - condition: state
-      #   entity_id: input_boolean.lighting_automations
-      #   state: "on"
       # John is home
       - condition: state
         entity_id: input_boolean.john_home
@@ -62,10 +54,6 @@ automation:
       # John is NOT in bed
       - condition: state
         entity_id: input_boolean.john_is_in_bed
-        state: "off"
-      # Not in bed
-      - condition: state
-        entity_id: binary_sensor.john_sleeping
         state: "off"
       # It's bedtime hours
       - condition: state
