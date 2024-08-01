@@ -20,6 +20,8 @@ trigger:
   - platform: state
     entity_id: input_select.cristina_sleep_state
     to: "Just Got Up"
+    for:
+      minutes: 2
   # # Room presence changes
   # - platform: state
   #   entity_id: sensor.cristina_room_presence
@@ -43,10 +45,10 @@ condition:
   - condition: state
     entity_id: input_boolean.cristina_in_bed
     state: "on"
-  # It within the timeframe of wake up
-  - condition: time
-    after: "05:30:00"
-    before: "21:00:00"
+  # # It within the timeframe of wake up
+  # - condition: time
+  #   after: "05:30:00"
+  #   before: "21:00:00"
 action:
   - service: input_boolean.turn_off
     entity_id: input_boolean.cristina_in_bed
