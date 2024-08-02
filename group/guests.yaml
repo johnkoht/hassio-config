@@ -10,6 +10,7 @@ guests:
     - person.antoun_koht
     - person.sonia_koht
     - person.katia
+    - person.joe_falbo
 
 roommate:
   entities:
