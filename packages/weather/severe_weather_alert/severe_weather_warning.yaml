@@ -47,11 +47,11 @@ automation:
         response_variable: chatgpt
 
       #
-      # TTS Message
+      # Push Notification
       #
       - service: script.general_notification
         data:
-          title: "Daily Update!"
+          title: "Severe Weather Warning"
           message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
           devices: "jk"
           priority: "time-sensitive"
@@ -62,7 +62,7 @@ automation:
       - service: script.voice_announcement
         data:
           media_players: "auto"
-          sound: "default"
+          sound: "nuclear"
           speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
 
       # # Announce to the house
@@ -161,3 +161,47 @@ automation:
         data:
           variable: nws_alerts_event_ids
           value: "{{ (trigger.to_state.attributes.event_id).split('-')[0] }}"
+
+  #
+  #
+  # Lots of rain soon
+  #
+  - alias: Severe Rain Incoming
+    initial_state: on
+    trigger:
+      # Precipitation intensity > .3 per in
+      - platform: numeric_state
+        entity_id:
+          - sensor.pirateweather_precip_intensity_0h
+          - sensor.pirateweather_precip_intensity_1h
+        above: 0.3
+      # Precipitation accumulation > .03 inches
+      - platform: numeric_state
+        entity_id:
+          - sensor.pirateweather_precip_accumulation_0h
+          - sensor.pirateweather_precip_accumulation_1h
+        above: 0.03
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      #
+      # Push Notification
+      #
+      - service: script.general_notification
+        data:
+          title: "Severe Rain Warning"
+          message: "The forecast is showing a lot of rain in the next hour. Might be a good idea to put out the pumps."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "daily-update"
+      #
+      # Voice Announcement
+      #
+      - service: script.voice_announcement
+        data:
+          media_players: "auto"
+          sound: "nuclear"
+          speech_message: "The forecast is showing a lot of rain in the next hour. Keep an eye out for any leaks and it might be a good idea to put out the pumps."

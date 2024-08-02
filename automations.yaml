@@ -121,36 +121,6 @@
         - 37ab5381dccd0ec08d2043d4cf433d72
       no_motion_wait: 240
       motion_entity: binary_sensor.mudroom_trisensor_home_security_motion_detection
-- id: '1645986690212'
-  alias: Water Detected in Basement
-  description: ''
-  trigger:
-  - type: moist
-    platform: device
-    device_id: 49e81b02d6064a7191287e8b6283278c
-    entity_id: binary_sensor.water_sensor_7_pro_water_alarm_water_leak_detected
-    domain: binary_sensor
-  condition: []
-  action:
-  - service: notify.mobile_app_jk
-    data:
-      message: The basement water sensor has detected water!
-      title: Basement Water Sensor
-  - service: notify.family_room_tv
-    data:
-      title: Basement Water Sensor
-      message: The basement water sensor has detected water!
-  - service: notify.mobile_app_cfalb
-    data:
-      message: The basement water sensor has detected water!
-      title: Basement Water Sensor
-  - service: notify.alexa_media_everywhere
-    data:
-      message: The basement water sensor has detected water!
-      data:
-        type: announce
-        method: all
-  mode: single
 - id: '1646251632973'
   alias: Doorbell Ring (Duplicate)
   description: ''
@@ -208,48 +178,6 @@
     data: {}
     target:
       entity_id: group.exterior_lights
-  mode: single
-- id: '1646274478600'
-  alias: Away mode
-  description: Automatically turn the house into away mode when nobody is home.
-  trigger:
-  - platform: device
-    device_id: 417292d1346b8ae9514e83186be0b755
-    domain: device_tracker
-    entity_id: device_tracker.johns_iphone_2
-    type: leaves
-    zone: zone.home
-  - platform: device
-    device_id: d3a17386e8d525871b55e54e3d58fc64
-    domain: device_tracker
-    entity_id: device_tracker.cfalb_2
-    type: leaves
-    zone: zone.home
-  condition:
-  - condition: state
-    entity_id: input_boolean.guest_mode
-    state: 'off'
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: group.extended_family
-      state: not_home
-    - condition: state
-      entity_id: group.family
-      state: not_home
-  action:
-  - service: script.turn_off_interior_lights
-    data: {}
-  - service: script.climate_away
-    data: {}
-  - service: script.tvs_off
-    data: {}
-  - service: script.garage_close
-    data: {}
-  - service: notify.mobile_app_jk
-    data:
-      title: Away Mode
-      message: Nobody is home so away mode has been activated!
   mode: single
 - id: '1646280009884'
   alias: 'Weather: Bad Weather Lighting'
@@ -372,71 +300,6 @@
     data: {}
     target:
       entity_id: input_boolean.quiet_mode
-  mode: single
-- id: '1647483168820'
-  alias: Arrival Mode
-  description: ''
-  trigger:
-  - platform: device
-    device_id: 417292d1346b8ae9514e83186be0b755
-    domain: device_tracker
-    entity_id: device_tracker.johns_iphone_2
-    type: enters
-    zone: zone.home
-  - platform: device
-    device_id: d3a17386e8d525871b55e54e3d58fc64
-    domain: device_tracker
-    entity_id: device_tracker.cfalb_2
-    type: enters
-    zone: zone.home
-  condition:
-  - condition: state
-    entity_id: input_boolean.guest_mode
-    state: 'off'
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: group.family
-      state: not_home
-    - condition: state
-      entity_id: group.extended_family
-      state: not_home
-  action:
-  - service: light.turn_on
-    data: {}
-    target:
-      entity_id: light.mudroom_main_lights
-  - device_id: d21fee64f0e0c227432ffa0d1fef645c
-    domain: cover
-    entity_id: cover.garage_door_1
-    type: open
-  - service: notify.ios_family
-    data:
-      title: Arrival Mode
-      message: I noticed that you're arriving home so I've opened the garage and turned
-        on a couple of lights.
-  - service: script.climate_activate
-    data: {}
-  mode: single
-- id: '1647610270810'
-  alias: Arrival Announcement - John
-  description: ''
-  trigger:
-  - platform: device
-    device_id: 417292d1346b8ae9514e83186be0b755
-    domain: device_tracker
-    entity_id: device_tracker.johns_iphone_2
-    type: enters
-    zone: zone.home
-  - platform: state
-    entity_id: person.john_koht
-    from: not_home
-    to: home
-  condition: []
-  action:
-  - service: script.announce_arrival
-    data:
-      who: john
   mode: single
 - id: '1703382935999'
   alias: Playroom play time
