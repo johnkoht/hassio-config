@@ -55,6 +55,12 @@ automation:
       - condition: state
         entity_id: input_boolean.john_is_in_bed
         state: "off"
+      # John sleep state is awake for at least 10 minutes
+      - condition: state
+        entity_id: input_select.john_sleep_state
+        state: "Awake"
+        for:
+          minutes: 10
       # It's bedtime hours
       - condition: state
         entity_id: binary_sensor.bedtime
