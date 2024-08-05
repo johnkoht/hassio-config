@@ -1,12 +1,16 @@
 automation:
   - id: "garage_entry_door_lock_at_bedtime"
-    alias: "Garage Entry Door - Lock at Bedtime"
+    alias: "Garage Entry Door - Lock"
     initial_state: on
     trigger:
       # House goes into bedtime mode
       - platform: state
         entity_id: input_boolean.bedtime
         to: "on"
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
     condition:
       # Garage entry door is unlocked
       - condition: state
