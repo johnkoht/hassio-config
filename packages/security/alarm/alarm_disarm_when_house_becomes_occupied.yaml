@@ -12,11 +12,26 @@ automation:
         entity_id: input_select.house
         from: "Away"
         to: "Auto"
+      # Somebody arrives at the house
+      # This is useful when the house is armed but somebody
+      # is not home or a close guest arrives
+      - platform: state
+        entity_id:
+          - person.john_koht
+          - person.cristina_falbo
+          - person.mary_falbo
+          - person.antoun_koht
+          - person.sonia_koht
+          - person.katia
+          - person.joe_falbo
+        to: "home"
     condition:
-      # Alarm is current armed_home
+      # Alarm is currently armed
       - condition: state
         entity_id: alarm_control_panel.panel
-        state: "armed_home"
+        state:
+          - "armed_home"
+          - "armed_away"
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
