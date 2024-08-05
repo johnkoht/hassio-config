@@ -171,3 +171,15 @@
   - device_id: 5u_marauders
     ignore_availability: true
     name: 5U Marauders
+
+- cal_id: trlpnmvvr5rqkdgn8viqtfvnvo8lang0@import.calendar.google.com
+  entities:
+  - device_id: lyon_school
+    ignore_availability: true
+    name: Lyon School
+
+- cal_id: 5tiq75cl4ab1ctphl9d1j4g09o0c7udp@import.calendar.google.com
+  entities:
+  - device_id: district_34_events
+    ignore_availability: true
+    name: District 34 Events
