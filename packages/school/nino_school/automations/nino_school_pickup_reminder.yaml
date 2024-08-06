@@ -6,19 +6,14 @@ automation:
     mode: "single"
     initial_state: off
     trigger:
-      # 20 mins before end
-      - platform: calendar
-        event: end
-        entity_id: calendar.ninos_school
-        offset: -00:20:00
+      # Trigger at the input_datetime
+      - platform: time
+        at: input_datetime.elementary_school_pickup_reminder
     condition:
       # Nino school day boolean is ON
       - condition: state
         entity_id: input_boolean.nino_school_day
         state: "on"
-      # Not a reminder
-      - condition: template
-        value_template: "{{ 'reminder' not in (trigger.calendar_event.summary | lower) }}"
     action:
       # Call the announcement engine
       - service: script.voice_announcement
@@ -26,25 +21,20 @@ automation:
           media_players: auto
           sound: "school-bell-chime"
           speech_message: >-
-            {% set event = trigger.calendar_event.summary | lower %}
-
-            {% if "school day" in event %}
-              {% set label = "school" %}
-            {% else %}
-              {% set label = event %}
-            {% endif %}
-
             {{
               [
-                label ~ " is done! Time to pick up Nino!",
-                "Hey there! It's time to pickup Nino from " ~ label,
-                "Dont forget to pick up Nino from " ~ label,
-                "Quick reminder that " ~ label ~ " is almost over, time to pick Nino up."  
+                "School is done! Time to pick up Nino!",
+                "Hey there! It's time to pickup Nino from school!",
+                "Dont forget to pick up Nino from school!",
+                "Quick reminder that school is almost over, time to pick Nino up."  
               ] | random
             }}
 
       # Notify the family via push
-      - service: notify.ios_family
+      - service: script.general_notification
         data:
-          message: "School will be over soon, it's time to pick up Nino from school."
           title: "Nino's school is ending soon"
+          message: "School will be over soon, it's time to pick up Nino from school."
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "nino_school_pikcup"
