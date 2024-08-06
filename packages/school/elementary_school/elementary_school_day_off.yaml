@@ -1,0 +1,17 @@
+automation:
+  - id: "elementary_school_day_off"
+    alias: "Elementary School Day Off"
+    mode: "single"
+    trigger:
+      # Just before midnight
+      - platform: time
+        at: "23:59:00"
+    condition:
+      # Input boolean is currently ON
+      - condition: state
+        entity_id: input_boolean.elementary_school_day
+        state: "on"
+    action:
+      # Turn OFF the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.elementary_school_day

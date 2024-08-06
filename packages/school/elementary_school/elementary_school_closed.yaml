@@ -1,0 +1,35 @@
+# Is the elementary school closed today?
+#
+# This trigger-based binary sensor checks the
+# calendars for any mention of "no school" to prevent
+# school day automations from activating
+#
+template:
+  - trigger:
+      - platform: time_pattern
+        hours: 1
+    action:
+      - service: calendar.get_events
+        data:
+          duration:
+            hours: 700
+        target:
+          entity_id:
+            - calendar.lyon_school
+            - calendar.district_34_events
+        response_variable: calendar
+
+    #
+    # This is the binary sensor that will check if any of the
+    # calendars mention no school
+    binary_sensor:
+      - name: Elementary School Closed
+        unique_id: elementary_school_closed
+        state: >-
+          {% set fms = namespace(event=false) %}
+          {%- for key, value in calendar.items() if fms.event is false %}
+            {%- for event in value.events if fms.event is false and 'No School' in event.summary%}
+              {%- set fms.event = true %}
+            {%- endfor -%}
+          {%- endfor %}
+          {{- fms.event }}

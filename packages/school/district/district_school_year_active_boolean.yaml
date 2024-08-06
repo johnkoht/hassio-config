@@ -1,0 +1,4 @@
+input_boolean:
+  district_school_year_active:
+    name: District School Year Active
+    icon: mdi:town-hall

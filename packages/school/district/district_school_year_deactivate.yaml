@@ -1,0 +1,17 @@
+automation:
+  - id: "district_school_year_deactivate"
+    alias: "District School Year - Deactivate"
+    mode: "single"
+    trigger:
+      # Trigger at the input_datetime
+      - platform: time
+        at: input_datetime.district_34_last_day_of_school
+    condition:
+      # School Year Active Boolean is ON
+      - condition: state
+        entity_id: input_boolean.district_school_year_active
+        state: "on"
+    action:
+      # Turn on the boolean
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.district_school_year_active
