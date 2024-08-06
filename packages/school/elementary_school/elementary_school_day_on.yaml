@@ -1,0 +1,26 @@
+automation:
+  - id: "elementary_school_day_on"
+    alias: "Elementary School Day On"
+    mode: "single"
+    trigger:
+      # First thing in the morning
+      - platform: time
+        at: "02:00:01"
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # It's a school day (e.g. M-F)
+      - condition: state
+        entity_id: binary_sensor.school_day
+        state: "on"
+      # School is not closed today
+      - condition: state
+        entity_id: binary_sensor.elementary_school_closed
+        state: "off"
+    action:
+      # Turn on the boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.elementary_school_day
