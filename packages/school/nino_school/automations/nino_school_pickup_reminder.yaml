@@ -4,7 +4,7 @@ automation:
   - id: "nino_school_pickup_reminder"
     alias: "Nino School Pickup Reminder"
     mode: "single"
-    initial_state: on
+    initial_state: off
     trigger:
       # 20 mins before end
       - platform: calendar

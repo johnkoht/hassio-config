@@ -2,6 +2,7 @@ automation:
   - id: "elementary_school_day_on"
     alias: "Elementary School Day On"
     mode: "single"
+    initial_state: off
     trigger:
       # First thing in the morning
       - platform: time
@@ -12,6 +13,10 @@ automation:
       - platform: homeassistant
         event: start
     condition:
+      # School is in session
+      - condition: state
+        entity_id: input_boolean.district_school_year_active
+        state: "on"
       # It's a school day (e.g. M-F)
       - condition: state
         entity_id: binary_sensor.school_day
@@ -24,3 +29,7 @@ automation:
       # Turn on the boolean
       - service: input_boolean.turn_on
         entity_id: input_boolean.elementary_school_day
+
+      - service: automation.turn_on
+        entity_id:
+          - automation.school_day_reminder

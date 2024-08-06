@@ -8,7 +8,7 @@ automation:
   - id: "nino_school_reminder_notification"
     alias: "Nino School Reminder Notification"
     mode: "single"
-    initial_state: on
+    initial_state: off
     trigger:
       # When reminder is triggered
       - platform: calendar
