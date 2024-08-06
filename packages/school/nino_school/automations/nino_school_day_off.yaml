@@ -22,9 +22,7 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.nino_school_day
 
-      # # Turn OFF the school reminder automation
-      # - service: automation.turn_off
-      #   entity_id:
-      #     #- automation.nino_school_day_reminder
-      #     #- automation.nino_school_departure_reminder
-      #     - automation.nino_school_pickup_reminder
+      # Turn OFF the school reminder automation
+      - service: automation.turn_off
+        entity_id:
+          - automation.nino_school_pickup_reminder
