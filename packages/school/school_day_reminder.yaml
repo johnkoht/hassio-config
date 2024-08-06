@@ -7,37 +7,16 @@ automation:
   - id: "school_day_reminder"
     alias: "School Day Reminder"
     mode: "single"
-    initial_state: on
+    initial_state: off
     trigger:
-      # 1 hour and 15 mins before start
-      - platform: calendar
-        event: start
-        entity_id: calendar.ninos_school
-        offset: -01:30:00
-      # 1 hour and 15 mins before start
-      - platform: calendar
-        event: start
-        entity_id: calendar.gianluca_school
-        offset: -01:30:00
+      # Trigger at the input_datetime
+      - platform: time
+        at: input_datetime.school_day_breakfast_reminder_time
     condition:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      - condition: time
-        before: "10:00:00"
-      # Make sure the automation wasn't recently trigger (last 5 mins)
-      - condition: template
-        value_template: >
-          {% if states.automation.school_day_reminder.attributes.last_triggered is not none %}
-            {% if as_timestamp(now()) | int - as_timestamp(states.automation.school_day_reminder.attributes.last_triggered) | int > 300 %}
-              true 
-            {% else %}
-              false
-            {% endif %}
-          {% else %}
-            true
-          {% endif %}
       # One of the kid's has school
       - condition: or
         conditions:
@@ -49,9 +28,6 @@ automation:
           - condition: state
             entity_id: input_boolean.gianluca_school_day
             state: "on"
-      # Not a reminder
-      - condition: template
-        value_template: "{{ 'reminder' not in (trigger.calendar_event.summary | lower) }}"
     action:
       # Call the announcement engine
       - service: script.voice_announcement
@@ -59,18 +35,36 @@ automation:
           media_players: auto
           sound: "school-bell-chime"
           speech_message: >-
-            {% set event = trigger.calendar_event.summary | lower %}
+            {% set nino_school = states.input_boolean.nino_school_day.state %}
+            {% set gl_school = states.input_boolean.gianluca_school_day.state %}
 
-            {% if "school day" in event %}
-              {% set label = "school" %}
-            {% else %}
-              {% set label = event %}
+            {# Both kids have school today #}
+            {% if nino_school == "on" and gl_school == "on" %}
+              {{
+                [
+                  "Hey gang, it's time to eat breakfast and get ready for school!",
+                  "Hey there, it's time to get the kids breakfast ready. Today's a school day.",
+                  "Just at reminder that there's school today, so it's time for breakfast."
+                ] | random
+              }}
+
+            {# Only Nino has school #}
+            {% elif nino_school == "on" %}
+              {{
+                [
+                  "Hey Nino, today's a school day so it's time to get ready!",
+                  "Hey there, it's time to get the Nino's breakfast ready. Today is a school day.",
+                  "Hey Nino! Just a reminder that today's a school day so it's time to eat breakfast and get ready."
+                ] | random
+              }}
+
+            {# Only Gianluca has school #}
+            {% elif gl_school == "on" %}
+              {{
+                [
+                  "Hey Gianluca, it's time to eat breakfast and get ready for school",
+                  "Hey there, it's time to get Gianluca's breakfast ready. Today is a school day.",
+                  "Hey Gianluca! Just a reminder that today's a school day so it's time to eat breakfast and get ready."
+                ] | random
+              }}
             {% endif %}
-
-            {{
-              [
-                "Hey gang, it's time to eat breakfast and get ready for " ~ label,
-                "Hey there, it's time to get the kids breakfast ready. Today is " ~ label,
-                "Just at reminder that there's " ~ label ~ " today, so it's time for breakfast."
-              ] | random
-            }}

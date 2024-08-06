@@ -2,6 +2,7 @@ automation:
   - id: "elementary_school_day_off"
     alias: "Elementary School Day Off"
     mode: "single"
+    initial_state: off
     trigger:
       # Just before midnight
       - platform: time
@@ -15,3 +16,8 @@ automation:
       # Turn OFF the boolean
       - service: input_boolean.turn_off
         entity_id: input_boolean.elementary_school_day
+
+      # Turn OFF the school day reminder automation
+      - service: automation.turn_on
+        entity_id:
+          - automation.school_day_reminder

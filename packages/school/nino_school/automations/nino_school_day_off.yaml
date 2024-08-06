@@ -6,10 +6,12 @@ automation:
   - id: "nino_school_day_off"
     alias: "Nino School Day Off"
     mode: "single"
+    initial_state: off
     trigger:
-      # Just before midnight
-      - platform: time
-        at: "23:59:00"
+      # Elementary school day is turned OFF
+      - platform: state
+        entity_id: input_boolean.elementary_school_day
+        to: "off"
     condition:
       # Input boolean is currently ON
       - condition: state
@@ -20,9 +22,9 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.nino_school_day
 
-      # Turn OFF the school reminder automation
-      - service: automation.turn_off
-        entity_id:
-          #- automation.nino_school_day_reminder
-          #- automation.nino_school_departure_reminder
-          - automation.nino_school_pickup_reminder
+      # # Turn OFF the school reminder automation
+      # - service: automation.turn_off
+      #   entity_id:
+      #     #- automation.nino_school_day_reminder
+      #     #- automation.nino_school_departure_reminder
+      #     - automation.nino_school_pickup_reminder

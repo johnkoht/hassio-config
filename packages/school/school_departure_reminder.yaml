@@ -6,33 +6,13 @@ automation:
     mode: "single"
     initial_state: on
     trigger:
-      # 20 mins before start
-      - platform: calendar
-        event: start
-        entity_id: calendar.ninos_school
-        offset: -00:20:00
-      # 20 mins before start
-      - platform: calendar
-        event: start
-        entity_id: calendar.gianluca_school
-        offset: -00:20:00
+      # Trigger at the input_datetime
+      - platform: time
+        at: input_datetime.school_day_departure_reminder
     condition:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # Make sure the automation wasn't recently trigger (last 5 mins)
-      - condition: template
-        value_template: >
-          {% if states.automation.school_departure_reminder.attributes.last_triggered is not none %}
-            {% if as_timestamp(now()) | int - as_timestamp(states.automation.school_departure_reminder.attributes.last_triggered) | int > 300 %}
-              true 
-            {% else %}
-              false
-            {% endif %}
-          {% else %}
-            true
-          {% endif %}
-
       # One of the kid's has school
       - condition: or
         conditions:
@@ -44,9 +24,6 @@ automation:
           - condition: state
             entity_id: input_boolean.gianluca_school_day
             state: "on"
-      # Not a reminder
-      - condition: template
-        value_template: "{{ 'reminder' not in (trigger.calendar_event.summary | lower) }}"
     action:
       # Call the announcement engine
       - service: script.voice_announcement
@@ -54,18 +31,10 @@ automation:
           media_players: auto
           sound: "school-bell"
           speech_message: >-
-            {% set event = trigger.calendar_event.summary | lower %}
-
-            {% if "school day" in event %}
-              {% set event_label = "school" %}
-            {% else %}
-              {% set event_label = event %}
-            {% endif %}
-
             {{
               [
-                event_label ~ " starts soon. Time to pack up and head out!",
-                "Hey boys! Time to start heading over to " ~ event_label,
-                "Pack it up, pack it in, time to drop the kids at " ~ event_label
+                "School starts soon. Time to pack up and head out!",
+                "Hey boys! Time to start heading over to school!",
+                "Pack it up, pack it in, time to drop the kids at school!"
               ] | random
             }}

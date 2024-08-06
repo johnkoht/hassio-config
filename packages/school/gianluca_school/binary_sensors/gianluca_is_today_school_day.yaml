@@ -1,16 +1,27 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      gianluca_is_today_school_day:
-        friendly_name: Gianluca Is Today School Day
-        value_template: >-
-          {% set event = strptime(state_attr('calendar.gianluca_school', 'start_time'), '%Y-%m-%d %H:%M:%S') %}
-          {{
-            (
-              event.year == now().year
-              and 
-              event.month == now().month
-              and
-              event.day == now().day
-            )
-          }}
+template:
+  - trigger:
+      - platform: time_pattern
+        hours: 1
+    action:
+      - service: calendar.get_events
+        data:
+          duration:
+            hours: 23
+        target:
+          entity_id: calendar.gianluca_school
+        response_variable: calendar
+
+    #
+    # This is the binary sensor that will check if any of the
+    # calendars mention no school
+    binary_sensor:
+      - name: Gianluca Is Today School Day
+        unique_id: gianluca_is_today_school_day
+        state: >-
+          {% set fms = namespace(event=false) %}
+          {%- for key, value in calendar.items() if fms.event is false %}
+            {%- for event in value.events if fms.event is false and 'School Day' in event.summary%}
+              {%- set fms.event = true %}
+            {%- endfor -%}
+          {%- endfor %}
+          {{- fms.event }}

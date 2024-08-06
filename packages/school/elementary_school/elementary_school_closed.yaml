@@ -12,7 +12,7 @@ template:
       - service: calendar.get_events
         data:
           duration:
-            hours: 700
+            hours: 23
         target:
           entity_id:
             - calendar.lyon_school
