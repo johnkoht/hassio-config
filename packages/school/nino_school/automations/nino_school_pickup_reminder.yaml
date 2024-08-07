@@ -8,7 +8,7 @@ automation:
     trigger:
       # Trigger at the input_datetime
       - platform: time
-        at: input_datetime.elementary_school_pickup_reminder
+        at: input_datetime.primary_school_pickup_reminder
     condition:
       # Nino school day boolean is ON
       - condition: state

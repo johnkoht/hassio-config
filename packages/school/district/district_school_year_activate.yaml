@@ -15,9 +15,9 @@ automation:
       # Turn on the boolean
       - service: input_boolean.turn_on
         entity_id: input_boolean.district_school_year_active
-      
+
       # Turn on the automations
       - service: automation.turn_on
         entity_id:
-          - automation.elementary_school_day_on
-          - automation.elementary_school_day_off
+          - automation.primary_school_day_on
+          - automation.primary_school_day_off

@@ -8,9 +8,9 @@ automation:
     mode: "single"
     initial_state: off
     trigger:
-      # Elementary school day is turned OFF
+      # Primary school day is turned OFF
       - platform: state
-        entity_id: input_boolean.elementary_school_day
+        entity_id: input_boolean.primary_school_day
         to: "off"
     condition:
       # Input boolean is currently ON
