@@ -106,7 +106,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [UZG-01](https://a.co/d/2AWruQV) | 1 | USB | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js/) | Used to control Z-Wave devices. |
+| [HUSBZB-1](https://a.co/d/2AWruQV) | 1 | USB | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js/) | Used to control Z-Wave devices. |
 | [ZigStar UZG-01](https://uzg.zig-star.com/product/) | 1 | Ethernet / POE | [ZHA](https://www.home-assistant.io/integrations/zha/) | Used to control Zigbee devices. |
 | [Hue Hub](https://a.co/d/jhxXDpy) | 2 | Ethernet | [Philips Hue](https://www.home-assistant.io/components/hue/) | Used to control all Philip Hue products (lights, motion sensors, switches) |
 | [Lutron Caseta Smart Bridge](https://a.co/d/56Hyw8D) | 2 | Ethernet | [Lutron Caséta](https://www.home-assistant.io/integrations/lutron_caseta) | Controls Lutron Caseta light switches, dimmers, and Pico remotes |
@@ -161,6 +161,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [August Smart Lock Pro](https://a.co/d/6bLXSqm) | 1 | Cloud Push | [August](https://www.home-assistant.io/integrations/august/) | Smart lock for the front door (currently doesn't work!) |
+| [Yale Assure Lever Lock with Z-Wave](https://a.co/d/j12OMGb) | 1 | Z-Wave | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js) | Garage door entry lock |
 
 ## <a name="garage">Garage Doors</a>
 
