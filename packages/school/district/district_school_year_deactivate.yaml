@@ -19,5 +19,5 @@ automation:
       # Turn OFF the automations
       - service: automation.turn_off
         entity_id:
-          - automation.elementary_school_day_on
-          - automation.elementary_school_day_off
+          - automation.primary_school_day_on
+          - automation.primary_school_day_off

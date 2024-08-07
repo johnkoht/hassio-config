@@ -1,0 +1,4 @@
+input_boolean:
+  district_late_start_wednesday:
+    name: District Late Start Wednesday
+    icon: mdi:town-hall

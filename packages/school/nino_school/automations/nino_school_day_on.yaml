@@ -10,9 +10,9 @@ automation:
     mode: "single"
     initial_state: on
     trigger:
-      # Elementary school day is turned ON
+      # Primary school day is turned ON
       - platform: state
-        entity_id: input_boolean.elementary_school_day
+        entity_id: input_boolean.primary_school_day
         to: "on"
       # Hassio reloads/starts
       - platform: event

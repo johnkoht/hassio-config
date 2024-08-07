@@ -1,0 +1,4 @@
+input_boolean:
+  primary_school_day:
+    name: Primary School Day
+    icon: mdi:school-outline

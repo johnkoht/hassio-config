@@ -1,6 +1,6 @@
 automation:
-  - id: "elementary_school_day_on"
-    alias: "Elementary School Day On"
+  - id: "primary_school_day_on"
+    alias: "Primary School Day On"
     mode: "single"
     initial_state: off
     trigger:
@@ -23,13 +23,25 @@ automation:
         state: "on"
       # School is not closed today
       - condition: state
-        entity_id: binary_sensor.elementary_school_closed
+        entity_id: binary_sensor.primary_school_closed
         state: "off"
     action:
       # Turn on the boolean
       - service: input_boolean.turn_on
-        entity_id: input_boolean.elementary_school_day
+        entity_id: input_boolean.primary_school_day
 
       - service: automation.turn_on
         entity_id:
-          - automation.school_day_reminder
+          - automation.school_day_reminder\
+
+      # Wednesday's are a late start day, in this case
+      # toggle the late start boolean
+      - if:
+          # It's Wednesday then toggle the late start boolean
+          - condition: time
+            weekday:
+              - wed
+        then:
+          # Turn on the boolean
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.district_late_start_wednesday

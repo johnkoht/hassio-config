@@ -1,4 +1,0 @@
-input_boolean:
-  elementary_school_day:
-    name: Elementary School Day
-    icon: mdi:school-outline

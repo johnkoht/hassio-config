@@ -1,4 +1,4 @@
-# Is the elementary school closed today?
+# Is the primary school closed today?
 #
 # This trigger-based binary sensor checks the
 # calendars for any mention of "no school" to prevent
@@ -23,8 +23,8 @@ template:
     # This is the binary sensor that will check if any of the
     # calendars mention no school
     binary_sensor:
-      - name: Elementary School Closed
-        unique_id: elementary_school_closed
+      - name: Primary School Closed
+        unique_id: primary_school_closed
         state: >-
           {% set fms = namespace(event=false) %}
           {%- for key, value in calendar.items() if fms.event is false %}

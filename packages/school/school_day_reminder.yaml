@@ -36,27 +36,48 @@ automation:
           sound: "school-bell-chime"
           speech_message: >-
             {% set nino_school = states.input_boolean.nino_school_day.state %}
+            {% set late_start = states.input_boolean.district_late_start_wednesday.state %}
             {% set gl_school = states.input_boolean.gianluca_school_day.state %}
 
             {# Both kids have school today #}
             {% if nino_school == "on" and gl_school == "on" %}
-              {{
-                [
-                  "Hey gang, it's time to eat breakfast and get ready for school!",
-                  "Hey there, it's time to get the kids breakfast ready. Today's a school day.",
-                  "Just at reminder that there's school today, so it's time for breakfast."
-                ] | random
-              }}
+              {% if late_start == "on" %}
+                {{
+                  [
+                    "Hey gang, it's time to eat breakfast and get ready for school! As a reminder, Nino has a late start today!",
+                    "Hey there, it's time to get the kids breakfast ready. Today's a school day, but remember that Nino has a late start today.",
+                    "Just at reminder that there's school today, so it's time for breakfast. Just an FYI, Nino has late start today!"
+                  ] | random
+                }}
+              {% else %}
+                {{
+                  [
+                    "Hey gang, it's time to eat breakfast and get ready for school!",
+                    "Hey there, it's time to get the kids breakfast ready. Today's a school day.",
+                    "Just at reminder that there's school today, so it's time for breakfast."
+                  ] | random
+                }}
+              {% endif %}
 
             {# Only Nino has school #}
             {% elif nino_school == "on" %}
-              {{
-                [
-                  "Hey Nino, today's a school day so it's time to get ready!",
-                  "Hey there, it's time to get the Nino's breakfast ready. Today is a school day.",
-                  "Hey Nino! Just a reminder that today's a school day so it's time to eat breakfast and get ready."
-                ] | random
-              }}
+              {% if late_start == "on" %}
+                {{
+                  [
+                    "Hey Nino, today's a school day and it's time to get ready, but guess what, it's a late start!",
+                    "Hey there, it's time to get the Nino's breakfast ready. Just a reminder that today's a late start day!",
+                    "Hey Nino! There's school today, but lucky for you it's a late start day!"
+                  ] | random
+                }}
+              {% else %}
+                {{
+                  [
+                    "Hey Nino, today's a school day so it's time to get ready!",
+                    "Hey there, it's time to get the Nino's breakfast ready. Today is a school day.",
+                    "Hey Nino! Just a reminder that today's a school day so it's time to eat breakfast and get ready."
+                  ] | random
+                }}
+              {% endif %}
 
             {# Only Gianluca has school #}
             {% elif gl_school == "on" %}
