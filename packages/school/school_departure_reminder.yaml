@@ -4,7 +4,7 @@ automation:
   - id: "school_departure_reminder"
     alias: "School Departure Reminder"
     mode: "single"
-    initial_state: on
+    initial_state: off
     trigger:
       # Trigger at the input_datetime
       - platform: time
