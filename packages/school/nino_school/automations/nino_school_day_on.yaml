@@ -14,11 +14,6 @@ automation:
       - platform: state
         entity_id: input_boolean.primary_school_day
         to: "on"
-      # Hassio reloads/starts
-      - platform: event
-        event_type: automation_reloaded
-      - platform: homeassistant
-        event: start
     action:
       # Turn on the boolean
       - service: input_boolean.turn_on
