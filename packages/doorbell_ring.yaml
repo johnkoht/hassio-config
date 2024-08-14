@@ -38,36 +38,39 @@ automation:
         entity_id: binary_sensor.front_door_camera_person_detected
         to: "on"
     action:
+      # Display snapshop on the TV
       - service: script.display_doorbell_snapshot_on_tv
         data: {}
 
-  - id: "doorbell_message_test"
-    alias: Doorbell Message Test
-    mode: single
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.front_door_camera_person_detected
-        to: "on"
-        variables:
-          camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
-          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
-          event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
-          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
-    condition: []
-    action:
-      - service: notify.mobile_app_jk_2
-        metadata: {}
-        data:
-          title: Person Detected
-          message: Person Detected on {{camera_name}}
-          data:
-            image: "{{image_path}}"
-            push:
-              sound:
-                name: default
-                critical: 1
-                volume: 1
+  # # Just a test
+  # - id: "doorbell_message_test"
+  #   alias: Doorbell Message Test
+  #   mode: single
+  #   initial_state: off
+  #   trigger:
+  #     - platform: state
+  #       entity_id:
+  #         - binary_sensor.front_door_camera_person_detected
+  #       to: "on"
+  #       variables:
+  #         camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
+  #         nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+  #         event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
+  #         image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+  #   condition: []
+  #   action:
+  #     - service: notify.mobile_app_jk_2
+  #       metadata: {}
+  #       data:
+  #         title: Person Detected
+  #         message: Person Detected on {{camera_name}} {{nvr_id}} {{event_id}}
+  #         data:
+  #           image: "{{image_path}}"
+  #           push:
+  #             sound:
+  #               name: default
+  #               critical: 1
+  #               volume: 1
 
 script:
   # Activate Doorbell Chime
@@ -145,22 +148,16 @@ script:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # The TV is on
-      - condition: state
-        entity_id: media_player.sony_bravia_tv
-        state: "on"
 
       # Take a snapshot
       - service: camera.snapshot
         data:
           filename: /config/www/images/doorbell_camera_alert.jpg
-          entity_id: camera.front_door_camera_high
+          entity_id: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
 
-      # Notify the family room TV
-      - service: notify.family_room_sony_bravia_tv
+      - service: script.security_detection_display_notification_on_screens
         data:
-          message: Somebody is at the door!
-          data:
-            image:
-              path: /config/www/images/doorbell_camera_alert.jpg
-          title: Front Door
+          title: "Front Door Camera"
+          message: "A person has been detected by the front door."
+          #image_path: "{{image_path}}"
+          image_path: /config/www/images/doorbell_camera_alert.jpg

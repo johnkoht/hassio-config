@@ -5,49 +5,21 @@ automation:
     alias: "Driveway Detected Object"
     mode: "single"
     trigger:
-      # # Driveway detects an object
-      # - platform: state
-      #   entity_id: binary_sensor.garage_driveway_object_detected
-      #   to: "on"
       # Driveway detects an person
       - platform: state
         entity_id: binary_sensor.garage_driveway_person_detected
         to: "on"
 
     action:
-      - service: script.display_driveway_snapshot_on_tv
-        data: {}
-
-script:
-  #
-  #
-  # Display snapshot on TV
-  #
-  display_driveway_snapshot_on_tv:
-    mode: single
-    alias: Display Driveway Snapshot on TV
-    icon: mdi:account-question
-    sequence:
-      # The house is occupied
-      - condition: state
-        entity_id: input_boolean.house_occupied
-        state: "on"
-      # The TV is on
-      - condition: state
-        entity_id: media_player.sony_bravia_tv
-        state: "on"
-
       # Take a snapshot
       - service: camera.snapshot
         data:
           filename: /config/www/images/driveway_camera_alert.jpg
-          entity_id: camera.garage_driveway_camera_high
+          entity_id: camera.driveway_front_camera_high
 
-      # Notify the family room TV
-      - service: notify.family_room_sony_bravia_tv
+      # Send a notification to the TVs
+      - service: script.security_detection_display_notification_on_screens
         data:
-          message: Somebody is on the driveway
-          data:
-            image:
-              path: /config/www/images/driveway_camera_alert.jpg
-          title: Driveway Camera
+          title: "Driveway Camera"
+          message: "A person has been detected on the driveway."
+          image_path: /config/www/images/driveway_camera_alert.jpg

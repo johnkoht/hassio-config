@@ -1,0 +1,7 @@
+notify:
+  - platform: group
+    name: "Security Detection Display Devices"
+    services:
+      - service: family_room_sony_bravia_tv
+      - service: basement_tv
+      #- service: alexa_media_john_s_echo_show
