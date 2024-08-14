@@ -1,0 +1,49 @@
+# Camera Proxy
+camera:
+  - platform: proxy
+    entity_id: camera.front_door_camera_high_resolution_channel
+
+script:
+  security_detection_display_notification_on_screens:
+    mode: single
+    alias: Security Detection - Display Notification on Screens
+    icon: mdi:doorbell-video
+
+    fields:
+      title:
+        name: Notification Title
+        description: A title for the notification message, typically the camera name/position.
+        example: "Front Door Camera"
+        selector:
+          text:
+            type: text
+
+      message:
+        name: Notification Message
+        description: A notification message about the security detection.
+        example: "Somebody is at the front door!"
+        selector:
+          text:
+            type: text
+
+      image_path:
+        name: Camera Snapshot Image URL
+        description: A URL to an image of the camera snapshot
+        example: "/api/unifiprotect/"
+        selector:
+          text:
+            type: url
+
+    sequence:
+      # The house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+
+      # Notify the family room TV
+      - service: notify.security_detection_display_devices
+        data:
+          title: "{{title}}"
+          message: "{{message}}"
+          data:
+            image: "{{image_path}}"
