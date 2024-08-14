@@ -1,0 +1,72 @@
+automation:
+  - id: "security_detections_push_notifications"
+    alias: "Security Detections - Push Notifications"
+    mode: "single"
+    trigger:
+      # Backyard detects a person
+      - platform: state
+        entity_id:
+          - binary_sensor.backyard_south_person_detected
+          - binary_sensor.driveway_front_camera_person_detected
+          - binary_sensor.garage_driveway_person_detected
+          - binary_sensor.front_door_camera_person_detected
+        to: "on"
+        variables:
+          camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
+          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+          event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
+          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+    action:
+      - choose:
+          #
+          #
+          # House is in auto or quiet mode
+          # and camera notifications are enabled
+          #
+          #
+          - conditions:
+              # House is auto or quiet
+              - condition: state
+                entity_id: input_select.house
+                state:
+                  - "Auto"
+                  - "Quiet"
+              # And camera notifications are on
+              - condition: state
+                entity_id: input_boolean.camera_notifications
+                state: "on"
+            sequence:
+              # Send a time sensitive push notification
+              - service: notify.ios_family
+                data:
+                  title: "{{camera_name}}"
+                  message: "Person detected on {{camera_name}}"
+                  data:
+                    image: "{{image_path}}"
+                    push:
+                      interruption-level: "time-sensitive"
+
+          #
+          # House is not occupied
+          # OR it's bedtime mode
+          #
+          - conditions:
+              - condition: or
+                conditions:
+                  # House is NOT occupied
+                  - condition: state
+                    entity_id: input_boolean.house_occupied
+                    state: "off"
+                  # OR it's bedtime mode
+                  - condition: state
+                    entity_id: input_boolean.bedtime
+                    state: "on"
+            sequence:
+              - service: notify.ios_family
+                data:
+                  title: "{{camera_name}}"
+                  message: "Person detected on {{camera_name}}"
+                  data:
+                    image: "{{image_path}}"
+                    push:
+                      interruption-level: "critical"
