@@ -9,7 +9,7 @@ automation:
   - id: "camera_notifications_turn_on"
     alias: "Camera Notifications - Turn On"
     mode: "single"
-    initial_state: on
+    initial_state: off
     trigger:
       # The camera notification boolean is activated
       - platform: state

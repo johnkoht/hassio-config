@@ -1,0 +1,60 @@
+# Doorbell Detected Object
+#
+automation:
+  - id: "front_door_camera_detections"
+    alias: "Front Door Camera Detections"
+    mode: "single"
+    trigger:
+      # Front door camera detects something
+      - platform: state
+        entity_id:
+          - binary_sensor.front_door_camera_person_detected
+          - binary_sensor.front_door_camera_animal_detected
+          #- binary_sensor.front_door_camera_package_detected
+          - binary_sensor.front_door_camera_vehicle_detected
+        to: "on"
+        variables:
+          camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
+          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+          event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
+          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+    condition:
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.front_door_camera_detections','last_triggered')) ) | int > 60 }}"
+    action:
+      #
+      # If camera notifications are disabled and a person is
+      # detected then always alert us
+      - choose:
+          - conditions:
+              # Camera Notifications are disabled
+              - condition: state
+                entity_id: input_boolean.camera_notifications
+                state: "off"
+              # It's a person detection
+              - condition: template
+                value_template: "{{ 'person' in trigger.entity_id }}"
+            sequence:
+              - service: script.camera_detection_alert
+                data:
+                  entity_id: "{{ trigger.entity_id }}"
+                  camera_name: "{{ camera_name }}"
+                  camera: "camera.front_door_camera_high_resolution_channel"
+                  image_path: "{{ image_path }}"
+      #
+      #
+      # If camera notifications are enabled, then always
+      # trigger an alert
+      - choose:
+          - conditions:
+              # Camera Notifications are enabled
+              - condition: state
+                entity_id: input_boolean.camera_notifications
+                state: "on"
+            sequence:
+              - service: script.camera_detection_alert
+                data:
+                  entity_id: "{{ trigger.entity_id }}"
+                  camera_name: "{{ camera_name }}"
+                  camera: "camera.front_door_camera_high_resolution_channel"
+                  image_path: "{{ image_path }}"

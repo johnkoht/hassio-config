@@ -1,0 +1,261 @@
+automation:
+  # Backyard South Camera Detected Object
+  #
+  - id: "camera_notifications_send_detection_notification"
+    alias: "Camera Notifications - Send Detection Notification"
+    mode: "single"
+    trigger:
+      # A person is detected
+      - platform: state
+        entity_id:
+          - binary_sensor.backyard_south_person_detected
+          - binary_sensor.driveway_front_camera_person_detected
+          - binary_sensor.garage_driveway_person_detected
+          - binary_sensor.front_door_camera_person_detected
+        to: "on"
+        variables:
+          camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
+          #camera_id: "{{ trigger.entity_id) }}"
+          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+          event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
+          start: "{{ state_attr(trigger.from_state, 'last_changed') }}"
+          end: "{{ state_attr(trigger.to_state, 'last_changed') }}"
+          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+          #video_path: /api/unifiprotect/video/{{ nvr_id }}/{{ trigger.entity_id }}/{{ start }}/{{ end}}
+    action:
+      # # Take a snapshot
+      # - service: camera.snapshot
+      #   data:
+      #     filename: /config/www/images/backyard_south_camera_alert.jpg
+      #     entity_id: camera.backyard_south_camera_high
+
+      # - service: script.security_detection_display_notification_on_screens
+      #   data:
+      #     title: "Backyard South Camera"
+      #     message: "A person has been detected in the backyard."
+      #     image_path: /config/www/images/backyard_south_camera_alert.jpg
+      - service: notify.mobile_app_jk_2
+        metadata: {}
+        data:
+          title: Person Detected
+          message: Person Detected on {{camera_name}} {{nvr_id}} {{event_id}} {{start}} {{end}}
+          data:
+            image: "{{image_path}}"
+            #video: "{{video_path}}"
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1
+
+script:
+  camera_detection_alert:
+    alias: "Camera Detection Alert"
+    mode: "single"
+    icon: mdi:alert
+
+    fields:
+      #
+      #
+      #
+      entity_id:
+        name: Entity ID
+        description: The entity ID for the camera that triggered the detection
+        example: "binary_sensor.backyard_south_person_detected"
+      #
+      #
+      #
+      camera_name:
+        name: Camera Name
+        description: The name of the Camera
+        example: "Backyard South"
+      #
+      #
+      #
+      camera:
+        name: Camera
+        description: The Camera device that triggered the detection
+        example: "camera.backyard_south_camera_high"
+      #
+      #
+      #
+      image_path:
+        name: Image Path
+        description: A URL to the image that we can send with the notification
+        example: "/api/unifiprotect/thumbnail/de6377033b8c80f45813234a37a9389f/66bd12d000810303e401b870"
+      # #
+      # #
+      # #
+      # video_path:
+      #   name: Video Path
+      #   description: A URL to the video that we can send with the notification
+      #   example: "Backyard South"
+
+    variables:
+      #
+      # Identify the detection type
+      detection_type: >-
+        {% if "person" in entity_id %}
+          person
+        {% elif "animal" in entity_id %}
+          animal
+        {% elif "vehicle" in entity_id %}
+          vehicle
+        {% else %}
+          object
+        {% endif %}
+      #
+      # For the TVs, we can't send the unifi protect proxy
+      # image (maybe human error), so we download and send
+      # a local link
+      local_image_name: >-
+        "{{ camera_name | lower | replace(" ", "_") }}_alert"
+      #
+      # Notification Title
+      title: >-
+        {{ detection_type | title }} Detected
+      # Notification Message
+      message: >-
+        A {{ detection_type }} has been detected in {{ camera_name }}
+
+    sequence:
+      # Camera Notifications are enabled
+      - condition: state
+        entity_id: input_boolean.camera_notifications
+        state: "on"
+      # condition? camera notifications enabled?
+      #
+      #
+      # house is occupied and TVs on
+      # display on TVs that are ON
+
+      # house occupied and if it's bedtime mode
+      # send critical push
+      # tts message on alex or bedroom?
+
+      # if we're home & not bedtime mode
+      # send a passive push
+
+      # if we're not home
+      # send a time sensitive push
+
+      #
+      # If the house is occupied AND a TV is ON
+      # then send a notification to the TV with an image
+      - choose:
+          - conditions:
+              # House is occupied
+              - condition: state
+                entity_id: input_boolean.house_occupied
+                state: "on"
+              # One of the TVs is ON
+              - condition: or
+                conditions:
+                  # Family Room TV is on
+                  - condition: state
+                    entity_id: media_player.sony_bravia_tv
+                    state: "on"
+                  # Basement TV is on
+                  - condition: state
+                    entity_id: media_player.basement_tv
+                    state: "on"
+            sequence:
+              # Take a snapshot from the camera
+              - service: camera.snapshot
+                data:
+                  filename: "/config/www/images/{{ local_image_name }}.jpg"
+                  entity_id: "{{ camera }}"
+              # Notify the family room TV
+              - service: notify.security_detection_display_devices
+                data:
+                  title: "{{title}}"
+                  message: "{{message}}"
+                  data:
+                    image: "/config/www/images/{{ local_image_name }}.jpg"
+
+      - choose:
+          - conditions:
+              # House is occupied
+              - condition: state
+                entity_id: input_boolean.house_occupied
+                state: "on"
+              # Bedtime mode is active
+              - condition: state
+                entity_id: input_boolean.bedtime
+                state: "on"
+            sequence:
+              - service: notify.ios_family
+                metadata: {}
+                data:
+                  title: "{{title}}"
+                  message: "{{message}}"
+                  data:
+                    image: "{{image_path}}"
+                    push:
+                      sound:
+                        name: default
+                        critical: 1
+                        volume: 1
+
+      # if we're home & not bedtime mode
+      # send a active push
+      - choose:
+          - conditions:
+              # House is occupied
+              - condition: state
+                entity_id: input_boolean.house_occupied
+                state: "on"
+              # Bedtime mode is NOT active
+              - condition: state
+                entity_id: input_boolean.bedtime
+                state: "off"
+            # Send a active push notification
+            sequence:
+              - service: notify.mobile_app_jk_2
+                metadata: {}
+                data:
+                  title: "{{title}}"
+                  message: "{{message}}"
+                  data:
+                    image: "{{image_path}}"
+                    push:
+                      interruption-level: active
+
+      # if we're not home
+      # send a time sensitive push
+      - choose:
+          - conditions:
+              # House is occupied
+              - condition: state
+                entity_id: group.family
+                state: "off"
+            # Send a time sensitive push notification
+            sequence:
+              - service: notify.mobile_app_jk_2
+                metadata: {}
+                data:
+                  title: "{{title}}"
+                  message: "{{message}}"
+                  data:
+                    image: "{{image_path}}"
+                    push:
+                      interruption-level: time-sensitive
+
+      - choose:
+          - conditions:
+              # Guest mode is OFF
+              - condition: state
+                entity_id: input_boolean.guest_mode
+                state: "off"
+              # It's dark outside
+              - condition: state
+                entity_id: input_boolean.dark_outside
+                state: "on"
+              # A door hasn't been opened the last 5 minutes
+              - condition: template
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.exterior_doors.last_changed)) | int > 300 }}"
+            sequence:
+              - service: script.voice_announcement
+                data:
+                  media_players: auto
+                  speech_message: "Attention: {{ message }}"
