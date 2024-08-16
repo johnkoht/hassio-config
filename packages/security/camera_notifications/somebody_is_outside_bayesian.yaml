@@ -55,3 +55,10 @@ binary_sensor:
         to_state: "on"
         prob_given_true: 0.95
         prob_given_false: 0.73
+
+      # Pool is occupied
+      - platform: state
+        entity_id: input_boolean.pool_occupied
+        to_state: "on"
+        prob_given_true: 0.4
+        prob_given_false: 0.1
