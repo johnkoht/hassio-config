@@ -119,10 +119,10 @@ script:
         A {{ detection_type }} has been detected in {{ camera_name }}
 
     sequence:
-      # Camera Notifications are enabled
-      - condition: state
-        entity_id: input_boolean.camera_notifications
-        state: "on"
+      # # Camera Notifications are enabled
+      # - condition: state
+      #   entity_id: input_boolean.camera_notifications
+      #   state: "on"
       # condition? camera notifications enabled?
       #
       #
