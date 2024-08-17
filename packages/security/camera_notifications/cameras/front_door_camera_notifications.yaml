@@ -19,8 +19,8 @@ automation:
           event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
     condition:
-      - condition: template
-        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.front_door_camera_detections','last_triggered')) ) | int > 60 }}"
+      # - condition: template
+      #   value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.front_door_camera_detections','last_triggered')) ) | int > 60 }}"
     action:
       #
       # If camera notifications are disabled and a person is
