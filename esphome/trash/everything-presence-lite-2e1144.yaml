@@ -2,14 +2,14 @@ substitutions:
   name: everything-presence-lite-2e1144
   friendly_name: EPL Playroom
 packages:
-  EverythingSmartTechnology.Everything_Presence_Lite: github://everythingsmarthome/everything-presence-lite/everything-presence-lite-ha-no-ble.yaml@main
+  EverythingSmartTechnology.Everything_Presence_Lite: github://everythingsmarthome/everything-presence-lite/everything-presence-lite-ha.yaml@main
 esphome:
   name: ${name}
   name_add_mac_suffix: false
   friendly_name: ${friendly_name}
 api:
   encryption:
-    key: KDO4qkk/lA8I5LN/aDy2SdIrnWb8yF/Zk4pEKXoKu2w=
+    key: xAh+Yt4EI/VgBAale0clmlAlPF7lqh2SzH1FNrAO4WU=
 
 
 wifi:
