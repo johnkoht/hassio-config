@@ -42,7 +42,8 @@ automation:
           minutes: 5
       # EPL Occupancy NOT Detected
       - platform: state
-        entity_id: binary_sensor.epl_kitchen_occupancy
+        # entity_id: binary_sensor.epl_kitchen_occupancy
+        entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_presence
         to: "off"
     condition:
       # Kitchen is occupied
@@ -51,7 +52,8 @@ automation:
         state: "on"
       # EPL Occupancy Detected
       - condition: state
-        entity_id: binary_sensor.epl_kitchen_occupancy
+        # entity_id: binary_sensor.epl_kitchen_occupancy
+        entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_presence
         state: "off"
       - condition: or
         conditions:
