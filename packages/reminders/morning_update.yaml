@@ -136,8 +136,7 @@ template:
       # - platform: state
       #   entity_id: weather.pirateweather
       - platform: time_pattern
-        # hours: /1
-        minutes: /1
+        hours: /1
     action:
       - service: weather.get_forecasts
         data:
