@@ -78,7 +78,7 @@ script:
             Current Weather: {{ states.weather.pirateweather }}
         response_variable: chatgpt
       #
-      # TTS Message
+      # Push Notification
       #
       - service: script.general_notification
         data:
@@ -87,6 +87,14 @@ script:
           devices: "jk"
           priority: "time-sensitive"
           tag: "daily-update"
+      #
+      # Voice Announcement
+      #
+      - service: script.voice_announcement
+        data:
+          media_players: "auto"
+          sound: "default"
+          speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
 
 #
 #
