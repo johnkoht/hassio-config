@@ -32,7 +32,7 @@ automation:
 
       - service: automation.turn_on
         entity_id:
-          - automation.school_day_reminder\
+          - automation.school_day_reminder
 
       # Wednesday's are a late start day, in this case
       # toggle the late start boolean
