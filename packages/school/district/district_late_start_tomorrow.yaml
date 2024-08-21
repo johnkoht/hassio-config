@@ -1,8 +1,8 @@
-# Is the primary school closed tomorrow?
+# District Late State Tomorrow?
 #
 # This trigger-based binary sensor checks the
-# calendars for any mention of "no school" or
-# "district closed" tomorrow
+# calendars for any mention of "late state wednesday"
+# for notifications
 #
 template:
   - trigger:
@@ -14,21 +14,19 @@ template:
           start_date_time: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d 23:59:59') }}"
         target:
-          entity_id:
-            - calendar.lyon_school
-            - calendar.district_34_events
+          entity_id: calendar.district_34_events
         response_variable: calendar
 
     #
     # This is the binary sensor that will check if any of the
     # calendars mention no school
     binary_sensor:
-      - name: Primary School Closed Tomorrow
-        unique_id: primary_school_closed_tomorrow
+      - name: District Late Start Tomorrow
+        unique_id: district_late_start_tomorrow
         state: >-
           {% set fms = namespace(event=false) %}
           {%- for key, value in calendar.items() if fms.event is false %}
-            {%- for event in value.events if fms.event is false and (('No School' in event.summary) or 'District Closed' in event.summary) %}
+            {%- for event in value.events if fms.event is false and 'Late Start Wednesday' in event.summary %}
               {%- set fms.event = true %}
             {%- endfor -%}
           {%- endfor %}

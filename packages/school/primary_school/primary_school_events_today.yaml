@@ -1,0 +1,38 @@
+# Primary School Events for Today
+#
+# This trigger-based sensor fethces the events on
+# the calendar for today
+#
+template:
+  - trigger:
+      - platform: time_pattern
+        # hours: 1
+        minutes: /1
+    action:
+      - service: calendar.get_events
+        data:
+          start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
+          end_date_time: "{{ now().strftime('%Y-%m-%d 23:59:59') }}"
+        target:
+          entity_id: calendar.lyon_school
+        response_variable: calendar
+      - variables:
+          e: |-
+            {% set ns = namespace(cal_events=[]) %}
+
+            {%- for key, value in calendar.items() %}
+              {%- for event in value.events %}
+                {%- set ns.cal_events = ns.cal_events + [event] %}
+              {%- endfor %}
+            {%- endfor %}
+
+            {{ ns.cal_events | sort(attribute='start') | list }}
+
+    #
+    # Sensor that lists out the events for today
+    sensor:
+      - name: Primary School Events Today
+        unique_id: primary_school_events_today
+        state: "{{ now().isoformat() }}"
+        attributes:
+          events: "{{ e }}"
