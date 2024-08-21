@@ -1,8 +1,8 @@
-# Is the primary school closed today?
+# Is the primary school closed tomorrow?
 #
 # This trigger-based binary sensor checks the
-# calendars for any mention of "no school" to prevent
-# school day automations from activating
+# calendars for any mention of "no school" or
+# "district closed" tomorrow
 #
 template:
   - trigger:
