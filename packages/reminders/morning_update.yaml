@@ -3,24 +3,29 @@ automation:
     alias: "Morning Update"
     mode: "single"
     trigger:
-      # Bedtime mode is disabled
-      - platform: state
-        entity_id: input_boolean.bedtime
-        from: "on"
-        to: "off"
+      # # Bedtime mode is disabled
+      # - platform: state
+      #   entity_id: input_boolean.bedtime
+      #   from: "on"
+      #   to: "off"
+      - platform: time
+        at: "07:05:00"
     condition:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
     action:
+      # Wait for quiet mode to be disabled
+      - wait_template: "{{ is_state('input_boolean.quiet_mode', 'off') }}"
+        timeout: "00:45:00"
       # Kitchen has been occupied for more than 15 minutes
       - wait_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 900 }}"
         timeout: "00:15:00"
         continue_on_timeout: false
       # Wait for motion in the kitchen
       - wait_template: "{{ is_state('binary_sensor.kitchen_motion_sensor_status', 'on') }}"
-        timeout: "00:15:00"
+        timeout: "00:30:00"
         continue_on_timeout: false
       - alias: "Wait 2 seconds"
         delay: 2
