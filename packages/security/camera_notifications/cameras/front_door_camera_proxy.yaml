@@ -1,0 +1,4 @@
+# Front Door Camera Proxy
+camera:
+  - platform: proxy
+    entity_id: camera.front_door_camera_high_resolution_channel

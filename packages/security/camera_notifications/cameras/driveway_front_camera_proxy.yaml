@@ -1,0 +1,5 @@
+# Camera Proxy for the Driveway Front Camera
+#
+camera:
+  - platform: proxy
+    entity_id: camera.driveway_front_camera_high

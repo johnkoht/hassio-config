@@ -1,0 +1,5 @@
+# Camera Proxy for the Backyard South Camera
+#
+camera:
+  - platform: proxy
+    entity_id: camera.backyard_south_camera_high

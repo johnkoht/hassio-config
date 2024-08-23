@@ -1,52 +1,52 @@
-automation:
-  # Backyard South Camera Detected Object
-  #
-  - id: "camera_notifications_send_detection_notification"
-    alias: "Camera Notifications - Send Detection Notification"
-    mode: "single"
-    trigger:
-      # A person is detected
-      - platform: state
-        entity_id:
-          - binary_sensor.backyard_south_person_detected
-          - binary_sensor.driveway_front_camera_person_detected
-          - binary_sensor.garage_driveway_person_detected
-          - binary_sensor.front_door_camera_person_detected
-        to: "on"
-        variables:
-          camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
-          #camera_id: "{{ trigger.entity_id) }}"
-          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
-          event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
-          start: "{{ state_attr(trigger.from_state, 'last_changed') }}"
-          end: "{{ state_attr(trigger.to_state, 'last_changed') }}"
-          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
-          #video_path: /api/unifiprotect/video/{{ nvr_id }}/{{ trigger.entity_id }}/{{ start }}/{{ end}}
-    action:
-      # # Take a snapshot
-      # - service: camera.snapshot
-      #   data:
-      #     filename: /config/www/images/backyard_south_camera_alert.jpg
-      #     entity_id: camera.backyard_south_camera_high
+# automation:
+#   # Backyard South Camera Detected Object
+#   #
+#   - id: "camera_notifications_send_detection_notification"
+#     alias: "Camera Notifications - Send Detection Notification"
+#     mode: "single"
+#     trigger:
+#       # A person is detected
+#       - platform: state
+#         entity_id:
+#           - binary_sensor.backyard_south_person_detected
+#           - binary_sensor.driveway_front_camera_person_detected
+#           - binary_sensor.garage_driveway_person_detected
+#           # - binary_sensor.front_door_camera_person_detected
+#         to: "on"
+#         variables:
+#           camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
+#           #camera_id: "{{ trigger.entity_id) }}"
+#           nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+#           event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
+#           # start: "{{ state_attr(trigger.from_state, 'last_changed') }}"
+#           # end: "{{ state_attr(trigger.to_state, 'last_changed') }}"
+#           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+#           #video_path: /api/unifiprotect/video/{{ nvr_id }}/{{ trigger.entity_id }}/{{ start }}/{{ end}}
+#     action:
+#       # # Take a snapshot
+#       # - service: camera.snapshot
+#       #   data:
+#       #     filename: /config/www/images/backyard_south_camera_alert.jpg
+#       #     entity_id: camera.backyard_south_camera_high
 
-      # - service: script.security_detection_display_notification_on_screens
-      #   data:
-      #     title: "Backyard South Camera"
-      #     message: "A person has been detected in the backyard."
-      #     image_path: /config/www/images/backyard_south_camera_alert.jpg
-      - service: notify.mobile_app_jk_2
-        metadata: {}
-        data:
-          title: Person Detected
-          message: Person Detected on {{camera_name}} {{nvr_id}} {{event_id}} {{start}} {{end}}
-          data:
-            image: "{{image_path}}"
-            #video: "{{video_path}}"
-            push:
-              sound:
-                name: default
-                critical: 1
-                volume: 1
+#       # - service: script.security_detection_display_notification_on_screens
+#       #   data:
+#       #     title: "Backyard South Camera"
+#       #     message: "A person has been detected in the backyard."
+#       #     image_path: /config/www/images/backyard_south_camera_alert.jpg
+#       - service: notify.mobile_app_jk_2
+#         metadata: {}
+#         data:
+#           title: Person Detected
+#           message: Person Detected on {{camera_name}} {{nvr_id}} {{event_id}} {{start}} {{end}}
+#           data:
+#             image: "{{image_path}}"
+#             #video: "{{video_path}}"
+#             push:
+#               sound:
+#                 name: default
+#                 critical: 1
+#                 volume: 1
 
 script:
   camera_detection_alert:
@@ -83,13 +83,21 @@ script:
         name: Image Path
         description: A URL to the image that we can send with the notification
         example: "/api/unifiprotect/thumbnail/de6377033b8c80f45813234a37a9389f/66bd12d000810303e401b870"
-      # #
-      # #
-      # #
-      # video_path:
-      #   name: Video Path
-      #   description: A URL to the video that we can send with the notification
-      #   example: "Backyard South"
+      #
+      #
+      #
+      video_path:
+        name: Video Path
+        description: A URL to the video that we can send with the notification
+        example: "/api/unifiprotect/video/de6377033b8c80f45813234a37a9389f/635c4f66018d72038704f79c/2024-08-22T03:15:43+00:00/2024-08-22T03:16:06+00:00"
+
+      #
+      #
+      #
+      proxy_camera:
+        name: Proxy Camera
+        description: A camera proxy to the Unifi Protect device
+        example: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
 
     variables:
       #
@@ -184,13 +192,14 @@ script:
                 entity_id: input_boolean.bedtime
                 state: "on"
             sequence:
-              - service: notify.ios_family
+              - service: notify.mobile_app_jk_2
                 metadata: {}
                 data:
                   title: "{{title}}"
                   message: "{{message}}"
                   data:
                     image: "{{image_path}}"
+                    entity_id: "{{ proxy_camera }}"
                     push:
                       sound:
                         name: default
@@ -218,6 +227,7 @@ script:
                   message: "{{message}}"
                   data:
                     image: "{{image_path}}"
+                    entity_id: "{{ proxy_camera }}"
                     push:
                       interruption-level: active
 
@@ -238,6 +248,7 @@ script:
                   message: "{{message}}"
                   data:
                     image: "{{image_path}}"
+                    entity_id: "{{ proxy_camera }}"
                     push:
                       interruption-level: time-sensitive
 
