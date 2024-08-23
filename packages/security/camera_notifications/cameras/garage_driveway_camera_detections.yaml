@@ -1,0 +1,59 @@
+# Garage Driveway Camera Detections
+#
+automation:
+  - id: "garage_driveway_camera_detections"
+    alias: "Garage Driveway Camera Detections"
+    mode: "single"
+    trigger:
+      # Garage Driveway camera detects something
+      - platform: state
+        entity_id:
+          - binary_sensor.garage_driveway_person_detected
+          - binary_sensor.garage_driveway_camera_animal_detected
+          - binary_sensor.garage_driveway_vehicle_detected
+        to: "on"
+        variables:
+          camera_name: "Garage Driveway Camera"
+          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+          event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
+          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+          proxy_camera: camera.camera_proxy_camera_garage_driveway_camera_high
+    condition:
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.garage_driveway_camera_detections','last_triggered')) ) | int > 60 }}"
+    action:
+      # If camera notifications are disabled and a person is
+      # detected then always alert us
+      - choose:
+          - conditions:
+              # Camera Notifications are disabled
+              - condition: state
+                entity_id: input_boolean.camera_notifications
+                state: "off"
+              # It's a person detection
+              - condition: template
+                value_template: "{{ 'person' in trigger.entity_id }}"
+            sequence:
+              - service: script.camera_detection_alert
+                data:
+                  entity_id: "{{ trigger.entity_id }}"
+                  camera_name: "{{ camera_name }}"
+                  image_path: "{{ image_path }}"
+                  proxy_camera: "{{ proxy_camera }}"
+      #
+      #
+      # If camera notifications are enabled, then always
+      # trigger an alert
+      - choose:
+          - conditions:
+              # Camera Notifications are enabled
+              - condition: state
+                entity_id: input_boolean.camera_notifications
+                state: "on"
+            sequence:
+              - service: script.camera_detection_alert
+                data:
+                  entity_id: "{{ trigger.entity_id }}"
+                  camera_name: "{{ camera_name }}"
+                  image_path: "{{ image_path }}"
+                  proxy_camera: "{{ proxy_camera }}"

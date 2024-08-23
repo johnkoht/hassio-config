@@ -1,0 +1,5 @@
+# Camera Proxy for the Garage Driveway Camera
+#
+camera:
+  - platform: proxy
+    entity_id: camera.garage_driveway_camera_high

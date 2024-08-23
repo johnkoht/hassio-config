@@ -32,6 +32,7 @@ automation:
   - id: "doorbell_detected_object"
     alias: "Doorbell Detected Object"
     mode: "single"
+    initial_state: off
     trigger:
       # Doorbell detects an person
       - platform: state
