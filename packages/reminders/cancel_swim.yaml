@@ -1,0 +1,55 @@
+script:
+  cancel_swim:
+    alias: "Cancel Swim"
+    mode: "single"
+    sequence:
+      - action: rest_command.cancel_swim_class
+
+rest_command:
+  cancel_swim_class:
+    url: https://us.api.bland.ai/v1/calls
+    method: POST
+    content_type: "application/json; charset=utf-8"
+    headers:
+      authorization: !secret bland_api_key
+      accept: "application/json"
+    #payload: '{ "phone_number": "+17082617227", "task": "We are the Koht family. Koht is pronounced coat. You are our family personal AI assistant. Your primary role is to make calls on my behalf to friends, family, restaurants, and other businesses, so I dont have to do that myself. You are calling Foss Swim School, a swim school our kids attend. Unfortunately, we wont be able to make it today. Please inform them that Nino and Gianluca Koht will not attend their classes.", "wait_for_greeting": true, "voice": "Alexa", "language": "en" }'
+    payload: '{ "phone_number": "+17082617227", "task": "We are the Koht family. Koht is pronounced coat. You are our family personal AI assistant. Your primary role is to make calls on my behalf to friends, family, restaurants, and other businesses, so I dont have to do that myself. You are calling Foss Swim School, a swim school our kids attend. Unfortunately, we wont be able to make it today. Please inform them that Nino and Gianluca Koht will not attend their classes." }'
+
+  #   curl --request POST \
+  # --url https://api.bland.ai/v1/calls \
+  # --header 'Content-Type: application/json' \
+  # --header 'authorization: sk-60l833ua6edm0zvjwovn6oxdv57ygzzbeapx5y039racmd448ad775dor4smmu1169' \
+  # --data '{ "phone_number": "+17082617227", "task": "We are the Koht family. Koht is pronounced coat. You are our family personal AI assistant. Your primary role is to make calls on my behalf to friends, family, restaurants, and other businesses, so I dont have to do that myself. You are calling Foss Swim School, a swim school our kids attend. Unfortunately, we wont be able to make it today. Please inform them that Nino and Gianluca Koht will not attend their classes.", "wait_for_greeting": true, "voice": "Alexa", "language": "en" }'
+  # payload: >-
+  #   {
+  #     "phone_number": "+17082617227",
+  #     "from": null,
+  #     "task": "We're the Koht family. Koht is pronounced \"coat.\" You are our family personal AI assistant. Your primary role is to make calls on my behalf to friends, family, restaurants, and other businesses, so I don\'t have to do that myself. \n\nIMPORTANT RULE:\n- If instructed to \"wait for the person to respond\" then do not advance or share any more information unless they explicitly ask.\n\nYou\'re calling Foss Swim School, a swim school our kids attend. Unfortunately, we won\'t be able to make it today. Please inform them that Nino and Gianluca Koht will not attend their classes. \n\n*Wait for the person to respond*\n\n[If they confirm and thank you for letting them know, you can say goodbye and end the call. If they ask about their class times, Nino\'s is at 9am and Gianluca\'s is at 9:30am. If they ask about a phone number associated with the account, you can use 847-708-7943. There is no need to provide this information without them requesting it.]",
+  #     "model": "enhanced",
+  #     "language": "en",
+  #     "voice": "Alexa",
+  #     "voice_settings": {},
+  #     "pathway_id": null,
+  #     "local_dialing": false,
+  #     "max_duration": 12,
+  #     "answered_by_enabled": false,
+  #     "wait_for_greeting": true,
+  #     "record": false,
+  #     "amd": false,
+  #     "interruption_threshold": 100,
+  #     "voicemail_message": null,
+  #     "temperature": null,
+  #     "transfer_phone_number": null,
+  #     "transfer_list": {},
+  #     "metadata": {},
+  #     "pronunciation_guide": [],
+  #     "start_time": null,
+  #     "request_data": {},
+  #     "tools": [],
+  #     "dynamic_data": [],
+  #     "analysis_preset": null,
+  #     "analysis_schema": {},
+  #     "webhook": null,
+  #     "calendly": {}
+  #   }
