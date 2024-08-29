@@ -6,11 +6,25 @@ automation:
       # Trigger at the input_datetime
       - platform: time
         at: input_datetime.district_34_first_day_of_school
+      # Hassio reloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
     condition:
       # School Year Active Boolean is OFF
       - condition: state
         entity_id: input_boolean.district_school_year_active
         state: "off"
+      # First day of school is in the PAST
+      # AND Last day of school is in the FUTURE
+      - condition: template
+        value_template: >-
+          {{ 
+            states.input_datetime.district_34_first_day_of_school.attributes.timestamp < (now() | as_timestamp)
+            and
+            states.input_datetime.district_34_last_day_of_school.attributes.timestamp > (now() | as_timestamp)
+          }}
     action:
       # Turn on the boolean
       - service: input_boolean.turn_on
