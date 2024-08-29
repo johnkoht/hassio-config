@@ -6,132 +6,384 @@ automation:
       - platform: state
         entity_id: sensor.nws_alerts
     condition:
-      condition: and
-      conditions:
-        - "{{states('sensor.nws_alerts') | int > 0}}"
-        - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
-        - condition: template
-          value_template: >
-            {{ 
-              ('Severe Thunderstorm Warning' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Tornado Warning' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Freeze Watch' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Blizzard Warning' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Winter Storm Watch' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Extreme Wind Warning' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Flood Watch' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Flood Warning' in state_attr('sensor.nws_alerts', 'title')) or
-              ('Excessive Heat Warning' in state_attr('sensor.nws_alerts', 'title'))
-            }}
-        - "{{ (state_attr('sensor.nws_alerts', 'event_id').split('-')[0] not in states.sensor.nws_alerts_event_ids.attributes.values()|list) }}"
-        - "{{ (state_attr('sensor.nws_alerts', 'event_id').split('-')[0] != states('sensor.nws_alerts_event_ids')) }}"
+      - "{{states('sensor.nws_alerts') | int > 0}}"
+      - condition: template
+        value_template: >
+          {% set ns = namespace(ids=[]) %}
+          {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+            {% set id = state_attr('sensor.nws_alerts', 'Alerts')[x].ID %}
+            {% set ns.ids = ns.ids + [id] %}
+          {% endfor -%}
+          {% set current_id_list = set(ns.ids) %}
+          {% set history_id_list = set( (states.sensor.nws_alert_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+          {{ (current_id_list.difference(history_id_list)|list) | count > 0 }}
+      - condition: template
+        value_template: >
+          {% set ns = namespace(events=[]) %}
+          {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+            {% set event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event %}
+            {% set ns.events = ns.events + [event] %}
+          {% endfor -%}
+          {% set alerts_list = set(ns.events) %}
+          {% set test_list = set(['Tornado Warning', 'Severe Thunderstorm Warning', 'Air Quality Alert', 'Heat Advisory', 'Severe Thunderstorm Watch', 'Excessive Heat Warning' ]) %}
+          {{ test_list.intersection(alerts_list) | count > 0 }}
     action:
       #
-      # Use ChatGPT to get the daily briefing
       #
-      - service: conversation.process
-        data:
-          agent_id: conversation.chatgpt
-          text: >-
-            You're part of my smart home. I subscribe to severe weather alerts from the NWS and need your help parsing and summarizing the alert details.
-
-            I will share a severe weather alert message that is provided by the NWS. I need you to review the details and then summarize it as clearly and succinctly as possible. Your response will be provided to my text-to-speech software and will broadcast the message throughout the house over the speakers. 
-
-            Some rules:
-            - Be clear and concise
-            - No special characters or emojis
-
-            Here is the alert:
-            {{ state_attr('sensor.nws_alerts', 'title') }}
-            {{ state_attr('sensor.nws_alerts', 'display_desc') }}
-        response_variable: chatgpt
-
+      # Tornado Warning Notificaiton
       #
-      # Push Notification
+      - repeat:
+          count: "{{ states('sensor.nws_alerts') | int }}"
+          sequence:
+            - if:
+                - condition: template
+                  value_template: >
+                    {% set ns_events = namespace(events=[]) %}
+                    {% set ns_dict = namespace(events_dict=[]) %}
+                    {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                      {% set event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event %}
+                      {% set ns_events.events = ns_events.events + [event] %}
+                      {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                      {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                    {% endfor -%}
+                    {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Tornado Warning' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+              then:
+                #
+                # Voice Announcement
+                #
+                - service: script.voice_announcement
+                  data:
+                    media_players: "auto"
+                    sound: "nuclear"
+                    speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a tornado warning for our area!"
+                #
+                # Update the sensor
+                #
+                - service: variable.update_sensor
+                  target:
+                    entity_id: sensor.nws_alerts_announced_ids
+                  data:
+                    value: >
+                      {% set ns_dict = namespace(events_dict=[]) %}
+                      {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                        {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                        {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                      {% endfor -%}
+                      {{ ns_dict.events_dict[repeat.index - 1].id}}
+                # set this delay to ensure that any audio is completed before triggering the next announcement
+                - delay:
+                    minutes: 1
       #
-      - service: script.general_notification
-        data:
-          title: "Severe Weather Warning"
-          message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
-          devices: "jk"
-          priority: "time-sensitive"
-          tag: "daily-update"
       #
-      # Voice Announcement
+      # Severe Thunderstorm Watch Notification
       #
-      - service: script.voice_announcement
-        data:
-          media_players: "auto"
-          sound: "nuclear"
-          speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
-
-      # # Announce to the house
-      # - service: script.voice_announcement
+      - repeat:
+          count: "{{ states('sensor.nws_alerts') | int }}"
+          sequence:
+            - if:
+                - condition: template
+                  value_template: >
+                    {% set ns_events = namespace(events=[]) %}
+                    {% set ns_dict = namespace(events_dict=[]) %}
+                    {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                      {% set event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event %}
+                      {% set ns_events.events = ns_events.events + [event] %}
+                      {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                      {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                    {% endfor -%}
+                    {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Severe Thunderstorm Warning' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+              then:
+                #
+                # Voice Announcement
+                #
+                - service: script.voice_announcement
+                  data:
+                    media_players: "auto"
+                    sound: "nuclear"
+                    speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a severe thunderstorm warning for our area!"
+                #
+                # Update the sensor
+                #
+                - service: variable.update_sensor
+                  target:
+                    entity_id: sensor.nws_alerts_announced_ids
+                  data:
+                    value: >
+                      {% set ns_dict = namespace(events_dict=[]) %}
+                      {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                        {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                        {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                      {% endfor -%}
+                      {{ ns_dict.events_dict[repeat.index - 1].id}}
+                - delay:
+                    minutes: 1
+      #
+      #
+      # Heat Advisory Watch Notification
+      #
+      - repeat:
+          count: "{{ states('sensor.nws_alerts') | int }}"
+          sequence:
+            - if:
+                - condition: template
+                  value_template: >
+                    {% set ns_events = namespace(events=[]) %}
+                    {% set ns_dict = namespace(events_dict=[]) %}
+                    {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                      {% set event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event %}
+                      {% set ns_events.events = ns_events.events + [event] %}
+                      {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                      {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                    {% endfor -%}
+                    {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Heat Advisory' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+              then:
+                #
+                # Voice Announcement
+                #
+                - service: script.voice_announcement
+                  data:
+                    media_players: "auto"
+                    sound: "default"
+                    speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a heat advisory for our area!"
+                - service: variable.update_sensor
+                  target:
+                    entity_id: sensor.nws_alerts_announced_ids
+                  data:
+                    value: >
+                      {% set ns_dict = namespace(events_dict=[]) %}
+                      {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                        {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                        {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                      {% endfor -%}
+                      {{ ns_dict.events_dict[repeat.index - 1].id}}
+                - delay:
+                    minutes: 1
+      #
+      #
+      # Severe Thunderstorm Watch Notification
+      #
+      - repeat:
+          count: "{{ states('sensor.nws_alerts') | int }}"
+          sequence:
+            - if:
+                - condition: template
+                  value_template: >
+                    {% set ns_events = namespace(events=[]) %}
+                    {% set ns_dict = namespace(events_dict=[]) %}
+                    {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                      {% set event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event %}
+                      {% set ns_events.events = ns_events.events + [event] %}
+                      {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                      {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                    {% endfor -%}
+                    {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Severe Thunderstorm Watch' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+              then:
+                - service: script.voice_announcement
+                  data:
+                    media_players: "auto"
+                    sound: "default"
+                    speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued a severe thunderstorm watch for our area!
+                - service: variable.update_sensor
+                  target:
+                    entity_id: sensor.nws_alerts_announced_ids
+                  data:
+                    value: >
+                      {% set ns_dict = namespace(events_dict=[]) %}
+                      {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                        {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                        {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                      {% endfor -%}
+                      {{ ns_dict.events_dict[repeat.index - 1].id}}
+                - delay:
+                    minutes: 1
+      #
+      #
+      # Air Quality Alert Noficication
+      #
+      - repeat:
+          count: "{{ states('sensor.nws_alerts') | int }}"
+          sequence:
+            - if:
+                - condition: template
+                  value_template: >
+                    {% set ns_events = namespace(events=[]) %}
+                    {% set ns_dict = namespace(events_dict=[]) %}
+                    {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                      {% set event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event %}
+                      {% set ns_events.events = ns_events.events + [event] %}
+                      {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                      {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                    {% endfor -%}
+                    {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Air Quality Alert' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+              then:
+                - service: script.voice_announcement
+                  data:
+                    media_players: "auto"
+                    sound: "default"
+                    speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an air quality alert for our area!
+                - service: variable.update_sensor
+                  target:
+                    entity_id: sensor.nws_alerts_announced_ids
+                  data:
+                    value: >
+                      {% set ns_dict = namespace(events_dict=[]) %}
+                      {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                        {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                        {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                      {% endfor -%}
+                      {{ ns_dict.events_dict[repeat.index - 1].id}}
+                - delay:
+                    minutes: 1
+      #
+      #
+      # Excessive Heat Warning Notification
+      #
+      - repeat:
+          count: "{{ states('sensor.nws_alerts') | int }}"
+          sequence:
+            - if:
+                - condition: template
+                  value_template: >
+                    {% set ns_events = namespace(events=[]) %}
+                    {% set ns_dict = namespace(events_dict=[]) %}
+                    {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                      {% set event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event %}
+                      {% set ns_events.events = ns_events.events + [event] %}
+                      {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                      {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                    {% endfor -%}
+                    {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Excessive Heat Warning' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+              then:
+                - service: script.voice_announcement
+                  data:
+                    media_players: "auto"
+                    sound: "default"
+                    speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an excessive heat warning for our area!
+                - service: variable.update_sensor
+                  target:
+                    entity_id: sensor.nws_alerts_announced_ids
+                  data:
+                    value: >
+                      {% set ns_dict = namespace(events_dict=[]) %}
+                      {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                        {% set event_dict_list = dict(event = state_attr('sensor.nws_alerts', 'Alerts')[x].Event, id=state_attr('sensor.nws_alerts', 'Alerts')[x].ID) %}
+                        {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
+                      {% endfor -%}
+                      {{ ns_dict.events_dict[repeat.index - 1].id}}
+                - delay:
+                    minutes: 1
+                    # #
+      # # Use ChatGPT to get the daily briefing
+      # #
+      # - service: conversation.process
       #   data:
-      #     speech_message: >
-      #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+      #     agent_id: conversation.chatgpt
+      #     text: >-
+      #       You're part of my smart home. I subscribe to severe weather alerts from the NWS and need your help parsing and summarizing the alert details.
 
-      #       {% if alert_count > 1 %}
-      #         "{{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
-      #       {% else %}
-      #         "{{ state_attr('sensor.pirateweather_alerts', 'title') }}"
-      #       {% endif %}
+      #       I will share a severe weather alert message that is provided by the NWS. I need you to review the details and then summarize it as clearly and succinctly as possible. Your response will be provided to my text-to-speech software and will broadcast the message throughout the house over the speakers.
 
-      #     sound: "default"
-      #     media_players: auto
+      #       Some rules:
+      #       - Be clear and concise
+      #       - No special characters or emojis
 
-      # # Notification for logging
+      #       Here is the alert:
+      #       {{ state_attr('sensor.nws_alerts', 'title') }}
+      #       {{ state_attr('sensor.nws_alerts', 'display_desc') }}
+      #   response_variable: chatgpt
+
+      # #
+      # # Push Notification
+      # #
       # - service: script.general_notification
       #   data:
-      #     title: >
-      #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
-      #       {% if alert_count > 1 %}
-      #         "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
-      #       {% else %}
-      #         "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title') }}"
-      #       {% endif %}
-
-      #     message: >
-      #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
-      #       {% if alert_count > 1 %}
-      #         {% set desc = state_attr('sensor.pirateweather_alerts', 'title_0').split("\n")[0] %}
-      #         "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description_0').split(' - ')[0] }}. {{desc}}"
-      #       {% else %}
-      #         {% set desc = state_attr('sensor.pirateweather_alerts', 'title').split("\n")[0] %}
-      #         "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description').split(' - ')[0] }}. {{desc}}"
-      #       {% endif %}
+      #     title: "Severe Weather Warning"
+      #     message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
       #     devices: "jk"
       #     priority: "time-sensitive"
-      #     tag: "weather-alert"
+      #     tag: "daily-update"
+      # #
+      # # Voice Announcement
+      # #
+      # - service: script.voice_announcement
+      #   data:
+      #     media_players: "auto"
+      #     sound: "nuclear"
+      #     speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
 
-  #
-  #
-  # Check for multie alerts
-  #
-  - alias: "NWS Check for Multi Alerts"
-    initial_state: "on"
-    trigger:
-      - platform: state
-        entity_id: sensor.nws_alerts
-    condition:
-      - "{{ states('sensor.nws_alerts') | int > 0 }}"
-      - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
-    action:
-      - choose:
-          - conditions:
-              - "{{ (trigger.to_state.state | int - trigger.from_state.state|int) > 1 }}"
-            sequence:
-              - service: input_boolean.turn_on
-                entity_id: input_boolean.nws_multi_alert
-              - delay:
-                  seconds: 30
-              - service: input_boolean.turn_on
-                entity_id: input_boolean.nws_multi_alert
-          - conditions:
-              - "{{ (trigger.to_state.state | int - trigger.from_state.state|int) == 1 }}"
-            sequence:
-              - service: input_boolean.turn_off
-                entity_id: input_boolean.nws_multi_alert
+      # # # Announce to the house
+      # # - service: script.voice_announcement
+      # #   data:
+      # #     speech_message: >
+      # #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+
+      # #       {% if alert_count > 1 %}
+      # #         "{{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
+      # #       {% else %}
+      # #         "{{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+      # #       {% endif %}
+
+      # #     sound: "default"
+      # #     media_players: auto
+
+      # # # Notification for logging
+      # # - service: script.general_notification
+      # #   data:
+      # #     title: >
+      # #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+      # #       {% if alert_count > 1 %}
+      # #         "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title_0') }}"
+      # #       {% else %}
+      # #         "Weather Alert: {{ state_attr('sensor.pirateweather_alerts', 'title') }}"
+      # #       {% endif %}
+
+      # #     message: >
+      # #       {% set alert_count = states.sensor.pirateweather_alerts.state | int %}
+      # #       {% if alert_count > 1 %}
+      # #         {% set desc = state_attr('sensor.pirateweather_alerts', 'title_0').split("\n")[0] %}
+      # #         "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description_0').split(' - ')[0] }}. {{desc}}"
+      # #       {% else %}
+      # #         {% set desc = state_attr('sensor.pirateweather_alerts', 'title').split("\n")[0] %}
+      # #         "NWS: {{ state_attr('sensor.pirateweather_alerts', 'description').split(' - ')[0] }}. {{desc}}"
+      # #       {% endif %}
+      # #     devices: "jk"
+      # #     priority: "time-sensitive"
+      # #     tag: "weather-alert"
+
+  # #
+  # #
+  # # Check for multie alerts
+  # #
+  # - alias: "NWS Check for Multi Alerts"
+  #   initial_state: "on"
+  #   trigger:
+  #     - platform: state
+  #       entity_id: sensor.nws_alerts
+  #   condition:
+  #     - "{{ states('sensor.nws_alerts') | int > 0 }}"
+  #     - "{{ trigger.to_state.state|int > trigger.from_state.state|int }}"
+  #   action:
+  #     - choose:
+  #         - conditions:
+  #             - "{{ (trigger.to_state.state | int - trigger.from_state.state|int) > 1 }}"
+  #           sequence:
+  #             - service: input_boolean.turn_on
+  #               entity_id: input_boolean.nws_multi_alert
+  #             - delay:
+  #                 seconds: 30
+  #             - service: input_boolean.turn_on
+  #               entity_id: input_boolean.nws_multi_alert
+  #         - conditions:
+  #             - "{{ (trigger.to_state.state | int - trigger.from_state.state|int) == 1 }}"
+  #           sequence:
+  #             - service: input_boolean.turn_off
+  #               entity_id: input_boolean.nws_multi_alert
 
   #
   #
@@ -205,3 +457,123 @@ automation:
           media_players: "auto"
           sound: "nuclear"
           speech_message: "The forecast is showing a lot of rain in the next hour. Keep an eye out for any leaks and it might be a good idea to put out the pumps."
+
+  ## This will send up to 3 notifications for alerts.
+  ## If there are more than 3 alerts there will be a fouth notification to check the NWS for further information.
+
+  - alias: NWS Alerts Notification Weather Alert
+    id: nws_alerts_notification_weather_alert
+    initial_state: "on"
+    trigger:
+      platform: state
+      entity_id: sensor.nws_alerts
+    condition:
+      - "{{states('sensor.nws_alerts') | int > 0}}"
+    action:
+      - choose:
+          - conditions:
+              - "{{ states('sensor.nws_alerts') | int >= 3 }}"
+            sequence:
+              - if:
+                  - "{{ (state_attr('sensor.nws_alerts', 'Alerts')[0].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts', 'Alerts')[0].ID != states('sensor.nws_alerts_event_ids')) }}"
+                then:
+                  - service: script.general_notification
+                    data:
+                      title: "NWS Alert"
+                      message: >
+                        "NWS: {{ state_attr('sensor.nws_alerts', 'Alerts')[0].Event }}"
+                      devices: "jk"
+                      priority: "time-sensitive"
+                      tag: "severe-weather-alert-{{0}}"
+                  - delay:
+                      seconds: 2
+              - if:
+                  - "{{ (state_attr('sensor.nws_alerts', 'Alerts')[1].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts', 'Alerts')[1].ID != states('sensor.nws_alerts_event_ids')) }}"
+                then:
+                  - service: script.general_notification
+                    data:
+                      title: "NWS Alert"
+                      message: >
+                        "NWS: {{ state_attr('sensor.nws_alerts', 'Alerts')[1].Event }}"
+                      devices: "jk"
+                      priority: "time-sensitive"
+                      tag: "severe-weather-alert-{{1}}"
+                  - delay:
+                      seconds: 2
+              - if:
+                  - "{{ (state_attr('sensor.nws_alerts', 'Alerts')[2].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts', 'Alerts')[2].ID != states('sensor.nws_alerts_event_ids')) }}"
+                then:
+                  - service: script.general_notification
+                    data:
+                      title: "NWS Alert"
+                      message: >
+                        "NWS: {{ state_attr('sensor.nws_alerts', 'Alerts')[2].Event }}"
+                      devices: "jk"
+                      priority: "time-sensitive"
+                      tag: "severe-weather-alert-{{2}}"
+          - conditions:
+              - "{{ states('sensor.nws_alerts') | int == 2 }}"
+            sequence:
+              - if:
+                  - "{{ (state_attr('sensor.nws_alerts', 'Alerts')[0].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts', 'Alerts')[0].ID != states('sensor.nws_alerts_event_ids')) }}"
+                then:
+                  - service: script.general_notification
+                    data:
+                      title: "NWS Alert"
+                      message: >
+                        "NWS: {{ state_attr('sensor.nws_alerts', 'Alerts')[0].Event }}"
+                      devices: "jk"
+                      priority: "time-sensitive"
+                      tag: "severe-weather-alert-{{0}}"
+                  - delay:
+                      seconds: 2
+              - if:
+                  - "{{ (state_attr('sensor.nws_alerts', 'Alerts')[1].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts', 'Alerts')[1].ID != states('sensor.nws_alerts_event_ids')) }}"
+                then:
+                  - service: script.general_notification
+                    data:
+                      title: "NWS Alert"
+                      message: >
+                        "NWS: {{ state_attr('sensor.nws_alerts', 'Alerts')[1].Event }}"
+                      devices: "jk"
+                      priority: "time-sensitive"
+                      tag: "severe-weather-alert-{{1}}"
+          - conditions:
+              - "{{ states('sensor.nws_alerts') | int == 1 }}"
+            sequence:
+              - if:
+                  - "{{ (state_attr('sensor.nws_alerts', 'Alerts')[0].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) and (state_attr('sensor.nws_alerts', 'Alerts')[0].ID != states('sensor.nws_alerts_event_ids')) }}"
+                then:
+                  - service: script.general_notification
+                    data:
+                      title: "NWS Alert"
+                      message: >
+                        "NWS: {{ state_attr('sensor.nws_alerts', 'Alerts')[0].Event }}"
+                      devices: "jk"
+                      priority: "time-sensitive"
+                      tag: "severe-weather-alert-{{0}}"
+      - delay:
+          seconds: 5
+      - condition: template
+        value_template: "{{ states('sensor.nws_alerts') | int >= 4 }}"
+      - condition: template
+        value_template: >
+          {% set ns = namespace(ids=[]) %}
+          {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+            {% set id = state_attr('sensor.nws_alerts', 'Alerts')[x].ID %}
+            {% set ns.ids = ns.ids + [id] %}
+          {% endfor -%}
+          {% set current_id_list = set(ns.ids) %}
+          {% set history_id_list = set( (states.sensor.nws_alerts_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+          {{ (current_id_list.difference(history_id_list)|list) | count > 0 }}
+      - condition: template
+        value_template: >
+          {{ (state_attr('sensor.nws_alerts', 'Alerts')[0].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) 
+              and (state_attr('sensor.nws_alerts', 'Alerts')[0].ID != states('sensor.nws_alerts_event_ids')) }}
+      - service: script.general_notification
+        data:
+          title: "NWS Alert"
+          message: "NWS: More Than 3 New Alerts! Check your local National Weather Service for all current alerts!"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "severe-weather-alert-multiple"

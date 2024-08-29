@@ -1,0 +1,80 @@
+automation:
+  - alias: NWS Alerts Update Event ID History
+    id: nws_alerts_update_event_id_history
+    initial_state: "on"
+    trigger:
+      - platform: state
+        entity_id: sensor.nws_alerts
+    action:
+      - delay:
+          minutes: 5
+      - repeat:
+          sequence:
+            - delay:
+                seconds: 5
+            - condition: template
+              value_template: >
+                {% set ns = namespace(ids=[]) %}
+                {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                  {% set id = state_attr('sensor.nws_alerts', 'Alerts')[x].ID %}
+                  {% set ns.ids = ns.ids + [id] %}
+                {% endfor -%}
+                {% set current_id_list = set(ns.ids) %}
+                {% set history_id_list = set( (states.sensor.nws_alerts_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                {{ (current_id_list.difference(history_id_list)|list) | count > 0 }}
+            - service: variable.update_sensor
+              target:
+                entity_id: sensor.nws_alerts_event_ids
+              data:
+                value: >
+                  {% set ns = namespace(ids=[]) %}
+                  {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                    {% set id = state_attr('sensor.nws_alerts', 'Alerts')[x].ID %}
+                    {% set ns.ids = ns.ids + [id] %}
+                  {% endfor -%}
+                  {% set current_id_list = set(ns.ids) %}
+                  {% set history_id_list = set( (states.sensor.nws_alerts_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                  {% if (current_id_list.difference(history_id_list)|list)[0] is defined %}
+                    {{ (current_id_list.difference(history_id_list)|list)[0] }}
+                  {% endif %}
+            - service: variable.update_sensor
+              target:
+                entity_id: sensor.nws_alerts_event_ids
+              data:
+                attributes:
+                  history_1: >
+                    {% set ns = namespace(ids=[]) %}
+                    {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                      {% set id = state_attr('sensor.nws_alerts', 'Alerts')[x].ID %}
+                      {% set ns.ids = ns.ids + [id] %}
+                    {% endfor -%}
+                    {% set current_id_list = set(ns.ids) %}
+                    {% set history_id_list = set( (states.sensor.nws_alerts_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                    {% if (current_id_list.difference(history_id_list)|list)[0] is defined %}
+                      {{ (current_id_list.difference(history_id_list)|list)[0] }}
+                    {% endif %}
+                  history_2: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_1') }}"
+                  history_3: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_2') }}"
+                  history_4: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_3') }}"
+                  history_5: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_4') }}"
+                  history_6: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_5') }}"
+                  history_7: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_6') }}"
+                  history_8: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_7') }}"
+                  history_9: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_8') }}"
+                  history_10: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_9') }}"
+                  history_11: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_10') }}"
+                  history_12: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_11') }}"
+                  history_13: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_12') }}"
+                  history_14: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_13') }}"
+                  history_15: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_14') }}"
+          until:
+            - condition: template
+              value_template: >
+                {% set ns = namespace(ids=[]) %}
+                {% for x in range(0,states('sensor.nws_alerts')|int ) %}
+                  {% set id = state_attr('sensor.nws_alerts', 'Alerts')[x].ID %}
+                  {% set ns.ids = ns.ids + [id] %}
+                {% endfor -%}
+                {% set current_id_list = set(ns.ids) %}
+                {% set history_id_list = set( (states.sensor.nws_alerts_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+                {{ (current_id_list.difference(history_id_list)|list) | count == 0}}
