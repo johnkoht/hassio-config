@@ -15,7 +15,7 @@ automation:
             {% set ns.ids = ns.ids + [id] %}
           {% endfor -%}
           {% set current_id_list = set(ns.ids) %}
-          {% set history_id_list = set( (states.sensor.nws_alert_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
+          {% set history_id_list = set( (states.sensor.nws_alerts_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
           {{ (current_id_list.difference(history_id_list)|list) | count > 0 }}
       - condition: template
         value_template: >
