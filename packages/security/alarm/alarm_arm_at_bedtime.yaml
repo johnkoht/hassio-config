@@ -7,8 +7,6 @@ automation:
       - platform: state
         entity_id: input_boolean.bedtime
         to: "on"
-        for:
-          minutes: 5
     condition:
       # Alarm is current disarmed
       - condition: state
