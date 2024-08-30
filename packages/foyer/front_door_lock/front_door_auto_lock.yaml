@@ -1,0 +1,27 @@
+# Auto Lock the Front Door
+#
+# If the house goes into bedtime mode or
+# become unoccupied then lock the door immediately
+#
+automation:
+  - id: "front_door_auto_lock"
+    alias: "Front Door - Auto Lock"
+    initial_state: on
+    trigger:
+      # House goes into bedtime mode
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # House becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    condition:
+      # Front door is unlocked
+      - condition: state
+        entity_id: lock.front_door
+        state: "unlocked"
+    action:
+      # Lock the door!
+      - service: lock.lock
+        entity_id: lock.front_door

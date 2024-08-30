@@ -1,0 +1,42 @@
+# Lock the Front Door if it's been unlocked too long
+#
+# If the door has been unlocked for 15 minutes then
+# automatically lock the door unless entertainment
+# mode is active and it's not late
+#
+automation:
+  - id: "front_door_lock_if_open_too_long"
+    alias: "Front Door - Lock If Open Too Long"
+    initial_state: on
+    trigger:
+      # If door has been unlocked for a while
+      - platform: state
+        entity_id: lock.front_door
+        to: "unlocked"
+        for:
+          minutes: 15
+      # Entertainment mode is turned OFF
+      - platform: state
+        entity_id: input_boolean.entertainment_mode
+        from: "on"
+        to: "off"
+    condition:
+      # Door is unlocked
+      - condition: state
+        entity_id: lock.front_door
+        state: "unlocked"
+      # Entertainment mode is OFF
+      # OR it's late
+      - condition: or
+        conditions:
+          # Entertainment mode is OFF
+          - condition: state
+            entity_id: input_boolean.entertainment_mode
+            state: "off"
+          # OR it's late (10pm)
+          - condition: time
+            after: "22:00:00"
+    action:
+      # Lock the door!
+      - service: lock.lock
+        entity_id: lock.front_door
