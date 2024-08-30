@@ -8,7 +8,7 @@ automation:
         entity_id: input_select.house
         to: "Away"
         for:
-          minutes: 30
+          minutes: 15
       # We leave the neighborhood zone
       - platform: zone
         entity_id:
