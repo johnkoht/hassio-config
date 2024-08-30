@@ -43,7 +43,7 @@
     #
     # Lights are OFF
     - platform: state
-      entity_id: light.main_bedroom_lights
+      entity_id: light.main_bedroom_main_lights
       prob_given_true: 0.98
       prob_given_false: 0.75
       to_state: "off"
