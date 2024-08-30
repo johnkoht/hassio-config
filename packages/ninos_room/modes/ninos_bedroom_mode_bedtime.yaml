@@ -21,4 +21,4 @@ automation:
       - service: input_select.select_option
         data:
           entity_id: input_select.ninos_bedroom
-          option: "Bedtime2"
+          option: "Bedtime"
