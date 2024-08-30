@@ -238,7 +238,7 @@ script:
               # House is occupied
               - condition: state
                 entity_id: group.family
-                state: "off"
+                state: "not_home"
             # Send a time sensitive push notification
             sequence:
               - service: notify.mobile_app_jk_2
