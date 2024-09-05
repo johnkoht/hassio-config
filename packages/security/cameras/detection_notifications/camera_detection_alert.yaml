@@ -141,7 +141,7 @@ script:
                 entity_id: input_boolean.bedtime
                 state: "on"
             sequence:
-              - service: notify.mobile_app_jk_2
+              - service: notify.ios_family
                 metadata: {}
                 data:
                   title: "{{title}}"
@@ -169,7 +169,7 @@ script:
                 state: "off"
             # Send a active push notification
             sequence:
-              - service: notify.mobile_app_jk_2
+              - service: notify.ios_family
                 metadata: {}
                 data:
                   title: "{{title}}"
@@ -190,7 +190,7 @@ script:
                 state: "not_home"
             # Send a time sensitive push notification
             sequence:
-              - service: notify.mobile_app_jk_2
+              - service: notify.ios_family
                 metadata: {}
                 data:
                   title: "{{title}}"
