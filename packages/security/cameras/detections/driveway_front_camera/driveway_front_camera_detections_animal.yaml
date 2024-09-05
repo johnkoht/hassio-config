@@ -1,0 +1,36 @@
+# Driveway Front Camera Detects an Animal
+#
+automation:
+  - id: "driveway_front_camera_detections_animal"
+    alias: "Driveway Front Camera Detections - Animal"
+    mode: "single"
+    trigger:
+      #
+      # Drivewy Front Camera detects a animal
+      - platform: state
+        entity_id: binary_sensor.driveway_front_camera_animal_detected
+        to: "on"
+        variables:
+          camera_name: "Driveway Front Camera"
+          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+          event_id: "{{ trigger.to_state.attributes.event_id }}"
+          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+          proxy_camera: camera.camera_proxy_camera_driveway_front_camera_high
+    condition:
+      #
+      # Automation wasn't run in the past 90 seconds
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.driveway_front_camera_detections_animal','last_triggered')) ) | int > 60 }}"
+      # Only alert about animals if camera notifications are enabled
+      - condition: state
+        entity_id: input_boolean.camera_notifications
+        state: "on"
+    action:
+      #
+      # Call the camera detection alert service to handle
+      - service: script.camera_detection_alert
+        data:
+          entity_id: "{{ trigger.entity_id }}"
+          camera_name: "{{ camera_name }}"
+          image_path: "{{ image_path }}"
+          proxy_camera: "{{ proxy_camera }}"
