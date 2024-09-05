@@ -1,0 +1,36 @@
+# Doorbell Detected an Animal
+#
+automation:
+  - id: "front_door_camera_detections_animal"
+    alias: "Front Door Camera Detections - Animal"
+    mode: "single"
+    trigger:
+      #
+      # Front door camera detects an animal
+      - platform: state
+        entity_id: binary_sensor.front_door_camera_animal_detected
+        to: "on"
+        variables:
+          camera_name: "Front Doorbell Camera"
+          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+          event_id: "{{ trigger.to_state.attributes.event_id }}"
+          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+          proxy_camera: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
+    condition:
+      #
+      # Automation wasn't run in the past 90 seconds
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.front_door_camera_detections_animal','last_triggered')) ) | int > 60 }}"
+      # Only alert about animals if camera notifications are enabled
+      - condition: state
+        entity_id: input_boolean.camera_notifications
+        state: "on"
+    action:
+      #
+      # Call the camera detection alert service to handle
+      - service: script.camera_detection_alert
+        data:
+          entity_id: "{{ trigger.entity_id }}"
+          camera_name: "{{ camera_name }}"
+          image_path: "{{ image_path }}"
+          proxy_camera: "{{ proxy_camera }}"

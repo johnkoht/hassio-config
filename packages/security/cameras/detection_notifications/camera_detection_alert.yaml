@@ -1,53 +1,3 @@
-# automation:
-#   # Backyard South Camera Detected Object
-#   #
-#   - id: "camera_notifications_send_detection_notification"
-#     alias: "Camera Notifications - Send Detection Notification"
-#     mode: "single"
-#     trigger:
-#       # A person is detected
-#       - platform: state
-#         entity_id:
-#           - binary_sensor.backyard_south_person_detected
-#           - binary_sensor.driveway_front_camera_person_detected
-#           - binary_sensor.garage_driveway_person_detected
-#           # - binary_sensor.front_door_camera_person_detected
-#         to: "on"
-#         variables:
-#           camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
-#           #camera_id: "{{ trigger.entity_id) }}"
-#           nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
-#           event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
-#           # start: "{{ state_attr(trigger.from_state, 'last_changed') }}"
-#           # end: "{{ state_attr(trigger.to_state, 'last_changed') }}"
-#           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
-#           #video_path: /api/unifiprotect/video/{{ nvr_id }}/{{ trigger.entity_id }}/{{ start }}/{{ end}}
-#     action:
-#       # # Take a snapshot
-#       # - service: camera.snapshot
-#       #   data:
-#       #     filename: /config/www/images/backyard_south_camera_alert.jpg
-#       #     entity_id: camera.backyard_south_camera_high
-
-#       # - service: script.security_detection_display_notification_on_screens
-#       #   data:
-#       #     title: "Backyard South Camera"
-#       #     message: "A person has been detected in the backyard."
-#       #     image_path: /config/www/images/backyard_south_camera_alert.jpg
-#       - service: notify.mobile_app_jk_2
-#         metadata: {}
-#         data:
-#           title: Person Detected
-#           message: Person Detected on {{camera_name}} {{nvr_id}} {{event_id}} {{start}} {{end}}
-#           data:
-#             image: "{{image_path}}"
-#             #video: "{{video_path}}"
-#             push:
-#               sound:
-#                 name: default
-#                 critical: 1
-#                 volume: 1
-
 script:
   camera_detection_alert:
     alias: "Camera Detection Alert"
@@ -173,13 +123,12 @@ script:
                 data:
                   filename: "/config/www/images/{{ local_image_name }}.jpg"
                   entity_id: "{{ camera }}"
-              # Notify the family room TV
-              - service: notify.security_detection_display_devices
+              # Send a notification to the TVs
+              - service: script.security_detection_display_notification_on_screens
                 data:
                   title: "{{title}}"
                   message: "{{message}}"
-                  data:
-                    image: "/config/www/images/{{ local_image_name }}.jpg"
+                  image_path: "/config/www/images/{{ local_image_name }}.jpg"
 
       - choose:
           - conditions:
