@@ -8,7 +8,7 @@ automation:
       #
       # Drivewy Front Camera detects a person
       - platform: state
-        entity_id: binary_sensor.driveway_front_camera_vehicle_detected
+        entity_id: binary_sensor.driveway_front_camera_person_detected
         to: "on"
         variables:
           camera_name: "Driveway Front Camera"
@@ -20,7 +20,7 @@ automation:
       #
       # Automation wasn't run in the past 90 seconds
       - condition: template
-        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.driveway_front_camera_detections_person','last_triggered')) ) | int > 60 }}"
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.driveway_front_camera_detections_person','last_triggered'), 0) ) | int > 60 }}"
       # Only alert if camera notifications are enabled
       - condition: state
         entity_id: input_boolean.camera_notifications

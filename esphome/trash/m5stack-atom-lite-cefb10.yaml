@@ -1,0 +1,17 @@
+substitutions:
+  name: m5stack-atom-lite-cefb10
+  friendly_name: Bluetooth Proxy cefb10
+packages:
+  esphome.bluetooth-proxy: github://esphome/bluetooth-proxies/m5stack/m5stack-atom-lite.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: laep8+QIfSoYOg7WBZAQFhaoba36r0WPCXLdtNGPnB4=
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
