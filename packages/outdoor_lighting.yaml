@@ -50,6 +50,10 @@ light:
       - light.hue_outdoor_spot_8
       - light.hue_outdoor_spot_9
       - light.hue_outdoor_spot_10
+      - light.hue_spot_11_light
+      - light.hue_spot_12_light
+      - light.hue_spot_13_light
+      - light.hue_spot_14_light
 
   # All Exterior Lights
   - platform: group
