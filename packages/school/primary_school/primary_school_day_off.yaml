@@ -21,3 +21,19 @@ automation:
       - service: automation.turn_on
         entity_id:
           - automation.school_day_reminder
+
+      # If it's Wednesday and the late start boolean is
+      # on, then we should turn it off
+      - if:
+          # It's Wednesday
+          - condition: time
+            weekday:
+              - wed
+          # AND the boolean is ON
+          - condition: state
+            entity_id: input_boolean.district_late_start_wednesday
+            state: "on"
+        then:
+          # Turn OFF the boolean
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.district_late_start_wednesday
