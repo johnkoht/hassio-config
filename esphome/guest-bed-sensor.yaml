@@ -1,0 +1,73 @@
+esphome:
+  name: guest-bed-sensor
+  friendly_name: Guest Bed Sensor
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "2SG51n4USRmt/XdTRDY0OX2Hzfr4iPebtT9FKstmCxo="
+
+ota:
+  - platform: esphome
+    password: "cb902b92d21ae07757bf3b792177aa70"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Guest-Bed-Sensor"
+    password: "d8OLuEisgTVu"
+
+captive_portal:
+
+binary_sensor:
+  - platform: template
+    name: "Occupied"
+    id: mb_o
+    lambda: |-
+      if (id(guest_bed_sensor).state < id(guest_bed_trigger_level).state) {
+        return true;
+      } else {
+        return false;
+      }
+
+sensor:
+  - platform: adc
+    pin: GPIO35
+    name: "Sensor"
+    id: "guest_bed_sensor"
+    icon: mdi:bed
+    attenuation: 11db
+    update_interval: 0.5s
+    filters:
+      - multiply: 3.3
+      - sliding_window_moving_average:
+          window_size: 10
+          send_every: 1
+      - or:
+          - throttle: 180s
+          - delta: 0.02
+
+number:
+  - platform: template
+    name: "Trigger Level"
+    id: "guest_bed_trigger_level"
+    icon: mdi:arrow-collapse-down
+    min_value: 0
+    max_value: 3.5
+    step: 0.05
+    optimistic: true
+    initial_value: 2.8
+    restore_value: true
+
+    

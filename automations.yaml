@@ -376,3 +376,19 @@
   condition: []
   action: []
   mode: single
+- id: '1726030107950'
+  alias: Toggle garage door 2
+  description: ''
+  trigger:
+  - event_data:
+      actionID: 6EE7ECA3-E8C5-4603-B741-F2B23A89C131
+    platform: event
+    event_type: ios.action_fired
+  condition: []
+  action:
+  - action: cover.toggle
+    metadata: {}
+    data: {}
+    target:
+      device_id: fbe1f9961737e541fa5e35c420d63bfd
+  mode: single

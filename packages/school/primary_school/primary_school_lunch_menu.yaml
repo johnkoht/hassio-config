@@ -1,0 +1,42 @@
+rest_command:
+  fetch_primary_daily_menu:
+    url: "https://api.getchoosi.com/KidsChooseApi/v1.0/menus?filter%5Bdate%5D={{ now().strftime('%m-%d-%Y') }}&filter%5Bschool%5D=05e88d1f-e79d-48f0-866d-22e20b03a78d"
+    method: GET
+    content_type: "application/json; charset=utf-8"
+
+#caesar salad
+#mini chicken bites
+#cheeseburger
+#byo pizza kit
+#cheese pizza slice
+
+#
+#
+# Get the school lunch menu
+#
+template:
+  - trigger:
+      - platform: time_pattern
+        hours: /1
+    action:
+      - action: rest_command.fetch_primary_daily_menu
+        response_variable: menu
+      # - variables:
+      #     e: |-
+      #       {% set ns = namespace(menu_items=[]) %}
+
+      #       {%- for key, value in menu.content.menu.items() %}
+      #         {%- for items in value.lunchItems %}
+      #           {%- set ns.menu_items = ns.menu_items + [item] %}
+      #         {%- endfor %}
+      #       {%- endfor %}
+
+      #       {{ ns.menu_items | list }}
+    #
+    # This is the sensor that will provide a list of menu items
+    sensor:
+      - name: Primary School Lunch Menu
+        unique_id: primary_school_lunch_menu
+        state: "{{ now().isoformat() }}"
+        attributes:
+          lunch_menu: "{{ menu.content.menu.lunchItems }}"
