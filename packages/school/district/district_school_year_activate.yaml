@@ -12,10 +12,10 @@ automation:
       - platform: homeassistant
         event: start
     condition:
-      # School Year Active Boolean is OFF
-      - condition: state
-        entity_id: input_boolean.district_school_year_active
-        state: "off"
+      # # School Year Active Boolean is OFF
+      # - condition: state
+      #   entity_id: input_boolean.district_school_year_active
+      #   state: "off"
       # First day of school is in the PAST
       # AND Last day of school is in the FUTURE
       - condition: template
