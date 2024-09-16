@@ -12,6 +12,10 @@ automation:
       # First thing in the morning
       - platform: time
         at: "00:00:01"
+      # If the school day binary sensor turns on
+      - platform: state
+        entity_id: binary_sensor.gianluca_is_today_school_day
+        to: "on"
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
