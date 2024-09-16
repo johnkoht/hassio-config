@@ -77,7 +77,7 @@ script:
               There is no school today, so make sure to let Nino know!
             {% endif %}
 
-            {% if states.input_boolean.primary_school_day == "on" %}
+            {% if states.input_boolean.primary_school_day.state == "on" %}
               Today is a school day, so make sure to let Nino know. While Nino doesn't usually get hot lunch from school, I'd like to share some of the items on the menu to see if any peak his interest. He likes chicken nuggets (not the the plant based one, please don't mention these), pizza, cheeseburgers, and caesar salad. If any of these items are in the list below, please let us know.
               {{ states.sensor.primary_school_lunch_menu.attributes.lunch_menu }}
             {% endif %}
