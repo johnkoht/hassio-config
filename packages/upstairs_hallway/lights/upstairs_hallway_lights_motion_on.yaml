@@ -29,8 +29,30 @@ automation:
         entity_id: input_boolean.quiet_mode
         state: "off"
     action:
-      - service: light.turn_on
-        entity_id: light.upstairs_hallway
+      - if:
+          # If either of the kids rooms are occupied
+          # then don't turn them up 100%
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.gianlucas_room_occupied
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.ninos_bedroom_occupied
+                state: "on"
+        then:
+          # Turn them on 10%
+          - service: light.turn_on
+            entity_id: light.upstairs_hallway
+            data:
+              brightness_pct: 10
+              transition: 0.5
+
+        else:
+          # Turn the lights on normal
+          - service: light.turn_on
+            entity_id: light.upstairs_hallway
+
       # Toggle the boolean to flag it was auto
       - service: input_boolean.turn_on
         entity_id: input_boolean.upstairs_hallway_lights_auto
