@@ -7,6 +7,10 @@ automation:
       - platform: state
         entity_id: input_boolean.quiet_mode
         to: "on"
+      # Bedtime mode is enabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
     condition:
       # House is occupied
       - condition: state
@@ -21,3 +25,30 @@ automation:
             - media_player.kohbo_dot_main_bedroom
             - media_player.john_s_echo_show
           volume_level: .3
+
+  - id: "alexa_volume_control_turn_up"
+    initial_state: on
+    alias: "Alexa Volume Control - Turn Up"
+    trigger:
+      # Quiet mode is disabled
+      - platform: state
+        entity_id: input_boolean.quiet_mode
+        to: "off"
+      # Bedtime mod is disabled
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      - service: media_player.volume_set
+        data:
+          entity_id:
+            - media_player.john_s_echo_dot
+            - media_player.john_s_2nd_echo_dot
+            - media_player.kohbo_dot_main_bedroom
+            - media_player.john_s_echo_show
+          volume_level: .6
