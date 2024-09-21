@@ -7,7 +7,7 @@ automation:
       # If the front driveway camera detects motion
       - platform: state
         entity_id: binary_sensor.driveway_front_camera_object_detected
-        state: "on"
+        to: "on"
     condition:
       # If it's dark outside
       - condition: state
@@ -17,5 +17,3 @@ automation:
       # Turn the light on
       - action: light.turn_on
         entity_id: light.driveway_flood_light
-
-  
