@@ -13,6 +13,10 @@ automation:
       - condition: state
         entity_id: input_boolean.dark_outside
         state: "on"
+      # The light is OFF
+      - condition: state
+        entity_id: light.driveway_flood_light
+        state: "off"
     action:
       # Turn the light on
       - action: light.turn_on
