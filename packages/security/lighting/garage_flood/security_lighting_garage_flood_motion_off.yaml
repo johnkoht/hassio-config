@@ -7,7 +7,7 @@ automation:
       # Front driveway doesn't detect an object for a bit
       - platform: state
         entity_id: binary_sensor.driveway_front_camera_object_detected
-        state: "off"
+        to: "off"
         for:
           minutes: 3
     condition:
