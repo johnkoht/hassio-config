@@ -6,7 +6,9 @@ automation:
     trigger:
       # Front driveway doesn't detect an object for a bit
       - platform: state
-        entity_id: binary_sensor.driveway_front_camera_object_detected
+        entity_id:
+          - binary_sensor.driveway_front_camera_object_detected
+          - binary_sensor.driveway_front_camera_person_detected
         to: "off"
         for:
           minutes: 3
@@ -18,6 +20,10 @@ automation:
           - binary_sensor.driveway_front_camera_person_detected
           - binary_sensor.driveway_front_camera_vehicle_detected
         state: "off"
+      # The light is ON
+      - condition: state
+        entity_id: light.driveway_flood_light
+        state: "on"
     action:
       # Turn the light off
       - action: light.turn_off
