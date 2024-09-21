@@ -1,0 +1,21 @@
+automation:
+  - id: "security_lighting_garage_flood_motion_on"
+    alias: "Security Lighting - Garage Flood Motion On"
+    mode: "single"
+    initial_state: on
+    trigger:
+      # If the front driveway camera detects motion
+      - platform: state
+        entity_id: binary_sensor.driveway_front_camera_object_detected
+        state: "on"
+    condition:
+      # If it's dark outside
+      - condition: state
+        entity_id: input_boolean.dark_outside
+        state: "on"
+    action:
+      # Turn the light on
+      - action: light.turn_on
+        entity_id: light.driveway_flood_light
+
+  
