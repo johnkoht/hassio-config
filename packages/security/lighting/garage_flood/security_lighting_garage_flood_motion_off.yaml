@@ -12,6 +12,20 @@ automation:
         to: "off"
         for:
           minutes: 3
+      # Front driveway doesn't detect an object for a bit
+      - platform: state
+        entity_id:
+          - binary_sensor.driveway_front_camera_object_detected
+          - binary_sensor.driveway_front_camera_person_detected
+        to: "off"
+        for:
+          minutes: 5
+      # If the light is on for 30 minutes
+      - platform: state
+        entity_id: light.driveway_flood_light
+        to: "on"
+        for:
+          minutes: 30
     condition:
       # Object, vehicle, or person are not detected
       - condition: state
