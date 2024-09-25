@@ -80,6 +80,9 @@ script:
       - service: automation.turn_off
         entity_id: automation.main_bathroom_lights_motion_on
 
+      # Delay 1 min
+      - delay: "00:01:00"
+
       # Turn ON sleep mode
       - service: switch.turn_on
         entity_id: switch.adaptive_lighting_sleep_mode_main_bathroom
