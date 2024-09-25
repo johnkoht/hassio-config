@@ -40,6 +40,9 @@ automation:
               - condition: state
                 entity_id: input_boolean.ninos_bedroom_occupied
                 state: "on"
+              # Quiet mode was recently changed
+              - condition: template
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.quiet_mode.last_changed)) | int < 180 }}"
         then:
           # Turn them on 10%
           - service: light.turn_on
