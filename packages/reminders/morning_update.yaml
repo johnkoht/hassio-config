@@ -88,6 +88,21 @@ script:
             Today's High: {{ states.sensor.pirateweather_daytime_high_temperature_0d.state }}
             Today's Low: {{ states.sensor.pirateweather_overnight_low_temperature_0d.state }}
             Current Weather: {{ states.weather.pirateweather }}
+
+            {% if now().strftime('%A') == "Tuesday" or now().strftime('%A') == "Wednesday" %}
+              Today is {{ now().strftime('%A') }}, which means Cristina commutes to the office. If there is rain in the forecast or a high probabilty of rain, please remind her to bring an umbrella just in case.
+              Here is the precipitation probabilities for the day: {{ states.sensor.pirateweather_precip_probability_0d.state }}%
+              Here is the probability of rain over the next few hours:
+              1 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_1h.state }}
+              2 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_2h.state }}
+              3 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_3h.state }}
+              4 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_4h.state }}
+              5 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_5h.state }}
+              6 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_6h.state }}
+              7 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_7h.state }}
+              8 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_8h.state }}
+              9 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_9h.state }}
+            {% endif %}
         response_variable: chatgpt
       #
       # Push Notification
