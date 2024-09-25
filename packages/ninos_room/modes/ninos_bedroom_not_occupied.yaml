@@ -14,13 +14,13 @@ automation:
         entity_id: light.ninos_bedroom_main_lights
         to: "off"
         for:
-          minutes: 3
+          minutes: 5
       # Bed occupied
       - platform: state
         entity_id: binary_sensor.nino_bed_occupied
         to: "off"
         for:
-          minutes: 3
+          minutes: 5
     condition:
       # Currently occupied
       - condition: state
