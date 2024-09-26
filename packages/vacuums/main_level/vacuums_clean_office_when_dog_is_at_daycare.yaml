@@ -1,0 +1,24 @@
+automation:
+  - id: "vacuum_clean_office_when_dog_is_at_daycare"
+    alias: "Vacuum - Clean Office When Dog is at Daycare"
+    mode: "single"
+    trigger:
+      # John is dropping Rio off
+      - platform: zone
+        entity_id: person.john_koht
+        zone: zone.north_shore_k9
+        event: enter
+    condition:
+      # Between 8-10am
+      - condition: time
+        after: "08:00:00"
+        before: "10:00:00"
+    action:
+      # Vacuum the Office
+      - action: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_s7
+        data:
+          command: app_segment_clean
+          params: [29]
+      
