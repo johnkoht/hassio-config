@@ -7,8 +7,8 @@ automation:
       - platform: state
         entity_id: input_boolean.gianlucas_room_occupied
         to: "on"
-        for: 
-          minutes: 15
+        for:
+          minutes: 10
     condition:
       # Quiet mode is enabled
       - condition: state
@@ -30,4 +30,3 @@ automation:
         data:
           command: app_segment_clean
           params: [24]
-      
