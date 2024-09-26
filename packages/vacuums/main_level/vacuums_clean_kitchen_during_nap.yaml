@@ -1,0 +1,33 @@
+automation:
+  - id: "vacuum_clean_kitchen_during_nap"
+    alias: "Vacuum - Clean Kitchen During Nap"
+    mode: "single"
+    trigger:
+      # GL's room becomes occupied
+      - platform: state
+        entity_id: input_boolean.gianlucas_room_occupied
+        to: "on"
+        for: 
+          minutes: 15
+    condition:
+      # Quiet mode is enabled
+      - condition: state
+        entity_id: input_boolean.quiet_mode
+        state: "on"
+      # Between 1-4pm
+      - condition: time
+        after: "13:00:00"
+        before: "15:00:00"
+      # Entertainment mode is NOT enabled
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
+    action:
+      # Vacuum the Kitchen
+      - action: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_s7
+        data:
+          command: app_segment_clean
+          params: [24]
+      
