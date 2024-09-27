@@ -1,0 +1,21 @@
+# Second Floor Climate - Resume When Energy Fall
+#
+# Reactivate the AC when energy prices fall
+#
+automation:
+  - id: "second_floor_climate_resume_when_energy_prices_fall"
+    alias: "Second Floor Climate - Resume When Energy Prices Fall"
+    initial_state: "on"
+    trigger:
+      # If energy prices are too high
+      - platform: state
+        entity_id: binary_sensor.energy_prices_are_high
+        from: "on"
+        to: "off"
+    condition:
+      # Make sure the Nest isn't set to a preset already
+      - condition: template
+        value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode != 'none' }}"
+    action:
+      - service: script.second_floor_climate_to_resume
+        data: {}
