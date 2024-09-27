@@ -99,7 +99,7 @@ script:
       # Which rooms should play the doorbell
       - alias: "Rooms to sound the doorbell"
         variables:
-          sound_file: "https://raw.githubusercontent.com/johnkoht/hass-config/master/config/sounds/ding-dong.mp3"
+          sound_file: "/local/sounds/ding-dong.mp3"
           sound_file_length: 5
           sound_file_volume: >-
             {% if states.input_boolean.quiet_mode.state == "on" %}
@@ -132,12 +132,17 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - service: script.announcement_engine
-        data:
-          sound_file: "{{sound_file}}"
-          sound_length: "{{sound_file_length}}"
-          sound_volume: "{{sound_file_volume}}"
-          media_players: "{{ media_players}}"
+      - repeat:
+        count: 3
+        sequence:
+          - action: script.announcement_engine
+            data:
+              sound_file: "{{sound_file}}"
+              sound_length: "{{sound_file_length}}"
+              sound_volume: "{{sound_file_volume}}"
+              media_players: "{{ media_players}}"
+          # Delay 5 seconds
+          - delay: 5
 
   #
   #
