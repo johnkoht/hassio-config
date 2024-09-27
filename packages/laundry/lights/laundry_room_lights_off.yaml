@@ -43,4 +43,4 @@ automation:
       # Turn OFF the boolean to notify it's been automatically
       # turned on
       - service: input_boolean.turn_off
-        entity_id: laundry_room_lights_auto
+        entity_id: input_boolean.laundry_room_lights_auto
