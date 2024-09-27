@@ -1,0 +1,28 @@
+# Second Floor Climate - Activate Eco When Energy is Expensive
+#
+# If energy prices jump, turn on eco mode to save a few
+# bucks.
+# TODO: auto-invest money saved in QQQ
+#
+automation:
+  - id: "second_floor_climate_activate_eco_when_energy_is_expensive"
+    alias: "Second Floor Climate - Activate Eco When Energy is Expensive"
+    initial_state: "on"
+    trigger:
+      # If energy prices are too high
+      - platform: state
+        entity_id: binary_sensor.energy_prices_are_high
+        to: "on"
+    condition:
+      # None of the kids are sleeping
+      - condition: state
+        entity_id:
+          - input_boolean.ninos_bedroom_occupied
+          - input_boolean.gianlucas_room_occupied
+        state: "off"
+      # Make sure the Nest isn't set to a preset already
+      - condition: template
+        value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode == 'none' }}"
+    action:
+      - service: script.second_floor_climate_to_eco
+        data: {}

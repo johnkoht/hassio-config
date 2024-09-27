@@ -8,9 +8,9 @@ alias: "Main floor climate resume"
 initial_state: "on"
 trigger:
   # If the house goes into auto mode
-  - platform: state
-    entity_id: input_select.house
-    to: "Auto"
+  # - platform: state
+  #   entity_id: input_select.house
+  #   to: "Auto"
   # The house becomes occupied
   - platform: state
     entity_id: input_boolean.house_occupied

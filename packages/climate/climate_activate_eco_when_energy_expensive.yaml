@@ -1,0 +1,43 @@
+# Main Floor Climate to Eco
+#
+# If the house is empty or we're all asleep then
+# turn the first floor Nest to Eco mode
+#
+automation:
+  - id: "climate_activate_eco_when_energy_is_expensive"
+    alias: "Climate - Activate Eco When Energy is Expensive"
+    initial_state: "on"
+    trigger:
+      # If energy prices are too high
+      - platform: state
+        entity_id: binary_sensor.energy_prices_are_high
+        to: "on"
+    condition:
+      # Entertainment mode is OFF
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
+      # Make sure the Nest isn't set to a preset already
+      - condition: template
+        value_template: >-
+          {{
+            states.climate.nest_main_floor.attributes.preset_mode == 'none'
+            and
+            states.climate.nest_2nd_floor.attributes.preset_mode == 'none'
+          }}
+    action:
+      - choose:
+          # If trigger is bedtime mode then lets make sure it's before 4am
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'input_boolean.bedtime' }}"
+              # Before 4am
+              - condition: time
+                before: "04:00:00"
+            sequence:
+              - service: script.main_floor_climate_to_eco
+                data: {}
+        default:
+          - service: script.main_floor_climate_to_eco
+            data: {}
+          
