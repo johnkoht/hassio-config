@@ -7,10 +7,6 @@ trigger:
     entity_id: person.john_koht
     zone: zone.john_s_work
     event: leave
-  # He's more than 2 miles away from work
-  - platform: numeric_state
-    entity_id: sensor.lpl_john_distance
-    above: 2
 condition:
   # John is not home
   - condition: state
@@ -23,6 +19,10 @@ condition:
   # After 3pm
   - condition: time
     after: "15:00:00"
+  # Traveling away from the office
+  - condition: state
+    entity_id: sensor.lpl_john_direction_of_travel
+    state: "away_from"
 action:
   # Announcement
   - service: script.voice_announcement
