@@ -8,7 +8,7 @@ automation:
         entity_id: binary_sensor.laundry_room_motion_sensor_motion
         to: "off"
         for:
-          minutes: 1
+          minutes: 3
       # No motion for 5 minutes
       - platform: state
         entity_id: binary_sensor.laundry_room_motion_sensor_motion
@@ -33,3 +33,11 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.laundry_room_occupied
+
+      # Wait 2 seconds
+      - alias: "Wait 2 seconds"
+        delay: 02
+
+      # Enable laundry room lighting automations
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.laundry_room_lighting_automations

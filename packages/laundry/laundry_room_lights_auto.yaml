@@ -1,0 +1,5 @@
+input_boolean:
+  laundry_room_lights_auto:
+    name: Laundry Room Lights Auto
+    icon: mdi:lightbulb-auto
+    initial: off
