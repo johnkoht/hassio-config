@@ -37,5 +37,10 @@ automation:
             entity_id: input_boolean.laundry_room_occupied
             state: "off"
     action:
+      # Turn the lights OFF
       - service: light.turn_off
         entity_id: light.laundry_room_main_lights
+      # Turn OFF the boolean to notify it's been automatically
+      # turned on
+      - service: input_boolean.turn_off
+        entity_id: laundry_room_lights_auto

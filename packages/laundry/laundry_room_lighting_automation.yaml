@@ -1,0 +1,5 @@
+input_boolean:
+  laundry_room_lighting_automations:
+    name: Laundry Room Lighting Automations
+    icon: mdi:motion-sensor
+    initial: on
