@@ -7,7 +7,7 @@
 automation:
   - id: "main_floor_climate_activate_eco_when_energy_is_expensive"
     alias: "Main Floor Climate - Activate Eco When Energy is Expensive"
-    initial_state: "on"
+    initial_state: on
     trigger:
       # If energy prices are too high
       - platform: state
@@ -22,5 +22,5 @@ automation:
       - condition: template
         value_template: "{{ states.climate.nest_main_floor.attributes.preset_mode == 'none' }}"
     action:
-      - service: script.main_floor_climate_to_eco
+      - action: script.main_floor_climate_to_eco
         data: {}
