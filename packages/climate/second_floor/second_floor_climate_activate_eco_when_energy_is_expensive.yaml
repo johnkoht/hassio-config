@@ -7,7 +7,7 @@
 automation:
   - id: "second_floor_climate_activate_eco_when_energy_is_expensive"
     alias: "Second Floor Climate - Activate Eco When Energy is Expensive"
-    initial_state: "on"
+    initial_state: on
     trigger:
       # If energy prices are too high
       - platform: state
@@ -24,5 +24,5 @@ automation:
       - condition: template
         value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode == 'none' }}"
     action:
-      - service: script.second_floor_climate_to_eco
+      - action: script.second_floor_climate_to_eco
         data: {}
