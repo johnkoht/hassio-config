@@ -15,7 +15,7 @@ automation:
           nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
           event_id: "{{ trigger.to_state.attributes.event_id }}"
           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
-          proxy_camera: camera.camera_proxy_camera_backyard_porch_camera_high
+          proxy_camera: camera.camera_proxy_camera_backyard_porch_camera_high_resolution_channel
     condition:
       #
       # Automation wasn't run in the past 90 seconds
