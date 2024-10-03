@@ -1,0 +1,5 @@
+# Camera Proxy for the Backyard Porch Camera
+#
+camera:
+  - platform: proxy
+    entity_id: camera.backyard_porch_camera_high_resolution_channel
