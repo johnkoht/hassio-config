@@ -20,7 +20,12 @@ automation:
       - wait_template: "{{ is_state('input_boolean.quiet_mode', 'off') }}"
         timeout: "00:45:00"
       # Kitchen has been occupied for more than 10 minutes
-      - wait_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 600 }}"
+      - wait_template: >-
+          {{
+            states.binary_sensor.kitchen_motion_sensor_occupancy == "on" and
+            (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 600
+          }}
+
         timeout: "00:30:00"
         continue_on_timeout: false
       # Wait for motion in the kitchen
@@ -29,7 +34,7 @@ automation:
         continue_on_timeout: false
       - alias: "Wait 2 seconds"
         delay: 2
-      - service: script.morning_update_announcement
+      - action: script.morning_update_announcement
 
 script:
   morning_update_announcement:
@@ -41,7 +46,7 @@ script:
       #
       # Use ChatGPT to get the daily briefing
       #
-      - service: conversation.process
+      - action: conversation.process
         data:
           agent_id: conversation.chatgpt
           text: >-
@@ -107,7 +112,7 @@ script:
       #
       # Push Notification
       #
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Daily Update!"
           message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
@@ -117,7 +122,7 @@ script:
       #
       # Voice Announcement
       #
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: "auto"
           sound: "default"
@@ -132,7 +137,7 @@ template:
       - platform: time_pattern
         hours: /1
     action:
-      - service: calendar.get_events
+      - action: calendar.get_events
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ now().strftime('%Y-%m-%d 23:59:59') }}"
@@ -173,7 +178,7 @@ template:
       - platform: time_pattern
         hours: /1
     action:
-      - service: weather.get_forecasts
+      - action: weather.get_forecasts
         data:
           type: hourly
         target:
