@@ -28,7 +28,7 @@ automation:
     action:
       #
       # Call the camera detection alert service to handle
-      - service: script.camera_detection_alert
+      - action: script.camera_detection_alert
         data:
           entity_id: "{{ trigger.entity_id }}"
           camera_name: "{{ camera_name }}"
