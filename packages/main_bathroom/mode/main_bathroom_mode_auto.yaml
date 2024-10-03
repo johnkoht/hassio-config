@@ -50,19 +50,19 @@ automation:
       - condition: template
         value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
     action:
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.main_bathroom
           option: "Auto"
 
       # Turn off the bedtime motion
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.main_bathroom_bedtime_motion_on
 
       # Turn on the regular motion automation
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id: automation.main_bathroom_lights_motion_on
 
       # Turn OFF sleep mode
-      - service: switch.turn_off
+      - action: switch.turn_off
         entity_id: switch.adaptive_lighting_sleep_mode_main_bathroom
