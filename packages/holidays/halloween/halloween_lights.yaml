@@ -17,12 +17,16 @@ automation:
         state: "on"
       # Switch is currently OFF
       - condition: state
-        entity_id: switch.z_wave_outdoor_smart_plug
+        entity_id:
+          - switch.front_door_smart_plug_1
+          - switch.front_door_smart_plug_2
         state: "off"
     action:
       # Turn the smart plug switch ON
-      - service: switch.turn_on
-        entity_id: switch.z_wave_outdoor_smart_plug
+      - action: switch.turn_on
+        entity_id:
+          - switch.front_door_smart_plug_1
+          - switch.front_door_smart_plug_2
 
   #
   #
@@ -44,9 +48,13 @@ automation:
     condition:
       # Switch is currently ON
       - condition: state
-        entity_id: switch.z_wave_outdoor_smart_plug
+        entity_id:
+          - switch.front_door_smart_plug_1
+          - switch.front_door_smart_plug_2
         state: "on"
     action:
       # Turn the smart plug switch ON
-      - service: switch.turn_off
-        entity_id: switch.z_wave_outdoor_smart_plug
+      - action: switch.turn_off
+        entity_id:
+          - switch.front_door_smart_plug_1
+          - switch.front_door_smart_plug_2
