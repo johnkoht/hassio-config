@@ -6,7 +6,9 @@ switch:
       - switch.christmas_trees
       - switch.christmas_playroom_lights
       # Front yard lights
-      - switch.z_wave_outdoor_smart_plug
+      #- switch.z_wave_outdoor_smart_plug
+      - switch.front_door_smart_plug_1
+      - switch.front_door_smart_plug_2
 
   - platform: group
     name: "Christmas Trees"
