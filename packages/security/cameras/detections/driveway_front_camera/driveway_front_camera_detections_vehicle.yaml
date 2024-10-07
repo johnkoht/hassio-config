@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Drivewy Front Camera detects a vehicle
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.driveway_front_camera_vehicle_detected
         to: "on"
         variables:
@@ -28,9 +28,9 @@ automation:
     action:
       #
       # Call the camera detection alert service to handle
-      - service: script.camera_detection_alert
+      - action: script.camera_detection_alert
         data:
-          entity_id: "{{ trigger.entity_id }}"
+          detection_type: "vehicle"
           camera_name: "{{ camera_name }}"
           image_path: "{{ image_path }}"
           proxy_camera: "{{ proxy_camera }}"

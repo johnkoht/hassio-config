@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Garage Driveway camera detects an Animal
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.garage_driveway_camera_animal_detected
         to: "on"
         variables:
@@ -28,9 +28,9 @@ automation:
     action:
       #
       # Call the camera detection alert service to handle
-      - service: script.camera_detection_alert
+      - action: script.camera_detection_alert
         data:
-          entity_id: "{{ trigger.entity_id }}"
+          detection_type: "animal"
           camera_name: "{{ camera_name }}"
           image_path: "{{ image_path }}"
           proxy_camera: "{{ proxy_camera }}"

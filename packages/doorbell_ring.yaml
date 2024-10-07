@@ -6,20 +6,20 @@ automation:
     mode: "single"
     trigger:
       # Doorbell is pressed
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.front_door_camera_doorbell
         to: "on"
     action:
       # Sound the doorbell
-      - service: script.activate_doorbell_chime
+      - action: script.activate_doorbell_chime
         data: {}
 
       # Display snapshop on the TV
-      - service: script.display_doorbell_snapshot_on_tv
+      - action: script.display_doorbell_snapshot_on_tv
         data: {}
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Front Door"
           message: "Somebody is at the front door!"
@@ -35,12 +35,12 @@ automation:
     initial_state: off
     trigger:
       # Doorbell detects an person
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.front_door_camera_person_detected
         to: "on"
     action:
       # Display snapshop on the TV
-      - service: script.display_doorbell_snapshot_on_tv
+      - action: script.display_doorbell_snapshot_on_tv
         data: {}
 
   # Just a test
@@ -49,7 +49,7 @@ automation:
     mode: single
     initial_state: off
     trigger:
-      - platform: state
+      - trigger: state
         entity_id:
           - binary_sensor.front_door_camera_person_detected
           - binary_sensor.backyard_south_person_detected
@@ -63,7 +63,7 @@ automation:
           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
     condition: []
     action:
-      - service: notify.mobile_app_jk_2
+      - action: notify.mobile_app_jk_2
         metadata: {}
         data:
           title: Person Detected
@@ -132,17 +132,18 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - repeat:
-        count: 3
-        sequence:
-          - action: script.announcement_engine
-            data:
-              sound_file: "{{sound_file}}"
-              sound_length: "{{sound_file_length}}"
-              sound_volume: "{{sound_file_volume}}"
-              media_players: "{{ media_players}}"
-          # Delay 5 seconds
-          - delay: 5
+      - alias: "Repeat the doorbell sounce three times"
+        repeat:
+          count: 3
+          sequence:
+            - action: script.announcement_engine
+              data:
+                sound_file: "{{sound_file}}"
+                sound_length: "{{sound_file_length}}"
+                sound_volume: "{{sound_file_volume}}"
+                media_players: "{{ media_players}}"
+            # Delay 5 seconds
+            - delay: 5
 
   #
   #
@@ -159,12 +160,12 @@ script:
         state: "on"
 
       # Take a snapshot
-      - service: camera.snapshot
+      - action: camera.snapshot
         data:
           filename: /config/www/images/doorbell_camera_alert.jpg
           entity_id: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
 
-      - service: script.security_detection_display_notification_on_screens
+      - action: script.security_detection_display_notification_on_screens
         data:
           title: "Front Door Camera"
           message: "A person has been detected by the front door."
