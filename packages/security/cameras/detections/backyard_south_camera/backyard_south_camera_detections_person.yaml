@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Backyard South Camera detects a person
-      - trigger: state
+      - platform: state
         entity_id: binary_sensor.backyard_south_person_detected
         to: "on"
         variables:

@@ -16,6 +16,18 @@ automation:
       # Make sure the Nest isn't set to a preset already
       - condition: template
         value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode != 'none' }}"
+      # 
+      # The house is occupied or we're nearly home
+      - condition: or
+        conditions:
+          # House is occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "on"
+          # OR we're nearly home
+          - condition: state
+            entity_id: input_boolean.nearly_home
+            state: "on"
     action:
       - action: script.second_floor_climate_to_resume
         data: {}

@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Garage Driveway camera detects a Vehicle
-      - trigger: state
+      - platform: state
         entity_id: binary_sensor.garage_driveway_vehicle_detected
         to: "on"
         variables:
