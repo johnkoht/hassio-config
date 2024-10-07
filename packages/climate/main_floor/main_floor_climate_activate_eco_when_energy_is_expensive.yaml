@@ -14,6 +14,10 @@ automation:
         entity_id: binary_sensor.energy_prices_are_high
         to: "on"
     condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
       # Entertainment mode is OFF
       - condition: state
         entity_id: input_boolean.entertainment_mode

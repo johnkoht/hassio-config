@@ -6,7 +6,7 @@ automation:
     mode: "single"
     trigger:
       # Doorbell is pressed
-      - trigger: state
+      - platform: state
         entity_id: binary_sensor.front_door_camera_doorbell
         to: "on"
     action:
@@ -35,7 +35,7 @@ automation:
     initial_state: off
     trigger:
       # Doorbell detects an person
-      - trigger: state
+      - platform: state
         entity_id: binary_sensor.front_door_camera_person_detected
         to: "on"
     action:
@@ -49,7 +49,7 @@ automation:
     mode: single
     initial_state: off
     trigger:
-      - trigger: state
+      - platform: state
         entity_id:
           - binary_sensor.front_door_camera_person_detected
           - binary_sensor.backyard_south_person_detected

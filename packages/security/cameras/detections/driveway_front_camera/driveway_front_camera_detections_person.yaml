@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Drivewy Front Camera detects a person
-      - trigger: state
+      - platform: state
         entity_id: binary_sensor.driveway_front_camera_person_detected
         to: "on"
         variables:

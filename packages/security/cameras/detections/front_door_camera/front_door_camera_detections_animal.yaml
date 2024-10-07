@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Front door camera detects an animal
-      - trigger: state
+      - platform: state
         entity_id: binary_sensor.front_door_camera_animal_detected
         to: "on"
         variables:
