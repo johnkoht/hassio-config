@@ -144,6 +144,11 @@ script:
                 media_players: "{{ media_players}}"
             # Delay 5 seconds
             - delay: 5
+          until:
+            # Or until the door opens
+            - condition: state
+              entity_id: binary_sensor.front_door
+              state: "on"
 
   #
   #
