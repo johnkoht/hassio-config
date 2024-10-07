@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Backyard Porch Camera detects a person
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.backyard_porch_camera_person_detected
         to: "on"
         variables:
@@ -39,7 +39,7 @@ automation:
       # Call the camera detection alert service to handle
       - action: script.camera_detection_alert
         data:
-          entity_id: "{{ trigger.entity_id }}"
+          detection_type: "person"
           camera_name: "{{ camera_name }}"
           image_path: "{{ image_path }}"
           proxy_camera: "{{ proxy_camera }}"

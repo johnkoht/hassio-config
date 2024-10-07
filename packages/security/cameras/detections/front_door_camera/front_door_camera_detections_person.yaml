@@ -7,7 +7,7 @@ automation:
     trigger:
       #
       # Front door camera detects a person
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.front_door_camera_person_detected
         to: "on"
         variables:
@@ -24,9 +24,9 @@ automation:
     action:
       #
       # Call the camera detection alert service to handle
-      - service: script.camera_detection_alert
+      - action: script.camera_detection_alert
         data:
-          entity_id: "{{ trigger.entity_id }}"
+          detection_type: "person"
           camera_name: "{{ camera_name }}"
           image_path: "{{ image_path }}"
           proxy_camera: "{{ proxy_camera }}"

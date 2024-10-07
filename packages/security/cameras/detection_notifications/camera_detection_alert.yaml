@@ -8,10 +8,14 @@ script:
       #
       #
       #
-      entity_id:
-        name: Entity ID
-        description: The entity ID for the camera that triggered the detection
-        example: "binary_sensor.backyard_south_person_detected"
+      # camera_entity_id:
+      #   name: Camera Entity ID
+      #   description: The camera entity ID for the camera that triggered the detection
+      #   example: "binary_sensor.backyard_south_person_detected"
+      detection_type:
+        name: Detection Type
+        description: The type of detection the camera alerted about
+        example: "person"
       #
       #
       #
@@ -51,17 +55,17 @@ script:
 
     variables:
       #
-      # Identify the detection type
-      detection_type: >-
-        {% if "person" in entity_id %}
-          person
-        {% elif "animal" in entity_id %}
-          animal
-        {% elif "vehicle" in entity_id %}
-          vehicle
-        {% else %}
-          object
-        {% endif %}
+      # # Identify the detection type
+      # detection_type: >-
+      #   {% if "person" in camera_entity_id %}
+      #     person
+      #   {% elif "animal" in camera_entity_id %}
+      #     animal
+      #   {% elif "vehicle" in camera_entity_id %}
+      #     vehicle
+      #   {% else %}
+      #     object
+      #   {% endif %}
       #
       # For the TVs, we can't send the unifi protect proxy
       # image (maybe human error), so we download and send
@@ -119,12 +123,12 @@ script:
                     state: "on"
             sequence:
               # Take a snapshot from the camera
-              - service: camera.snapshot
+              - action: camera.snapshot
                 data:
                   filename: "/config/www/images/{{ local_image_name }}.jpg"
                   entity_id: "{{ camera }}"
               # Send a notification to the TVs
-              - service: script.security_detection_display_notification_on_screens
+              - action: script.security_detection_display_notification_on_screens
                 data:
                   title: "{{title}}"
                   message: "{{message}}"
@@ -141,7 +145,7 @@ script:
                 entity_id: input_boolean.bedtime
                 state: "on"
             sequence:
-              - service: notify.ios_family
+              - action: notify.ios_family
                 metadata: {}
                 data:
                   title: "{{title}}"
@@ -169,7 +173,7 @@ script:
                 state: "off"
             # Send a active push notification
             sequence:
-              - service: notify.ios_family
+              - action: notify.ios_family
                 metadata: {}
                 data:
                   title: "{{title}}"
@@ -190,7 +194,7 @@ script:
                 state: "not_home"
             # Send a time sensitive push notification
             sequence:
-              - service: notify.ios_family
+              - action: notify.ios_family
                 metadata: {}
                 data:
                   title: "{{title}}"
@@ -215,7 +219,7 @@ script:
               - condition: template
                 value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.exterior_doors.last_changed)) | int > 300 }}"
             sequence:
-              - service: script.voice_announcement
+              - action: script.voice_announcement
                 data:
                   media_players: auto
                   speech_message: "Attention: {{ message }}"
