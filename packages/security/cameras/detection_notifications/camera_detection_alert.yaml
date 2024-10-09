@@ -126,7 +126,7 @@ script:
               - action: camera.snapshot
                 data:
                   filename: "/config/www/images/{{ local_image_name }}.jpg"
-                  entity_id: "{{ camera }}"
+                  entity_id: "{{ proxy_camera }}"
               # Send a notification to the TVs
               - action: script.security_detection_display_notification_on_screens
                 data:

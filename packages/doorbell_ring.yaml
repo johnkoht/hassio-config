@@ -134,7 +134,15 @@ script:
       # or default to ones in occupied rooms
       - alias: "Repeat the doorbell sounce three times"
         repeat:
-          count: 3
+          # count: 3
+          while:
+            # Until the door opens
+            - condition: state
+              entity_id: binary_sensor.front_door
+              state: "on"
+            # Only 3 times max
+            - condition: template
+              value_template: "{{ repeat.index <= 2 }}"
           sequence:
             - action: script.announcement_engine
               data:
@@ -142,13 +150,8 @@ script:
                 sound_length: "{{sound_file_length}}"
                 sound_volume: "{{sound_file_volume}}"
                 media_players: "{{ media_players}}"
-            # Delay 5 seconds
-            - delay: 5
-          until:
-            # Or until the door opens
-            - condition: state
-              entity_id: binary_sensor.front_door
-              state: "on"
+            # Delay 4 seconds
+            - delay: 4
 
   #
   #
