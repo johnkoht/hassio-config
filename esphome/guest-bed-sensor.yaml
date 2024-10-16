@@ -32,25 +32,41 @@ captive_portal:
 
 binary_sensor:
   - platform: template
-    name: "Occupied"
-    id: mb_o
+    name: "Guest Bed Occupied"
+    id: guest_bed_occupied
     lambda: |-
-      if (id(guest_bed_sensor).state < id(guest_bed_trigger_level).state) {
+      if (id(guest_bed_left_sensor).state < id(guest_bed_trigger_level).state || id(guest_bed_right_sensor).state < id(guest_bed_trigger_level).state) {
         return true;
       } else {
         return false;
       }
 
 sensor:
+  # Left side (green/black)
   - platform: adc
-    pin: GPIO35
-    name: "Sensor"
-    id: "guest_bed_sensor"
+    pin: GPIO34
+    name: "Guest Bed Left Sensor"
+    id: "guest_bed_left_sensor"
     icon: mdi:bed
     attenuation: 11db
     update_interval: 0.5s
     filters:
-      #- multiply: 3.3
+      - sliding_window_moving_average:
+          window_size: 10
+          send_every: 1
+      - or:
+          - throttle: 180s
+          - delta: 0.02
+
+  # Right side (red)
+  - platform: adc
+    pin: GPIO35
+    name: "Guest Bed Right Sensor"
+    id: "guest_bed_right_sensor"
+    icon: mdi:bed
+    attenuation: 11db
+    update_interval: 0.5s
+    filters:
       - sliding_window_moving_average:
           window_size: 10
           send_every: 1

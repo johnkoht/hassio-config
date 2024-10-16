@@ -1,0 +1,108 @@
+substitutions:
+  name: "jr-suite-bed"
+  friendly_name: Jr. Suite Bed
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  min_version: 2024.6.0
+  name_add_mac_suffix: false
+  project:
+    name: esphome.web
+    version: dev
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Allow Over-The-Air updates
+ota:
+- platform: esphome
+
+# Allow provisioning Wi-Fi via serial
+improv_serial:
+
+wifi:
+  # Set up a wifi access point
+  ap: {}
+
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device via WiFi AP.
+captive_portal:
+
+dashboard_import:
+  package_import_url: github://esphome/example-configs/esphome-web/esp32.yaml@main
+  import_full_config: true
+
+# Sets up Bluetooth LE (Only on ESP32) to allow the user
+# to provision wifi credentials to the device.
+esp32_improv:
+  authorizer: none
+
+# To have a "next url" for improv serial
+web_server:
+
+binary_sensor:
+  # Jr. Suite Bed Occupancy Sensor
+  - platform: template
+    name: "Jr. Suite Bed Occupied"
+    id: john_bed_occupied
+    lambda: |-
+      if (id(jr_suite_bed_left_sensor).state < id(jr_suite_bed_trigger_level).state || id(jr_suite_bed_right_sensor).state < id(jr_suite_bed_trigger_level).state) {
+        return true;
+      } else {
+        return false;
+      }
+
+sensor:
+  # Left Bedside Sensor (black/green)
+  - platform: adc
+    pin: GPIO34
+    name: "Jr. Suite Bed Left Sensor"
+    id: "jr_suite_bed_left_sensor"
+    icon: mdi:bed
+    attenuation: 11db
+    update_interval: 0.5s
+    filters:
+      - sliding_window_moving_average:
+          window_size: 10
+          send_every: 1
+      - or:
+          - throttle: 180s
+          - delta: 0.02
+
+  # Right Bedside Sensor (red)
+  - platform: adc
+    pin: GPIO35
+    name: "Jr. Suite Bed Right Sensor"
+    id: "jr_suite_bed_right_sensor"
+    icon: mdi:bed
+    attenuation: 11db
+    update_interval: 0.5s
+    filters:
+      - sliding_window_moving_average:
+          window_size: 10
+          send_every: 1
+      - or:
+          - throttle: 180s
+          - delta: 0.02
+
+number:
+  # Jr. Suite Bed Trigger Level
+  - platform: template
+    name: "Jr. Suite Bed Trigger Level"
+    id: "jr_suite_bed_trigger_level"
+    icon: mdi:arrow-collapse-down
+    min_value: 0
+    max_value: 3.5
+    step: 0.05
+    optimistic: true
+    initial_value: 2.8
+    restore_value: true

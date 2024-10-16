@@ -392,3 +392,30 @@
     target:
       device_id: fbe1f9961737e541fa5e35c420d63bfd
   mode: single
+- id: '1728564743404'
+  alias: Temp auto - unlock garage door
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.bedtime
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: 'on'
+  - condition: state
+    entity_id: lock.garage_entry_door
+    state: locked
+  action:
+  - action: lock.unlock
+    metadata: {}
+    data: {}
+    target:
+      entity_id: lock.garage_entry_door
+  mode: single
