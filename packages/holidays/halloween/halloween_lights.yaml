@@ -20,6 +20,7 @@ automation:
         entity_id:
           - switch.front_door_smart_plug_1
           - switch.front_door_smart_plug_2
+          - switch.front_left_smart_plug_2
         state: "off"
     action:
       # Turn the smart plug switch ON
@@ -27,6 +28,7 @@ automation:
         entity_id:
           - switch.front_door_smart_plug_1
           - switch.front_door_smart_plug_2
+          - switch.front_left_smart_plug_2
 
   #
   #
@@ -51,6 +53,7 @@ automation:
         entity_id:
           - switch.front_door_smart_plug_1
           - switch.front_door_smart_plug_2
+          - switch.front_left_smart_plug_2
         state: "on"
     action:
       # Turn the smart plug switch ON
@@ -58,3 +61,4 @@ automation:
         entity_id:
           - switch.front_door_smart_plug_1
           - switch.front_door_smart_plug_2
+          - switch.front_left_smart_plug_2
