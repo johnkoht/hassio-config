@@ -22,7 +22,7 @@ automation:
       # Kitchen has been occupied for more than 10 minutes
       - wait_template: >-
           {{
-            states.binary_sensor.kitchen_motion_sensor_occupancy == "on" and
+            states.binary_sensor.kitchen_motion_sensor_occupancy.state == "on" and
             (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 600
           }}
 
