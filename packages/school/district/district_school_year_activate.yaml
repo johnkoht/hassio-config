@@ -35,5 +35,7 @@ automation:
         entity_id:
           - automation.primary_school_day_on
           - automation.primary_school_day_off
+          - automation.nino_school_day_on
+          - automation.nino_school_day_off
           - automation.school_departure_reminder
           - automation.school_day_reminder
