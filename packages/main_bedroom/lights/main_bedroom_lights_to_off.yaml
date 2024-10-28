@@ -15,6 +15,11 @@ automation:
       - platform: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "off"
+      # Main bedroom lighting automation turned on
+      - platform: state
+        entity_id: input_boolean.main_bedroom_lighting_automations
+        from: "off"
+        to: "on"
     condition:
       # Lighting automations are enabled
       - condition: state

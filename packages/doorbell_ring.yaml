@@ -139,7 +139,7 @@ script:
             # Until the door opens
             - condition: state
               entity_id: binary_sensor.front_door
-              state: "on"
+              state: "off"
             # Only 3 times max
             - condition: template
               value_template: "{{ repeat.index <= 2 }}"
