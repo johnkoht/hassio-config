@@ -4,7 +4,7 @@ automation:
     alias: "Zigbee Router Unavailable"
     trigger:
       - platform: state
-        entity_id: 
+        entity_id:
           - switch.smart_plug_1_switch
           - switch.smart_plug_2_switch
           - switch.smart_plug_3_switch
@@ -22,6 +22,7 @@ automation:
           - switch.smart_plug_15_switch
           - switch.smart_plug_16_switch
           - switch.smart_plug_17_switch
+          - switch.smart_plug_18_switch
           - switch.gazebo_smart_plug_switch
           - switch.tradfri_smart_plug_1_switch
           - switch.tradfri_smart_plug_2_switch
@@ -29,7 +30,7 @@ automation:
           - switch.tradfri_smart_plug_4_switch
           - switch.tradfri_smart_plug_5_switch
         to: "unavailable"
-        for: 
+        for:
           minutes: 15
     action:
       - service: script.general_notification
