@@ -26,4 +26,4 @@ switch:
       - switch.smart_plug_15_switch
       - switch.smart_plug_16_switch
       - switch.smart_plug_17_switch
-      - switch.tradfri_smart_plug_5_switch
+      - switch.smart_plug_18_switch
