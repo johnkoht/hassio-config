@@ -10,15 +10,15 @@ automation:
     alias: "Playroom lights off"
     trigger:
       # Playroom is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.playroom
         to: "Off"
       # Playroom is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.playroom_occupied
         to: "off"
       # Lighting automations turn on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
     condition:
@@ -38,5 +38,13 @@ automation:
             entity_id: input_boolean.playroom_occupied
             state: "off"
     action:
-      - service: light.turn_off
+      - action: light.turn_off
         entity_id: group.playroom_lights
+
+      - if:
+          - condition: state
+            entity_id: switch.christmas_playroom_lights
+            state: "on"
+        then:
+          - action: switch.turn_off
+            entity_id: swtich.christmas_playroom_lights

@@ -46,6 +46,7 @@ automation:
       # still dark outside
       - condition: time
         after: "12:00:00"
+        before: "22:00:00"
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.christmas_active
