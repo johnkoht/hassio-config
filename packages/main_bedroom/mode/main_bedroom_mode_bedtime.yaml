@@ -4,38 +4,44 @@ automation:
   - id: "main_bedroom_mode_bedtime"
     initial_state: on
     alias: "Main Bedroom mode bedtime"
-    trigger:
+    triggers:
       # # Bedtime is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Main bedroom becomes occupied for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "on"
         for:
           minutes: 5
       # Main bedroom door is closed for 2 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "off"
         for:
           minutes: 2
       # Bedtime hours active
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.bedtime
         to: "on"
-      # If we're in bed
-      - platform: state
+      # If we're in bed (boolean)
+      - trigger: state
         entity_id:
           - input_boolean.john_is_in_bed
           - input_boolean.cristina_in_bed
         to: "on"
+      # Bed is occupied
+      - trigger: state
+        entity_id:
+          - input_select.john_sleep_state
+          - input_select.cristina_sleep_state
+        to: "Just Laid Down"
       # Lights are turned OFF
-      - platform: state
+      - trigger: state
         entity_id: light.main_bedroom_main_lights
         to: "off"
-    condition:
+    conditions:
       # Main bedroom is occupied
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
@@ -64,13 +70,19 @@ automation:
           - condition: state
             entity_id: input_boolean.cristina_in_bed
             state: "on"
-    action:
-      - service: input_select.select_option
+          # Sleep state changes
+          - condition: state
+            entity_id:
+              - input_select.john_sleep_state
+              - input_select.cristina_sleep_state
+            state: "Just Laid Down"
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.main_bedroom
           option: "Bedtime"
       # Turn on some bedtime automations
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id:
           - automation.main_bedroom_john_night_light_off
           - automation.main_bedroom_night_light_for_john
