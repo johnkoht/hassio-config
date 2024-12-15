@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      extreme_climate:
+        friendly_name: Extreme Climate
+        value_template: >-
+          {% set temp = states.sensor.tempest_temperature.state | float %}
+          {{ temp > 90 or temp < 20 }}

@@ -1,7 +1,7 @@
 # Main Floor Climate - Activate Eco When Energy is Expensive
 #
 # If energy prices jump, turn on eco mode to save a few
-# bucks. 
+# bucks.
 # TODO: auto-invest money saved in QQQ
 #
 automation:
@@ -21,6 +21,10 @@ automation:
       # Entertainment mode is OFF
       - condition: state
         entity_id: input_boolean.entertainment_mode
+        state: "off"
+      # Not extreme weather
+      - condition: state
+        entity_id: binary_sensor.extreme_climate
         state: "off"
       # Make sure the Nest isn't set to a preset already
       - condition: template
