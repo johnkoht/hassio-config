@@ -24,6 +24,10 @@ automation:
           - input_boolean.ninos_bedroom_occupied
           - input_boolean.gianlucas_room_occupied
         state: "off"
+      # Not extreme weather
+      - condition: state
+        entity_id: binary_sensor.extreme_climate
+        state: "off"
       # Make sure the Nest isn't set to a preset already
       - condition: template
         value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode == 'none' }}"
