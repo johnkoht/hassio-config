@@ -8,12 +8,12 @@ automation:
   - id: "second_floor_climate_activate_eco_when_energy_is_expensive"
     alias: "Second Floor Climate - Activate Eco When Energy is Expensive"
     initial_state: on
-    trigger:
+    triggers:
       # If energy prices are too high
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.energy_prices_are_high
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -31,6 +31,6 @@ automation:
       # Make sure the Nest isn't set to a preset already
       - condition: template
         value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode == 'none' }}"
-    action:
+    actions:
       - action: script.second_floor_climate_to_eco
         data: {}
