@@ -1,0 +1,47 @@
+automation:
+  - id: "garage_doors_lock_remotes"
+    alias: "Garage Doors - Lock Remotes"
+    initial_state: on
+    triggers:
+      # When bedtime is active for 15 minutes
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+        for:
+          minutes: 15
+    actions:
+      # Lock the garage remotes
+      - action: lock.lock
+        entity_id:
+          - lock.garage_door_1_lock_remotes
+          - lock.garage_door_2_lock_remotes
+          - lock.garage_door_3_lock_remotes
+
+  - id: "garage_doors_unlock_remotes"
+    alias: "Garage Doors - Unlock Remotes"
+    initial_state: on
+    triggers:
+      # When bedtime mode is disabled
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+        for:
+          minutes: 5
+      # Somebody arrives at the house
+      - trigger: state
+        entity_id:
+          - person.john_koht
+          - person.cristina_falbo
+          - person.mary_falbo
+          - person.antoun_koht
+          - person.sonia_koht
+          - person.katia
+          - person.joe_falbo
+        to: "home"
+    actions:
+      # Lock the garage remotes
+      - action: lock.unlock
+        entity_id:
+          - lock.garage_door_1_lock_remotes
+          - lock.garage_door_2_lock_remotes
+          - lock.garage_door_3_lock_remotes
