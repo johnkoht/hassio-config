@@ -7,45 +7,45 @@ automation:
   - id: "kitchen_not_occupied"
     initial_state: on
     alias: "Kitchen not occupied"
-    trigger:
+    triggers:
       # No BLE for 2 minutes
-      # - platform: template
+      # - trigger: template
       #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length == 0 }}"
       #   for:
       #     minutes: 2
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_ble_occupancy
         to: "off"
         for:
           minutes: 2
       # # No motion detected for 3 minutes
-      # - platform: state
+      # - trigger: state
       #   entity_id: binary_sensor.kitchen_motion_sensor_status
       #   to: "off"
       #   for:
       #     minutes: 3
       # No motion detected for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion_sensor_status
         to: "off"
         for:
           minutes: 5
       # No aqara occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion_sensor_occupancy
         to: "off"
       # No aqara occupancy for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion_sensor_occupancy
         to: "off"
         for:
           minutes: 5
       # EPL Occupancy NOT Detected
-      - platform: state
+      - trigger: state
         # entity_id: binary_sensor.epl_kitchen_occupancy
         entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_presence
         to: "off"
-    condition:
+    conditions:
       # Kitchen is occupied
       - condition: state
         entity_id: input_boolean.kitchen_occupied
@@ -55,104 +55,20 @@ automation:
         # entity_id: binary_sensor.epl_kitchen_occupancy
         entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_presence
         state: "off"
-      - condition: or
-        conditions:
-          # When Guest Mode is enabled
-          # No Aqara occupancy for 5 minutes
-          - condition: and
-            conditions:
-              # Guest mode enabled
-              - condition: state
-                entity_id: input_boolean.guest_mode
-                state: "on"
-              # No Aqara occupancy for 5 minutes (15 mins total)
-              - condition: state
-                entity_id: binary_sensor.kitchen_motion_sensor_occupancy
-                state: "off"
-                for:
-                  minutes: 5
-          # Only family is home
-          # No motion for 3 minutes
-          # AND lights were automatically turned on
-          - condition: and
-            conditions:
-              # Guest mode NOT enabled
-              - condition: state
-                entity_id: input_boolean.guest_mode
-                state: "off"
-              # No Aqara motion for 5 minutes
-              - condition: state
-                entity_id: binary_sensor.kitchen_motion_sensor_status
-                state: "off"
-                for:
-                  minutes: 5
-          # # Only family is home
-          # # No motion for 3 minutes
-          # # AND lights were automatically turned on
-          # - condition: and
-          #   conditions:
-          #     # Guest mode NOT enabled
-          #     - condition: state
-          #       entity_id: input_boolean.guest_mode
-          #       state: "off"
-          #     # No Aqara motion for 3 minutes
-          #     - condition: state
-          #       entity_id: binary_sensor.kitchen_motion_sensor_status
-          #       state: "off"
-          #       for:
-          #         minutes: 3
-          #     # Lights were automatically turned on
-          #     - condition: state
-          #       entity_id: input_boolean.kitchen_lights_auto
-          #       state: "on"
-          # # OR no motion in 10 minutes
-          # # AND lights turned on manually
-          # - condition: and
-          #   conditions:
-          #     # Guest mode NOT enabled
-          #     - condition: state
-          #       entity_id: input_boolean.guest_mode
-          #       state: "off"
-          #     # No Aqara motion for 10 minutes
-          #     - condition: state
-          #       entity_id: binary_sensor.kitchen_motion_sensor_status
-          #       state: "off"
-          #       for:
-          #         minutes: 10
-          #     # Lights were manually turned on
-          #     - condition: state
-          #       entity_id: input_boolean.kitchen_lights_auto
-          #       state: "off"
-      # No BLE devices detected
-      # - condition: template
-      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length == 0 }}"
+      # No Aqara occupancy
+      - condition: state
+        entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+        state: "off"
       - condition: state
         entity_id: binary_sensor.kitchen_ble_occupancy
         state: "off"
-      # # Aqara doesn't detect occupancy
-      # - condition: state
-      #   entity_id: binary_sensor.kitchen_motion_sensor_occupancy
-      #   state: "off"
-      #   for:
-      #     minutes: 5
-      # # Nobody via BLE
-      # - condition: template
-      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length == 0 }}"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.kitchen_occupied
 
       - alias: "Wait 2 seconds"
         delay: 02
-      # - wait_template: "{{ is_state('automation.kitchen_lights_manually_turned_off', 'on') }}"
-      #   timeout: "00:01:00"
-      # # Wait for the automation.kitchen_lights_manually_turned_off to turn OFF
-      # # Since the input_boolean.kitchen_occupied will trigger the
-      # # lights to turn off, we want to wait until the automation runs
-      # # to reenable the lighting automations. We'll wait up to 2 mins.
-      # - wait_template: "{{ is_state('automation.kitchen_lights_manually_turned_off', 'off') }}"
-      #   timeout: "00:01:00"
 
       # Enable kitchen lighting automations
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.kitchen_lighting_automations

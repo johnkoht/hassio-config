@@ -59,7 +59,7 @@ automation:
         entity_id: binary_sensor.playroom_motion
         state: "off"
         for:
-          minutes: 3
+          minutes: 10
       # - condition: or
       #   conditions:
       #     # When both kids sleeping
