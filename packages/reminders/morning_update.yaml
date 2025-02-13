@@ -68,6 +68,7 @@ script:
             - If there are no birthdays then you can skip this part altogether and not mention that there are not birthdays
             - If there are no calendar invites, you can simply let us know there's nothing on the calendar
             - When covering all of the weather details, plese be very concise. 
+            - Occupational Therapy should always be referred to as OT. Please don't say "occupation therapy"
 
             Please read the carefully and ensure you follow the instructions. Remember, this should be plain text sentences that a computer can read and generate a text-to-speech message from.
 
@@ -145,7 +146,7 @@ template:
           entity_id:
             - calendar.gianluca_school
             - calendar.ninos_school
-            #- calendar.kohbocal
+            - calendar.kohbocal
             - calendar.lyon_school
         response_variable: calendar
       - variables:
