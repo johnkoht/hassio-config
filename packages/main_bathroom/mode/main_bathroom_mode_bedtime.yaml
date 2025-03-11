@@ -4,20 +4,20 @@ automation:
   - id: "main_bathroom_mode_bedtime"
     initial_state: on
     alias: "Main Bathroom mode bedtime"
-    trigger:
+    triggers:
       # # Bedtime is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Bedtime hours active
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.bedtime
         to: "on"
       # When the main bedroom goes to Bedtime mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Bedtime"
-    condition:
+    conditions:
       # Bathroom is not already Bedtime
       - condition: template
         value_template: "{{ not is_state('input_select.main_bathroom','Bedtime') }}"
@@ -33,7 +33,7 @@ automation:
             entity_id: input_select.main_bedroom
             state: "Bedtime"
     action:
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.main_bathroom
           option: "Bedtime"
@@ -48,19 +48,19 @@ automation:
                 state: "on"
             sequence:
               - wait_for_trigger:
-                  - platform: state
+                  - trigger: state
                     entity_id: input_boolean.main_bathroom_occupied
                     to: "off"
                 timeout:
                   minutes: 10
                 continue_on_timeout: true
-              - service: script.turn_on
+              - action: script.turn_on
                 entity_id: script.main_bathroom_activate_bedtime_lighting_mode
         #
         # If bathroom is NOT occupied then just
         # run the script to activate bedtime lighting mode
         default:
-          - service: script.turn_on
+          - action: script.turn_on
             entity_id: script.main_bathroom_activate_bedtime_lighting_mode
 
 #
@@ -73,16 +73,18 @@ script:
     mode: restart
     sequence:
       # Turn on the bedtime motion automation
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id: automation.main_bathroom_bedtime_motion_on
 
       # Turn off the regular motion automation
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.main_bathroom_lights_motion_on
 
       # Delay 1 min
       - delay: "00:01:00"
 
       # Turn ON sleep mode
-      - service: switch.turn_on
-        entity_id: switch.adaptive_lighting_sleep_mode_main_bathroom
+      - action: switch.turn_on
+        entity_id:
+          - switch.adaptive_lighting_sleep_mode_main_bathroom
+          - switch.adaptive_lighting_sleep_mode_main_bathroom_toilet

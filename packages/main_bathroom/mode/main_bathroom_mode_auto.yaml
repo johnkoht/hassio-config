@@ -4,37 +4,37 @@ automation:
   - id: "main_bathroom_mode_auto"
     initial_state: on
     alias: "Main Bathroom mode auto"
-    trigger:
+    triggers:
       # House is turned to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
       # Main Bathroom becomes unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bathroom_occupied
         to: "off"
       # Bathroom is Wake for 15 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bathroom
         to: "Wake"
         for:
           minutes: 15
       # Main bedroom turns to Wake
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Wake"
       # Main bedroom turns to Auto
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Auto"
       # It's after 7am
-      - platform: time
+      - trigger: time
         at: "00:07:00"
       # Bedtime hours inactive
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.bedtime
         to: "off"
-    condition:
+    conditions:
       # Main Bathroom is not occupied
       - condition: state
         entity_id: input_boolean.main_bathroom_occupied
@@ -49,7 +49,7 @@ automation:
       # Main bedroom is not in Bedtime mode
       - condition: template
         value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
-    action:
+    actions:
       - action: input_select.select_option
         data:
           entity_id: input_select.main_bathroom
@@ -65,4 +65,6 @@ automation:
 
       # Turn OFF sleep mode
       - action: switch.turn_off
-        entity_id: switch.adaptive_lighting_sleep_mode_main_bathroom
+        entity_id:
+          - switch.adaptive_lighting_sleep_mode_main_bathroom
+          - switch.adaptive_lighting_sleep_mode_main_bathroom_toilet
