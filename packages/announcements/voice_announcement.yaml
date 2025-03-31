@@ -183,6 +183,9 @@ script:
 
         {{ vol }}
 
+      # Save the announcement to the text field
+      save_announcement: true
+
     sequence:
       # Somebody is home
       - condition: state
@@ -207,7 +210,7 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - service: script.announcement_engine
+      - action: script.announcement_engine
         data:
           speech_message: "{{ speech_message }}"
           sound_file: "{{sound_file}}"
@@ -232,8 +235,14 @@ script:
 
             {{ media_players}}
 
+      # In some cases, we don't need to log the message. If save_announcement
+      # is set to false then we'll skip, otherwise, it defaults to true
+      - alias: "Check if we should save the message"
+        condition: template
+        value_template: "{{save_announcement}}"
+
       # Save the latest message
-      - service: input_text.set_value
+      - action: input_text.set_value
         entity_id: input_text.latest_voice_announcement
         data:
           value: "{{ speech_message }}"

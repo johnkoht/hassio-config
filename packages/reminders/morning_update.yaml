@@ -2,13 +2,13 @@ automation:
   - id: "morning_update"
     alias: "Morning Update"
     mode: "single"
-    trigger:
+    triggers:
       # # Bedtime mode is disabled
       # - platform: state
       #   entity_id: input_boolean.bedtime
       #   from: "on"
       #   to: "off"
-      - platform: time
+      - trigger: time
         at: "07:05:00"
     condition:
       # House is occupied
@@ -135,7 +135,7 @@ script:
 #
 template:
   - trigger:
-      - platform: time_pattern
+      - trigger: time_pattern
         hours: /1
     action:
       - action: calendar.get_events
@@ -176,7 +176,7 @@ template:
   - trigger:
       # - platform: state
       #   entity_id: weather.pirateweather
-      - platform: time_pattern
+      - trigger: time_pattern
         hours: /1
     action:
       - action: weather.get_forecasts

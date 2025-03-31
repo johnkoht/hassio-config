@@ -7,6 +7,8 @@ homeassistant:
   allowlist_external_dirs:
     - "/tmp"
 
+prometheus:
+
 # Text to speech
 # tts:
 #   - platform: google_translate
