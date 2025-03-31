@@ -8,7 +8,7 @@ automation:
         entity_id: input_boolean.bedtime
         to: "on"
         for:
-          minutes: 15
+          minutes: 5
     actions:
       # Lock the garage remotes
       - action: lock.lock
@@ -38,6 +38,15 @@ automation:
           - person.katia
           - person.joe_falbo
         to: "home"
+    conditions:
+      # Only unlock if any of the remotes are locked
+      - condition: state
+        entity_id:
+          - lock.garage_door_1_lock_remotes
+          - lock.garage_door_2_lock_remotes
+          - lock.garage_door_3_lock_remotes
+        match: any
+        state: "locked"
     actions:
       # Lock the garage remotes
       - action: lock.unlock
