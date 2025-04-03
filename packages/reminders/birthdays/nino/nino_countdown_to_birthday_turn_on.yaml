@@ -7,33 +7,36 @@ automation:
     alias: "Nino Countdown to Birthday - Turn On"
     mode: "single"
     initial_state: on
-    trigger:
-      # First thing in the morning
-      - platform: time
-        at: "00:00:01"
-      # Hassio reloads/starts
-      - platform: event
-        event_type: automation_reloaded
-      - platform: homeassistant
-        event: start
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.nino_days_to_birthday
-        below: 16
-    action:
+    triggers:
+      # Trigger on 4/2
+      - trigger: template
+        value_template: "{{ now().month == 4 and now().day == 2 }}"
+      # # First thing in the morning
+      # - platform: time
+      #   at: "00:00:01"
+      # # Hassio reloads/starts
+      # - platform: event
+      #   event_type: automation_reloaded
+      # - platform: homeassistant
+      #   event: start
+    # conditions:
+    #   - condition: numeric_state
+    #     entity_id: sensor.nino_days_to_birthday
+    #     below: 16
+    actions:
       # Turn on the boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.nino_countdown_to_birthday
 
       # Turn on the automation to check if we should turn OFF the boolean
       # And turn on the daily reminder
       # Turn on the daily reset
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id:
           - automation.nino_countdown_to_birthday_turn_off
-          - automation.nino_birthday_countdown_reminder
-          - automation.nino_birthday_daily_reset
+          #- automation.nino_birthday_countdown_reminder
+          #- automation.nino_birthday_daily_reset
 
       # Turn this automation off
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.nino_countdown_to_birthday_turn_on

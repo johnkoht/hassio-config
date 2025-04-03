@@ -76,7 +76,27 @@ script:
 
             Here is the information for today's daily briefing:
 
-            Here are the school calendar events:
+            Today's date is: {{ now() }}
+
+            ## Family Birthday reminders!
+            If it's within two weeks of my kids birthday, I'd like you to include a countdown in your response. I'll provide the kids birthdays below as well as some instructions:
+              - Nino's birthday is April 17th
+              - Gianluca's birthday is August 30th
+              - If it's within two weeks before their birthday, please provide a countdown, e.g. "Hey Nino, it's 9 days until your birthday!"
+              - Be playful and make sure you speak directly to Nino or Gianluca. 
+              - As we get closer to their big day (1-2 days away) make it more exciting
+              - On the day of, make sure to really celebrate it and say happy birthday
+              - They both have friends parties and parties with our family. Feel free to get them excited about their birthday parties!
+
+            {% if now().month == 4 and now().day == 1 %}
+              Today is april fools day! Can you prank my family and mix things up today! Say some outrageous things like:
+              - Tell Nino something crazy is on the menu for lunch, like an "Enderdragon burger" or "friend Enderdragon" since he love Minecraft. Get creative! But sound serious to prank him!  
+              - Share outrageous weather conditions. Like really outrageous.
+              - Make something up that's not really on the calendar that would not be fun, like a doctors appointment for the kids or something silly.
+              - Make something else up about aliens or minecraft related
+            {% endif %}
+
+            Here are the calendar events for today. Make to to let us know if there are any holidays or events we should know about. 
             {{ states.sensor.calendar_events_today.attributes.events }}
 
             {% if states.binary_sensor.primary_school_closed.state == "on" %}
@@ -109,6 +129,10 @@ script:
               8 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_8h.state }}
               9 hour precipitation probability: {{ states.sensor.pirateweather_precip_probability_9h.state }}
             {% endif %}
+
+            Last rule to follow, if today is any kind of special day like a holiday, make sure to adapt your response appropriately. For example:
+              - On christmas, you can say "Ho ho ho! Merry Christmas" or something fun and christmasy
+              - On April Fool Day, you can be funny and fool us before providing our briefing.
         response_variable: chatgpt
       #
       # Push Notification
@@ -148,6 +172,7 @@ template:
             - calendar.ninos_school
             - calendar.kohbocal
             - calendar.lyon_school
+            - calendar.holidays_in_united_states
         response_variable: calendar
       - variables:
           e: |-
