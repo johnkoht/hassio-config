@@ -19,6 +19,10 @@ condition:
   - condition: state
     entity_id: input_boolean.house_occupied
     state: "on"
+  # House is not in bedtime
+  - condition: state
+    entity_id: input_boolean.bedtime
+    state: "off"
 action:
   - service: input_select.select_option
     data:
