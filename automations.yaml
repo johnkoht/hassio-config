@@ -419,3 +419,14 @@
     target:
       entity_id: lock.garage_entry_door
   mode: single
+- id: '1745156745937'
+  alias: ' Notify Cristina of Event'
+  description: ''
+  triggers:
+  - trigger: calendar
+    entity_id: calendar.kohbocal
+    event: start
+    offset: '-1:0:0'
+  conditions: []
+  actions:
+  mode: single
