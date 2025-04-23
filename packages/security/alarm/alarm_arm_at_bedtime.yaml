@@ -2,12 +2,12 @@ automation:
   - id: "alarm_arm_at_bedtime"
     alias: "Alarm - Arm at Bedtime"
     mode: "single"
-    trigger:
+    triggers:
       # Bedtime mode enabled for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
-    condition:
+    conditions:
       # Alarm is current disarmed
       - condition: state
         entity_id: alarm_control_panel.panel
@@ -16,12 +16,12 @@ automation:
       - condition: time
         after: "20:00:00"
         before: "05:00:00"
-    action:
+    actions:
       # Arm Home
-      - service: alarm_control_panel.alarm_arm_home
+      - action: alarm_control_panel.alarm_arm_home
         entity_id: alarm_control_panel.panel
 
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: Home is armed stay!
           title: Security System

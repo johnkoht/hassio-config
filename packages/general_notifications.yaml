@@ -2,7 +2,7 @@
 #
 #
 # USAGE:
-# service: script.general_notification
+# action: script.general_notification
 # data:
 #   title: "Home Assistant"
 #   message: "Hello, world!"
@@ -36,7 +36,7 @@ script:
     alias: "Clear Notifications"
     mode: "queued"
     sequence:
-      - service: >
+      - action: >
           {% if devices == "all"  %}
             notify.ios_family
           {% elif devices == "jk" %}
@@ -94,7 +94,7 @@ script:
             value_template: "{{ true if tag is defined and tag|length else false}}"
 
         then:
-          - service: >
+          - action: >
               {% if devices == "all"  %}
                 notify.ios_family
               {% elif devices == "jk" %}
@@ -111,7 +111,7 @@ script:
                   interruption-level: "{{ priority }}"
 
         else:
-          - service: >
+          - action: >
               {% if devices == "all"  %}
                 notify.ios_family
               {% elif devices == "jk" %}
@@ -131,17 +131,17 @@ automation:
   - id: "notifications_activate_important_only"
     alias: "Notifications - Activate Important Only"
     mode: "single"
-    trigger:
+    triggers:
       # Bedtime mode is ON
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Entertainment mode is ON
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.entertainment_mode
         to: "on"
       # House is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
     condition:
@@ -151,7 +151,7 @@ automation:
         state: "All"
     action:
       # Set the notification level to "Important"
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.notification_level
           option: "Important"

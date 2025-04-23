@@ -23,22 +23,22 @@ condition:
           - condition: state
             entity_id: input_boolean.john_is_in_bed
             state: "on"
-          # If I'm out of town then the house should
+          # If I'm not home the house should
           # skip my bed detection
           - condition: state
-            entity_id: input_select.john_status
-            state: "Extended Away"
+            entity_id: input_boolean.john_home
+            state: "off"
       # Cristina is in bed OR out of town
       - condition: or
         conditions:
           - condition: state
             entity_id: input_boolean.cristina_in_bed
             state: "on"
-          # If Cristina's out of town then the house should
+          # If Cristina's NOT HOME then the house should
           # skip my bed detection
           - condition: state
-            entity_id: input_select.cristina_status_dropdown
-            state: "Extended Away"
+            entity_id: input_boolean.cristina_home
+            state: "off"
 action:
   - service: input_boolean.turn_on
     entity_id: input_boolean.bedtime

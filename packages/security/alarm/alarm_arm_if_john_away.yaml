@@ -1,0 +1,60 @@
+automation:
+  - id: "alarm_arm_if_john_away"
+    alias: "Alarm - Arm if John Away"
+    mode: "single"
+    initial_state: false
+    triggers:
+      # Trigger at 9:30 PM
+      - trigger: time
+        at: "21:30:00"
+    conditions:
+      # Alarm is current disarmed
+      - condition: state
+        entity_id: alarm_control_panel.panel
+        state: "disarmed"
+      # John is NOT HOME
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "off"
+    actions:
+      # Arm Home
+      - action: alarm_control_panel.alarm_arm_home
+        entity_id: alarm_control_panel.panel
+
+      - action: script.general_notification
+        data:
+          message: Home is ARMED for stay since John's not home.
+          title: Security System
+          devices: "cfalb"
+          priority: "time-sensitive"
+          tag: "home-security"
+
+  #
+  # If John is AWAY, turn on the automation that
+  # will arm the house at night
+  - id: "active_alarm_automation_if_john_away"
+    alias: "Activate Alarm Automation if John Away"
+    mode: "single"
+    triggers:
+      # If John is NOT HOME
+      - trigger: state
+        entity_id: input_boolean.john_home
+        to: "off"
+    actions:
+      - action: automation.turn_on
+        entity_id: automation.alarm_arm_if_john_away
+
+  #
+  # If John is HOME, turn on the automation that
+  # will arm the house at night
+  - id: "deactive_alarm_automation_if_john_home"
+    alias: "Deactivate Alarm Automation if John Home"
+    mode: "single"
+    triggers:
+      # If John is HOME
+      - trigger: state
+        entity_id: input_boolean.john_home
+        to: "on"
+    actions:
+      - action: automation.turn_off
+        entity_id: automation.alarm_arm_if_john_away
