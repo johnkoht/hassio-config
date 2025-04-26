@@ -50,3 +50,51 @@ class KohboPersonChip extends HTMLElement {
   }
   
   customElements.define("kohbo-person-card", KohboPersonCard);
+
+
+  // - type: custom:button-card
+  //                   entity: person.john_koht
+  //                   #aspect_ratio: 1/1
+  //                   name: Person
+  //                   show_entity_picture: true
+  //                   show_name: false
+  //                   tap_action:
+  //                     action: navigate
+  //                     navigation_path: "#john"
+  //                   styles:
+  //                     card:
+  //                       - background-color: transparent
+  //                       - border: none
+  //                       #- border-radius: 50%
+  //                       - width: 50px
+  //                       - height: 50px
+  //                       - overflow: visible
+  //                     entity_picture:
+  //                       - border-radius: 50%
+  //                     icon:
+  //                       - height: 100%
+  //                       - width: 100%
+  //                     custom_fields:
+  //                       status:
+  //                         - position: absolute
+  //                         - top: -13px
+  //                         - right: -13px
+  //                         - width: 80%
+  //                         - height: 80%
+  //                         - color: |
+  //                             [[[
+  //                               if (states['person.john_koht'].state == 'home') {
+  //                                 return "green";
+  //                               } else {
+  //                                 return "red"
+  //                               }
+  //                             ]]]
+  //                   custom_fields:
+  //                     status: |
+  //                       [[[
+  //                         return `<ha-icon icon="mdi:circle-medium"></ha-icon>`;                          
+  //                       ]]]
+  //                   # visibility:
+  //                   #   - condition: state
+  //                   #     entity: input_boolean.john_home
+  //                   #     state: "on"

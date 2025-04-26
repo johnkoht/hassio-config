@@ -27,146 +27,262 @@
 #   - Speech notifications
 #   - Adaptive lighting
 
+decluttering_templates:
+  person_chip:
+    card:
+      type: custom:button-card
+      entity: "[[entity]]"
+      #aspect_ratio: 1/1
+      name: Person
+      show_entity_picture: true
+      show_name: false
+      tap_action:
+        action: navigate
+        navigation_path: "#[[id]]"
+      styles:
+        card:
+          - background-color: transparent !important
+          - background: none
+          - border: none
+          - width: 50px
+          - height: 50px
+          - overflow: visible
+        entity_picture:
+          - border-radius: 50%
+        icon:
+          - height: 100%
+          - width: 100%
+        custom_fields:
+          status:
+            - position: absolute
+            - top: -13px
+            - right: -13px
+            - width: 80%
+            - height: 80%
+            - color: |
+                [[[
+                  if (states['[[entity]]'].state == 'home') {
+                    return "green";
+                  } else {
+                    return "red"
+                  }
+                ]]]
+      custom_fields:
+        status: |
+          [[[
+            return `<ha-icon icon="mdi:circle-medium"></ha-icon>`;                          
+          ]]]
+
 title: "Dining Room"
-theme: "minimalist-desktop"
-background: "var(--background-image)"
+theme: kohbo
+#background: "var(--background-image)"
 # views: !include_dir_merge_list "views/"
 views:
   - title: "Dining Room"
     path: 0
+    theme: kohbo
     icon: "mdi:flower"
     cards:
       - type: "vertical-stack"
         cards:
           - type: "horizontal-stack"
+            # - type: custom:layout-card
+            #   layout_type: grid
+            #   layout:
+            #     grid-template-columns: 50% 50%
             cards:
               # - type: custom:bubble-card
-              #   card_type: button
-              #   button_type: name
-              #   name: House
+              #   card_type: select
+              #   name: House Mode
+              #   show_name: false
+              #   entity: input_select.house
               #   icon: mdi:home-lightning-bolt
-              #   button_action:
-              #     tap_action:
-              #       action: navigate
-              #       navigation_path: "#house_mode"
-              - type: custom:bubble-card
-                card_type: select
-                name: House Mode
-                show_name: false
-                entity: input_select.house
+              #   show_state: true
+              - type: custom:button-card
+                name: "Auto"
                 icon: mdi:home-lightning-bolt
-                show_state: true
+                layout: icon_name
+                size: 28px
+                tap_action:
+                  action: navigate
+                  navigation_path: "#house-mode"
+                styles:
+                  card:
+                    #- border: none
+                    - width: 150px
+                    - height: 50px
+                    - margin-right: 40px
+                    - border-radius: 45px
+                    # - background: radial-gradient(68.86% 108.57% at 29.04% 31.2%, rgba(233, 236, 239, 0.1125) 0%, rgba(233, 236, 239, 0.0375) 100%)
+                    # - backdrop-filter: blur(4px)
+                  name:
+                    - justify-self: start
 
-              - type: horizontal-stack
-                cards:
-                  - type: custom:button-card
-                    entity: person.john_koht
-                    #aspect_ratio: 1/1
-                    name: Person
-                    show_entity_picture: true
-                    show_name: false
-                    tap_action:
-                      action: navigate
-                      navigation_path: "#john"
-                    styles:
-                      card:
-                        - background-color: transparent
-                        - border: none
-                        #- border-radius: 50%
-                        - width: 50px
-                        - height: 50px
-                        - overflow: visible
-                      entity_picture:
-                        - border-radius: 50%
-                      icon:
-                        - height: 100%
-                        - width: 100%
-                      custom_fields:
-                        status:
-                          - position: absolute
-                          - top: -13px
-                          - right: -13px
-                          - width: 80%
-                          - height: 80%
-                          - color: |
-                              [[[
-                                if (states['person.john_koht'].state == 'home') {
-                                  return "green";
-                                } else {
-                                  return "red"
-                                }
-                              ]]]
-                    custom_fields:
-                      status: |
-                        [[[
-                          return `<ha-icon icon="mdi:circle-medium"></ha-icon>`;                          
-                        ]]]
-                    # visibility:
-                    #   - condition: state
-                    #     entity: input_boolean.john_home
-                    #     state: "on"
-                  - type: custom:button-card
-                    entity: person.cristina_falbo
-                    #aspect_ratio: 1/1
-                    name: Cristina
-                    show_entity_picture: true
-                    show_name: false
-                    tap_action:
-                      action: navigate
-                      navigation_path: "#cristina"
-                    styles:
-                      card:
-                        - background-color: transparent
-                        - border: none
-                        - border-radius: 50%
-                        - width: 50px
-                        - height: 50px
-                      icon:
-                        - height: 100%
-                        - width: 100%
-                    # visibility:
-                    #   - condition: state
-                    #     entity: input_boolean.cristina_home
-                    #     state: "on"
+              # People Status
+              #
+              # - type: horizontal-stack
+              - type: custom:mod-card
+                # card_mod:
+                #   style: |
+                #     hui-horizontal-stack-card$: |
+                #       #root decluttering-card {
+                #         flex: none;
+                #       }
+                card_mod:
+                  debug: true
+                  style: |
+                    "hui-horizontal-stack-card $":
+                      "#root":
+                        "decluttering-card": {
+                          background-color: blue;
+                          flex: none;
+                        }
 
-                    # custom_fields:
-                    #   status: |
-                    #     [[[
-                    #       if (states['person.john_koht'].state =='not_home') {
-                    #       return `<ha-icon icon="mdi:home-export-outline"
-                    #         style="width: 20px; height: 20px; color: '#888888';">
-                    #         </ha-icon><span> Away</span>`;
-                    #       }
-                    #       if (states['person.john_koht'].state =='home') {
-                    #       return `<ha-icon
-                    #         icon="mdi:home"
-                    #         style="width: 20px; height: 20px; color: 888888;">
-                    #         </ha-icon><span> ${entity.state}</span>`;
-                    #       } else {
-                    #       return `<ha-icon
-                    #         icon="mdi:map-marker-radius"
-                    #         style="width: 20px; height: 20px; color: 888888;">
-                    #         </ha-icon><span> ${entity.state}</span>`;
-                    #       }
-                    #     ]]]
-                  - type: vertical-stack
-                    cards:
-                      - type: custom:bubble-card
-                        card_type: pop-up
-                        hash: "#john"
-                        name: John
-                        icon: mdi:fridge
-                        entity: light.kitchen_lights
-                  - type: vertical-stack
-                    cards:
-                      - type: custom:bubble-card
-                        card_type: pop-up
-                        hash: "#cristina"
-                        name: Cristina
-                        icon: mdi:fridge
-                        entity: light.kitchen_lights
-                  - type: custom:kohbo-person-chip
-                    entity: person.john_koht
+                    # hui-horizontal-stack-card $: |
+                    #   #root > hui-card: {
+                    #     background-color: green;
+                    #   }
+                  #   ha-card {
+                  #     background-color: blue;
+                  #   }
+
+                  #   "ha-card hui-horizontal-stack-card $ #root" {
+                  #     background-color: red;
+                  #   }
+
+                  #   "ha-card hui-horizontal-stack-card $":
+                  #     #root hui-card decluttering-card {
+                  #       background: green;
+                  #     }
+
+                  #   ha-card hui-horizontal-stack-card $ hui-card {
+                  #     background-color: red;
+                  #     flex: none !important;
+                  #   }
+
+                  #   hui-horizontal-stack-card$: |
+                  #     #root > decluttering-card {
+                  #       flex: none !important;
+                  #     }
+
+                card:
+                  type: horizontal-stack
+                  cards:
+                    # John
+                    - type: custom:decluttering-card
+                      template: person_chip
+                      variables:
+                        - entity: person.john_koht
+                        - id: john
+                    # Cristina
+                    - type: custom:decluttering-card
+                      template: person_chip
+                      variables:
+                        - entity: person.cristina_falbo
+                        - id: cristina
+                    # Nonna
+                    - type: custom:decluttering-card
+                      template: person_chip
+                      variables:
+                        - entity: person.mary_falbo
+                        - id: mary
+                      # visibility:
+                      #   - condition: state
+                      #     entity: input_boolean.nonna_home
+                      #     state: "on"
+                    # Katia
+                    - type: custom:decluttering-card
+                      template: person_chip
+                      variables:
+                        - entity: person.katia
+                        - id: katia
+                      # visibility:
+                      #   - condition: state
+                      #     entity: input_boolean.katia_home
+                      #     state: "on"
+
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#john"
+            name: John
+            # icon: mdi:fridge
+            # entity: light.kitchen_lights
+          - type: custom:mushroom-person-card
+            entity: person.john_koht
+            layout: horizontal
+            fill_container: true
+            primary_info: name
+            secondary_info: state
+          - type: entities
+            entities:
+              - entity: input_boolean.john_home
+                name: John (Boolean)
+                secondary_info: last-changed
+              - entity: sensor.john_room_presence
+                secondary_info: last-changed
+              - entity: binary_sensor.john_bed_occupied
+                secondary_info: last-changed
+                name: Bed Occupied (FRS)
+              - entity: input_boolean.john_is_in_bed
+                secondary_info: last-changed
+              - entity: input_boolean.john_dnd
+                secondary_info: last-changed
+                name: John DnD Status
+              - entity: sensor.home_john_distance
+                secondary_info: last-changed
+                name: Proximity
+              - entity: input_boolean.john_commuting
+                secondary_info: last-changed
+                name: Commuting
+              - entity: sensor.jk_iphone_14_battery_level
+                secondary_info: last-changed
+                name: iPhone Battery
+            card_mod:
+              style: |
+                ha-card {
+                  background: none;
+                }
+
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#cristina"
+            name: Cristina
+            icon: mdi:fridge
+            entity: light.kitchen_lights
+
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#nonna"
+            name: Nonna
+            icon: mdi:fridge
+            entity: light.kitchen_lights
+
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#katia"
+            name: Katia
+            icon: mdi:fridge
+            entity: light.kitchen_lights
+
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#house-mode"
+            name: House Mode
+            entity:
+              light.kitchen_lights
+
+              # - type: custom:kohbo-person-chip
+              #   entity: person.john_koht
           # - type: vertical-stack
           #   cards:
           #     - type: custom:bubble-card
