@@ -43,6 +43,8 @@ automation:
           # We only want to trigger when nobody is detected through BLE
           - condition: template
             value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
+            for:
+              minutes: 2
     action:
       #
       # Call the camera detection alert service to handle
