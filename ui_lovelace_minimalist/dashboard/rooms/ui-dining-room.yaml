@@ -200,6 +200,15 @@ views:
                       #   - condition: state
                       #     entity: input_boolean.katia_home
                       #     state: "on"
+                    # - type: custom:kohbo-person-chip
+                    #   entity: person.john_koht
+                    - type: "custom:custom-security-card"
+                      entities:
+                        - input_boolean.office_occupied
+                    - type: "custom:wired-toggle-card"
+                      entities:
+                        - input_boolean.house_occupied
+                        - input_boolean.john_home
 
       - type: vertical-stack
         cards:

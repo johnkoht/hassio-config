@@ -1,6 +1,6 @@
 substitutions:
-  name: "jr-suite-bed"
-  friendly_name: Jr. Suite Bed
+  name: "esphome-gianluca-bed-sensor"
+  friendly_name: Gianluca Bed Sensor
 
 esphome:
   name: ${name}
@@ -50,12 +50,12 @@ esp32_improv:
 web_server:
 
 binary_sensor:
-  # Jr. Suite Bed Occupancy Sensor
+  # Gianluca Bed Occupancy Sensor
   - platform: template
-    name: "Jr. Suite Bed Occupied"
-    id: john_bed_occupied
+    name: "Gianluca Bed Occupied"
+    id: gianluca_bed_occupied
     lambda: |-
-      if (id(jr_suite_bed_left_sensor).state < id(jr_suite_bed_trigger_level).state || id(jr_suite_bed_right_sensor).state < id(jr_suite_bed_trigger_level).state) {
+      if (id(gianluca_bed_left_sensor).state < id(gianluca_bed_trigger_level).state || id(gianluca_bed_right_sensor).state < id(gianluca_bed_trigger_level).state) {
         return true;
       } else {
         return false;
@@ -65,8 +65,8 @@ sensor:
   # Left Bedside Sensor (black/green)
   - platform: adc
     pin: GPIO34
-    name: "Jr. Suite Bed Left Sensor"
-    id: "jr_suite_bed_left_sensor"
+    name: "Gianluca Bed Left Sensor"
+    id: "gianluca_bed_left_sensor"
     icon: mdi:bed
     attenuation: 11db
     update_interval: 0.5s
@@ -81,8 +81,8 @@ sensor:
   # Right Bedside Sensor (red)
   - platform: adc
     pin: GPIO35
-    name: "Jr. Suite Bed Right Sensor"
-    id: "jr_suite_bed_right_sensor"
+    name: "Gianluca Bed Right Sensor"
+    id: "gianluca_bed_right_sensor"
     icon: mdi:bed
     attenuation: 11db
     update_interval: 0.5s
@@ -95,10 +95,10 @@ sensor:
           - delta: 0.02
 
 number:
-  # Jr. Suite Bed Trigger Level
+  # Gianluca Bed Trigger Level
   - platform: template
-    name: "Jr. Suite Bed Trigger Level"
-    id: "jr_suite_bed_trigger_level"
+    name: "Gianluca Bed Trigger Level"
+    id: "gianluca_bed_trigger_level"
     icon: mdi:arrow-collapse-down
     min_value: 0
     max_value: 3.5
