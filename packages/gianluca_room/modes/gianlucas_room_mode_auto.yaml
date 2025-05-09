@@ -4,27 +4,37 @@ automation:
   - id: "gianlucas_bedroom_mode_auto"
     initial_state: on
     alias: "Gianluca's Bedroom - Mode Auto"
-    trigger:
+    triggers:
       # Gianluca's Bedroom is occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.gianlucas_room_occupied
         to: "on"
       # House turn to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
-    condition:
+      # Gianluca is out of bed for 10 minutes
+      - trigger: state
+        entity_id: input_boolean.gianluca_in_bed
+        to: "off"
+        for:
+          minutes: 10
+      # Bedtime mode is turned off
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
       # Gianluca's Bedroom is not already Auto
       - condition: template
-        value_template: "{{ not is_state('input_select.gianlucas_room_occupied','Auto') }}"
+        value_template: "{{ not is_state('input_select.gianlucas_bedroom','Auto') }}"
       # It's not bedtime mode
       - condition: state
         entity_id: input_boolean.bedtime
@@ -33,8 +43,17 @@ automation:
       - condition: state
         entity_id: input_select.house
         state: "Auto"
-    action:
-      - service: input_select.select_option
+      # Bedroom is NOT occupied
+      # We don't want ot change state if the bedroom is occupied
+      - condition: state
+        entity_id: input_boolean.gianlucas_bedroom_occupied
+        state: "off"
+      # Gianluca is NOT in bed
+      - condition: state
+        entity_id: input_boolean.gianluca_in_bed
+        state: "off"
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.gianlucas_bedroom
           option: "Auto"

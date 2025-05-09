@@ -1,0 +1,4 @@
+input_boolean:
+  gianluca_in_bed:
+    name: Gianluca in bed
+    icon: mdi:bed

@@ -2,19 +2,25 @@ automation:
   - id: "gianlucas_room_not_occupied"
     initial_state: on
     alias: "Gianluca's room not occupied"
-    trigger:
+    triggers:
       # Gianluca's door is open for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.gianlucas_door_sensor_status
         to: "on"
         for:
           minutes: 5
       # Lights turned OFF for 3 mins
-      - platform: state
+      - trigger: state
         entity_id: light.gianluca_bedroom_lights
         to: "off"
         for:
           minutes: 3
+      # Bed occupied
+      - trigger: state
+        entity_id: binary_sensor.gianlucas_room_occupied
+        to: "off"
+        for:
+          minutes: 5
     condition:
       # Currently occupied
       - condition: state
@@ -23,12 +29,18 @@ automation:
       # Lights are OFF and door is OPEN
       - condition: and
         conditions:
+          # Door is OPEN
           - condition: state
             entity_id: binary_sensor.gianlucas_door_sensor_status
             state: "on"
+          # Lights are OFF
           - condition: state
             entity_id: light.gianluca_bedroom_lights
             state: "off"
+          # Bed is NOT occupied
+          - condition: state
+            entity_id: binary_sensor.gianlucas_room_occupied
+            state: "off"
     action:
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.gianlucas_room_occupied

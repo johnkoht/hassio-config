@@ -1,0 +1,19 @@
+automation:
+  - id: gianluca_bed_just_laid_down
+    alias: "Gianluca Bed - Just Laid Down"
+    mode: single
+    triggers:
+      # Gianluca's bed IS occupied
+      - trigger: state
+        entity_id: binary_sensor.gianlucas_bed_occupied
+        to: "on"
+    conditions:
+      # If the network restarts or device disconnects, we don't want to
+      # go from unavailable to just laid down
+      - condition: template
+        value_template: "{{ not is_state('input_select.gianluca_sleep_state','Sleep') }}"
+    action:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.gianluca_sleep_state
+          option: "Just Laid Down"

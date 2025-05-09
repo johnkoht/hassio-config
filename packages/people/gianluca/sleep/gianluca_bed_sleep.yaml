@@ -1,0 +1,19 @@
+automation:
+  - id: gianluca_bed_sleep
+    alias: "Gianluca Bed - Sleep"
+    mode: single
+    triggers:
+      # Gianluca's been in bed for 5 minutes
+      - trigger: state
+        entity_id: input_select.gianluca_sleep_state
+        to: "Just Laid Down"
+        for:
+          minutes: 5
+    action:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.gianluca_sleep_state
+          option: "Sleep"
+      # Turn ON the Gianluca in Bed boolean
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.gianluca_in_bed

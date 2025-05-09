@@ -1,0 +1,20 @@
+automation:
+  - id: gianluca_bed_awake
+    alias: "Gianluca Bed - Awake"
+    mode: single
+    triggers:
+      # Gianluca's been OUT in bed for 5 minutes
+      - trigger: state
+        entity_id: input_select.gianluca_sleep_state
+        to: "Just Got Up"
+        for:
+          minutes: 5
+    action:
+      # Change his sleep state to Awake
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.gianluca_sleep_state
+          option: "Awake"
+      # Turn off the gianluca in Bed boolean
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.gianluca_in_bed

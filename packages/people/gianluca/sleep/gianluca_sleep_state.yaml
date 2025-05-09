@@ -1,0 +1,8 @@
+input_select:
+  gianluca_sleep_state:
+    name: Gianluca Sleep State
+    options:
+      - Awake
+      - Sleep
+      - Just Laid Down
+      - Just Got Up
