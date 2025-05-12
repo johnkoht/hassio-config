@@ -22,7 +22,12 @@ class CustomSecurityCard extends LitElement {
 
   render() {
     return html`
-      <h1>Test2222</h1>
+      <custom-security-card>
+        <div class="kohbo-card-header">
+        </div>
+
+        <div
+      </custom-security-card>
     `;
   }
 

@@ -17,7 +17,7 @@ automation:
           minutes: 3
       # Bed occupied
       - trigger: state
-        entity_id: binary_sensor.gianlucas_room_occupied
+        entity_id: binary_sensor.gianluca_bed_occupied
         to: "off"
         for:
           minutes: 5
@@ -39,7 +39,7 @@ automation:
             state: "off"
           # Bed is NOT occupied
           - condition: state
-            entity_id: binary_sensor.gianlucas_room_occupied
+            entity_id: binary_sensor.gianluca_bed_occupied
             state: "off"
     action:
       - action: input_boolean.turn_off
