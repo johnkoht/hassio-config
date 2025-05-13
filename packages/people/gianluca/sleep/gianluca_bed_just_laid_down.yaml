@@ -5,7 +5,7 @@ automation:
     triggers:
       # Gianluca's bed IS occupied
       - trigger: state
-        entity_id: binary_sensor.gianlucas_bed_occupied
+        entity_id: binary_sensor.gianluca_bed_occupied
         to: "on"
     conditions:
       # If the network restarts or device disconnects, we don't want to

@@ -46,7 +46,7 @@ automation:
       # Bedroom is NOT occupied
       # We don't want ot change state if the bedroom is occupied
       - condition: state
-        entity_id: input_boolean.gianlucas_bedroom_occupied
+        entity_id: input_boolean.gianlucas_room_occupied
         state: "off"
       # Gianluca is NOT in bed
       - condition: state
