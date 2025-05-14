@@ -59,6 +59,8 @@ automation:
       - condition: state
         entity_id: binary_sensor.kitchen_motion_sensor_occupancy
         state: "off"
+        for:
+          minutes: 5
       - condition: state
         entity_id: binary_sensor.kitchen_ble_occupancy
         state: "off"
