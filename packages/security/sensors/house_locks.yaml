@@ -1,0 +1,7 @@
+lock:
+  - platform: group
+    name: House Locks
+    unique_id: house_locks
+    entities:
+      - lock.front_door
+      - lock.garage_entry_door

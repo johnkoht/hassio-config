@@ -1,0 +1,13 @@
+template:
+  - sensor:
+      - name: "House Security Status"
+        unique_id: house_security_status
+        state: >-
+          {% set score = states.sensor.house_security_score.state | int %}
+          {% if score >= 85 %}
+            "Totally Secure"
+          {% elif score >= 50 %}
+            "Partially Secure"
+          {% else %}
+            "Vulnerable"
+          {% endif %}

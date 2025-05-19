@@ -1,0 +1,8 @@
+lock:
+  - platform: group
+    name: Garage Door Remote Locks
+    unique_id: garage_door_remote_locks
+    entities:
+      - lock.garage_door_1_lock_remotes
+      - lock.garage_door_2_lock_remotes
+      - lock.garage_door_3_lock_remotes
