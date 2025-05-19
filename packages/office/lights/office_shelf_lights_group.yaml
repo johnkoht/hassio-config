@@ -1,0 +1,14 @@
+light:
+  - platform: group
+    name: Office Shelf Lights
+    unique_id: office_shelf_lights
+    entities:
+      - light.hue_gradient_lightstrip_1
+      - light.hue_gradient_lightstrip_2
+      - light.hue_gradient_lightstrip_3
+      - light.hue_gradient_lightstrip_4
+      - light.hue_gradient_lightstrip_5
+      - light.hue_gradient_lightstrip_1_2
+      - light.hue_gradient_lightstrip_1_3
+      - light.hue_gradient_lightstrip_4_2
+      - light.hue_gradient_lightstrip_3_2
