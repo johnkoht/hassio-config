@@ -1,6 +1,6 @@
 id: "gianluca_nap_time"
 alias: "Gianluca nap time"
-initial_state: "on"
+initial_state: "off"
 trigger:
   # Gianluca's room is occupied, e.g. he's sleeping
   - platform: state

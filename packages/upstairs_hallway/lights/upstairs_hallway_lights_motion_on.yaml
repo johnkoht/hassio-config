@@ -2,12 +2,12 @@ automation:
   - id: "upstairs_hallway_lights_motion_on"
     initial_state: on
     alias: "Upstairs Hallway Lights - Motion On"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.upstairs_hallway_motion
         to: "on"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -45,7 +45,7 @@ automation:
                 value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_boolean.quiet_mode.last_changed)) | int < 180 }}"
         then:
           # Turn them on 10%
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.upstairs_hallway
             data:
               brightness_pct: 10
@@ -53,9 +53,9 @@ automation:
 
         else:
           # Turn the lights on normal
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.upstairs_hallway
 
       # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.upstairs_hallway_lights_auto

@@ -1,6 +1,6 @@
 id: "nino_nap_time_ended"
 alias: "Nino's nap time ended"
-initial_state: "on"
+initial_state: "off"
 trigger:
   # His room is no longer occupied
   - platform: state

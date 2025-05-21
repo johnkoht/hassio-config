@@ -1,0 +1,33 @@
+automation:
+  - id: "quiet_mode_turn_off"
+    initial_state: on
+    alias: "Quiet Mode - Turn Off"
+    triggers:
+      # Gianluca is NOT in bed
+      - trigger: state
+        entity_id: input_boolean.gianluca_in_bed
+        to: "off"
+        id: gianluca
+      # Nino is NOT in bed
+      - trigger: state
+        entity_id: input_boolean.nino_in_bed
+        to: "off"
+        id: nino
+    conditions:
+      # Quiet mode is oFF
+      - condition: state
+        entity_id: input_boolean.quiet_mode
+        state: "on"
+      # Neither bed is occupied
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.nino_bed_occupied
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.gianluca_bed_occupied
+            state: "off"
+    actions:
+      # Toggle the input boolean
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.quiet_mode
