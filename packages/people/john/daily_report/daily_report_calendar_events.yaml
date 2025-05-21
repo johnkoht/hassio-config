@@ -1,0 +1,34 @@
+template:
+  - trigger:
+      - trigger: time_pattern
+        #hours: /1
+        minutes: /1
+    action:
+      - action: calendar.get_events
+        data:
+          start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
+          end_date_time: "{{ now().strftime('%Y-%m-%d 23:59:59') }}"
+        target:
+          entity_id:
+            - calendar.john_launchpadlab_com
+            - calendar.john_koht
+        response_variable: calendar
+      - variables:
+          e: |-
+            {% set ns = namespace(cal_events=[]) %}
+
+            {%- for key, value in calendar.items() %}
+              {%- for event in value.events %}
+                {%- set ns.cal_events = ns.cal_events + [event] %}
+              {%- endfor %}
+            {%- endfor %}
+
+            {{ ns.cal_events | sort(attribute='start') | list }}
+    #
+    # This is the sensor that will provide a list of events
+    sensor:
+      - name: John Calendar Events Today
+        unique_id: john_calendar_events_today
+        state: "{{ now().isoformat() }}"
+        attributes:
+          events: "{{ e }}"
