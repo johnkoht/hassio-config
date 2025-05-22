@@ -19,7 +19,7 @@ automation:
         entity_id: input_boolean.quiet_mode
         state: "on"
       # Neither bed is occupied
-      - condition: or
+      - condition: and
         conditions:
           - condition: state
             entity_id: binary_sensor.nino_bed_occupied
