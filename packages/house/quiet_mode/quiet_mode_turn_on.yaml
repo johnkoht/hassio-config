@@ -28,7 +28,7 @@ automation:
           media_players: auto
           sound: harp-flourish
           speech_message: >-
-            {% if states.binary_sensor.nino_bed_occupied.state == "on" && states.binary_sensor.gianluca_bed_occupied.state == "on" %}
+            {% if states.binary_sensor.nino_bed_occupied.state == "on" and states.binary_sensor.gianluca_bed_occupied.state == "on" %}
               {{
                 [
                   "Shhh...Nino is going to sleep.",
