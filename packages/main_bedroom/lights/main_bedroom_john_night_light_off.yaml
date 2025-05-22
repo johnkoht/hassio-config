@@ -2,20 +2,26 @@ automation:
   - id: "main_bedroom_john_night_light_off"
     initial_state: on
     alias: "Main bedroom night light for John - Turn Off"
-    trigger:
+    triggers:
       # John's in bed
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.john_is_in_bed
         to: "on"
         for:
           minutes: 10
       # Bedtime enabled for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
         for:
           minutes: 5
-    condition:
+      # Turn off if it's been on for 10 mins
+      - trigger: state
+        entity_id: light.hue_ambiance_lamp_1
+        to: "on"
+        for:
+          minutes: 10
+    conditions:
       # Light automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -41,8 +47,8 @@ automation:
         state: "on"
         for:
           minutes: 10
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id:
           - light.hue_ambiance_lamp_1
           - light.hue_ambiance_lamp_1_2
