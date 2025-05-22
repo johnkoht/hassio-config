@@ -1,0 +1,128 @@
+automation:
+  - id: "john_daily_report"
+    alias: "John Daily Report"
+    mode: "single"
+    triggers:
+      - trigger: time
+        at: "08:05:00"
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # John is home
+      - condition: state
+        entity_id: person.john_koht
+        state: "home"
+    action:
+      # binary_sensor.johns_macbook_pro_active
+
+      # Wait for the office to be occupied
+      - wait_template: "{{ is_state('input_boolean.office_occupied', 'on') }}"
+        timeout: "02:00:00"
+        continue_on_timeout: false
+
+      # Wait for my computer to be active to avoid running
+      # the automation when I'm quickly grabbing something
+      - wait_template: "{{ is_state('binary_sensor.johns_macbook_pro_active', 'on') }}"
+        timeout: "00:30:00"
+
+      - if:
+          # Only move forward if I'm not on a call
+          - condition: and
+            conditions:
+              # Not in DnD mode
+              - condition: state
+                entity_id: input_boolean.john_dnd
+                state: "off"
+              # Audio is not active
+              - condition: state
+                entity_id: binary_sensor.john_laptop_audio_active
+                state: "off"
+        then:
+          - action: script.john_daily_update_announcement
+
+script:
+  john_daily_update_announcement:
+    alias: "John Daily Update Announcement"
+    mode: "single"
+    icon: mdi:air-horn
+
+    sequence:
+      #
+      # Use ChatGPT to get the daily briefing
+      #
+      - action: conversation.process
+        data:
+          agent_id: conversation.chatgpt
+          text: >-
+            Every morning, when I get into my office, I'd like a morning summary of my
+            day. Please read the carefully and ensure you follow the instructions.
+            Remember, this should be plain text sentences that a computer can read and
+            generate a text-to-speech message from. Reminder to make sure your response
+            is one single paragraph without any line breaks or bullet points! This is
+            important!
+
+            Be short and concise with responses. 
+
+            Here are the details to review:
+
+            ## General Here is some general information about the date and day of the
+            week.  - Date & Time: {{ now() }} - Is it a workday: {{
+            states.binary_sensor.workday_sensor.state }}
+
+            ## Sleep Here are a bunch of sensors related to my sleep the previous night
+            and this morning. You can share my score and total sleep length but no need
+            to dig into all details.  - My sleep score from my Withings device: {{
+            states.sensor.withings_sleep_score.state }}  - Sleep length: Can you add up
+            and share the total sleep length
+              - Deep Sleep {{ states.sensor.withings_deep_sleep.state }} seconds
+              - Light Sleep {{ states.sensor.withings_light_sleep.state }} seconds
+              - REM Sleep {{ states.sensor.withings_rem_sleep.state }} seconds
+
+            ## Outdoor Air Quality & Climate A bunch of sensors regarding outdoor air
+            quality, temperature and humidity. You can share the temperature. If the AIQ
+            or any air quality is bad, please share.
+              - AIQ: {{ states.sensor.desplns_illinois_usa_air_quality_index.state }}
+              - Dominant Pollutant: {{ states.sensor.desplns_illinois_usa_dominant_pollutant.state }}
+              - Ozone: {{ states.sensor.desplns_illinois_usa_ozone.state }}
+              - PM2.5 {{ states.sensor.desplns_illinois_usa_pm2_5.state }}
+              - Pressure: {{ states.sensor.desplns_illinois_usa_pressure.state }} psi
+              - Temperature: {{ states.sensor.tempest_temperature.state }} degrees F
+              - Humidity: {{ states.sensor.tempest_humidity.state }}%
+
+            ## Calendar Events Here are the events from my work and personal calendar.
+            No need to read them off. Please share the following:  
+            - The next event: how long from now and what the title is 
+            - If there are any personal events like picking up a kid from school, haircut, or appointment, please call those out.
+            - I'm John, so anytime you see anything about "John" in a calendar event know that's probably referencing me, so need to say "meeting with john"
+            - Here are the calendar Events: {{ states.sensor.john_calendar_events_today.attributes.events }}
+
+            Please provide an overview in plain text as a single paragraph. Remember: 
+            - Don't list all events, just the next event or any personal tasks/reminders 
+            - Don't list all details, just summarize and provide an overview 
+            - Be short and concise in your response - Be super cheerful and excited.
+            - Don't use emojis as this will be a voice-activated TTS message
+            - Use full sentences instead of using special characters, lists or bullet points, and making it easily readable
+            - If there are no calendar invites, you can simply let us know there's nothing on the calendar
+            - If you see a 1:1 with Nino (Nino <> John) that's just for 1:1 time with my son, not a work meeting
+
+        response_variable: chatgpt
+      #
+      # Push Notification
+      #
+      - action: script.general_notification
+        data:
+          title: "Daily Report!"
+          message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "daily-report"
+      #
+      # Voice Announcement
+      #
+      - action: script.voice_announcement
+        data:
+          media_players: "media_player.sonos_office"
+          sound: "one-chime"
+          speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
