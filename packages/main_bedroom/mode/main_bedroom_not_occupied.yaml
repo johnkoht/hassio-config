@@ -4,29 +4,29 @@ automation:
   - id: "main_bedroom_not_occupied"
     initial_state: on
     alias: "Main bedroom not occupied"
-    trigger:
+    triggers:
       # Anybody detected via BLE
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_ble_occupancy
         to: "off"
         for:
           minutes: 2
       # Bedtime is disabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "off"
       # No motion detected for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_motion_sensor
         to: "off"
         for:
           minutes: 5
       # No aqara occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
         to: "off"
       # No aqara occupancy for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
         to: "off"
         for:
@@ -34,10 +34,10 @@ automation:
       # Main bathroom becomes unoccupied
       # When somebody showers, the bathroom might take a little
       # while to register as unoccupied.
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bathroom_occupied
         to: "off"
-    condition:
+    conditions:
       # The bedroom is occupied
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
@@ -58,6 +58,14 @@ automation:
       - condition: state
         entity_id: binary_sensor.main_bedroom_motion_sensor_occupancy
         state: "off"
+      # Nobody is in bed
+      - and:
+          - condition: state
+            entity_id: input_boolean.john_is_in_bed
+            state: "off"
+          - condition: state
+            entity_id: input_boolean.cristina_in_bed
+            state: "off"
       # Auto mode between 5-midnight
       # OR bedtime mode and between 6am-9pm
       - condition: or
@@ -65,12 +73,6 @@ automation:
           # Auto mode between 5am - 11:59
           - condition: and
             conditions:
-              # Auto mode or
-              # - condition: state
-              #   entity_id: input_select.main_bedroom
-              #   state: "Auto"
-              # - condition: template
-              #   value_template: "{{ states('input_select.main_bedroom') in ('Auto', 'Wake') }}"
               # Not in bedtime mode
               - condition: template
                 value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
@@ -90,12 +92,12 @@ automation:
                 after: "06:00:00"
                 before: "21:00:00"
     action:
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.main_bedroom_occupied
 
       # Wati 2 seconds to activate lighting automations
       - alias: "Wait 2 seconds"
         delay: 02
 
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lighting_automations
