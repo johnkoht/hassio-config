@@ -94,7 +94,7 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - service: script.announcement_engine
+      - action: script.announcement_engine
         data:
           speech_message: "{{ speech_message }}"
           sound_file: "{{sound_file}}"
@@ -102,7 +102,19 @@ script:
           sound_volume: "{{sound_file_volume}}"
           speech_volume: "{{speech_volume}}"
           media_players: >-
-            {% if media_players == "all" or media_players == "auto" %}
+            {% if media_players == "all" %}
+              {% set media_players = [
+                  "media_player.sonos_office",
+                  "media_player.sonos_family_room",
+                  "media_player.sonos_kitchen",
+                  "media_player.sonos_playroom",
+                  "media_player.sonos_basement",
+                  "media_player.sonos_living_room",
+                  "media_player.sonos_main_bedroom",
+                  "media_player.ninos_room"
+                ]
+              %}
+            {% elif media_players == "auto" %}
               {% set media_players = [] %}   
               {# Check which rooms are occupied and if speech notifications are turned #}
               {# on for them. If so, add them to an array of announceable rooms #}
@@ -122,7 +134,7 @@ script:
             {{ media_players}}
 
       # Save the latest message
-      - service: input_text.set_value
+      - action: input_text.set_value
         entity_id: input_text.latest_voice_announcement
         data:
           value: "{{ speech_message }}"

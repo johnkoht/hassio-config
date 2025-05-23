@@ -9,22 +9,8 @@ automation:
         from: "off"
         to: "on"
     actions:
-      # Turn OFF the HVAC
-      - action: climate.turn_off
-        target:
-          entity_id:
-            - climate.nest_main_floor
-            - climate.nest_2nd_floor
-
-      # Send a push notification
-      - action: script.general_notification
-        data:
-          message: The smoke detector has activated, I'm turning off the HVAC
-          title: Fire & Smoke Alarm
-          devices: "jk"
-          priority: "critical"
-          tag: "home-fire-alarm"
-
+      - action: script.fire_alarm_alert
+        data: {}
 
 script:
   fire_alarm_alert:
@@ -39,27 +25,21 @@ script:
             - climate.nest_main_floor
             - climate.nest_2nd_floor
 
-      # Announcement
-      - service: script.voice_announcement
+      # Trigger a critical announcement
+      - action: script.critical_announcement
         data:
-          media_players: auto
+          media_players: all
           sound: "nuclear"
-          speech_message: >-
-            {{
-              [
-                "Arrivederci! Mamma has left the house.",
-                "Ciao Mamma! See you later.",
-                "Mamma just left, but she misses you dearly!",
-                "Mamma just left, but don't worry, she'll be back soon.",
-                "Pardon the interruption but Mamma has left the house.",
-                "Attention! Mamma left the house."
-              ] | random
-            }}
+          speech_message: Alert! The smoke detector has been trigger. Get to safety immediately!
+
+      # Flash the lights
+      - action: script.alarm_flash_lights
+        data: {}
 
       # Send a push notification
       - action: script.general_notification
         data:
-          message: The smoke detector has activated, I'm turning off the HVAC
+          message: The smoke detector has activated, I'm turning off the HVAC. Please get to safety!
           title: Fire & Smoke Alarm
           devices: "jk"
           priority: "critical"

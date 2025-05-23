@@ -1,0 +1,42 @@
+light:
+  - platform: group
+    name: Emergency Light Group
+    unique_id: emergency_light_group
+    entities:
+      - light.kitchen_lights
+      - light.family_room_main_lights
+      - light.office_lights
+      - light.dining_room_lights
+      - light.playroom_lights
+      - light.main_bedroom_lights
+      - light.foyer_lights
+      - light.stairs_light
+      - light.laundry_room_main_lights
+      - light.main_bathroom_lights
+      - light.upstairs_hallway
+      - light.exterior_lights
+
+script:
+  alarm_flash_lights:
+    alias: "Alarm - Flash Lights"
+    mode: "restart"
+    icon: mdi:alert
+    sequence:
+      # Create a scene to save the current state of the lights
+      - action: scene.create
+        data:
+          scene_id: alarm_flash_lights_initial_state
+          snapshot_entities: light.emergency_light_group
+      # Turn ON the lights
+      - action: light.turn_on
+        entity_id: light.emergency_light_group
+      # Flash the lights
+      - alias: "Flash the lights 10 times"
+        repeat:
+          count: 10
+          sequence:
+            - delay: 1
+            - action: light.toggle
+              entity_id: light.emergency_light_group
+      # Restore lights to original state
+      - scene: scene.alarm_flash_lights_initial_state
