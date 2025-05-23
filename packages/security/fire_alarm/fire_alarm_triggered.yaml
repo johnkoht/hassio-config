@@ -1,6 +1,6 @@
 automation:
-  - id: "fire_alarm_shut_off_hvac"
-    alias: "Fire Alarm - Shut Off HVAC"
+  - id: "fire_alarm_trigger"
+    alias: "Fire Alarm - Triggered"
     mode: "single"
     triggers:
       # Smoke detector detects smoke
