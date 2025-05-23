@@ -18,7 +18,7 @@ automation:
         state: "on"
       # Light is low
       - condition: numeric_state
-        entity_id: sensor.stairs_up_motion_sensor_illuminance
+        entity_id: sensor.upstairs_hallway_nightlight_illuminance
         below: 30
       # Lights are currently off
       - condition: state
