@@ -97,6 +97,9 @@ script:
             - If there are any personal events like picking up a kid from school, haircut, or appointment, please call those out.
             - I'm John, so anytime you see anything about "John" in a calendar event know that's probably referencing me, so need to say "meeting with john"
             - Here are the calendar Events: {{ states.sensor.john_calendar_events_today.attributes.events }}
+            - If I have a bunch of 1:1s (e.g. Chad <> John and it's not with Nino), you can just summarize like: "You have three one-on-ones with Chad, Amy, and Nida..."
+            - If I have a bunch of meetings around lunch time, suggest a time to eat lunch earlier or within a small opening if available
+            - Ignore anything on my calendar that starts with OOO or GSD as those are personal blocks
 
             Please provide an overview in plain text as a single paragraph. Remember: 
             - Don't list all events, just the next event or any personal tasks/reminders 
