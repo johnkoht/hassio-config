@@ -40,22 +40,6 @@ switch: !include_dir_merge_list switch/
 
 # alert: !include_dir_named alerts/
 
-device_tracker:
-  - platform: iphonedetect
-    # consider_home: 180
-    consider_home: 60
-    scan_interval: 12
-    new_device_defaults:
-      track_new_devices: true
-    hosts:
-      cristina_iphone_detect: !secret cristina_iphone_detect
-      john_iphone_detect: !secret john_iphone_detect
-      katia_iphone_detect: !secret katia_iphone_detect
-      joe_iphone_detect: !secret joe_iphone_detect
-      mary_iphone_detect: !secret mary_iphone_detect
-      antoun_iphone_detect: !secret antoun_iphone_detect
-      sonia_iphone_detect: !secret sonia_iphone_detect
-
 frontend:
   extra_module_url:
     - /hacsfiles/hass-hue-icons/hass-hue-icons.js
@@ -141,13 +125,6 @@ zone:
     longitude: !secret home_longitude
     radius: !secret home_radius
     icon: mdi:home
-
-wemo:
-  discovery: true
-  static:
-    - 192.168.2.24
-    - 192.168.2.162
-    - 192.168.2.230
 
 logger:
   default: info
