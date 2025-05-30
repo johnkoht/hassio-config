@@ -1,4 +1,4 @@
 input_boolean:
-  alexa_home:
+  alex_home:
     name: Alex Home
     icon: mdi:home
