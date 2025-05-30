@@ -3,12 +3,12 @@ automation:
     alias: Tayta Announce Arrival
     mode: queued
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: person.sonia_koht
         from: "not_home"
         to: "home"
-    condition:
+    conditions:
       # A guest is home
       - condition: state
         entity_id: person.sonia_koht
@@ -19,23 +19,28 @@ automation:
         state: "on"
         for:
           minutes: 5
-    action:
-      # Announcement
-      - service: script.voice_announcement
+    actions:
+      # Announcement script
+      - action: script.person_announcement
         data:
-          media_players: auto
-          sound: "arabic-intro"
-          speech_message: >-
-            {{
-              [
-                "Guess who's here? It's Tayta!",
-                "Anybody smell kibbeh? Tayta must be here!",
-                "Tayta is in the house!",
-                "Marhabah! Tayta is here!",
-                "Pardon the interruption but Tayta is home!",
-                "Knock knock. Who's there? Tayta is here!"
-              ] | random
-            }}
+          person: tayta
+          announcement_type: arrival
+      # # Announcement
+      # - service: script.voice_announcement
+      #   data:
+      #     media_players: auto
+      #     sound: "arabic-intro"
+      #     speech_message: >-
+      #       {{
+      #         [
+      #           "Guess who's here? It's Tayta!",
+      #           "Anybody smell kibbeh? Tayta must be here!",
+      #           "Tayta is in the house!",
+      #           "Marhabah! Tayta is here!",
+      #           "Pardon the interruption but Tayta is home!",
+      #           "Knock knock. Who's there? Tayta is here!"
+      #         ] | random
+      #       }}
 
       # If a guest mode has not been announced, then we'll
       # set initiate guest_mode_announced so we the generic
@@ -43,5 +48,5 @@ automation:
       - condition: state
         entity_id: input_boolean.guest_mode_announced
         state: "off"
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.guest_mode_announced

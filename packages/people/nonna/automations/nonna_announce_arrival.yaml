@@ -3,12 +3,12 @@ automation:
     alias: Nonna Announce Arrival
     mode: queued
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: person.mary_falbo
         from: "not_home"
         to: "home"
-    condition:
+    conditions:
       # A guest is home
       - condition: state
         entity_id: person.mary_falbo
@@ -19,23 +19,28 @@ automation:
         state: "on"
         for:
           minutes: 5
-    action:
-      # Announcement
-      - service: script.voice_announcement
+    actions:
+      # Announcement script
+      - action: script.person_announcement
         data:
-          media_players: auto
-          sound: "tarantella"
-          speech_message: >-
-            {{
-              [
-                "Guess who's here? It's Nonna!",
-                "Anybody smell pasta? Nonna must be here!",
-                "Nonna is in the house!",
-                "Ciao Ciao! Nonna is here!",
-                "Pardon the interruption but Nonna is home!",
-                "Knock knock. Who's there? Nonna is here!"
-              ] | random
-            }}
+          person: nonna
+          announcement_type: arrival
+      # # Announcement
+      # - service: script.voice_announcement
+      #   data:
+      #     media_players: auto
+      #     sound: "tarantella"
+      #     speech_message: >-
+      #       {{
+      #         [
+      #           "Guess who's here? It's Nonna!",
+      #           "Anybody smell pasta? Nonna must be here!",
+      #           "Nonna is in the house!",
+      #           "Ciao Ciao! Nonna is here!",
+      #           "Pardon the interruption but Nonna is home!",
+      #           "Knock knock. Who's there? Nonna is here!"
+      #         ] | random
+      #       }}
 
       # If a guest mode has not been announced, then we'll
       # set initiate guest_mode_announced so we the generic
@@ -43,5 +48,5 @@ automation:
       - condition: state
         entity_id: input_boolean.guest_mode_announced
         state: "off"
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.guest_mode_announced

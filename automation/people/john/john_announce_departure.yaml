@@ -14,17 +14,22 @@ condition:
     for:
       minutes: 5
 action:
-  # Announcement
-  - service: script.voice_announcement
+  # Announcement script
+  - action: script.person_announcement
     data:
-      media_players: auto
-      sound: "arcade"
-      speech_message: >-
-        {{
-          [
-            "Arrivederci! Baba has left the house.",
-            "Baba left the house.",
-            "Pardon the interruption but Baba has left the house!",
-            "Attention! Baba is no longer home."
-          ] | random
-        }}
+      person: john
+      announcement_type: departure
+  # # Announcement
+  # - service: script.voice_announcement
+  #   data:
+  #     media_players: auto
+  #     sound: "arcade"
+  #     speech_message: >-
+  #       {{
+  #         [
+  #           "Arrivederci! Baba has left the house.",
+  #           "Baba left the house.",
+  #           "Pardon the interruption but Baba has left the house!",
+  #           "Attention! Baba is no longer home."
+  #         ] | random
+  #       }}

@@ -114,6 +114,20 @@ script:
           - He's a retired neuro-anesthesiologist
           - The boys love him
           - Our dog Rio always bring his bone to Jido for him to hold 
+        {% elif person == "john" or person == "bab" %}
+          - John is me! The creator of these automations!
+          - John is into smart homes, obviously
+          - John is into home labbing as well (servers, self hosted apps, etc)
+          - John responsible for our dog Rio
+          - The kids call me "Baba", but you can refer to me as Baba or John
+          - Sometimes a disturbance within the force can be detected when I arrive
+        {% elif person == "cristina" or person == "mamma" %}
+          - Cristina is John's husband
+          - Cristina is mother to the boys (gianluca and nino)
+          - Cristina is our Queen, don't hesitate to empahsize that!
+          - Cristina likes reality shows like the real housewives
+          - We should really clean up our mess before she comes home
+          - She's the only girl in the immediate family
         {% endif %}
 
       sound: >-
@@ -208,17 +222,20 @@ script:
             With my Smart Home, I like to announce when friends and family arrive and/or depart.
             Please provide a short message that I can broadcast over the speakers throughout the house.
 
+            Current date and time: {{ now() }}
+
             Please read the carefully and ensure you follow the instructions.
             Remember, this should be plain text sentences that a computer can read and
             generate a text-to-speech message from. Reminder to make sure your response
             is one single paragraph without any line breaks or bullet points! This is
             important!
 
-            Some context about the friends and family that come to our house:
+            Some context about the friends and family that come to our house, including whether they are currently home or not.
+            The presence of people should should influence how you craft your message.
               - John (that's me, home owner and dad) - state: {{ states.person.john_koht.state }}
               - Cristina (my spouse, mother of our kids) - state: {{ states.person.cristina_falbo.state }}
-              - Nino (my older son)
-              - Gianluca (my younger son)
+              - Nino- our older son
+              - Gianluca- our younger son
               - Mary, a.k.a, Nonna, is Cristina's mom, grandmother to Nino and Gianluca - state: {{ states.person.mary_falbo.state }}
               - Sonia, a.k.a., Tayta, is John's mom, grandmother to Nino and Gianluca - state: {{ states.person.sonia_koht.state }}
               - Joe is Cristina's brother (my brother in law) - state: {{ states.person.joe_falbo.state }}

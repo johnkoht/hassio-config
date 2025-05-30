@@ -19,22 +19,27 @@ condition:
     for:
       minutes: 5
 action:
-  # Announcement
-  # Announcement
-  - service: script.voice_announcement
+  # Announcement script
+  - action: script.person_announcement
     data:
-      media_players: auto
-      sound: "arcade"
-      speech_message: >-
-        {{
-          [
-            "Guess who's home? It's Baba!",
-            "Stop what you're doing, Baba is home!",
-            "Baba is home! Yay!",
-            "I am sensing a disturbance in the force. Baba must be home!",
-            "And the house becomes a home. Welcome back Baba!",
-            "Pardon the interruption but Baba is home!",
-            "Knock knock. Who's there? It's Baba!!",
-            "Fear not! Baba is home!"
-          ] | random
-        }}
+      person: john
+      announcement_type: arrival
+  # # Announcement
+  # # Announcement
+  # - service: script.voice_announcement
+  #   data:
+  #     media_players: auto
+  #     sound: "arcade"
+  #     speech_message: >-
+  #       {{
+  #         [
+  #           "Guess who's home? It's Baba!",
+  #           "Stop what you're doing, Baba is home!",
+  #           "Baba is home! Yay!",
+  #           "I am sensing a disturbance in the force. Baba must be home!",
+  #           "And the house becomes a home. Welcome back Baba!",
+  #           "Pardon the interruption but Baba is home!",
+  #           "Knock knock. Who's there? It's Baba!!",
+  #           "Fear not! Baba is home!"
+  #         ] | random
+  #       }}
