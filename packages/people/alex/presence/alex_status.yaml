@@ -1,0 +1,9 @@
+input_select:
+  alex_status:
+    name: Alex
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+    initial: Away

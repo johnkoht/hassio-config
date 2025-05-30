@@ -35,6 +35,11 @@ script:
               - message-alert
               - musical-flute
               - success-trumpets
+              - alex
+              - yara
+              - shawn
+              - jido
+              - genny
       #
       #
       # Speech Message Details
@@ -103,6 +108,16 @@ script:
           /local/sounds/musical-flute-alert.mp3
         {% elif sound == "success-trumpets" %}
           /local/sounds/success-trumpets.mp3
+        {% elif sound == "alex" %}
+          /local/sounds/alex-intro.mp3
+        {% elif sound == "yara" %}
+          /local/sounds/yara.mp3
+        {% elif sound == "shawn" %}
+          /local/sounds/shawn.mp3
+        {% elif sound == "jido" %}
+          /local/sounds/jido.mp3
+        {% elif sound == "genny" %}
+          /local/sounds/genny.mp3
         {% else %}
           /local/sounds/Notification-sound.mp3
         {% endif %}
@@ -146,6 +161,16 @@ script:
           2
         {% elif sound == "success-trumpets" %}
           4
+        {% elif sound == "alex" %}
+          17
+        {% elif sound == "yara" %}
+          15
+        {% elif sound == "shawn" %}
+          14
+        {% elif sound == "jido" %}
+          11
+        {% elif sound == "genny" %}
+          22
         {% else %}
           2
         {% endif %}

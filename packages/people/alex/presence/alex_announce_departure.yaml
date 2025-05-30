@@ -1,0 +1,26 @@
+automation:
+  - id: "alex_announce_departure"
+    alias: Alex Presence - Announce Departure
+    mode: queued
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: person.alex
+        from: "home"
+    conditions:
+      # Not home
+      - condition: state
+        entity_id: person.alex
+        state: "not_home"
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    actions:
+      # Announcement
+      - action: script.person_announcement
+        data:
+          person: alex
+          announcement_type: departure

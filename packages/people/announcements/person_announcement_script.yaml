@@ -1,0 +1,273 @@
+script:
+  person_announcement:
+    alias: "Person Announcement"
+    mode: "single"
+    icon: mdi:air-horn
+
+    # TEST FIELD
+    # will implement later
+    fields:
+      people:
+        name: People
+        description: People to announce
+        example: "john"
+        default: "john"
+        selector:
+          select:
+            multiple: true
+            options:
+              - john
+              - cristina
+              - nonna
+              - joe
+              - katia
+              - jido
+              - tayta
+              - yara
+              - shawn
+              - alex
+              - genny
+      #
+      #
+      # Person
+      #
+      person:
+        name: Person
+        description: The person to announce arrival or departure for
+        example: "john"
+        default: "john"
+        selector:
+          select:
+            options:
+              - john
+              - cristina
+              - nonna
+              - joe
+              - katia
+              - jido
+              - tayta
+              - yara
+              - shawn
+              - alex
+              - genny
+      #
+      # Announcement Type
+      #
+      announcement_type:
+        name: Announcement Type
+        description: The type of announcement, e.g. arrival or departure
+        example: "arrival"
+        default: "arrival"
+        selector:
+          select:
+            options:
+              - arrival
+              - departure
+
+    # Variables
+    variables:
+      person_context: >-
+        {% if person == "alex" %}
+          - Alex is John's younger brother
+          - He's a producer
+          - NYU film school graduate
+          - He's lived in NYC and LA
+          - He has shaggy curly hair
+          - He looks a lot like me, people often think we're twins
+          - He loves movies. 
+          - His intro music when he arrives is Also Sprach Zarathrustra by Richard Struass from 2001: A Space Odyssey
+          - He recently had his gallbladder removed, you can joke about this (I, John, also have no gallbladder)
+          - He lives downtown Chicago
+          - He is a meat popsicle
+        {% elif person == "joe" %}
+          - Joe is Cristina's older brother
+          - He's a month older than John
+          - He's getting married next year
+          - John's trying to convince him to have two bachelors parties before his wedding
+          - He loves sports. He always wins fantasy sports leagues
+          - Joe is Nino and Gianluca's uncle and they love playing with him
+        {% elif person == "genny" %}
+          - Genny is Joe's fiance
+          - Genny and Joe got engaged soon
+          - They are getting married in Montreal, Canada next year
+          - Genny just graduated law school and is studying for the bar
+          - Genny is Irish
+          - The boys love playing with Genny
+        {% elif person == "tayta" or person == "sonia" %}
+          - Sonia is John's mom and she goes by Tayta (Arabic for grandmother)
+          - Refer to her as Tayta only, not Sonia or Tayta Sonia
+          - She's grandmother (tayta) to the boys
+          - Sonia lives in the city with Antoun
+          - She makes delicious Syrian dishes (grape leaves, kib-ay) sometimes, maybe today?
+          - The boys love to play with her
+        {% elif person == "nonna" or person == "mary"  %}
+          - Mary is Cristina's mom and goes by Nonna (italian for grandmother)
+          - Refer to her as Nonna, not Mary or Nonna Mary
+          - She's here quite often
+          - Mary makes delicious italian dishes like pasta, yum
+          - The boys love to play with her
+        {% elif person == "jido" or person == "antoun" %}
+          - Antoun is John's dad
+          - He's the boy's grandfather
+          - Antoun goes by "Jido" with the kids, it's Arabic for grandfather
+          - Refer to him as Jido, not Jido Antoun or Antoun
+          - He's a retired neuro-anesthesiologist
+          - The boys love him
+          - Our dog Rio always bring his bone to Jido for him to hold 
+        {% endif %}
+
+      sound: >-
+        {% if person == "nonna" or person == "nonna" %}
+          tarantella
+        {% elif person == "sonia" or person == "tayta" %}
+          arabic-intro
+        {% elif person == "jido" or person == "antoun" %}
+          jido
+        {% elif person == "joe" %}
+          fox-nfl
+        {% else %}
+          {{ person }}
+        {% endif %}
+
+      people_context: >-
+        {% set pc = "" %}
+        {% set ns = namespace(pc="") %}
+
+        {% for person in people %}
+          {% if person == "alex" %}
+            {% set ns.pc = ns.pc + "
+            ALEX CONTEXT:
+            - Alex is John's younger brother
+            - He's a producer
+            - NYU film school graduate
+            - He's lived in NYC and LA
+            - He has shaggy curly hair
+            - He looks a lot like me, people often think we're twins
+            - He loves movies. 
+            - His intro music when he arrives is Also Sprach Zarathrustra by Richard Struass from 2001: A Space Odyssey
+            - He recently had his gallbladder removed, you can joke about this (I, John, also have no gallbladder)
+            - He lives downtown Chicago
+            "
+            %}
+          {% elif person == "joe" %}
+            {% set ns.pc = ns.pc + "
+            JOE CONTEXT:
+            - Joe is Cristina's older brother
+            - He's a month older than John
+            - He's getting married next year
+            - John's trying to convince him to have two bachelors parties before his wedding
+            - He loves sports. He always wins fantasy sports leagues
+            - Joe is Nino and Gianluca's uncle and they love playing with him
+            "
+            %}
+          {% elif person == "genny" %}
+            {% set ns.pc = ns.pc + "
+            GENNY CONTEXT:
+            - Genny is Joe's fiance
+            - Genny and Joe got engaged soon
+            - They are getting married in Montreal, Canada next year
+            - Genny just graduated law school and is studying for the bar
+            - Genny is Irish
+            - The boys love playing with Genny
+            "
+            %}
+          {% elif person == "sonia" %}
+            {% set ns.pc = ns.pc + "
+            SONIA CONTEXT:
+            - Sonia is John's mom and she goes by Tayta (Arabic for grandmother)
+            - Refer to her as Tayta only, not Sonia or Tayta Sonia
+            - She's grandmother (tayta) to the boys
+            - Sonia lives in the city with Antoun
+            - She makes delicious Syrian dishes (grape leaves, kib-ay) sometimes, maybe today?
+            - The boys love to play with her
+            "
+            %}
+          {% elif person == "mary" %}
+            {% set ns.pc = ns.pc + "
+            MARY CONTEXT:
+            - Mary is Cristina's mom and goes by Nonna (italian for grandmother)
+            - Refer to her as Nonna, not Mary or Nonna Mary
+            - She's here quite often
+            - Mary makes delicious italian dishes like pasta, yum
+            - The boys love to play with her
+            "
+            %}
+          {% endif %}
+        {% endfor %}
+
+        {{ ns.pc }}
+
+    sequence:
+      #
+      # Use ChatGPT to create the TTS message
+      #
+      - action: conversation.process
+        data:
+          agent_id: conversation.chatgpt_4_nano
+          text: >-
+            With my Smart Home, I like to announce when friends and family arrive and/or depart.
+            Please provide a short message that I can broadcast over the speakers throughout the house.
+
+            Please read the carefully and ensure you follow the instructions.
+            Remember, this should be plain text sentences that a computer can read and
+            generate a text-to-speech message from. Reminder to make sure your response
+            is one single paragraph without any line breaks or bullet points! This is
+            important!
+
+            Some context about the friends and family that come to our house:
+              - John (that's me, home owner and dad) - state: {{ states.person.john_koht.state }}
+              - Cristina (my spouse, mother of our kids) - state: {{ states.person.cristina_falbo.state }}
+              - Nino (my older son)
+              - Gianluca (my younger son)
+              - Mary, a.k.a, Nonna, is Cristina's mom, grandmother to Nino and Gianluca - state: {{ states.person.mary_falbo.state }}
+              - Sonia, a.k.a., Tayta, is John's mom, grandmother to Nino and Gianluca - state: {{ states.person.sonia_koht.state }}
+              - Joe is Cristina's brother (my brother in law) - state: {{ states.person.joe_falbo.state }}
+              - Alex is John's brother (cristina's brother in law) - state: .person.alex.state }}
+              - Antoun, a.k.a, Jido, is John's data, grandparent to Nino and Gianluca - state: {{ states.person.antoun_koht.state }}
+              - Yara is John's sister
+              - Shawn is Yara's husband, John and Cristina's brother in law
+              - Genny is Joe's fiance
+              - Sal, a.k.a., Nonno, is Cristina's dad, grandparent to Nino and Gianluca
+              - Katia is the kid's nanny - state: {{ states.person.katia.state }}
+
+            Whenever you see a reference to "the boys" or "the kids" it's referring to Nino and Gianluca.
+
+            Person: {{ person }}
+            Type: {{ announcement_type }}
+
+            Person context:
+              {{ person_context }}
+
+            How to use person context:
+              - Use this as your create an intro message for them.
+              - Do NOT use all of the context in a single message. Just pick one at random and craft your message around that.
+              - DO NOT label somebody as "John's brother" or "Cristina's older brother", this information is mostly for your context
+
+            Can you provide a very short welcome message that I can broadcast as a TTS message throughout our house to announce is arrival?
+            A couple of rules: 
+              - It should be short, very short, like one sentence. 
+              - Pick any of the attributes in the person context that I provided and use that as the core. 
+              - Don't call out all person context that is available, just pick one at random for today
+              - Keep it short, funny.
+              - Consider yourself part of the family, so no need to refer to us as "The Koht Family". Prefer "Fam" or "Family.""
+
+        response_variable: chatgpt
+      # #
+      # # Voice Announcement
+      # #
+      # - action: script.voice_announcement
+      #   data:
+      #     media_players: auto
+      #     sound: "{{ person }}"
+      #     speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+
+      #
+      # Push Notification
+      #
+      - action: script.general_notification
+        data:
+          title: "Somebody's here! {{sound}}"
+          message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "person-announcement"

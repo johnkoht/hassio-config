@@ -1,0 +1,36 @@
+# Automation to detect and initiate away for Alex
+#
+#
+automation:
+  - id: "alex_is_away"
+    alias: "Alex Presence - Away"
+    initial_state: on
+    triggers:
+      # Alex not home
+      - trigger: state
+        entity_id: person.alex
+        to: "not_home"
+      # Handle restarts and reloads of HA
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      # Didn't just leave
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.alex_status
+            state: "Just Left"
+      - or:
+          # Not detected home
+          - condition: state
+            entity_id: person.alex
+            state: "not_home"
+          # iPhone detect NOT home
+          - condition: state
+            entity_id: device_tracker.alex_iphone_detect
+            state: "not_home"
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.alex_home
