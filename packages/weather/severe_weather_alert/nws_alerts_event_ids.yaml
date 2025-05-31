@@ -1,8 +1,0 @@
-# variable:
-#   nws_alerts_event_ids:
-#     value: "none"
-#     restore: true
-
-#   nws_alerts_announced_ids:
-#     value: "none"
-#     restore: false
