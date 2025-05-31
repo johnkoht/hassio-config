@@ -4,9 +4,9 @@ automation:
   - id: "doorbell_ring"
     alias: "Doorbell Ring"
     mode: "single"
-    trigger:
+    triggers:
       # Doorbell is pressed
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.front_door_camera_doorbell
         to: "on"
     action:
@@ -26,55 +26,6 @@ automation:
           devices: "all"
           priority: "time-sensitive"
           tag: "doorbell-ring"
-
-  # Doorbell Detected Object
-  #
-  - id: "doorbell_detected_object"
-    alias: "Doorbell Detected Object"
-    mode: "single"
-    initial_state: off
-    trigger:
-      # Doorbell detects an person
-      - platform: state
-        entity_id: binary_sensor.front_door_camera_person_detected
-        to: "on"
-    action:
-      # Display snapshop on the TV
-      - action: script.display_doorbell_snapshot_on_tv
-        data: {}
-
-  # Just a test
-  - id: "doorbell_message_test"
-    alias: Doorbell Message Test
-    mode: single
-    initial_state: off
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.front_door_camera_person_detected
-          - binary_sensor.backyard_south_person_detected
-          - binary_sensor.driveway_front_camera_person_detected
-          - binary_sensor.garage_driveway_person_detected
-        to: "on"
-        variables:
-          camera_name: "{{ device_attr(trigger.entity_id, 'name') }}"
-          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
-          event_id: "{{ state_attr(trigger.entity_id, 'event_id') }}"
-          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
-    condition: []
-    action:
-      - action: notify.mobile_app_jk_2
-        metadata: {}
-        data:
-          title: Person Detected
-          message: Person Detected on {{camera_name}} {{nvr_id}} {{event_id}}
-          data:
-            image: "{{image_path}}"
-            push:
-              sound:
-                name: default
-                critical: 1
-                volume: 1
 
 script:
   # Activate Doorbell Chime
@@ -132,7 +83,7 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - alias: "Repeat the doorbell sounce three times"
+      - alias: "Repeat the doorbell sound three times"
         repeat:
           # count: 3
           while:

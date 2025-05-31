@@ -2,18 +2,18 @@ automation:
   - id: "garage_door_3_open_upon_arrival"
     alias: "Garage Door 3 - Open Upon Arrival"
     initial_state: off
-    trigger:
+    triggers:
       # People just got home
-      - platform: state
+      - trigger: state
         entity_id:
           # - input_select.cristina_status_dropdown
           - input_select.john_status
         to: "Just Arrived"
       # BMW just arrived
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bmw_home
         to: "on"
-    condition:
+    conditions:
       # Somebody just arrived
       - condition: or
         conditions:
@@ -39,13 +39,16 @@ automation:
         entity_id: cover.garage_door_3
         state: "closed"
 
-    action:
+    actions:
       # Close the garage doors
-      - service: cover.open_cover
+      - action: cover.open_cover
         entity_id: cover.garage_door_3
 
-      # Notify the family
-      - service: notify.mobile_app_jk
+      # Notification for logging
+      - action: script.general_notification
         data:
-          title: Garage Door 3
+          title: "Garage Door 3"
           message: Garage door three is opening upon somebody's arrival
+          devices: "jk"
+          priority: "active"
+          tag: "garage-door-3-automation"
