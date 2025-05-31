@@ -2,33 +2,33 @@ automation:
   - id: "garage_doors_close_when_home"
     alias: "Garage doors close when home"
     initial_state: on
-    trigger:
+    triggers:
       # If any doors have been open for more than 30 mins
-      - platform: state
+      - trigger: state
         entity_id: cover.garage_doors
         to: "open"
         for:
           minutes: 30
       # If the garage is set to Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.garage
         to: "Off"
       # House goes into bedtime mode
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Garage is no longer occupied for 20 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.garage_occupied
         to: "off"
         for:
           minutes: 20
       # Hassio reloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       - condition: or
         conditions:
           # If the house is in bedtime mode, then we can skip
@@ -68,18 +68,19 @@ automation:
             for:
               minutes: 30
       # No BLE devices detected
-      - condition: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
-    action:
+      - condition: state
+        entity_id: binary_sensor.garage_ble_occupancy
+        state: "off"
+    actions:
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "police-whistle"
           speech_message: "{{ expand('cover.garage_doors')|selectattr('state', 'eq', 'open')|map(attribute='name')|list|join(', ') }} has been open for a while but nobody is around so I'm automaticallly closing."
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Garage Doors Open!"
           message: "{{ expand('cover.garage_doors')|selectattr('state', 'eq', 'open')|map(attribute='name')|list|join(', ') }} has been open for a while but nobody is around so I'm automaticallly closing."
@@ -88,11 +89,11 @@ automation:
           tag: "garage-doors-open-home"
 
       # Close the garage doors
-      - service: cover.close_cover
+      - action: cover.close_cover
         data: {}
         target:
           entity_id: cover.garage_doors
 
       # Turn off the garage lights
-      - service: light.turn_off
+      - action: light.turn_off
         entity_id: light.garage_lights

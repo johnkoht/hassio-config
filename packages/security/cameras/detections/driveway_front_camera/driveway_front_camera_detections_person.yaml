@@ -41,11 +41,12 @@ automation:
             state: "closed"
           # OR nobody is in the garage
           # We only want to trigger when nobody is detected through BLE
-          - condition: template
-            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
+          - condition: state
+            entity_id: binary_sensor.garage_ble_occupancy
+            state: "off"
             for:
               minutes: 2
-    action:
+    actions:
       #
       # Call the camera detection alert service to handle
       - action: script.camera_detection_alert

@@ -2,27 +2,28 @@ automation:
   - id: "garage_not_occupied"
     initial_state: on
     alias: "Garage not occupied"
-    trigger:
+    triggers:
       # If anybody is detected out of the room
-      - platform: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
+      - trigger: state
+        entity_id: binary_sensor.garage_ble_occupancy
+        to: "off"
         for:
           minutes: 5
       # Garage sensor no longer detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.garage_motion_sensor_occupancy
         to: "off"
       # Garage door is closed
-      - platform: state
+      - trigger: state
         entity_id: cover.garage_doors
         to: "closed"
       # Garage doors have been open for 15 minutes
-      - platform: state
+      - trigger: state
         entity_id: cover.garage_doors
         to: "open"
         for:
           minutes: 15
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.garage_occupied
         state: "on"
@@ -31,13 +32,14 @@ automation:
         entity_id: binary_sensor.garage_motion_sensor_occupancy
         state: "off"
       # Nobody detected via bluetooth
-      - condition: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length == 0 }}"
-    action:
-      - service: input_boolean.turn_off
+      - condition: state
+        entity_id: binary_sensor.garage_ble_occupancy
+        state: "off"
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.garage_occupied
       # Waits 30 seconds to enable lighting automations
       - delay: "00:00:30"
       # Enable garage lighting automations
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.garage_lighting_automations

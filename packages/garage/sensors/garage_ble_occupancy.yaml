@@ -1,0 +1,14 @@
+# Kitchen BLE Occupancy
+#
+# The Kitchen has two BLE base stations. This sensor
+# combines them into one to check if anybody is present.
+#
+binary_sensor:
+  - platform: template
+    sensors:
+      garage_ble_occupancy:
+        friendly_name: "Garage BLE occupancy"
+        unique_id: "garage_ble_occupancy"
+        device_class: occupancy
+        value_template: >-
+          {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'garage')|map(attribute='name')|list | length > 0 }}

@@ -114,7 +114,7 @@ script:
           - He's a retired neuro-anesthesiologist
           - The boys love him
           - Our dog Rio always bring his bone to Jido for him to hold 
-        {% elif person == "john" or person == "bab" %}
+        {% elif person == "john" or person == "baba" %}
           - John is me! The creator of these automations!
           - John is into smart homes, obviously
           - John is into home labbing as well (servers, self hosted apps, etc)
@@ -137,6 +137,10 @@ script:
           arabic-intro
         {% elif person == "jido" or person == "antoun" %}
           jido
+        {% elif person == "john" or person == "baba" %}
+          arcade
+        {% elif person == "cristina" or person == "mamma" %}
+          fanfare
         {% elif person == "joe" %}
           fox-nfl
         {% else %}
@@ -269,14 +273,14 @@ script:
               - Consider yourself part of the family, so no need to refer to us as "The Koht Family". Prefer "Fam" or "Family.""
 
         response_variable: chatgpt
-      # #
-      # # Voice Announcement
-      # #
-      # - action: script.voice_announcement
-      #   data:
-      #     media_players: auto
-      #     sound: "{{ person }}"
-      #     speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+      #
+      # Voice Announcement
+      #
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "{{ sound }}"
+          speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
 
       #
       # Push Notification
