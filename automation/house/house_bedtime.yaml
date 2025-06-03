@@ -31,8 +31,6 @@ conditions:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "off"
-  - condition: state
-    entity_id: binary_sen
   # - condition: and
   #   conditions:
   #     # John is in bed OR out of town
