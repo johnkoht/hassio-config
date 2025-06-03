@@ -1,4 +1,14 @@
+# Bedtime Mode Vacation Automations
+#
+# These automations are toggled by the vacation_mode
+# automations.
+#
+# If we're on vacation/extended away, then we'll turn
+# on bedtime mode at 10pm and off at 7am
 automation:
+  #
+  # Turn ON bedtime mode at 10 when we're not home
+  #
   - id: "bedtime_mode_vacation_on"
     initial_state: on
     alias: "Bedtime Mode - Vacation On"
@@ -15,11 +25,14 @@ automation:
       - action: input_boolean.turn_on
         entity_id: input_boolean.bedtime
 
+  #
+  # Turn OFF bedtime mode at 7am when we're not home
+  #
   - id: "bedtime_mode_vacation_off"
     initial_state: on
     alias: "Bedtime Mode - Vacation Off"
     triggers:
-      # At 10pm
+      # At 7am
       - trigger: time
         at: "07:00:00"
     conditions:

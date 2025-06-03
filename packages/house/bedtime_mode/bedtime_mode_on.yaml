@@ -1,3 +1,8 @@
+# Bedtime Mode On
+#
+# If everybody is in bed then we'll turn
+# bedtime mode on to shut down unused areas
+#
 automation:
   - id: "bedtime_mode_on"
     initial_state: on

@@ -1,3 +1,8 @@
+# Everybody in Bed
+#
+# This automation checks that the kids are in bed
+# and that all adults that are home are in bed
+#
 binary_sensor:
   - platform: template
     sensors:
