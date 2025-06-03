@@ -24,16 +24,30 @@ condition:
     entity_id: input_boolean.bedtime
     state: "off"
 action:
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.house
-      option: "Auto"
-  # Set the doorbell text
-  # This should probably move elsewhere
-  - service: select.select_option
-    data:
-      entity_id: select.front_door_camera_doorbell_text
-      option: WELCOME!
+  - choose:
+      # IF vacation mode is ON
+      - conditions:
+          - condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "on"
+        sequence:
+          - action: input_select.select_option
+            data:
+              entity_id: input_select.house
+              option: "Vacation"
+    # ELSE set to Auto
+    default:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.house
+          option: "Auto"
+
+      # Set the doorbell text
+      # This should probably move elsewhere
+      - service: select.select_option
+        data:
+          entity_id: select.front_door_camera_doorbell_text
+          option: WELCOME!
 
   # Turn ON speech notifications if they are off
   - if:

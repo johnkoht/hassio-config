@@ -2,14 +2,14 @@ automation:
   - id: "vacation_mode_turn_on"
     initial_state: on
     alias: "Vacation Mode - Turn On"
-    trigger:
+    triggers:
       # If either of use are marked as extended away
-      - platform: state
+      - trigger: state
         entity_id:
           - input_select.cristina_status_dropdown
           - input_select.john_status
         to: "Extended Away"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -22,20 +22,22 @@ automation:
       - condition: state
         entity_id: input_select.john_status
         state: "Extended Away"
-    action:
+    actions:
       # Turn ON the boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.vacation_mode
 
       # Turn on the faux home automations
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id:
           - automation.vacation_faux_home
           - automation.vacation_faux_home_off
           - automation.vacation_mode_turn_off
+          - automation.bedtime_mode_vacation_on
+          - automation.bedtime_mode_vacation_off
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Vacation Mode Turned On"
           message: "Vacation mode has been turned on!"

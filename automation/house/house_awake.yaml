@@ -5,7 +5,7 @@
 #
 id: "house_awake"
 alias: "House awake"
-initial_state: "on"
+initial_state: "off"
 trigger:
   - platform: state
     entity_id:

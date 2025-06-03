@@ -1,0 +1,61 @@
+# House Awake
+#
+# When both of us are deteremined to be awake,
+# we'll turn off the bedtime mode for the house
+#
+automation:
+  - id: "bedtime_mode_off"
+    alias: "Bedtime Mode - Off"
+    initial_state: on
+    triggers:
+      # Somebody is out of bed
+      - trigger: state
+        entity_id: binary_sensor.everybody_in_bed
+        to: "off"
+      - trigger: state
+        entity_id:
+          - input_boolean.cristina_is_awake
+          - input_boolean.john_is_awake
+        to: "on"
+      # At 6:30am
+      - trigger: time
+        at: "06:30:00"
+      # At sunrise
+      - trigger: sun
+        event: sunrise
+    condition:
+      - condition: time
+        after: "05:00:00"
+      - condition: or
+        conditions:
+          # John is away or home and awake
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.john_home
+                state: "off"
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.john_home
+                    state: "on"
+                  - condition: state
+                    entity_id: input_boolean.john_is_awake
+                    state: "on"
+          # Cristina is away or home and awake
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.cristina_home
+                state: "off"
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.cristina_home
+                    state: "on"
+                  - condition: state
+                    entity_id: input_boolean.cristina_is_awake
+                    state: "on"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.bedtime
