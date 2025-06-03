@@ -1,50 +1,33 @@
+# John DnD On
+# 
+# If I'm on a call, turn ON the DnD boolean
 automation:
   - id: "john_dnd_on"
     initial_state: on
     alias: "John DnD On"
     mode: queued
-    trigger:
+    triggers:
       # Webcam turned on
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.john_laptop_camera_active
         to: "on"
         for:
           seconds: 3
       # Computer audio turned ON for 5 seconds
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.john_laptop_audio_active
         to: "on"
         for:
           seconds: 5
       # On a work call
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.john_work_call
         to: "on"
         for:
           seconds: 5
-      # Personal time turns OFF
-      - platform: state
-        entity_id: input_boolean.john_personal_time
-        to: "off"
-    condition:
-      # # Not personal time (GSD, OOO, etc)
-      # # AND camera is NOT on
-      # - condition: and
-      #   conditions:
-      #     - condition: state
-      #       entity_id: input_boolean.john_personal_time
-      #       state: "off"
-      #     # Camera is OFF
-      #     - condition: state
-      #       entity_id: binary_sensor.john_laptop_camera_active
-      #       state: "off"
-
+    conditions:
       - condition: or
         conditions:
-          # On a work call
-          - condition: state
-            entity_id: input_boolean.john_work_call
-            state: "on"
           # Camera is ON
           - condition: state
             entity_id: binary_sensor.john_laptop_camera_active
@@ -53,20 +36,16 @@ automation:
           - condition: state
             entity_id: binary_sensor.john_laptop_audio_active
             state: "on"
-
-      # It's working hours
-      - condition: state
-        entity_id: binary_sensor.work_hours
-        state: "on"
       # Not already active
       - condition: state
         entity_id: input_boolean.john_dnd
         state: "off"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      # Turn ON the dnd boolean
+      - action: input_boolean.turn_on
         entity_id: input_boolean.john_dnd
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "John's DnD mode has been turned on"
           title: "John DnD On!"
