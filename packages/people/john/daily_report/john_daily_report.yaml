@@ -1,3 +1,8 @@
+# John's Daily Report
+# 
+# This automation provides a "just in time" TTS message
+# with an update on my schedule, sleep score, and more.
+# 
 automation:
   - id: "john_daily_report"
     alias: "John Daily Report"
@@ -15,17 +20,16 @@ automation:
         entity_id: person.john_koht
         state: "home"
     action:
-      # binary_sensor.johns_macbook_pro_active
-
-      # Wait for the office to be occupied
-      - wait_template: "{{ is_state('input_boolean.office_occupied', 'on') }}"
-        timeout: "02:00:00"
-        continue_on_timeout: false
+      # # Wait for the office to be occupied
+      # - wait_template: "{{ is_state('input_boolean.office_occupied', 'on') }}"
+      #   timeout: "02:00:00"
+      #   continue_on_timeout: false
 
       # Wait for my computer to be active to avoid running
       # the automation when I'm quickly grabbing something
       - wait_template: "{{ is_state('binary_sensor.johns_macbook_pro_active', 'on') }}"
         timeout: "00:30:00"
+        continue_on_timeout: false
 
       - if:
           # Only move forward if I'm not on a call

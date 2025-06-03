@@ -1,3 +1,8 @@
+# Family Morning Update
+#
+# Every morning, provide an overview of the day for the family
+# that includes calendar events, weather, and some fun additions
+#
 automation:
   - id: "morning_update"
     alias: "Morning Update"
@@ -115,6 +120,10 @@ script:
             Today's Low: {{ states.sensor.pirateweather_overnight_low_temperature_0d.state }}
             Current Weather: {{ states.weather.pirateweather }}
 
+            {% if states.sensor.pirateweather_daytime_high_temperature_0d.state > 93 %}
+              It looks like today's weather is going to be pretty hot. Since we reguarly have mail and package delivery, it would be kind of us to provide some cold water for delivery people. You could remind us to do this in your morning briefing.
+            {% endif %}
+
             {% if now().strftime('%A') in <office days> %}
               Today is {{ now().strftime('%A') }}, which means Cristina commutes to the office. If there is rain in the forecast or a high probabilty of rain, please remind her to bring an umbrella just in case.
               Here is the precipitation probabilities for the day: {{ states.sensor.pirateweather_precip_probability_0d.state }}%
@@ -133,6 +142,7 @@ script:
             Last rule to follow, if today is any kind of special day like a holiday, make sure to adapt your response appropriately. For example:
               - On christmas, you can say "Ho ho ho! Merry Christmas" or something fun and christmasy
               - On April Fool Day, you can be funny and fool us before providing our briefing.
+              - Some other holidays to call out include mothers day, father's day, easter, thanksgiving, christmas, halloween
         response_variable: chatgpt
       #
       # Push Notification

@@ -2,22 +2,22 @@ automation:
   - id: "tempest_rain_alert"
     alias: Tempest - Rain Alert
     initial_state: on
-    trigger:
+    triggers:
       # Tempest rain amount over 1 inch
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.tempest_rain_amount
         above: 1
       # Tempest rain amount over 3 inch
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.tempest_rain_amount
         above: 3
       # Tempest rain rate above 2 inches per hour
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.tempest_rain_rate
         above: 2
-    action:
+    actions:
       # Announce to the house
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           speech_message: >-
             {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
@@ -32,7 +32,7 @@ automation:
           media_players: auto
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Rain Accumulation Alert!"
           message: >-
