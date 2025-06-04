@@ -1,3 +1,10 @@
+# Alex Status
+#
+# This automation manages an input_select that manages
+# the state of the person, e.g. home, just left, just
+# arrived, or away
+#
+
 input_select:
   alex_status:
     name: Alex
@@ -7,3 +14,84 @@ input_select:
       - Just Left
       - Away
     initial: Away
+
+automation:
+  #
+  # Alex Presence Just Arrived
+  # Mark him as just arrived once detected home
+  #
+  - id: "alex_presence_just_arrived"
+    alias: Alex Presence - Just Arrived
+    mode: single
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.alex_home
+        to: "on"
+    actions:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.alex_status
+          option: "{{ 'Home' if states.input_select.alex_status.state else 'Just Arrived' }}"
+
+  #
+  # Alex Presence Home
+  # Mark him as home after having arrived for 5 mins
+  #
+  - id: "alex_presence_home"
+    alias: Alex Presence - Home
+    mode: single
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_select.alex_status
+        to: "Just Arrived"
+        for:
+          minutes: 5
+      - trigger: state
+        entity_id: input_select.alex_status
+        from: "Just Left"
+        to: "Just Arrived"
+    actions:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.alex_status
+          option: Home
+
+  #
+  # Alex Presence Just Left
+  # Mark him as Just Left upon departure
+  #
+  - id: "alex_presence_just_left"
+    alias: Alex Presence - Just Left
+    mode: single
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.alex_home
+        to: "off"
+    actions:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.alex_status
+          option: Just Left
+
+  # Mark person as Away
+  #
+  # If a person has been in the Just Left status for
+  # more than 5 minutes, let's consider them Away.
+  - id: "alex_presence_away"
+    alias: Alex Presence - Away
+    mode: single
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_select.alex_status
+        to: "Just Left"
+        for:
+          minutes: 5
+    actions:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.alex_status
+          option: Away
