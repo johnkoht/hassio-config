@@ -1,7 +1,7 @@
 script:
   person_announcement:
     alias: "Person Announcement"
-    mode: "single"
+    mode: "queued"
     icon: mdi:air-horn
 
     # TEST FIELD

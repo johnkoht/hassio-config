@@ -1,0 +1,36 @@
+# Automation to detect and initiate away for Jido
+#
+#
+automation:
+  - id: "jido_is_away"
+    alias: "Jido Presence - Away"
+    initial_state: on
+    triggers:
+      # Jido not home
+      - trigger: state
+        entity_id: person.antoun_koht
+        to: "not_home"
+      # Handle restarts and reloads of HA
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      # Didn't just leave
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.jido_status
+            state: "Just Left"
+      - or:
+          # Not detected home
+          - condition: state
+            entity_id: person.antoun_koht
+            state: "not_home"
+          # iPhone detect NOT home
+          - condition: state
+            entity_id: device_tracker.antoun_iphone_detect
+            state: "not_home"
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.antoun_home

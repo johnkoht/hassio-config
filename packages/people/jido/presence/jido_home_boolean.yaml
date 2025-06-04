@@ -1,0 +1,4 @@
+input_boolean:
+  jido_home:
+    name: Jido Home
+    icon: mdi:home

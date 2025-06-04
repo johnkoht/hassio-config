@@ -1,0 +1,30 @@
+# Automation to detect and initiate home for Jido
+#
+# This automation will detect if Jido's home based on
+# a bunch of triggers and conditions and then run a
+# script to handle home actions.
+#
+automation:
+  - id: "jido_is_home"
+    initial_state: on
+    alias: "Jido Presence - Home"
+    triggers:
+      # Jido detected home
+      - trigger: state
+        entity_id: person.antoun_koht
+        to: "home"
+      # iPhone detect tracker is detected home
+      - trigger: state
+        entity_id: device_tracker.antoun_iphone_detect
+        to: "home"
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: person.antoun_koht
+        state: "home"
+    actions:
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.jido_home
