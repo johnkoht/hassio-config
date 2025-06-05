@@ -33,4 +33,4 @@ automation:
             state: "not_home"
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.antoun_home
+        entity_id: input_boolean.jido_home
