@@ -1,0 +1,18 @@
+# Everybody Awake
+#
+# This automation that all kids and adults are
+# OUT of bed.
+#
+binary_sensor:
+  - platform: template
+    sensors:
+      everybody_awake:
+        friendly_name: Bedtime Mode - Everybody Awake
+        unique_id: everybody_awake
+        value_template: >-
+          {{
+            states.input_boolean.gianluca_in_bed.state == "off" and
+            states.input_boolean.nino_in_bed.state == "off" and
+            states.input_boolean.john_is_in_bed.state == "off" and
+            states.input_boolean.cristina_in_bed.state == "off"
+          }}

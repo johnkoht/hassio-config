@@ -1,18 +1,17 @@
+# Quiet Mode - Turn On
+#
+# If somebody is in bed then turn quiet mode on
+# to disable voice notifications and quiet down the house
+#
 automation:
   - id: "quiet_mode_turn_on"
     initial_state: on
     alias: "Quiet Mode - Turn On"
     triggers:
-      # Gianluca is in bed
+      # Somebody is in bed
       - trigger: state
-        entity_id: input_boolean.gianluca_in_bed
+        entity_id: binary_sensor.somebody_in_bed
         to: "on"
-        id: gianluca
-      # Nino in bed
-      - trigger: state
-        entity_id: input_boolean.nino_in_bed
-        to: "on"
-        id: nino
     conditions:
       # Quiet mode is oFF
       - condition: state
@@ -23,28 +22,28 @@ automation:
       - action: input_boolean.turn_on
         entity_id: input_boolean.quiet_mode
 
+      # Announce to the house
       - action: script.voice_announcement
         data:
           media_players: auto
           sound: harp-flourish
           speech_message: >-
-            {% if states.binary_sensor.nino_bed_occupied.state == "on" and states.binary_sensor.gianluca_bed_occupied.state == "on" %}
-              {{
-                [
-                  "Shhh...Nino is going to sleep.",
-                  "Quiet time, Nino is going to sleep!",
-                  "Pardon the interruption but Nino is going to sleep, please be quiet!",
-                  "Attention! Quiet mode has been enabled for Nino's nap."
-                ] | random
-              }}
-
-            {% else %}
-              {{
-                [
-                  "Shhh..." ~ trigger.id ~ " is going to sleep.",
-                  "Quiet time, " ~ trigger.id ~ " is going to sleep!",
-                  "Pardon the interruption but " ~ trigger.id ~ " is going to sleep, please be quiet!",
-                  "Attention! Quiet mode has been enabled for " ~ trigger.id ~ "'s nap."
-                ] | random
-              }}
+            {% set who = "" %}
+            {% if states.input_boolean.gianluca_in_bed.state == "on" %}
+              {% set who = "Gianluca" %}
+            {% elif states.input_boolean.nino_in_bed.state == "on" %}
+              {% set who = "Nino" %}
+            {% elif states.input_boolean.john_is_in_bed.state == "on" %}
+              {% set who = "John" %}
+            {% elif states.input_boolean.cristina_in_bed.state == "on" %}
+              {% set who = "Cristina" %}
             {% endif %}
+
+            {{
+              [
+                "Shhh..." ~ who ~ " is going to sleep.",
+                "Quiet time, " ~ who ~ " is going to sleep!",
+                "Pardon the interruption but " ~ who ~ " is going to sleep, please be quiet!",
+                "Attention! Quiet mode has been enabled for " ~ who ~ "'s nap."
+              ] | random
+            }}

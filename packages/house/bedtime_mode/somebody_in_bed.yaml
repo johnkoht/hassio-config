@@ -1,0 +1,17 @@
+# Somebody in Bed
+#
+# This automation detects if anybody is inbed
+#
+binary_sensor:
+  - platform: template
+    sensors:
+      somebody_in_bed:
+        friendly_name: Bedtime Mode - Somebody in Bed
+        unique_id: somebody_in_bed
+        value_template: >-
+          {{
+            states.input_boolean.gianluca_in_bed.state == "on" or
+            states.input_boolean.nino_in_bed.state == "on" or
+            states.input_boolean.john_is_in_bed.state == "on" or
+            states.input_boolean.cristina_in_bed.state == "on"
+          }}
