@@ -1,0 +1,129 @@
+script:
+  set_air_purifier_mode:
+    alias: "Air Quality - Set Air Purifier Mode"
+    mode: "queued"
+    # description: >
+    #   Set purifier mode based on local air quality.
+    fields:
+      #
+      # Purifier device to set
+      #
+      purifier:
+        description: "Entity ID of the fan (purifier)"
+        example: "fan.office_air_purifier"
+        default: "fan.office_air_purifier"
+        selector:
+          select:
+            options:
+              - fan.office_air_purifier
+
+      #
+      # PM2.5 value to review
+      #
+      pm25:
+        name: "PM2.5"
+        description: "PM2.5 value (µg/m³)"
+        example: "22.4"
+        selector:
+          number:
+            min: 0
+            max: 500
+            unit_of_measurement: "µg/m³"
+            mode: "box"
+
+      #
+      # VOC value to review
+      #
+      voc:
+        name: "Volatile Organic Compounds"
+        description: "VOC value (ppb)"
+        example: "300"
+        selector:
+          number:
+            min: 0
+            max: 5500
+            unit_of_measurement: "ppb"
+            mode: "box"
+
+      #
+      # CO2 value to review
+      #
+      co2:
+        name: "CO₂"
+        description: "CO₂ value (ppm)"
+        example: "1100"
+        selector:
+          number:
+            min: 0
+            max: 5500
+            unit_of_measurement: "ppm"
+            mode: "box"
+
+    variables:
+      #
+      # Are any of the values hazardous?
+      #
+      is_hazardous: "{{ pm25 > 55 or voc > 1500 or co2 > 1500 }}"
+
+      #
+      # Is there moderate/unhealthy air quality
+      #
+      is_moderate: "{{ pm25 > 12 or voc > 400 or co2 > 1000 }}"
+
+      #
+      # Current mode of the purifier
+      #
+      current_mode: "{{ state_attr(purifier, 'preset_mode') }}"
+
+      #
+      # Current speed of the fan, if applicable
+      #
+      percentage: "{{ state_attr(purifier, 'percentage') }}"
+
+    # Set the fan
+    sequence:
+      - choose:
+          #
+          # Hazardous
+          # If harardous, turn on the air purifier
+          # to full blast
+          #
+          - conditions: "{{ is_hazardous }}"
+            sequence:
+              - action: fan.turn_on
+                data:
+                  entity_id: "{{ purifier }}"
+              - action: fan.set_preset_mode
+                data:
+                  entity_id: "{{ purifier }}"
+                  preset_mode: "Manual"
+              - action: fan.set_percentage
+                data:
+                  entity_id: "{{ purifier }}"
+                  percentage: 100
+          #
+          # Moderate / Unhealthy
+          # If moderate or unhealthy, turn on the air
+          # purifier to auto mode
+          #
+          - conditions: >
+              {{ is_moderate and not is_hazardous and (
+                current_mode != 'Auto' or states(purifier) != 'on'
+              ) }}
+            sequence:
+            - action: fan.turn_on
+              target:
+                entity_id: "{{ purifier }}"
+            - action: fan.set_preset_mode
+              data:
+                entity_id: "{{ purifier }}"
+                preset_mode: "Auto"
+          #
+          # Healthy/Good AQI
+          # Turn OFF the air purifier
+          #
+          - conditions: "{{ not is_hazardous and not is_moderate }}"
+            sequence:
+              - action: fan.turn_off
+                target:
+                  entity_id: "{{ purifier }}"

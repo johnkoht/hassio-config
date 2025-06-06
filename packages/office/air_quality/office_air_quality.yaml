@@ -1,0 +1,77 @@
+# Office Air Quality Detection
+#
+# Automate the air purifier in the office based
+# on various AQI sensors from an Awair Element
+#
+automation:
+  - id: "office_air_quality_detection"
+    alias: Office Air Quality Detection
+    mode: single
+    initial_state: on
+    triggers:
+      # If PM2.5 above 12
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_pm2_5
+        above: 12
+        for:
+          minutes: 3
+      # If PM2.5 above 55
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_pm2_5
+        above: 55
+        for:
+          minutes: 3
+      # If PM2.5 below 12
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_pm2_5
+        below: 12
+        for:
+          minutes: 3
+      # If CO2 above 600
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_carbon_dioxide
+        above: 600
+        for:
+          minutes: 3
+      # If CO2 above 1000
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_carbon_dioxide
+        above: 1500
+        for:
+          minutes: 3
+      # If CO2 below 600
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_carbon_dioxide
+        below: 600
+        for:
+          minutes: 3
+      # If VOCS above 300
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_vocs
+        above: 300
+        for:
+          minutes: 3
+      # If VOCS above 2000
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_vocs
+        above: 2000
+        for:
+          minutes: 3
+      # If VOCS below 300
+      - trigger: numeric_state
+        entity_id: sensor.office_awair_vocs
+        below: 300
+        for:
+          minutes: 3
+    conditions:
+      # Only trigger if the house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      - action: script.set_air_purifier_mode
+        data:
+          purifier: fan.office_air_purifier
+          pm25: "{{ states('sensor.office_awair_pm2_5') | float }}"
+          voc: "{{ states('sensor.office_awair_vocs') | float }}"
+          co2: "{{ states('sensor.office_awair_carbon_dioxide') | float }}"
