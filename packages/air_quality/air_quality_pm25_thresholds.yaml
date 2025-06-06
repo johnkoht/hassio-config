@@ -1,0 +1,53 @@
+# PM2.5 AQI Thresholds
+#
+# Set variables to track threshold breaches
+# to set AQI state and automate purifiers
+#
+input_number:
+  #
+  # PM2.5 Acceptable Range
+  #
+  pm25_acceptable:
+    name: PM2.5 Acceptable
+    initial: 12
+    min: 12
+    max: 34
+    unit_of_measurement: µg/m³
+    mode: box
+    icon: phu:pm2-5
+
+  #
+  # PM2.5 Moderate Range
+  #
+  pm25_moderate:
+    name: PM2.5 Moderate
+    initial: 35
+    min: 35
+    max: 54
+    unit_of_measurement: µg/m³
+    mode: box
+    icon: phu:pm2-5
+
+  #
+  # PM2.5 Poor Range
+  #
+  pm25_poor:
+    name: PM2.5 Poor
+    initial: 55
+    min: 55
+    max: 149
+    unit_of_measurement: µg/m³
+    mode: box
+    icon: phu:pm2-5
+
+  #
+  # PM2.5 Hazardous Range
+  #
+  pm25_hazardous:
+    name: PM2.5 Hazardous
+    initial: 150
+    min: 150
+    max: 5500
+    unit_of_measurement: µg/m³
+    mode: box
+    icon: phu:pm2-5

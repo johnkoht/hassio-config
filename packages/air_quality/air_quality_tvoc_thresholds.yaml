@@ -1,0 +1,53 @@
+# Toxic Chemicals AQI Thresholds
+# 
+# Set variables to track threshold breaches
+# to set AQI state and automate purifiers
+# 
+input_number:
+  #
+  # TVOCs Acceptable Range
+  #
+  tvoc_acceptable:
+    name: TVOCs Acceptable
+    initial: 300
+    min: 300
+    max: 499
+    unit_of_measurement: ppb
+    mode: box
+    icon: phu:voc
+
+  #
+  # TVOCs Moderate Range
+  #
+  tvoc_moderate:
+    name: TVOCs Moderate
+    initial: 500
+    min: 500
+    max: 2999
+    unit_of_measurement: ppb
+    mode: box
+    icon: phu:voc
+
+  #
+  # TVOCs Poor Range
+  #
+  tvoc_poor:
+    name: TVOCs Poor
+    initial: 3000
+    min: 3000
+    max: 24999
+    unit_of_measurement: ppb
+    mode: box
+    icon: phu:voc
+
+  #
+  # TVOCs Hazardous Range
+  #
+  tvoc_hazardous:
+    name: TVOCs Hazardous
+    initial: 25000
+    min: 25000
+    max: 55000
+    unit_of_measurement: ppb
+    mode: box
+    icon: phu:voc

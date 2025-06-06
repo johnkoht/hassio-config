@@ -1,0 +1,24 @@
+# Kitchen - Turn off Air Purifier
+#
+# Automation logic to handle turning off the
+# air purifier when we don't need it
+#
+automation:
+  - id: "kitchen_turn_off_purifier"
+    alias: Kitchen Air Quality - Turn off Purifier
+    mode: single
+    initial_state: on
+    triggers:
+      # House becomes unoccupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # Kitchen turns OFF
+      - trigger: state
+        entity_id: input_select.kitchen
+        to: "Off"
+    actions:
+      # Turn OFF the air purifer
+      - action: fan.turn_off
+        target:
+          entity_id: fan.kitchen_air_purifier

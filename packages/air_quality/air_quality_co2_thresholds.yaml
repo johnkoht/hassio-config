@@ -1,0 +1,53 @@
+# Carbon Dioxide AQI Thresholds
+#
+# Set variables to track threshold breaches
+# to set AQI state and automate purifiers
+#
+input_number:
+  #
+  # CO2 Acceptable Range
+  #
+  co2_acceptable:
+    name: CO2 Acceptable
+    initial: 600
+    min: 600
+    max: 999
+    unit_of_measurement: ppm
+    mode: box
+    icon: phu:co2
+
+  #
+  # CO2 Moderate Range
+  #
+  co2_moderate:
+    name: CO2 Moderate
+    initial: 1000
+    min: 1000
+    max: 1999
+    unit_of_measurement: ppm
+    mode: box
+    icon: phu:co2
+
+  #
+  # CO2 Poor Range
+  #
+  co2_poor:
+    name: CO2 Poor
+    initial: 2000
+    min: 2000
+    max: 4499
+    unit_of_measurement: ppm
+    mode: box
+    icon: phu:co2
+
+  #
+  # CO2 Hazardous Range
+  #
+  co2_hazardous:
+    name: CO2 Hazardous
+    initial: 4500
+    min: 4500
+    max: 10000
+    unit_of_measurement: ppm
+    mode: box
+    icon: phu:co2

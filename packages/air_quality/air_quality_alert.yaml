@@ -1,3 +1,14 @@
+# Outdoor Air Quality Alerts
+#
+# This automation is responsible for notifying us if
+# there are air quality issues in our city.
+#
+
+#
+# Air Quality State
+# This simply stores the current state of the
+# local air quality. Changes to the value of this
+# input_select will trigger the automations
 #
 input_select:
   air_quality_state:
@@ -13,6 +24,9 @@ input_select:
 automation:
   #
   # AQI becomes unhealthy
+  # If the input_select.air_quality_state goes from
+  # good, moderate or slightly unhealthy to unhealthy,
+  # then broadcast an announcement in the house
   #
   - id: "air_quality_alert_unhealthy"
     alias: "Air Quality - Alert for Unhealthy Conditions"
@@ -40,6 +54,8 @@ automation:
 
   #
   # AQI becomes very unhealthy
+  # If the input_select.air_quality_state becomes
+  # very unhealthy then trigger a broadcast
   #
   - id: "air_quality_alert_very_unhealthy"
     alias: "Air Quality - Alert for Very Unhealthy Conditions"
@@ -68,6 +84,8 @@ automation:
 
   #
   #  AQI becomes hazardous
+  # If the input_select.air_quality_state becomes
+  # hazardous then trigger a nuclear broadcast
   #
   - id: "air_quality_alert_hazardous"
     alias: "Air Quality - Alert for Very Unhealthy Conditions"
@@ -91,6 +109,9 @@ automation:
 
   #
   # Set the Air Quality State input select
+  # This automation listens to the local air quality index'
+  # and updates the input_select above based on the air
+  # quality score
   #
   - id: "update_air_quality_state"
     alias: Update Air Quality State
@@ -122,24 +143,3 @@ automation:
             {% else %}
               Hazardous
             {% endif %}
-      # - alias: "Set AQI Variables"
-      #   variables:
-      #     aqi: "{{ states.sensor.desplns_illinois_usa_air_quality_index.state | int }}"
-      #     air_quality_level: >-
-      #       {% if aqi <= 50 %}
-      #         Good
-      #       {% elif aqi <= 100 %}
-      #         Moderate
-      #       {% elif aqi <= 150 %}
-      #         Slightly Unhealthy
-      #       {% elif aqi <= 200 %}
-      #         Unhealthy
-      #       {% elif aqi <= 300 %}
-      #         Very Unhealthy
-      #       {% else %}
-      #         Hazardous
-      #       {% endif %}
-      # - action: input_select.select_option
-      #   data:
-      #     entity_id: input_select.air_quality_state
-      #     option: "{{ air_quality_level }}"

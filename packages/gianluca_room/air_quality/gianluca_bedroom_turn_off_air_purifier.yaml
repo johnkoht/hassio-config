@@ -1,0 +1,20 @@
+# Gianluca's Bedroom - Turn off Air Purifier
+#
+# Automation logic to handle turning off the
+# air purifier when we don't need it
+#
+automation:
+  - id: "gianluca_bedroom_turn_off_purifier"
+    alias: Gianluca's Bedroom Air Quality - Turn off Purifier
+    mode: single
+    initial_state: on
+    triggers:
+      # House becomes unoccupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    actions:
+      # Turn OFF the air purifer
+      - action: fan.turn_off
+        target:
+          entity_id: fan.gianlucas_bedroom_air_purifier

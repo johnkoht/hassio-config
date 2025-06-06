@@ -32,11 +32,11 @@ script:
             mode: "box"
 
       #
-      # VOC value to review
+      # TVOC value to review
       #
-      voc:
-        name: "Volatile Organic Compounds"
-        description: "VOC value (ppb)"
+      tvoc:
+        name: "Toxic Chemicals (Volatile Organic Compounds)"
+        description: "TVOC value (ppb)"
         example: "300"
         selector:
           number:
@@ -63,12 +63,12 @@ script:
       #
       # Are any of the values hazardous?
       #
-      is_hazardous: "{{ pm25 > 55 or voc > 1500 or co2 > 1500 }}"
+      is_hazardous: "{{ pm25 > 55 or tvoc > 1500 or co2 > 1500 }}"
 
       #
       # Is there moderate/unhealthy air quality
       #
-      is_moderate: "{{ pm25 > 12 or voc > 400 or co2 > 1000 }}"
+      is_moderate: "{{ pm25 > 12 or vtoc > 400 or co2 > 1000 }}"
 
       #
       # Current mode of the purifier
@@ -111,13 +111,13 @@ script:
                 current_mode != 'Auto' or states(purifier) != 'on'
               ) }}
             sequence:
-            - action: fan.turn_on
-              target:
-                entity_id: "{{ purifier }}"
-            - action: fan.set_preset_mode
-              data:
-                entity_id: "{{ purifier }}"
-                preset_mode: "Auto"
+              - action: fan.turn_on
+                target:
+                  entity_id: "{{ purifier }}"
+              - action: fan.set_preset_mode
+                data:
+                  entity_id: "{{ purifier }}"
+                  preset_mode: "Auto"
           #
           # Healthy/Good AQI
           # Turn OFF the air purifier

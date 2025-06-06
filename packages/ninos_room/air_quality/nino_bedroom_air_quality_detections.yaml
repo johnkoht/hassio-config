@@ -1,0 +1,116 @@
+# Nino's Bedroom Air Quality Detections
+#
+# If PM2.5, CO2, or TVOCs breach thresholds
+# then turn on the air purifier.
+#
+automation:
+  - id: "nino_bedroom_air_quality_detections"
+    alias: Nino's Bedroom Air Quality Sensor Detections
+    mode: single
+    initial_state: on
+    triggers:
+      #
+      # PM2.5 Threshold Breaches
+      #
+      # If PM2.5 above acceptable threshold
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_pm2_5
+        above: input_number.pm25_acceptable
+        for:
+          minutes: 3
+      # If PM2.5 above poor threshold
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_pm2_5
+        above: input_number.pm25_poor
+        for:
+          minutes: 3
+      # If PM2.5 below acceptable (good)
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_pm2_5
+        below: input_number.pm25_acceptable
+        for:
+          minutes: 3
+
+      #
+      # CO2 Threshold Breaches
+      #
+      # If CO2 above acceptable threshold
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_carbon_dioxide
+        above: input_number.co2_acceptable
+        for:
+          minutes: 3
+      # If CO2 above poor threshold
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_carbon_dioxide
+        above: input_number.co2_poor
+        for:
+          minutes: 3
+      # If CO2 below acceptable (good)
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_carbon_dioxide
+        below: input_number.co2_acceptable
+        for:
+          minutes: 3
+
+      #
+      # TVOCs Threshold Breaches
+      #
+      # If VOCS above acceptable threshold
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_vocs
+        above: input_number.tvoc_acceptable
+        for:
+          minutes: 3
+      # If VOCS above poor threshold
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_vocs
+        above: input_number.tvoc_poor
+        for:
+          minutes: 3
+      # If VOCS below acceptable threshold (good)
+      - trigger: numeric_state
+        entity_id: sensor.nino_bedroom_awair_vocs
+        below: input_number.tvoc_acceptable
+        for:
+          minutes: 3
+
+      #
+      # Misc. triggers
+      #
+      # Nearly home boolean is turned on
+      - trigger: state
+        entity_id: input_boolean.nearly_home
+        to: "on"
+      # Bedroom becomes occupied
+      - trigger: state
+        entity_id: input_boolean.ninos_bedroom_occupied
+        to: "on"
+      # House becomes occupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+      # Bedtime mode turns on
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+
+    conditions:
+      - or:
+          # Only trigger if the house is occupied
+          # OR we're almost home
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "on"
+          - condition: state
+            entity_id: input_boolean.nearly_home
+            state: "on"
+
+    actions:
+      # Call a script to set the air purifer mode
+      - action: script.set_air_purifier_mode
+        data:
+          purifier: fan.ninos_bedroom_air_purifer
+          pm25: "{{ states('sensor.nino_bedroom_awair_pm2_5') | float }}"
+          tvoc: "{{ states('sensor.nino_bedroom_awair_vocs') | float }}"
+          co2: "{{ states('sensor.nino_bedroom_awair_carbon_dioxide') | float }}"
