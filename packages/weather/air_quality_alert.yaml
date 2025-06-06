@@ -1,0 +1,145 @@
+#
+input_select:
+  air_quality_state:
+    name: Air Quality State
+    options:
+      - Good
+      - Moderate
+      - Slightly Unhealthy
+      - Unhealthy
+      - Very Unhealthy
+      - Hazardous
+
+automation:
+  #
+  # AQI becomes unhealthy
+  #
+  - id: "air_quality_alert_unhealthy"
+    alias: "Air Quality - Alert for Unhealthy Conditions"
+    initial_state: on
+    trigger:
+      - trigger: state
+        entity_id: input_select.air_quality_state
+        from:
+          - "Good"
+          - "Moderate"
+          - "Slightly Unhealthy"
+        to: "Unhealthy"
+        for:
+          minutes: 5
+    conditions:
+      # Automation hasn't run in 2 hours
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.air_quality_alert_unhealthy','last_triggered'), 0) ) | int > 7200 }}"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: one-chime
+          speech_message: Hey Fam, the air quality is looking unhealthy, make sure to take precautions.
+
+  #
+  # AQI becomes very unhealthy
+  #
+  - id: "air_quality_alert_very_unhealthy"
+    alias: "Air Quality - Alert for Very Unhealthy Conditions"
+    initial_state: on
+    trigger:
+      - trigger: state
+        entity_id: input_select.air_quality_state
+        from:
+          - "Good"
+          - "Moderate"
+          - "Slightly Unhealthy"
+          - "Unhealthy"
+        to: "Very Unhealthy"
+        for:
+          minutes: 5
+    conditions:
+      # Automation hasn't run in 2 hours
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.air_quality_alert_very_unhealthy','last_triggered'), 0) ) | int > 7200 }}"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: one-chime
+          speech_message: Hey Fam, the air quality is looking very unhealthy, make sure to take precautions and stay indoors if possible.
+
+  #
+  #  AQI becomes hazardous
+  #
+  - id: "air_quality_alert_hazardous"
+    alias: "Air Quality - Alert for Very Unhealthy Conditions"
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_select.air_quality_state
+        to: "Hazardous"
+        for:
+          minutes: 2
+    conditions:
+      # Automation hasn't run in 2 hours
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.air_quality_alert_hazardous','last_triggered'), 0) ) | int > 7200 }}"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: nuclear
+          speech_message: Attention! The air quality is hazardous today. Please stay indoors as much as possible!"
+
+  #
+  # Set the Air Quality State input select
+  #
+  - id: "update_air_quality_state"
+    alias: Update Air Quality State
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: sensor.desplns_illinois_usa_air_quality_index
+      # Hassio reloads/starts
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    action:
+      - action: input_select.select_option
+        data:
+          entity_id: input_select.air_quality_state
+          option: >
+            {% set aqi = states.sensor.desplns_illinois_usa_air_quality_index.state | int %}
+            {% if aqi <= 50 %}
+              Good
+            {% elif aqi <= 100 %}
+              Moderate
+            {% elif aqi <= 150 %}
+              Slightly Unhealthy
+            {% elif aqi <= 200 %}
+              Unhealthy
+            {% elif aqi <= 300 %}
+              Very Unhealthy
+            {% else %}
+              Hazardous
+            {% endif %}
+      # - alias: "Set AQI Variables"
+      #   variables:
+      #     aqi: "{{ states.sensor.desplns_illinois_usa_air_quality_index.state | int }}"
+      #     air_quality_level: >-
+      #       {% if aqi <= 50 %}
+      #         Good
+      #       {% elif aqi <= 100 %}
+      #         Moderate
+      #       {% elif aqi <= 150 %}
+      #         Slightly Unhealthy
+      #       {% elif aqi <= 200 %}
+      #         Unhealthy
+      #       {% elif aqi <= 300 %}
+      #         Very Unhealthy
+      #       {% else %}
+      #         Hazardous
+      #       {% endif %}
+      # - action: input_select.select_option
+      #   data:
+      #     entity_id: input_select.air_quality_state
+      #     option: "{{ air_quality_level }}"
