@@ -83,17 +83,17 @@ I have some person-specific automations that are extremely useful, but this is a
 ## Speech Notifications / TTS
 Speech notifications give the house a personality. I have a bunch of Sonos Amps that power in-ceiling speakers throughout the house. Automations and home states can broadcast messages throughout the house via TTS. Speech notifications are only broadcast in rooms that are occupied. So if I'm in the Office, my wife is in the bedroom, and our kids are in the Playroom, it will announce in all three rooms. For example, when I leave the house, an automation will broadcast a voice notification to let people know. Likewise, when I arrive at work, a speech notification will trigger. Most regular guests are announced. There are a lot of other announcements as well, including:
 
-- Exterior lights turning on/off
+- [Exterior lights turning on/off](https://github.com/johnkoht/hassio-config/blob/master/packages/outdoor_lighting.yaml)
 - Quiet mode is enabled
 - Announce arrival and departure of family 
-- Washer or Dryer is finished
-- Kitchen fridge has been open too long
-- School day announcement, dropoff/pickup reminders
-- Calendar reminder (upcoming or next day)
-- Commuting notifications (arrived at station, heading home, train five mins away)
+- [Washer or Dryer is finished](https://github.com/johnkoht/hassio-config/tree/master/packages/laundry/main_level_washer)
+- [School day announcement, dropoff/pickup reminders](https://github.com/johnkoht/hassio-config/blob/master/packages/school/school_day_reminder.yaml)
+- [Calendar reminder (upcoming or next day)](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders)
+- [Commuting notifications (arrived at station, heading home, train five mins away)](https://github.com/johnkoht/hassio-config/tree/master/packages/people/john/commute)
 - Garbage day
-- Severe weather warnings
-
+- [Severe weather warnings](https://github.com/johnkoht/hassio-config/blob/master/packages/weather/severe_weather_alert/severe_weather_warning.yaml)
+- [Morning Update for the Family](https://github.com/johnkoht/hassio-config/blob/master/packages/reminders/morning_update.yaml)
+- [Garage doors topen too long](https://github.com/johnkoht/hassio-config/blob/master/packages/garage/doors/garage_doors_close_when_home.yaml)
 
 ## <a name="devices">Devices</a>
 
@@ -136,7 +136,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Google Nest Learning Thermostat](https://a.co/d/eFNSURb) | 2 | WiFi | [Google Nest](https://www.home-assistant.io/integrations/nest/) | Thermostats for main and upper levels |
 | [Aqara Temperature and Humidity Sensor](https://a.co/d/b1M2cvC) | 12 | Zigbee | [ZHA](https://www.home-assistant.io/integrations/zha/) | Provides-specific room temperature and humidity reporting |
-| [Awair Element](https://www.getawair.com/products/element) | 2 | Local API | [Awair](https://www.home-assistant.io/integrations/awair/) | Monitors air quality |
+| [Awair Element](https://www.getawair.com/products/element) | 5 | Local API | [Awair](https://www.home-assistant.io/integrations/awair/) | Monitors air quality |
 | [Tempest Weather Station](https://tempest.earth/tempest-home-weather-system/) | 1 | Local | [WeatherFlow](https://www.home-assistant.io/integrations/weatherflow/) | Local weather station |
 
 
@@ -160,7 +160,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [August Smart Lock Pro](https://a.co/d/6bLXSqm) | 1 | Cloud Push | [August](https://www.home-assistant.io/integrations/august/) | Smart lock for the front door (currently doesn't work!) |
+| [Level Lock](https://level.co/) | 1 | Bluetooth | [Bluetooth Proxy](https://www.home-assistant.io/integrations/bluetooth/) | Replaced my August with this. It works okay. |
 | [Yale Assure Lever Lock with Z-Wave](https://a.co/d/j12OMGb) | 1 | Z-Wave | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js) | Garage door entry lock |
 
 ## <a name="garage">Garage Doors</a>
@@ -179,6 +179,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | ------------- | :---: | ------------- | ------------- | ------------- |
 | [Amazon Echo Dot](https://a.co/d/40y9K6n) | 3 | Wi-Fi | [Home Assistant Cloud](https://www.home-assistant.io/cloud/) | Audio only Voice Assistant |
 | [Amazon Echo Show 8](https://a.co/d/666eZqh) | 1 | Wi-Fi | [Home Assistant Cloud](https://www.home-assistant.io/cloud/) |Voice Assistant with display |
+| [Home Assistant Voice Preview](https://www.home-assistant.io/voice-pe/) | 2 | Wi-FI | [Home Assistant Cloud](https://www.home-assistant.io/cloud/) | Currently just experimenting with this, but looks promising |
 
 ## <a name="media">Media</a>
 
@@ -193,7 +194,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 | Sony Bravia SmartTV | 1 | Ethernet | [Sony Bravia TV](https://www.home-assistant.io/integrations/braviatv/) | Family room TV |
 | [TCL 75-Inch Q7 QLED 4K Smart Google TV](https://a.co/d/28XUorw) | 1 | Ethernet | [Android TV Remote](https://www.home-assistant.io/integrations/androidtv_remote) | Basement TV |
 
-The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly used, or open boxes from OfferUp.
+The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly used, or open boxes from OfferUp and FB marketplace.
 
 ## <a name="sensors">Sensors</a>
 
@@ -218,9 +219,10 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [Ubiquiti Unifi G4 Bullet](https://a.co/d/hqaAlr3) | 2 | Ethernet | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | 1440p POE Camera. |
-| [Ubiquiti UniFi Protect G4 Doorbell (UVC-G4-DoorBell)](https://a.co/d/1i8B5Y2) | 1 | WiFI | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | Front door doorbell camera |
-| [Ubiquiti Unifi AI Pro](https://store.ui.com/us/en/pro/category/all-cameras-nvrs/products/uvc-ai-pro) | 1 | Ethernet | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | 4K Camera looking down the driveway and front of the house |
+| [Ubiquiti Unifi G4 Bullet](https://a.co/d/hqaAlr3) | 4 | Ethernet/PoE | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | 1440p PoE cameras around the house |
+| [Ubiquiti UniFi Protect G4 Doorbell Pro PoE](https://a.co/d/1i8B5Y2) | 1 | Ethernet/PoE | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | Front door doorbell camera |
+| [Ubiquiti Unifi AI Pro](https://store.ui.com/us/en/pro/category/all-cameras-nvrs/products/uvc-ai-pro) | 1 | Ethernet/PoE | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | 4K Camera looking down the driveway and front of the house |
+| [Ubiquiti Unifi G5 Turret Ultra](https://store.ui.com/us/en/category/cameras-dome-turret/products/uvc-g5-turret-ultra) | 1 | Ethernet/PoE | [Unifi Protect](https://www.home-assistant.io/integrations/unifiprotect/) | 2K Camera in the backyard |
 
 ## <a name="vacuum">Vacuum</a>
 
@@ -237,7 +239,7 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [Aeotec Smart Home Energy Meter 5](https://a.co/d/giAIoJi) | 2 | Z-Wave | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js) | 200 Amp CT Clamps. I have one installed and the other sitting in a cabinet waiting to be installed |
+| [Aeotec Smart Home Energy Meter 5](https://a.co/d/giAIoJi) | 2 | Z-Wave | [Z-Wave JS](https://www.home-assistant.io/integrations/zwave_js) | 200 Amp CT Clamps |
 
 
 
@@ -255,8 +257,11 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 
 | Device  | Quantity | Connection | Home Assistant | Notes |
 | ------------- | :---: | ------------- | ------------- | ------------- |
-| [Ubiquiti Unifi Dream Machine Pro](https://a.co/d/h8PQdfZ) | 1 | Ethernet | [Unifi Network](https://www.home-assistant.io/integrations/unifi) | Unifi OS, switch and security gateway. UniFi Protect video surveillance NVR. Presence detection for non-household members and devices. |
-| [Ubiquiti Networks UniFi Switch PoE - 48 Ports (USW-48-POE)](https://store.ui.com/us/en/collections/unifi-switching-standard-power-over-ethernet/products/usw-48-poe) | 1 | Ethernet | [Ubiquiti Unifi WAP](https://www.home-assistant.io/components/device_tracker.unifi/)| Primary Network Switch. Presence detection for non-household members and devices |
+| [Ubiquiti Unifi Dream Machine Pro](https://a.co/d/h8PQdfZ) | 1 | SFP (2.5g) | [Unifi Network](https://www.home-assistant.io/integrations/unifi) | Unifi OS, switch and security gateway. UniFi Protect video surveillance NVR. Presence detection for non-household members and devices. |
+| [Ubiquiti Unifi Aggregation Switch](https://store.ui.com/us/en/category/switching-aggregation/products/usw-aggregation) | 1 | SFP | [Unifi Network](https://www.home-assistant.io/integrations/unifi) | Aggregation switch for SFP connections |
+| [Ubiquiti Network Video Recorder (NVR)](https://store.ui.com/us/en/category/cameras-nvr/products/unvr) | 1 | SFP | [Unifi Network](https://www.home-assistant.io/integrations/unifi) | Network Video Recorder for all cameras |
+| [Ubiquiti Networks UniFi Switch PoE - 48 Ports (USW-48-POE)](https://store.ui.com/us/en/collections/unifi-switching-standard-power-over-ethernet/products/usw-48-poe) | 1 | Ethernet | [Ubiquiti Unifi WAP](https://www.home-assistant.io/components/device_tracker.unifi/)| Switch that connects to all room ethernet runs (non-critical devices) |
+| [Ubiquiti Networks Unifi Switch 24 Enterprise PoE](https://store.ui.com/us/en/category/switching-professional/products/usw-enterprise-24-poe) | 1 | SFP | [Ubiquiti Unifi WAP](https://www.home-assistant.io/components/device_tracker.unifi/)| Primary swiitch for Home Lab, network, and cameras |
 | [Ubiquiti Networks UniFi Switch PRO PoE - 24 Ports (USW-Pro-24-POE)](https://a.co/d/1F1iUsA) | 1 | Ethernet | [Ubiquiti Unifi WAP](https://www.home-assistant.io/components/device_tracker.unifi/)| Media Network Switch. Upgraded to a 48 so moved this to manage my media rack |
 | [Ubiquiti Networks UniFi Switch Lite 8 PoE (USW-Lite-8-PoE)](https://a.co/d/600W5KJ) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional PoE Network Switches. Mostly used for the two G4 bullet cameras and an AP. |
 | [Ubiquiti Networks UniFi USW-Flex-Mini (USW-Flex-Mini-5)](https://a.co/d/0xHbnSd) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Additional Network Switch for Hue and Lutron smart hubs. |
@@ -266,3 +271,13 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | [Ubiquiti Networks UniFi Access Point AC Pro (UAP-AC-PRO-US)](https://store.ui.com/collections/unifi-network-wireless/products/uap-ac-pro) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/) | Wireless Access Point for interior use. Presence detection for non-household members and devices. |
 | [Ubiquiti Networks UniFi Access Point WiFi 6 Long-Range (U6-LR-US)](https://a.co/d/1JAJFyC) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/)| Wireless Access Point for interior and exterior use. Presence detection for non-household members and devices. |
 | [Ubiquiti Networks Unifi Mesh AP (UAP-AC-M-US)](https://a.co/d/333d9os) | 1 | Ethernet | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/) | Wired PoE Access Point that's outside in the backyard. Presence detection for non-household members and devices. |
+| [Ubiquiti Networks Unifi Access Point U6 In-Wall](https://store.ui.com/us/en/category/all-wifi/products/u6-iw) | 2 | Ethernet/PoE | [Ubiquiti Unifi](https://www.home-assistant.io/components/device_tracker.unifi/) | Wired PoE Access Point |
+
+
+## <a name="servers">Servers</a>
+| Hardware | Compute | Memory | Storage | Description |
+| ------------- | :---: | :---: | ------------- | ------------- |
+| Supermicro SCE826 12 Bay 2U Server | 24 Cores / 48 Threads | 192 GB | 6 x 12TB HDDs, 1 x 256 GB NVMe SSDs, 2 x 1TB NVMe SSDs | Runs proxmox with TrueNAS and a bunch of VMs (Paperless NGX, Immich, Grafana, Gramps, Hoarder, etc) |
+| Supermicro 6018-TRTP+ 1U Server | 26 Cores / 52 Threads | 256 GB | 2 x 1.92 TB SSDs | AI stack (Ollama, Open WebUI, etc), Media Server, Authentik, Caddy External, Minecraft Server |
+| Supermicro X11SSQ 1U Server (in a BSI chassis) | 4 Cores / 4 Threads | 48 GB | 2 x 1 TB NVMe SSDs (mirror), 256 GB NVMe boot SSD | New proxmox server that I'm migrating some of my smart home services |
+| Supermicro X11SSQ 1U Server (in a BSI chassis) | 4 Cores / 4 Threads | 32 GB | 2 x 8 TB HDDs (mirror), 128 GB NVMe boot SSD | Proxmox Backup Server (PBS) |
