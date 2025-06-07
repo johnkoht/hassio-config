@@ -1,3 +1,12 @@
+# Critical Announcements
+# 
+# Sometimes, we need to really make sure that an
+# announcement is heard. This script calls the 
+# announcement engine but broadcasts to all rooms,
+# regardless of their occupancy. It also is much 
+# louder and has a "nuclear" sound which is sure
+# to get our attention.
+# 
 script:
   critical_announcement:
     alias: Critical Announcement

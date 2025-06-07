@@ -1,3 +1,29 @@
+# Voice Announcment - TTS Broadcast
+# 
+# The voice announcement is a helper script I run to 
+# create TTS messages from various automations. For 
+# example when the laundry is done, somebody arrives,
+# or calendar reminders.
+# 
+# This script is a wrapper of the announcement engine,
+# which actually broadcasts the chime and TTS message. 
+# It's mostly for convenience and usability.
+# 
+# USAGE:
+#   - action: script.voice_announcement
+#     data:
+#      media_players: auto
+#      sound: "one-chime"
+#      speech_message: "The upstairs washer is done and ready to be emptied."
+# 
+# 
+# Media Player: set to "auto" will automatically broadcast the
+# message in occupied rooms. Otherwise, a specific room can be passed.
+# 
+# Sound: different notifications require different chimes. There are 
+# individualized intro sounds for person arrival/departures or various
+# types of chimes that can be used.
+# 
 script:
   voice_announcement:
     alias: Voice Announcement
@@ -69,6 +95,11 @@ script:
 
     # Variables
     variables:
+      # 
+      # Passing "sound" to the script is a convenience method so I don't
+      # have to remember the file. This will map the sound argument to
+      # the file that needs to be loaded for the chime.
+      # 
       sound_file: >-
         {% if sound == "default" %}
           /local/sounds/Notification-sound.mp3
@@ -121,7 +152,12 @@ script:
         {% else %}
           /local/sounds/Notification-sound.mp3
         {% endif %}
-      # Sound file length
+      # 
+      # Sound file length:
+      # I've found that the announce feature will sometimes fail to play
+      # the entire chime so I set a specific timeout based on the chime
+      # length. This has worked very well so far.
+      # 
       sound_file_length: >-
         {% if sound == "default" %}
           2
@@ -174,7 +210,12 @@ script:
         {% else %}
           2
         {% endif %}
-      # Sound file volume
+      # 
+      # Sound file volume:
+      # Some sounds are just too loud or too quiet so I have a few overrides
+      # in place to adjust the volume appropriately. The state of the house
+      # can also influence the volume of the chime and TTS message.
+      # 
       sound_file_volume: >-
         {# Sound volumes vary so this is a way to compensate #}
         {% set vol = 35 %}
@@ -208,7 +249,12 @@ script:
 
         {{ vol }}
 
-      # Save the announcement to the text field
+      # 
+      # Save announcement:
+      # This was originally set as a way to QA test announcements
+      # but I've just left it in there. It saves the latest TTS
+      # message to an input field for future reference.
+      # 
       save_announcement: true
 
     sequence:

@@ -1,3 +1,14 @@
+# Announcement Engine
+#
+# This is the actual script that broadcasts the
+# chime and TTS message. It's used by the voice
+# announcement script and others.
+#
+# This can be run with either a chime and/or a
+# speech message. For example the door bell automation
+# uses this with only a chime, no speech message is
+# included.
+#
 #
 # Sound (optional)
 # Sound length (optional)
@@ -80,7 +91,7 @@ script:
 
     sequence:
       # Play a chime
-      - service: media_player.play_media
+      - action: media_player.play_media
         data:
           # entity_id: media_player.sonos_office
           entity_id: "{{ media_players }}"
@@ -103,13 +114,10 @@ script:
         # {{ quiet_time_volume if quiet_time_volume is defined and quiet_time_volume != none else 0 }}
 
       # Play the TTS message
-      - service: media_player.play_media
+      - action: media_player.play_media
         data:
           entity_id: "{{ media_players }}"
-          # media_content_id: "media-source://tts/cloud?message='{{speech_message}}'"
-          # media_content_id: "media-source://tts/google_translate?message='{{speech_message}}'"
           media_content_id: "media-source://tts/cloud?message={{speech_message}}&language=en-GB&gender=female"
-          # media-source://tts/cloud?message=Hello+John+Koht%2C+you+can+play+any+text+on+any+supported+media+player%21&language=en-GB&gender=female
           media_content_type: music
           announce: true
           extra:

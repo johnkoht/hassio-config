@@ -1,3 +1,11 @@
+# Announceable Rooms
+#
+# Ensure there are announceable rooms. This is mostly
+# true, but sometimes it's possible that the only rooms
+# occupied don't have a speakers, so there's no reason
+# to broadcast the message.
+#
+#
 binary_sensor:
   - platform: template
     sensors:
