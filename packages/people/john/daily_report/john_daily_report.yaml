@@ -1,8 +1,8 @@
 # John's Daily Report
-# 
+#
 # This automation provides a "just in time" TTS message
 # with an update on my schedule, sleep score, and more.
-# 
+#
 automation:
   - id: "john_daily_report"
     alias: "John Daily Report"
@@ -28,7 +28,7 @@ automation:
       # Wait for my computer to be active to avoid running
       # the automation when I'm quickly grabbing something
       - wait_template: "{{ is_state('binary_sensor.johns_macbook_pro_active', 'on') }}"
-        timeout: "00:30:00"
+        timeout: "02:30:00"
         continue_on_timeout: false
 
       - if:
