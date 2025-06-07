@@ -68,7 +68,7 @@ script:
       #
       # Is there moderate/unhealthy air quality
       #
-      is_moderate: "{{ pm25 > 12 or vtoc > 400 or co2 > 1000 }}"
+      is_moderate: "{{ pm25 > 12 or tvoc > 400 or co2 > 1000 }}"
 
       #
       # Current mode of the purifier
