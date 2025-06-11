@@ -1,0 +1,92 @@
+# Store Announcement History for People
+#
+# To (hopefully) improve the response from the LLM,
+# we'll send the latest three messages it generated
+# for the person
+#
+#
+script:
+  #
+  # Update the Person's Announcement History
+  # using MQTT to store the latest messages
+  #
+  update_person_announcement_history:
+    description: "Store last 3 announcements per person"
+    alias: "Update Person Announcement History"
+    mode: queued
+    icon: mdi:database
+    fields:
+      person:
+        description: "Person identifier (e.g., 'john')"
+        required: true
+      message:
+        description: "New announcement message"
+        required: true
+    sequence:
+      - variables:
+          sensor_id: "sensor.latest_announcements_{{ person }}"
+      - variables:
+          raw_state: "{{ states(sensor_id) | default('[]') }}"
+      - variables:
+          history: >
+            {% set parsed = [] %}
+            {% if (raw_state | string).startswith('[') and (raw_state | string).endswith(']') %}
+              {% set parsed = raw_state | string | from_json %}
+            {% endif %}
+            {{ parsed }}
+      - variables:
+          updated: "{{ [message] + history[:2] }}"
+          topic: "home/announcements/{{ person }}"
+      - service: mqtt.publish
+        data:
+          topic: "{{ topic }}"
+          payload: "{{ updated | to_json }}"
+          retain: true
+
+# MQTT Entities
+mqtt:
+  sensor:
+    #
+    # John
+    - name: "latest_announcements_john"
+      state_topic: "home/announcements/john"
+    #
+    # Cristina
+    - name: "latest_announcements_cristina"
+      state_topic: "home/announcements/cristina"
+    #
+    # nonna
+    - name: "latest_announcements_nonna"
+      state_topic: "home/announcements/nonna"
+    #
+    # jido
+    - name: "latest_announcements_jido"
+      state_topic: "home/announcements/jido"
+    #
+    # tayta
+    - name: "latest_announcements_tayta"
+      state_topic: "home/announcements/tayta"
+    #
+    # joe
+    - name: "latest_announcements_joe"
+      state_topic: "home/announcements/joe"
+    #
+    # Alex
+    - name: "latest_announcements_alex"
+      state_topic: "home/announcements/alex"
+    #
+    # yara
+    - name: "latest_announcements_yara"
+      state_topic: "home/announcements/yara"
+    #
+    # shawn
+    - name: "latest_announcements_shawn"
+      state_topic: "home/announcements/shawn"
+    #
+    # katia
+    - name: "latest_announcements_katia"
+      state_topic: "home/announcements/katia"
+    #
+    # genny
+    - name: "latest_announcements_genny"
+      state_topic: "home/announcements/genny"

@@ -259,6 +259,18 @@ script:
             Person context:
               {{ person_context }}
 
+            {% set sensor = 'sensor.latest_announcements_' ~ person %}
+            {% set raw = states(sensor) %}
+            {% set history = raw if raw not in ['unknown', 'unavailable', None, ''] else '[]' %}
+            {% set parsed = history | string | from_json %}
+
+            {% if parsed | length > 0 %}
+            Here are some previous announcements you've generated for {{ person | capitalize }}. Try not to repeat too much of the same jokes or messaging.
+            {% for item in parsed %}
+              - {{ item }}
+            {% endfor %}
+            {% endif %}
+
             How to use person context:
               - Use this as your create an intro message for them.
               - Do NOT use all of the context in a single message. Just pick one at random and craft your message around that.

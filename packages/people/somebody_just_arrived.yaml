@@ -1,0 +1,18 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      somebody_just_arrived:
+        friendly_name: "Somebody Just Arrived"
+        value_template: >-
+          {{ 
+            'Just Arrived' in [
+              states('input_select.cristina_status_dropdown'),
+              states('input_select.john_status'),
+              states('input_select.nonna_status'),
+              states('input_select.joe_status_dropdown'),
+              states('input_select.katia_status'),
+              states('input_select.alex_status'),
+              states('input_select.jido_status'),
+              states('input_select.tayta_status')
+            ]
+          }}

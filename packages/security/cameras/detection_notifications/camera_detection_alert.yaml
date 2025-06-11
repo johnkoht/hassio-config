@@ -85,6 +85,12 @@ script:
       # - condition: state
       #   entity_id: input_boolean.camera_notifications
       #   state: "on"
+      #
+      # Skip the notification if sombody just arrived
+      - condition: state
+        entity_id: binary_sensor.somebody_just_arrived
+        state: "off"
+      #
       # condition? camera notifications enabled?
       #
       #
