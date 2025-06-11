@@ -25,19 +25,33 @@ script:
             - climate.nest_main_floor
             - climate.nest_2nd_floor
 
+      # 
+      # The use of script.turn_on is intentional here as
+      # we don't want to wait for the scripts to finish 
+      # before proceeding, instead, it will call each script
+      # and move on to the next.
+      # see https://www.home-assistant.io/integrations/script/#waiting-for-script-to-complete
+      # 
+
       # Trigger a critical announcement
-      - action: script.critical_announcement
+      - action: script.turn_on
+        target:
+          entity_id: script.critical_announcement
         data:
           media_players: all
           sound: "nuclear"
           speech_message: Alert! The smoke detector has been trigger. Get to safety immediately!
 
       # Flash the lights
-      - action: script.alarm_flash_lights
+      - action: script.turn_on
+        target:
+          entity_id: script.alarm_flash_lights
         data: {}
 
       # Send a push notification
-      - action: script.general_notification
+      - action: script.turn_on
+        target:
+          entity_id: script.general_notification
         data:
           message: The smoke detector has activated, I'm turning off the HVAC. Please get to safety!
           title: Fire & Smoke Alarm
