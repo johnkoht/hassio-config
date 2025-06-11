@@ -120,7 +120,7 @@ script:
             Today's Low: {{ states.sensor.pirateweather_overnight_low_temperature_0d.state }}
             Current Weather: {{ states.weather.pirateweather }}
 
-            {% if states.sensor.pirateweather_daytime_high_temperature_0d.state > 93 %}
+            {% if (states.sensor.pirateweather_daytime_high_temperature_0d.state | int) > 93 %}
               It looks like today's weather is going to be pretty hot. Since we reguarly have mail and package delivery, it would be kind of us to provide some cold water for delivery people. You could remind us to do this in your morning briefing.
             {% endif %}
 
