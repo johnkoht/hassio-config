@@ -1,12 +1,12 @@
 # Person Announcement Engine
-# 
+#
 # Instead of having multiple, separate files where
-# I create a random-ish announcement for a person, 
+# I create a random-ish announcement for a person,
 # I'm playing around with using OpenAI to craft
 # a personal message about the person who's arriving
 # or departing our house.
-# 
-# 
+#
+#
 script:
   person_announcement:
     alias: "Person Announcement"
@@ -313,3 +313,11 @@ script:
           devices: "jk"
           priority: "time-sensitive"
           tag: "person-announcement"
+
+      #
+      # Save the message in the person's announcement history
+      #
+      - action: script.update_person_announcement_history
+        data:
+          person: "{{ person }}"
+          message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
