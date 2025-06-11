@@ -81,6 +81,7 @@ Every bed in the house has a force sensitive resistor (FSR) sensor that detects 
 - Just Got Up
 - Just Laid Down
 - Sleep
+  
 There are a few [automations](https://github.com/johnkoht/hassio-config/tree/master/packages/people/john/sleep) and some other sensors that help automate this process. I also have some [general sensors](https://github.com/johnkoht/hassio-config/tree/master/packages/house/bedtime_mode) that indiciate if everybody is awake or asleep or if somebody is asleep. Person-specific sleep state will influence the state of the room they occupied, e.g. if I'm sleeping, my room will transition to "bedtime" mode which disables some automations and disables TTS messages, for example. When everybody is sleeping, the house will change to Bedtime mode.
 
 ### Commuting
