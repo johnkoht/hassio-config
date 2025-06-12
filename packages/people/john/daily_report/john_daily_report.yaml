@@ -110,6 +110,7 @@ script:
             - Don't list all details, just summarize and provide an overview 
             - Be short and concise in your response - Be super cheerful and excited.
             - Don't use emojis as this will be a voice-activated TTS message
+            - Don't include any dashes, em-dashes, or special characters at all
             - Use full sentences instead of using special characters, lists or bullet points, and making it easily readable
             - If there are no calendar invites, you can simply let us know there's nothing on the calendar
             - If you see a 1:1 with Nino (Nino <> John) that's just for 1:1 time with my son, not a work meeting
