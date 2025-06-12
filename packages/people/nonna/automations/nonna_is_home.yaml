@@ -8,31 +8,33 @@ automation:
   - id: "nonna_is_home"
     initial_state: on
     alias: "Nonna is Home"
-    trigger:
+    triggers:
       # Nonna detected home
-      - platform: state
+      - trigger: state
         entity_id: person.mary_falbo
         to: "home"
-      # iPhone detect tracker is detected home
-      - platform: state
-        entity_id: device_tracker.mary_iphone_detect
-        to: "home"
-      - platform: event
+      # Bayesian sensor ON
+      - trigger: state
+        entity_id: binary_sensor.nonna_presence
+        to: "on"
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
-      # iPhone detect trracker is home
+    conditions:
+      # nonna_home boolean is OFF
       - condition: state
-        entity_id: device_tracker.mary_iphone_detect
-        state: "home"
-      - condition: or
-        conditions:
+        entity_id: input_boolean.nonna_home
+        state: "off"
+      - or:
+          # Bayesian presence is ON
+          - condition: state
+            entity_id: binary_sensor.nonna_presence
+            state: "on"
+          # OR person is HOME
           - condition: state
             entity_id: person.mary_falbo
             state: "home"
-          - condition: template
-            value_template: "{{ states.sensor.mary_room_presence.state != 'not_home'}}"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.nonna_home

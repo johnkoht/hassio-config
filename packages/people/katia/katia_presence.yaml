@@ -1,0 +1,32 @@
+binary_sensor:
+  - platform: bayesian
+    prior: 0.58
+    name: "Katia Presence"
+    probability_threshold: 0.97
+    observations:
+      # Router Detection
+      #
+      # Detected home
+      - entity_id: "device_tracker.katia_iphone_15"
+        prob_given_true: 0.85
+        prob_given_false: 0.25
+        platform: "state"
+        to_state: "home"
+
+      # Ping tracker
+      #
+      # Detected home
+      - entity_id: "device_tracker.katia_backup_ping_tracker"
+        prob_given_true: 0.57
+        prob_given_false: 0.15
+        platform: "state"
+        to_state: "home"
+
+      # iPhone Detect
+      #
+      # Detected home
+      - platform: "state"
+        entity_id: "device_tracker.katia_iphone_detect"
+        prob_given_true: 0.86
+        prob_given_false: 0.0625
+        to_state: "home"

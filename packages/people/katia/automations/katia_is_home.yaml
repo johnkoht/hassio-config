@@ -5,25 +5,34 @@ automation:
   - id: "katia_is_home"
     initial_state: on
     alias: "Katia is Home"
-    trigger:
-      # If ESPresense detects her in a room
-      - platform: template
-        value_template: "{{ states.sensor.katia_room_presence.state != 'not_home'}}"
-      - platform: state
+    triggers:
+      # Person marked HOME
+      - trigger: state
         entity_id: person.katia
         to: "home"
-      - platform: event
+      # Bayesian sensor ON
+      - trigger: state
+        entity_id: binary_sensor.katia_presence
+        to: "on"
+      # Hassio restart/reload
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
-      - condition: or
-        conditions:
+    conditions:
+      # katia_home boolean is OFF
+      - condition: state
+        entity_id: input_boolean.katia_home
+        state: "off"
+      - or:
+          # Person marked as HOME
           - condition: state
             entity_id: person.katia
             state: "home"
-          - condition: template
-            value_template: "{{ states.sensor.katia_room_presence.state != 'not_home'}}"
-    action:
-      - service: input_boolean.turn_on
+          # OR bayesian sensor is ON
+          - condition: state
+            entity_id: binary_sensor.katia_presence
+            state: "on"
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.katia_home
