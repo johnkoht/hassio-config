@@ -1,0 +1,531 @@
+mqtt:
+  sensor:
+    - name: "announcement_queue"
+      state_topic: "home/announcement_queue/state"
+      json_attributes_topic: "home/announcement_queue/data"
+      value_template: "queue"
+
+input_boolean:
+  announcement_queue_running:
+    name: Announcement Queue Running
+
+script:
+  global_announcement_enqueue:
+    alias: "Global Announcement Enqueue (MQTT)"
+    mode: parallel
+    fields:
+      priority:
+        default: "normal"
+      speech_message:
+        required: false
+      sound_file:
+        required: false
+      sound_length:
+        required: false
+      sound_volume:
+        default: 30
+      speech_volume:
+        default: 40
+      media_players:
+        required: true
+    sequence:
+      - variables:
+          topic: "home/announcement_queue"
+          new_item: >-
+            {{
+              {
+                "priority": priority,
+                "speech_message": speech_message,
+                "sound_file": sound_file,
+                "sound_length": sound_length,
+                "sound_volume": sound_volume,
+                "speech_volume": speech_volume,
+                "media_players": media_players
+              }
+            }}
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/append"
+          payload: "{{ new_item | to_json }}"
+
+  # process_announcement_queue:
+  #   alias: "Process Announcement Queue"
+  #   mode: single
+  #   sequence:
+  #     - action: input_boolean.turn_on
+  #       entity_id: input_boolean.announcement_queue_running
+
+  #     - variables:
+  #         q: >-
+  #           {% set q = states('sensor.announcement_queue') %}
+  #           {% if q is string and q.startswith('[') %}
+  #             {{ q | from_json }}
+  #           {% else %}
+  #             []
+  #           {% endif %}
+  #         next: "{{ q[0] if q | length > 0 else {} }}"
+  #         updated: "{{ q[1:] if q | length > 1 else [] }}"
+  #         payload_json: "{{ updated | to_json }}"
+
+  #     - condition: template
+  #       value_template: "{{ next.speech_message is defined or next.sound_file is defined }}"
+
+  #     - action: mqtt.publish
+  #       data:
+  #         topic: "home/announcement_queue"
+  #         payload: "{{ payload_json }}"
+  #         retain: true
+  # process_announcement_queue:
+  #   alias: "Process Announcement Queue"
+  #   mode: single
+  #   sequence:
+  #     - action: input_boolean.turn_on
+  #       entity_id: input_boolean.announcement_queue_running
+
+  #     - variables:
+  #         raw_queue: "{{ states('sensor.announcement_queue') }}"
+  #         queue: >-
+  #           {% if raw_queue is string and raw_queue.startswith('[') %}
+  #             {{ raw_queue | from_json }}
+  #           {% else %}
+  #             []
+  #           {% endif %}
+  #         next: >-
+  #           {% if queue | length > 0 %}
+  #             {{ queue[0] }}
+  #           {% else %}
+  #             {}
+  #           {% endif %}
+  #         updated: "{{ queue[1:] if queue | length > 1 else [] }}"
+  #         payload_json: "{{ updated | to_json }}"
+
+  #     - action: system_log.write
+  #       data:
+  #         level: info
+  #         message: "Next in queue: {{ next | to_json }}"
+
+  #     - condition: template
+  #       value_template: >-
+  #         {% set has_message = next.get('speech_message') %}
+  #         {% set has_sound = next.get('sound_file') %}
+  #         {{ has_message or has_sound }}
+
+  #     - action: mqtt.publish
+  #       data:
+  #         topic: "home/announcement_queue"
+  #         payload: "{{ payload_json }}"
+  #         retain: true
+
+  #     # - action: script.announcement_engine
+  #     #   data:
+  #     #     speech_message: "{{ next.speech_message }}"
+  #     #     sound_file: "{{ next.sound_file }}"
+  #     #     sound_length: "{{ next.sound_length }}"
+  #     #     sound_volume: "{{ next.sound_volume }}"
+  #     #     speech_volume: "{{ next.speech_volume }}"
+  #     #     media_players: "{{ next.media_players }}"
+  #     - action: script.general_notification
+  #       data:
+  #         message: "{{ next.sound_file }} | {{ next.sound_length }} | {{ next.sound_volume }} | {{ next.speech_volume }} | {{ next.media_players }}"
+  #         title: "{{next.speech_message}}"
+  #         devices: "jk"
+  #         priority: "active"
+  #         tag: "test-testerson"
+
+  #     - delay: "00:00:01"
+
+  #     - action: input_boolean.turn_off
+  #       entity_id: input_boolean.announcement_queue_running
+
+automation:
+  # - id: trigger_queue_processing
+  #   alias: "Trigger Queue Processing (MQTT)"
+  #   mode: single
+  #   trigger:
+  #     - trigger: mqtt
+  #       topic: home/announcement_queue
+  #   condition:
+  #     - condition: template
+  #       value_template: >
+  #         {% set q = trigger.payload %}
+  #         {{ q is string and q.startswith('[') and (q | from_json | length > 0) }}
+  #     - condition: state
+  #       entity_id: input_boolean.announcement_queue_running
+  #       state: "off"
+  #   action:
+  #     - action: script.process_announcement_queue
+  #
+
+  - id: process_global_announcement_queue
+    alias: "Process Global Announcement Queue"
+    mode: single
+    initial_state: on
+
+    trigger:
+      - trigger: state
+        entity_id: sensor.announcement_queue
+      - trigger: state
+        entity_id: input_boolean.announcement_queue_running
+        to: "off"
+      - trigger: mqtt
+        topic: home/announcement_queue/state
+
+    condition:
+      - condition: template
+        value_template: >
+          {% set q = state_attr('sensor.announcement_queue', 'queue') %}
+          {{ q is iterable and q | length > 0 }}
+      - condition: state
+        entity_id: input_boolean.announcement_queue_running
+        state: "off"
+
+    action:
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.announcement_queue_running
+
+      - variables:
+          raw_queue: "{{ state_attr('sensor.announcement_queue', 'queue') }}"
+          queue: >-
+            {% if raw_queue is iterable %}
+              {{ raw_queue }}
+            {% else %}
+              [] 
+            {% endif %}
+          next: "{{ queue[0] if queue | length > 0 else {} }}"
+          updated: "{{ queue[1:] if queue | length > 1 else [] }}"
+          payload_json: "{{ updated | to_json }}"
+
+      # ⛔ Skip if both speech and sound are missing
+      - condition: template
+        value_template: "{{ queue | length > 0 and (next.get('speech_message') is string or next.get('sound_file') is string) }}"
+
+      # ✅ Publish trimmed queue back to MQTT
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/data"
+          payload: '{{ {"queue": updated} | to_json }}'
+          retain: true
+
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/state"
+          payload: "queue"
+          retain: true
+
+      # # 🔊 Trigger your real announcement engine
+      # - action: script.announcement_engine
+      #   data:
+      #     speech_message: "{{ next.speech_message }}"
+      #     sound_file: "{{ next.sound_file }}"
+      #     sound_length: "{{ next.sound_length }}"
+      #     sound_volume: "{{ next.sound_volume }}"
+      #     speech_volume: "{{ next.speech_volume }}"
+      #     media_players: "{{ next.media_players }}"
+      - action: script.general_notification
+        data:
+          message: "{{ next.sound_file }} | {{ next.sound_length }} | {{ next.sound_volume }} | {{ next.speech_volume }} | {{ next.media_players }}"
+          title: "{{next.speech_message}}"
+          devices: "jk"
+          priority: "active"
+          tag: "test-testerson"
+
+      - delay: "00:00:02" # Give the system a breather
+
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.announcement_queue_running
+  #
+  #
+  - id: append_to_global_announcement_queue
+    alias: "Append to Global Announcement Queue (MQTT, Reliable)"
+    mode: single
+    trigger:
+      - trigger: mqtt
+        topic: home/announcement_queue/append
+
+    variables:
+      new_item: "{{ trigger.payload | from_json }}"
+      queue_data_topic: "home/announcement_queue/data"
+      queue_state_topic: "home/announcement_queue/state"
+
+    action:
+      # 💡 Fetch current retained queue from MQTT sensor directly
+      - wait_for_trigger:
+          - trigger: mqtt
+            topic: "{{ queue_data_topic }}"
+        timeout: "00:00:01"
+
+      - variables:
+          raw_queue: "{{ wait.trigger.payload }}"
+          current: >-
+            {% if raw_queue is string and raw_queue.startswith('[') %}
+              {{ raw_queue | from_json }}
+            {% elif raw_queue is iterable %}
+              {{ raw_queue }}
+            {% else %}
+              [] 
+            {% endif %}
+          updated: >-
+            {% if new_item.priority == 'critical' %}
+              {{ [new_item] + current }}
+            {% else %}
+              {{ current + [new_item] }}
+            {% endif %}
+          payload_json: '{{ {"queue": updated} | to_json }}'
+
+      # 🪵 Debug logging (optional)
+      - action: system_log.write
+        data:
+          level: warning
+          message: >
+            📦 Appended item. New queue: {{ payload_json }}
+
+      # ✅ Publish updated queue to data topic
+      - action: mqtt.publish
+        data:
+          topic: "{{ queue_data_topic }}"
+          payload: "{{ payload_json }}"
+          retain: true
+
+      # ✅ Trigger sensor update (state value doesn't matter)
+      - action: mqtt.publish
+        data:
+          topic: "{{ queue_state_topic }}"
+          payload: "queue"
+          retain: true
+
+  # - id: process_global_announcement_queue
+  #   alias: "Process Global Announcement Queue"
+  #   mode: single
+  #   initial_state: off
+  #   trigger:
+  #     - trigger: state
+  #       entity_id: sensor.announcement_queue
+  #   condition:
+  #     - condition: template
+  #       value_template: >
+  #         {% set q = state_attr('sensor.announcement_queue', 'queue') %}
+  #         {{ q is string and q.startswith('[') and (q | from_json | length > 0) }}
+  #     - condition: state
+  #       entity_id: input_boolean.announcement_queue_running
+  #       state: "off"
+  #   action:
+  #     - action: input_boolean.turn_on
+  #       entity_id: input_boolean.announcement_queue_running
+
+  #     - variables:
+  #         raw_queue: "{{ state_attr('sensor.announcement_queue', 'queue') }}"
+  #         queue: >-
+  #           {% set rq = raw_queue | string %}
+  #           {% if rq.startswith('[') %}
+  #             {{ raw_queue | from_json }}
+  #           {% else %}
+  #             []
+  #           {% endif %}
+  #         next: "{{ queue[0] if queue | length > 0 else {} }}"
+  #         updated: "{{ queue[1:] if queue | length > 1 else [] }}"
+  #         payload_json: "{{ updated | to_json }}"
+
+  #     - condition: template
+  #       value_template: >-
+  #         {% set has_message = next.get('speech_message') %}
+  #         {% set has_sound = next.get('sound_file') %}
+  #         {{ has_message or has_sound }}
+
+  #     - action: mqtt.publish
+  #       data:
+  #         topic: "home/announcement_queue"
+  #         payload: "{{ payload_json }}"
+  #         retain: true
+
+  #     # - action: script.announcement_engine
+  #     #   data:
+  #     #     speech_message: "{{ next.speech_message }}"
+  #     #     sound_file: "{{ next.sound_file }}"
+  #     #     sound_length: "{{ next.sound_length }}"
+  #     #     sound_volume: "{{ next.sound_volume }}"
+  #     #     speech_volume: "{{ next.speech_volume }}"
+  #     #     media_players: "{{ next.media_players }}"
+
+  #     - action: script.general_notification
+  #       data:
+  #         message: "{{ next.sound_file }} | {{ next.sound_length }} | {{ next.sound_volume }} | {{ next.speech_volume }} | {{ next.media_players }}"
+  #         title: "{{next.speech_message}}"
+  #         devices: "jk"
+  #         priority: "active"
+  #         tag: "test-testerson"
+
+  #     - delay: "00:00:01"
+
+  #     - action: input_boolean.turn_off
+  #       entity_id: input_boolean.announcement_queue_running
+  # - id: "append_to_global_announcement_queue"
+  #   alias: "Append to Global Announcement Queue (MQTT)"
+  #   mode: single
+  #   trigger:
+  #     - trigger: mqtt
+  #       topic: home/announcement_queue/append
+  #   variables:
+  #     new_item: "{{ trigger.payload | from_json }}"
+  #     queue_topic: "home/announcement_queue"
+  #   action:
+  #     - variables:
+  #         current: >-
+  #           {% set q = states('sensor.announcement_queue') %}
+  #           {% if q is string and q.startswith('[') %}
+  #             {{ q | from_json }}
+  #           {% else %}
+  #             []
+  #           {% endif %}
+  #         updated: >-
+  #           {% if new_item.priority == 'critical' %}
+  #             {{[new_item] + current}}
+  #           {% else %}
+  #             {{current + [new_item]}}
+  #           {% endif %}
+  #         payload_json: "{{ updated | to_json }}"
+  #     - action: mqtt.publish
+  #       data:
+  #         topic: "{{ queue_topic }}"
+  #         payload: "{{ payload_json }}"
+  #         retain: true
+
+  # - id: process_global_announcement_queue
+  #   alias: "Process Global Announcement Queue"
+  #   mode: single
+  #   trigger:
+  #     - trigger: mqtt
+  #       topic: home/announcement_queue
+  #     - trigger: state
+  #       entity_id: input_boolean.announcement_queue_running
+  #       to: "off"
+  #   condition:
+  #     - condition: template
+  #       value_template: >
+  #         {% set q = trigger.payload %}
+  #         {{ q is string and q.startswith('[') and (q | from_json | length > 0) }}
+  #   action:
+  #     - action: input_boolean.turn_on
+  #       entity_id: input_boolean.announcement_queue_running
+
+  #     - variables:
+  #         queue: >-
+  #           {% set q = trigger.payload %}
+  #           {% if q is string and q.startswith('[') %}
+  #             {{ q | from_json }}
+  #           {% else %}
+  #             []
+  #           {% endif %}
+  #         next: "{{ queue[0] }}"
+  #         updated: "{{ queue[1:] }}"
+  #         payload_json: "{{ updated | to_json }}"
+
+  #     - action: mqtt.publish
+  #       data:
+  #         topic: "home/announcement_queue"
+  #         payload: "{{ payload_json }}"
+  #         retain: true
+
+  #     # - action: script.announcement_engine
+  #     #   data:
+  #     #     speech_message: "{{ next.speech_message }}"
+  #     #     sound_file: "{{ next.sound_file }}"
+  #     #     sound_length: "{{ next.sound_length }}"
+  #     #     sound_volume: "{{ next.sound_volume }}"
+  #     #     speech_volume: "{{ next.speech_volume }}"
+  #     #     media_players: "{{ next.media_players }}"
+  #     - action: script.general_notification
+  #       data:
+  #         message: "{{ next.sound_file }} | {{ next.sound_length }} | {{ next.sound_volume }} | {{ next.speech_volume }} | {{ next.media_players }}"
+  #         title: "{{next.speech_message}}"
+  #         devices: "jk"
+  #         priority: "active"
+  #         tag: "test-testerson"
+
+  #     # Optional: add a delay for buffer time between announcements
+  #     - delay: "00:00:01"
+
+  #     - action: input_boolean.turn_off
+  #       entity_id: input_boolean.announcement_queue_running
+# script:
+#   global_announcement_queue:
+#     alias: "Global Announcement Queue"
+#     mode: queued
+#     max: 50 # Optional safety cap
+
+#     fields:
+#       #
+#       #
+#       # Sound File Details
+#       #
+#       sound_file:
+#         name: Sound File
+#         description: A URL to a sound file to play
+#         example: "/local/sounds/Notification-sound.mp3"
+#         selector:
+#           text:
+#             type: url
+#       # Sound file length
+#       sound_length:
+#         name: Sound Length
+#         description: The lengths of the sound file in seconds
+#         example: "2"
+#         selector:
+#           number:
+#             min: 1
+#             max: 10
+#             mode: box
+#       # Sound volume
+#       sound_volume:
+#         name: Sound Volume
+#         description: The volume of the chime sound
+#         example: "30"
+#         default: 30
+#         selector:
+#           number:
+#             min: 10
+#             max: 80
+#       #
+#       #
+#       # Speech Message Details
+#       #
+#       speech_message:
+#         name: Speech Message
+#         description: The TTS message that will be broadcast
+#         example: "Hello, world!"
+#         selector:
+#           text:
+#             type: text
+#       # Speech notification volume
+#       speech_volume:
+#         name: Speech Message Volume
+#         description: The volume of the speech notification
+#         example: "30"
+#         default: 30
+#         selector:
+#           number:
+#             min: 10
+#             max: 80
+#       #
+#       #
+#       # Media Player
+#       media_players:
+#         name: Media Players
+#         description: The media players that should broadcast the announcement
+#         selector:
+#           entity:
+#             include_entities:
+#               - media_player.sonos_living_room
+#               - media_player.sonos_office
+#               - media_player.sonos_family_room
+#               - media_player.sonos_kitchen
+#               - media_player.sonos_playroom
+
+#     sequence:
+#       - action: script.announcement_engine
+#         data:
+#           speech_message: "{{ speech_message }}"
+#           sound_file: "{{ sound_file }}"
+#           sound_length: "{{ sound_length }}"
+#           sound_volume: "{{ sound_volume }}"
+#           speech_volume: "{{ speech_volume }}"
+#           media_players: "{{ media_players }}"
