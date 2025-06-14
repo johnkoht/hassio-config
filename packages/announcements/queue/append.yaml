@@ -1,0 +1,76 @@
+automation:
+  - id: announcement_queue_append
+    alias: "Announcement Queue - Append"
+    mode: single
+    trigger:
+      - trigger: mqtt
+        topic: home/announcement_queue/append
+
+    variables:
+      new_item: >-
+        {% set item = trigger.payload | from_json %}
+        {% if item.expires_in is defined %}
+          {% set expires_at = now() + timedelta(minutes=item.expires_in) %}
+          {{ item | combine({'expires_at': expires_at.isoformat()}) }}
+        {% else %}
+          {{ item }}
+        {% endif %}
+      queue_data_topic: "home/announcement_queue/data"
+      queue_state_topic: "home/announcement_queue/state"
+
+    action:
+      # Get current queue from sensor attributes
+      - variables:
+          current_queue: >-
+            {% set q = state_attr('sensor.announcement_queue', 'queue') %}
+            {% if q is iterable %}
+              {{ q }}
+            {% else %}
+              []
+            {% endif %}
+          updated: >-
+            {% if new_item.priority == 'critical' %}
+              {# Keep only critical messages and add new critical message at start #}
+              {% set critical_msgs = current_queue | selectattr('priority', 'eq', 'critical') | list %}
+              {{ [new_item] + critical_msgs }}
+            {% else %}
+              {# For non-critical messages, sort by priority #}
+              {% set high_priority = current_queue | selectattr('priority', 'eq', 'high') | list %}
+              {% set normal_priority = current_queue | selectattr('priority', 'eq', 'normal') | list %}
+              {% set low_priority = current_queue | selectattr('priority', 'eq', 'low') | list %}
+              {% set critical_msgs = current_queue | selectattr('priority', 'eq', 'critical') | list %}
+              
+              {# Add new message to appropriate priority list #}
+              {% if new_item.priority == 'high' %}
+                {% set high_priority = high_priority + [new_item] %}
+              {% elif new_item.priority == 'low' %}
+                {% set low_priority = low_priority + [new_item] %}
+              {% else %}
+                {% set normal_priority = normal_priority + [new_item] %}
+              {% endif %}
+              
+              {# Combine all lists in priority order #}
+              {{ critical_msgs + high_priority + normal_priority + low_priority }}
+            {% endif %}
+          payload_json: '{{ {"queue": updated} | to_json }}'
+
+      # 🪵 Debug logging (optional)
+      - action: system_log.write
+        data:
+          level: warning
+          message: >
+            📦 Appended item. New queue: {{ payload_json }}
+
+      # ✅ Publish updated queue to data topic
+      - action: mqtt.publish
+        data:
+          topic: "{{ queue_data_topic }}"
+          payload: "{{ payload_json }}"
+          retain: true
+
+      # ✅ Trigger sensor update
+      - action: mqtt.publish
+        data:
+          topic: "{{ queue_state_topic }}"
+          payload: "queue"
+          retain: true

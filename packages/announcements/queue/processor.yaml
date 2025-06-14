@@ -1,0 +1,99 @@
+automation:
+  - id: announcement_queue_processor
+    alias: "Announcement Queue - Processor"
+    mode: single
+    initial_state: on
+
+    trigger:
+      - trigger: state
+        entity_id: sensor.announcement_queue
+      - trigger: state
+        entity_id: input_boolean.announcement_queue_running
+        to: "off"
+      - trigger: mqtt
+        topic: home/announcement_queue/state
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+        for:
+          minutes: 5
+
+    condition:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: template
+        value_template: >
+          {% set q = state_attr('sensor.announcement_queue', 'queue') %}
+          {{ q is iterable and q | length > 0 }}
+      - condition: state
+        entity_id: input_boolean.announcement_queue_running
+        state: "off"
+
+    action:
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.announcement_queue_running
+
+      - variables:
+          raw_queue: "{{ state_attr('sensor.announcement_queue', 'queue') }}"
+          queue: >-
+            {% if raw_queue is iterable %}
+              {# Filter out expired messages and apply priority rules #}
+              {% set now_iso = now().isoformat() %}
+              {% set valid_msgs = namespace(list=[]) %}
+              {% for msg in raw_queue %}
+                {% set expires_at = msg.get('expires_at') %}
+                {% set priority = msg.get('priority', 'normal') %}
+                {# Keep message if not expired - we process all priorities when occupied #}
+                {% if not expires_at or expires_at > now_iso %}
+                  {% set valid_msgs.list = valid_msgs.list + [msg] %}
+                {% endif %}
+              {% endfor %}
+              {{ valid_msgs.list }}
+            {% else %}
+              [] 
+            {% endif %}
+          next: "{{ queue[0] if queue | length > 0 else {} }}"
+          updated: "{{ queue[1:] if queue | length > 1 else [] }}"
+          payload_json: '{{ {"queue": updated} | to_json }}'
+
+      # ⛔ Skip if both speech and sound are missing
+      - condition: template
+        value_template: "{{ queue | length > 0 and (next.get('speech_message') is string or next.get('sound_file') is string) }}"
+
+      # ✅ Publish trimmed queue back to MQTT
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/data"
+          payload: "{{ payload_json }}"
+          retain: true
+
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/state"
+          payload: "queue"
+          retain: true
+
+      #  Trigger your real announcement engine (commented for debug)
+      - action: script.announcement_engine
+        data:
+          speech_message: "{{ next.speech_message }}"
+          sound_file: "{{ next.sound_file }}"
+          sound_length: "{{ next.sound_length }}"
+          sound_volume: "{{ next.sound_volume }}"
+          speech_volume: "{{ next.speech_volume }}"
+          media_players: "{{ next.media_players }}"
+
+      # # Debug notification
+      # - action: script.general_notification
+      #   data:
+      #     message: "{{ next.sound_file }} | {{ next.sound_length }} | {{ next.sound_volume }} | {{ next.speech_volume }} | {{ next.media_players }}"
+      #     title: "{{next.speech_message}}"
+      #     devices: "jk"
+      #     priority: "time-sensitive"
+      #     tag: "test-testerson"
+
+      - delay: "00:00:03" # Give the system a breather
+
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.announcement_queue_running

@@ -1,0 +1,6 @@
+mqtt:
+  sensor:
+    - name: "announcement_queue"
+      state_topic: "home/announcement_queue/state"
+      json_attributes_topic: "home/announcement_queue/data"
+      value_template: "queue"

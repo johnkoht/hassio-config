@@ -1,0 +1,3 @@
+input_boolean:
+  announcement_queue_running:
+    name: Announcement Queue Running

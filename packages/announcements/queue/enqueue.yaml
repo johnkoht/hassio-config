@@ -1,0 +1,59 @@
+script:
+  announcement_queue_enqueue:
+    alias: "Announcement Queue - Enqueue"
+    mode: parallel
+    fields:
+      priority:
+        description: "Message priority level (critical for emergencies only)"
+        default: "normal"
+        selector:
+          select:
+            options:
+              - "critical"  # Emergency alerts only (fire, smoke, leaks)
+              - "high"      # Important but not emergency
+              - "normal"    # Regular announcements
+              - "low"       # Non-essential information
+      speech_message:
+        required: false
+      sound_file:
+        required: false
+      sound_length:
+        required: false
+      sound_volume:
+        default: 30
+      speech_volume:
+        default: 40
+      media_players:
+        required: true
+      expires_in:
+        required: false
+        description: "Minutes until message expires"
+        selector:
+          number:
+            min: 1
+            max: 60
+    sequence:
+      - variables:
+          new_item: >-
+            {% set item = {
+              "priority": priority,
+              "speech_message": speech_message,
+              "sound_file": sound_file,
+              "sound_length": sound_length,
+              "sound_volume": sound_volume,
+              "speech_volume": speech_volume,
+              "media_players": media_players
+            } %}
+            {% if expires_in is defined and expires_in is not none %}
+              {% set expires_at = now() + timedelta(minutes=expires_in) %}
+              {{ item | combine({
+                'expires_in': expires_in,
+                'expires_at': expires_at.isoformat()
+              }) }}
+            {% else %}
+              {{ item }}
+            {% endif %}
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/append"
+          payload: "{{ new_item | to_json }}"

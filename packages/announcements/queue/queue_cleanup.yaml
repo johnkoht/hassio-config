@@ -1,0 +1,52 @@
+automation:
+  - id: announcement_queue_cleanup
+    alias: "Announcement Queue - Cleanup on Empty House"
+    mode: single
+    trigger:
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+
+    action:
+      - variables:
+          raw_queue: "{{ state_attr('sensor.announcement_queue', 'queue') }}"
+          cleaned_queue: >-
+            {% if raw_queue is iterable %}
+              {# When house becomes empty: #}
+              {# 1. Keep only critical and high priority messages #}
+              {# 2. Remove expired messages #}
+              {% set now_iso = now().isoformat() %}
+              {% set valid_msgs = namespace(list=[]) %}
+              {% for msg in raw_queue %}
+                {% set expires_at = msg.get('expires_at') %}
+                {% set priority = msg.get('priority', 'normal') %}
+                {% if (not expires_at or expires_at > now_iso) and
+                      (priority in ['critical', 'high']) %}
+                  {% set valid_msgs.list = valid_msgs.list + [msg] %}
+                {% endif %}
+              {% endfor %}
+              {{ valid_msgs.list }}
+            {% else %}
+              []
+            {% endif %}
+          payload_json: '{{ {"queue": cleaned_queue} | to_json }}'
+
+      # 🪵 Debug logging
+      - action: system_log.write
+        data:
+          level: warning
+          message: >
+            🧹 Queue cleaned due to empty house. Remaining messages: {{ cleaned_queue | length }}
+
+      # ✅ Publish cleaned queue
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/data"
+          payload: "{{ payload_json }}"
+          retain: true
+
+      - action: mqtt.publish
+        data:
+          topic: "home/announcement_queue/state"
+          payload: "queue"
+          retain: true 
