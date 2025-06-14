@@ -1,11 +1,35 @@
+# Announcement Queue - Append
+# 
+# This script is used to append a message to the announcement queue.
+# It's called by the announcement_queue_enqueue script. It basically
+# processes the /append topic and appends the new item to the queue. 
+# it's also responsible to maintaining the queue priority order.
+#
 automation:
   - id: announcement_queue_append
     alias: "Announcement Queue - Append"
     mode: single
+    #
+    # Trigger
+    #
+    # This trigger is used to listen for the /append topic.
+    #
     trigger:
       - trigger: mqtt
         topic: home/announcement_queue/append
 
+    #
+    # Variables
+    #
+    # This is the new item to be appended to the queue. It's a JSON object
+    # with the following fields:
+    # - priority: The priority level of the message
+    # - speech_message: The message to be announced
+    # - sound_file: The sound file to be played
+    # - sound_length: The length of the sound file
+    # - sound_volume: The volume of the sound file
+    # - speech_volume: The volume of the speech
+    # - media_players: The media players that should broadcast the announcement
     variables:
       new_item: >-
         {% set item = trigger.payload | from_json %}
@@ -21,6 +45,9 @@ automation:
     action:
       # Get current queue from sensor attributes
       - variables:
+          #
+          # Get the current queue from the sensor attributes
+          #
           current_queue: >-
             {% set q = state_attr('sensor.announcement_queue', 'queue') %}
             {% if q is iterable %}
@@ -28,6 +55,9 @@ automation:
             {% else %}
               []
             {% endif %}
+          #
+          # Update the queue with the new item and maintain the priority order
+          #
           updated: >-
             {% if new_item.priority == 'critical' %}
               {# Keep only critical messages and add new critical message at start #}
@@ -54,21 +84,27 @@ automation:
             {% endif %}
           payload_json: '{{ {"queue": updated} | to_json }}'
 
-      # 🪵 Debug logging (optional)
+      #
+      # Debug logging
+      #
       - action: system_log.write
         data:
           level: warning
           message: >
-            📦 Appended item. New queue: {{ payload_json }}
+            Appended item. New queue: {{ payload_json }}
 
-      # ✅ Publish updated queue to data topic
+      #
+      # Publish updated queue to data topic
+      #
       - action: mqtt.publish
         data:
           topic: "{{ queue_data_topic }}"
           payload: "{{ payload_json }}"
           retain: true
 
-      # ✅ Trigger sensor update
+      #
+      # Trigger sensor update
+      #
       - action: mqtt.publish
         data:
           topic: "{{ queue_state_topic }}"

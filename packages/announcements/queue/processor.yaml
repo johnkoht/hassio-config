@@ -1,17 +1,37 @@
+# Announcement Queue - Processor
+# 
+# This script is used to process the announcement queue.
+# It's called by the announcement_queue_enqueue script.
+#
+# It's responsible for:
+# - Filtering out expired messages
+# - Maintaining the queue priority order
+# - Triggering the announcement engine
+#
 automation:
   - id: announcement_queue_processor
     alias: "Announcement Queue - Processor"
     mode: single
     initial_state: on
 
+    #
+    # Trigger
+    #
+    # This trigger is used to listen for the announcement queue state
+    # and the house occupied state.
+    #
     trigger:
+      # Announcement Queue State
       - trigger: state
         entity_id: sensor.announcement_queue
+      # Announcement Queue Running
       - trigger: state
         entity_id: input_boolean.announcement_queue_running
         to: "off"
+      # Announcement Queue State
       - trigger: mqtt
         topic: home/announcement_queue/state
+      # House Occupied for 5 minutes
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
@@ -19,23 +39,36 @@ automation:
           minutes: 5
 
     condition:
+      # Make sure the house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Make sure the queue is not empty
       - condition: template
         value_template: >
           {% set q = state_attr('sensor.announcement_queue', 'queue') %}
           {{ q is iterable and q | length > 0 }}
+      # Make sure the queue is not running
       - condition: state
         entity_id: input_boolean.announcement_queue_running
         state: "off"
 
     action:
+      # Turn on the announcement queue running flag
       - action: input_boolean.turn_on
         entity_id: input_boolean.announcement_queue_running
 
+      #
+      # Variables
+      #
       - variables:
+          #
+          # This is the raw queue from the sensor attributes.
+          #
           raw_queue: "{{ state_attr('sensor.announcement_queue', 'queue') }}"
+          #
+          # This is the queue with the expired messages filtered out.
+          #
           queue: >-
             {% if raw_queue is iterable %}
               {# Filter out expired messages and apply priority rules #}
@@ -53,28 +86,43 @@ automation:
             {% else %}
               [] 
             {% endif %}
+          #
+          # This is the next message to be announced.
+          #
           next: "{{ queue[0] if queue | length > 0 else {} }}"
+          #
+          # This is the updated queue with the next message removed.
+          #
           updated: "{{ queue[1:] if queue | length > 1 else [] }}"
           payload_json: '{{ {"queue": updated} | to_json }}'
 
-      # ⛔ Skip if both speech and sound are missing
+      #
+      # Skip if both speech and sound are missing
+      #
       - condition: template
         value_template: "{{ queue | length > 0 and (next.get('speech_message') is string or next.get('sound_file') is string) }}"
 
-      # ✅ Publish trimmed queue back to MQTT
+      #
+      # Publish trimmed queue back to MQTT
+      #
       - action: mqtt.publish
         data:
           topic: "home/announcement_queue/data"
           payload: "{{ payload_json }}"
           retain: true
 
+      #
+      # Publish the updated queue back to MQTT
+      #
       - action: mqtt.publish
         data:
           topic: "home/announcement_queue/state"
           payload: "queue"
           retain: true
 
-      #  Trigger your real announcement engine (commented for debug)
+      #
+      # Trigger the announcement engine
+      #
       - action: script.announcement_engine
         data:
           speech_message: "{{ next.speech_message }}"
@@ -93,7 +141,13 @@ automation:
       #     priority: "time-sensitive"
       #     tag: "test-testerson"
 
-      - delay: "00:00:03" # Give the system a breather
+      #
+      # Give the system a breather
+      #
+      - delay: "00:00:03"
 
+      #
+      # Turn off the announcement queue running flag
+      #
       - action: input_boolean.turn_off
         entity_id: input_boolean.announcement_queue_running

@@ -1,14 +1,31 @@
+# Announcement Queue - Cleanup on Empty House
+# 
+# This script is used to cleanup the announcement queue when the house
+# is empty. It's called by the announcement_queue_processor script.
+#
+# It's responsible for:
+# - Filtering out expired messages
+# - Maintaining the queue priority order
+# - Triggering the announcement engine
+# 
 automation:
   - id: announcement_queue_cleanup
     alias: "Announcement Queue - Cleanup on Empty House"
     mode: single
     trigger:
+      # The house is empty
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
 
     action:
+      #
+      # Variables
+      #
       - variables:
+          #
+          # This is the raw queue from the sensor attributes.
+          #
           raw_queue: "{{ state_attr('sensor.announcement_queue', 'queue') }}"
           cleaned_queue: >-
             {% if raw_queue is iterable %}
@@ -29,22 +46,32 @@ automation:
             {% else %}
               []
             {% endif %}
+          #
+          # This is the cleaned queue to be published to the MQTT topic.
+          #
           payload_json: '{{ {"queue": cleaned_queue} | to_json }}'
 
-      # 🪵 Debug logging
+      #
+      # Debug logging
+      #
       - action: system_log.write
         data:
           level: warning
           message: >
-            🧹 Queue cleaned due to empty house. Remaining messages: {{ cleaned_queue | length }}
+            Queue cleaned due to empty house. Remaining messages: {{ cleaned_queue | length }}
 
-      # ✅ Publish cleaned queue
+      #
+      # Publish cleaned queue
+      #
       - action: mqtt.publish
         data:
           topic: "home/announcement_queue/data"
           payload: "{{ payload_json }}"
           retain: true
 
+      #
+      # Publish the cleaned queue state
+      #
       - action: mqtt.publish
         data:
           topic: "home/announcement_queue/state"

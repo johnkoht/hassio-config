@@ -1,8 +1,34 @@
+# Announcement Queue - Enqueue
+# 
+# This script is used to enqueue a message into the announcement queue
+# by publishing to a MQTT home/announcement_queue/append topic.
+#
+# The message is a JSON object with the following fields:
+# - priority: The priority level of the message
+# - speech_message: The message to be announced
+# - sound_file: The sound file to be played
+# - sound_length: The length of the sound file
+# - sound_volume: The volume of the sound file
+# - speech_volume: The volume of the speech
+# - media_players: The media players that should broadcast the announcement
+# - expires_in: The number of minutes until the message expires
+#
+# The message is enqueued in the order of priority.
+#
+#
 script:
   announcement_queue_enqueue:
     alias: "Announcement Queue - Enqueue"
     mode: parallel
+    #
+    # Fields
+    # These fields are really just passthroughs from the caller
+    # script/automation to the announcement engine ultimately.
+    #
     fields:
+      #
+      # Priority
+      #
       priority:
         description: "Message priority level (critical for emergencies only)"
         default: "normal"
@@ -13,18 +39,43 @@ script:
               - "high"      # Important but not emergency
               - "normal"    # Regular announcements
               - "low"       # Non-essential information
+      #
+      # Speech Message
+      #
       speech_message:
         required: false
+      #
+      # Sound File
+      #
       sound_file:
         required: false
+      #
+      # Sound Length
+      #
       sound_length:
         required: false
+      #
+      # Sound Volume
+      #
       sound_volume:
         default: 30
+      #
+      # Speech Volume
+      #
       speech_volume:
         default: 40
+      #
+      # Media Players
+      #
       media_players:
         required: true
+      #
+      # Expires In
+      #
+      # This is the number of minutes until the message expires.
+      # If not provided, the message will never expire. It's useful
+      # for time-specific messages like calendar reminders.
+      #
       expires_in:
         required: false
         description: "Minutes until message expires"
@@ -33,6 +84,12 @@ script:
             min: 1
             max: 60
     sequence:
+      #
+      # Variables
+      #
+      # This is the new item to be enqueued. It's a JSON object with the
+      # following fields:
+      #
       - variables:
           new_item: >-
             {% set item = {
@@ -53,6 +110,9 @@ script:
             {% else %}
               {{ item }}
             {% endif %}
+      #
+      # Publish the new item to the announcement queue
+      #
       - action: mqtt.publish
         data:
           topic: "home/announcement_queue/append"
