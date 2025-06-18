@@ -1,4 +1,12 @@
+# Garage Door Remote Lock Automation
+# 
+# For additional security, we lock the garage door remotes
+# so that nobody can open the garage door from the outside.
+# 
 automation:
+  # 
+  # Lock the garage door remotes
+  # 
   - id: "garage_doors_lock_remotes"
     alias: "Garage Doors - Lock Remotes"
     initial_state: on
@@ -9,6 +17,11 @@ automation:
         to: "on"
         for:
           minutes: 5
+      # Hassio restart/relaod
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
     actions:
       # Lock the garage remotes
       - action: lock.lock
@@ -17,6 +30,9 @@ automation:
           - lock.garage_door_2_lock_remotes
           - lock.garage_door_3_lock_remotes
 
+  # 
+  # Unlock the garage door remotes
+  # 
   - id: "garage_doors_unlock_remotes"
     alias: "Garage Doors - Unlock Remotes"
     initial_state: on
@@ -38,6 +54,11 @@ automation:
           - person.katia
           - person.joe_falbo
         to: "home"
+      # Hassio restart/relaod
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
     conditions:
       # Only unlock if any of the remotes are locked
       - condition: state

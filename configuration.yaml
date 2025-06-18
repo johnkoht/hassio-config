@@ -118,6 +118,12 @@ lovelace:
       icon: hue:room-nursery
       show_in_sidebar: true
       require_admin: false
+    # dashboard-kohbo:
+    #   mode: yaml
+    #   title: "kohbo"
+    #   icon: mdi:star-plus-outline
+    #   show_in_sidebar: true
+    #   filename: dashboards/kohbo/kohbo.yaml
 
 zone:
   - name: Home
