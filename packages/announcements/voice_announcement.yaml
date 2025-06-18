@@ -297,7 +297,6 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      #- action: script.announcement_queue_enqueue
       - action: script.announcement_queue_enqueue
         data:
           speech_message: "{{ speech_message }}"
