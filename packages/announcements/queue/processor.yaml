@@ -75,11 +75,13 @@ automation:
               {% set now_iso = now().isoformat() %}
               {% set valid_msgs = namespace(list=[]) %}
               {% for msg in raw_queue %}
-                {% set expires_at = msg.get('expires_at') %}
-                {% set priority = msg.get('priority', 'normal') %}
-                {# Keep message if not expired - we process all priorities when occupied #}
-                {% if not expires_at or expires_at > now_iso %}
-                  {% set valid_msgs.list = valid_msgs.list + [msg] %}
+                {% if msg is mapping %}
+                  {% set expires_at = msg.get('expires_at') %}
+                  {% set priority = msg.get('priority', 'normal') %}
+                  {# Keep message if not expired - we process all priorities when occupied #}
+                  {% if not expires_at or expires_at > now_iso %}
+                    {% set valid_msgs.list = valid_msgs.list + [msg] %}
+                  {% endif %}
                 {% endif %}
               {% endfor %}
               {{ valid_msgs.list }}

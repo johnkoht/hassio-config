@@ -92,6 +92,22 @@ script:
               - media_player.sonos_kitchen
               - media_player.sonos_playroom
               - media_player.sonos_living_room
+      # 
+      # Priority
+      #
+      priority:
+        name: Priority
+        description: The priority of the announcement
+        default: "normal"
+        example: "high"
+        selector:
+          select:
+            options:
+              - "critical"  # Emergency alerts only (fire, smoke, leaks)
+              - "high"      # Important but not emergency
+              - "normal"    # Regular announcements
+              - "low"       # Non-essential information
+
 
     # Variables
     variables:
@@ -281,13 +297,15 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - action: script.announcement_queue_enqueue
+      #- action: script.announcement_queue_enqueue
+      - action: script.announcement_engine
         data:
           speech_message: "{{ speech_message }}"
           sound_file: "{{sound_file}}"
           sound_length: "{{sound_file_length}}"
           sound_volume: "{{sound_file_volume}}"
           speech_volume: "{{speech_volume}}"
+          priority: "{{priority}}"
           media_players: >-
             {% if media_players == "all" or media_players == "auto" %}
               {% set media_players = [] %}   
