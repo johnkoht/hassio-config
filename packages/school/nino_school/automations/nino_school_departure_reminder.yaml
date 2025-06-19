@@ -28,6 +28,8 @@ automation:
         data:
           media_players: auto
           sound: "school-bell"
+          priority: high
+          expires_in: 5
           speech_message: >-
             {% set event = trigger.calendar_event.summary | lower %}
 

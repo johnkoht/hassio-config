@@ -30,6 +30,15 @@ automation:
             {% endif %}
           sound: "police-whistle"
           media_players: auto
+          priority: >-
+            {% set rain_amount = state_attr('sensor.tempest_rain_amount') %}
+            {% set rain_rate = state_attr('sensor.tempest_rain_rate') %}
+
+            {% if rain_amount > 3 or rain_rate > 3 %}
+              "high"
+            {% else %}
+              "normal"
+            {% endif %}
 
       # Notification for logging
       - action: script.general_notification

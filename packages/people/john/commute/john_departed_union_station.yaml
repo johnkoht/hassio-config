@@ -29,6 +29,7 @@ automation:
         data:
           media_players: auto
           sound: "arcade"
+          priority: normal
           speech_message: >-
             {{
               [

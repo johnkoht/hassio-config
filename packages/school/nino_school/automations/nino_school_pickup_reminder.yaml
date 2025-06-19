@@ -20,6 +20,7 @@ automation:
         data:
           media_players: auto
           sound: "school-bell-chime"
+          priority: normal
           speech_message: >-
             {{
               [

@@ -56,6 +56,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "nuclear"
+                    priority: critical
                     speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a tornado warning for our area!"
                 #
                 # Update the sensor
@@ -102,6 +103,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "nuclear"
+                    priority: critical
                     speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a severe thunderstorm warning for our area!"
                 #
                 # Update the sensor
@@ -147,6 +149,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "default"
+                    priority: high
                     speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a heat advisory for our area!"
                 - action: variable.update_sensor
                   target:
@@ -186,6 +189,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "default"
+                    priority: high
                     speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued a severe thunderstorm watch for our area!
                 - action: variable.update_sensor
                   target:
@@ -225,6 +229,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "default"
+                    priority: high
                     speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an air quality alert for our area!
                 - action: variable.update_sensor
                   target:
@@ -264,6 +269,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "default"
+                    priority: high
                     speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an excessive heat warning for our area!
                 - action: variable.update_sensor
                   target:
@@ -284,7 +290,8 @@ automation:
   #
   # Update the Event ID Variable
   #
-  - alias: NWS Update Event ID Variable
+  - id: "nws_update_event_id_variable"
+    alias: NWS Update Event ID Variable
     initial_state: on
     triggers:
       - trigger: state
@@ -313,7 +320,8 @@ automation:
   #
   # Lots of rain soon
   #
-  - alias: Severe Rain Incoming
+  - id: "severe_rain_incoming"
+    alias: Severe Rain Incoming
     initial_state: on
     triggers:
       # Precipitation intensity > .5 per in
@@ -351,6 +359,8 @@ automation:
         data:
           media_players: "auto"
           sound: "nuclear"
+          priority: high
+          expires_in: 10
           speech_message: "The forecast is showing a lot of rain in the next hour. Keep an eye out for any leaks and it might be a good idea to put out the pumps."
 
   ## This will send up to 3 notifications for alerts.

@@ -31,6 +31,17 @@ automation:
             {% endif %}
           sound: "police-whistle"
           media_players: auto
+          priority: >-
+            {% set uv = state_attr('sensor.tempest_uv') %}
+
+            {% if uv > 10 %}
+              "critical"
+            {% elif uv > 8 %}
+              "high"
+            {% else %}
+              "normal"
+            {% endif %}
+            
 
       # Notification for logging
       - service: script.general_notification

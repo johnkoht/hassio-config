@@ -134,3 +134,5 @@ script:
           media_players: "media_player.sonos_office"
           sound: "one-chime"
           speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+          priority: normal
+          expires_in: 20

@@ -302,6 +302,7 @@ script:
           media_players: auto
           sound: "{{ sound }}"
           speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+          priority: low
 
       #
       # Push Notification

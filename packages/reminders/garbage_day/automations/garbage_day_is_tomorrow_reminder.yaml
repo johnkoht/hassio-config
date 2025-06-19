@@ -45,6 +45,7 @@ automation:
         data:
           media_players: auto
           sound: "message-alert"
+          priority: high
           speech_message: >-
             {{
               [

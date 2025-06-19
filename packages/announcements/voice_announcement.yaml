@@ -92,13 +92,13 @@ script:
               - media_player.sonos_kitchen
               - media_player.sonos_playroom
               - media_player.sonos_living_room
-      # 
+      # sup
       # Priority
       #
       priority:
         name: Priority
         description: The priority of the announcement
-        default: "normal"
+        default: "low"
         example: "high"
         selector:
           select:
@@ -107,6 +107,17 @@ script:
               - "high"      # Important but not emergency
               - "normal"    # Regular announcements
               - "low"       # Non-essential information
+      # 
+      # Expires In
+      # 
+      expires_in:
+        name: Expires In
+        description: The number of minutes until the announcement expires
+        example: 3
+        selector:
+          number:
+            min: 1
+            max: 120
 
 
     # Variables
@@ -273,6 +284,22 @@ script:
       #
       save_announcement: true
 
+      #
+      # Calculate default expiration based on priority if not provided
+      #
+      default_expires_in: >-
+        {% if expires_in is defined and expires_in is not none %}
+          {{ expires_in }}
+        {% else %}
+          {% if priority == "low" %}
+            3
+          {% elif priority == "normal" %}
+            10
+          {% else %}
+            null
+          {% endif %}
+        {% endif %}
+
     sequence:
       # Somebody is home
       - condition: state
@@ -305,6 +332,7 @@ script:
           sound_volume: "{{sound_file_volume}}"
           speech_volume: "{{speech_volume}}"
           priority: "{{priority}}"
+          expires_in: "{{ default_expires_in }}"
           media_players: >-
             {% if media_players == "all" or media_players == "auto" %}
               {% set media_players = [] %}   

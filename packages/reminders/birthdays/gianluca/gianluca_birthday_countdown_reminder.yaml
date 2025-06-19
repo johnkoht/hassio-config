@@ -60,6 +60,7 @@ automation:
                   speech_message: "Hey, Gianluca! Guess what? Today's your birthday! Happy Birthday!!!"
                   media_players: "auto"
                   sound: "success-trumpets"
+                  priority: high
 
           # ELIF 1 more day
           - conditions:
@@ -72,6 +73,7 @@ automation:
                   speech_message: "Gianluca! Guess what tomorrow is? You're birthday!!! Are you super excited to celebrate?"
                   media_players: "auto"
                   sound: "games-sfx"
+                  priority: high
 
         # ELSE more than 1 day
         default:
@@ -87,3 +89,4 @@ automation:
                 }}
               media_players: "auto"
               sound: "games-sfx"
+              priority: high

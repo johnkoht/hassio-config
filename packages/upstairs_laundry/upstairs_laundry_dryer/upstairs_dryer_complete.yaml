@@ -16,6 +16,8 @@ automation:
         data:
           media_players: auto
           sound: "chirp"
+          priority: normal
+          expires_in: 120
           speech_message: "The upstairs dryer finished and is ready to be emptied."
       # Notification
       - service: script.general_notification

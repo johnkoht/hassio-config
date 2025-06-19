@@ -43,6 +43,7 @@ automation:
         data:
           media_players: auto
           sound: "one-chime"
+          priority: high
           speech_message: >-
             {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" %}
               "The robot vacuum is water tank is empty, please refill it as soon as possible."

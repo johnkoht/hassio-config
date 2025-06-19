@@ -161,6 +161,8 @@ script:
         data:
           media_players: "auto"
           sound: "default"
+          priority: high
+          expires_in: 10
           speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
 
 #

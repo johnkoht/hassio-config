@@ -37,3 +37,5 @@ automation:
             }}
           media_players: "auto"
           sound: "arcade"
+          priority: normal
+          expires_in: 3

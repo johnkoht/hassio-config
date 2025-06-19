@@ -28,6 +28,8 @@ automation:
       - service: script.voice_announcement
         data:
           media_players: auto
+          priority: normal
+          expires_in: 3
           speech_message: >-
             {{
               [
