@@ -301,10 +301,6 @@ script:
         {% endif %}
 
     sequence:
-      # Somebody is home
-      - condition: state
-        entity_id: input_boolean.house_occupied
-        state: "on"
       # Speech notifications is enabled
       - condition: state
         entity_id: input_boolean.speech_notifications
@@ -317,10 +313,6 @@ script:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-      # A room that we can announce to is occupied
-      - condition: state
-        entity_id: binary_sensor.announceable_rooms_occupied
-        state: "on"
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms

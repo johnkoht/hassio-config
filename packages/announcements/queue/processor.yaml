@@ -52,6 +52,20 @@ automation:
       - condition: state
         entity_id: input_boolean.announcement_queue_running
         state: "off"
+      # For non-critical messages, make sure there's an announceable room
+      - condition: template
+        value_template: >
+          {% set q = state_attr('sensor.announcement_queue', 'queue') %}
+          {% if q is iterable and q | length > 0 %}
+            {% set next_msg = q[0] %}
+            {% if next_msg.priority == 'critical' %}
+              true
+            {% else %}
+              {{ states('binary_sensor.announceable_rooms_occupied') == 'on' }}
+            {% endif %}
+          {% else %}
+            false
+          {% endif %}
 
     action:
       # Turn on the announcement queue running flag
