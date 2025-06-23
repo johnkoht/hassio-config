@@ -1,0 +1,45 @@
+script:
+  clean_selected_rooms:
+    alias: Clean Selected Rooms
+    description: Clean rooms selected using the input booleans
+    mode: single 
+    sequence:
+      # Check if Jr Suite door is open if Jr Suite is selected
+      - condition: state
+        entity_id: binary_sensor.jr_suite_door_status
+        state: "on"
+        
+      # Get the selected rooms and map them to segment numbers
+      - variables:
+          room_map:
+            input_boolean.vacuum_powder_room: 16
+            input_boolean.vacuum_playroom: 18
+            input_boolean.vacuum_foyer: 20
+            input_boolean.vacuum_jr_suite: 21
+            input_boolean.vacuum_dining_room: 23
+            input_boolean.vacuum_kitchen: 24
+            input_boolean.vacuum_mudroom: 25
+            input_boolean.vacuum_family_room: 26
+            input_boolean.vacuum_laundry_room: 27
+            input_boolean.vacuum_mudroom_bathroom: 30
+            input_boolean.vacuum_office: 29
+          selected_segments: >
+            {% set segments = [] %}
+            {% for entity_id, segment in room_map.items() %}
+              {% if is_state(entity_id, 'on') %}
+                {% set segments = segments + [segment] %}
+              {% endif %}
+            {% endfor %}
+            {{ segments }}
+
+      # Only proceed if rooms were selected
+      - condition: template
+        value_template: "{{ selected_segments|length > 0 }}"
+
+      # Start cleaning the selected rooms
+      - service: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_s7
+        data:
+          command: app_segment_clean
+          params: "{{ selected_segments }}" 

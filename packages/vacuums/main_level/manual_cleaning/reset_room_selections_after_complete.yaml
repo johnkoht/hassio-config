@@ -1,0 +1,30 @@
+# Automation to reset input booleans when vacuum finishes
+automation:
+  - alias: "Reset Room Selection After Vacuum Finishes"
+    description: "Turns off all room selection booleans when the vacuum completes cleaning"
+    trigger:
+      - platform: state
+        entity_id: vacuum.roborock_s7
+        to: 'returning'
+    condition:
+      # Only run if at least one room was selected
+      - condition: template
+        value_template: >
+          {% for entity in states.input_boolean if 'vacuum_' in entity.entity_id %}
+            {% if is_state(entity.entity_id, 'on') %}
+              {{ true }}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          {{ false }}
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: >
+            {% set entities = [] %}
+            {% for entity in states.input_boolean if 'vacuum_' in entity.entity_id %}
+              {% if is_state(entity.entity_id, 'on') %}
+                {% set entities = entities + [entity.entity_id] %}
+              {% endif %}
+            {% endfor %}
+            {{ entities | join(',') }} 
