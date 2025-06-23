@@ -246,7 +246,7 @@ automation:
                     minutes: 1
       #
       #
-      # Excessive Heat Warning Notification
+      # Excessive/Extreme Heat Warning Notification
       #
       - repeat:
           count: "{{ states('sensor.nws_alerts') | int }}"
@@ -263,14 +263,23 @@ automation:
                       {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
                     {% endfor -%}
                     {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
-                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Excessive Heat Warning' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+                    {% set event = ns_dict.events_dict[repeat.index - 1].event %}
+                    {{ (event == 'Excessive Heat Warning' or event == 'Extreme Heat Warning') and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
               then:
+                #
+                # Voice Announcement
+                #
                 - action: script.voice_announcement
                   data:
                     media_players: "auto"
-                    sound: "default"
-                    priority: high
-                    speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an excessive heat warning for our area!
+                    sound: "nuclear"
+                    priority: critical
+                    speech_message: >
+                      {% set event = ns_dict.events_dict[repeat.index - 1].event %}
+                      Attention!!,,,Attention!!,,,The National Weather Service Has issued an {{ event.lower() }} for our area!
+                #
+                # Update the sensor
+                #
                 - action: variable.update_sensor
                   target:
                     entity_id: sensor.nws_alerts_announced_ids
@@ -282,9 +291,11 @@ automation:
                         {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
                       {% endfor -%}
                       {{ ns_dict.events_dict[repeat.index - 1].id}}
+                #
+                # Give the system a breather
+                #
                 - delay:
                     minutes: 1
-                    # #
 
   #
   #
