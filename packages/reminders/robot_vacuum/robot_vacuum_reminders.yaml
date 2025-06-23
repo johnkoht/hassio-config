@@ -2,44 +2,43 @@ automation:
   - id: "robot_vacuum_maintenance_reminder"
     alias: "Robot Vacuum Maintenance Reminder"
     mode: "single"
-    trigger:
-      # Low on water
-      - platform: state
-        entity_id: binary_sensor.roborock_s7_water_shortage
-        from: "off"
-        to: "on"
-      # Sensors need to be cleaned (less than 2 hours)
-      - platform: numeric_state
-        entity_id: sensor.roborock_s7_sensor_dirty_left
-        below: 7200
-    action:
-      # Wait until 6:30am
+    triggers:
+      # At 8:45pm
+      - trigger: time
+        at: "20:45:00"
+        id: reminder_time
+      # At 7:05am
+      - trigger: time
+        at: "07:05:00"
+        id: reminder_time
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      # Wait for the kitchen to be occupied for 5 minutes
       - wait_for_trigger:
-          - platform: time
-            at: "07:05:00"
-
-      # Wait for the kitchen to be occupied for 10 minutes
-      - wait_for_trigger:
-          - platform: state
+          - trigger: state
             entity_id: binary_sensor.kitchen_motion_sensor_occupancy
             to: "on"
             for:
-              minutes: 10
+              minutes: 5
+        timeout:
+          minutes: 20
+        continue_on_timeout: true
+
+      # wait for the kitchen motion sensor to trigger
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: binary_sensor.kitchen_motion_sensor_status
+            to: "on"
         timeout:
           minutes: 10
         continue_on_timeout: true
 
-      # Wait for John to be present or wait 5 mins
-      - wait_for_trigger:
-          - platform: state
-            entity_id: sensor.john_room_presence
-            to: "kitchen"
-        timeout:
-          minutes: 5
-        continue_on_timeout: true
-
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "one-chime"
@@ -54,7 +53,7 @@ automation:
             {% endif %}
 
       # Send a push notification
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: >-
             {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" %}

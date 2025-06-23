@@ -27,11 +27,24 @@ automation:
       - condition: state
         entity_id: binary_sensor.jr_suite_door_status
         state: "on"
-      # Not in Vacation mode
-      - not:
-        - condition: state
-          entity_id: input_select.house
-          state: "Vacation"
+      # Either not in vacation mode OR vacation mode just started (within 24 hours)
+      # we don't need the vacuum running if we're on vacation, but I definitely
+      # want it to run once after we leave so we return to a clean house
+      - condition: or
+        conditions:
+          # Not in vacation mode
+          - condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "off"
+          # OR vacation mode started less than 24 hours ago
+          - condition: template
+            value_template: >
+              {% set vacation_last_changed = states.input_boolean.vacation_mode.last_changed %}
+              {% if states.input_boolean.vacation_mode.state == "on" %}
+                {{ (now() - vacation_last_changed).total_seconds() < 86400 }}
+              {% else %}
+                {{ false }}
+              {% endif %}
     actions:
       # Vacuum the Kitchen, family room, and mudroom
       - action: vacuum.send_command
