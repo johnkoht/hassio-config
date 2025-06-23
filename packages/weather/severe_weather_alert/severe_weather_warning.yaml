@@ -25,7 +25,7 @@ automation:
             {% set ns.events = ns.events + [event] %}
           {% endfor -%}
           {% set alerts_list = set(ns.events) %}
-          {% set test_list = set(['Tornado Warning', 'Severe Thunderstorm Warning', 'Air Quality Alert', 'Heat Advisory', 'Severe Thunderstorm Watch', 'Excessive Heat Warning' ]) %}
+          {% set test_list = set(['Tornado Warning', 'Severe Thunderstorm Warning', 'Air Quality Alert', 'Heat Advisory', 'Severe Thunderstorm Watch', 'Excessive Heat Warning', 'Extreme Heat Warning']) %}
           {{ test_list.intersection(alerts_list) | count > 0 }}
     actions:
       #
@@ -285,7 +285,7 @@ automation:
                 - delay:
                     minutes: 1
                     # #
-      
+
   #
   #
   # Update the Event ID Variable

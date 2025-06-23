@@ -113,10 +113,39 @@ automation:
           payload_json: '{{ {"queue": updated} | to_json }}'
 
       #
-      # Skip if both speech and sound are missing
+      # If the queue is not empty then call the announcement engine
       #
-      - condition: template
-        value_template: "{{ queue | length > 0 and (next.get('speech_message') is string or next.get('sound_file') is string) }}"
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ queue | length > 0 and (next.get('speech_message') is string or next.get('sound_file') is string) }}"
+            sequence:
+              #
+              # Trigger the announcement engine
+              #
+              - action: script.announcement_engine
+                data:
+                  speech_message: "{{ next.speech_message }}"
+                  sound_file: "{{ next.sound_file }}"
+                  sound_length: "{{ next.sound_length }}"
+                  sound_volume: "{{ next.sound_volume }}"
+                  speech_volume: "{{ next.speech_volume }}"
+                  media_players: "{{ next.media_players }}"
+
+              # # Debug notification
+              # - action: script.general_notification
+              #   data:
+              #     message: "{{ next.sound_file }} | {{ next.sound_length }} | {{ next.sound_volume }} | {{ next.speech_volume }} | {{ next.media_players }}"
+              #     title: "{{next.speech_message}}"
+              #     devices: "jk"
+              #     priority: "time-sensitive"
+              #     tag: "test-testerson"
+      #
+
+      # 
+      # Run the following sequence regardless of whether the
+      # announcement engine was called or not.
+      # 
 
       #
       # Publish trimmed queue back to MQTT
@@ -136,28 +165,6 @@ automation:
           payload: "queue"
           retain: true
 
-      #
-      # Trigger the announcement engine
-      #
-      - action: script.announcement_engine
-        data:
-          speech_message: "{{ next.speech_message }}"
-          sound_file: "{{ next.sound_file }}"
-          sound_length: "{{ next.sound_length }}"
-          sound_volume: "{{ next.sound_volume }}"
-          speech_volume: "{{ next.speech_volume }}"
-          media_players: "{{ next.media_players }}"
-
-      # # Debug notification
-      # - action: script.general_notification
-      #   data:
-      #     message: "{{ next.sound_file }} | {{ next.sound_length }} | {{ next.sound_volume }} | {{ next.speech_volume }} | {{ next.media_players }}"
-      #     title: "{{next.speech_message}}"
-      #     devices: "jk"
-      #     priority: "time-sensitive"
-      #     tag: "test-testerson"
-
-      #
       # Give the system a breather
       #
       - delay: "00:00:03"
