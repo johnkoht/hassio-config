@@ -3,12 +3,12 @@ automation:
     alias: "Alarm - Arm When House is Empty"
     mode: "single"
     trigger:
-      # House is in the away state for 30 minutes
+      # House is in the away state for 5 minutes
       - platform: state
         entity_id: input_select.house
         to: "Away"
         for:
-          minutes: 15
+          minutes: 5
       # We leave the neighborhood zone
       - platform: zone
         entity_id:
