@@ -1,0 +1,34 @@
+# Energy Prices Are Negative
+# 
+# binary sensor to check if energy prices are negative
+# 
+binary_sensor:
+  - platform: template
+    sensors:
+      energy_prices_are_negative:
+        friendly_name: Energy Prices Are Negative
+        value_template: "{{ states.sensor.energy_price.state | float < 0 }}"
+
+# 
+# Energy Prices Are Negative
+# 
+# Notify me when energy prices are negative so I can
+# turn on everything!!!
+# 
+automation:
+  - id: "energy_prices_are_negative"
+    alias: "Energy Prices Are Negative"
+    mode: "single"
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.energy_prices_are_negative
+        to: "on"
+    action:
+      - service: script.general_notification
+        data:
+          message: "Energy prices are negative at {{ states.sensor.energy_price.state }}. Turn on everything!!!"
+          title: "Energy Prices Are Negative"
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "energy_prices_are_negative"
