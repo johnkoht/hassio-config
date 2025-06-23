@@ -1,0 +1,42 @@
+# Vacuum - Clean Kitchen and Family Room at Night
+#
+# Automation logic to handle vacuuming the
+# kitchen and family room at night. 
+#
+automation:
+  - id: "clean_kitchen_and_family_room_at_night"
+    alias: "Vacuum - Clean Kitchen and Family Room at Night"
+    mode: "single"
+    triggers:
+      # Bedtime mode is on for 30 minutes
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+        for:
+          minutes: 30
+      # At 1:01am
+      - trigger: time
+        at: "01:01:00"
+    conditions:
+      # Guest mode is OFF
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      # Jr. Suite door is OPEN
+      # otherwise the vacuum will get stuck in the Jr. Suite
+      - condition: state
+        entity_id: binary_sensor.jr_suite_door_status
+        state: "on"
+      # Not in Vacation mode
+      - not:
+        - condition: state
+          entity_id: input_select.house
+          state: "Vacation"
+    actions:
+      # Vacuum the Kitchen, family room, and mudroom
+      - action: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_s7
+        data:
+          command: app_segment_clean
+          params: [24, 25, 26]
