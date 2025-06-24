@@ -72,14 +72,13 @@ automation:
       # Check if we should run today based on last run and entertainment history
       - condition: template
         value_template: >
-          {% set last_run = states.automation.clean_dining_and_foyer_at_night.attributes.last_triggered %}
+          {% set last_run = state_attr('automation.clean_dining_and_foyer_at_night', 'last_triggered') %}
           {% set yesterday_start = now().replace(hour=0, minute=0, second=0) - timedelta(days=1) %}
           {% set yesterday_end = now().replace(hour=0, minute=0, second=0) %}
           {% set entertainment_yesterday = states.input_boolean.entertainment_mode.last_changed.replace(hour=0, minute=0, second=0) >= yesterday_start 
              and states.input_boolean.entertainment_mode.last_changed < yesterday_end %}
-          {% if not last_run %}
-            {{ true }}
-          {% else %}
+
+          {% if last_run != None %}
             {% set days_since_last_run = (now() - last_run).total_seconds() / 86400 %}
             {% if entertainment_yesterday %}
               {# Run if there was entertainment yesterday, regardless of last run #}
@@ -88,6 +87,8 @@ automation:
               {# Otherwise run if it's been at least 2 days since last run #}
               {{ days_since_last_run >= 2 }}
             {% endif %}
+          {% else %}
+            {{ true }}
           {% endif %}
     actions:
       # Vacuum the dining room and foyer
