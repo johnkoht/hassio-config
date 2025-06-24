@@ -17,7 +17,5 @@ automation:
         entity_id: input_boolean.office_occupied
         state: "on"
     actions:
-      # - action: light.turn_on
-      #   entity_id: light.office_shelf_lights
-      - action: scene.turn_off
-        entity_id: scene.office_shelves_tokyo
+      - action: light.turn_off
+        entity_id: light.office_shelf_lights
