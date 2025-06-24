@@ -2,7 +2,7 @@
 #
 # If the office becomes occupied again and
 # music was previously playing before it
-# became empty, then let's resume
+# became empty, then let's resume playing music
 #
 automation:
   - id: "office_music_resume"
@@ -16,18 +16,25 @@ automation:
         for:
           minutes: 3
           seconds: 10
+        id: "office_occupied"
       # Office is no longer in DnD mode for 2 minutes
       - platform: state
         entity_id: input_select.office
         from: "DnD"
         for:
           minutes: 2
+        id: "dnd_off"
       # Laptop becomes active
       - platform: state
         entity_id: binary_sensor.johns_macbook_pro_active
         to: "on"
         for:
           minutes: 2
+        id: "laptop_active"
+      # Focus mode changes
+      - platform: state
+        entity_id: input_select.john_focus_mode
+        id: "focus_changed"
     condition:
       # Office is occupied
       - condition: state
@@ -37,17 +44,20 @@ automation:
       - condition: state
         entity_id: sensor.john_room_presence
         state: "office"
-      # Sonos is paused, idle, or off
-      - condition: state
-        entity_id: media_player.sonos_office
-        state:
-          - "paused"
-          - "idle"
-          - "off"
-      # Sonos Office didnt' recently change state, e.g. I manually paused it
-      - condition: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.media_player.sonos_office.last_updated)) | int > 180 }}"
-      # Must be in a suitable time window
+      # If music is playing, then we don't need to resume it
+      # UNLESS the focus mode has changed, in that case we
+      # change update the music
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: focus_changed
+          - condition: state
+            entity_id: media_player.sonos_office
+            state:
+              - "paused"
+              - "idle"
+              - "off"
+      # Some appropriate time window limitations
       - condition: time
         after: "08:01:00"
         before: "22:00:00"
@@ -59,21 +69,75 @@ automation:
         entity_id: binary_sensor.johns_macbook_pro_active
         state: "on"
     action:
-      - if:
-          # If music is paused
-          - condition: state
-            entity_id: media_player.sonos_office
-            state: "paused"
-        then:
-          # Then play
-          - service: media_player.media_play
-            entity_id: media_player.sonos_office
-        else:
-          # Otherwise, play the queue
-          - service: sonos.play_queue
-            entity_id: media_player.sonos_office
+      # Check if there are items in the queue
+      - service: sonos.get_queue
+        target:
+          entity_id: media_player.sonos_office
+        response_variable: queue_items
+
+      - choose:
+          # Load a new playliist
+          # 
+          # - if the queue is emptyu
+          # - OR if the focus mode has changed
+          - conditions:
+              - condition: or
+                conditions:
+                  # Focused changed
+                  - condition: trigger
+                    id: focus_changed
+                  # Queue is empty
+                  - condition: template
+                    value_template: "{{ queue_items['media_player.sonos_office'] | length == 0 }}"
+            sequence:
+              # Variables for the new playlist
+              - variables:
+                  media_content_id: "{{ states('sensor.john_focus_mode_playlist') }}"
+                  media_content_type: >-
+                    {% if media_content_id | contains('playlist') %}
+                      "playlist"
+                    {% else %}
+                      "music"
+                    {% endif %}
+              # 
+              # Load the new playlist
+              # 
+              - service: media_player.play_media
+                target:
+                  entity_id: media_player.sonos_office
+                data:
+                  media_content_type: "{{ media_content_type }}"
+                  media_content_id: "{{ media_content_id }}"
+                  enqueue: "replace"
+              # Make sure shuffle is on
+              - service: media_player.shuffle_set
+                target:
+                  entity_id: media_player.sonos_office
+                data:
+                  shuffle: true
+        # 
+        # Resume Playing
+        # 
+        # If the queue is not empty and focus mode hasn't changed
+        # just resume playing the existing queue
+        # 
+        default:
+          - if:
+              # If music is paused
+              - condition: state
+                entity_id: media_player.sonos_office
+                state: "paused"
+            then:
+              # Then play
+              - service: media_player.media_play
+                entity_id: media_player.sonos_office
+            else:
+              # Otherwise, play the queue
+              - service: sonos.play_queue
+                entity_id: media_player.sonos_office
 
       # Turn off the input_boolean.office_music_playing so
       # we don't always just keep playing music upon occupancy
       - service: input_boolean.turn_off
         entity_id: input_boolean.office_music_playing
+

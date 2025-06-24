@@ -1,0 +1,41 @@
+# Focus Mode Playlists
+# 
+# This sensor will return the playlist based on the focus mode. It's
+# still early and I'lll most likely either:
+# 1) add more playlists/albums
+# 2) use a single playlist for each mode and modify them manually
+# 
+sensor:
+  - platform: template
+    sensors:
+      john_focus_mode_playlist:
+        friendly_name: John Focus Mode Playlist
+        unique_id: john_focus_mode_playlist
+        value_template: >-
+          {% set mode = states('input_select.john_focus_mode') %}
+
+          {% if mode == 'Deep Work' %}
+            {% set music = [
+              'spotify:playlist:3NiREobhw0F20In6S2h9uD',
+              'spotify:album:1ijkFiMeHopKkHyvQCWxUa',
+              'spotify:album:3fKas0iq7DWAylIQxGEIQW'
+            ] | random%}
+          {% elif mode == 'Task Mode' %}
+            {% set music = [
+              'spotify:playlist:37i9dQZF1E3aklmeCJgW2W',
+              'spotify:playlist:37i9dQZF1E39lWkdAMoS7i',
+              'spotify:playlist:37i9dQZF1E36DhGbq1YFdb',
+              'spotify:playlist:37i9dQZF1E37gzMVLHxopg'
+            ] | random%}
+          {% elif mode == 'Tinkering' %}
+            {% set music = [
+              'spotify:playlist:37i9dQZF1EQqkOPvHGajmW',
+              'spotify:playlist:37i9dQZF1EQp62d3Dl7ECY',
+              'spotify:playlist:37i9dQZF1EIXmFqb6sZC4P',
+              'spotify:playlist:37i9dQZF1EIUqxJLAsBf4h'
+            ] | random%}
+          {% else %}
+            {% set music = [] %}
+          {% endif %}
+
+          {{ music }}

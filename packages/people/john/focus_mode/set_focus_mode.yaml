@@ -1,0 +1,45 @@
+# Set the Focus Mode
+# 
+# If my focus mode changes (based on the calendar)
+# OR i just finish up a call, then update the focus mode
+# based on the calendar
+# 
+automation:
+  - id: "john_set_focus_mode"
+    alias: "John Set Focus Mode"
+    mode: queued
+    triggers:
+      # Calendar focus mode changes
+      - trigger: state
+        entity_id: sensor.john_calendar_focus_mode
+      # DnD turns OFF
+      - trigger: state
+        entity_id: input_boolean.john_dnd
+        to: "off"
+      # Hassio restart/relaod
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+    condition:
+      # # Make sure it's not DnD mode
+      # - condition: state
+      #   entity_id: input_boolean.john_dnd
+      #   state: "off"
+      # Make sure I'm home
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "on"
+      # Make sure the calendar focus mode has changed
+      - condition: template
+        value_template: >-
+          {% set calendar_mode = states('sensor.john_calendar_focus_mode') %}
+          {% set current_mode = states('input_select.john_focus_mode') %}
+          {{ calendar_mode != current_mode and calendar_mode != '' }}
+    action:
+      # Update the focus mode input_select
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.john_focus_mode
+        data:
+          option: "{{ states('sensor.john_calendar_focus_mode') }}" 

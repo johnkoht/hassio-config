@@ -1,0 +1,59 @@
+# Focus Mode based on John's Calendar
+# 
+# My calendar is usually filled with work calls and personal
+# blocks that I use for deep work (GSD) or task work (e.g.,
+# emails, slack, todos, etc.)
+#
+# This sensor will return the focus mode based on the calendar
+# and the time of day.
+# 
+# General Rules
+# - If there is an event with GSD in the title, it's deep work
+# - If it's passed 7pm, it's tinkering
+# - If I have a big block of time coming up, it's deep work
+# - Otherwise it's task mode
+# 
+sensor:
+  - platform: template
+    sensors:
+      john_calendar_focus_mode:
+        friendly_name: "John Calendar Focus Mode"
+        value_template: >
+          {% set work_calendar = states('calendar.john_launchpadlab_com') %}
+          {% set work_message = state_attr('calendar.john_launchpadlab_com', 'message') | lower if work_calendar != 'unknown' else '' %}
+          {% set next_event_start = state_attr('calendar.john_launchpadlab_com', 'start_time') if work_calendar != 'unknown' else none %}
+          {% set current_hour = now().hour %}
+          {% set is_workday = is_state('binary_sensor.workday_sensor', 'on') %}
+          
+          {# Evening hours (after 7pm) are typically for tinkering #}
+          {% if current_hour >= 19 %}
+            Tinkering
+          {# If calendar is active, check event title #}
+          {% elif work_calendar == 'on' %}
+            {% if work_message and 'gsd' in work_message %}
+              Deep Work
+            {% else %}
+              Task Mode
+            {% endif %}
+          {% else %}
+            {# Calendar is off, check time and next event #}
+            {% if next_event_start %}
+              {% set now = now() %}
+              {% set time_until_next = (as_timestamp(next_event_start) - as_timestamp(now)) / 60 %}
+              {# Only suggest Deep Work if it's before 2pm and we have a good time block #}
+              {% if time_until_next > 60 and current_hour < 14 and is_workday %}
+                Deep Work
+              {% else %}
+                Task Mode
+              {% endif %}
+            {% else %}
+              {# No upcoming events - consider time of day #}
+              {% if current_hour < 14 and is_workday %}
+                Deep Work
+              {% elif current_hour >= 19 %}
+                Tinkering
+              {% else %}
+                Task Mode
+              {% endif %}
+            {% endif %}
+          {% endif %} 
