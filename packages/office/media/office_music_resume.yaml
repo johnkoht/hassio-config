@@ -60,7 +60,7 @@ automation:
       # Some appropriate time window limitations
       - condition: time
         after: "08:01:00"
-        before: "22:00:00"
+        before: "23:45:00"
       # Office is not in DnD Mode
       - condition: template
         value_template: "{{ not is_state('input_select.office','DnD') }}"
