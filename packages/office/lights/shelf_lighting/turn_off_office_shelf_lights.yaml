@@ -1,0 +1,16 @@
+# Turn off office shelf lights
+#
+# When the house becomes unoccupied, turn off the office shelf lights
+#
+automation:
+  - id: "turn_off_office_shelf_lights"
+    alias: "Turn off office shelf lights"
+    initial_state: on
+    trigger:
+      # If the house becomes unoccupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    actions:
+      - action: light.turn_off
+        entity_id: light.office_shelf_lights
