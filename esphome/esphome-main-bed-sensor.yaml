@@ -60,7 +60,7 @@ sensor:
     name: "John Bed Sensor"
     id: "john_bed_sensor"
     icon: mdi:bed
-    attenuation: 11db
+    attenuation: 12db
     update_interval: 0.5s
     filters:
       - sliding_window_moving_average:
@@ -76,7 +76,7 @@ sensor:
     name: "Cristina Bed Sensor"
     id: "cristina_bed_sensor"
     icon: mdi:bed
-    attenuation: 11db
+    attenuation: 12db
     update_interval: 0.5s
     filters:
       - sliding_window_moving_average:

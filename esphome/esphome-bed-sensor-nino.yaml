@@ -46,7 +46,7 @@ sensor:
     name: "Sensor"
     id: "nino_bed_sensor"
     icon: mdi:bed
-    attenuation: 11db
+    attenuation: 12db
     update_interval: 0.5s
     filters:
       - sliding_window_moving_average:
