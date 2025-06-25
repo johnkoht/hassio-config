@@ -22,6 +22,12 @@ automation:
         event: start
       - trigger: event
         event_type: automation_reloaded
+    conditions:
+      # Make sure it's bedtime in case
+      # restart is the trigger
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "on"
     actions:
       # Lock the garage remotes
       - action: lock.lock
