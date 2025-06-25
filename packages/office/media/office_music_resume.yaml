@@ -8,9 +8,9 @@ automation:
   - id: "office_music_resume"
     initial_state: on
     alias: "Office music resume"
-    trigger:
+    triggers:
       # Office becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "on"
         for:
@@ -18,24 +18,24 @@ automation:
           seconds: 10
         id: "office_occupied"
       # Office is no longer in DnD mode for 2 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_select.office
         from: "DnD"
         for:
           minutes: 2
         id: "dnd_off"
       # Laptop becomes active
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.johns_macbook_pro_active
         to: "on"
         for:
           minutes: 2
         id: "laptop_active"
       # Focus mode changes
-      - platform: state
+      - trigger: state
         entity_id: input_select.john_focus_mode
         id: "focus_changed"
-    condition:
+    conditions:
       # Office is occupied
       - condition: state
         entity_id: input_boolean.office_occupied
@@ -70,15 +70,15 @@ automation:
         state: "on"
     action:
       # Check if there are items in the queue
-      - service: sonos.get_queue
+      - action: sonos.get_queue
         target:
           entity_id: media_player.sonos_office
         response_variable: queue_items
 
       - choose:
-          # Load a new playliist
+          # Load new playlists
           # 
-          # - if the queue is emptyu
+          # - if the queue is empty
           # - OR if the focus mode has changed
           - conditions:
               - condition: or
@@ -90,31 +90,49 @@ automation:
                   - condition: template
                     value_template: "{{ queue_items['media_player.sonos_office'] | length == 0 }}"
             sequence:
-              # Variables for the new playlist
+              # Get the playlists array
               - variables:
-                  media_content_id: "{{ states('sensor.john_focus_mode_playlist') }}"
-                  media_content_type: >-
-                    {% if media_content_id | contains('playlist') %}
-                      "playlist"
-                    {% else %}
-                      "music"
-                    {% endif %}
-              # 
-              # Load the new playlist
-              # 
-              - service: media_player.play_media
-                target:
-                  entity_id: media_player.sonos_office
-                data:
-                  media_content_type: "{{ media_content_type }}"
-                  media_content_id: "{{ media_content_id }}"
-                  enqueue: "replace"
-              # Make sure shuffle is on
-              - service: media_player.shuffle_set
-                target:
-                  entity_id: media_player.sonos_office
-                data:
-                  shuffle: true
+                  playlists: "{{ states('sensor.john_focus_mode_playlist') }}"
+
+              # Check if we have an array of playlists
+              - if:
+                  - condition: template
+                    value_template: "{{ playlists is sequence }}"
+                then:
+                  # Loop through each playlist
+                  - repeat:
+                      sequence:
+                        # Determine if this is a playlist or music
+                        - variables:
+                            media_content_type: >-
+                              {% if repeat.item | contains('playlist') %}
+                                playlist
+                              {% else %}
+                                music
+                              {% endif %}
+                            enqueue_mode: >-
+                              {% if repeat.index == 1 %}
+                                replace
+                              {% else %}
+                                add
+                              {% endif %}
+                        
+                        # Add the playlist/music to the queue
+                        - action: media_player.play_media
+                          target:
+                            entity_id: media_player.sonos_office
+                          data:
+                            media_content_type: "{{ media_content_type }}"
+                            media_content_id: "{{ repeat.item }}"
+                            enqueue: "{{ enqueue_mode }}"
+                      for_each: "{{ playlists }}"
+
+                  # Make sure shuffle is on
+                  - action: media_player.shuffle_set
+                    target:
+                      entity_id: media_player.sonos_office
+                    data:
+                      shuffle: true
         # 
         # Resume Playing
         # 
@@ -129,15 +147,15 @@ automation:
                 state: "paused"
             then:
               # Then play
-              - service: media_player.media_play
+              - action: media_player.media_play
                 entity_id: media_player.sonos_office
             else:
               # Otherwise, play the queue
-              - service: sonos.play_queue
+              - action: sonos.play_queue
                 entity_id: media_player.sonos_office
 
       # Turn off the input_boolean.office_music_playing so
       # we don't always just keep playing music upon occupancy
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.office_music_playing
 
