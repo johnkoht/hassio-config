@@ -1,0 +1,27 @@
+automation:
+  - id: "alarm_arm_away_when_vacation_mode"
+    alias: "Alarm - Arm Away When Vacation Mode"
+    mode: "single"
+    triggers:
+      # House is in Vacation state
+      - trigger: state
+        entity_id: input_select.house
+        to: "Vacation"
+    conditions:
+      # Make sure the house is not occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+    actions:
+      # Arm Away
+      - action: alarm_control_panel.alarm_arm_away
+        entity_id: alarm_control_panel.panel
+
+      # Send a notification
+      - action: script.general_notification
+        data:
+          message: Home is armed Away since the house is in Vacation mode.
+          title: Security System
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "home-security"
