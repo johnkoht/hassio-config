@@ -18,10 +18,10 @@ automation:
       - trigger: time
         at: "01:01:00"
     conditions:
-      # Guest mode is OFF
-      - condition: state
-        entity_id: input_boolean.guest_mode
-        state: "off"
+      # # Guest mode is OFF
+      # - condition: state
+      #   entity_id: input_boolean.guest_mode
+      #   state: "off"
       # Jr. Suite door is OPEN
       # otherwise the vacuum will get stuck in the Jr. Suite
       - condition: state
