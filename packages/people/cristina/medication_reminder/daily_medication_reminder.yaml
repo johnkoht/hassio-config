@@ -68,7 +68,7 @@ automation:
       # 
       # Send the notification
       # 
-      - service: notify.mobile_app_jk_2
+      - action: notify.mobile_app_cfalb2
         data:
           message: "Cristina, it's time to take your morning medication."
           title: "Medication Reminder"
