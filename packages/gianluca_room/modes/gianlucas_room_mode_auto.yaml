@@ -42,9 +42,11 @@ automation:
       # House is in Auto mode
       - condition: state
         entity_id: input_select.house
-        state: "Auto"
+        state:
+          - "Auto"
+          - "Quiet"
       # Bedroom is NOT occupied
-      # We don't want ot change state if the bedroom is occupied
+      # We don't want to change state if the bedroom is occupied
       - condition: state
         entity_id: input_boolean.gianlucas_room_occupied
         state: "off"
