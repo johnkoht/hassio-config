@@ -30,9 +30,10 @@ script:
         target:
           entity_id: script.critical_announcement
         data:
-          media_players: all
-          sound: "nuclear"
-          speech_message: Alert! The security alarm has been triggered. Get to safety immediately!
+          variables:
+            media_players: all
+            sound: "nuclear"
+            speech_message: Alert! The security alarm has been triggered. Get to safety immediately!
 
       # Flash the lights
       - action: script.turn_on
@@ -45,8 +46,9 @@ script:
         target:
           entity_id: script.general_notification
         data:
-          message: The security alarm has been triggered. Please get to safety immediately!
-          title: Security Alarm
-          devices: "all"
-          priority: "critical"
-          tag: "home-security-alarm"
+          variables:
+            message: The security alarm has been triggered. Please get to safety immediately!
+            title: Security Alarm
+            devices: "all"
+            priority: "critical"
+            tag: "home-security-alarm"
