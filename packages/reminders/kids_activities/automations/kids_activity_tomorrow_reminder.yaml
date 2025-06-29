@@ -39,6 +39,7 @@ automation:
         data:
           media_players: auto
           sound: "flute-cell-phone-alert"
+          priority: normal
           speech_message: >-
             {% set time =  states.calendar.kohbocal.attributes.start_time | as_datetime | as_local %}
             {% set time = time.timestamp() | timestamp_custom('%-I:%M %p') %}

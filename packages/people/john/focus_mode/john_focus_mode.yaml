@@ -1,0 +1,13 @@
+# Focus Mode Input Select
+# 
+# Just a simple way of tracking the focus mode. Not sure
+# if I'm totally happy with these or if I need more.
+# 
+input_select:
+  john_focus_mode:
+    name: "John Focus Mode"
+    options:
+      - "Deep Work"
+      - "Task Mode"
+      - "Tinkering"
+    initial: "Task Mode"

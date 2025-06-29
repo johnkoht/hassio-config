@@ -1,0 +1,30 @@
+# Sensor to show which rooms are currently being cleaned
+template:
+  - sensor:
+      - name: "Currently Cleaning Rooms"
+        icon: mdi:robot-vacuum
+        state: >
+          {% set room_map = {
+            'vacuum_powder_room': 'Powder Room',
+            'vacuum_playroom': 'Playroom',
+            'vacuum_foyer': 'Foyer',
+            'vacuum_jr_suite': 'Jr Suite',
+            'vacuum_dining_room': 'Dining Room',
+            'vacuum_kitchen': 'Kitchen',
+            'vacuum_mudroom': 'Mudroom',
+            'vacuum_family_room': 'Family Room',
+            'vacuum_laundry_room': 'Laundry Room',
+            'vacuum_mudroom_bathroom': 'Mudroom Bathroom',
+            'vacuum_office': 'Office'
+          } %}
+          {% set cleaning_rooms = [] %}
+          {% for entity_id, room_name in room_map.items() %}
+            {% if is_state('input_boolean.' ~ entity_id, 'on') %}
+              {% set cleaning_rooms = cleaning_rooms + [room_name] %}
+            {% endif %}
+          {% endfor %}
+          {% if cleaning_rooms | length > 0 %}
+            {{ cleaning_rooms | join(', ') }}
+          {% else %}
+            Not cleaning
+          {% endif %} 

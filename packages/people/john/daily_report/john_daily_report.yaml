@@ -30,6 +30,10 @@ automation:
       - wait_template: "{{ is_state('binary_sensor.johns_macbook_pro_active', 'on') }}"
         timeout: "02:30:00"
         continue_on_timeout: false
+      
+      # Delay 2 minutes in case I just got on my computer
+      # and I'm hoping on a call
+      - delay: "00:02:00"
 
       - if:
           # Only move forward if I'm not on a call
@@ -134,3 +138,5 @@ script:
           media_players: "media_player.sonos_office"
           sound: "one-chime"
           speech_message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
+          priority: normal
+          expires_in: 20

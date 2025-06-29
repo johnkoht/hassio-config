@@ -43,6 +43,8 @@ action:
     data:
       media_players: auto
       sound: "chirp"
+      priority: normal
+      expires_in: 120 # 2 hours
       speech_message: "The upstairs washer finished and is ready to be emptied."
   # Notify whoever is home
   - service_template: >

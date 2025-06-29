@@ -30,6 +30,9 @@ ota:
 improv_serial:
 
 wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  
   # Set up a wifi access point
   ap: {}
 
@@ -68,7 +71,7 @@ sensor:
     name: "Gianluca Bed Left Sensor"
     id: "gianluca_bed_left_sensor"
     icon: mdi:bed
-    attenuation: 11db
+    attenuation: 12db
     update_interval: 0.5s
     filters:
       - sliding_window_moving_average:
@@ -84,7 +87,7 @@ sensor:
     name: "Gianluca Bed Right Sensor"
     id: "gianluca_bed_right_sensor"
     icon: mdi:bed
-    attenuation: 11db
+    attenuation: 12db
     update_interval: 0.5s
     filters:
       - sliding_window_moving_average:

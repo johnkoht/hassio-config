@@ -19,12 +19,12 @@ automation:
         to: "on"
         for:
           seconds: 5
-      # On a work call
-      - trigger: state
-        entity_id: input_boolean.john_work_call
-        to: "on"
-        for:
-          seconds: 5
+      # # On a work call
+      # - trigger: state
+      #   entity_id: input_boolean.john_work_call
+      #   to: "on"
+      #   for:
+      #     seconds: 5
     conditions:
       - condition: or
         conditions:

@@ -1,0 +1,100 @@
+# Vacuum - Clean Dining and Foyer at Night
+#
+# Automation logic to handle vacuuming the
+# dining and foyer at night. The vacuum should
+# clean the dining room and foyer every other night
+# unless we were entertaining the previous day then it
+# should run again.
+#
+automation:
+  - id: "clean_dining_and_foyer_at_night"
+    alias: "Vacuum - Clean Dining and Foyer at Night"
+    mode: "single"
+    triggers:
+      # Run daily at 9pm
+      - trigger: time
+        at: "21:00:00"
+        id: nightly_check
+      # When guest mode turns off between 9pm and 11pm
+      - trigger: state
+        entity_id: input_boolean.guest_mode
+        to: "off"
+        for: 
+          minutes: 15
+        enabled: true
+        id: guest_mode_off
+    conditions:
+      # Time window check for guest mode trigger
+      - condition: or
+        conditions:
+          # Either it's the scheduled trigger
+          - condition: trigger
+            id: nightly_check
+          # Or it's the guest mode trigger and within time window
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: guest_mode_off
+              - condition: time
+                after: "21:00:00"
+                before: "23:00:00"
+      # Guest mode is OFF
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      # Entertainment mode is OFF
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
+      # Either not in vacation mode OR vacation mode just started (within 24 hours)
+      # we don't need the vacuum running if we're on vacation, but I definitely
+      # want it to run once after we leave so we return to a clean house
+      - condition: or
+        conditions:
+          # Not in vacation mode
+          - condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "off"
+          # OR vacation mode started less than 24 hours ago
+          - condition: template
+            value_template: >
+              {% set vacation_last_changed = states.input_boolean.vacation_mode.last_changed %}
+              {% if states.input_boolean.vacation_mode.state == "on" %}
+                {{ (now() - vacation_last_changed).total_seconds() < 86400 }}
+              {% else %}
+                {{ false }}
+              {% endif %}
+      # Jr. Suite door is OPEN
+      # otherwise the vacuum will get stuck in the Jr. Suite
+      - condition: state
+        entity_id: binary_sensor.jr_suite_door_status
+        state: "on"
+      # Check if we should run today based on last run and entertainment history
+      - condition: template
+        value_template: >
+          {% set last_run = state_attr('automation.clean_dining_and_foyer_at_night', 'last_triggered') %}
+          {% set yesterday_start = now().replace(hour=0, minute=0, second=0) - timedelta(days=1) %}
+          {% set yesterday_end = now().replace(hour=0, minute=0, second=0) %}
+          {% set entertainment_yesterday = states.input_boolean.entertainment_mode.last_changed.replace(hour=0, minute=0, second=0) >= yesterday_start 
+             and states.input_boolean.entertainment_mode.last_changed < yesterday_end %}
+
+          {% if last_run != None %}
+            {% set days_since_last_run = (now() - last_run).total_seconds() / 86400 %}
+            {% if entertainment_yesterday %}
+              {# Run if there was entertainment yesterday, regardless of last run #}
+              {{ true }}
+            {% else %}
+              {# Otherwise run if it's been at least 2 days since last run #}
+              {{ days_since_last_run >= 2 }}
+            {% endif %}
+          {% else %}
+            {{ true }}
+          {% endif %}
+    actions:
+      # Vacuum the dining room and foyer
+      - action: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_s7
+        data:
+          command: app_segment_clean
+          params: [20, 23]

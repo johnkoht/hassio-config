@@ -229,3 +229,5 @@ script:
                 data:
                   media_players: auto
                   speech_message: "Attention: {{ message }}"
+                  priority: high
+                  expires_in: 2

@@ -25,7 +25,7 @@ automation:
             {% set ns.events = ns.events + [event] %}
           {% endfor -%}
           {% set alerts_list = set(ns.events) %}
-          {% set test_list = set(['Tornado Warning', 'Severe Thunderstorm Warning', 'Air Quality Alert', 'Heat Advisory', 'Severe Thunderstorm Watch', 'Excessive Heat Warning' ]) %}
+          {% set test_list = set(['Tornado Warning', 'Severe Thunderstorm Warning', 'Air Quality Alert', 'Heat Advisory', 'Severe Thunderstorm Watch', 'Excessive Heat Warning', 'Extreme Heat Warning']) %}
           {{ test_list.intersection(alerts_list) | count > 0 }}
     actions:
       #
@@ -56,6 +56,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "nuclear"
+                    priority: critical
                     speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a tornado warning for our area!"
                 #
                 # Update the sensor
@@ -102,6 +103,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "nuclear"
+                    priority: critical
                     speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a severe thunderstorm warning for our area!"
                 #
                 # Update the sensor
@@ -147,6 +149,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "default"
+                    priority: high
                     speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a heat advisory for our area!"
                 - action: variable.update_sensor
                   target:
@@ -186,6 +189,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "default"
+                    priority: high
                     speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued a severe thunderstorm watch for our area!
                 - action: variable.update_sensor
                   target:
@@ -225,6 +229,7 @@ automation:
                   data:
                     media_players: "auto"
                     sound: "default"
+                    priority: high
                     speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an air quality alert for our area!
                 - action: variable.update_sensor
                   target:
@@ -241,7 +246,7 @@ automation:
                     minutes: 1
       #
       #
-      # Excessive Heat Warning Notification
+      # Excessive/Extreme Heat Warning Notification
       #
       - repeat:
           count: "{{ states('sensor.nws_alerts') | int }}"
@@ -258,13 +263,23 @@ automation:
                       {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
                     {% endfor -%}
                     {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
-                    {{ ns_dict.events_dict[repeat.index - 1].event == 'Excessive Heat Warning' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
+                    {% set event = ns_dict.events_dict[repeat.index - 1].event %}
+                    {{ (event == 'Excessive Heat Warning' or event == 'Extreme Heat Warning') and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
               then:
+                #
+                # Voice Announcement
+                #
                 - action: script.voice_announcement
                   data:
                     media_players: "auto"
-                    sound: "default"
-                    speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an excessive heat warning for our area!
+                    sound: "nuclear"
+                    priority: critical
+                    speech_message: >
+                      {% set event = ns_dict.events_dict[repeat.index - 1].event %}
+                      Attention!!,,,Attention!!,,,The National Weather Service Has issued an {{ event.lower() }} for our area!
+                #
+                # Update the sensor
+                #
                 - action: variable.update_sensor
                   target:
                     entity_id: sensor.nws_alerts_announced_ids
@@ -276,15 +291,18 @@ automation:
                         {% set ns_dict.events_dict = ns_dict.events_dict + [event_dict_list] %}
                       {% endfor -%}
                       {{ ns_dict.events_dict[repeat.index - 1].id}}
+                #
+                # Give the system a breather
+                #
                 - delay:
                     minutes: 1
-                    # #
-      
+
   #
   #
   # Update the Event ID Variable
   #
-  - alias: NWS Update Event ID Variable
+  - id: "nws_update_event_id_variable"
+    alias: NWS Update Event ID Variable
     initial_state: on
     triggers:
       - trigger: state
@@ -313,7 +331,8 @@ automation:
   #
   # Lots of rain soon
   #
-  - alias: Severe Rain Incoming
+  - id: "severe_rain_incoming"
+    alias: Severe Rain Incoming
     initial_state: on
     triggers:
       # Precipitation intensity > .5 per in
@@ -351,6 +370,8 @@ automation:
         data:
           media_players: "auto"
           sound: "nuclear"
+          priority: high
+          expires_in: 10
           speech_message: "The forecast is showing a lot of rain in the next hour. Keep an eye out for any leaks and it might be a good idea to put out the pumps."
 
   ## This will send up to 3 notifications for alerts.

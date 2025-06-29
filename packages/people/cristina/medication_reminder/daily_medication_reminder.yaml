@@ -1,0 +1,152 @@
+# 
+# Daily Morning Medication Reminder
+# 
+# This automation is used to remind Cristina to take her morning medication.
+# It will send a notification to her phone at <time> and <time>
+# She can snooze it for 15 minutes if needed.
+# 
+# 
+
+# 
+# Daily Morning Medication Bolean
+# Tracks if Cristina has taken her morning medication
+# 
+input_boolean:
+  cristina_daily_medication_taken:
+    name: Cristina Daily Medication Taken
+    initial: off
+    icon: mdi:pill
+
+# 
+# Daily Morning Medication Timer
+# This timer is used to snooze the medication reminder for 15 minutes.
+# 
+timer:
+  cristina_daily_medication_timer:
+    name: Cristina Daily Medication Timer
+    duration: "00:15:00"
+    restore: true
+    icon: mdi:rewind-15
+
+# 
+# Automations
+# 
+automation:
+  # 
+  # Cristina Daily Medication Reminder
+  # 
+  # Send her an actionable notification at <time> and <time> She
+  # can snooze it for 15 minutes if needed. If she doesn't respond
+  # then it will automatically snooze.
+  # 
+  - id: "cristina_daily_medication_reminder"
+    alias: "Cristina Daily Medication Reminder"
+    trigger:
+      # Trigger at <time>
+      - trigger: time
+        at: "00:00:00"
+      # - trigger: time
+      #   at: "00:00:00"
+      # Trigger when the timer is finished
+      - trigger: event
+        event_type: timer.finished
+        event_data: 
+          entity_id: timer.cristina_daily_medication_timer
+    conditions:
+      # Only run if Cristina has not taken her morning medication
+      - condition: state
+        entity_id: input_boolean.cristina_daily_medication_taken
+        state: "off"
+    actions:
+      # 
+      # Set the action variables
+      # 
+      - variables:
+          action_taken: "{{ 'TAKEN_' ~ context.id }}"
+          action_snooze: "{{ 'SNOOZE_' ~ context.id }}"
+
+      # 
+      # Send the notification
+      # 
+      - action: notify.mobile_app_cfalb2
+        data:
+          message: "Cristina, it's time to take your morning medication."
+          title: "Medication Reminder"
+          data:
+            tag: cristina-morning-medication
+            push:
+              interruption-level: "critical"
+            actions:
+              - action: "{{ action_taken }}"
+                title: "Medication Taken"
+              - action: "{{ action_snooze }}"
+                title: "Snooze 15 Minutes"
+      # 
+      # Wait for her to respond to the actionable notification, either
+      # by marking that she took the meds or by snoozing.
+      # 
+      - wait_for_trigger:
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_taken }}"
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_snooze }}"
+        timeout:
+          minutes: 15
+
+      # 
+      # Main Actions
+      # 
+      # IF she DOES NOT RESPOND, then automatically snooze the timer
+      # IF she DOES RESPOND, then mark that she took the medication and
+      # cancel the timer.
+      # 
+      - if:
+          - "{{ not wait.completed }}"
+        then:
+          # She didn't response so automatically snooze
+          - action: timer.start
+            entity_id: timer.cristina_daily_medication_timer
+        else:
+          # 
+          # If she responded that she took the meds, then update the 
+          # input boolean and cancel the timer.
+          # 
+          - if:
+              - condition: template
+                value_template: "{{ wait.trigger.event.data.action == action_taken }}"
+            then:
+              - action: input_boolean.turn_on
+                entity_id: input_boolean.cristina_daily_medication_taken
+              - action: timer.cancel
+                entity_id: timer.cristina_daily_medication_timer
+          # 
+          # If she responded that she snoozed, then start the timer.
+          # 
+          - if:
+            - condition: template
+              value_template: "{{ wait.trigger.event.data.action == action_snooze }}"
+            then:
+              - action: timer.start
+                entity_id: timer.cristina_daily_medication_timer
+
+  # 
+  # Cristina Medication Reminder Reset
+  # 
+  # Reset the medication reminder at at midnight
+  # 
+  - id: "cristina_medication_reminder_reset"
+    alias: "Cristina Medication Reminder Reset"
+    trigger:
+      - trigger: time
+        at: "00:00:01"
+    actions:
+      # Turn off the input boolean
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.cristina_daily_medication_taken
+      # Cancel the timer
+      - action: timer.cancel
+        entity_id: timer.cristina_daily_medication_timer

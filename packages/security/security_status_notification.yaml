@@ -1,0 +1,68 @@
+# Security Status Notification
+# 
+# Notify me when the house security protocol is activated.
+# 
+# This automation is used to notify me when the house security
+# protocol is activated. It is only triggered when the house
+# goes into bedtime mode or becomes unoccupied.
+#
+automation:
+  - id: "security_status_notification"
+    alias: "Security - Status Notification"
+    mode: "single"
+    trigger:
+      # House goes into bedtime mode
+      - platform: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+        for:
+          minutes: 5
+      # House becomes unoccupied for 7 minutes
+      - platform: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: 7
+    condition:
+      # Only notify if we haven't notified in the last hour
+      - condition: template
+        value_template: >
+          {% set last_triggered = state_attr('automation.security_status_notification', 'last_triggered') %}
+          {% if last_triggered != None %}
+            {% set time_diff = (now() - last_triggered).total_seconds() | int %}
+            {{ time_diff > 3600 }}
+          {% else %}
+            true
+          {% endif %}
+    action:
+      - service: script.general_notification
+        data:
+          message: >
+            {% set trigger = trigger.to_state.entity_id %}
+            {% if 'bedtime' in trigger %}
+              The house security protocol has been activated for bedtime.
+            {% else %}
+              The house security protocol has been activated since nobody's home.
+            {% endif %}
+            The house is {{ states('sensor.house_security_status') | lower }}.
+            {% if states('sensor.house_security_score') | int < 85 %}
+              {% if is_state('binary_sensor.windows', 'on') %}
+                Windows are open.
+              {% endif %}
+              {% if is_state('binary_sensor.exterior_doors', 'on') %}
+                Exterior doors are open.
+              {% endif %}
+              {% if is_state('cover.garage_doors', 'open') %}
+                Garage doors are open.
+              {% endif %}
+              {% if is_state('lock.front_door', 'unlocked') %}
+                Front door is unlocked.
+              {% endif %}
+              {% if is_state('lock.garage_entry_door', 'unlocked') %}
+                Garage entry door is unlocked.
+              {% endif %}
+            {% endif %}
+          title: Home Security - Shields Up
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "home-security" 

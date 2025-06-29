@@ -92,24 +92,15 @@ script:
         {{ vol }}
 
     sequence:
-      # Somebody is home
-      - condition: state
-        entity_id: input_boolean.house_occupied
-        state: "on"
-      # A room that we can announce to is occupied
-      - condition: state
-        entity_id: binary_sensor.announceable_rooms_occupied
-        state: "on"
-
-      # Call the announcement engine and pass the requested media_players
-      # or default to ones in occupied rooms
-      - action: script.announcement_engine
+      # Call the announcement engine and pass all media players for critical announcements
+      - action: script.announcement_queue_enqueue
         data:
           speech_message: "{{ speech_message }}"
           sound_file: "{{sound_file}}"
           sound_length: "{{sound_file_length}}"
           sound_volume: "{{sound_file_volume}}"
           speech_volume: "{{speech_volume}}"
+          priority: "critical"
           media_players: >-
             {% if media_players == "all" %}
               {% set media_players = [

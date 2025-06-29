@@ -1,0 +1,21 @@
+automation:
+  - id: "office_shelf_lights_turn_off_deep_work_lighting"
+    alias: "Office Shelf Lights - Turn Off Deep Work Lighting"
+    triggers:
+      # Focus mode changes to something other than Deep Work
+      - trigger: state
+        entity_id: input_select.john_focus_mode
+        from: "Deep Work"
+    conditions:
+      - condition: state
+        entity_id: input_select.office
+        state:
+          - "Auto"
+          - "DnD"
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+    actions:
+      - action: light.turn_off
+        entity_id: light.office_shelf_lights

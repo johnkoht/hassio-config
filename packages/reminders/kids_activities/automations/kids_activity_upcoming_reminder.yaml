@@ -18,6 +18,7 @@ automation:
         data:
           media_players: auto
           sound: "flute-cell-phone-alert"
+          priority: normal
           speech_message: >-
             {{ 
               [

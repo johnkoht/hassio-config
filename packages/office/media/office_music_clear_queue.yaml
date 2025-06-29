@@ -1,0 +1,17 @@
+# Office Music Clear Queue
+# 
+# Clear the queue at 1am every day.
+# 
+automation:
+  - id: "office_music_clear_queue"
+    initial_state: on
+    alias: "Office Music Clear Queue"
+    trigger:
+      # At 1am
+      - trigger: time
+        at: "01:00:00"
+    actions:
+      - action: media_player.clear_playlist
+        target:
+          entity_id: media_player.sonos_office
+        data: {}

@@ -1,0 +1,116 @@
+# Vacuum - Clean Kitchen When Unoccupied in Morning
+#
+# Automation logic to handle vacuuming the
+# kitchen when the house becomes unoccupied
+# during morning hours on weekdays (8-9:30)
+# or weekends (8:30-10:30).
+#
+automation:
+  - id: "clean_kitchen_when_unoccupied"
+    alias: "Vacuum - Clean Kitchen When Unoccupied"
+    mode: "single"
+    triggers:
+      # When house becomes unoccupied for 5 minutes
+      - trigger: state
+        entity_id: binary_sensor.house_occupied
+        to: "off"
+        for:
+          minutes: 5
+    conditions:
+      # Either weekday morning OR weekend morning time windows
+      - condition: or
+        conditions:
+          # Weekday between 8:00-9:30
+          - condition: and
+            conditions:
+              - condition: time
+                after: "08:00:00"
+                before: "09:30:00"
+              - condition: time
+                weekday:
+                  - mon
+                  - tue
+                  - wed
+                  - thu
+                  - fri
+          # Weekend between 8:30-10:30
+          - condition: and
+            conditions:
+              - condition: time
+                after: "08:30:00"
+                before: "10:30:00"
+              - condition: time
+                weekday:
+                  - sat
+                  - sun
+      # Guest mode is OFF
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      # Jr. Suite door is OPEN (consistent with other vacuum automations)
+      - condition: state
+        entity_id: binary_sensor.jr_suite_door_status
+        state: "on"
+      # Not in vacation mode
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "off"
+    actions:
+      # Vacuum the Kitchen only
+      - action: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_s7
+        data:
+          command: app_segment_clean
+          params: [24]
+
+  # Return to dock when house is occupied
+  # 
+  # This automation is used to return the vacuum to the dock
+  # when the house is occupied. It is only triggered during
+  # our morning cleaning window.
+  #
+  - id: "return_vacuum_when_occupied"
+    alias: "Vacuum - Return to Dock When House Occupied"
+    mode: "single"
+    triggers:
+      # When house becomes occupied
+      - trigger: state
+        entity_id: binary_sensor.house_occupied
+        to: "on"
+    conditions:
+      # Only if vacuum is cleaning
+      - condition: state
+        entity_id: vacuum.roborock_s7
+        state: "cleaning"
+      # And it's during our morning cleaning window
+      - condition: or
+        conditions:
+          # Weekday between 8:00-9:30
+          - condition: and
+            conditions:
+              - condition: time
+                after: "08:00:00"
+                before: "09:30:00"
+              - condition: time
+                weekday:
+                  - mon
+                  - tue
+                  - wed
+                  - thu
+                  - fri
+          # Weekend between 8:30-10:30
+          - condition: and
+            conditions:
+              - condition: time
+                after: "08:30:00"
+                before: "10:30:00"
+              - condition: time
+                weekday:
+                  - sat
+                  - sun
+    actions:
+      # Return to dock
+      - action: vacuum.return_to_base
+        target:
+          entity_id: vacuum.roborock_s7 

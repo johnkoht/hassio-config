@@ -7,16 +7,16 @@ automation:
     alias: "John DnD Off"
     mode: queued
     triggers:
-      # Work call boolean is OFF
-      - trigger: state
-        entity_id: input_boolean.john_work_call
-        to: "off"
-      # Work call boolean is OFF
-      - trigger: state
-        entity_id: input_boolean.john_work_call
-        to: "off"
-        for:
-          seconds: 60
+      # # Work call boolean is OFF
+      # - trigger: state
+      #   entity_id: input_boolean.john_work_call
+      #   to: "off"
+      # # Work call boolean is OFF
+      # - trigger: state
+      #   entity_id: input_boolean.john_work_call
+      #   to: "off"
+      #   for:
+      #     seconds: 60
       # Webcam turned OFF for 30 seconds
       - trigger: state
         entity_id: binary_sensor.john_laptop_camera_active

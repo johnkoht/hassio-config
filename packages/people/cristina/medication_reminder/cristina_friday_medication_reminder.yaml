@@ -1,0 +1,145 @@
+# 
+# Friday Evening Medication Reminder
+# 
+# This automation is used to remind Cristina to take her Friday evening medication.
+# It will send a notification to her phone at <time> on Fridays.
+# She can snooze it for 15 minutes if needed.
+# 
+
+# 
+# Friday Evening Medication Boolean
+# Tracks if Cristina has taken her Friday evening medication
+# 
+input_boolean:
+  cristina_friday_medication_taken:
+    name: Cristina Friday Medication Taken
+    initial: off
+    icon: mdi:pill
+
+# 
+# Friday Evening Medication Timer
+# This timer is used to snooze the medication reminder for 15 minutes.
+# 
+timer:
+  cristina_friday_medication_timer:
+    name: Cristina Friday Medication Timer
+    duration: "00:15:00"
+    restore: true
+    icon: mdi:rewind-15
+
+# 
+# Automations
+# 
+automation:
+  # 
+  # Cristina Friday Medication Reminder
+  # 
+  # Send her an actionable notification at <time> on Fridays. She
+  # can snooze it for 15 minutes if needed. If she doesn't respond
+  # then it will automatically snooze.
+  # 
+  - id: "cristina_friday_medication_reminder"
+    alias: "Cristina Friday Medication Reminder"
+    triggers:
+      # Trigger at <time> on Fridays
+      - trigger: time
+        at: "00:00:00"
+      - trigger: event
+        event_type: timer.finished
+        event_data: 
+          entity_id: timer.cristina_friday_medication_timer
+    conditions:
+      # Only on Fridays
+      - condition: template
+        value_template: "{{ now().isoweekday() == 5 }}"
+      # Only if she hasn't taken the medication yet
+      - condition: state
+        entity_id: input_boolean.cristina_friday_medication_taken
+        state: "off"
+      
+    action:
+      # 
+      # Set the action variables
+      # 
+      - variables:
+          action_taken: "{{ 'FRIDAY_TAKEN_' ~ context.id }}"
+          action_snooze: "{{ 'FRIDAY_SNOOZE_' ~ context.id }}"
+
+      # 
+      # Send the notification
+      # 
+      - action: notify.mobile_app_cfalb2
+        data:
+          message: "Cristina, it's time to take your Friday evening medication."
+          title: "Friday Medication Reminder"
+          data:
+            tag: cristina-friday-medication
+            push:
+              interruption-level: "critical"
+            actions:
+              - action: "{{ action_taken }}"
+                title: "Medication Taken"
+              - action: "{{ action_snooze }}"
+                title: "Snooze 15 Minutes"
+      # 
+      # Wait for her to respond to the actionable notification, either
+      # by marking that she took the meds or by snoozing.
+      # 
+      - wait_for_trigger:
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_taken }}"
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_snooze }}"
+        timeout:
+          minutes: 15
+
+      # 
+      # Main Actions
+      # 
+      # IF she DOES NOT RESPOND, then automatically snooze the timer
+      # IF she DOES RESPOND, then mark that she took the medication and
+      # cancel the timer.
+      # 
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ not wait.completed }}"
+            sequence:
+              - action: timer.start
+                entity_id: timer.cristina_friday_medication_timer
+          - conditions:
+              - condition: template
+                value_template: "{{ wait.trigger.event.data.action == action_taken }}"
+            sequence:
+              - action: input_boolean.turn_on
+                entity_id: input_boolean.cristina_friday_medication_taken
+              - action: timer.cancel
+                entity_id: timer.cristina_friday_medication_timer
+          - conditions:
+              - condition: template
+                value_template: "{{ wait.trigger.event.data.action == action_snooze }}"
+            sequence:
+              - action: timer.start
+                entity_id: timer.cristina_friday_medication_timer
+
+  # 
+  # Cristina Friday Medication Reminder Reset
+  # 
+  # Reset the medication reminder at at midnight
+  # 
+  - id: "cristina_friday_medication_reminder_reset"
+    alias: "Cristina Friday Medication Reminder Reset"
+    triggers:
+      - trigger: time
+        at: "00:00:01"
+    actions:
+      # Turn off the input boolean
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.cristina_friday_medication_taken
+      # Cancel the timer
+      - action: timer.cancel
+        entity_id: timer.cristina_friday_medication_timer 

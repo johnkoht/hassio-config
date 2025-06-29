@@ -1,0 +1,54 @@
+automation:
+  - id: "security_alarm_trigger"
+    alias: "Security Alarm - Triggered"
+    mode: "single"
+    triggers:
+      # Security alarm is triggered
+      - trigger: state
+        entity_id: alarm_control_panel.panel
+        to: "triggered"
+    actions:
+      - action: script.security_alarm_alert
+        data: {}
+
+script:
+  security_alarm_alert:
+    alias: "Security Alarm - Alert"
+    mode: "single"
+    icon: mdi:alert
+    sequence:
+      # 
+      # The use of script.turn_on is intentional here as
+      # we don't want to wait for the scripts to finish 
+      # before proceeding, instead, it will call each script
+      # and move on to the next.
+      # see https://www.home-assistant.io/integrations/script/#waiting-for-script-to-complete
+      # 
+
+      # Trigger a critical announcement
+      - action: script.turn_on
+        target:
+          entity_id: script.critical_announcement
+        data:
+          variables:
+            media_players: all
+            sound: "nuclear"
+            speech_message: Alert! The security alarm has been triggered. Get to safety immediately!
+
+      # Flash the lights
+      - action: script.turn_on
+        target:
+          entity_id: script.alarm_flash_lights
+        data: {}
+
+      # Send a push notification
+      - action: script.turn_on
+        target:
+          entity_id: script.general_notification
+        data:
+          variables:
+            message: The security alarm has been triggered. Please get to safety immediately!
+            title: Security Alarm
+            devices: "all"
+            priority: "critical"
+            tag: "home-security-alarm"
