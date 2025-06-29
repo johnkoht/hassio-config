@@ -131,3 +131,21 @@
     - device_id: district_34_events
       ignore_availability: true
       name: District 34 Events
+
+- cal_id: john@kohactive.com
+  entities:
+  - device_id: john_kohactive_com
+    ignore_availability: true
+    name: john@kohactive.com
+
+- cal_id: family02656020943721194763@group.calendar.google.com
+  entities:
+  - device_id: family
+    ignore_availability: true
+    name: Family
+
+- cal_id: en.usa#holiday@group.v.calendar.google.com
+  entities:
+  - device_id: holidays_in_united_states
+    ignore_availability: true
+    name: Holidays in United States

@@ -1,5 +1,6 @@
 sensor:
   - platform: mqtt_room
+    unique_id: "john_room_presence_raw"
     # device_id: "apple:1007:11-7"
     device_id: "jk_iphone"
     name: "John Room Presence RAW"
