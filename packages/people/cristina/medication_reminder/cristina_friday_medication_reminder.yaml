@@ -13,7 +13,6 @@
 input_boolean:
   cristina_friday_medication_taken:
     name: Cristina Friday Medication Taken
-    initial: off
     icon: mdi:pill
 
 # 
