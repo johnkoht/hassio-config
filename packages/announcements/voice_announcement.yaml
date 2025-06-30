@@ -103,13 +103,13 @@ script:
         selector:
           select:
             options:
-              - "critical"  # Emergency alerts only (fire, smoke, leaks)
-              - "high"      # Important but not emergency
-              - "normal"    # Regular announcements
-              - "low"       # Non-essential information
-      # 
+              - "critical" # Emergency alerts only (fire, smoke, leaks)
+              - "high" # Important but not emergency
+              - "normal" # Regular announcements
+              - "low" # Non-essential information
+      #
       # Expires In
-      # 
+      #
       expires_in:
         name: Expires In
         description: The number of minutes until the announcement expires
@@ -118,7 +118,6 @@ script:
           number:
             min: 1
             max: 120
-
 
     # Variables
     variables:

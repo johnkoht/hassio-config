@@ -12,7 +12,7 @@ automation:
     triggers:
       # When house becomes unoccupied for 5 minutes
       - trigger: state
-        entity_id: binary_sensor.house_occupied
+        entity_id: input_boolean.house_occupied
         to: "off"
         for:
           minutes: 5
@@ -76,7 +76,7 @@ automation:
     triggers:
       # When house becomes occupied
       - trigger: state
-        entity_id: binary_sensor.house_occupied
+        entity_id: input_boolean.house_occupied
         to: "on"
     conditions:
       # Only if vacuum is cleaning

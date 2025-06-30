@@ -1,5 +1,5 @@
 # Announcement Queue - Enqueue
-# 
+#
 # This script is used to enqueue a message into the announcement queue
 # by publishing to a MQTT home/announcement_queue/append topic.
 #
@@ -35,10 +35,10 @@ script:
         selector:
           select:
             options:
-              - "critical"  # Emergency alerts only (fire, smoke, leaks)
-              - "high"      # Important but not emergency
-              - "normal"    # Regular announcements
-              - "low"       # Non-essential information
+              - "critical" # Emergency alerts only (fire, smoke, leaks)
+              - "high" # Important but not emergency
+              - "normal" # Regular announcements
+              - "low" # Non-essential information
       #
       # Speech Message
       #
@@ -101,7 +101,7 @@ script:
               "speech_volume": speech_volume,
               "media_players": media_players
             } %}
-            {% if expires_in is defined and expires_in is not none %}
+            {% if expires_in is defined and expires_in is not none and expires_in != 'null' %}
               {% set expires_at = now() + timedelta(minutes=expires_in) %}
               {{ item | combine({
                 'expires_in': expires_in,
