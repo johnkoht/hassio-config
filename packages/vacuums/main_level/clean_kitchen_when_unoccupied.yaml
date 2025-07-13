@@ -17,6 +17,10 @@ automation:
         for:
           minutes: 5
     conditions:
+      # Only if vacuum is docked
+      - condition: state
+        entity_id: vacuum.roborock_s7
+        state: "docked"
       # Either weekday morning OR weekend morning time windows
       - condition: or
         conditions:
