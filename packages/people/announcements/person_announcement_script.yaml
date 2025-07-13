@@ -312,7 +312,7 @@ script:
           title: "Somebody's here! {{sound}}"
           message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "person-announcement"
 
       #

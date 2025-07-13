@@ -18,6 +18,7 @@ action:
   - service: script.voice_announcement
     data:
       media_players: auto
+      expires_in: 2
       speech_message: >-
         {{
           [
