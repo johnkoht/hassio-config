@@ -7,3 +7,10 @@ light:
       - light.foyer_chandelier
       - light.foyer_coat_closet
       - light.stairs_light
+
+  - platform: group
+    name: Foyer Ceiling Lights Group
+    unique_id: foyer_ceiling_lights_group
+    entities:
+      - light.foyer_ceiling_lights
+      - light.foyer_coat_closet
