@@ -22,6 +22,10 @@ automation:
       - trigger: event
         event_type: automation_reloaded
     condition:
+      # Only run after 5am, otherwise it turns into
+      # deep work mode at midnight
+      - condition: time
+        after: "05:00:00"
       # # Make sure it's not DnD mode
       # - condition: state
       #   entity_id: input_boolean.john_dnd
