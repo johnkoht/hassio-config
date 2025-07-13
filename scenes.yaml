@@ -91,3 +91,41 @@
       supported_features: 27
       state: heat_cool
   icon: mdi:home-minus-outline
+- id: '1752206867869'
+  name: Office Osaka
+  entities:
+    light.office_lights:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: xy
+      brightness: 91
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 0.469
+      - 50.196
+      rgb_color:
+      - 255
+      - 128
+      - 127
+      xy_color:
+      - 0.5279
+      - 0.313525
+      entity_id:
+      - light.office_1
+      - light.office_2
+      - light.office_3
+      - light.office_4
+      icon: mdi:lightbulb-group
+      friendly_name: Office Lights
+      supported_features: 40
+      state: 'on'
+  icon: phu:scene-dynamic
+  metadata:
+    light.office_lights:
+      entity_only: true

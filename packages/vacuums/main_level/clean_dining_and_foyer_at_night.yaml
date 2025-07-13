@@ -79,7 +79,7 @@ automation:
              and states.input_boolean.entertainment_mode.last_changed < yesterday_end %}
 
           {% if last_run != None %}
-            {% set days_since_last_run = (now() - last_run).total_seconds() / 86400 %}
+            {% set days_since_last_run = (now() - last_run).total_seconds() / 108000 %}
             {% if entertainment_yesterday %}
               {# Run if there was entertainment yesterday, regardless of last run #}
               {{ true }}
