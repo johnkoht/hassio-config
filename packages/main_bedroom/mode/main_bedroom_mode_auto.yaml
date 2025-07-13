@@ -41,9 +41,13 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
         state: "off"
-      # Bedroom is not already Auto
-      - condition: template
-        value_template: "{{ not is_state('input_select.main_bedroom','Auto') }}"
+      # Main bedroom is not OFF or already in Auto mode
+      - not:
+          - condition: state
+            entity_id: input_select.main_bedroom
+            state:
+              - "Off"
+              - "Auto"
       # # Main bedroom lighting is low
       # - condition: numeric_state
       #   entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
