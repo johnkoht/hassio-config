@@ -9,63 +9,48 @@ automation:
       - platform: state
         entity_id: input_select.house
         to: "Auto"
-      # Main bedroom becomes unoccupied
-      - platform: state
-        entity_id: input_boolean.main_bedroom_occupied
-        to: "off"
-      # Main bedroom door is left open for 5 minutes
-      - platform: state
-        entity_id: binary_sensor.main_bedroom_door_sensor_status
-        to: "on"
-        for:
-          minutes: 5
+        id: "house_auto"
+      # # Main bedroom becomes unoccupied
+      # - platform: state
+      #   entity_id: input_boolean.main_bedroom_occupied
+      #   to: "off"
+      #   id: "main_bedroom_unoccupied"
       # Bedroom is Wake for 10 minutes
       - platform: state
         entity_id: input_select.main_bedroom
         to: "Wake"
         for:
           minutes: 10
-      # It's after 7am
-      - platform: time
-        at: "00:07:00"
-      # Bedtime hours inactive
-      - platform: state
-        entity_id: binary_sensor.bedtime
-        to: "off"
+        id: "main_bedroom_wake"
+      # # Bedtime hours inactive
+      # - platform: state
+      #   entity_id: binary_sensor.bedtime
+      #   to: "off"
+      #   id: "bedtime_mode_off"
       # If the main ceiling lights turn on
-      - platform: state
-        entity_id: light.main_bedroom_main_lights
-        to: "on"
-    condition:
-      # Main bedroom is not occupied
+      # - platform: state
+      #   entity_id: light.main_bedroom_main_lights
+      #   to: "on"
+      #   id: "main_bedroom_lights_on"
+    conditions:
+      # Neither of us are in bed
       - condition: state
-        entity_id: input_boolean.main_bedroom_occupied
+        entity_id:
+          - binary_sensor.john_bed_occupied
+          - binary_sensor.cristina_bed_occupied
         state: "off"
-      # Main bedroom is not OFF or already in Auto mode
-      - not:
-          - condition: state
-            entity_id: input_select.main_bedroom
-            state:
-              - "Off"
-              - "Auto"
-      # # Main bedroom lighting is low
-      # - condition: numeric_state
-      #   entity_id: sensor.main_bedroom_motion_sensor_entry_illuminance
-      #   below: 100
-      # Not in bedtime mode
-      - condition: state
-        entity_id: input_boolean.bedtime
-        state: "off"
-    action:
-      - service: input_select.select_option
+    actions:
+      # Set the main bedroom mode to Auto
+      - action: input_select.select_option
         data:
           entity_id: input_select.main_bedroom
           option: "Auto"
       # Turn off some bedtime automations
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id:
           - automation.main_bedroom_john_night_light_off
           - automation.main_bedroom_night_light_for_john
       # Enable bedroom lighting automations
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lighting_automations
+
