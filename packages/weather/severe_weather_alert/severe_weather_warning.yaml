@@ -225,12 +225,12 @@ automation:
                     {%- set history_id_list = set( (states.sensor.nws_alerts_announced_ids.attributes.values() | reject('match', 'nws_alerts_announced_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
                     {{ ns_dict.events_dict[repeat.index - 1].event == 'Air Quality Alert' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
               then:
-                - action: script.voice_announcement
-                  data:
-                    media_players: "auto"
-                    sound: "default"
-                    priority: high
-                    speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an air quality alert for our area!
+                # - action: script.voice_announcement
+                #   data:
+                #     media_players: "auto"
+                #     sound: "default"
+                #     priority: high
+                #     speech_message: Attention!!,,,Attention!!,,,The National Weather Service Has issued an air quality alert for our area!
                 - action: variable.update_sensor
                   target:
                     entity_id: sensor.nws_alerts_announced_ids

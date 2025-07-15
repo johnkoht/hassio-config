@@ -52,12 +52,13 @@ automation:
           sound: one-chime
           priority: high
           expires_in: 60
-          speech_message: Hey Fam, the air quality is looking unhealthy, make sure to take precautions.
+          speech_message: Hey Fam, the air quality is looking unhealthy, please keep windows closed and make sure to take precautions.
 
   #
   # AQI becomes very unhealthy
   # If the input_select.air_quality_state becomes
-  # very unhealthy then trigger a broadcast
+  # very unhealthy then trigger a broadcast AND
+  # turn on the air purifiers to 50%
   #
   - id: "air_quality_alert_very_unhealthy"
     alias: "Air Quality - Alert for Very Unhealthy Conditions"
@@ -78,18 +79,30 @@ automation:
       - condition: template
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.air_quality_alert_very_unhealthy','last_triggered'), 0) ) | int > 7200 }}"
     actions:
+      #
+      # Announce the air quality alert
+      #
       - action: script.voice_announcement
         data:
           media_players: auto
           sound: one-chime
           priority: high
           expires_in: 60
-          speech_message: Hey Fam, the air quality is looking very unhealthy, make sure to take precautions and stay indoors if possible.
+          speech_message: Hey Fam, the air quality is looking very unhealthy, please keep windows closed and make sure to take precautions.
+      #
+      # Turn on the air purifiers to 50%
+      #
+      - action: fan.turn_on
+        data:
+          entity_id: fan.air_purifiers
+          percentage: 50
+
 
   #
   #  AQI becomes hazardous
   # If the input_select.air_quality_state becomes
-  # hazardous then trigger a nuclear broadcast
+  # hazardous then trigger a nuclear broadcast AND
+  # turn on the air purifiers to 100%
   #
   - id: "air_quality_alert_hazardous"
     alias: "Air Quality - Alert for Very Unhealthy Conditions"
@@ -105,13 +118,22 @@ automation:
       - condition: template
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.air_quality_alert_hazardous','last_triggered'), 0) ) | int > 7200 }}"
     actions:
+      #
+      # Announce the air quality alert
+      #
       - action: script.voice_announcement
         data:
           media_players: auto
           sound: nuclear
           priority: critical
-          speech_message: Attention! The air quality is hazardous today. Please stay indoors as much as possible!"
-
+          speech_message: Attention! The air quality is hazardous today. Please stay indoors as much as possible.
+      #
+      # Turn on the air purifiers to 100%
+      #
+      - action: fan.turn_on
+        data:
+          entity_id: fan.air_purifiers
+          percentage: 100
   #
   # Set the Air Quality State input select
   # This automation listens to the local air quality index'

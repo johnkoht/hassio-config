@@ -1,0 +1,11 @@
+fan:
+  - platform: group
+    name: Air Purifiers
+    unique_id: air_purifiers
+    entities:
+      - fan.office_air_purifier
+      - fan.kitchen_air_purifier
+      - fan.jr_suite_air_purifier
+      - fan.gianlucas_bedroom_air_purifier
+      - fan.ninos_bedroom_air_purifer
+      - fan.main_bedroom_air_purifier
