@@ -70,6 +70,7 @@ script:
             Some things to note and consider when responding:
             - Don't use emojis as this will be a voice-activated TTS message
             - Use full sentences instead of using special characters, lists or bullet points, and making it easily readable
+            - Please don't use symbols like &, #, or other special characters.
             - If there are no birthdays then you can skip this part altogether and not mention that there are not birthdays
             - If there are no calendar invites, you can simply let us know there's nothing on the calendar
             - When covering all of the weather details, plese be very concise. 

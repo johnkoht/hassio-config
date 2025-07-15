@@ -10,7 +10,9 @@ homeassistant:
 prometheus:
 
 # Text to speech
-# tts:
+tts:
+  - platform: picotts
+    language: en-GB
 #   - platform: google_translate
 #     #base_url: !secret base_url
 #     service_name: google_say
