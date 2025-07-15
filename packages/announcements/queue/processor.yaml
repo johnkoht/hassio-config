@@ -121,9 +121,12 @@ automation:
                 value_template: "{{ queue | length > 0 and (next.get('speech_message') is string or next.get('sound_file') is string) }}"
             sequence:
               #
-              # Trigger the announcement engine
+              # Trigger the announcement engine. Continue on error
+              # because we don't want to block the queue processor.
               #
-              - action: script.announcement_engine
+              - alias: "Broadcast the announcement"
+                continue_on_error: true
+                action: script.announcement_engine
                 data:
                   speech_message: "{{ next.speech_message }}"
                   sound_file: "{{ next.sound_file }}"

@@ -29,7 +29,7 @@ automation:
         entity_id: sensor.office_awair_pm2_5
         below: input_number.pm25_acceptable
         for:
-          minutes: 3
+          minutes: 1
 
       #
       # CO2 Threshold Breaches
@@ -51,7 +51,7 @@ automation:
         entity_id: sensor.office_awair_carbon_dioxide
         below: input_number.co2_acceptable
         for:
-          minutes: 3
+          minutes: 1
 
       #
       # TVOCs Threshold Breaches
@@ -73,7 +73,7 @@ automation:
         entity_id: sensor.office_awair_vocs
         below: input_number.tvoc_acceptable
         for:
-          minutes: 3
+          minutes: 1
 
       #
       # Misc. triggers
