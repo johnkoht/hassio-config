@@ -10,11 +10,11 @@ automation:
         entity_id: input_select.house
         to: "Auto"
         id: "house_auto"
-      # # Main bedroom becomes unoccupied
-      # - platform: state
-      #   entity_id: input_boolean.main_bedroom_occupied
-      #   to: "off"
-      #   id: "main_bedroom_unoccupied"
+      # Main bedroom becomes unoccupied
+      - platform: state
+        entity_id: input_boolean.main_bedroom_occupied
+        to: "off"
+        id: "main_bedroom_unoccupied"
       # Bedroom is Wake for 10 minutes
       - platform: state
         entity_id: input_select.main_bedroom
@@ -39,20 +39,56 @@ automation:
           - binary_sensor.john_bed_occupied
           - binary_sensor.cristina_bed_occupied
         state: "off"
+      
     actions:
+      - choose: 
+          # 
+          # If the trigger is the main bedroom is empty then
+          # let's make sure the house is occupied, otherwise,
+          # there are conditions where the room is technically 
+          # still marked as "occupied" while we rush out the door
+          # 
+          - conditions:
+              - condition: trigger
+                id: "main_bedroom_unoccupied"
+            sequence:
+              # Only proceed if the house is occupied
+              - if: 
+                  - condition: state
+                    entity_id: input_boolean.house_occupied
+                    state: "on"
+                then:
+                  - action: script.main_bedroom_mode_auto_script
+
+        default:
+          - action: script.main_bedroom_mode_auto_script
+
+#
+# Script to set the main bedroom mode to Auto.
+# This is only abstracted so I don't have to repeat code...
+# maybe there's a better way?
+#
+script:
+  main_bedroom_mode_turn_on_auto:
+    alias: "Main Bedroom mode turn on auto"
+    sequence:
+      # 
       # Set the main bedroom mode to Auto
       - action: input_select.select_option
         data:
           entity_id: input_select.main_bedroom
           option: "Auto"
-      # Turn off some bedtime automations
+      #
+      #  Turn off some bedtime automations
       - action: automation.turn_off
         entity_id:
           - automation.main_bedroom_john_night_light_off
           - automation.main_bedroom_night_light_for_john
+      # 
       # Enable bedroom lighting automations
       - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lighting_automations
+      # 
       # Turn off adaptive lighting
       - action: switch.turn_off
         entity_id: 
