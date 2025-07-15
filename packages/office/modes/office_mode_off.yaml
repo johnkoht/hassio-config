@@ -7,26 +7,26 @@ automation:
   - id: "office_mode_off"
     initial_state: on
     alias: "Office mode off"
-    trigger:
+    triggers:
       # House becomes unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # House is turned to Away
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Away"
       # House is turned to Bedtime
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Bedtime"
-    condition:
-      # Office is not occupied
-      - condition: state
-        entity_id: input_boolean.office_occupied
-        state: "off"
+    conditions:
       - condition: or
         conditions:
+          # Office is not occupied
+          - condition: state
+            entity_id: input_boolean.office_occupied
+            state: "off"
           # House is not occupied
           - condition: state
             entity_id: input_boolean.house_occupied
@@ -39,8 +39,8 @@ automation:
           - condition: state
             entity_id: input_select.house
             state: "Bedtime"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.office
           option: "Off"

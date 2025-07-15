@@ -184,6 +184,9 @@ camera:
 
 http:
   use_x_forwarded_for: true
+  cors_allowed_origins:
+    - "http://10.0.10.80:3001"
+    - "http://192.168.1.0/24" 
   trusted_proxies:
     #- 192.168.1.14
     - 192.168.1.0/24
