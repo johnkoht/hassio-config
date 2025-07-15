@@ -53,4 +53,11 @@ automation:
       # Enable bedroom lighting automations
       - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lighting_automations
+      # Turn off adaptive lighting
+      - action: switch.turn_off
+        entity_id: 
+          - switch.adaptive_lighting_sleep_mode_main_bedroom
+          - switch.adaptive_lighting_sleep_mode_main_bedroom_lamps
+
+
 

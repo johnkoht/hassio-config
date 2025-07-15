@@ -70,3 +70,8 @@ automation:
         entity_id:
           - automation.main_bedroom_john_night_light_off
           - automation.main_bedroom_night_light_for_john
+      # Turn on adaptive lighting
+      - action: switch.turn_on
+        entity_id: 
+          - switch.adaptive_lighting_sleep_mode_main_bedroom
+          - switch.adaptive_lighting_sleep_mode_main_bedroom_lamps
