@@ -284,15 +284,26 @@ script:
       save_announcement: true
 
       #
+      # Default priority:
+      # If no priority is provided, default to low
+      #
+      default_priority: >-
+        {% if priority is defined and priority is not none %}
+          {{ priority }}
+        {% else %}
+          "low"
+        {% endif %}
+
+      #
       # Calculate default expiration based on priority if not provided
       #
       default_expires_in: >-
         {% if expires_in is defined and expires_in is not none %}
           {{ expires_in }}
         {% else %}
-          {% if priority == "low" %}
+          {% if default_priority == "low" %}
             3
-          {% elif priority == "normal" %}
+          {% elif default_priority == "normal" %}
             10
           {% else %}
             null
@@ -322,7 +333,7 @@ script:
           sound_length: "{{sound_file_length}}"
           sound_volume: "{{sound_file_volume}}"
           speech_volume: "{{speech_volume}}"
-          priority: "{{priority}}"
+          priority: "{{default_priority}}"
           expires_in: "{{ default_expires_in }}"
           media_players: >-
             {% if media_players == "all" or media_players == "auto" %}
