@@ -58,10 +58,10 @@ automation:
                     entity_id: input_boolean.house_occupied
                     state: "on"
                 then:
-                  - action: script.main_bedroom_mode_auto_script
+                  - action: script.main_bedroom_mode_turn_on_auto
 
         default:
-          - action: script.main_bedroom_mode_auto_script
+          - action: script.main_bedroom_mode_turn_on_auto
 
 #
 # Script to set the main bedroom mode to Auto.
