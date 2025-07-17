@@ -12,6 +12,15 @@ automation:
       # Triggered by any change to the air quality state
       - trigger: state
         entity_id: sensor.gianluca_bedroom_air_quality
+
+      # Trigger if gianluca's bedroom is set to bedtime
+      - trigger: state
+        entity_id: input_select.gianlucas_bedroom
+        to: "Bedtime"
+
+      # Trigger if gianluca's occupancy changes
+      - trigger: state
+        entity_id: input_boolean.gianlucas_room_occupied
     conditions:
       - or:
           # House is occupied

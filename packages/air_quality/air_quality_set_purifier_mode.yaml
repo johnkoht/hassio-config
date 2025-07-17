@@ -53,16 +53,44 @@ script:
               - DnD
 
     variables:
+      # 
       # Determine desired mode and percentage
+      # 
+      # If the AQI is Hazardous, Unhealthy, or Moderate,
+      # then set the purifier to Manual mode.
+      # 
+      # If the AQI is Acceptable and the room is set to Bedtime,
+      # then set the purifier to Sleep mode.
+      # 
+      # If the AQI is Acceptable and the room is set to Auto,
+      # then set the purifier to Auto mode.
+      # 
+      # If the AQI is Acceptable and the room is set to Off,
+      # then set the purifier to Off mode.
       set_mode: >-
         {% if aqi_state == 'Hazardous' or aqi_state == 'Unhealthy' or aqi_state == 'Moderate' %}
           Manual
         {% elif aqi_state == 'Acceptable' and room_state == 'Bedtime' %}
           Sleep
+        {% elif aqi_state == 'Acceptable' and room_state == 'Auto' %}
+          Auto
         {% else %}
           Off
         {% endif %}
 
+      # 
+      # Determine desired speed
+      #
+      # If the AQI is Hazardous, then set the speed to 100%.
+      #
+      # If the AQI is Unhealthy and the room is set to Bedtime,
+      # then set the speed to 50%.
+      #
+      # If the AQI is Unhealthy, then set the speed to 75%.
+      #
+      # If the AQI is Moderate and the room is set to Bedtime,
+      # then set the speed to 25%.
+      #
       set_speed: >-
         {% if aqi_state == 'Hazardous' and room_state == 'Bedtime' %}
           75
@@ -106,6 +134,19 @@ script:
                 data:
                   entity_id: "{{ purifier }}"
                   preset_mode: Sleep
+
+          #
+          # Turn ON the air purifier in Auto mode
+          #
+          - conditions: "{{ set_mode == 'Auto' }}"
+            sequence:
+              - action: fan.turn_on
+                target:
+                  entity_id: "{{ purifier }}"
+              - action: fan.set_preset_mode
+                data:
+                  entity_id: "{{ purifier }}"
+                  preset_mode: Auto
 
           #
           # Turn ON the air purifier in Manual mode

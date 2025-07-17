@@ -11,6 +11,25 @@ automation:
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
+      # When the office becomes unoccupied
+      - trigger: state
+        entity_id: input_boolean.office_occupied
+        to: "off"
+    conditions:
+      - or: 
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # Office is unoccupied AND entertainment mode is OFF
+          # During entertainment mode, the office lights should stay on
+          # even if the office is unoccupied
+          - and:
+              - condition: state
+                entity_id: input_boolean.office_occupied
+                state: "off"
+              - condition: state
+                entity_id: input_boolean.entertainment_mode
+                state: "off"
     actions:
       - action: light.turn_off
         entity_id: light.office_shelf_lights

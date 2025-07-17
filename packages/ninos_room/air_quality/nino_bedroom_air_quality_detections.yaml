@@ -12,6 +12,14 @@ automation:
       # Triggerd by any change to the air quality state
       - trigger: state
         entity_id: sensor.nino_bedroom_air_quality
+      # Trigger if nino's bedroom is set to bedtime
+      - trigger: state
+        entity_id: input_select.ninos_bedroom
+        to: "Bedtime"
+
+      # Trigger if nino's bedroom occupancy changes
+      - trigger: state
+        entity_id: input_boolean.ninos_bedroom_occupied
     conditions:
       - or:
           # House is occupied
@@ -34,4 +42,3 @@ automation:
           purifier: "{{ purifier }}"
           aqi_state: "{{ aqi_state }}"
           room_state: "{{ room_state }}"
-
