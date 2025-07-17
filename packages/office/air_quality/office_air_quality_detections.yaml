@@ -9,108 +9,28 @@ automation:
     mode: single
     initial_state: on
     triggers:
-      #
-      # PM2.5 Threshold Breaches
-      #
-      # If PM2.5 above acceptable threshold
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_pm2_5
-        above: input_number.pm25_acceptable
-        for:
-          minutes: 3
-      # If PM2.5 above poor threshold
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_pm2_5
-        above: input_number.pm25_poor
-        for:
-          minutes: 3
-      # If PM2.5 below acceptable (good)
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_pm2_5
-        below: input_number.pm25_acceptable
-        for:
-          minutes: 1
-
-      #
-      # CO2 Threshold Breaches
-      #
-      # If CO2 above acceptable threshold
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_carbon_dioxide
-        above: input_number.co2_acceptable
-        for:
-          minutes: 3
-      # If CO2 above poor threshold
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_carbon_dioxide
-        above: input_number.co2_poor
-        for:
-          minutes: 3
-      # If CO2 below acceptable (good)
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_carbon_dioxide
-        below: input_number.co2_acceptable
-        for:
-          minutes: 1
-
-      #
-      # TVOCs Threshold Breaches
-      #
-      # If VOCS above acceptable threshold
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_vocs
-        above: input_number.tvoc_acceptable
-        for:
-          minutes: 3
-      # If VOCS above poor threshold
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_vocs
-        above: input_number.tvoc_poor
-        for:
-          minutes: 3
-      # If VOCS below acceptable threshold (good)
-      - trigger: numeric_state
-        entity_id: sensor.office_awair_vocs
-        below: input_number.tvoc_acceptable
-        for:
-          minutes: 1
-
-      #
-      # Misc. triggers
-      #
-      # Nearly home boolean is turned on
+      # Triggered by any change to the air quality state
       - trigger: state
-        entity_id: input_boolean.nearly_home
-        to: "on"
-      # Office becomes occupied
-      - trigger: state
-        entity_id: input_boolean.office_occupied
-        to: "on"
-      # House becomes occupied
-      - trigger: state
-        entity_id: input_boolean.house_occupied
-        to: "on"
-      # Bedtime mode turns off
-      - trigger: state
-        entity_id: input_boolean.bedtime
-        to: "off"
-
+        entity_id: sensor.office_air_quality
     conditions:
       - or:
-          # Only trigger if the house is occupied
-          # OR we're almost home
+          # House is occupied
           - condition: state
             entity_id: input_boolean.house_occupied
             state: "on"
+          # Or we're almost home
           - condition: state
-            entity_id: input_boolean.nearly_home
+            entity_id: input_boolean.almost_home
             state: "on"
-
+    variables:
+      purifier: fan.office_air_purifier
+      aqi_state: "{{ trigger.to_state.state }}"
+      room_state: "{{ states.input_select.office.state }}"
     actions:
-      # Call a script to set the air purifer mode
-      - action: script.set_air_purifier_mode
+      # Call the air quality set purifier mode script
+      # and let it handle the logic for speed and mode
+      - action: script.air_quality_set_air_purifier_mode
         data:
-          purifier: fan.office_air_purifier
-          pm25: "{{ states('sensor.office_awair_pm2_5') | float }}"
-          tvoc: "{{ states('sensor.office_awair_vocs') | float }}"
-          co2: "{{ states('sensor.office_awair_carbon_dioxide') | float }}"
+          purifier: "{{ purifier }}"
+          aqi_state: "{{ aqi_state }}"
+          room_state: "{{ room_state }}"

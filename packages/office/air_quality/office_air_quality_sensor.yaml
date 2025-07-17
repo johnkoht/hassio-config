@@ -1,0 +1,30 @@
+template:
+  - sensor:
+      - name: "Office Air Quality"
+        unique_id: sensor.office_air_quality
+        state: >
+          {% set pm25 = states('sensor.office_awair_pm2_5') | float %}
+          {% set voc = states('sensor.office_awair_vocs') | float %}
+          {% set co2 = states('sensor.office_awair_carbon_dioxide') | float %}
+
+          {% set pm25_mod = states('input_number.pm25_moderate') | float %}
+          {% set pm25_poor = states('input_number.pm25_poor') | float %}
+          {% set pm25_haz = states('input_number.pm25_hazardous') | float %}
+
+          {% set voc_mod = states('input_number.tvoc_moderate') | float %}
+          {% set voc_poor = states('input_number.tvoc_poor') | float %}
+          {% set voc_haz = states('input_number.tvoc_hazardous') | float %}
+
+          {% set co2_mod = states('input_number.co2_moderate') | float %}
+          {% set co2_poor = states('input_number.co2_poor') | float %}
+          {% set co2_haz = states('input_number.co2_hazardous') | float %}
+
+          {% if pm25 > pm25_haz or voc > voc_haz or co2 > co2_haz %}
+            Hazardous
+          {% elif pm25 > pm25_poor or voc > voc_poor or co2 > co2_poor %}
+            Unhealthy
+          {% elif pm25 > pm25_mod or voc > voc_mod or co2 > co2_mod %}
+            Moderate
+          {% else %}
+            Acceptable
+          {% endif %} 

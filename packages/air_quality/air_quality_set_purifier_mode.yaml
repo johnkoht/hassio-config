@@ -1,5 +1,5 @@
 script:
-  set_air_purifier_mode:
+  air_quality_set_air_purifier_mode:
     alias: "Air Quality - Set Air Purifier Mode"
     mode: "queued"
     # description: >
@@ -16,114 +16,110 @@ script:
           select:
             options:
               - fan.office_air_purifier
+              - fan.ninos_bedroom_air_purifier
+              - fan.gianlucas_bedroom_air_purifier
+              - fan.main_bedroom_air_purifier
+              - fan.jr_suite_air_purifier
+              - fan.kitchen_air_purifier
 
       #
-      # PM2.5 value to review
+      # AQI state to review
       #
-      pm25:
-        name: "PM2.5"
-        description: "PM2.5 value (µg/m³)"
-        example: "22.4"
+      aqi_state:
+        name: "AQI State"
+        description: "AQI State of the Room"
+        example: "Hazardous"
         selector:
-          number:
-            min: 0
-            max: 500
-            unit_of_measurement: "µg/m³"
-            mode: "box"
+          select:
+            options:
+              - Hazardous
+              - Unhealthy
+              - Moderate
+              - Acceptable
 
       #
-      # TVOC value to review
+      # Room state to review
       #
-      tvoc:
-        name: "Toxic Chemicals (Volatile Organic Compounds)"
-        description: "TVOC value (ppb)"
-        example: "300"
+      room_state:
+        name: "Room State"
+        description: "Current State of the Room"
+        example: "Bedtime"
         selector:
-          number:
-            min: 0
-            max: 5500
-            unit_of_measurement: "ppb"
-            mode: "box"
-
-      #
-      # CO2 value to review
-      #
-      co2:
-        name: "CO₂"
-        description: "CO₂ value (ppm)"
-        example: "1100"
-        selector:
-          number:
-            min: 0
-            max: 5500
-            unit_of_measurement: "ppm"
-            mode: "box"
+          select:
+            options:
+              - Auto
+              - Off
+              - Bedtime
+              - DnD
 
     variables:
-      #
-      # Are any of the values hazardous?
-      #
-      is_hazardous: "{{ pm25 > 55 or tvoc > 1500 or co2 > 1500 }}"
+      # Determine desired mode and percentage
+      set_mode: >-
+        {% if aqi_state == 'Hazardous' or aqi_state == 'Unhealthy' or aqi_state == 'Moderate' %}
+          Manual
+        {% elif aqi_state == 'Acceptable' and room_state == 'Bedtime' %}
+          Sleep
+        {% else %}
+          Off
+        {% endif %}
 
-      #
-      # Is there moderate/unhealthy air quality
-      #
-      is_moderate: "{{ pm25 > 12 or tvoc > 400 or co2 > 1000 }}"
+      set_speed: >-
+        {% if aqi_state == 'Hazardous' and room_state == 'Bedtime' %}
+          75
+        {% elif aqi_state == 'Hazardous' %}
+          100
+        {% elif aqi_state == 'Unhealthy' and room_state == 'Bedtime' %}
+          50
+        {% elif aqi_state == 'Unhealthy' %}
+          75
+        {% elif aqi_state == 'Moderate' and room_state == 'Bedtime' %}
+          25
+        {% elif aqi_state == 'Moderate' %}
+          50
+        {% else %}
+          0
+        {% endif %}
 
-      #
-      # Current mode of the purifier
-      #
-      current_mode: "{{ state_attr(purifier, 'preset_mode') }}"
-
-      #
-      # Current speed of the fan, if applicable
-      #
-      percentage: "{{ state_attr(purifier, 'percentage') }}"
-
-    # Set the fan
+    #
+    # Set the air purifier
+    #
     sequence:
       - choose:
           #
-          # Hazardous
-          # If harardous, turn on the air purifier
-          # to full blast
-          #
-          - conditions: "{{ is_hazardous }}"
-            sequence:
-              - action: fan.turn_on
-                data:
-                  entity_id: "{{ purifier }}"
-              - action: fan.set_preset_mode
-                data:
-                  entity_id: "{{ purifier }}"
-                  preset_mode: "Manual"
-              - action: fan.set_percentage
-                data:
-                  entity_id: "{{ purifier }}"
-                  percentage: 100
-          #
-          # Moderate / Unhealthy
-          # If moderate or unhealthy, turn on the air
-          # purifier to auto mode
-          #
-          - conditions: >
-              {{ is_moderate and not is_hazardous and (
-                current_mode != 'Auto' or states(purifier) != 'on'
-              ) }}
-            sequence:
-              - action: fan.turn_on
-                target:
-                  entity_id: "{{ purifier }}"
-              - action: fan.set_preset_mode
-                data:
-                  entity_id: "{{ purifier }}"
-                  preset_mode: "Auto"
-          #
-          # Healthy/Good AQI
           # Turn OFF the air purifier
           #
-          - conditions: "{{ not is_hazardous and not is_moderate }}"
+          - conditions: "{{ set_mode == 'Off' }}"
             sequence:
               - action: fan.turn_off
                 target:
                   entity_id: "{{ purifier }}"
+
+          #
+          # Turn ON the air purifier in Sleep mode
+          #
+          - conditions: "{{ set_mode == 'Sleep' }}"
+            sequence:
+              - action: fan.turn_on
+                target:
+                  entity_id: "{{ purifier }}"
+              - action: fan.set_preset_mode
+                data:
+                  entity_id: "{{ purifier }}"
+                  preset_mode: Sleep
+
+          #
+          # Turn ON the air purifier in Manual mode
+          #
+          - conditions: "{{ set_mode == 'Manual' }}"
+            sequence:
+              - action: fan.turn_on
+                target:
+                  entity_id: "{{ purifier }}"
+              - action: fan.set_preset_mode
+                data:
+                  entity_id: "{{ purifier }}"
+                  preset_mode: Manual
+              - action: fan.set_percentage
+                data:
+                  entity_id: "{{ purifier }}"
+                  percentage: "{{ set_speed }}"
