@@ -7,7 +7,7 @@
 # should run again.
 #
 automation:
-  - id: "clean_dining_and_foyer_at_night"
+  - id: "vacuum_clean_dining_and_foyer_at_night"
     alias: "Vacuum - Clean Dining and Foyer at Night"
     mode: "single"
     triggers:
@@ -46,24 +46,18 @@ automation:
       - condition: state
         entity_id: input_boolean.entertainment_mode
         state: "off"
-      # Either not in vacation mode OR vacation mode just started (within 24 hours)
-      # we don't need the vacuum running if we're on vacation, but I definitely
-      # want it to run once after we leave so we return to a clean house
-      - condition: or
-        conditions:
-          # Not in vacation mode
-          - condition: state
-            entity_id: input_boolean.vacation_mode
-            state: "off"
-          # OR vacation mode started less than 24 hours ago
-          - condition: template
-            value_template: >
-              {% set vacation_last_changed = states.input_boolean.vacation_mode.last_changed %}
-              {% if states.input_boolean.vacation_mode.state == "on" %}
-                {{ (now() - vacation_last_changed).total_seconds() < 86400 }}
-              {% else %}
-                {{ false }}
-              {% endif %}
+      # If vacation mode is ON and the vacuum hasn't been run in the last 24 hours
+      # then proceed (and run the vacuum). If vacation mode is ON and it's run
+      # then fail the condition.
+      # Otherwise, proceed (and run the vacuum).
+      - condition: template
+        value_template: >
+          {% set vacation = states.input_boolean.vacation_mode %}
+          {% if vacation.state == "on" %}
+            {{ (now() - vacation.last_changed).total_seconds() < 86400 }}
+          {% else %}
+            true
+          {% endif %}
       # Jr. Suite door is OPEN
       # otherwise the vacuum will get stuck in the Jr. Suite
       - condition: state
@@ -72,7 +66,7 @@ automation:
       # Check if we should run today based on last run and entertainment history
       - condition: template
         value_template: >
-          {% set last_run = state_attr('automation.clean_dining_and_foyer_at_night', 'last_triggered') %}
+          {% set last_run = state_attr('automation.vacuum_clean_dining_and_foyer_at_night', 'last_triggered') %}
           {% set yesterday_start = now().replace(hour=0, minute=0, second=0) - timedelta(days=1) %}
           {% set yesterday_end = now().replace(hour=0, minute=0, second=0) %}
           {% set entertainment_yesterday = states.input_boolean.entertainment_mode.last_changed.replace(hour=0, minute=0, second=0) >= yesterday_start 
