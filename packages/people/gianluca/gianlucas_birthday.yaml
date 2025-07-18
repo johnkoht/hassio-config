@@ -1,0 +1,7 @@
+sensor:
+  - platform: template
+    sensors:
+      gianlucas_birthday:
+        friendly_name: Gianluca's Birthday
+        unique_id: gianlucas_birthday
+        value_template: !secret gianlucas_birthday

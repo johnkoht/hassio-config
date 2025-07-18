@@ -1,0 +1,7 @@
+sensor:
+  - platform: template
+    sensors:
+      johns_birthday:
+        friendly_name: John's Birthday
+        unique_id: johns_birthday
+        value_template: !secret johns_birthday

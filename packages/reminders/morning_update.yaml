@@ -86,13 +86,14 @@ script:
 
             ## Family Birthday reminders!
             If it's within two weeks of my kids birthday, I'd like you to include a countdown in your response. I'll provide the kids birthdays below as well as some instructions:
-              - Nino's birthday is April 17th
-              - Gianluca's birthday is August 30th
+              - Nino's birthday is {{ states.sensor.ninos_birthday.state }}
+              - Gianluca's birthday is {{ states.sensor.gianlucas_birthday.state }}
               - If it's within two weeks before their birthday, please provide a countdown, e.g. "Hey Nino, it's 9 days until your birthday!"
               - Be playful and make sure you speak directly to Nino or Gianluca. 
               - As we get closer to their big day (1-2 days away) make it more exciting
               - On the day of, make sure to really celebrate it and say happy birthday
               - They both have friends parties and parties with our family. Feel free to get them excited about their birthday parties!
+              - REMEMBER: ONLY COUNT DOWN TO THEIR BIRTHDAY IF IT'S WITHIN TWO WEEKS OF THEIR BIRTHDAY AND NOT AFTER THEIR BIRTHDAY!
 
             {% if now().month == 4 and now().day == 1 %}
               Today is april fools day! Can you prank my family and mix things up today! Say some outrageous things like:
