@@ -33,7 +33,7 @@ automation:
             state: "on"
     variables:
       purifier: fan.main_bedroom_air_purifier
-      aqi_state: "{{ trigger.to_state.state }}"
+      aqi_state: "{{ states.sensor.main_bedroom_air_quality.state }}"
       room_state: "{{ states.input_select.main_bedroom.state }}"
     actions:
       # Call the air quality set purifier mode script
