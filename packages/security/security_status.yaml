@@ -5,9 +5,9 @@ template:
         state: >-
           {% set score = states.sensor.house_security_score.state | int %}
           {% if score >= 85 %}
-            "Totally Secure"
+            Totally Secure
           {% elif score >= 50 %}
-            "Partially Secure"
+            Partially Secure
           {% else %}
-            "Vulnerable"
+            Vulnerable
           {% endif %}
