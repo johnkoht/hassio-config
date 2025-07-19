@@ -13,6 +13,13 @@ automation:
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
+
+      # Nino's room becomes unoccupied for 
+      - trigger: state
+        entity_id: input_boolean.ninos_bedroom_occupied
+        to: "off"
+        for:
+          minutes: 30
     actions:
       # Turn OFF the air purifer
       - action: fan.turn_off
