@@ -1,0 +1,7 @@
+template:
+  - sensor:
+      - name: "Jido Person Context"
+        unique_id: jido_person_context
+        state: "On"
+        attributes:
+          context: !secret jido_person_context

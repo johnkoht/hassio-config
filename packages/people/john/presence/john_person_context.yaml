@@ -1,0 +1,7 @@
+template:
+  - sensor:
+      - name: "John Person Context"
+        unique_id: john_person_context
+        state: "On"
+        attributes:
+          context: !secret john_person_context

@@ -77,66 +77,19 @@ script:
     variables:
       person_context: >-
         {% if person == "alex" %}
-          - Alex is John's younger brother
-          - He's a producer
-          - NYU film school graduate
-          - He's lived in NYC and LA
-          - He has shaggy curly hair
-          - He looks a lot like me, people often think we're twins
-          - He loves movies. 
-          - His intro music when he arrives is Also Sprach Zarathrustra by Richard Struass from 2001: A Space Odyssey
-          - He recently had his gallbladder removed, you can joke about this (I, John, also have no gallbladder)
-          - He lives downtown Chicago
-          - He is a meat popsicle
+          {{ states.sensor.alex_person_context.attributes.context }}
         {% elif person == "joe" %}
-          - Joe is Cristina's older brother
-          - He's a month older than John
-          - He's getting married next year
-          - John's trying to convince him to have two bachelors parties before his wedding
-          - He loves sports. He always wins fantasy sports leagues
-          - Joe is Nino and Gianluca's uncle and they love playing with him
-        {% elif person == "genny" %}
-          - Genny is Joe's fiance
-          - Genny and Joe got engaged soon
-          - They are getting married in Montreal, Canada next year
-          - Genny just graduated law school and is studying for the bar
-          - Genny is Irish
-          - The boys love playing with Genny
+          {{ states.sensor.joe_person_context.attributes.context }}
         {% elif person == "tayta" or person == "sonia" %}
-          - Sonia is John's mom and she goes by Tayta (Arabic for grandmother)
-          - Refer to her as Tayta only, not Sonia or Tayta Sonia
-          - She's grandmother (tayta) to the boys
-          - Sonia lives in the city with Antoun
-          - She makes delicious Syrian dishes (grape leaves, kib-ay) sometimes, maybe today?
-          - The boys love to play with her
+          {{ states.sensor.tayta_person_context.attributes.context }}
         {% elif person == "nonna" or person == "mary"  %}
-          - Mary is Cristina's mom and goes by Nonna (italian for grandmother)
-          - Refer to her as Nonna, not Mary or Nonna Mary
-          - She's here quite often
-          - Mary makes delicious italian dishes like pasta, yum
-          - The boys love to play with her
+          {{ states.sensor.nonna_person_context.attributes.context }}
         {% elif person == "jido" or person == "antoun" %}
-          - Antoun is John's dad
-          - He's the boy's grandfather
-          - Antoun goes by "Jido" with the kids, it's Arabic for grandfather
-          - Refer to him as Jido, not Jido Antoun or Antoun
-          - He's a retired neuro-anesthesiologist
-          - The boys love him
-          - Our dog Rio always bring his bone to Jido for him to hold 
+          {{ states.sensor.jido_person_context.attributes.context }}
         {% elif person == "john" or person == "baba" %}
-          - John is me! The creator of these automations!
-          - John is into smart homes, obviously
-          - John is into home labbing as well (servers, self hosted apps, etc)
-          - John responsible for our dog Rio
-          - The kids call me "Baba", but you can refer to me as Baba or John
-          - Sometimes a disturbance within the force can be detected when I arrive
+          {{ states.sensor.john_person_context.attributes.context }}
         {% elif person == "cristina" or person == "mamma" %}
-          - Cristina is John's husband
-          - Cristina is mother to the boys (gianluca and nino)
-          - Cristina is our Queen, don't hesitate to empahsize that!
-          - Cristina likes reality shows like the real housewives
-          - We should really clean up our mess before she comes home
-          - She's the only girl in the immediate family
+          {{ states.sensor.cristina_person_context.attributes.context }}
         {% endif %}
 
       sound: >-

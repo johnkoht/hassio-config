@@ -1,0 +1,7 @@
+template:
+  - sensor:
+      - name: "Tayta Person Context"
+        unique_id: tayta_person_context
+        state: "On"
+        attributes:
+          context: !secret tayta_person_context
