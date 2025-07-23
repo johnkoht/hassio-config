@@ -1,0 +1,41 @@
+# 
+# UPS Battery Power Automation
+# 
+# 
+automation:
+  # 
+  # UPS Battery Power Activated
+  # 
+  - alias: UPS Battery Power Activated
+    trigger:
+      - platform: state
+        entity_id: sensor.apc_ups_status
+        to: "OB"
+    action:
+      # Send a a critical notification
+      - action: script.general_notification
+        data:
+          title: "Power Outage!"
+          message: "🚨 Power outage! UPS is now on battery."
+          devices: "jk"
+          priority: "critical"
+          tag: "ups-power-outage"
+
+
+  # 
+  # UPS Battery Power Deactivated
+  # 
+  - alias: UPS Battery Power Deactivated
+    trigger:
+      - platform: state
+        entity_id: sensor.apc_ups_status
+        to: "OL"
+    action:
+      - action: script.general_notification
+        data:
+          title: "UPS Power Restored!"
+          message: "The UPS is now back on AC power."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "ups-power-restored"
+        
