@@ -18,7 +18,7 @@ automation:
         entity_id: input_select.main_bathroom
         to: "Wake"
         for:
-          minutes: 15
+          minutes: 5
       # Main bedroom turns to Wake
       - trigger: state
         entity_id: input_select.main_bedroom
@@ -35,10 +35,10 @@ automation:
         entity_id: binary_sensor.bedtime
         to: "off"
     conditions:
-      # Main Bathroom is not occupied
-      - condition: state
-        entity_id: input_boolean.main_bathroom_occupied
-        state: "off"
+      # # Main Bathroom is not occupied
+      # - condition: state
+      #   entity_id: input_boolean.main_bathroom_occupied
+      #   state: "off"
       # Bathroom is not already Auto
       - condition: template
         value_template: "{{ not is_state('input_select.main_bathroom','Auto') }}"

@@ -115,63 +115,21 @@ script:
 
         {% for person in people %}
           {% if person == "alex" %}
-            {% set ns.pc = ns.pc + "
-            ALEX CONTEXT:
-            - Alex is John's younger brother
-            - He's a producer
-            - NYU film school graduate
-            - He's lived in NYC and LA
-            - He has shaggy curly hair
-            - He looks a lot like me, people often think we're twins
-            - He loves movies. 
-            - His intro music when he arrives is Also Sprach Zarathrustra by Richard Struass from 2001: A Space Odyssey
-            - He recently had his gallbladder removed, you can joke about this (I, John, also have no gallbladder)
-            - He lives downtown Chicago
-            "
-            %}
+            {% set ns.pc = ns.pc + states.sensor.alex_person_context.attributes.context %}
           {% elif person == "joe" %}
-            {% set ns.pc = ns.pc + "
-            JOE CONTEXT:
-            - Joe is Cristina's older brother
-            - He's a month older than John
-            - He's getting married next year
-            - John's trying to convince him to have two bachelors parties before his wedding
-            - He loves sports. He always wins fantasy sports leagues
-            - Joe is Nino and Gianluca's uncle and they love playing with him
-            "
-            %}
+            {% set ns.pc = ns.pc + states.sensor.joe_person_context.attributes.context %}
           {% elif person == "genny" %}
-            {% set ns.pc = ns.pc + "
-            GENNY CONTEXT:
-            - Genny is Joe's fiance
-            - Genny and Joe got engaged soon
-            - They are getting married in Montreal, Canada next year
-            - Genny just graduated law school and is studying for the bar
-            - Genny is Irish
-            - The boys love playing with Genny
-            "
-            %}
+            {% set ns.pc = ns.pc + states.sensor.genny_person_context.attributes.context %}
           {% elif person == "sonia" %}
-            {% set ns.pc = ns.pc + "
-            SONIA CONTEXT:
-            - Sonia is John's mom and she goes by Tayta (Arabic for grandmother)
-            - Refer to her as Tayta only, not Sonia or Tayta Sonia
-            - She's grandmother (tayta) to the boys
-            - Sonia lives in the city with Antoun
-            - She makes delicious Syrian dishes (grape leaves, kib-ay) sometimes, maybe today?
-            - The boys love to play with her
-            "
-            %}
+            {% set ns.pc = ns.pc + states.sensor.tayta_person_context.attributes.context %}
           {% elif person == "mary" %}
-            {% set ns.pc = ns.pc + "
-            MARY CONTEXT:
-            - Mary is Cristina's mom and goes by Nonna (italian for grandmother)
-            - Refer to her as Nonna, not Mary or Nonna Mary
-            - She's here quite often
-            - Mary makes delicious italian dishes like pasta, yum
-            - The boys love to play with her
-            "
-            %}
+            {% set ns.pc = ns.pc + states.sensor.nonna_person_context.attributes.context %}
+          {% elif person == "jido" %}
+            {% set ns.pc = ns.pc + states.sensor.jido_person_context.attributes.context %}
+          {% elif person == "john" %}
+            {% set ns.pc = ns.pc + states.sensor.john_person_context.attributes.context %}
+          {% elif person == "cristina" %}
+            {% set ns.pc = ns.pc + states.sensor.cristina_person_context.attributes.context %}
           {% endif %}
         {% endfor %}
 
