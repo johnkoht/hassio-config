@@ -5,12 +5,12 @@ automation:
     initial_state: on
     triggers:
       - trigger: state
-        entity_id: person.anount_koht
+        entity_id: person.antoun_koht
         from: "home"
     conditions:
       # Not home
       - condition: state
-        entity_id: person.anount_koht
+        entity_id: person.antoun_koht
         state: "not_home"
       # We've been home for at least 5 minutes
       - condition: state

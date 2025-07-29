@@ -51,11 +51,33 @@ automation:
         event_type: timer.finished
         event_data: 
           entity_id: timer.cristina_daily_medication_timer
+      # Trigger when Cristina gets home
+      - trigger: state
+        entity_id: input_boolean.cristina_home
+        to: "on"
+        for: 
+          minutes: 15
     conditions:
       # Only run if Cristina has not taken her morning medication
       - condition: state
         entity_id: input_boolean.cristina_daily_medication_taken
         state: "off"
+      # Only run if the timer is idle
+      - condition: state
+        entity_id: time.cristina_daily_medication_timer
+        state: "idle"
+      # Only run if Cristina is HOME or Extended Away
+      # If she's not home, we'll wait until she gets home and listen
+      # to that trigger. Otherwise, if she's out of town, proceed as normal.
+      - or:
+          # Cristina is HOME
+          - condition: state
+            entity_id: input_boolean.cristina_home
+            state: "on"
+          # Cristina is out of town
+          - condition: state
+            entity_id: input_text.cristina_status_dropdown
+            state: "Extended Away"
     actions:
       # 
       # Set the action variables
@@ -118,10 +140,15 @@ automation:
               - condition: template
                 value_template: "{{ wait.trigger.event.data.action == action_taken }}"
             then:
+              # Mark that she took the medication
               - action: input_boolean.turn_on
                 entity_id: input_boolean.cristina_daily_medication_taken
+              # Cancel the timer
               - action: timer.cancel
                 entity_id: timer.cristina_daily_medication_timer
+              # Turn off the automation
+              - action: automation.turn_off
+                entity_id: automation.cristina_daily_medication_reminder
           # 
           # If she responded that she snoozed, then start the timer.
           # 
@@ -149,3 +176,6 @@ automation:
       # Cancel the timer
       - action: timer.cancel
         entity_id: timer.cristina_daily_medication_timer
+      # Turn on the automation
+      - action: automation.turn_on
+        entity_id: automation.cristina_daily_medication_reminder
