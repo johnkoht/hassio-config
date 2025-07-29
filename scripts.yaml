@@ -251,3 +251,13 @@ text_to_speech_on_sonos_test:
     input:
       tts_service_name: google_say
   mode: single
+voice_weather_forecasts_full_llm_script_2:
+  alias: Voice - Weather Forecasts - Full LLM script
+  use_blueprint:
+    path: TheFes/3_voice_weather_forecast_full_llm.yaml
+    input:
+      weather_entity: weather.pirateweather
+  description: Fetches the weather forecast for either a part of a day, or one or
+    more full days. In case the weather for the weekend is requested, this means Saturday
+    and Sunday
+  icon: mdi:white-balance-sunny

@@ -22,6 +22,12 @@ automation:
       # - condition: state
       #   entity_id: input_boolean.guest_mode
       #   state: "off"
+      # Only run between 10pm and 5am
+      # Otherwise, if we get out of bed at 5 for whatever reason, 
+      # then get back in, it will run unnecessarily.
+      - condition: time
+        after: "22:00:00"
+        before: "07:00:00"
       # Jr. Suite door is OPEN
       # otherwise the vacuum will get stuck in the Jr. Suite
       - condition: state
