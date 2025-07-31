@@ -64,7 +64,7 @@ automation:
         state: "off"
       # Only run if the timer is idle
       - condition: state
-        entity_id: time.cristina_daily_medication_timer
+        entity_id: timer.cristina_daily_medication_timer
         state: "idle"
       # Only run if Cristina is HOME or Extended Away
       # If she's not home, we'll wait until she gets home and listen
