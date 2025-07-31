@@ -1,31 +1,54 @@
+# 
+# Timer
+# 
+timer:
+  snooze_door_left_open_automation:
+    name: Snooze Door Left Open Automation
+    duration: "00:30:00"
+    restore: true
+    icon: mdi:rewind-30
+
+# 
+# Automations
+# 
 automation:
   - id: "door_left_open"
     alias: "Door Left Open"
     mode: "single"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id:
           - binary_sensor.interior_garage_door
           - binary_sensor.front_door_status
         to: "on"
         for:
           minutes: 5
-      - platform: state
+      - trigger: state
         entity_id:
           - binary_sensor.interior_garage_door
           - binary_sensor.front_door_status
         to: "on"
         for:
           minutes: 10
-      - platform: state
+      - trigger: state
         entity_id:
           - binary_sensor.interior_garage_door
           - binary_sensor.front_door_status
         to: "on"
         for:
           minutes: 15
-    condition:
+      # Trigger when the timer is finished
+      - trigger: event
+        event_type: timer.finished
+        event_data: 
+          entity_id: timer.snooze_door_left_open_automation
+    conditions:
+      # Only run if the timer is idle
+      - condition: state
+        entity_id: timer.snooze_door_left_open_automation
+        state: "idle"
+      # Only run if the door is open
       - condition: or
         conditions:
           - condition: state
@@ -34,21 +57,54 @@ automation:
           - condition: state
             entity_id: binary_sensor.front_door_status
             state: "on"
-    action:
+    actions:
+    # 
+      # Set the action variables
+      # 
+      - variables:
+          action_snooze: "{{ 'SNOOZE_' ~ context.id }}"
+
       # Call the announcement engine
       # Announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "police-whistle"
           priority: high
           speech_message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
 
-      # Notification for logging
-      - service: script.general_notification
+      #
+      # Send a notification and let us snooze the automation
+      # 
+      - action: script.general_notification
         data:
           title: Exterior House Doors
           message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
           devices: "all"
           priority: "time-sensitive"
           tag: "door-open"
+          actions:
+            - action: "{{ action_snooze }}"
+              title: "Snooze 30 Minutes"
+
+      # 
+      # Wait for us to respond to the actionable notification to 
+      # snooze the automation
+      #
+      - wait_for_trigger:
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_snooze }}"
+        timeout:
+          minutes: 3
+
+      - if:
+          - condition: template
+            value_template: "{{ wait.trigger.event.data.action == action_snooze }}"
+        then:
+          - action: timer.start
+            entity_id: timer.snooze_door_left_open_automation
+
+
+        

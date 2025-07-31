@@ -10,6 +10,11 @@
 #   priority: "active"
 #   tag: ""
 #   group: "example-notification-group"
+#   actions:  # Optional - for actionable notifications
+#     - action: "ACTION_ID_1"
+#       title: "Action 1"
+#     - action: "ACTION_ID_2" 
+#       title: "Action 2"
 #
 
 #
@@ -32,6 +37,10 @@ input_select:
       - "None"
 
 script:
+  # 
+  # 
+  # Clear Notifications
+  # 
   clear_notifications:
     alias: "Clear Notifications"
     mode: "queued"
@@ -49,13 +58,114 @@ script:
           data:
             tag: "{{ tag }}"
 
+  # 
+  # 
+  # General Notification
+  # 
   general_notification:
     alias: General Notification
     mode: "queued"
+    icon: mdi:message-alert
+
+    fields:
+      #
+      # 
+      # Devices
+      # 
+      devices:
+        name: Devices
+        description: The devices to send the notification to
+        example: "all"
+        default: "all"
+        required: true
+        selector:
+          select:
+            options:
+              - all
+              - jk
+              - cfalb
+      #
+      # 
+      # Title
+      # 
+      title:
+        name: Title
+        description: The title of the push notification
+        example: "Home Assistant"
+        default: "Home Assistant"
+        required: true
+      #
+      # 
+      # Message
+      # 
+      message:
+        name: Message
+        description: The message of the push notification
+        example: "Hello, world!"
+        default: "Hello, world!"
+        required: true
+      #
+      # 
+      # Priority
+      # 
+      priority:
+        name: Priority
+        description: The priority of the push notification
+        example: "active"
+        default: "active"
+        selector:
+          select:
+            options:
+              - active
+              - passive
+              - time-sensitive
+              - critical
+      #
+      # 
+      # Tag
+      # 
+      tag:
+        name: Tag
+        description: The tag of the push notification
+        example: "front_door_person_alert"
+        default: "push_1234567890"
+      #
+      # 
+      # Image
+      # 
+      image:
+        name: Image
+        description: An image to display in the push notification, typically used for camera alerts
+        example: "https://example.com/image.png"
+        default: "https://example.com/image.png"
+      #
+      # 
+      # Entity ID
+      # 
+      entity_id:
+        name: Camera Entity ID
+        description: Provide the entity ID of a camera that can be used to stream directly from the notification
+        example: "camera.camera_proxy_camera_front_door_camera_high_resolution_channel"
+        default: "camera.camera_proxy_camera_front_door_camera_high_resolution_channel"
+      #
+      # 
+      # Actions
+      # 
+      actions:
+        name: Actionable Notification Actions
+        description: Actions to display in the push notification
+        example: "{{ actions }}"
+        default: "{{ actions }}"
+    
+    # 
+    # Sequence
+    # 
     sequence:
       - alias: "Set up variables"
         variables:
-          # tag: "{{ tag }}"
+          tag: "{{ tag | default('push_' ~ now().timestamp() | int) }}"
+          image: "{{ image | default('') }}"
+          entity_id: "{{ entity_id | default('') }}"
           priority: >-
             {% if priority is defined and priority|length %}
               {{priority}}
@@ -86,45 +196,28 @@ script:
                 false
               {% endif %}
 
-      # TODO: figure out a better way to solve this. Not sure
-      # the best way to handle a dynamic/conditional YAML attribute
-      - if:
-          - alias: "Tag is included"
-            condition: template
-            value_template: "{{ true if tag is defined and tag|length else false}}"
-
-        then:
-          - action: >
-              {% if devices == "all"  %}
-                notify.ios_family
-              {% elif devices == "jk" %}
-                notify.mobile_app_jk_2
-              {% elif devices == "cfalb" %}
-                notify.mobile_app_cfalb2
-              {% endif %}
-            data:
-              message: "{{ message }}"
-              title: "{{ title }}"
-              data:
-                tag: "{{ tag }}"
-                push:
-                  interruption-level: "{{ priority }}"
-
-        else:
-          - action: >
-              {% if devices == "all"  %}
-                notify.ios_family
-              {% elif devices == "jk" %}
-                notify.mobile_app_jk_2
-              {% elif devices == "cfalb" %}
-                notify.mobile_app_cfalb2
-              {% endif %}
-            data:
-              message: "{{ message }}"
-              title: "{{ title }}"
-              data:
-                push:
-                  interruption-level: "{{ priority }}"
+      #
+      # Send the push notification
+      #
+      - action: >
+          {% if devices == "all"  %}
+            notify.ios_family
+          {% elif devices == "jk" %}
+            notify.mobile_app_jk_2
+          {% elif devices == "cfalb" %}
+            notify.mobile_app_cfalb2
+          {% endif %}
+        data:
+          message: "{{ message }}"
+          title: "{{ title }}"
+          data:
+            tag: "{{ tag }}"
+            image: "{{ image }}"
+            entity_id: "{{ entity_id }}"
+            push:
+              interruption-level: "{{ priority }}"
+            actions: "{{ actions }}"
+     
 
 automation:
   #
