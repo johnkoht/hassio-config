@@ -53,6 +53,13 @@ automation:
           priority: high
           expires_in: 60
           speech_message: Hey Fam, the air quality is looking unhealthy, please keep windows closed and make sure to take precautions.
+      #
+      # Turn on the air purifiers to 25%
+      #
+      - action: fan.turn_on
+        data:
+          entity_id: fan.air_purifiers
+          percentage: 25
 
   #
   # AQI becomes very unhealthy
