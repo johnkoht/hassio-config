@@ -3,6 +3,12 @@ extended_family:
     - person.mary_falbo
     - person.antoun_koht
     - person.sonia_koht
+    - person.alex
+    - person.yara
+    - person.genny
+    - person.elise
+    - person.olivia
+    - person.shawn
 
 guests:
   entities:
@@ -10,10 +16,6 @@ guests:
     - person.antoun_koht
     - person.sonia_koht
     - person.katia
-    - person.joe_falbo
-
-roommate:
-  entities:
     - person.joe_falbo
 
 arriving:

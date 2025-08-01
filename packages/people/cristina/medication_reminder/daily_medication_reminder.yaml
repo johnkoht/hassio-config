@@ -76,7 +76,7 @@ automation:
             state: "on"
           # Cristina is out of town
           - condition: state
-            entity_id: input_text.cristina_status_dropdown
+            entity_id: input_select.cristina_status_dropdown
             state: "Extended Away"
     actions:
       # 
