@@ -1,0 +1,16 @@
+# 
+# Jido Person
+# 
+# The Person sensor is way of creating a Person
+# with additional attributes that the standard 
+# person sensor doesn't have.
+# 
+template:
+  - sensor:
+      - name: "Jido Person"
+        unique_id: jido_person
+        state: "{{ states.person.jido.state }}"
+        attributes:
+          unlock_privilege: "{{ states.input_boolean.jido_unlock_privilege.state }}"
+
+

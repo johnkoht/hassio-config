@@ -1,0 +1,16 @@
+# 
+# Tayta Person
+# 
+# The Person sensor is way of creating a Person
+# with additional attributes that the standard 
+# person sensor doesn't have.
+# 
+template:
+  - sensor:
+      - name: "Tayta Person"
+        unique_id: tayta_person
+        state: "{{ states.person.tayta.state }}"
+        attributes:
+          unlock_privilege: "{{ states.input_boolean.tayta_unlock_privilege.state }}"
+
+

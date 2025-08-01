@@ -1,0 +1,62 @@
+group:
+  # 
+  # Immediate Family Group
+  # 
+  family:
+    name: Family
+    entities:
+      - person.john_koht
+      - person.cristina_falbo
+
+  # 
+  # Extended Family Group
+  # 
+  extended_family:
+    name: Extended Family
+    entities:
+      - person.mary_falbo
+      - person.antoun_koht
+      - person.sonia_koht
+      - person.alex
+      - person.yara
+      - person.genny
+      - person.elise
+      - person.olivia
+      - person.shawn
+
+  guests:
+    name: Guests
+    entities:
+      - person.sylvia
+      - person.katia
+      - group.extended_family
+
+  all_people:
+    name: All People
+    entities:
+      - group.family
+      - group.extended_family
+      - group.guests
+
+
+  arriving:
+    name: Arriving
+    entities: []
+
+  # 
+  # Room Presence Devices
+  # This is primarly used to track room presence and check 
+  # if anybody is currently in a room for occupancy check.
+  # 
+  room_presence_devices:
+    name: "Devices tracked by Room Assistant"
+    entities:
+      - sensor.john_room_presence
+      - sensor.cristina_room_presence
+      - sensor.antoun_room_presence
+      - sensor.sonia_room_presence
+      - sensor.katia_room_presence
+      - sensor.mary_room_presence
+      - sensor.joe_room_presence
+      # - sensor.nino_ipad_room_presence
+      # - sensor.roscoe_room_presence

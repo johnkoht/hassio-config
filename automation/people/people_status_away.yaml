@@ -6,20 +6,20 @@ id: "people_status_away"
 alias: Mark person as away
 mode: parallel
 initial_state: "on"
-trigger:
-  - platform: state
+triggers:
+  - trigger: state
     entity_id:
       - input_select.cristina_status_dropdown
       - input_select.john_status
       - input_select.joe_status_dropdown
       - input_select.nonna_status
       - input_select.katia_status
-      - input_select.sylvia_home
+      - input_select.sylvia_status
     to: "Just Left"
     for:
       minutes: 5
-action:
-  - service: input_select.select_option
+actions:
+  - action: input_select.select_option
     data:
       entity_id: >
         {% if trigger.entity_id == 'input_select.cristina_status_dropdown' %}

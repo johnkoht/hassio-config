@@ -1,0 +1,11 @@
+# 
+# Cristina Unlock Privilege
+# Provides privilege to unlock the doors,
+# disarm the alarm, and unlock the garage.
+# 
+input_boolean:
+  cristina_unlock_privilege:
+    name: Cristina Unlock Privilege
+    icon: mdi:key-outline
+    initial: on
+

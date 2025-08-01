@@ -1,0 +1,63 @@
+# Automation to detect if the house is now occupied
+#
+# This automation will detect if the house is occupied
+# based on a few triggers and conditions
+# and if it's occupied, it will update the
+# input_boolean.house_occupied to be on
+#
+automation:
+  - id: "house_occupied"
+    alias: "House occupied"
+    initial_state: "on"
+    triggers:
+      # 
+      # Triggered if any of the custom Person sensors
+      # change to ON
+      # 
+      - trigger: state
+        entity_id:
+          - sensor.john_person
+          - sensor.cristina_person
+          - sensor.nonna_person
+          - sensor.tayta_person
+          - sensor.jido_person
+          - sensor.katia_person
+          - sensor.joe_person
+          - sensor.sylvia_person
+          - sensor.alex_person
+        to: "home"
+      # 
+      # Hassio reloads/starts
+      # 
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      # 
+      # House is current unoccupied
+      # 
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+      # 
+      # Ensure that the person has unlock privilege
+      # 
+      - condition: template
+        value_template: >
+          {{ state_attr(trigger.entity_id, 'unlock_privilege') == "on" }}
+      # 
+      # Somebody is HOME
+      # This is useful for restarts
+      # 
+      # This is a group and will return "home" if
+      # any of the entities are home
+      - condition: state
+        entity_id: group.all_people
+        state: "home"
+    actions:
+      # 
+      # Set the house occupied to on
+      # 
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.house_occupied

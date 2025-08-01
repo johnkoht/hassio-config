@@ -1,0 +1,11 @@
+# 
+# Joe Unlock Privilege
+# Provides privilege to unlock the doors,
+# disarm the alarm, and unlock the garage.
+# 
+input_boolean:
+  joe_unlock_privilege:
+    name: Joe Unlock Privilege
+    icon: mdi:key-outline
+    initial: on
+

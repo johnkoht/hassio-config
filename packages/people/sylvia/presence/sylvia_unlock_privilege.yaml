@@ -1,0 +1,11 @@
+# 
+# Sylvia Unlock Privilege
+# Provides privilege to unlock the doors,
+# disarm the alarm, and unlock the garage.
+# 
+input_boolean:
+  sylvia_unlock_privilege:
+    name: Sylvia Unlock Privilege
+    icon: mdi:key-outline
+    initial: off
+

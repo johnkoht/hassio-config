@@ -1,0 +1,16 @@
+# 
+# Joe Person
+# 
+# The Person sensor is way of creating a Person
+# with additional attributes that the standard 
+# person sensor doesn't have.
+# 
+template:
+  - sensor:
+      - name: "Joe Person"
+        unique_id: joe_person
+        state: "{{ states.person.joe_falbo.state }}"
+        attributes:
+          unlock_privilege: "{{ states.input_boolean.joe_unlock_privilege.state }}"
+
+

@@ -1,0 +1,11 @@
+# 
+# John Unlock Privilege
+# Provides privilege to unlock the doors,
+# disarm the alarm, and unlock the garage.
+# 
+input_boolean:
+  john_unlock_privilege:
+    name: John Unlock Privilege
+    icon: mdi:key-outline
+    initial: on
+

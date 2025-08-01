@@ -1,0 +1,35 @@
+# Automation to detect if the house is not occupied
+#
+# This automation will detect if the house is not
+# occupied based on a few triggers and conditions
+# and if it's empty, it will update the
+# input_boolean.house_occupied to be off
+#
+automation:
+  - id: "house_not_occupied"
+    alias: "House not occupied"
+    initial_state: "on"
+    triggers:
+      # If nobody is home
+      - trigger: state
+        entity_id: group.all_people
+        to: "not_home"
+      # Hassio reloads/starts
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      # House is currently occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Nobody is home
+      # This is a group and will return "not_home" if
+      # none of the entities are home
+      - condition: state
+        entity_id: group.all_people
+        state: "not_home"
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.house_occupied

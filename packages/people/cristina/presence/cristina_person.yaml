@@ -1,0 +1,16 @@
+# 
+# Cristina Person
+# 
+# The Person sensor is way of creating a Person
+# with additional attributes that the standard 
+# person sensor doesn't have.
+# 
+template:
+  - sensor:
+      - name: "Cristina Person"
+        unique_id: cristina_person
+        state: "{{ states.person.cristina_falbo.state }}"
+        attributes:
+          unlock_privilege: "{{ states.input_boolean.cristina_unlock_privilege.state }}"
+
+

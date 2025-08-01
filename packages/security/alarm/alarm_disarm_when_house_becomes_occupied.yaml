@@ -2,30 +2,12 @@ automation:
   - id: "alarm_disarm_when_house_becomes_occupied"
     alias: "Alarm - Disarm When House Becomes Occupied"
     mode: "single"
-    trigger:
+    triggers:
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
-      # House state changes to Auto from Away
-      - platform: state
-        entity_id: input_select.house
-        from: "Away"
-        to: "Auto"
-      # Somebody arrives at the house
-      # This is useful when the house is armed but somebody
-      # is not home or a close guest arrives
-      - platform: state
-        entity_id:
-          - person.john_koht
-          - person.cristina_falbo
-          - person.mary_falbo
-          - person.antoun_koht
-          - person.sonia_koht
-          - person.katia
-          - person.joe_falbo
-        to: "home"
-    condition:
+    conditions:
       # Alarm is currently armed
       - condition: state
         entity_id: alarm_control_panel.panel
@@ -36,12 +18,12 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
+    actions:
       # Disarm the alarm
-      - service: alarm_control_panel.alarm_disarm
+      - action: alarm_control_panel.alarm_disarm
         entity_id: alarm_control_panel.panel
 
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: Home is now disarmed upon the arrival of somebody.
           title: Home Security System

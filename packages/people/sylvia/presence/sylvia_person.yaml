@@ -1,0 +1,16 @@
+# 
+# Sylvia Person
+# 
+# The Person sensor is way of creating a Person
+# with additional attributes that the standard 
+# person sensor doesn't have.
+# 
+template:
+  - sensor:
+      - name: "Sylvia Person"
+        unique_id: sylvia_person
+        state: "{{ states.person.sylvia.state }}"
+        attributes:
+          unlock_privilege: "{{ states.input_boolean.sylvia_unlock_privilege.state }}"
+
+

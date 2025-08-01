@@ -1,0 +1,16 @@
+# 
+# Nonna Person
+# 
+# The Person sensor is way of creating a Person
+# with additional attributes that the standard 
+# person sensor doesn't have.
+# 
+template:
+  - sensor:
+      - name: "Nonna Person"
+        unique_id: nonna_person
+        state: "{{ states.person.nonna.state }}"
+        attributes:
+          unlock_privilege: "{{ states.input_boolean.nonna_unlock_privilege.state }}"
+
+

@@ -1,23 +1,23 @@
-extended_family:
-  entities:
-    - person.mary_falbo
-    - person.antoun_koht
-    - person.sonia_koht
-    - person.alex
-    - person.yara
-    - person.genny
-    - person.elise
-    - person.olivia
-    - person.shawn
+# extended_family:
+#   entities:
+#     - person.mary_falbo
+#     - person.antoun_koht
+#     - person.sonia_koht
+#     - person.alex
+#     - person.yara
+#     - person.genny
+#     - person.elise
+#     - person.olivia
+#     - person.shawn
 
-guests:
-  entities:
-    - person.mary_falbo
-    - person.antoun_koht
-    - person.sonia_koht
-    - person.katia
-    - person.joe_falbo
+# guests:
+#   entities:
+#     - person.mary_falbo
+#     - person.antoun_koht
+#     - person.sonia_koht
+#     - person.katia
+#     - person.joe_falbo
 
-arriving:
-  name: Arriving
-  entities: []
+# arriving:
+#   name: Arriving
+#   entities: []
