@@ -66,6 +66,10 @@ automation:
       - condition: state
         entity_id: timer.cristina_daily_medication_timer
         state: "idle"
+      # Cristina is not in bed
+      - condition: state
+        entity_id: input_boolean.cristina_is_awake
+        state: "on"
       # Only run if Cristina is HOME or Extended Away
       # If she's not home, we'll wait until she gets home and listen
       # to that trigger. Otherwise, if she's out of town, proceed as normal.
