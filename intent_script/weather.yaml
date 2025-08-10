@@ -1,0 +1,3 @@
+GetWeather:
+  speech:
+    text: "It is currently {{ states('weather.pirateweather') }}, and {{ state_attr('weather.pirateweather','temperature') }} degrees, with {{ state_attr('weather.pirateweather','humidity') }} per cent humidity now."

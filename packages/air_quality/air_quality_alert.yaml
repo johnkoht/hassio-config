@@ -23,6 +23,21 @@ input_select:
 
 automation:
   #
+  # AQI becomes good
+  # If the input_select.air_quality_state goes from
+  # very unhealthy to good, then turn off the air purifiers
+  #
+  - id: "air_quality_alert_good"
+    alias: "Air Quality - Alert for Good Conditions"
+    initial_state: on
+    trigger:
+      - trigger: state
+        entity_id: input_select.air_quality_state
+        to: "Good"
+    actions:
+      - action: script.air_quality_alert_set_air_purifier_auto
+
+  #
   # AQI becomes unhealthy
   # If the input_select.air_quality_state goes from
   # good, moderate or slightly unhealthy to unhealthy,
@@ -46,6 +61,9 @@ automation:
       - condition: template
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.air_quality_alert_unhealthy','last_triggered'), 0) ) | int > 7200 }}"
     actions:
+      #
+      # Announce the air quality alert
+      #
       - action: script.voice_announcement
         data:
           media_players: auto
@@ -56,10 +74,9 @@ automation:
       #
       # Turn on the air purifiers to 25%
       #
-      - action: fan.turn_on
+      - action: script.air_quality_alert_turn_on_air_purifiers
         data:
-          entity_id: fan.air_purifiers
-          percentage: 25
+          speed: 25
 
   #
   # AQI becomes very unhealthy
@@ -99,10 +116,9 @@ automation:
       #
       # Turn on the air purifiers to 50%
       #
-      - action: fan.turn_on
+      - action: script.air_quality_alert_turn_on_air_purifiers
         data:
-          entity_id: fan.air_purifiers
-          percentage: 50
+          speed: 50
 
 
   #
@@ -137,10 +153,9 @@ automation:
       #
       # Turn on the air purifiers to 100%
       #
-      - action: fan.turn_on
+      - action: script.air_quality_alert_turn_on_air_purifiers
         data:
-          entity_id: fan.air_purifiers
-          percentage: 100
+          speed: 100
   #
   # Set the Air Quality State input select
   # This automation listens to the local air quality index'
@@ -177,3 +192,51 @@ automation:
             {% else %}
               Hazardous
             {% endif %}
+
+
+
+script:
+  #
+  # Turn on the air purifiers and set the speed
+  #
+  air_quality_alert_turn_on_air_purifiers:
+    alias: "Air Quality Alert - Turn on Air Purifiers"
+    mode: queued
+    fields:
+      speed:
+        description: "Speed to set the air purifiers to"
+        example: "25"
+        default: "25"
+        selector:
+          select:
+            options:
+              - "25"
+              - "50"
+              - "75"
+              - "100"
+    # 
+    # Purifier to set
+    sequence:
+      - action: fan.turn_on
+        data:
+          entity_id: fan.air_purifiers
+      - action: fan.set_preset_mode
+        data:
+          entity_id: fan.air_purifiers
+          preset_mode: Manual
+      - action: fan.set_percentage
+        data:
+          entity_id: fan.air_purifiers
+          percentage: "{{ speed }}"
+
+  # 
+  # Set the air purifier to auto
+  #
+  air_quality_alert_set_air_purifier_auto:
+    alias: "Air Quality Alert - Set Air Purifier to Auto"
+    mode: queued
+    sequence:
+      - action: fan.set_preset_mode
+        data:
+          entity_id: fan.air_purifiers
+          preset_mode: Auto

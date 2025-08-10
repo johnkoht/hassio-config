@@ -430,3 +430,15 @@
   conditions: []
   actions:
   mode: single
+- id: '1754455487847'
+  alias: custom assist weather test
+  description: ''
+  triggers:
+  - trigger: conversation
+    command: tell me the weather
+  conditions: []
+  actions:
+  - set_conversation_response: It's currently {{ states.weather.pirateweather.attributes.temperature
+      }} degrees with {{ states.weather.pirateweather.attributes.humidity }} percent
+      humidity
+  mode: single

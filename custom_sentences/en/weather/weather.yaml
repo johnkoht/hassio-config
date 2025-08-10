@@ -1,0 +1,8 @@
+language: "en"
+intents:
+  GetWeather:
+    data:
+      - sentences:
+          - "what is the weather?"
+          - "what's the weather today?"
+
