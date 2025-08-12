@@ -1,0 +1,9 @@
+sensor:
+  - platform: min_max
+    name: Main Bedroom Mean Temperature
+    unique_id: main_bedroom_mean_temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.main_bedroom_temperature
+      - sensor.main_bedroom_awair_temperature

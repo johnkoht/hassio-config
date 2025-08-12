@@ -1,10 +1,11 @@
 sensor:
   - platform: min_max
     name: Second Floor Temperature
+    unique_id: second_floor_temperature
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.main_bedroom_temperature
-      - sensor.gianluca_room_temperature
-      - sensor.nino_room_temperature
+      - sensor.main_bedroom_mean_temperature
+      - sensor.gianluca_room_mean_temperature
+      - sensor.nino_room_mean_temperature
       - sensor.guest_bedroom_temperature
