@@ -1,0 +1,63 @@
+# Example config/custom_sentences/en/media.yaml
+language: "en"
+intents:
+  SetVolume:
+    data:
+      - sentences:
+          - "(set|change) {media_player} volume to {volume} [percent]"
+          - "(set|change) [the] volume for {media_player} to {volume} [percent]"
+
+  StopMusic:
+    data:
+      - sentences:
+        - "(stop|pause) the music in the {media_player}"
+        - "(stop|pause) the {media_player} music"
+
+  ResumeMusic:
+    data:
+      - sentences:
+        - "resume the music in the {media_player}"
+        - "resume the {media_player} music"
+
+lists:
+  media_player:
+    values:
+      # Office
+      - in: "office"
+        out: "media_player.sonos_office"
+      # Kitchen
+      - in: "kitchen"
+        out: "media_player.sonos_kitchen"
+      # Family Room
+      - in: "family room"
+        out: "media_player.sonos_family_room"
+      # Patio
+      - in: "patio"
+        out: "media_player.sonos_patio"
+      # Dining Room
+      - in: "dining room"
+        out: "media_player.sonos_living_room"
+      # Main Bedroom
+      - in: "main bedroom"
+        out: "media_player.sonos_main_bedroom"
+      # Nino's bedroom'
+      - in: "nino's room"
+        out: "media_player.ninos_room"
+      # Basement
+      - in: "basement"
+        out: "media_player.sonos_basement"
+      # Playroom
+      - in: "playroom"
+        out: "media_player.sonos_playroom"
+      # Pool
+      - in: "pool"
+        out: "media_player.sonos_pool"
+      # Gazebo
+      - in: "gazebo"
+        out: "media_player.sonos_gazebo"
+  volume:
+    range:
+      from: 0
+      to: 100
+
+

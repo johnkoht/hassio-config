@@ -1,0 +1,18 @@
+language: "en"
+intents:
+  GetWeather:
+    data:
+      - sentences:
+          - "what is the weather?"
+          - "what's the weather today?"
+
+
+  GetOutdoorTemperature:
+    data:
+      - sentences:
+        - "what's the outdoor temperature?"
+        - "what's the outside temperature?"
+        - "what is the outdoor temperature?"
+        - "what is the outside temperature?"
+        - "what is the temperature outside?"
+        - "what's the temperature outside?"

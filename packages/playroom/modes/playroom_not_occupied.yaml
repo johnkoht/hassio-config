@@ -32,7 +32,7 @@ automation:
           minutes: 5
       # Playroom EPL Sensor Detects NO Occupancy
       - platform: state
-        entity_id: binary_sensor.epl_playroom_occupancy
+        entity_id: binary_sensor.playroom_presence_sensor
         to: "off"
     condition:
       - condition: state
@@ -49,7 +49,7 @@ automation:
         state: "off"
       # Playroom EPL Sensor Detects NO Occupancy
       - condition: state
-        entity_id: binary_sensor.epl_playroom_occupancy
+        entity_id: binary_sensor.playroom_presence_sensor
         state: "off"
       # Nobody via BLE
       - condition: template

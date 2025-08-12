@@ -3,16 +3,16 @@
     speech:
       text: "It is currently {{ states('weather.pirateweather') }}, and {{ state_attr('weather.pirateweather','temperature') }} degrees, with {{ state_attr('weather.pirateweather','humidity') }} percent humidity now."
 
+  GetOutdoorTemperature:
+    speech:
+      text: "The outdoor temperature is {{ states.sensor.tempest_temperature.state }}."
+
   Test:
     speech:
       text: "Hello!"
   Ping:
     speech:
       text: "Pong"
-
-  WhatWeather:
-    speech:
-      text: "It is currently {{ states('weather.pirateweather') }}, and {{ state_attr('weather.pirateweather','temperature') }} degrees, with {{ state_attr('weather.pirateweather','humidity') }} percent humidity now."
 
   WhereIsJohn:
     speech:
@@ -39,3 +39,29 @@
             Cristina is at {{ states.person.cristina_falbo.state }}
           {% endif %}
         {% endif %}
+        
+
+  SetVolume:
+    action:
+      service: "media_player.volume_set"
+      data:
+        entity_id: "{{ media_player }}"
+        volume_level: "{{ volume / 100.0 }}"
+    speech:
+      text: "Volume changed to {{ volume }}"
+
+  StopMusic:
+    action:
+      service: "media_player.media_stop"
+      data:
+        entity_id: "{{ media_player }}"
+    speech:
+      text: "Music stopped in {{ media_player }}"
+
+  ResumeMusic:
+    action:
+      service: "media_player.media_play"
+      data:
+        entity_id: "{{ media_player }}"
+    speech:
+      text: "Music resumed in {{ media_player }}"

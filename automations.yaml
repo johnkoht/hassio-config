@@ -442,3 +442,10 @@
       }} degrees with {{ states.weather.pirateweather.attributes.humidity }} percent
       humidity
   mode: single
+- id: '1754970331821'
+  alias: Music Assistant Voice Command
+  description: Play music through voice commands
+  use_blueprint:
+    path: music-assistant/mass_assist_blueprint_en.yaml
+    input:
+      default_player_entity_id_input: media_player.office_3

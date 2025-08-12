@@ -26,7 +26,7 @@ automation:
         to: "on"
       # Playroom EPL Sensor Detects Occupancy
       - platform: state
-        entity_id: binary_sensor.epl_playroom_occupancy
+        entity_id: binary_sensor.playroom_presence_sensor
         to: "on"
       # Hassio resloads/starts
       - platform: event
@@ -58,7 +58,7 @@ automation:
             state: "on"
           # Playroom EPL Sensor Detects Occupancy
           - condition: state
-            entity_id: binary_sensor.epl_playroom_occupancy
+            entity_id: binary_sensor.playroom_presence_sensor
             state: "on"
     action:
       - service: input_boolean.turn_on

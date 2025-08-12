@@ -18,14 +18,14 @@ intents:
       - sentences:
         - "Ping"
 
-  WhatWeather:
-    data:
-      - sentences:
-        - "weather please"
-        - "weather today"
+  # WhatWeather:
+  #   data:
+  #     - sentences:
+  #       - "weather please"
+  #       - "weather today"
   
-  GetWeather:
-    data:
-      - sentences:
-        - "what is the weather?"
-        - "what's the weather today?"
+  # GetWeather:
+  #   data:
+  #     - sentences:
+  #       - "what is the weather?"
+  #       - "what's the weather today?"
