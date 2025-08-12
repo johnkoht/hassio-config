@@ -1,0 +1,14 @@
+language: "en"
+intents:
+  WhereIsJohn:
+    data:
+      - sentences:
+        - "where is john?"
+        - "where's john"
+
+  WhereIsCristina:
+    data:
+      - sentences:
+        - "where is cristina?"
+        - "where's cristina"
+  

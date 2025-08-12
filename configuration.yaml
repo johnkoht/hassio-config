@@ -23,7 +23,9 @@ automation: !include automations.yaml
 automation mine: !include_dir_list automation/
 script: !include scripts.yaml
 script mine: !include_dir_named scripts/
-intent_script: !include_dir_named intent_script/
+#intent_script: !include_dir_named intent_script/
+intent:
+intent_script: !include intents.yaml
 scene: !include scenes.yaml
 scene mine: !include_dir_list scenes/
 notify: !include notify.yaml

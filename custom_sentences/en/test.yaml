@@ -1,0 +1,31 @@
+# language: "en"
+# intents:
+#   Test:
+#     data:
+#       - sentences:
+#           - "testerson"
+
+
+language: "en"
+intents:
+  Test:
+    data:
+      - sentences:
+        - "Hello"
+        - "Hi"
+  Ping:
+    data:
+      - sentences:
+        - "Ping"
+
+  WhatWeather:
+    data:
+      - sentences:
+        - "weather please"
+        - "weather today"
+  
+  GetWeather:
+    data:
+      - sentences:
+        - "what is the weather?"
+        - "what's the weather today?"
