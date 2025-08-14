@@ -84,6 +84,11 @@ automation:
           {% else %}
             {{ true }}
           {% endif %}
+      # Only run if Sylvia has been away for more than 24 hours
+      - condition: template
+        value_template: >
+          {{ states('input_boolean.sylvia_home') == 'off' 
+             and (now() - states.input_boolean.sylvia_home.last_changed).total_seconds() > 86400 }}
     actions:
       # Vacuum the dining room and foyer
       - action: vacuum.send_command
