@@ -25,6 +25,10 @@ automation:
           - input_select.john_sleep_state
           - input_select.cristina_sleep_state
         to: "Just Laid Down"
+      # Lights are turned off
+      - trigger: state
+        entity_id: light.main_bedroom_main_lights
+        to: "off"
     conditions:
       # Main bedroom is occupied
       - condition: state
