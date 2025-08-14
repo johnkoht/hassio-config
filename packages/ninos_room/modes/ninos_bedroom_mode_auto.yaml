@@ -39,10 +39,6 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-      # House is in Auto mode
-      - condition: state
-        entity_id: input_select.house
-        state: "Auto"
       # Bedroom is NOT occupied
       # We don't want ot change state if the bedroom is occupied
       - condition: state
