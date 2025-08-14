@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Kitchen Presence Sensor
+    unique_id: kitchen_presence_sensor
+    device_class: occupancy
+    entities:
+      - binary_sensor.screek_human_sensor_l12_73d3d8_presence
+      - binary_sensor.kitchen_presence_sensor_west

@@ -43,7 +43,7 @@ automation:
       # EPL Occupancy NOT Detected
       - trigger: state
         # entity_id: binary_sensor.epl_kitchen_occupancy
-        entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_presence
+        entity_id: binary_sensor.kitchen_presence_sensor
         to: "off"
     conditions:
       # Kitchen is occupied
@@ -53,7 +53,7 @@ automation:
       # EPL Occupancy Detected
       - condition: state
         # entity_id: binary_sensor.epl_kitchen_occupancy
-        entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_presence
+        entity_id: binary_sensor.kitchen_presence_sensor
         state: "off"
       # No Aqara occupancy
       - condition: state

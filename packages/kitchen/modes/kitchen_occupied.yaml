@@ -23,7 +23,7 @@ automation:
       # EPL Occupancy Detected
       - platform: state
         #entity_id: binary_sensor.epl_kitchen_occupancy
-        entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_presence
+        entity_id: binary_sensor.kitchen_presence_sensor
         to: "on"
     condition:
       # House is occupied
@@ -48,7 +48,7 @@ automation:
             state: "on"
           # EPL Occupancy Detected
           - condition: state
-            entity_id: binary_sensor.epl_kitchen_occupancy
+            entity_id: binary_sensor.kitchen_presence_sensor
             state: "on"
     action:
       - service: input_boolean.turn_on
