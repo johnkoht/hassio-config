@@ -5,6 +5,5 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.gianluca_room_temperature
       - sensor.gianlucas_door_sensor_temperature
       - sensor.gianluca_bedroom_awair_temperature

@@ -11,7 +11,7 @@ trigger:
   # Gianluca's temperature is too high or low (climate sensor)
   - platform: numeric_state
     entity_id:
-      - sensor.gianluca_room_temperature
+      - sensor.gianluca_bedroom_awair_temperature
       - sensor.gianlucas_door_sensor_temperature
     above: 78
     for:
@@ -19,7 +19,7 @@ trigger:
   # Gianluca's temperature is too high or low (door sensor)
   - platform: numeric_state
     entity_id:
-      - sensor.gianluca_room_temperature
+      - sensor.gianluca_bedroom_awair_temperature
       - sensor.gianlucas_door_sensor_temperature
     below: 67
     for:
@@ -39,12 +39,12 @@ condition:
     conditions:
       - condition: numeric_state
         entity_id:
-          - sensor.gianluca_room_temperature
+          - sensor.gianluca_bedroom_awair_temperature
           - sensor.gianlucas_door_sensor_temperature
         below: 67
       - condition: numeric_state
         entity_id:
-          - sensor.gianluca_room_temperature
+          - sensor.gianluca_bedroom_awair_temperature
           - sensor.gianlucas_door_sensor_temperature
         above: 78
 action:
@@ -52,7 +52,7 @@ action:
     data:
       media_players: auto
       speech_message: >-
-        {% set temp = states.sensor.gianluca_room_temperature.state %}
+        {% set temp = states.sensor.gianluca_bedroom_awair_temperature.state %}
         {% set door_temp = states.sensor.gianlucas_door_sensor_temperature.state %}
         {% set low = temp if temp < door_temp else door_temp %}
         {% set high = temp if temp > door_temp else door_temp %}
