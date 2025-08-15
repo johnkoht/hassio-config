@@ -1,0 +1,194 @@
+# 
+# Daily Morning Medication Reminder
+# 
+# This automation is used to remind us to give Nino his morning medication.
+# It will send a notification to his phone at <time>
+# He can snooze it for 15 minutes if needed.
+# 
+# 
+# 
+# Daily Morning Medication Bolean
+# Tracks if Nino has taken his morning medication
+# 
+input_boolean:
+  nino_daily_medication_taken:
+    name: Nino Daily Medication Taken
+    icon: mdi:pill
+
+# 
+# Daily Morning Medication Timer
+# This timer is used to snooze the medication reminder for 15 minutes.
+# 
+timer:
+  nino_daily_medication_timer:
+    name: Nino Daily Medication Timer
+    duration: "00:15:00"
+    restore: true
+    icon: mdi:rewind-15
+
+# 
+# Automations
+# 
+automation:
+  # 
+  # Nino Daily Medication Reminder
+  # 
+  # Send him an actionable notification at <time> He
+  # can snooze it for 15 minutes if needed. If he doesn't respond
+  # then it will automatically snooze.
+  # 
+  - id: "nino_daily_medication_reminder"
+    alias: "Nino Daily Medication Reminder"
+    trigger:
+      # Trigger at <time>
+      - trigger: time
+        at: "00:00:00"
+      # Trigger when the timer is finished
+      - trigger: event
+        event_type: timer.finished
+        event_data: 
+          entity_id: timer.nino_daily_medication_timer
+    conditions:
+      # Only run if Nino has not taken his morning medication
+      - condition: state
+        entity_id: input_boolean.nino_daily_medication_taken
+        state: "off"
+      # Only run if the timer is idle
+      - condition: state
+        entity_id: timer.nino_daily_medication_timer
+        state: "idle"
+      # Nino is awake
+      - condition: state
+        entity_id: input_select.nino_sleep_state
+        state: "Awake"
+    actions:
+      # 
+      # Set the action variables
+      # 
+      - variables:
+          action_taken: "{{ 'TAKEN_' ~ context.id }}"
+          action_snooze: "{{ 'SNOOZE_' ~ context.id }}"
+
+      # 
+      # Send the notification
+      # 
+      - action: script.general_notification
+        data:
+          title: Nino's Daily Medication Reminder
+          message: "It's time for Nino to take his morning medication."
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "nino-morning-medication"
+          actions:
+            - action: "{{ action_taken }}"
+              title: "Medication Taken"
+            - action: "{{ action_snooze }}"
+              title: "Snooze 15 Minutes"            
+      # 
+      # Wait for somebody to respond to the actionable notification, either
+      # by marking that he's taken the meds or by snoozing.
+      # 
+      - wait_for_trigger:
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_taken }}"
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_snooze }}"
+        timeout:
+          minutes: 15
+
+      # 
+      # Main Actions
+      # 
+      # IF we DO NOT RESPOND, then automatically snooze the timer
+      # IF we DO RESPOND, then mark that he took the medication and
+      # cancel the timer.
+      # 
+      - if:
+          - "{{ not wait.completed }}"
+        then:
+          # We didn't response so automatically snooze
+          - action: timer.start
+            entity_id: timer.nino_daily_medication_timer
+        else:
+          # 
+          # If we responded that he took the meds, then update the 
+          # input boolean and cancel the timer.
+          # 
+          - if:
+              - condition: template
+                value_template: "{{ wait.trigger.event.data.action == action_taken }}"
+            then:
+              # Mark that he took the medication
+              - action: input_boolean.turn_on
+                entity_id: input_boolean.nino_daily_medication_taken
+              # Cancel the timer
+              - action: timer.cancel
+                entity_id: timer.nino_daily_medication_timer
+              # Turn off the automation
+              - action: automation.turn_off
+                entity_id: automation.nino_daily_medication_reminder
+          # 
+          # If we responded that we snoozed, then start the timer.
+          # 
+          - if:
+            - condition: template
+              value_template: "{{ wait.trigger.event.data.action == action_snooze }}"
+            then:
+              - action: timer.start
+                entity_id: timer.nino_daily_medication_timer
+
+  # 
+  # Nino Medication Reminder Reset
+  # 
+  # Reset the medication reminder at 3:00am
+  # 
+  - id: "nino_medication_reminder_reset"
+    alias: "Nino Medication Reminder Reset"
+    trigger:
+      - trigger: time
+        at: "03:00:01"
+    actions:
+      # Turn off the input boolean
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.nino_daily_medication_taken
+      # Cancel the timer
+      - action: timer.cancel
+        entity_id: timer.nino_daily_medication_timer
+      # Turn on the automation
+      - action: automation.turn_on
+        entity_id: automation.nino_daily_medication_reminder
+
+  # 
+  # Nino Medication Reminder Shortcut Button
+  # 
+  # A physical button that we can press to mark that Nino has taken his
+  # morning medication.
+  # 
+  - id: "nino_medication_reminder_shortcut_button"
+    alias: "Nino Medication Reminder Shortcut Button"
+    initial_state: on
+    triggers:
+      - trigger: device
+        device_id: d98b081e7991a6e9ce1672128dad93ae
+        domain: zha
+        type: remote_button_short_press     
+        subtype: turn_on
+    conditions:
+      # Only run if Nino has not taken his morning medication
+      - condition: state
+        entity_id: input_boolean.nino_daily_medication_taken
+        state: "off"
+    actions:
+      # Mark that he took the medication
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.nino_daily_medication_taken
+      # Cancel the timer
+      - action: timer.cancel
+        entity_id: timer.nino_daily_medication_timer
+      # Turn off the automation
+      - action: automation.turn_off
+        entity_id: automation.nino_daily_medication_reminder
