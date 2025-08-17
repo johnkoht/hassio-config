@@ -4,7 +4,7 @@ input_boolean:
     icon: mdi:wall-sconce
     initial: off
 
-  exterior_floor_lights:
+  exterior_flood_lights:
     name: Exterior Flood Lights
     icon: mdi:wall-sconce
     initial: off
@@ -102,7 +102,7 @@ automation:
     mode: "single"
     trigger:
       - platform: state
-        entity_id: input_boolean.exterior_floor_lights
+        entity_id: input_boolean.exterior_flood_lights
         to: "on"
     action:
       - service: light.turn_on
@@ -115,7 +115,7 @@ automation:
     mode: "single"
     trigger:
       - platform: state
-        entity_id: input_boolean.exterior_floor_lights
+        entity_id: input_boolean.exterior_flood_lights
         to: "off"
     action:
       - service: light.turn_off
@@ -182,7 +182,7 @@ automation:
             state: "off"
           # Make sure the boolean is off
           - condition: state
-            entity_id: input_boolean.exterior_floor_lights
+            entity_id: input_boolean.exterior_flood_lights
             state: "off"
           # Make sure the boolean is off
           - condition: state
@@ -206,7 +206,7 @@ automation:
         entity_id: input_boolean.exterior_house_lights
       # Activate the flood light boolean
       - service: input_boolean.turn_on
-        entity_id: input_boolean.exterior_floor_lights
+        entity_id: input_boolean.exterior_flood_lights
       # Activate the accent lights boolean
       - service: input_boolean.turn_on
         entity_id: input_boolean.exterior_accent_lights
@@ -330,7 +330,7 @@ automation:
         entity_id: input_boolean.exterior_house_lights
       # Deactivate the flood light boolean
       - service: input_boolean.turn_off
-        entity_id: input_boolean.exterior_floor_lights
+        entity_id: input_boolean.exterior_flood_lights
       # Deactivate the accent lights boolean
       - service: input_boolean.turn_off
         entity_id: input_boolean.exterior_accent_lights
