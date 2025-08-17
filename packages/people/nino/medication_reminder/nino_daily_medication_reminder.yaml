@@ -48,6 +48,12 @@ automation:
         event_type: timer.finished
         event_data: 
           entity_id: timer.nino_daily_medication_timer
+      # Nino is awake for 1 hour
+      - trigger: state
+        entity_id: input_select.nino_sleep_state
+        to: "Awake"
+        for:
+          hours: 1
     conditions:
       # Only run if Nino has not taken his morning medication
       - condition: state
@@ -61,7 +67,27 @@ automation:
       - condition: state
         entity_id: input_select.nino_sleep_state
         state: "Awake"
+      # After <time> and before <time>
+      - condition: time
+        after: "00:00:00"
+        before: "00:00:00"
     actions:
+      #  
+      #  Voice Announcement
+      # 
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: chirp
+          priority: high
+          speech_message: >-
+            {{
+              [
+                "It's time for Nino to take his medication.",
+                "Nino, it's time to take your medication.",
+                "Don't forget to give Nino his medication.",
+              ] | random
+            }}
       # 
       # Set the action variables
       # 
@@ -97,6 +123,14 @@ automation:
             event_type: mobile_app_notification_action
             event_data:
               action: "{{ action_snooze }}"
+          # Or if button pressed!
+          - trigger: device
+            device_id: d98b081e7991a6e9ce1672128dad93ae
+            domain: zha
+            type: remote_button_short_press     
+            subtype: turn_on
+            event_data:
+              action: "{{ action_taken }}"
         timeout:
           minutes: 15
 
