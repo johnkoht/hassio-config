@@ -17,14 +17,5 @@ automation:
         after: "20:00:00"
         before: "05:00:00"
     actions:
-      # Arm Home
-      - action: alarm_control_panel.alarm_arm_home
-        entity_id: alarm_control_panel.panel
-
-      - action: script.general_notification
-        data:
-          message: Home is armed stay!
-          title: Security System
-          devices: "jk"
-          priority: "active"
-          tag: "home-security"
+      # Call the script to arm the home
+      - action: script.alarm_arm_home

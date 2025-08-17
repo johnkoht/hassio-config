@@ -1,0 +1,41 @@
+# Alarm - Arm Home
+# 
+# This script arms the home security system. Since we're 
+# arming the house in different automations, this script
+# is used to DRY thing up.
+# 
+script:
+  alarm_arm_home:
+    alias: Alarm - Arm Home
+    mode: "queued"
+    icon: mdi:security-home
+    sequence:
+      # Arm Home
+      - action: alarm_control_panel.alarm_arm_home
+        entity_id: alarm_control_panel.panel
+
+      # Notify John
+      - action: script.general_notification
+        data:
+          message: Home is armed stay!
+          title: Security System
+          devices: "jk"
+          priority: "active"
+          tag: "home-security"
+
+      # 
+      # If the house is occupied, turn on the automation that will
+      # disarm the alarm when somebody arrives and the house is occupied
+      # 
+      - if:
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "on"
+        then:
+          # Turn on the automation that will disarm the alarm
+          # when somebody arrives and the house is occupied
+          - action: automation.turn_on
+            entity_id: automation.alarm_disarm_when_somebody_arrives_and_house_occupied
+
+
+      

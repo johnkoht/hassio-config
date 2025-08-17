@@ -17,9 +17,8 @@ automation:
         entity_id: input_boolean.john_home
         state: "off"
     actions:
-      # Arm Home
-      - action: alarm_control_panel.alarm_arm_home
-        entity_id: alarm_control_panel.panel
+      # Call the script to arm the home
+      - action: script.alarm_arm_home
 
       # Notify Cristina
       - action: script.general_notification
@@ -36,7 +35,7 @@ automation:
           media_players: auto
           sound: "default"
           priority: high
-          speech_message: "I'm arming the security system since John's out of town. Make sure to unlock before opening an exterior door."
+          speech_message: "I'm arming the security system since John's out of town. Make sure to disarm before opening an exterior door."
 
   #
   # If John is AWAY, turn on the automation that

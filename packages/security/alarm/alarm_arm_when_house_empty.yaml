@@ -30,14 +30,6 @@ automation:
         entity_id: input_boolean.house_occupied
         state: "off"
     action:
-      # Arm Home
-      - service: alarm_control_panel.alarm_arm_home
-        entity_id: alarm_control_panel.panel
+      # Call the script to arm the home
+      - action: script.alarm_arm_home
 
-      - service: script.general_notification
-        data:
-          message: Home is armed since nobody is home.
-          title: Security System
-          devices: "jk"
-          priority: "active"
-          tag: "home-security"
