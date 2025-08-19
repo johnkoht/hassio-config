@@ -44,10 +44,16 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # It's not super bright outside
-      - condition: numeric_state
-        entity_id: sensor.tempest_illuminance
-        below: 250
+      # It's not very bright outside and after 10am
+      # Otherwise, the light will turn on in the morning
+      # if lux goes above 250 then drops under for a few mins
+      - and:
+        # It's not super bright outside
+        - condition: numeric_state
+          entity_id: sensor.tempest_illuminance
+          below: 250
+        - condition: time
+          after: "10:00:00"
       - condition: or
         conditions:
           # Sun is down
