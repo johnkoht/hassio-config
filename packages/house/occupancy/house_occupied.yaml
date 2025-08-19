@@ -26,16 +26,9 @@ automation:
           - sensor.sylvia_person
           - sensor.alex_person
         to: "home"
-      # 
-      # Hassio reloads/starts
-      # 
-      - trigger: event
-        event_type: automation_reloaded
-      - trigger: homeassistant
-        event: start
     conditions:
       # 
-      # House is current unoccupied
+      # House is currently NOT occupied
       # 
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -46,15 +39,6 @@ automation:
       - condition: template
         value_template: >
           {{ state_attr(trigger.entity_id, 'unlock_privilege') == "on" }}
-      # 
-      # Somebody is HOME
-      # This is useful for restarts
-      # 
-      # This is a group and will return "home" if
-      # any of the entities are home
-      - condition: state
-        entity_id: group.all_people
-        state: "home"
     actions:
       # 
       # Set the house occupied to on
