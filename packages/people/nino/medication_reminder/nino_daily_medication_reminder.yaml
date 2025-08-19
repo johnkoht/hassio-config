@@ -116,21 +116,22 @@ automation:
       # 
       - wait_for_trigger:
           - trigger: event
+            id: "push_action"
             event_type: mobile_app_notification_action
             event_data:
               action: "{{ action_taken }}"
           - trigger: event
+            id: "push_action"
             event_type: mobile_app_notification_action
             event_data:
               action: "{{ action_snooze }}"
           # Or if button pressed!
           - trigger: device
+            id: "button_action"
             device_id: d98b081e7991a6e9ce1672128dad93ae
             domain: zha
             type: remote_button_short_press     
             subtype: turn_on
-            event_data:
-              action: "{{ action_taken }}"
         timeout:
           minutes: 15
 
@@ -148,30 +149,29 @@ automation:
           - action: timer.start
             entity_id: timer.nino_daily_medication_timer
         else:
-          # 
-          # If we responded that he took the meds, then update the 
-          # input boolean and cancel the timer.
-          # 
-          - if:
-              - condition: template
-                value_template: "{{ wait.trigger.event.data.action == action_taken }}"
-            then:
-              # Mark that he took the medication
-              - action: input_boolean.turn_on
-                entity_id: input_boolean.nino_daily_medication_taken
-              # Cancel the timer
-              - action: timer.cancel
-                entity_id: timer.nino_daily_medication_timer
-              # Turn off the automation
-              - action: automation.turn_off
-                entity_id: automation.nino_daily_medication_reminder
-          # 
-          # If we responded that we snoozed, then start the timer.
-          # 
-          - if:
-            - condition: template
-              value_template: "{{ wait.trigger.event.data.action == action_snooze }}"
-            then:
+          - choose:
+              # 
+              # IF the physical button was pressed to 
+              # mark meds were taken
+              # 
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.id == 'button_action' }}"
+                sequence:
+                  - action: script.nino_medication_taken
+              # 
+              # ElSE IF a push action was taken and it was
+              # marked as taken
+              # 
+              - conditions:
+                  - condition: template
+                    value_template: "{{ wait.trigger.event.data.action == action_taken }}"
+                sequence:
+                  - action: script.nino_medication_taken
+            #
+            # ELSE if they snoozed, then start the timer
+            # 
+            default:
               - action: timer.start
                 entity_id: timer.nino_daily_medication_timer
 
@@ -212,17 +212,30 @@ automation:
         type: remote_button_short_press     
         subtype: turn_on
     conditions:
-      # Only run if Nino has not taken his morning medication
+      # Only run if he has not taken his morning medication
       - condition: state
         entity_id: input_boolean.nino_daily_medication_taken
         state: "off"
     actions:
+      # Trigger the script to mark that he's taken his medication
+      - action: script.nino_medication_taken
+
+
+
+script:
+  nino_medication_taken:
+    alias: "Nino Medication Taken"
+    mode: "single"
+    sequence:
+      # 
       # Mark that he took the medication
       - action: input_boolean.turn_on
         entity_id: input_boolean.nino_daily_medication_taken
+      # 
       # Cancel the timer
       - action: timer.cancel
         entity_id: timer.nino_daily_medication_timer
+      # 
       # Turn off the automation
       - action: automation.turn_off
         entity_id: automation.nino_daily_medication_reminder
