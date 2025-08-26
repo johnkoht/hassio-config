@@ -1,0 +1,31 @@
+automation:
+  - id: "garage_entry_door_auto_lock"
+    alias: "Garage Entry Door - Auto Lock"
+    initial_state: on
+    trigger:
+      # # If door has been unlocked for a while
+      # - platform: state
+      #   entity_id: lock.garage_entry_door
+      #   to: "unlocked"
+      #   for:
+      #     hours: 1
+      # At 10pm
+      - platform: time
+        at: "22:00:00"
+    condition:
+      # Garage entry door is unlocked
+      - condition: state
+        entity_id: lock.garage_entry_door
+        state: "unlocked"
+      # House is NOT in entertainment mode
+      - not:
+          - condition: state
+            entity_id: input_boolean.entertainment_mode
+            state: "on"
+    action:
+      # Lock the door!
+      - service: lock.lock
+        entity_id: lock.garage_entry_door
+
+
+

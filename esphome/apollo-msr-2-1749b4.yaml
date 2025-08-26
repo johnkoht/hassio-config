@@ -1,0 +1,24 @@
+substitutions:
+  name: apollo-msr-2-1749b4
+  friendly_name: Presence Detection - Main Bedroom West
+#packages:
+#  ApolloAutomation.MSR-2_Factory: github://ApolloAutomation/MSR-2/Integrations/ESPHome/MSR-2_Factory.yaml
+packages:
+  ApolloAutomation.MSR-2: # name of package/project
+    url: https://github.com/ApolloAutomation/MSR-2 # url of the repository
+    ref: main # branch, tag or commit SHA
+    files: [Integrations/ESPHome/MSR-2_BLE.yaml] # Path to config from base repo URL
+    refresh: 1min # how often to sync updates from the remote url
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: DFvYonPY+cUWrNk6F83/PvOZ6GiZ5hCLAGPByFXqAe0=
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
