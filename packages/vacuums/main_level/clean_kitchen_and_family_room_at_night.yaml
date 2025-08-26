@@ -27,7 +27,7 @@ automation:
       # then get back in, it will run unnecessarily.
       - condition: time
         after: "22:00:00"
-        before: "07:00:00"
+        before: "05:00:00"
       # Jr. Suite door is OPEN
       # otherwise the vacuum will get stuck in the Jr. Suite
       - condition: state
