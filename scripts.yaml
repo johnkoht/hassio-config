@@ -1,12 +1,3 @@
-turn_off_interior_lights:
-  alias: Interior Off
-  sequence:
-  - service: homeassistant.turn_off
-    data: {}
-    target:
-      entity_id: group.interior_lights
-  mode: single
-  icon: mdi:power-off
 climate_away:
   alias: Climate Away
   sequence:
@@ -64,25 +55,6 @@ tvs_off:
     domain: remote
   mode: single
   icon: mdi:television-off
-go_sleep:
-  alias: Go Sleep
-  sequence:
-  - service: homeassistant.turn_off
-    data: {}
-    target:
-      entity_id:
-      - group.first_floor_lights
-  - device_id: 8ff6e575e11c54a1fac5f4e022eee597
-    domain: climate
-    entity_id: climate.nest_main_floor
-    type: set_preset_mode
-    preset_mode: eco
-  - device_id: d21fee64f0e0c227432ffa0d1fef645c
-    domain: cover
-    entity_id: cover.garage_door_1
-    type: close
-  mode: single
-  icon: mdi:sleep
 notify_engine:
   alias: Notify Engine
   mode: single

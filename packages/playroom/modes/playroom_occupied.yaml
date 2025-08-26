@@ -22,7 +22,7 @@ automation:
         to: "on"
       # Playroom lights are turned on
       - platform: state
-        entity_id: group.playroom_lights
+        entity_id: light.playroom_lights
         to: "on"
       # Playroom EPL Sensor Detects Occupancy
       - platform: state

@@ -1,0 +1,26 @@
+# 
+# Upper floor lights
+# 
+light:
+  - platform: group
+    name: Upper Floor Lights
+    unique_id: upper_floor_lights
+    entities:
+      - light.upstairs_hallway
+      - light.stairs_light
+      - light.gianluca_bedroom_lights
+      - light.gianluca_lamp
+      - light.ninos_bedroom_main_lights
+      - light.nino_bedroom_lamp
+      - light.main_bedroom_lights
+      - light.main_bathroom_lights
+      - light.unfinished_area_main_lights
+
+
+# 
+# Upper Floor Lights On Count
+# 
+template:
+  - sensor:
+      - name: Upper Floor Lights On
+        state: "{{ expand(states.light.upper_floor_lights) | selectattr( 'state', 'eq', 'on') | list | count  }}"

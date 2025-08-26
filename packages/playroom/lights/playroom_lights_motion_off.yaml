@@ -25,10 +25,10 @@ automation:
         state: "off"
       # Lights are currently on
       - condition: state
-        entity_id: group.playroom_lights
+        entity_id: light.playroom_lights
         state: "on"
     action:
       - service: light.turn_off
-        entity_id: group.playroom_lights
+        entity_id: light.playroom_lights
       - service: automation.turn_off
         entity_id: automation.playroom_lights_motion_off

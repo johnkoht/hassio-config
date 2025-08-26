@@ -57,7 +57,7 @@ automation:
         below: 150
       # Lights are currently off
       - condition: state
-        entity_id: group.office_lights
+        entity_id: light.office_lights
         state: "off"
       - condition: or
         conditions:
@@ -71,7 +71,7 @@ automation:
             state: "DnD"
     action:
       - service: light.turn_on
-        entity_id: group.office_lights
+        entity_id: light.office_lights
 
       # Toggle the boolean to flag it was auto
       - service: input_boolean.turn_on

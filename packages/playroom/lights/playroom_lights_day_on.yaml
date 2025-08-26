@@ -69,7 +69,7 @@ automation:
             below: 100
       # Lights are currently off
       - condition: state
-        entity_id: group.playroom_lights
+        entity_id: light.playroom_lights
         state: "off"
       # Playroom is Auto
       - condition: state
@@ -77,4 +77,4 @@ automation:
         state: "Auto"
     action:
       - service: light.turn_on
-        entity_id: group.playroom_lights
+        entity_id: light.playroom_lights

@@ -1,0 +1,29 @@
+# 
+# Main floor lights
+# 
+light:
+  - platform: group
+    name: Main Floor Lights
+    unique_id: main_floor_lights
+    entities:
+      - light.foyer_lights
+      - light.playroom_lights
+      - light.office_lights
+      - light.kitchen_lights
+      - light.dining_room_lights
+      - light.garage_lights
+      - light.family_room_main_lights
+      - light.mudroom_main_lights
+      - light.jr_suite_bedroom_main_lights
+      - light.laundry_room_main_lights
+      - light.powder_room_main_lights
+      - light.mudroom_bathroom_main_lights
+
+
+# 
+# Main Floor Lights On Count
+# 
+template:
+  - number:
+      - name: Main Floor Lights On
+        state: "{{ expand(states.light.main_floor_lights) | selectattr( 'state', 'eq', 'on') | list | count  }}"

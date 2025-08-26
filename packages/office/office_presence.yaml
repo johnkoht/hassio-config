@@ -120,13 +120,13 @@ binary_sensor:
       #
       # Lights ON
       - platform: state
-        entity_id: group.office_lights
+        entity_id: light.office_lights
         prob_given_true: 0.55
         prob_given_false: 0.2
         to_state: "on"
       # # Lights OFF
       # - platform: state
-      #   entity_id: group.office_lights
+      #   entity_id: light.office_lights
       #   prob_given_true: 0.70
       #   prob_given_false: 0.98
       #   to_state: "off"

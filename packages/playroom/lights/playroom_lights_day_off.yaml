@@ -58,4 +58,4 @@ automation:
         state: "on"
     action:
       - service: light.turn_off
-        entity_id: group.playroom_lights
+        entity_id: light.playroom_lights

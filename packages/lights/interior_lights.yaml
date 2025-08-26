@@ -1,0 +1,19 @@
+# 
+# Interior Lights
+# 
+light:
+  - platform: group
+    name: Interior Lights
+    unique_id: interior_lights
+    entities:
+      - light.main_floor_lights
+      - light.upper_floor_lights
+
+
+# 
+# Interior Lights On Count
+# 
+template:
+  - number:
+      - name: Interior Lights On
+        state: "{{ expand(states.light.interior_lights) | selectattr( 'state', 'eq', 'on') | list | count  }}"
