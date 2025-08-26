@@ -24,6 +24,6 @@ light:
 # Main Floor Lights On Count
 # 
 template:
-  - number:
+  - sensor:
       - name: Main Floor Lights On
         state: "{{ expand(states.light.main_floor_lights) | selectattr( 'state', 'eq', 'on') | list | count  }}"

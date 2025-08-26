@@ -14,6 +14,6 @@ light:
 # Interior Lights On Count
 # 
 template:
-  - number:
+  - sensor:
       - name: Interior Lights On
         state: "{{ expand(states.light.interior_lights) | selectattr( 'state', 'eq', 'on') | list | count  }}"
