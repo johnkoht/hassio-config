@@ -16,6 +16,14 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Low on water
+      - condition: state
+        entity_id: binary_sensor.roborock_s7_water_shortage
+        state: "on"
+      # Sensors need to be cleaned (less than 2 hours)
+      - condition: state
+        entity_id: sensor.roborock_s7_sensor_dirty_left
+        below: 7200
     actions:
       # Wait for the kitchen to be occupied for 5 minutes
       - wait_for_trigger:
