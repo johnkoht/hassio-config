@@ -1,0 +1,68 @@
+# Air Quality Averages
+# 
+# Mean of all the Awair sensors throughout the house
+# 
+sensor:
+  # 
+  # Indoor Air Quality Score
+  # 
+  - platform: min_max
+    name: Indoor Air Quality Score
+    unique_id: indoor_air_quality_score
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_score
+      - sensor.gianluca_bedroom_awair_score
+      - sensor.nino_bedroom_awair_score
+      - sensor.jr_suite_awair_score
+      - sensor.main_bedroom_awair_score
+      - sensor.office_awair_score
+
+  # 
+  # Indoor Air Quality PM2.5
+  # 
+  - platform: min_max
+    name: Indoor Air Quality PM2.5
+    unique_id: indoor_air_quality_pm2_5
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_pm2_5
+      - sensor.gianluca_bedroom_awair_pm2_5
+      - sensor.nino_bedroom_awair_pm2_5
+      - sensor.jr_suite_awair_pm2_5
+      - sensor.main_bedroom_awair_pm2_5
+      - sensor.office_awair_pm2_5
+
+  # 
+  # Indoor Air Quality CO2
+  # 
+  - platform: min_max
+    name: Indoor Air Quality CO2
+    unique_id: indoor_air_quality_co2
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_co2
+      - sensor.gianluca_bedroom_awair_co2
+      - sensor.nino_bedroom_awair_co2
+      - sensor.jr_suite_awair_co2
+      - sensor.main_bedroom_awair_co2
+      - sensor.office_awair_co2
+
+  # 
+  # Indoor Air Quality TVOC
+  # 
+  - platform: min_max
+    name: Indoor Air Quality TVOC
+    unique_id: indoor_air_quality_tvoc
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_vocs
+      - sensor.gianluca_bedroom_awair_vocs
+      - sensor.nino_bedroom_awair_vocs
+      - sensor.jr_suite_awair_vocs
+      - sensor.main_bedroom_awair_vocs
+      - sensor.office_awair_vocs
