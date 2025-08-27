@@ -3,22 +3,21 @@ automation:
     alias: "Gianluca Birthday Countdown Reminder"
     mode: "single"
     initial_state: off
-    trigger:
+    triggers:
       # At 7am
-      - platform: time
+      - trigger: time
         at: "07:05:00"
-      # At 7:35am
-      - platform: time
-        at: "07:35:00"
-      # At 8am
-      - platform: time
-        at: "08:05:00"
       # At 8:35am
-      - platform: time
+      - trigger: time
         at: "08:35:00"
       # At 6pm
-      - platform: time
+      - trigger: time
         at: "18:05:00"
+      - trigger: state
+        entity_id: input_select.gianluca_sleep_state
+        state: "Awake"
+        for:
+          minutes: 15
     condition:
       # House is occupied
       - condition: state
@@ -31,6 +30,9 @@ automation:
       # After 7am
       - condition: time
         after: "07:00:00"
+      - condition: state
+        entity_id: input_select.gianluca_sleep_state
+        state: "Awake"
     action:
       # Wait for motion in the kitchen or family room
       - wait_template: >-
