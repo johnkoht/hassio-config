@@ -5,20 +5,28 @@ automation:
   - id: "main_bedroom_speech_notifications_on"
     initial_state: on
     alias: "Main Bedroom Speech Notifications On"
-    trigger:
+    triggers:
       # Main Bedroom becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "on"
       # Main bedroom turns to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Auto"
+      # Nobody is in bed
+      - trigger: state
+        entity_id: binary_sensor.somebody_in_bed
+        to: "off"
     condition:
       # Main Bedroom is occupied
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
         state: "on"
+      # Nobody is in bed
+      - condition: state
+        entity_id: binary_sensor.somebody_in_bed
+        state: "off"
       # Main Bedroom is Auto or Wake
       - condition: or
         conditions:
@@ -28,7 +36,7 @@ automation:
           - condition: state
             entity_id: input_select.main_bedroom
             state: "Wake"
-    action:
+    actions:
       # Turn on the speech notifications boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_speech_notifications
