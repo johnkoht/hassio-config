@@ -1,0 +1,15 @@
+script:
+  repeat_last_voice_announcement:
+    alias: Repeat Latest Voice Announcement
+    mode: "queued"
+    sequence:
+      #
+      # Voice Announcement
+      #
+      - action: script.voice_announcement
+        data:
+          media_players: "auto"
+          sound: "default"
+          priority: normal
+          expires_in: 10
+          speech_message: "{{ states.input_text.latest_voice_announcement.state }}"
