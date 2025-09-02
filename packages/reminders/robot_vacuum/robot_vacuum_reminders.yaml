@@ -21,7 +21,7 @@ automation:
         entity_id: binary_sensor.roborock_s7_water_shortage
         state: "on"
       # Sensors need to be cleaned (less than 2 hours)
-      - condition: state
+      - condition: numeric_state
         entity_id: sensor.roborock_s7_sensor_dirty_left
         below: 7200
     actions:
