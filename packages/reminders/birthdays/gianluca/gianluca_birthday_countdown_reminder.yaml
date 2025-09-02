@@ -15,7 +15,7 @@ automation:
         at: "18:05:00"
       - trigger: state
         entity_id: input_select.gianluca_sleep_state
-        state: "Awake"
+        to: "Awake"
         for:
           minutes: 15
     condition:
