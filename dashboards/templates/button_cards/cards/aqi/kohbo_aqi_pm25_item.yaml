@@ -1,0 +1,13 @@
+kohbo_aqi_pm25_item:
+  template: kohbo_aqi_item
+  name: PM2.5
+  icon: phu:pm2-5
+  state_display: |
+    [[[
+      return entity.state.replace("µg/m³", "").trim();
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: aqi_status
+  custom_fields:
+    unit: "µg/m³"

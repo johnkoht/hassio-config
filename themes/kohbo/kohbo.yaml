@@ -1,11 +1,16 @@
 ---
 kohbo:
-  primary-font-family:
-    "Nunito Sans"
-    #   # Global
+  # primary-font-family: "Inter"
+  ha-font-family-body: "Inter"
+  ha-font-family-heading: "Inter"
+  # lovelace-background: radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%) radial-gradient(110.43% 50.94% at 19.08% 11.09%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%) "#1D2023"
+  #   # Global
   #background-image: "center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg-kibibit-theme.png')"
   background-image: "radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), radial-gradient(110.43% 50.94% at 19.08% 11.09%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), #1D2023"
+  # background-image: url("/local/kohbo/images/gradient-bg.png");
   lovelace-background: var(--background-image)
+  #lovelace-background: 'center / cover no-repeat url("/local/kohbo/images/gradient-bg.png") fixed'
+
   #primary-background-color: "#ffffff"
   #lovelace-background: radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), radial-gradient(110.43% 50.94% at 19.08% 11.09%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), "#1D2023";
   #lovelace-background: var(--background);
@@ -62,15 +67,19 @@ kohbo:
   ha-card-backdrop-filter: blur(4px)
   ha-card-border-width: 1px
   ha-card-border-radius: 12px
-  ha-card-border-color: "#373A3E"
+  ha-card-border-color: "#3A3F46"
+  ha-card-box-shadow: 0px 0px 15px 1px rgba(0,0,0,.2), 0 1px 2px rgba(0,0,0,.2)
+
+  ha-section-grid-row-gap: 20px
+  
   #ha-card-border-image: "linear-gradient(to left, #E9ECEF 0%, #E9ECEF 100%)"
-  card-mod-card-yaml: |
-    .: |
-      ha-card,
-      button-card {
-        backdrop-filter: blur(4px);
-        border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
-      }
+  # card-mod-card-yaml: |
+  #   .: |
+  #     ha-card,
+  #     button-card {
+  #       backdrop-filter: blur(4px);
+  #       border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+  #     }
 
 #   card-background-color: var(--secondary-background-color) # Unused entities table background
 #   paper-listbox-background-color: var(--primary-background-color)

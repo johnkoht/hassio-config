@@ -1,0 +1,53 @@
+kohbo_aqi_item:
+  show_state: true
+  show_icon: false
+  variables:
+    aqi_status: "Good"
+  styles:
+    grid:
+      - grid-template-areas: '"aqi aqi" "n n" "s s" "unit unit"'
+      - grid-template-rows: 1fr
+    card:
+      - background: transparent
+      - box-shadow: none
+      - padding: 15px 10px 20px 10px
+      - border: none
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+      - height: 175px;
+    name:
+      - font-size: 10px
+      - color: "#ADB5BD"
+    state:
+      - font-weight: normal
+      - color: "#F8F9FA"
+      - font-size: 16px;
+      - margin: 6px 0
+    custom_fields:
+      unit:
+        - font-size: 11px
+        - color: "#ADB5BD"
+      aqi:
+        - margin-bottom: 5px
+  custom_fields:
+    aqi: >
+      [[[  
+        if (variables.aqi_status === 'Good') {
+          return '<img src="/local/kohbo/images/aqi/good.png" alt="AQI Good" />'
+        }
+        if (variables.aqi_status === 'Acceptable') {
+          return '<img src="/local/kohbo/images/aqi/acceptable.png" alt="AQI Acceptable" />'
+        }
+        if (variables.aqi_status === 'Moderate') {
+          return '<img src="/local/kohbo/images/aqi/moderate.png" alt="AQI Moderate" />'
+        }
+        if (variables.aqi_status === 'Unhealthy') {
+          return '<img src="/local/kohbo/images/aqi/unhealthy.png" alt="AQI Unhealthy" />'
+        }
+        return '<img src="/local/kohbo/images/aqi/hazardous.png" alt="AQI Hazardous" />'
+      ]]]
+    unit: >
+      [[[
+        return variables.unit;
+      ]]]
+    

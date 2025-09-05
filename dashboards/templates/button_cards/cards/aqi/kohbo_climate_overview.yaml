@@ -1,0 +1,40 @@
+type: custom:stack-in-card
+cards:
+  - type: custom:mini-graph-card
+    entities:
+      - entity: sensor.average_indoor_temperature
+        color: "#59A5D8"
+    name: Indoor Climate
+    icon: mdi:thermometer
+    card_mod:
+      style: |
+        ha-card {
+          border: none;
+        }
+        ha-card .header {
+          padding-bottom: 2px;
+        }
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        entity: sensor.average_indoor_humidity
+        template: kohbo_aqi_humidity_item
+
+      - type: custom:button-card
+        entity: sensor.indoor_air_quality_pm2_5
+        template: kohbo_aqi_pm25_item
+        variables:
+          aqi_status: "[[[ return states['sensor.indoor_air_quality_pm2_5_status'].state ]]]"
+
+      - type: custom:button-card
+        entity: sensor.indoor_air_quality_co2
+        template: kohbo_aqi_co2_item
+        variables:
+          aqi_status: "[[[ return states['sensor.indoor_air_quality_co2_status'].state ]]]"
+      
+      - type: custom:button-card
+        entity: sensor.indoor_air_quality_tvoc
+        template: kohbo_aqi_tvocs_item
+        variables:
+          aqi_status: "[[[ return states['sensor.indoor_air_quality_tvoc_status'].state ]]]"

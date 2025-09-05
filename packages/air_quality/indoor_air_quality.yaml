@@ -44,12 +44,12 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.kitchen_awair_co2
-      - sensor.gianluca_bedroom_awair_co2
-      - sensor.nino_bedroom_awair_co2
-      - sensor.jr_suite_awair_co2
-      - sensor.main_bedroom_awair_co2
-      - sensor.office_awair_co2
+      - sensor.kitchen_awair_carbon_dioxide
+      - sensor.gianluca_bedroom_awair_carbon_dioxide
+      - sensor.nino_bedroom_awair_carbon_dioxide
+      - sensor.jr_suite_awair_carbon_dioxide
+      - sensor.main_bedroom_awair_carbon_dioxide
+      - sensor.office_awair_carbon_dioxide
 
   # 
   # Indoor Air Quality TVOC
@@ -66,3 +66,74 @@ sensor:
       - sensor.jr_suite_awair_vocs
       - sensor.main_bedroom_awair_vocs
       - sensor.office_awair_vocs
+
+
+template:
+  - sensor:
+      - name: "Indoor Air Quality PM2.5 Status"
+        unique_id: sensor.indoor_air_quality_pm2_5_status
+        state: >
+          {% set pm25 = states('sensor.indoor_air_quality_pm2_5') | float %}
+
+          {% set pm25_acc = states('input_number.pm25_acceptable') | float %}
+          {% set pm25_mod = states('input_number.pm25_moderate') | float %}
+          {% set pm25_poor = states('input_number.pm25_poor') | float %}
+          {% set pm25_haz = states('input_number.pm25_hazardous') | float %}
+
+          {% if pm25 > pm25_haz %}
+            Hazardous
+          {% elif pm25 > pm25_poor %}
+            Unhealthy
+          {% elif pm25 > pm25_mod %}
+            Moderate
+          {% elif pm25 > pm25_acc %}
+            Acceptable
+          {% else %}
+            Good
+          {% endif %} 
+
+  - sensor:
+      - name: "Indoor Air Quality CO2 Status"
+        unique_id: sensor.indoor_air_quality_co2_status
+        state: >
+          {% set co2 = states('sensor.indoor_air_quality_co2') | float %}
+
+          {% set co2_acc = states('input_number.co2_acceptable') | float %}
+          {% set co2_mod = states('input_number.co2_moderate') | float %}
+          {% set co2_poor = states('input_number.co2_poor') | float %}
+          {% set co2_haz = states('input_number.co2_hazardous') | float %}
+
+          {% if co2 > co2_haz %}
+            Hazardous
+          {% elif co2 > co2_poor %}
+            Unhealthy
+          {% elif co2 > co2_mod %}
+            Moderate
+          {% elif co2 > co2_acc %}
+            Acceptable
+          {% else %}
+            Good
+          {% endif %}
+
+  - sensor:
+      - name: "Indoor Air Quality TVOC Status"
+        unique_id: sensor.indoor_air_quality_tvoc_status
+        state: >
+          {% set voc = states('sensor.indoor_air_quality_tvoc') | float %}
+
+          {% set voc_acc = states('input_number.tvoc_acceptable') | float %}
+          {% set voc_mod = states('input_number.tvoc_moderate') | float %}
+          {% set voc_poor = states('input_number.tvoc_poor') | float %}
+          {% set voc_haz = states('input_number.tvoc_hazardous') | float %}
+
+          {% if voc > voc_haz %}
+            Hazardous
+          {% elif voc > voc_poor %}
+            Unhealthy
+          {% elif voc > voc_mod %}
+            Moderate
+          {% elif voc > voc_acc %}
+            Acceptable
+          {% else %}
+            Good
+          {% endif %}

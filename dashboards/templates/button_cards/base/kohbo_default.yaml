@@ -1,0 +1,20 @@
+kohbo_default:
+  styles:
+    card:
+      - "--mdc-ripple-color": transparent
+      - "-webkit-tap-highlight-color": transparent
+      - position: relative
+      # - border: none
+      # - border-radius: 0
+      # - padding: 0
+      # - margin: 0
+      # - animation: fadeIn 0.3s ease-in forwards
+  # extra_styles: |
+  #   @keyframes fadeIn {
+  #     from {
+  #       opacity: 0
+  #     }
+  #     to {
+  #       opacity: 1
+  #     }
+  #   }

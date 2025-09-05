@@ -1,0 +1,13 @@
+kohbo_aqi_humidity_item:
+  template: kohbo_aqi_item
+  name: Humidity
+  icon: mdi:water-percent
+  state_display: |
+    [[[
+      return entity.state.replace("%", "").trim();
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: aqi_status
+  custom_fields:
+    unit: "%"

@@ -1,0 +1,11 @@
+kohbo_title:
+  styles:
+    card:
+      - height: 100px
+      - size: 100%
+      - background: transparent
+      - border: none
+      - box-shadow: none
+    name:
+      - color: '#F8F9FA'
+      - font-size: 45px

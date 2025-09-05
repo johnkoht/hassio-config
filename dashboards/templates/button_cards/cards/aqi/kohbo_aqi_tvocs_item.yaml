@@ -1,0 +1,13 @@
+kohbo_aqi_tvocs_item:
+  template: kohbo_aqi_item
+  name: TVOC
+  icon: phu:voc
+  state_display: |
+    [[[
+      return entity.state.replace("ppb", "").trim();
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: aqi_status
+  custom_fields:
+    unit: "ppb"

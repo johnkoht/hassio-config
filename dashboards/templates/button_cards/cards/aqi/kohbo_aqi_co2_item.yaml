@@ -1,0 +1,13 @@
+kohbo_aqi_co2_item:
+  template: kohbo_aqi_item
+  name: CO2
+  icon: mdi:molecule-co2
+  state_display: |
+    [[[
+      return entity.state.replace("ppm", "").trim();
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: aqi_status
+  custom_fields:
+    unit: "ppm"

@@ -50,8 +50,15 @@ frontend:
     - /hacsfiles/hass-hue-icons/hass-hue-icons.js
   themes: !include_dir_merge_named themes
 
-# lovelace:
-#   mode: storage
+lovelace:
+  mode: storage
+  dashboards:
+    dashboard-kohbo:
+      mode: yaml
+      title: "kohbo"
+      icon: mdi:home-assistant
+      show_in_sidebar: true
+      filename: dashboards/kohbo/kohbo.yaml
   
 
 zone:
