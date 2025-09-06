@@ -1,7 +1,7 @@
 button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
 views:
-  - title: Home
-    type: sections
+  - type: sections
+    title: Home
     max_columns: 1
     path: home
     theme: kohbo
@@ -14,18 +14,79 @@ views:
             template: kohbo_title
             name: Home
 
-          # - type: custom:button-card
-          #   template: kohbo_security_overview
-          #   name: Security
-          #   variables:
-          #     security_status: sensor.house_security_status
-          #     alarm: alarm_control_panel.panel
-          #     locks: lock.house_locks
-          #     garage_doors: cover.garage_doors
-
           - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
           - !include /config/dashboards/templates/button_cards/cards/aqi/kohbo_climate_overview.yaml
 
+      - type: grid
+        card_mod:
+          style: |
+            .container {
+              row-gap: 0;
+            }
+        cards:
+          - type: heading
+            heading: Overview
+            card_mod:
+              style: |
+                .container {
+                  margin-bottom: -10px;
+                }
+                .title p {
+                  text-transform: uppercase;
+                  font-size: 14px;
+                  font-weight: bold;
+                }
+          
+          - type: custom:layout-card
+            layout_type: grid
+            layout_options: !include /config/dashboards/templates/includes/kohbo_entity_layout.yaml
+            cards:
+              - type: custom:button-card
+                entity: light.interior_lights
+                name: Interior Lights
+                template: kohbo_device_entity
+                icon: kohbo:kohbo-light
+                state_display: >
+                  [[[
+                    if (states['light.interior_lights'].state == "on")
+                      return `${states['sensor.interior_lights_on'].state} Lights On`
+                    else
+                      return "Off"
+                  ]]]
+
+              - type: custom:button-card
+                entity: light.exterior_lights
+                name: Exterior Lights
+                template: kohbo_device_entity
+                icon: kohbo:kohbo-lamp
+
+              - type: custom:button-card
+                entity: binary_sensor.exterior_doors
+                name: Exterior Doors
+                template: kohbo_device_entity
+                # icon: kohbo:kohbo-door
+                icon: >
+                  [[[
+                    if (entity.state == "open")
+                      return "kohbo:kohbo-door-open"
+                    else
+                      return "kohbo:kohbo-door-closed"
+                  ]]]
+
+              - type: custom:button-card
+                entity: binary_sensor.windows
+                name: Windows
+                template: kohbo_device_entity
+                # icon: kohbo:kohbo-window
+                icon: >
+                  [[[
+                    if (entity.state == "open")
+                      return "kohbo:kohbo-window-open"
+                    else
+                      return "kohbo:kohbo-window-closed"
+                  ]]]
+                  
+            
           
 
 

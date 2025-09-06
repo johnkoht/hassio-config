@@ -1,0 +1,28 @@
+kohbo_device_entity:
+  template: kohbo_entity
+  layout: vertical
+  show_state: true
+  size: 100%
+  styles:
+    card:
+      - height: 155px
+    name:
+      - margin-bottom: 8px
+    state:
+      - color: "#CED4DA"
+      - font-size: 12px
+      - font-weight: normal
+    icon:
+      - color: >
+          [[[
+            if (entity.state == "on")
+              return '#FFD166';
+            else if (entity.state == "open")
+              return '#59A5D8';
+            else
+              return '#F8F9FA';
+          ]]]
+    img_cell:
+      - height: 40px
+      - width: 40px
+      - margin-bottom: 15px
