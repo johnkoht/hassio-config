@@ -1,0 +1,11 @@
+style: |
+  ha-card {
+    background: #272A2E;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    border: none;
+    box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+  }

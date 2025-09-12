@@ -9,7 +9,7 @@ template:
   - sensor:
       - name: "Nonna Person"
         unique_id: nonna_person
-        state: "{{ states.person.nonna.state }}"
+        state: "{{ states.person.mary_falbo.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.nonna_unlock_privilege.state }}"
 

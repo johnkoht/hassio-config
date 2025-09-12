@@ -1,0 +1,40 @@
+style:
+  hui-generic-entity-row$: |
+      state-badge {
+        display: none;
+      }
+      .info {
+        margin-left:0 !important;
+        padding-left: 0 !important;
+      }
+
+  ha-entity-toggle$: |
+      ha-switch $ .mdc-switch {
+        background: blue !important;
+        height: 55px;
+
+        .mdc-switch__track {
+          height: 51px !important;
+          width: 31px !important;
+        }
+      }
+      ha-switch {
+        background: red;
+
+        .mdc-switch {
+          background: blue !important;
+          height: 55px;
+
+          .mdc-switch__track {
+            height: 51px !important;
+            width: 31px !important;
+          }
+        }
+      }
+      .mdc-switch {
+        background: orange;
+      }
+      .mdc-switch .mdc-switch__track {
+        height: 51px !important;
+        width: 31px !important;
+      }

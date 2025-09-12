@@ -26,18 +26,7 @@ cards:
   # - type: horizontal-stack
   - type: custom:stack-in-card
     mode: horizontal
-    card_mod:
-      style: |
-        ha-card {
-          background: #272A2E;
-          border-top-right-radius: 0;
-          border-top-left-radius: 0;
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
-          box-shadow: none;
-          border: none;
-          box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
-        }
+    card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
     cards:
       - type: custom:button-card
         entity: sensor.average_indoor_humidity

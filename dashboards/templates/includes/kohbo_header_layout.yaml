@@ -1,0 +1,9 @@
+style: |
+  .container {
+    margin-bottom: -10px;
+  }
+  .title p {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+  }

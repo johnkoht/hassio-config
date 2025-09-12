@@ -66,26 +66,12 @@ cards:
  
   - type: custom:stack-in-card
     mode: horizontal
-    keep:
-      background: true
-    card_mod:
-      style: |
-        ha-card {
-          background: #272A2E;
-          border-top-right-radius: 0;
-          border-top-left-radius: 0;
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
-          box-shadow: none;
-          border: none;
-          box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
-        }
+    card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
     cards:
       - type: custom:button-card
         entity: alarm_control_panel.panel
         name: Alarm
         template: kohbo_security_item
-        #icon: kohbo:kohbo-alarm-armed
         state:
           - value: 'disarmed'
             icon: kohbo:kohbo-alarm-disarmed
@@ -98,7 +84,6 @@ cards:
         entity: lock.house_locks
         name: Locks
         template: kohbo_security_item
-        # icon: kohbo:kohbo-lock-locked
         state:
           - value: 'unlocked'
             icon: kohbo:kohbo-lock-unlocked
@@ -110,3 +95,4 @@ cards:
         name: Garage
         template: kohbo_security_item
         icon: kohbo:kohbo-garage-closed
+        
