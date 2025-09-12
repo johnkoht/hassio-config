@@ -1,4 +1,8 @@
 style:
+  .: |
+    hui-generic-entity-row {
+      padding: 4px;
+    }
   hui-generic-entity-row$: |
       state-badge {
         display: none;
@@ -6,35 +10,59 @@ style:
       .info {
         margin-left:0 !important;
         padding-left: 0 !important;
+        font-weight: 500;
+        font-size: 16px;
+
+        .secondary {
+          font-weight: 400;
+          font-size: 12px;
+          color: #ADB5BD;
+        }
       }
+
+  hui-generic-entity-row:
+    ha-entity-toggle:
+      $:
+        ha-switch:
+          $: |
+            .mdc-switch__track  {
+              height: 32px !important;
+              width: 50px !important;
+              border-radius: 16px !important;
+              background: #484C51 !important;
+              opacity: 1 !important;
+              border: none !important;
+            }
+            .mdc-switch__thumb-underlay {
+              height: 32px !important;
+              width: 50px !important;
+              top: 0px !important;
+              left: -7px !important;
+            }
+            .mdc-switch__thumb {
+              height: 28px !important;
+              width: 28px !important;
+              border-radius: 14px !important;
+              background: #FFFFFF !important;
+              box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 3px 8px rgba(0, 0, 0, 0.15), 0px 3px 1px rgba(0, 0, 0, 0.06);
+              border: none !important;
+            }
+
+            .mdc-switch__native-control {
+              width: 58px !important;
+              height: 32px !important;
+            }
+
+            .mdc-switch--checked .mdc-switch__thumb-underlay {
+              left: -8px !important;
+            }
+
+            .mdc-switch--checked .mdc-switch__track {
+              background: #59A5D8 !important;
+            }
+          
 
   ha-entity-toggle$: |
-      ha-switch $ .mdc-switch {
-        background: blue !important;
-        height: 55px;
-
-        .mdc-switch__track {
-          height: 51px !important;
-          width: 31px !important;
-        }
-      }
-      ha-switch {
-        background: red;
-
-        .mdc-switch {
-          background: blue !important;
-          height: 55px;
-
-          .mdc-switch__track {
-            height: 51px !important;
-            width: 31px !important;
-          }
-        }
-      }
-      .mdc-switch {
-        background: orange;
-      }
-      .mdc-switch .mdc-switch__track {
-        height: 51px !important;
-        width: 31px !important;
-      }
+    ha-switch {
+      padding: 6px 5px !important;
+    }

@@ -12,6 +12,7 @@ kohbo_device_entity:
       - color: "#CED4DA"
       - font-size: 12px
       - font-weight: normal
+      - opacity: 1
     icon:
       - color: >
           [[[

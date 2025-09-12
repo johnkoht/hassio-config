@@ -90,10 +90,13 @@ views:
               - entity: input_boolean.speech_notifications
                 icon: none
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
               - entity: input_boolean.lighting_automations
                 icon: none
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
               - entity: input_boolean.camera_notifications
                 icon: none
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
                 icon: none
