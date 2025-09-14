@@ -1,0 +1,22 @@
+type: custom:navbar-card
+routes:
+  - url: /dashboard-kohbo/home
+    icon: mdi:home
+    label: Home
+  - url: /lovelace/lights
+    icon: mdi:lightbulb-outline
+    label: Lights
+  - url: /lovelace/devices
+    icon: mdi:devices
+    label: Devices
+
+styles: |
+  .navbar-card {
+    border-radius: 20px 20px 0 0;
+    border: none;
+    background: rgb(33, 37, 41, .85);
+    backdrop-filter: blur(4px);
+    width: 100%;
+    max-width: 500px;
+    bottom: 0;
+  }

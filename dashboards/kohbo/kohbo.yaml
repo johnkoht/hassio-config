@@ -1,4 +1,6 @@
 button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
+kiosk_mode:
+  hide_header: true
 views:
   - type: sections
     title: Home
@@ -15,6 +17,7 @@ views:
 
           - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
           - !include /config/dashboards/templates/button_cards/cards/aqi/kohbo_climate_overview.yaml
+          - !include /config/dashboards/templates/includes/navbar.yaml
 
       - type: grid
         card_mod:
