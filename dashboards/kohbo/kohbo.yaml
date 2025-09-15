@@ -15,7 +15,85 @@ views:
             template: kohbo_title
             name: Home
 
+          
+          # 
+          # Overview Area for house mode and occupancy
+          # 
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 30% 70%
+              margin: 0px 0px 0px 0px
+              padding: 0px
+              card_margin: 0px
+            cards:
+              - type: custom:button-card
+                entity: input_select.house
+                layout: icon_state
+                show_name: false
+                show_state: true
+                icon: kohbo:kohbo-house-auto
+                template: kohbo_pill
+                state_display: >
+                  [[[
+                    if (entity.state == "Auto" || entity.state == "Quiet" || entity.state == "Entertainment")
+                      return "Auto"
+                    else
+                      return entity.state
+                  ]]]
+                icon: >
+                  [[[
+                    if (entity.state == "Quiet" || entity.state == "Bedtime")
+                      return "kohbo:kohbo-house-quiet"
+                    else if (entity.state == "Entertainment")
+                      return "kohbo:kohbo-house-entertain"
+                    else
+                      return "kohbo:kohbo-house-auto"
+                  ]]]
+
+              - type: custom:mod-card
+                style:
+                  hui-horizontal-stack-card$: |
+                    #root {
+                      display: flex;
+                      justify-content: flex-end;
+                      align-items: flex-end;
+                    }
+                card:
+                  type: horizontal-stack
+                  cards:
+                    - type: custom:button-card
+                      entity: person.john_koht
+                      template: kohbo_person_entity
+                      tap_action:
+                        action: navigate
+                        navigation_path: '#john'
+                    - type: custom:button-card
+                      entity: person.cristina_falbo
+                      template: kohbo_person_entity
+                    - type: custom:button-card
+                      entity: person.mary_falbo
+                      template: kohbo_person_entity
+                      visibility:
+                        - condition: state
+                          entity: input_boolean.nonna_home
+                          state: "on"
+                    - type: custom:button-card
+                      entity: person.katia
+                      template: kohbo_person_entity
+                      visibility:
+                        - condition: state
+                          entity: input_boolean.katia_home
+                          state: "on"
+            
+          # 
+          # Security Overview
+          # 
           - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
+
+          # 
+          # Climate Overview
+          # 
           - !include /config/dashboards/templates/button_cards/cards/aqi/kohbo_climate_overview.yaml          
 
 
@@ -101,3 +179,23 @@ views:
 
 
           - !include /config/dashboards/templates/includes/navbar.yaml
+
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: '#kitchen'
+                name: Kitchen
+                icon: mdi:fridge
+                entity: light.kitchen
+
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: '#john'
+                name: John
+                # icon: mdi:fridge
+                entity: person.john_koht
+                margin_top_mobile: calc(100vh - 400px)
+                margin_top_desktop: calc(100vh - 400px)

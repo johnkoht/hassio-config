@@ -1,22 +1,44 @@
 type: custom:navbar-card
 routes:
   - url: /dashboard-kohbo/home
-    icon: mdi:home
+    icon: kohbo:kohbo-dashboard
     label: Home
   - url: /lovelace/lights
-    icon: mdi:lightbulb-outline
-    label: Lights
+    icon: kohbo:kohbo-rooms
+    label: Rooms
+  - url: /lovelace/climate
+    icon: kohbo:kohbo-climate
+    label: Climate
+  - url: /lovelace/media
+    icon: kohbo:kohbo-media
+    label: Media
   - url: /lovelace/devices
-    icon: mdi:devices
+    icon: kohbo:kohbo-devices
     label: Devices
+  - url: /lovelace/security
+    icon: kohbo:kohbo-security
+    label: Security
 
 styles: |
   .navbar-card {
     border-radius: 20px 20px 0 0;
     border: none;
-    background: rgb(33, 37, 41, .85);
+    background: rgb(33, 37, 41, .90);
     backdrop-filter: blur(4px);
     width: 100%;
     max-width: 500px;
     bottom: 0;
+    padding-bottom: 40px;
+  }
+
+  .button.active {
+    background: transparent;
+  }
+
+  .icon {
+    fill: #AAAAAA !important;
+  }
+
+  .icon.active {
+    fill: white !important;
   }
