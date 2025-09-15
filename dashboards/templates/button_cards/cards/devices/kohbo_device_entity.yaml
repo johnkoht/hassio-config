@@ -6,6 +6,7 @@ kohbo_device_entity:
   styles:
     card:
       - height: 155px
+      - margin: 0
     name:
       - margin-bottom: 8px
     state:

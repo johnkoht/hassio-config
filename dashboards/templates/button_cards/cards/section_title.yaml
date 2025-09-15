@@ -1,0 +1,15 @@
+section_title:
+  styles:
+    card:
+      - size: 100%
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - padding: 10px 0 0 0
+    name:
+      - color: '#F8F9FA'
+      - font-size: 14px
+      - text-transform: uppercase
+      - font-weight: bold
+      - width: 100%
+      - text-align: left

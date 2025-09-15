@@ -72,6 +72,7 @@ kohbo:
 
   ha-section-grid-row-gap: 20px
   ha-view-sections-row-gap: 10px
+  ha-view-sections-column-gap: 10px
   ha-sections-row-gap: 10px
   
   #ha-card-border-image: "linear-gradient(to left, #E9ECEF 0%, #E9ECEF 100%)"

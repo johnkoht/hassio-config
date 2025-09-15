@@ -1,6 +1,6 @@
 button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
 kiosk_mode:
-  hide_header: true
+  hide_header: false
 views:
   - type: sections
     title: Home
@@ -16,23 +16,20 @@ views:
             name: Home
 
           - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
-          - !include /config/dashboards/templates/button_cards/cards/aqi/kohbo_climate_overview.yaml
-          - !include /config/dashboards/templates/includes/navbar.yaml
+          - !include /config/dashboards/templates/button_cards/cards/aqi/kohbo_climate_overview.yaml          
 
-      - type: grid
-        card_mod:
-          style: |
-            .container {
-              row-gap: 0;
-            }
-        cards:
-          - type: heading
-            heading: Overview
-            card_mod: !include /config/dashboards/templates/includes/kohbo_header_layout.yaml
 
-          - type: custom:layout-card
-            layout_type: grid
-            layout_options: !include /config/dashboards/templates/includes/kohbo_entity_layout.yaml
+          # 
+          # Overview section
+          # Includes Interior Lights, Exterior Lights, Exterior Doors, Windows
+          # 
+          - type: custom:button-card
+            template: section_title
+            name: Overview
+
+          - type: grid
+            columns: 2
+            square: false
             cards:
               - type: custom:button-card
                 entity: light.interior_lights
@@ -52,7 +49,7 @@ views:
                 name: Exterior Lights
                 template: kohbo_device_entity
                 icon: kohbo:kohbo-lamp
-
+            
               - type: custom:button-card
                 entity: binary_sensor.exterior_doors
                 name: Exterior Doors
@@ -76,18 +73,15 @@ views:
                     else
                       return "kohbo:kohbo-window-closed"
                   ]]]
-                  
 
-      - type: grid
-        card_mod:
-          style: |
-            .container {
-              row-gap: 0;
-            }
-        cards:
-          - type: heading
-            heading: Quick Settings
-            card_mod: !include /config/dashboards/templates/includes/kohbo_header_layout.yaml
+
+
+          # 
+          # Quick Settings
+          # 
+          - type: custom:button-card
+            template: section_title
+            name: Quick Settings
           - type: entities
             entities:
               - entity: input_boolean.speech_notifications
@@ -103,3 +97,7 @@ views:
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 secondary_info: last-changed
                 icon: none
+
+
+
+          - !include /config/dashboards/templates/includes/navbar.yaml
