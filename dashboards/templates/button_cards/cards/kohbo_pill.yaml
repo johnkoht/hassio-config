@@ -1,6 +1,8 @@
 kohbo_pill:
   size: 24px
   styles:
+    grid:
+      - grid-template-columns: 30% 1fr
     card:
       - background: radial-gradient(68.86% 108.57% at 29.04% 31.2%, rgba(233, 236, 239, 0.1125) 0%, rgba(233, 236, 239, 0.0375) 100%)
       - backdrop-filter: blur(4px)
@@ -8,8 +10,6 @@ kohbo_pill:
       - height: 45px
       - padding-left: 10px
       - padding-right: 10px
-      # - background: transparent
-      # - border: none
       - box-shadow: none
     state:
       - color: '#F8F9FA'
@@ -17,3 +17,4 @@ kohbo_pill:
       - font-weight: 600
       - justify-self: start
       - margin-left: 5px
+      - line-height: 15px

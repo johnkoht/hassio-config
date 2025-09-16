@@ -1,11 +1,12 @@
-kohbo_title:
+kohbo_page_title:
   styles:
     card:
-      - height: 100px
-      - size: 100%
+      - height: 60px
       - background: transparent
       - border: none
       - box-shadow: none
+      - margin: 0
+      - padding: 0
     name:
       - color: '#F8F9FA'
       - font-size: 45px

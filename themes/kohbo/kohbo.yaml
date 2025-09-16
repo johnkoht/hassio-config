@@ -75,7 +75,7 @@ kohbo:
   ha-view-sections-column-gap: 10px
   ha-sections-row-gap: 10px
 
-  masonry-view-card-margin: "0"
+  masonry-view-card-margin: "15px"
   
   #ha-card-border-image: "linear-gradient(to left, #E9ECEF 0%, #E9ECEF 100%)"
   # card-mod-card-yaml: |
