@@ -1,0 +1,16 @@
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#john'
+    margin_top_mobile: calc(100vh - 400px)
+    margin_top_desktop: calc(100vh - 400px)
+
+  - type: custom:button-card
+    entity: person.john_koht
+    template: people_profile_picture
+
+  - type: custom:button-card
+    name: "John"
+    
+

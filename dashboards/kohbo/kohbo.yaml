@@ -195,13 +195,4 @@ views:
             icon: mdi:fridge
             entity: light.kitchen
 
-      - type: vertical-stack
-        cards:
-          - type: custom:bubble-card
-            card_type: pop-up
-            hash: '#john'
-            name: John
-            # icon: mdi:fridge
-            entity: person.john_koht
-            margin_top_mobile: calc(100vh - 400px)
-            margin_top_desktop: calc(100vh - 400px)
+      - !include /config/dashboards/templates/button_cards/people/john.yaml

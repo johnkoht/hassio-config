@@ -1,0 +1,39 @@
+people_profile_picture:
+  show_state: false
+  show_name: false
+  show_entity_picture: true
+  size: 90px
+  styles:
+    card:
+      - padding: 0
+      - background: transparent
+      - border: none
+      - border-radius: 0
+      - box-shadow: none
+      - padding-bottom: 5px
+    img_cell:
+      - height: 90px
+      - width: 90px
+      - border-radius: 50%
+    custom_fields:
+      occupancy_state:
+        - background-color: >
+            [[[
+              if (entity.state == "home")
+                return "#06D6A0";
+              return "#ED4747";
+            ]]]
+        - border-radius: 50%
+        - position: absolute
+        - bottom: 0
+        - right: 0
+        - left: 0
+        - margin: auto
+        - height: 10px
+        - width: 10px
+        - box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5)
+  custom_fields:
+    occupancy_state: >
+      [[[
+        return "";
+      ]]]
