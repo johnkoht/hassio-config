@@ -1,0 +1,225 @@
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#cristina'
+    styles: !include /config/dashboards/templates/includes/people/kohbo_person_popup_styles.yaml
+    
+  # 
+  # Profile Picture
+  # 
+  - type: custom:button-card
+    entity: person.cristina_falbo
+    template: people_profile_picture
+
+  # 
+  # Heading
+  # 
+  - type: custom:button-card
+    name: "Cristina"
+    template: kohbo_person_heading
+    custom_fields:
+      location: >
+        [[[
+          if (states['person.cristina_falbo'].state == "home") {
+            if (states['input_select.cristina_sleep_state'].state == "Sleep") {
+              return "Home - Sleeping"
+            } else {
+              var location = states['sensor.cristina_room_presence'].state.replace('_', ' ');
+              location = location.charAt(0).toUpperCase() + location.slice(1);
+              return "Home - " + location;
+            }
+          } else {
+            return "Away - " + states['person.cristina_falbo'].state;
+          }
+        ]]]
+
+  # 
+  # Location Details
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-location
+        name: Location
+        entity: person.cristina_falbo
+        state: "{{ states('person.cristina_falbo') | replace('_', ' ') | title }}"
+        secondary: "{{ states['person.cristina_falbo'].last_changed | relative_time }} ago"
+        color: >
+          {% if states['person.cristina_falbo'].state == "home" %}
+            #06D6A0
+          {% else %}
+            white
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-room-occupancy
+        name: Room
+        entity: sensor.cristina_room_presence
+        state: "{{ states('sensor.cristina_room_presence') | replace('_', ' ') | title }}"
+        secondary: "{{ states['sensor.cristina_room_presence'].last_changed | relative_time }} ago"
+        color: >
+          {% if states['sensor.cristina_room_presence'].state == "not_home" %}
+            white
+          {% else %}
+            #06D6A0
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-proximity
+        name: Proximity
+        entity: sensor.home_cristina_distance
+        secondary: "{{ states['sensor.home_cristina_distance'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        color: white
+
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-steps
+        name: Steps
+        entity: sensor.cfalb2_steps
+        state: "{{ '{:,}'.format(states('sensor.cfalb2_steps') | int(0)) }}"
+        secondary: "{{ states['sensor.cfalb2_steps'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        color: white
+
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-train
+        name: Commuting
+        entity: input_boolean.cristina_commuting
+        state: "{{ states('input_boolean.cristina_commuting') | title }}"
+        secondary: "{{ states['input_boolean.cristina_commuting'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        color: >
+          {% if states['input_boolean.cristina_commuting'].state == "on" %}
+            #06D6A0
+          {% else %}
+            white
+          {% endif %}
+
+
+  # 
+  # Medications
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      - entity: input_boolean.cristina_daily_medication_taken
+        icon: kohbo:kohbo-medication
+        name: Daily Medication
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-timer
+        name: Daily Reminder
+        entity: timer.cristina_daily_medication_timer
+        state: "{{ states('timer.cristina_daily_medication_timer') | title }}"
+        secondary: "{{ states['timer.cristina_daily_medication_timer'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+
+      - entity: input_boolean.cristina_friday_medication_taken
+        icon: kohbo:kohbo-medication
+        name: Friday Medication
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-timer
+        name: Friday Reminder
+        entity: timer.cristina_friday_medication_timer
+        state: "{{ states('timer.cristina_friday_medication_timer') | title }}"
+        secondary: "{{ states['timer.cristina_friday_medication_timer'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+
+  # 
+  # Sleep Details
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      # 
+      # Sleep Status
+      # 
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-person-status
+        name: Status
+        entity: input_select.cristina_sleep_state
+        # state: "{{ states('person.john_koht') | replace('_', ' ') | title }}"
+        secondary: "{{ states['input_select.cristina_sleep_state'].last_changed | relative_time }} ago"
+        color: >
+          {% set status = states['input_select.cristina_sleep_state'].state %}
+          {% if status == "Awake" or status == "Just Got Up" %}
+            #06D6A0
+          {% else %}
+            #E36001
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+      # 
+      # Bed Occupancy
+      # 
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-bed
+        name: Bed Occupancy
+        entity: binary_sensor.cristina_bed_occupied
+        state: "{{ 'Detected' if states('binary_sensor.cristina_bed_occupied') == 'on' else 'Clear' }}"
+        secondary: "{{ states['binary_sensor.cristina_bed_occupied'].last_changed | relative_time }} ago"
+        color: >
+          {% if states['binary_sensor.cristina_bed_occupied'].state == "on" %}
+            #E36001
+          {% else %}
+            white
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+
+  # 
+  # Device Details
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      # 
+      # Phone Battery Level
+      # 
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-battery-50
+        # icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
+        # icon: >
+        #   {% set battery_level = states[config.entity].state | int(0) %}
+        #   {% if battery_level >= 90 %}
+        #     '{{"kohbo:kohbo-battery-100"}}'
+        #   {% elif battery_level >= 75 %}
+        #     '{{"kohbo:kohbo-battery-75"}}'
+        #   {% elif battery_level >= 50 %}
+        #     '{{"kohbo:kohbo-battery-50"}}'
+        #   {% else %}
+        #     '{{"kohbo:kohbo-battery-25"}}'
+        #   {% endif %}
+        name: Battery
+        entity: sensor.cfalb2_battery_level
+        state: "{{ states['sensor.cfalb2_battery_level'].state }}%"
+        secondary: "{{ states['sensor.cfalb2_battery_level'].last_changed | relative_time }} ago"
+        color: >
+          {% set battery_level = states[config.entity].state | int(0) %}
+          {% if battery_level > 80 %}
+            #06D6A0
+          {% elif battery_level <= 20 %}
+            #E36001
+          {% else %}
+            white
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+      # 
+      # Network Details
+      # 
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-wifi
+        name: Wifi Network
+        entity: sensor.cfalb2_ssid
+        secondary: "{{ states['sensor.cfalb2_ssid'].last_changed | relative_time }} ago"
+        color: white
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml

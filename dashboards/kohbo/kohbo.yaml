@@ -77,6 +77,9 @@ views:
                   - type: custom:button-card
                     entity: person.cristina_falbo
                     template: kohbo_person_entity
+                    tap_action:
+                      action: navigate
+                      navigation_path: '#cristina'
                   - type: custom:button-card
                     entity: person.mary_falbo
                     template: kohbo_person_entity
@@ -169,30 +172,29 @@ views:
       - type: entities
         entities:
           - entity: input_boolean.speech_notifications
-            icon: none
+            icon: kohbo:kohbo-announcement
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
+            state_color: true
           - entity: input_boolean.lighting_automations
-            icon: none
+            icon: kohbo:kohbo-light-2
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
+            state_color: true
           - entity: input_boolean.camera_notifications
-            icon: none
+            icon: kohbo:kohbo-notification
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
-            icon: none
+            state_color: true
 
 
-
+      # 
+      # Navbar
+      # 
       - !include /config/dashboards/templates/includes/navbar.yaml
 
-      - type: vertical-stack
-        cards:
-          - type: custom:bubble-card
-            card_type: pop-up
-            hash: '#kitchen'
-            name: Kitchen
-            icon: mdi:fridge
-            entity: light.kitchen
-
+      # 
+      # People
+      # 
       - !include /config/dashboards/templates/button_cards/people/john.yaml
+      - !include /config/dashboards/templates/button_cards/people/cristina.yaml

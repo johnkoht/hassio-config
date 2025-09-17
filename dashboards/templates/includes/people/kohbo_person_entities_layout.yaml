@@ -1,0 +1,6 @@
+style: |
+  ha-card {
+    background: #343A40 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }

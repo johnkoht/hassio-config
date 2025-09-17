@@ -45,8 +45,13 @@ kohbo:
   #   sidebar-selected-icon-color: "#FFF" # (light: systemGray5 from iOS light mode, dark: XXX)
   #   sidebar-selected-text-color: var(--sidebar-selected-icon-color)
   #   # States and Badges
-  #   state-icon-color: "#FFF"
-  #   state-icon-active-color: "#FFF" # or make light icons yellow when active: rgba(255, 214, 10, 1)
+  state-icon-color: "#FFF"
+  # state-icon-active-color: "#06D6A0"
+  state-light-active-color: "#FFD166"
+  state-binary_sensor-active-color: "#59A5D8"
+  state-switch-active-color: "#59A5D8"
+  state-input_boolean-on-color: "#59A5D8"
+  state-input_boolean-active-color: "#59A5D8"
   #   state-icon-unavailable-color: var(--disabled-text-color)
   #   # Sliders
   #   paper-slider-knob-color: "#FFF"

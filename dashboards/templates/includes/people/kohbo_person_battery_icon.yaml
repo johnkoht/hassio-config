@@ -1,0 +1,11 @@
+>
+  {% set battery_level = states[config.entity].state | int(0) %}
+  {% if battery_level >= 90 %}
+    kohbo:kohbo-battery-100
+  {% elif battery_level >= 75 %}
+    kohbo:kohbo-battery-75
+  {% elif battery_level >= 50 %}
+    kohbo:kohbo-battery-50
+  {% else %}
+    kohbo:kohbo-battery-25
+  {% endif %}

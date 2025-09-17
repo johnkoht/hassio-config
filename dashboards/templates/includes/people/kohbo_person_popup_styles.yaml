@@ -1,0 +1,27 @@
+|
+  .bubble-pop-up-background {
+    background: #212529 !important;
+  }
+
+  .bubble-pop-up-container {
+    padding: 30px 30px calc(140px + var(--custom-height-offset-mobile)) 30px !important;
+  }
+
+  .bubble-header-container {
+    height: 20px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .bubble-close-button {
+    background: transparent !important;
+  }
+
+  .bubble-pop-up-container {
+    margin-top: -30px !important;    
+  }
+
+  .bubble-pop-up-container.is-scrollable {
+    mask-image: linear-gradient(to bottom, transparent 10px, black 45px, black calc(100% - 40px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 10px, black 45px, black calc(100% - 40px), transparent 100%);
+  }

@@ -1,0 +1,24 @@
+kohbo_person_heading:
+  styles:
+    grid:
+      - grid-template-areas: '"n n" "location location"'
+      - grid-template-rows: 1fr
+    card:
+      - padding: 0
+      - background: transparent
+      - border: none
+      - border-radius: 0
+      - box-shadow: none
+      - margin-bottom: 15px
+    name:
+      - font-size: 25px
+      - font-weight: 800
+      - color: white
+      - width: 100%
+      - margin-bottom: 5px
+    custom_fields:
+      location:
+        - font-size: 16px
+        - color: white
+        - font-weight: 400
+        - width: 100%
