@@ -3,7 +3,7 @@ routes:
   - url: /dashboard-kohbo/home
     icon: kohbo:kohbo-dashboard
     label: Home
-  - url: /lovelace/lights
+  - url: /dashboard-kohbo-rooms/rooms
     icon: kohbo:kohbo-rooms
     label: Rooms
   - url: /lovelace/climate

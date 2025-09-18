@@ -1,0 +1,94 @@
+button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
+kiosk_mode:
+  hide_header: false
+views:
+  - type: custom:vertical-layout
+    title: Rooms
+    path: rooms
+    theme: kohbo
+    layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_page_title
+        name: Rooms
+
+      - type: custom:stack-in-card
+        cards:
+          - type: custom:button-card
+            entity: input_boolean.family_room_occupied
+            name: Family Room
+            template: kohbo_room_card_header
+            icon: mdi:sofa
+            variables:
+              temperature: "[[[ return states['sensor.kitchen_temperature'].state ]]]"
+              humidity: "[[[ return states['sensor.kitchen_humidity'].state ]]]"
+      
+          - type: custom:stack-in-card
+            mode: horizontal
+            card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
+            cards:
+              - type: custom:button-card
+                entity: light.family_room_main_lights
+                name: Lights
+                template: kohbo_room_card_device                
+                icon: kohbo:kohbo-device-lights
+
+              - type: custom:button-card
+                entity: media_player.sony_bravia_tv
+                name: TV
+                template: kohbo_room_card_device
+                icon: kohbo:kohbo-device-tv
+
+              - type: custom:button-card
+                entity: media_player.sonos_family_room
+                name: Music
+                template: kohbo_room_card_device
+                icon: kohbo:kohbo-device-speaker
+
+      - type: custom:stack-in-card
+        cards:
+          - type: custom:button-card
+            entity: input_boolean.office_occupied
+            name: Office
+            template: kohbo_room_card_header
+            icon: mdi:laptop
+            variables:
+              temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
+              humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
+      
+          - type: custom:stack-in-card
+            mode: horizontal
+            card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
+            cards:
+              - type: custom:button-card
+                entity: light.office_lights
+                name: Lights
+                template: kohbo_room_card_device                
+                icon: kohbo:kohbo-device-lights
+
+              - type: custom:button-card
+                entity: media_player.sonos_office
+                name: Music
+                template: kohbo_room_card_device
+                icon: kohbo:kohbo-device-speaker
+
+              - type: custom:button-card
+                entity: binary_sensor.office_doors
+                name: Doors
+                template: kohbo_room_card_device
+                icon: >
+                  [[[
+                    if (entity.state == "on")
+                      return "kohbo:kohbo-door-open"
+                    else
+                      return "kohbo:kohbo-door-closed"
+                  ]]]
+
+
+
+            
+            
+      # 
+      # Navbar
+      # 
+      - !include /config/dashboards/templates/includes/navbar.yaml

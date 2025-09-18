@@ -52,6 +52,7 @@ kohbo:
   state-switch-active-color: "#59A5D8"
   state-input_boolean-on-color: "#59A5D8"
   state-input_boolean-active-color: "#59A5D8"
+  state-media_player-active-color: "#59A5D8"
   #   state-icon-unavailable-color: var(--disabled-text-color)
   #   # Sliders
   #   paper-slider-knob-color: "#FFF"
