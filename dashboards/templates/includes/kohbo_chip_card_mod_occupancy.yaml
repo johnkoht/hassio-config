@@ -1,0 +1,9 @@
+style: |
+  ha-card {
+    --chip-height: 45px;
+    --chip-border-radius: 23px;
+    --chip-font-size: 14px;
+    --chip-font-weight: 600;
+    --chip-padding: 0 14px;
+    --chip-icon-size: 12px;
+  }

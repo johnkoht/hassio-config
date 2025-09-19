@@ -1,6 +1,6 @@
 style: |
   ha-card {
-    background: #272A2E;
+    background: var(--darker-primary-color);
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     backdrop-filter: none;

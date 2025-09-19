@@ -4,8 +4,6 @@ kohbo_pill:
     grid:
       - grid-template-columns: 30% 1fr
     card:
-      - background: radial-gradient(68.86% 108.57% at 29.04% 31.2%, rgba(233, 236, 239, 0.1125) 0%, rgba(233, 236, 239, 0.0375) 100%)
-      - backdrop-filter: blur(4px)
       - border-radius: 45px
       - height: 45px
       - padding-left: 10px

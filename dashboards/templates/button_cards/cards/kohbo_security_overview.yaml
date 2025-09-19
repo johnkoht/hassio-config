@@ -84,6 +84,16 @@ cards:
         entity: lock.house_locks
         name: Locks
         template: kohbo_security_item
+        state_display: |
+          [[[
+            if (states['lock.front_door'].state === 'unlocked' && states['lock.garage_entry_door'].state === 'unlocked')
+              return 'Unlocked';
+
+            else if (states['lock.front_door'].state === 'locked' && states['lock.garage_entry_door'].state === 'locked')
+              return 'Locked';
+            else
+              return '1 Unlocked';
+          ]]]
         state:
           - value: 'unlocked'
             icon: kohbo:kohbo-lock-unlocked

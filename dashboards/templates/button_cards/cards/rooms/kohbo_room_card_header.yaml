@@ -12,12 +12,15 @@ kohbo_room_card_header:
   variables: 
     temperature: "72"
     humidity: "40"
+    aqi: null
   styles:
     grid:
-      - grid-template-areas: '"i n temperature" "i s humidity"'
+      - grid-template-areas: '"i n temperature" "i s secondary_climate"'
       - grid-template-columns: 40px 1fr 100px
       - grid-template-rows: 1fr 1fr
     card:
+      - --mdc-ripple-color: transparent
+      - --mdc-ripple-press-opacity: 0
       - padding: 20px
       - background: transparent
       - backdrop-filter: none
@@ -48,7 +51,7 @@ kohbo_room_card_header:
         - color: "#F8F9FA"
         - justify-self: end
         - align-self: end
-      humidity:
+      secondary_climate:
         - font-size: 13px
         - line-height: 13px
         - font-weight: 400
@@ -58,8 +61,15 @@ kohbo_room_card_header:
   custom_fields:
     temperature: >
       [[[ return Math.round(variables.temperature * 10) / 10 + "°" ]]]
-    humidity: >
-      [[[ return Math.round(variables.humidity * 10) / 10 + "% Humidity" ]]]
+    secondary_climate: >
+      [[[
+        if (variables.aqi) {
+          return "AQI - " + variables.aqi;
+        }
+        else {
+          return Math.round(variables.humidity * 10) / 10 + "% Humidity";
+        }
+      ]]]
   card_mod:
     debug: true
     style: |

@@ -2,7 +2,7 @@
 # grid-column-gap: 0px
 # # max_cols: 1
 # margin: 10px
-padding: 20px
+padding: 0px 20px 20px 20px
 # # height: 100vh
 # position: relative
 # background: 'radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%) radial-gradient(110.43% 50.94% at 19.08% 11.09%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%) #1D2023'

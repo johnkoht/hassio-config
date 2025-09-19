@@ -21,11 +21,11 @@ kohbo_security_item:
       - height: 24px;
       - margin-bottom: 15px;
     name:
-      - font-size: 10px
+      - font-size: 11px
       - color: "#ADB5BD"
     state:
       - font-weight: bold
       - color: "#F8F9FA"
-      - font-size: 12px;
+      - font-size: 13px;
       - margin-top: 2px;
     

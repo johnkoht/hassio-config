@@ -16,12 +16,17 @@ views:
       # Family Room
       # 
       - type: custom:stack-in-card
+        card_mod:
+          style: |
+            ha-card {
+              opacity: {{"1" if states['input_boolean.family_room_occupied'].state == "on" else "0.5"}};
+            }
         cards:
           - type: custom:button-card
             entity: input_boolean.family_room_occupied
             name: Family Room
             template: kohbo_room_card_header
-            icon: mdi:sofa
+            icon: kohbo:kohbo-chair
             variables:
               temperature: "[[[ return states['sensor.kitchen_temperature'].state ]]]"
               humidity: "[[[ return states['sensor.kitchen_humidity'].state ]]]"
@@ -52,15 +57,24 @@ views:
       # Office
       # 
       - type: custom:stack-in-card
+        card_mod:
+          style: |
+            ha-card {
+              opacity: {{"1" if states['input_boolean.office_occupied'].state == "on" else "0.5"}};
+            }
         cards:
           - type: custom:button-card
             entity: input_boolean.office_occupied
             name: Office
             template: kohbo_room_card_header
-            icon: mdi:laptop
+            icon: kohbo:kohbo-laptop
             variables:
               temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
+              aqi: "[[[ return states['sensor.office_air_quality'].state ]]]"
               humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
+            tap_action:
+              action: navigate
+              navigation_path: '#office'
       
           - type: custom:stack-in-card
             mode: horizontal
@@ -71,6 +85,7 @@ views:
                 name: Lights
                 template: kohbo_room_card_device                
                 icon: kohbo:kohbo-device-lights
+                color: auto
 
               - type: custom:button-card
                 entity: media_player.sonos_office
@@ -94,12 +109,17 @@ views:
       # Kitchen
       # 
       - type: custom:stack-in-card
+        card_mod:
+          style: |
+            ha-card {
+              opacity: {{"1" if states['input_boolean.kitchen_occupied'].state == "on" else "0.5"}};
+            }
         cards:
           - type: custom:button-card
             entity: input_boolean.kitchen_occupied
             name: Kitchen
             template: kohbo_room_card_header
-            icon: mdi:stove
+            icon: kohbo:kohbo-fridge
             variables:
               temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
               humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
@@ -142,12 +162,17 @@ views:
       # Playroom
       # 
       - type: custom:stack-in-card
+        card_mod:
+          style: |
+            ha-card {
+              opacity: {{"1" if states['input_boolean.playroom_occupied'].state == "on" else "0.5"}};
+            }
         cards:
           - type: custom:button-card
             entity: input_boolean.playroom_occupied
             name: Playroom
             template: kohbo_room_card_header
-            icon: mdi:teddy-bear
+            icon: kohbo:kohbo-lego
             variables:
               temperature: "[[[ return states['sensor.playroom_temperature'].state ]]]"
               humidity: "[[[ return states['sensor.playroom_humidity'].state ]]]"
@@ -185,9 +210,16 @@ views:
                     else
                       return "kohbo:kohbo-window-closed"
                   ]]]
-            
-            
+
+
+      
       # 
       # Navbar
       # 
       - !include /config/dashboards/templates/includes/navbar.yaml
+
+
+      # 
+      # Room Popups
+      # 
+      - !include /config/dashboards/kohbo/rooms/office.yaml
