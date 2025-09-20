@@ -1,0 +1,28 @@
+input_boolean:
+  nino_daily_task_potty:
+    name: Go Potty
+    icon: mdi:toilet
+
+  nino_daily_task_get_dressed:
+    name: Get Dressed
+    icon: mdi:tshirt-crew
+
+  nino_daily_task_brush_teeth:
+    name: Brush Teeth
+    icon: mdi:toothbrush
+
+  nino_daily_task_brush_hair:
+    name: Brush Hair
+    icon: mdi:hair-dryer
+
+  nino_daily_task_eat_breakfast:
+    name: Eat Breakfast
+    icon: mdi:bread-slice
+
+  nino_daily_task_put_plate_away:
+    name: Put Plate Away
+    icon: mdi:silverware-fork-knife
+
+  nino_daily_task_take_medicine:
+    name: Take Medicine
+    icon: mdi:pill
