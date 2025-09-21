@@ -1,0 +1,13 @@
+>
+  {% set state = states[config.entity].state | lower %}
+
+  {% set on_states  = ['on', 'open', 'unlocked', 'active', 'running', 'playing'] %}
+  {% set off_states = ['off', 'closed', 'locked', 'inactive', 'idle', 'paused'] %}
+
+  {% if state in on_states %}
+    var(--primary-color)
+  {% elif state in off_states %}
+    var(--light-grey-color)
+  {% else %}
+    red
+  {% endif %}

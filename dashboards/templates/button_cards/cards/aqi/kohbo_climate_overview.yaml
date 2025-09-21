@@ -23,7 +23,6 @@ cards:
           padding-bottom: 2px;
         }
 
-  # - type: horizontal-stack
   - type: custom:stack-in-card
     mode: horizontal
     card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
@@ -35,17 +34,11 @@ cards:
       - type: custom:button-card
         entity: sensor.indoor_air_quality_pm2_5
         template: kohbo_aqi_pm25_item
-        variables:
-          aqi_status: "[[[ return states['sensor.indoor_air_quality_pm2_5_status'].state ]]]"
 
       - type: custom:button-card
         entity: sensor.indoor_air_quality_co2
         template: kohbo_aqi_co2_item
-        variables:
-          aqi_status: "[[[ return states['sensor.indoor_air_quality_co2_status'].state ]]]"
       
       - type: custom:button-card
         entity: sensor.indoor_air_quality_tvoc
         template: kohbo_aqi_tvocs_item
-        variables:
-          aqi_status: "[[[ return states['sensor.indoor_air_quality_tvoc_status'].state ]]]"

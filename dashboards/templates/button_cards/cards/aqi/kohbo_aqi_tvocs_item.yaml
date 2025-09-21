@@ -4,10 +4,31 @@ kohbo_aqi_tvocs_item:
   icon: phu:voc
   state_display: |
     [[[
-      return entity.state.replace("ppb", "").trim();
+      var voc = parseFloat(entity.state.replace("ppb", "").trim());
+      voc = voc.toLocaleString();
+      return voc;
     ]]]
   show_state: true
   variables:
-    aqi_status: aqi_status
+    aqi_status: >
+      [[[
+        var voc = parseFloat(entity.state);
+        var voc_acc = states['input_number.tvoc_acceptable'].state;
+        var voc_mod = states['input_number.tvoc_moderate'].state;
+        var voc_poor = states['input_number.tvoc_poor'].state;
+        var voc_haz = states['input_number.tvoc_hazardous'].state;
+
+        if (voc > voc_haz) {
+          return 'Hazardous';
+        } else if (voc > voc_poor) {
+          return 'Unhealthy';
+        } else if (voc > voc_mod) {
+          return 'Moderate';
+        } else if (voc > voc_acc) {
+          return 'Acceptable';
+        } else {
+          return 'Good';
+        }
+      ]]]
   custom_fields:
     unit: "ppb"

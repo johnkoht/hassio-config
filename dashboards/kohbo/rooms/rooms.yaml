@@ -223,3 +223,4 @@ views:
       # Room Popups
       # 
       - !include /config/dashboards/kohbo/rooms/office.yaml
+      - !include /config/dashboards/kohbo/rooms/media_players/office_media_player.yaml

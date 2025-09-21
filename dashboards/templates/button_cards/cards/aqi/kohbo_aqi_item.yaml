@@ -1,8 +1,8 @@
 kohbo_aqi_item:
   show_state: true
   show_icon: false
-  variables:
-    aqi_status: "Good"
+  # variables:
+  #   aqi_status: null
   styles:
     grid:
       - grid-template-areas: '"aqi aqi" "n n" "s s" "unit unit"'

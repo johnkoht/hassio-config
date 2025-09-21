@@ -1,0 +1,20 @@
+kohbo_device_smart_plug_entity:
+  template: kohbo_device_entity
+  icon: mdi:power-plug
+  state_display: >
+    [[[
+      if (entity.state == "on")
+        if (variables.power_sensor)
+          return `On - ${states[variables.power_sensor].state} Watts`;
+        else
+          return `On`;
+      else
+        return "Off";
+    ]]]
+  confirmation: >
+    [[[
+      if (variables.confirmation)
+        return `Are you sure you want to toggle ${entity.attributes.friendly_name}?`;
+      else
+        return null;
+    ]]]

@@ -1,0 +1,6 @@
+>
+  {% if states(entity) == 'on' %}
+    primary
+  {% else %}
+    light-grey
+  {% endif %}

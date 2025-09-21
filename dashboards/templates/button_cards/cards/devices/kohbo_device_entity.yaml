@@ -3,10 +3,14 @@ kohbo_device_entity:
   layout: vertical
   show_state: true
   size: 100%
+  tap_action:
+    action: more-info
   styles:
     card:
       - height: 155px
       - margin: 0
+      - --mdc-ripple-color: var(--darker-primary-color)
+      - --mdc-ripple-press-opacity: 0.8
     name:
       - margin-bottom: 8px
     state:
@@ -14,16 +18,16 @@ kohbo_device_entity:
       - font-size: 12px
       - font-weight: normal
       - opacity: 1
-    icon:
-      - color: >
-          [[[
-            if (entity.state == "on")
-              return '#FFD166';
-            else if (entity.state == "open")
-              return '#59A5D8';
-            else
-              return '#F8F9FA';
-          ]]]
+    # icon:
+    #   - color: >
+    #       [[[
+    #         if (entity.state == "on")
+    #           return '#FFD166';
+    #         else if (entity.state == "open")
+    #           return '#59A5D8';
+    #         else
+    #           return '#F8F9FA';
+    #       ]]]
     img_cell:
       - height: 40px
       - width: 40px

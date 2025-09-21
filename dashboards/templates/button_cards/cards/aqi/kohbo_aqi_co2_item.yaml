@@ -4,10 +4,31 @@ kohbo_aqi_co2_item:
   icon: mdi:molecule-co2
   state_display: |
     [[[
-      return entity.state.replace("ppm", "").trim();
+      var co2 = parseFloat(entity.state.replace("ppm", "").trim());
+      co2 = co2.toLocaleString();
+      return co2;
     ]]]
   show_state: true
   variables:
-    aqi_status: aqi_status
+    aqi_status: >
+      [[[
+        var co2 = parseFloat(entity.state);
+        var co2_acc = states['input_number.co2_acceptable'].state;
+        var co2_mod = states['input_number.co2_moderate'].state;
+        var co2_poor = states['input_number.co2_poor'].state;
+        var co2_haz = states['input_number.co2_hazardous'].state;
+
+        if (co2 > co2_haz) {
+          return 'Hazardous';
+        } else if (co2 > co2_poor) {
+          return 'Unhealthy';
+        } else if (co2 > co2_mod) {
+          return 'Moderate';
+        } else if (co2 > co2_acc) {
+          return 'Acceptable';
+        } else {
+          return 'Good';
+        }
+      ]]]
   custom_fields:
     unit: "ppm"

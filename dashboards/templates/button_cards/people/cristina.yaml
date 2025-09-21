@@ -3,7 +3,7 @@ cards:
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#cristina'
-    styles: !include /config/dashboards/templates/includes/people/kohbo_person_popup_styles.yaml
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     
   # 
   # Profile Picture
@@ -52,7 +52,7 @@ cards:
           {% else %}
             white
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
       - type: custom:template-entity-row
         icon: kohbo:kohbo-room-occupancy
@@ -66,14 +66,14 @@ cards:
           {% else %}
             #06D6A0
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
       - type: custom:template-entity-row
         icon: kohbo:kohbo-proximity
         name: Proximity
         entity: sensor.home_cristina_distance
         secondary: "{{ states['sensor.home_cristina_distance'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: white
 
       - type: custom:template-entity-row
@@ -82,7 +82,7 @@ cards:
         entity: sensor.cfalb2_steps
         state: "{{ '{:,}'.format(states('sensor.cfalb2_steps') | int(0)) }}"
         secondary: "{{ states['sensor.cfalb2_steps'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: white
 
       - type: custom:template-entity-row
@@ -91,7 +91,7 @@ cards:
         entity: input_boolean.cristina_commuting
         state: "{{ states('input_boolean.cristina_commuting') | title }}"
         secondary: "{{ states['input_boolean.cristina_commuting'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: >
           {% if states['input_boolean.cristina_commuting'].state == "on" %}
             #06D6A0
@@ -119,7 +119,7 @@ cards:
         entity: timer.cristina_daily_medication_timer
         state: "{{ states('timer.cristina_daily_medication_timer') | title }}"
         secondary: "{{ states['timer.cristina_daily_medication_timer'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
       - entity: input_boolean.cristina_friday_medication_taken
         icon: kohbo:kohbo-medication
@@ -134,7 +134,7 @@ cards:
         entity: timer.cristina_friday_medication_timer
         state: "{{ states('timer.cristina_friday_medication_timer') | title }}"
         secondary: "{{ states['timer.cristina_friday_medication_timer'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
   # 
   # Sleep Details
@@ -158,7 +158,7 @@ cards:
           {% else %}
             #E36001
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Bed Occupancy
       # 
@@ -174,7 +174,7 @@ cards:
           {% else %}
             white
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
   # 
   # Device Details
@@ -212,7 +212,7 @@ cards:
           {% else %}
             white
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Network Details
       # 
@@ -222,4 +222,4 @@ cards:
         entity: sensor.cfalb2_ssid
         secondary: "{{ states['sensor.cfalb2_ssid'].last_changed | relative_time }} ago"
         color: white
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml

@@ -1,0 +1,8 @@
+>
+  {% if states(entity) == 'DnD' %}
+    red
+  {% elif states(entity) == 'Off' %}
+    light-grey
+  {% else %}
+    primary
+  {% endif %}

@@ -1,0 +1,10 @@
+kohbo_device_door_entity:
+  template: kohbo_device_entity
+  icon: |
+    [[[
+      if (entity.state == "on")
+        return "kohbo:kohbo-door-open"
+      else
+        return "kohbo:kohbo-door-closed"
+    ]]]
+  

@@ -4,10 +4,26 @@ kohbo_aqi_humidity_item:
   icon: mdi:water-percent
   state_display: |
     [[[
-      return entity.state.replace("%", "").trim();
+      var humidity = entity.state.replace("%", "").trim(); 
+      humidity = Math.round(humidity).toString();
+      return humidity;
     ]]]
   show_state: true
   variables:
-    aqi_status: aqi_status
+    aqi_status: >
+      [[[
+        var h = parseFloat(entity.state);
+        if (h < 14 || h > 80) {
+          return 'Hazardous';
+        } else if ((h >= 14 && h < 23) || (h > 65 && h <= 80)) {
+          return 'Poor';
+        } else if ((h >= 23 && h < 30) || (h > 60 && h <= 65)) {
+          return 'Moderate';
+        } else if ((h >= 30 && h < 40) || (h > 50 && h <= 60)) {
+          return 'Acceptable';
+        } else { // 40–50
+          return 'Good';
+        }
+      ]]]
   custom_fields:
     unit: "%"

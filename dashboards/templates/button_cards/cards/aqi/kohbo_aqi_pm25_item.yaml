@@ -4,10 +4,29 @@ kohbo_aqi_pm25_item:
   icon: phu:pm2-5
   state_display: |
     [[[
-      return entity.state.replace("µg/m³", "").trim();
+      return entity.state.replace("µg/m³", "").trim().toString();
     ]]]
   show_state: true
   variables:
-    aqi_status: aqi_status
+    aqi_status: >
+      [[[
+        var pm25 = parseFloat(entity.state);
+        var pm25_acc = states['input_number.pm25_acceptable'].state;
+        var pm25_mod = states['input_number.pm25_moderate'].state;
+        var pm25_poor = states['input_number.pm25_poor'].state;
+        var pm25_haz = states['input_number.pm25_hazardous'].state;
+
+        if (pm25 > pm25_haz) {
+          return 'Hazardous';
+        } else if (pm25 > pm25_poor) {
+          return 'Unhealthy';
+        } else if (pm25 > pm25_mod) {
+          return 'Moderate';
+        } else if (pm25 > pm25_acc) {
+          return 'Acceptable';
+        } else {
+          return 'Good';
+        }
+      ]]]
   custom_fields:
     unit: "µg/m³"

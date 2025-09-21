@@ -3,7 +3,7 @@ cards:
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#john'
-    styles: !include /config/dashboards/templates/includes/people/kohbo_person_popup_styles.yaml
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     
   # 
   # Profile Picture
@@ -54,7 +54,7 @@ cards:
           {% else %}
             white
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
       - type: custom:template-entity-row
         icon: kohbo:kohbo-room-occupancy
@@ -68,14 +68,14 @@ cards:
           {% else %}
             #06D6A0
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
       - type: custom:template-entity-row
         icon: kohbo:kohbo-proximity
         name: Proximity
         entity: sensor.home_john_distance
         secondary: "{{ states['sensor.home_john_distance'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: white
 
       - type: custom:template-entity-row
@@ -84,7 +84,7 @@ cards:
         entity: sensor.jk_iphone_14_steps
         state: "{{ '{:,}'.format(states('sensor.jk_iphone_14_steps') | int(0)) }}"
         secondary: "{{ states['sensor.jk_iphone_14_steps'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: white
 
       - type: custom:template-entity-row
@@ -93,7 +93,7 @@ cards:
         entity: input_boolean.john_commuting
         state: "{{ states('input_boolean.john_commuting') | title }}"
         secondary: "{{ states['input_boolean.john_commuting'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: >
           {% if states['input_boolean.john_commuting'].state == "on" %}
             #06D6A0
@@ -121,7 +121,7 @@ cards:
         entity: input_select.john_focus_mode
         state: "{{ states('input_select.john_focus_mode') | title }}"
         secondary: "{{ states['input_select.john_focus_mode'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
   # 
   # Sleep Details
@@ -145,7 +145,7 @@ cards:
           {% else %}
             #E36001
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Bed Occupancy
       # 
@@ -161,7 +161,7 @@ cards:
           {% else %}
             white
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Sleep Score
       # 
@@ -171,7 +171,7 @@ cards:
         entity: sensor.withings_sleep_score
         secondary: "{{ states['sensor.withings_sleep_score'].last_changed | relative_time }} ago"
         color: white
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
   # 
   # Device Details
@@ -209,7 +209,7 @@ cards:
           {% else %}
             white
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Watch Battery Level
       # 
@@ -228,7 +228,7 @@ cards:
           {% else %}
             white
           {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Network Details
       # 
@@ -238,4 +238,4 @@ cards:
         entity: sensor.jk_iphone_14_ssid
         secondary: "{{ states['sensor.jk_iphone_14_ssid'].last_changed | relative_time }} ago"
         color: white
-        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entity_item_layout.yaml
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml

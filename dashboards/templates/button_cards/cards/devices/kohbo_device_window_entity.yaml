@@ -1,0 +1,9 @@
+kohbo_device_window_entity:
+  template: kohbo_device_entity
+  icon: |
+    [[[
+      if (entity.state == "on")
+        return "kohbo:kohbo-window-open"
+      else
+        return "kohbo:kohbo-window-closed"
+    ]]]

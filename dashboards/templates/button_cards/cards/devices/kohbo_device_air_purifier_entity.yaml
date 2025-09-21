@@ -1,0 +1,16 @@
+kohbo_device_air_purifier_entity:
+  template: kohbo_device_entity
+  icon: mdi:air-purifier
+  state_display: >
+    [[[
+      if (entity.state == "on")
+        if (entity.attributes.mode == "manual")
+          return `Manual - ${entity.attributes.percentage}%`
+        else
+          if (entity.attributes.percentage != null)
+            return `${entity.attributes.preset_mode} - ${entity.attributes.percentage}%`
+          else
+            return `${entity.attributes.preset_mode}`
+      else
+        return "Off"
+    ]]]
