@@ -1,0 +1,30 @@
+# Automation to detect and initiate home for Nonno
+#
+# This automation will detect if Nonno's home based on
+# a bunch of triggers and conditions and then run a
+# script to handle home actions.
+#
+automation:
+  - id: "nonno_is_home"
+    initial_state: on
+    alias: "Nonno Presence - Home"
+    triggers:
+      # Nonno detected home
+      - trigger: state
+        entity_id: person.nonno
+        to: "home"
+      # # iPhone detect tracker is detected home
+      # - trigger: state
+      #   entity_id: device_tracker.nonno_iphone_detect
+      #   to: "home"
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: person.nonno
+        state: "home"
+    actions:
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.nonno_home

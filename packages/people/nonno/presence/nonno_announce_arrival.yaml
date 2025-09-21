@@ -1,0 +1,36 @@
+automation:
+  - id: "nonno_announce_arrival"
+    alias: Nonno Presence - Announce Arrival
+    mode: queued
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: person.nonno
+        from: "not_home"
+        to: "home"
+    conditions:
+      # A guest is home
+      - condition: state
+        entity_id: person.nonno
+        state: "home"
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    actions:
+      # Announcement script
+      - action: script.person_announcement
+        data:
+          person: nonno
+          announcement_type: arrival
+
+      # If a guest mode has not been announced, then we'll
+      # set initiate guest_mode_announced so we the generic
+      # guest mode announcement doesn't fire as well
+      - condition: state
+        entity_id: input_boolean.guest_mode_announced
+        state: "off"
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.guest_mode_announced

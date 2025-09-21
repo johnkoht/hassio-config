@@ -36,6 +36,7 @@ script:
               - shawn
               - alex
               - genny
+              - nonno
       #
       #
       # Person
@@ -59,6 +60,7 @@ script:
               - shawn
               - alex
               - genny
+              - nonno
       #
       # Announcement Type
       #
@@ -90,6 +92,8 @@ script:
           {{ states.sensor.john_person_context.attributes.context }}
         {% elif person == "cristina" or person == "mamma" %}
           {{ states.sensor.cristina_person_context.attributes.context }}
+        {% elif person == "nonno" %}
+          {{ states.sensor.nonno_person_context.attributes.context }}
         {% endif %}
 
       sound: >-

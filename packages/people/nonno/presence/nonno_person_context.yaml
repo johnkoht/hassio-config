@@ -1,0 +1,7 @@
+template:
+  - sensor:
+      - name: "Nonno Person Context"
+        unique_id: nonno_person_context
+        state: "On"
+        attributes:
+          context: !secret nonno_person_context

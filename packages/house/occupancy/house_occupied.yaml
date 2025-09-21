@@ -25,6 +25,7 @@ automation:
           - sensor.joe_person
           - sensor.sylvia_person
           - sensor.alex_person
+          - sensor.nonno_person
         to: "home"
     conditions:
       # 

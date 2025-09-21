@@ -1,0 +1,26 @@
+automation:
+  - id: "nonno_announce_departure"
+    alias: Nonno Presence - Announce Departure
+    mode: queued
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: person.nonno
+        from: "home"
+    conditions:
+      # Not home
+      - condition: state
+        entity_id: person.nonno
+        state: "not_home"
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+    actions:
+      # Announcement
+      - action: script.person_announcement
+        data:
+          person: nonno
+          announcement_type: departure

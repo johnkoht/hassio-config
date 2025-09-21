@@ -22,6 +22,10 @@ automation:
       - condition: state
         entity_id: input_select.john_status
         state: "Extended Away"
+      # Guest mode is OFF
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
     actions:
       # Turn ON the boolean
       - action: input_boolean.turn_on
