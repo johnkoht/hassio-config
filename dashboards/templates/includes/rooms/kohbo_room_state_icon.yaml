@@ -1,8 +1,12 @@
 >
   {% if states(entity) == 'Auto' %}
     kohbo:kohbo-house-auto
-  {% elif states(entity) == 'Off' %}
+  {% elif states(entity) == 'Off' or states(entity) == 'Away' %}
     kohbo:kohbo-house-away
   {% elif states(entity) == 'DnD' %}
     kohbo:kohbo-dnd-on
+  {% elif states(entity) == 'Quiet' or states(entity) == 'Bedtime' %}
+    kohbo:kohbo-house-quiet
+  {% elif states(entity) == 'Entertainment' %}
+    kohbo:kohbo-house-entertain
   {% endif %}

@@ -1,0 +1,233 @@
+type: custom:vertical-layout
+title: Home
+path: home
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+cards:
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Home
+
+  
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/cards/kohbo_layout_card_mod.yaml
+    # card_mod:
+    #   style:
+    #     layout-card $ grid-layout $: "#root { --masonry-view-card-margin: 0; }"
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 40% 60%
+        margin: 0px 0px 0px 0px
+        padding: 0px
+        card_margin: 0px
+      cards:
+        # 
+        # Room State & Occupancy
+        # 
+        - type: horizontal-stack
+          cards:            
+            - type: custom:mushroom-chips-card
+              chips:
+                - type: template
+                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+                  icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
+                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
+                  content: "{{ states(entity) }}"
+                  entity: input_select.house
+                  tap_action:
+                    action: more-info
+
+        # - type: custom:button-card
+        #   entity: input_select.house
+        #   layout: icon_state
+        #   show_name: false
+        #   show_state: true
+        #   icon: kohbo:kohbo-house-auto
+        #   template: kohbo_pill
+        #   state_display: >
+        #     [[[
+        #       if (entity.state == "Auto" || entity.state == "Quiet" || entity.state == "Away")
+        #         return entity.state + " Mode"
+        #       else if (entity.state == "Entertainment")
+        #         return "Entertain"
+        #       else
+        #         return entity.state
+        #     ]]]
+        #   icon: >
+        #     [[[
+        #       if (entity.state == "Quiet" || entity.state == "Bedtime")
+        #         return "kohbo:kohbo-house-quiet"
+        #       else if (entity.state == "Entertainment")
+        #         return "kohbo:kohbo-house-entertain"
+        #       else if (entity.state == "Away")
+        #         return "kohbo:kohbo-house-away"
+        #       else
+        #         return "kohbo:kohbo-house-auto"
+        #     ]]]
+
+        - type: custom:mod-card
+          style:
+            hui-horizontal-stack-card$: |
+              #root {
+                display: flex;
+                justify-content: flex-end;
+                align-items: flex-end;
+              }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: person.john_koht
+                template: kohbo_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#john'
+              - type: custom:button-card
+                entity: person.cristina_falbo
+                template: kohbo_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#cristina'
+              - type: custom:button-card
+                entity: person.mary_falbo
+                template: kohbo_person_entity
+                visibility:
+                  - condition: state
+                    entity: input_boolean.nonna_home
+                    state: "on"
+              - type: custom:button-card
+                entity: person.katia
+                template: kohbo_person_entity
+                visibility:
+                  - condition: state
+                    entity: input_boolean.katia_home
+                    state: "on"
+      
+  # 
+  # Security Overview
+  # 
+  - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
+
+  # 
+  # Climate Overview
+  # 
+  - !include /config/dashboards/templates/button_cards/cards/aqi/kohbo_climate_overview.yaml          
+
+
+  # 
+  # Overview section
+  # Includes Interior Lights, Exterior Lights, Exterior Doors, Windows
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Overview
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: light.interior_lights
+        name: Interior Lights
+        template: kohbo_device_entity
+        icon: kohbo:kohbo-light
+        state_display: >
+          [[[
+            if (states['light.interior_lights'].state == "on")
+              return `${states['sensor.interior_lights_on'].state} Lights On`
+            else
+              return "Off"
+          ]]]
+
+      - type: custom:button-card
+        entity: light.exterior_lights
+        name: Exterior Lights
+        template: kohbo_device_entity
+        icon: kohbo:kohbo-lamp
+    
+      - type: custom:button-card
+        entity: binary_sensor.exterior_doors
+        name: Exterior Doors
+        template: kohbo_device_entity
+        icon: |
+          [[[
+            if (entity.state == "on")
+              return "kohbo:kohbo-door-open"
+            else
+              return "kohbo:kohbo-door-closed"
+          ]]]
+
+      - type: custom:button-card
+        entity: binary_sensor.windows
+        name: Windows
+        template: kohbo_device_entity
+        icon: >
+          [[[
+            if (entity.state == "on")
+              return "kohbo:kohbo-window-open"
+            else
+              return "kohbo:kohbo-window-closed"
+          ]]]
+
+      - type: custom:button-card
+        entity: vacuum.roborock_s7
+        name: Main Floor Vacuum
+        template: kohbo_device_entity
+        icon: mdi:robot-vacuum
+        tap_action:
+          action: navigate
+          navigation_path: '#main_floor_vacuum'
+
+      - type: custom:button-card
+        entity: vacuum.upstairs_robot_vacuum
+        name: Upstairs Vacuum
+        template: kohbo_device_entity
+        icon: mdi:robot-vacuum
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      - entity: input_boolean.speech_notifications
+        icon: kohbo:kohbo-announcement
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.lighting_automations
+        icon: kohbo:kohbo-light-2
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.camera_notifications
+        icon: kohbo:kohbo-notification
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml
+
+  # 
+  # People
+  # 
+  - !include /config/dashboards/templates/button_cards/people/john.yaml
+  - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+
+  # 
+  # Vacuums
+  # 
+  - !include /config/dashboards/kohbo/shared/kohbo_main_floor_vacuum_popup.yaml
+  # - !include /config/dashboards/kohbo/shared/kohbo_upstairs_vacuum_popup.yaml

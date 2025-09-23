@@ -1,6 +1,6 @@
 kohbo_aqi_tvocs_item:
   template: kohbo_aqi_item
-  name: TVOC
+  name: Chemicals
   icon: phu:voc
   state_display: |
     [[[

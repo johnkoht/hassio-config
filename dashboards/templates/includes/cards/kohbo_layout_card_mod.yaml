@@ -1,0 +1,6 @@
+style:
+  layout-card $ grid-layout $: |
+    #root {
+      --masonry-view-card-margin: 0;
+      --horizontal-stack-card-gap: 8px;
+    }

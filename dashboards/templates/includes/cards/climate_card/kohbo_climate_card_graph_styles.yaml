@@ -1,0 +1,10 @@
+style: |
+  ha-card {
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+  ha-card .header {
+    padding-bottom: 2px;
+  }

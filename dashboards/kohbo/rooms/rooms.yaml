@@ -1,226 +1,234 @@
-button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
-kiosk_mode:
-  hide_header: false
-views:
-  - type: custom:vertical-layout
-    title: Rooms
-    path: rooms
-    theme: kohbo
-    layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+type: custom:vertical-layout
+title: Rooms
+path: rooms
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+cards:
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Rooms
+
+  # 
+  # Family Room
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          opacity: {{"1" if states['input_boolean.family_room_occupied'].state == "on" else "0.5"}};
+        }
     cards:
       - type: custom:button-card
-        template: kohbo_page_title
-        name: Rooms
-
-      # 
-      # Family Room
-      # 
+        entity: input_boolean.family_room_occupied
+        name: Family Room
+        template: kohbo_room_card_header
+        icon: kohbo:kohbo-chair
+        variables:
+          temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
+          humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
+        tap_action:
+          action: navigate
+          navigation_path: '#family_room'
+  
       - type: custom:stack-in-card
-        card_mod:
-          style: |
-            ha-card {
-              opacity: {{"1" if states['input_boolean.family_room_occupied'].state == "on" else "0.5"}};
-            }
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
         cards:
           - type: custom:button-card
-            entity: input_boolean.family_room_occupied
-            name: Family Room
-            template: kohbo_room_card_header
-            icon: kohbo:kohbo-chair
-            variables:
-              temperature: "[[[ return states['sensor.kitchen_temperature'].state ]]]"
-              humidity: "[[[ return states['sensor.kitchen_humidity'].state ]]]"
-      
-          - type: custom:stack-in-card
-            mode: horizontal
-            card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-            cards:
-              - type: custom:button-card
-                entity: light.family_room_main_lights
-                name: Lights
-                template: kohbo_room_card_device                
-                icon: kohbo:kohbo-device-lights
+            entity: light.family_room_main_lights
+            name: Lights
+            template: kohbo_room_card_device                
+            icon: kohbo:kohbo-device-lights
 
-              - type: custom:button-card
-                entity: media_player.sony_bravia_tv
-                name: TV
-                template: kohbo_room_card_device
-                icon: kohbo:kohbo-device-tv
+          - type: custom:button-card
+            entity: media_player.sony_bravia_tv
+            name: TV
+            template: kohbo_room_card_device
+            icon: kohbo:kohbo-device-tv
 
-              - type: custom:button-card
-                entity: media_player.sonos_family_room
-                name: Music
-                template: kohbo_room_card_device
-                icon: kohbo:kohbo-device-speaker
+          - type: custom:button-card
+            entity: media_player.sonos_family_room
+            name: Music
+            template: kohbo_room_card_device
+            icon: kohbo:kohbo-device-speaker
 
-      # 
-      # Office
-      # 
+  # 
+  # Office
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          opacity: {{"1" if states['input_boolean.office_occupied'].state == "on" else "0.5"}};
+        }
+    cards:
+      - type: custom:button-card
+        entity: input_boolean.office_occupied
+        name: Office
+        template: kohbo_room_card_header
+        icon: kohbo:kohbo-laptop
+        variables:
+          temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
+          aqi: "[[[ return states['sensor.office_air_quality'].state ]]]"
+          humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
+        tap_action:
+          action: navigate
+          navigation_path: '#office'
+  
       - type: custom:stack-in-card
-        card_mod:
-          style: |
-            ha-card {
-              opacity: {{"1" if states['input_boolean.office_occupied'].state == "on" else "0.5"}};
-            }
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
         cards:
           - type: custom:button-card
-            entity: input_boolean.office_occupied
-            name: Office
-            template: kohbo_room_card_header
-            icon: kohbo:kohbo-laptop
-            variables:
-              temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
-              aqi: "[[[ return states['sensor.office_air_quality'].state ]]]"
-              humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
-            tap_action:
-              action: navigate
-              navigation_path: '#office'
-      
-          - type: custom:stack-in-card
-            mode: horizontal
-            card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-            cards:
-              - type: custom:button-card
-                entity: light.office_lights
-                name: Lights
-                template: kohbo_room_card_device                
-                icon: kohbo:kohbo-device-lights
-                color: auto
+            entity: light.office_lights
+            name: Lights
+            template: kohbo_room_card_device                
+            icon: kohbo:kohbo-device-lights
+            color: auto
 
-              - type: custom:button-card
-                entity: media_player.sonos_office
-                name: Music
-                template: kohbo_room_card_device
-                icon: kohbo:kohbo-device-speaker
+          - type: custom:button-card
+            entity: media_player.sonos_office
+            name: Music
+            template: kohbo_room_card_device
+            icon: kohbo:kohbo-device-speaker
 
-              - type: custom:button-card
-                entity: binary_sensor.office_doors
-                name: Doors
-                template: kohbo_room_card_device
-                icon: >
-                  [[[
-                    if (entity.state == "on")
-                      return "kohbo:kohbo-door-open"
-                    else
-                      return "kohbo:kohbo-door-closed"
-                  ]]]
+          - type: custom:button-card
+            entity: binary_sensor.office_doors
+            name: Doors
+            template: kohbo_room_card_device
+            icon: >
+              [[[
+                if (entity.state == "on")
+                  return "kohbo:kohbo-door-open"
+                else
+                  return "kohbo:kohbo-door-closed"
+              ]]]
 
-      # 
-      # Kitchen
-      # 
+  # 
+  # Kitchen
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          opacity: {{"1" if states['input_boolean.kitchen_occupied'].state == "on" else "0.5"}};
+        }
+    cards:
+      - type: custom:button-card
+        entity: input_boolean.kitchen_occupied
+        name: Kitchen
+        template: kohbo_room_card_header
+        icon: kohbo:kohbo-fridge
+        variables:
+          temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
+          humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
+        tap_action:
+          action: navigate
+          navigation_path: '#kitchen'
+  
       - type: custom:stack-in-card
-        card_mod:
-          style: |
-            ha-card {
-              opacity: {{"1" if states['input_boolean.kitchen_occupied'].state == "on" else "0.5"}};
-            }
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
         cards:
           - type: custom:button-card
-            entity: input_boolean.kitchen_occupied
-            name: Kitchen
-            template: kohbo_room_card_header
-            icon: kohbo:kohbo-fridge
-            variables:
-              temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
-              humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
-      
-          - type: custom:stack-in-card
-            mode: horizontal
-            card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-            cards:
-              - type: custom:button-card
-                entity: light.kitchen_lights
-                name: Lights
-                template: kohbo_room_card_device                
-                icon: kohbo:kohbo-device-lights
+            entity: light.kitchen_lights
+            name: Lights
+            template: kohbo_room_card_device                
+            icon: kohbo:kohbo-device-lights
 
-              - type: custom:button-card
-                entity: media_player.sonos_kitchen
-                name: Music
-                template: kohbo_room_card_device
-                icon: kohbo:kohbo-device-speaker
+          - type: custom:button-card
+            entity: media_player.sonos_kitchen
+            name: Music
+            template: kohbo_room_card_device
+            icon: kohbo:kohbo-device-speaker
 
-              - type: custom:button-card
-                entity: binary_sensor.kitchen_door
-                name: Doors
-                template: kohbo_room_card_device
-                icon: >
-                  [[[
-                    if (entity.state == "on")
-                      return "kohbo:kohbo-door-open"
-                    else
-                      return "kohbo:kohbo-door-closed"
-                  ]]]
+          - type: custom:button-card
+            entity: binary_sensor.kitchen_door
+            name: Doors
+            template: kohbo_room_card_device
+            icon: >
+              [[[
+                if (entity.state == "on")
+                  return "kohbo:kohbo-door-open"
+                else
+                  return "kohbo:kohbo-door-closed"
+              ]]]
 
-              - type: custom:button-card
-                entity: fan.kitchen_air_purifier
-                name: Air Purifier
-                template: kohbo_room_card_device
-                icon: mdi:air-purifier
+          - type: custom:button-card
+            entity: fan.kitchen_air_purifier
+            name: Air Purifier
+            template: kohbo_room_card_device
+            icon: mdi:air-purifier
 
-      # 
-      # Playroom
-      # 
+  # 
+  # Playroom
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          opacity: {{"1" if states['input_boolean.playroom_occupied'].state == "on" else "0.5"}};
+        }
+    cards:
+      - type: custom:button-card
+        entity: input_boolean.playroom_occupied
+        name: Playroom
+        template: kohbo_room_card_header
+        icon: kohbo:kohbo-lego
+        variables:
+          temperature: "[[[ return states['sensor.playroom_temperature'].state ]]]"
+          humidity: "[[[ return states['sensor.playroom_humidity'].state ]]]"
+        tap_action:
+          action: navigate
+          navigation_path: '#playroom'
+  
       - type: custom:stack-in-card
-        card_mod:
-          style: |
-            ha-card {
-              opacity: {{"1" if states['input_boolean.playroom_occupied'].state == "on" else "0.5"}};
-            }
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
         cards:
           - type: custom:button-card
-            entity: input_boolean.playroom_occupied
-            name: Playroom
-            template: kohbo_room_card_header
-            icon: kohbo:kohbo-lego
-            variables:
-              temperature: "[[[ return states['sensor.playroom_temperature'].state ]]]"
-              humidity: "[[[ return states['sensor.playroom_humidity'].state ]]]"
-      
-          - type: custom:stack-in-card
-            mode: horizontal
-            card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-            cards:
-              - type: custom:button-card
-                entity: light.playroom_lights
-                name: Lights
-                template: kohbo_room_card_device                
-                icon: kohbo:kohbo-device-lights
-              
-              - type: custom:button-card
-                entity: switch.christmas_playroom_lights
-                name: Party Lights
-                template: kohbo_room_card_device                
-                icon: kohbo:kohbo-device-string-light
+            entity: light.playroom_lights
+            name: Lights
+            template: kohbo_room_card_device                
+            icon: kohbo:kohbo-device-lights
+          
+          - type: custom:button-card
+            entity: switch.christmas_playroom_lights
+            name: Party Lights
+            template: kohbo_room_card_device                
+            icon: kohbo:kohbo-device-string-light
 
-              - type: custom:button-card
-                entity: media_player.sonos_playroom
-                name: Music
-                template: kohbo_room_card_device
-                icon: kohbo:kohbo-device-speaker
+          - type: custom:button-card
+            entity: media_player.sonos_playroom
+            name: Music
+            template: kohbo_room_card_device
+            icon: kohbo:kohbo-device-speaker
 
-              - type: custom:button-card
-                entity: binary_sensor.playroom_window_west_left_opening
-                name: Windows
-                template: kohbo_room_card_device
-                icon: >
-                  [[[
-                    if (entity.state == "on")
-                      return "kohbo:kohbo-window-open"
-                    else
-                      return "kohbo:kohbo-window-closed"
-                  ]]]
+          - type: custom:button-card
+            entity: binary_sensor.playroom_window_west_left_opening
+            name: Windows
+            template: kohbo_room_card_device
+            icon: >
+              [[[
+                if (entity.state == "on")
+                  return "kohbo:kohbo-window-open"
+                else
+                  return "kohbo:kohbo-window-closed"
+              ]]]
 
 
-      
-      # 
-      # Navbar
-      # 
-      - !include /config/dashboards/templates/includes/navbar.yaml
+  
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml
 
 
-      # 
-      # Room Popups
-      # 
-      - !include /config/dashboards/kohbo/rooms/office.yaml
-      - !include /config/dashboards/kohbo/rooms/media_players/office_media_player.yaml
+  # 
+  # Room Popups
+  # 
+  - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
+  # - !include /config/dashboards/kohbo/rooms/media_players/office_media_player.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml

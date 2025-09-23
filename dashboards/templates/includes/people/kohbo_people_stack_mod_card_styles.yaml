@@ -1,0 +1,6 @@
+hui-horizontal-stack-card$: |
+  #root {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }

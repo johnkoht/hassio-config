@@ -1,0 +1,14 @@
+type: custom:vertical-layout
+title: Security
+path: security
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+cards:
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Security
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

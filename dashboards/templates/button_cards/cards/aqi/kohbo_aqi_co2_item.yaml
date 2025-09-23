@@ -1,6 +1,6 @@
 kohbo_aqi_co2_item:
   template: kohbo_aqi_item
-  name: CO2
+  name: CO₂
   icon: mdi:molecule-co2
   state_display: |
     [[[

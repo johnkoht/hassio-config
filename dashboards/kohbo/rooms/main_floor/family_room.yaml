@@ -2,24 +2,19 @@ type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: pop-up
-    hash: '#office'
+    hash: '#family_room'
+    close_by_clicking_outside: false
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
 
   - type: custom:button-card
     template: kohbo_page_title
-    name: Office
+    name: Family Room
 
   # 
   # Overview Area for house mode and occupancy
   # 
   - type: custom:mod-card
-    card_mod:
-      style:
-        layout-card $ grid-layout $: |
-          #root {
-            --masonry-view-card-margin: 0;
-            --horizontal-stack-card-gap: 8px;
-          }
+    card_mod: !include /config/dashboards/templates/includes/cards/kohbo_layout_card_mod.yaml
     card:
       type: custom:layout-card
       layout_type: custom:grid-layout
@@ -41,14 +36,14 @@ cards:
                   icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
                   icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
                   content: "{{ states(entity) }}"
-                  entity: input_select.office
+                  entity: input_select.family_room
                   tap_action:
                     action: more-info
 
                 - type: template
                   card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod_occupancy.yaml
                   icon: mdi:circle
-                  entity: input_boolean.office_occupied
+                  entity: input_boolean.family_room_occupied
                   content: "{{ 'Occupied' if states(entity) == 'on' else 'Unoccupied' }}"
                   icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_occupancy_icon_color.yaml
                   tap_action:
@@ -58,13 +53,7 @@ cards:
         # People in the room
         # 
         - type: custom:mod-card
-          style:
-            hui-horizontal-stack-card$: |
-              #root {
-                display: flex;
-                justify-content: flex-end;
-                align-items: flex-end;
-              }
+          style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
           card:
             type: horizontal-stack
             cards:
@@ -77,7 +66,7 @@ cards:
                 visibility:
                   - condition: state
                     entity: sensor.john_room_presence
-                    state: "office"
+                    state: "family_room"
               - type: custom:button-card
                 entity: person.cristina_falbo
                 template: kohbo_person_entity
@@ -87,74 +76,58 @@ cards:
                 visibility:
                   - condition: state
                     entity: sensor.cristina_room_presence
-                    state: "office"
+                    state: "family_room"
               - type: custom:button-card
                 entity: person.mary_falbo
                 template: kohbo_person_entity
                 visibility:
                   - condition: state
                     entity: sensor.mary_room_presence
-                    state: "office"
+                    state: "family_room"
               - type: custom:button-card
                 entity: person.katia
                 template: kohbo_person_entity
                 visibility:
                   - condition: state
                     entity: sensor.katia_room_presence
-                    state: "office"
+                    state: "family_room"
 
   # 
   # Climate Overview
   # 
   - type: custom:stack-in-card
-    card_mod:
-      style: |
-        :host {
-          --stack-card-gap: 0;
-          --vertical-stack-card-gap: 0;
-        }
+    card_mod: !include /config/dashboards/templates/includes/cards/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
       - type: custom:mini-graph-card
         entities:
-          - entity: sensor.office_awair_temperature
+          - entity: sensor.kitchen_awair_temperature
             color: "#59A5D8"
-        name: Office Climate
+        name: Family Room Climate
         icon: mdi:thermometer
-        card_mod:
-          style: |
-            ha-card {
-              border: none;
-              backdrop-filter: none;
-              -webkit-backdrop-filter: none;
-              box-shadow: none;
-            }
-            ha-card .header {
-              padding-bottom: 2px;
-            }
+        card_mod: !include /config/dashboards/templates/includes/cards/climate_card/kohbo_climate_card_graph_styles.yaml
 
-      # - type: horizontal-stack
       - type: custom:stack-in-card
         mode: horizontal
         card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
         cards:
           - type: custom:button-card
-            entity: sensor.office_awair_humidity
+            entity: sensor.kitchen_awair_humidity
             template: kohbo_aqi_humidity_item
 
           - type: custom:button-card
-            entity: sensor.office_awair_pm2_5
-            template: kohbo_aqi_pm25_item
-
-          - type: custom:button-card
-            entity: sensor.office_awair_carbon_dioxide
+            entity: sensor.kitchen_awair_carbon_dioxide
             template: kohbo_aqi_co2_item
           
           - type: custom:button-card
-            entity: sensor.office_awair_vocs
+            entity: sensor.kitchen_awair_vocs
             template: kohbo_aqi_tvocs_item
 
+          - type: custom:button-card
+            entity: sensor.kitchen_awair_pm2_5
+            template: kohbo_aqi_pm25_item
 
-                    
+
+
   # 
   # Lights
   # 
@@ -163,7 +136,7 @@ cards:
     name: Lights
 
   - type: custom:mushroom-light-card
-    entity: light.office_lights
+    entity: light.family_room_main_lights
     layout: horizontal
     show_brightness_control: true
     show_color_control: false
@@ -174,42 +147,34 @@ cards:
     tap_action:
       action: more-info
 
-  - type: custom:mushroom-light-card
-    entity: light.office_el_gato_light
-    layout: horizontal
-    show_brightness_control: true
-    show_color_control: false
-    fill_container: true
-    use_light_color: true
-    show_color_temp_control: false
-    collapsible_controls: false
-    tap_action:
-      action: more-info
 
-  - type: custom:mushroom-light-card
-    entity: light.office_shelves
-    layout: horizontal
-    show_brightness_control: true
-    show_color_control: false
-    fill_container: true
-    use_light_color: true
-    show_color_temp_control: false
-    collapsible_controls: false
-    tap_action:
-      action: more-info
-
-  
+  # 
+  # Media Player
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Music
 
   - type: "custom:mediocre-media-player-card"
-    entity_id: media_player.sonos_office
-    # ma_entity_id: media_player.sonos_office
-    # ma_favorite_button_entity_id: button.sonos_office_favorite
-    # tap_opens_popup: true
-    action:
-      tap_action:
-        action: navigate
-        navigation_path: '#office_media_player'
-  
+    entity_id: media_player.sonos_family_room
+    tap_opens_popup: true
+    card_mod:
+      style: |
+        .mmpc-1pnwwh8 {
+          align-items: end !important;
+        }
+    ma_entity_id: media_player.sonos_family_room
+    speaker_group:
+      entities:
+        - media_player.sonos_kitchen
+        - media_player.sonos_office
+        - media_player.sonos_living_room
+        - media_player.sonos_main_bedroom
+        - media_player.sonos_playroom
+        - media_player.sonos_patio
+        - media_player.sonos_pool
+        - media_player.sonos_gazebo
+        - media_player.sonos_family_room
   # 
   # Devices
   # 
@@ -221,43 +186,53 @@ cards:
     columns: 2
     square: false
     cards:
+      # Sony Bravia TV
       - type: custom:button-card
-        entity: fan.office_air_purifier
-        name: Air Purifier
-        template: kohbo_device_air_purifier_entity
+        entity: media_player.sony_bravia_tv
+        name: Sony Bravia
+        template: kohbo_device_entity
+
+      # Apple TV
+      - type: custom:button-card
+        entity: media_player.master_bedroom
+        name: Apple TV
+        icon: mdi:apple
+        template: kohbo_device_entity
 
       - type: custom:button-card
-        entity: switch.smart_plug_11_switch
-        name: Desk Outlet
+        entity: switch.smart_plug_14_switch
+        name: South Wall Outlet
         template: kohbo_device_smart_plug_entity
         variables:
-          power_sensor: sensor.smart_plug_11_active_power
+          power_sensor: sensor.smart_plug_14_active_power
           confirmation: true
-    
-      - type: custom:button-card
-        entity: binary_sensor.office_doors
-        name: Doors
-        template: kohbo_device_door_entity
-        state_display: >
-          [[[
-            if (entity.state == "on")
-              if (states['binary_sensor.office_door_left_status'].state == "on" && states['binary_sensor.office_door_right_status'].state == "on")
-                return "Open";
-              else if (states['binary_sensor.office_door_left_status'].state == "on")
-                return "Left Door Open";
-              else if (states['binary_sensor.office_door_right_status'].state == "on")
-                return "Right Door Open";
-            else
-              return "Closed";
-          ]]]
-        
 
       - type: custom:button-card
-        entity: binary_sensor.office_window_sensor
-        name: Window
-        template: kohbo_device_window_entity
-        
-  
+        entity: switch.smart_plug_4_switch
+        name: North Wall Outlet
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_4_active_power
+          confirmation: true
+
+
+  # 
+  # Automations
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # Vacuum Clean Kitchen and Family Room at Night
+      - entity: automation.vacuum_clean_kitchen_and_family_room_at_night
+        name: Clean at Night
+        icon: mdi:robot-vacuum
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+
   # 
   # Quick Settings
   # 
@@ -266,29 +241,23 @@ cards:
     name: Quick Settings
   - type: entities
     entities:
-      # DnD Toggle
-      - entity: input_boolean.office_dnd
-        name: Do Not Disturb
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      - entity: input_boolean.office_speech_notifications
+      # Speech Notifications Toggle
+      - entity: input_boolean.family_room_speech_notifications
         name: Speech Notifications
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
 
-      # Lighting Automations Toggle
-      - entity: input_boolean.office_lighting_automations
-        name: Lighting Automations
-        icon: kohbo:kohbo-light-2
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
+      # # Lighting Automations Toggle
+      # - entity: input_boolean.kitchen_lighting_automations
+      #   name: Lighting Automations
+      #   icon: kohbo:kohbo-light-2
+      #   card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+      #   secondary_info: last-changed
+      #   state_color: true
 
       # Adaptive Lighting Toggle
-      - entity: switch.adaptive_lighting_office
+      - entity: switch.adaptive_lighting_family_room
         name: Adaptive Lighting
         icon: mdi:theme-light-dark
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
@@ -296,35 +265,38 @@ cards:
         state_color: true
 
       # Adaptive Lighting Toggle
-      - entity: switch.adaptive_lighting_sleep_mode_office
+      - entity: switch.adaptive_lighting_sleep_mode_family_room
         name: Adaptive Lighting Sleep Mode
         icon: mdi:theme-light-dark
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
 
+  # 
+  # Sensors
+  # 
   - type: custom:button-card
     template: section_title
     name: Sensors
   - type: entities
     entities:
-      # BLE Base Station
-      - type: custom:template-entity-row
-        icon: mdi:bluetooth
-        name: BLE Base Station
-        entity: binary_sensor.espresense_office
-        state: "{{ 'Connected' if states['binary_sensor.espresense_office'].state == 'on' else 'Disconnected' }}"
-        secondary: "{{ states['binary_sensor.espresense_office'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+      # # Presence Sensor
+      # - type: custom:template-entity-row
+      #   icon: kohbo:kohbo-room-occupancy
+      #   name: Presence Sensor
+      #   entity: binary_sensor.kitchen_presence_sensor
+      #   state: "{{ 'Detected' if states['binary_sensor.kitchen_presence_sensor'].state == 'on' else 'Clear' }}"
+      #   secondary: "{{ states['binary_sensor.kitchen_presence_sensor'].last_changed | relative_time }} ago"
+      #   card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
+      #   color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         
       # Occupancy Sensor
       - type: custom:template-entity-row
         icon: kohbo:kohbo-room-occupancy
         name: Occupancy Sensor
-        entity: binary_sensor.office_aqara_occupancy
-        state: "{{ 'Occupied' if states['binary_sensor.office_aqara_occupancy'].state == 'on' else 'Unoccupied' }}"
-        secondary: "{{ states['binary_sensor.office_aqara_occupancy'].last_changed | relative_time }} ago"
+        entity: binary_sensor.family_room_motion_sensor_occupancy
+        state: "{{ 'Occupied' if states['binary_sensor.family_room_motion_sensor_occupancy'].state == 'on' else 'Clear' }}"
+        secondary: "{{ states['binary_sensor.family_room_motion_sensor_occupancy'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
 
@@ -332,12 +304,9 @@ cards:
       - type: custom:template-entity-row
         icon: mdi:motion-sensor
         name: Motion Sensor
-        entity: binary_sensor.office_aqara_motion_sensor
-        state: "{{ 'Motion Detected' if states['binary_sensor.office_aqara_motion_sensor'].state == 'on' else 'No Motion' }}"
-        secondary: "{{ states['binary_sensor.office_aqara_motion_sensor'].last_changed | relative_time }} ago"
+        entity: binary_sensor.family_room_motion_sensor
+        state: "{{ 'Motion Detected' if states['binary_sensor.family_room_motion_sensor'].state == 'on' else 'Clear' }}"
+        secondary: "{{ states['binary_sensor.family_room_motion_sensor'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
-
-
-  
+      

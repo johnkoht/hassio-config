@@ -61,23 +61,22 @@ kohbo:
   # States and Badges
   state-icon-color: "#FFF"
   # state-icon-active-color: "#06D6A0"
+  # state-unavailable-color: var(--warning-color)
   state-light-active-color: "#FFD166"
   state-binary_sensor-active-color: "#59A5D8"
   state-switch-active-color: "#59A5D8"
   state-input_boolean-on-color: "#59A5D8"
   state-input_boolean-active-color: "#59A5D8"
   state-media_player-active-color: "#59A5D8"
-  
 
+  
   # Cards
-  # card-background-color: radial-gradient(68.86% 108.57% at 29.04% 31.2%, rgba(233, 236, 239, 0.1125) 0%, rgba(233, 236, 239, 0.0375) 100%)
-  # ha-card-background: "#ffffff"
-  # ha-card-backdrop-filter: blur(4px)
   ha-card-border-width: 0px
   ha-card-border-radius: 12px
   # ha-card-border-color: "#3A3F46"
   # ha-card-box-shadow: 0px 0px 15px 1px rgba(0,0,0,.2), 0 1px 2px rgba(0,0,0,.2)
 
+  # Sections
   ha-section-grid-row-gap: 20px
   ha-view-sections-row-gap: 10px
   ha-view-sections-column-gap: 10px
@@ -86,17 +85,20 @@ kohbo:
   masonry-view-card-margin: "15px"
 
 
+  # Media Players
   state-media_player-paused-color: var(--light-grey-color)
   state-media_player-off-color: var(--light-grey-color)
   
   state-light-off-color: var(--light-grey-color)
 
+  # Binary Sensors
   state-binary_sensor-door-off-color: var(--light-grey-color)
   state-binary_sensor-window-off-color: var(--light-grey-color)
   state-binary_sensor-door-on-color: var(--primary-color)
   state-binary_sensor-window-on-color: var(--primary-color)
 
 
+  # Fans
   state-fan-on-color: var(--primary-color)
   state-fan-off-color: var(--light-grey-color)
 
@@ -106,5 +108,28 @@ kohbo:
   # state-cover-closed-color: var(--light-grey-color)
   # state-cover-open-color: var(--primary-color)
 
+  # Switches
   state-switch-off-color: var(--light-grey-color)
   state-switch-on-color: var(--primary-color)
+
+  # Binary Sensors
+  state-binary_sensor-moisture-on-color: var(--red-color)
+  state-binary_sensor-moisture-off-color: var(--light-grey-color)
+
+
+  # Vacuum
+  state-vacuum-docked-color: var(--light-grey-color)
+  state-vacuum-cleaning-color: var(--primary-color)
+
+  # Alarm Control Panel
+  state-alarm_control_panel-disarmed-color: var(--error-color)
+  state-alarm_control_panel-armed_home-color: var(--success-color)
+  state-alarm_control_panel-armed_away-color: var(--success-color)
+
+  # Covers
+  state-cover-closed-color: var(--success-color)
+  state-cover-open-color: var(--error-color)
+
+  # Locks
+  state-lock-locked-color: var(--success-color)
+  state-lock-unlocked-color: var(--error-color)

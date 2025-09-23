@@ -3,10 +3,10 @@ routes:
   - url: /dashboard-kohbo/home
     icon: kohbo:kohbo-dashboard
     label: Home
-  - url: /dashboard-kohbo-rooms/rooms
+  - url: /dashboard-kohbo/rooms
     icon: kohbo:kohbo-rooms
     label: Rooms
-  - url: /lovelace/climate
+  - url: /dashboard-kohbo/climate
     icon: kohbo:kohbo-climate
     label: Climate
   - url: /lovelace/media
@@ -15,7 +15,7 @@ routes:
   - url: /lovelace/devices
     icon: kohbo:kohbo-devices
     label: Devices
-  - url: /lovelace/security
+  - url: /dashboard-kohbo/security
     icon: kohbo:kohbo-security
     label: Security
 
@@ -27,7 +27,7 @@ styles: |
     backdrop-filter: blur(4px);
     width: 100%;
     max-width: 500px;
-    bottom: 0;
+    bottom: -1px;
     padding-bottom: 40px;
   }
 

@@ -27,7 +27,8 @@ cards:
     show_label: true
     layout: icon_name_state
     tap_action:
-      action: none
+      action: navigate
+      navigation_path: '/dashboard-kohbo/security'
     styles:
       card:
         - background: transparent

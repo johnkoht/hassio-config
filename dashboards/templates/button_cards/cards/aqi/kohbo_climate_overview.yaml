@@ -22,6 +22,10 @@ cards:
         ha-card .header {
           padding-bottom: 2px;
         }
+    animate: true
+    tap_action:
+      action: navigate
+      navigation_path: '/dashboard-kohbo/climate'
 
   - type: custom:stack-in-card
     mode: horizontal

@@ -9,15 +9,15 @@ kohbo_security_item:
       - backdrop-filter: none
       - -webkit-backdrop-filter: none
     icon:
-      - color: >
-          [[[
-            return (entity.state === 'on'
-            || entity.state === 'armed_home'
-            || entity.state === 'armed'
-            || entity.state === 'locked'
-            || entity.state === 'closed'
-            ) ? '#06D6A0' : '#ED4747';
-          ]]]
+      # - color: >
+      #     [[[
+      #       return (entity.state === 'on'
+      #       || entity.state === 'armed_home'
+      #       || entity.state === 'armed'
+      #       || entity.state === 'locked'
+      #       || entity.state === 'closed'
+      #       ) ? '#06D6A0' : '#ED4747';
+      #     ]]]
       - height: 24px;
       - margin-bottom: 15px;
     name:
