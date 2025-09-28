@@ -16,9 +16,9 @@ automation:
         to: "Auto"
         for:
           minutes: 3
-      # At 6:30am
-      - platform: time
-        at: "06:30:00"
+      # # At 6:30am
+      # - platform: time
+      #   at: "06:30:00"
     condition:
       # Alarm is currently armed_home
       - condition: state

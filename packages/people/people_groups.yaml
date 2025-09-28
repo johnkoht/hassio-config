@@ -23,6 +23,7 @@ group:
       - person.elise
       - person.olivia
       - person.shawn
+      - person.nonno
 
   guests:
     name: Guests
