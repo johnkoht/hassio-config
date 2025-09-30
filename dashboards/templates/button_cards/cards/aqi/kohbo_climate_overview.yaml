@@ -29,7 +29,7 @@ cards:
 
   - type: custom:stack-in-card
     mode: horizontal
-    card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
+    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
     cards:
       - type: custom:button-card
         entity: sensor.average_indoor_humidity

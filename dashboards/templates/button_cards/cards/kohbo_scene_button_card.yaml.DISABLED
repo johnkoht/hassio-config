@@ -1,0 +1,32 @@
+kohbo_scene_button_card:
+  type: custom:button-card
+  show_icon: false
+  show_name: false
+  show_state: false
+  show_entity_picture: true
+  entity_picture: |
+    [[[
+      return `/assets/scene_presets/${variables.scene_id}.jpeg`;
+    ]]]
+  size: 100%
+  fit_mode: cover
+  styles:
+    card:
+      - width: 158px
+      - height: 90px !important
+      - padding: 0px
+    entity_picture:
+      - height: 90px !important
+  tap_action:
+    action: call-service
+    service: scene_presets.apply_preset 
+    service_data:
+      preset_id: variables.scene_id
+      targets:
+        entity_id:
+          - variables.entity_id
+          - light.office_2
+          - light.office_3
+          - light.office_4
+      shuffle: false
+      smart_shuffle: false

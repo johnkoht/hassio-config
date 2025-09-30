@@ -1,0 +1,15 @@
+# 
+# Climate Overview
+# 
+climate_temperature_only:
+  card:
+    type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:mini-graph-card
+        entities:
+          - entity: '[[temperature_sensor]]'
+            color: "#59A5D8"
+        name: '[[room_name]] Climate'
+        icon: mdi:thermometer
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml

@@ -20,10 +20,10 @@ cards:
         entity: climate.nest_main_floor
         name: Main Floor
         icon: mdi:thermometer
-        card_mod: !include /config/dashboards/templates/includes/cards/climate_card/kohbo_climate_card_graph_styles.yaml
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
       - type: custom:stack-in-card
         mode: horizontal
-        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
         cards:
 
           # - type: custom:button-card

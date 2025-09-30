@@ -1,0 +1,86 @@
+# 
+# Room State & Occupancy
+# 
+room_overview:
+  card:
+    type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 60% 40%
+        margin: 0px 0px 0px 0px
+        padding: 0px
+        card_margin: 0px
+      cards:
+        # 
+        # Room State & Occupancy
+        # 
+        - type: horizontal-stack
+          cards:            
+            - type: custom:mushroom-chips-card
+              chips:
+                - type: template
+                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+                  icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
+                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
+                  content: "{{ states(entity) }}"
+                  entity: '[[mode]]'
+                  tap_action:
+                    action: more-info
+
+                - type: template
+                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod_occupancy.yaml
+                  icon: mdi:circle
+                  entity: '[[occupancy]]'
+                  content: "{{ 'Occupied' if states(entity) == 'on' else 'Empty' }}"
+                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_occupancy_icon_color.yaml
+                  tap_action:
+                    action: more-info
+
+        # 
+        # People in the room
+        # 
+        - type: custom:mod-card
+          style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: person.john_koht
+                template: kohbo_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#john'
+                visibility:
+                  - condition: state
+                    entity: sensor.john_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.cristina_falbo
+                template: kohbo_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#cristina'
+                visibility:
+                  - condition: state
+                    entity: sensor.cristina_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.mary_falbo
+                template: kohbo_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.mary_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.katia
+                template: kohbo_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.katia_room_presence
+                    state: "[[room]]"
+
+
+

@@ -1,130 +1,36 @@
-type: vertical-stack
+type: custom:vertical-layout
+title: Kitchen
+path: kitchen
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
 cards:
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: '#kitchen'
-    close_by_clicking_outside: false
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-
   - type: custom:button-card
     template: kohbo_page_title
     name: Kitchen
-  
+
   # 
   # Overview Area for house mode and occupancy
   # 
-  - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/cards/kohbo_layout_card_mod.yaml
-    card:
-      type: custom:layout-card
-      layout_type: custom:grid-layout
-      layout:
-        grid-template-columns: 60% 40%
-        margin: 0px 0px 0px 0px
-        padding: 0px
-        card_margin: 0px
-      cards:
-        # 
-        # Room State & Occupancy
-        # 
-        - type: horizontal-stack
-          cards:            
-            - type: custom:mushroom-chips-card
-              chips:
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                  icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
-                  content: "{{ states(entity) }}"
-                  entity: input_select.kitchen
-                  tap_action:
-                    action: more-info
-
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod_occupancy.yaml
-                  icon: mdi:circle
-                  entity: input_boolean.kitchen_occupied
-                  content: "{{ 'Occupied' if states(entity) == 'on' else 'Unoccupied' }}"
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_occupancy_icon_color.yaml
-                  tap_action:
-                    action: more-info
-
-        # 
-        # People in the room
-        # 
-        - type: custom:mod-card
-          style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
-          card:
-            type: horizontal-stack
-            cards:
-              - type: custom:button-card
-                entity: person.john_koht
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#john'
-                visibility:
-                  - condition: state
-                    entity: sensor.john_room_presence
-                    state: "kitchen"
-              - type: custom:button-card
-                entity: person.cristina_falbo
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#cristina'
-                visibility:
-                  - condition: state
-                    entity: sensor.cristina_room_presence
-                    state: "kitchen"
-              - type: custom:button-card
-                entity: person.mary_falbo
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.mary_room_presence
-                    state: "kitchen"
-              - type: custom:button-card
-                entity: person.katia
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.katia_room_presence
-                    state: "kitchen"
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - mode: input_select.kitchen
+      - occupancy: input_boolean.kitchen_occupied
+      - room: "kitchen"
 
   # 
   # Climate Overview
   # 
-  - type: custom:stack-in-card
-    card_mod: !include /config/dashboards/templates/includes/cards/climate_card/kohbo_climate_card_stack_styles.yaml
-    cards:
-      - type: custom:mini-graph-card
-        entities:
-          - entity: sensor.kitchen_awair_temperature
-            color: "#59A5D8"
-        name: Kitchen Climate
-        icon: mdi:thermometer
-        card_mod: !include /config/dashboards/templates/includes/cards/climate_card/kohbo_climate_card_graph_styles.yaml
-
-      - type: custom:stack-in-card
-        mode: horizontal
-        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
-        cards:
-          - type: custom:button-card
-            entity: sensor.kitchen_awair_humidity
-            template: kohbo_aqi_humidity_item
-
-          - type: custom:button-card
-            entity: sensor.kitchen_awair_carbon_dioxide
-            template: kohbo_aqi_co2_item
-          
-          - type: custom:button-card
-            entity: sensor.kitchen_awair_vocs
-            template: kohbo_aqi_tvocs_item
-
-          - type: custom:button-card
-            entity: sensor.kitchen_awair_pm2_5
-            template: kohbo_aqi_pm25_item
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.kitchen_awair_temperature
+      - humidity_sensor: sensor.kitchen_awair_humidity
+      - carbon_dioxide_sensor: sensor.kitchen_awair_carbon_dioxide
+      - vocs_sensor: sensor.kitchen_awair_vocs
+      - pm25_sensor: sensor.kitchen_awair_pm2_5
+      - room_name: Kitchen
 
 
   # 
@@ -344,7 +250,7 @@ cards:
         icon: kohbo:kohbo-room-occupancy
         name: Presence Sensor
         entity: binary_sensor.kitchen_presence_sensor
-        state: "{{ 'Detected' if states['binary_sensor.kitchen_presence_sensor'].state == 'on' else 'Clear' }}"
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
         secondary: "{{ states['binary_sensor.kitchen_presence_sensor'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
@@ -354,7 +260,7 @@ cards:
         icon: kohbo:kohbo-room-occupancy
         name: Occupancy Sensor
         entity: binary_sensor.kitchen_motion_sensor_occupancy
-        state: "{{ 'Occupied' if states['binary_sensor.kitchen_motion_sensor_occupancy'].state == 'on' else 'Clear' }}"
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
         secondary: "{{ states['binary_sensor.kitchen_motion_sensor_occupancy'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
@@ -364,7 +270,7 @@ cards:
         icon: mdi:motion-sensor
         name: Motion Sensor
         entity: binary_sensor.kitchen_motion_sensor_status
-        state: "{{ 'Motion Detected' if states['binary_sensor.kitchen_motion_sensor_status'].state == 'on' else 'Clear' }}"
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
         secondary: "{{ states['binary_sensor.kitchen_motion_sensor_status'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml

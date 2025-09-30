@@ -1,0 +1,247 @@
+homeassistant:
+  customize_glob:
+    scene.*adrift:
+      entity_picture: /local/kohbo/images/hue-scene-icons/adrift.png
+
+    scene.*amber_bloom:
+      entity_picture: /local/kohbo/images/hue-scene-icons/amber_bloom.png
+
+    scene.*amethyst_valley:
+      entity_picture: /local/kohbo/images/hue-scene-icons/amethyst_valley.png
+
+    scene.*arctic_aurora:
+      entity_picture: /local/kohbo/images/hue-scene-icons/arctic_aurora.png
+
+    scene.*autumn_gold:
+      entity_picture: /local/kohbo/images/hue-scene-icons/autumn_gold.png
+
+    scene.*beginnings:
+      entity_picture: /local/kohbo/images/hue-scene-icons/beginnings.png
+
+    scene.*blood_moon:
+      entity_picture: /local/kohbo/images/hue-scene-icons/blood_moon.png
+
+    scene.*blossom:
+      entity_picture: /local/kohbo/images/hue-scene-icons/blossom.png
+
+    scene.*blue_lagoon:
+      entity_picture: /local/kohbo/images/hue-scene-icons/blue_lagoon.png
+
+    scene.*blue_planet:
+      entity_picture: /local/kohbo/images/hue-scene-icons/blue_planet.png
+
+    scene.*bright:
+      entity_picture: /local/kohbo/images/hue-scene-icons/bright.png
+
+    scene.*cancun:
+      entity_picture: /local/kohbo/images/hue-scene-icons/cancun.png
+
+    scene.*chinatown:
+      entity_picture: /local/kohbo/images/hue-scene-icons/chinatown.png
+
+    scene.*concentrate:
+      entity_picture: /local/kohbo/images/hue-scene-icons/concentrate.png
+
+    scene.*cool_bright:
+      entity_picture: /local/kohbo/images/hue-scene-icons/cool_bright.png
+
+    scene.*crocus:
+      entity_picture: /local/kohbo/images/hue-scene-icons/crocus.png
+
+    scene.*dimmed:
+      entity_picture: /local/kohbo/images/hue-scene-icons/dimmed.png
+
+    scene.*disturbia:
+      entity_picture: /local/kohbo/images/hue-scene-icons/disturbia.png
+
+    scene.*dreamy_dusk:
+      entity_picture: /local/kohbo/images/hue-scene-icons/dreamy_dusk.png
+
+    scene.*emerald_flutter:
+      entity_picture: /local/kohbo/images/hue-scene-icons/emerald_flutter.png
+
+    scene.*emerald_isle:
+      entity_picture: /local/kohbo/images/hue-scene-icons/emerald_isle.png
+
+    scene.*energize:
+      entity_picture: /local/kohbo/images/hue-scene-icons/energize.png
+
+    scene.*fairfax:
+      entity_picture: /local/kohbo/images/hue-scene-icons/fairfax.png
+
+    scene.*first_light:
+      entity_picture: /local/kohbo/images/hue-scene-icons/first_light.png
+
+    scene.*forest_adventure:
+      entity_picture: /local/kohbo/images/hue-scene-icons/forest_adventure.png
+
+    scene.*frosty_dawn:
+      entity_picture: /local/kohbo/images/hue-scene-icons/frosty_dawn.png
+
+    scene.*galaxy:
+      entity_picture: /local/kohbo/images/hue-scene-icons/galaxy.png
+
+    scene.*golden_pond:
+      entity_picture: /local/kohbo/images/hue-scene-icons/golden_pond.png
+
+    scene.*hal:
+      entity_picture: /local/kohbo/images/hue-scene-icons/hal.png
+
+    scene.*hazy_days:
+      entity_picture: /local/kohbo/images/hue-scene-icons/hazy_days.png
+
+    scene.*honolulu:
+      entity_picture: /local/kohbo/images/hue-scene-icons/honolulu.png
+
+    scene.*horizon:
+      entity_picture: /local/kohbo/images/hue-scene-icons/horizon.png
+
+    scene.*ibiza:
+      entity_picture: /local/kohbo/images/hue-scene-icons/ibiza.png
+
+    scene.*lake_mist:
+      entity_picture: /local/kohbo/images/hue-scene-icons/lake_mist.png
+
+    scene.*lake_placid:
+      entity_picture: /local/kohbo/images/hue-scene-icons/lake_placid.png
+
+    scene.*lily:
+      entity_picture: /local/kohbo/images/hue-scene-icons/lily.png
+
+    scene.*magento:
+      entity_picture: /local/kohbo/images/hue-scene-icons/magento.png
+
+    scene.*majestic_morning:
+      entity_picture: /local/kohbo/images/hue-scene-icons/majestic_morning.png
+
+    scene.*memento:
+      entity_picture: /local/kohbo/images/hue-scene-icons/memento.png
+
+    scene.*meriete:
+      entity_picture: /local/kohbo/images/hue-scene-icons/meriete.png
+
+    scene.*miami:
+      entity_picture: /local/kohbo/images/hue-scene-icons/miami.png
+
+    scene.*midsummer_sun:
+      entity_picture: /local/kohbo/images/hue-scene-icons/midsummer_sun.png
+
+    scene.*midwinter:
+      entity_picture: /local/kohbo/images/hue-scene-icons/midwinter.png
+
+    scene.*misty_ridge:
+      entity_picture: /local/kohbo/images/hue-scene-icons/misty_ridge.png
+
+    scene.*moonlight:
+      entity_picture: /local/kohbo/images/hue-scene-icons/moonlight.png
+
+    scene.*motown:
+      entity_picture: /local/kohbo/images/hue-scene-icons/motown.png
+
+    scene.*mountain_breeze:
+      entity_picture: /local/kohbo/images/hue-scene-icons/mountain_breeze.png
+
+    scene.*narcissa:
+      entity_picture: /local/kohbo/images/hue-scene-icons/narcissa.png
+
+    scene.*nebula:
+      entity_picture: /local/kohbo/images/hue-scene-icons/nebula.png
+
+    scene.*nightlight:
+      entity_picture: /local/kohbo/images/hue-scene-icons/nightlight.png
+
+    scene.*ocean_dawn:
+      entity_picture: /local/kohbo/images/hue-scene-icons/ocean_dawn.png
+
+    scene.*orange_fields:
+      entity_picture: /local/kohbo/images/hue-scene-icons/orange_fields.png
+
+    scene.*osaka:
+      entity_picture: /local/kohbo/images/hue-scene-icons/osaka.png
+
+    scene.*painted_sky:
+      entity_picture: /local/kohbo/images/hue-scene-icons/painted_sky.png
+
+    scene.*palm_beach:
+      entity_picture: /local/kohbo/images/hue-scene-icons/palm_beach.png
+
+    scene.*pensive:
+      entity_picture: /local/kohbo/images/hue-scene-icons/pensive.png
+
+    scene.*precious:
+      entity_picture: /local/kohbo/images/hue-scene-icons/precious.png
+
+    scene.*read:
+      entity_picture: /local/kohbo/images/hue-scene-icons/read.png
+
+    scene.*relax:
+      entity_picture: /local/kohbo/images/hue-scene-icons/relax.png
+
+    scene.*resplendant:
+      entity_picture: /local/kohbo/images/hue-scene-icons/resplendant.png
+
+    scene.*rest:
+      entity_picture: /local/kohbo/images/hue-scene-icons/rest.png
+
+    scene.*rio:
+      entity_picture: /local/kohbo/images/hue-scene-icons/rio.png
+
+    scene.*rolling_hills:
+      entity_picture: /local/kohbo/images/hue-scene-icons/rolling_hills.png
+
+    scene.*ruby_glow:
+      entity_picture: /local/kohbo/images/hue-scene-icons/ruby_glow.png
+
+    scene.*savanna_sunset:
+      entity_picture: /local/kohbo/images/hue-scene-icons/savanna_sunset.png
+
+    scene.*scarlet_dream:
+      entity_picture: /local/kohbo/images/hue-scene-icons/scarlet_dream.png
+
+    scene.*soho:
+      entity_picture: /local/kohbo/images/hue-scene-icons/soho.png
+
+    scene.*spring_blossom:
+      entity_picture: /local/kohbo/images/hue-scene-icons/spring_blossom.png
+
+    scene.*spring_lake:
+      entity_picture: /local/kohbo/images/hue-scene-icons/spring_lake.png
+
+    scene.*starlight:
+      entity_picture: /local/kohbo/images/hue-scene-icons/starlight.png
+
+    scene.*still_waters:
+      entity_picture: /local/kohbo/images/hue-scene-icons/still_waters.png
+
+    scene.*sunday_morning:
+      entity_picture: /local/kohbo/images/hue-scene-icons/sunday_morning.png
+
+    scene.*sundown:
+      entity_picture: /local/kohbo/images/hue-scene-icons/sundown.png
+
+    scene.*sunflare:
+      entity_picture: /local/kohbo/images/hue-scene-icons/sunflare.png
+
+    scene.*tokyo:
+      entity_picture: /local/kohbo/images/hue-scene-icons/tokyo.png
+
+    scene.*tropical_twilight:
+      entity_picture: /local/kohbo/images/hue-scene-icons/tropical_twilight.png
+
+    scene.*tyrell:
+      entity_picture: /local/kohbo/images/hue-scene-icons/tyrell.png
+
+    scene.*valley_dawn:
+      entity_picture: /local/kohbo/images/hue-scene-icons/valley_dawn.png
+
+    scene.*vaporwave:
+      entity_picture: /local/kohbo/images/hue-scene-icons/vaporwave.png
+
+    scene.*warm_embrace:
+      entity_picture: /local/kohbo/images/hue-scene-icons/warm_embrace.png
+
+    scene.*winter_beauty:
+      entity_picture: /local/kohbo/images/hue-scene-icons/winter_beauty.png
+
+    scene.*winter_mountain:
+      entity_picture: /local/kohbo/images/hue-scene-icons/winter_mountain.png

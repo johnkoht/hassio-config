@@ -28,7 +28,7 @@ cards:
           humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
         tap_action:
           action: navigate
-          navigation_path: '#family_room'
+          navigation_path: '/dashboard-kohbo/family-room'
   
       - type: custom:stack-in-card
         mode: horizontal
@@ -73,7 +73,7 @@ cards:
           humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
         tap_action:
           action: navigate
-          navigation_path: '#office'
+          navigation_path: '/dashboard-kohbo/office'
   
       - type: custom:stack-in-card
         mode: horizontal
@@ -124,7 +124,7 @@ cards:
           humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
         tap_action:
           action: navigate
-          navigation_path: '#kitchen'
+          navigation_path: '/dashboard-kohbo/kitchen'
   
       - type: custom:stack-in-card
         mode: horizontal
@@ -180,7 +180,7 @@ cards:
           humidity: "[[[ return states['sensor.playroom_humidity'].state ]]]"
         tap_action:
           action: navigate
-          navigation_path: '#playroom'
+          navigation_path: '/dashboard-kohbo/playroom'
   
       - type: custom:stack-in-card
         mode: horizontal
@@ -217,6 +217,25 @@ cards:
               ]]]
 
 
+  # 
+  # Dining Room
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          opacity: {{"1" if states['input_boolean.dining_room_occupied'].state == "on" else "0.5"}};
+        }
+    cards:
+      - type: custom:button-card
+        entity: input_boolean.dining_room_occupied
+        name: Dining Room
+        template: kohbo_room_card_header
+        icon: kohbo:kohbo-dining
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/dining-room'
+
   
   # 
   # Navbar
@@ -227,8 +246,8 @@ cards:
   # 
   # Room Popups
   # 
-  - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
   # - !include /config/dashboards/kohbo/rooms/media_players/office_media_player.yaml
-  - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
-  - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
-  - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
+  # - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
+  # - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
+  # - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
+

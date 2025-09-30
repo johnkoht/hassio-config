@@ -63,7 +63,7 @@ lovelace:
       mode: yaml
       title: "Rooms"
       icon: mdi:home-assistant
-      show_in_sidebar: true
+      show_in_sidebar: false
       filename: dashboards/kohbo/rooms/rooms.yaml
   
 

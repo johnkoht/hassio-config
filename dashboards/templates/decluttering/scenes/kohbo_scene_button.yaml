@@ -1,0 +1,29 @@
+kohbo_scene_button:
+  card:
+    type: custom:button-card
+    show_icon: false
+    show_name: false
+    show_state: false
+    show_entity_picture: true
+    entity_picture: '/assets/scene_presets/[[scene_id]].jpeg'
+    size: 100%
+    # fit_mode: cover
+    styles:
+      card:
+        - width: 158px
+        - height: 90px !important
+        - padding: 0px
+      entity_picture:
+        - height: 90px !important
+        - width: auto
+        - min-width: 100%
+    haptic: light
+    tap_action:
+      action: call-service
+      service: scene_presets.apply_preset 
+      service_data:
+        preset_id: '[[scene_id]]'
+        targets:
+          entity_id: '[[entity_id]]'
+        shuffle: false
+        smart_shuffle: false

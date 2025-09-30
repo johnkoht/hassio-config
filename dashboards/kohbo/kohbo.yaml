@@ -1,4 +1,6 @@
 button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
+decluttering_templates: !include_dir_merge_named /config/dashboards/templates/decluttering
+
 kiosk_mode:
   hide_header: false
 views:
@@ -9,3 +11,10 @@ views:
     # - !include /config/dashboards/kohbo/media/media.yaml
     # - !include /config/dashboards/kohbo/devices/devices.yaml
     - !include /config/dashboards/kohbo/security/security.yaml
+
+    # Rooms
+    - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/dining_room.yaml

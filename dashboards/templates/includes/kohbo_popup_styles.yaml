@@ -25,3 +25,7 @@
     mask-image: linear-gradient(to bottom, transparent 10px, black 45px, black calc(100% - 40px), transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 10px, black 45px, black calc(100% - 40px), transparent 100%);
   }
+
+  .mmpc-tvkd6n {
+    z-index: 100 !important;
+  }

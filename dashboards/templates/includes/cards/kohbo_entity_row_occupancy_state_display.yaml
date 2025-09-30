@@ -1,0 +1,15 @@
+>
+  {% set device_class = state_attr(config.entity, 'device_class') %}
+  {% set state = states(config.entity) %}
+
+  {% if state == "on" %}
+    {% if device_class == "occupancy" %}
+      Occupied
+    {% else %}
+      Detected
+    {% endif %}
+  {% elif state == "off" %}
+    Clear
+  {% else %}
+    Unavailable
+  {% endif %}

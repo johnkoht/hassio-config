@@ -3,7 +3,7 @@
 # 
 # This automation is used to remind Cristina to take her morning medication.
 # It will send a notification to her phone at <time> and <time>
-# She can snooze it for 30 minutes if needed.
+# She can snooze it for 90 minutes if needed.
 # 
 # 
 
@@ -18,12 +18,12 @@ input_boolean:
 
 # 
 # Daily Morning Medication Timer
-# This timer is used to snooze the medication reminder for 30 minutes.
+# This timer is used to snooze the medication reminder for 90 minutes.
 # 
 timer:
   cristina_daily_medication_timer:
     name: Cristina Daily Medication Timer
-    duration: "00:30:00"
+    duration: "01:30:00"
     restore: true
     icon: mdi:rewind-30
 
@@ -105,7 +105,7 @@ automation:
               - action: "{{ action_taken }}"
                 title: "Medication Taken"
               - action: "{{ action_snooze }}"
-                title: "Snooze 30 Minutes"
+                title: "Snooze 90 Minutes"
       # 
       # Wait for her to respond to the actionable notification, either
       # by marking that she took the meds or by snoozing.

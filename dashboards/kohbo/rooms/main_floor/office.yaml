@@ -1,11 +1,10 @@
-type: vertical-stack
+type: custom:vertical-layout
+title: Office
+path: office
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
 cards:
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: '#office'
-    close_by_clicking_outside: false
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-
   - type: custom:button-card
     template: kohbo_page_title
     name: Office
@@ -13,119 +12,26 @@ cards:
   # 
   # Overview Area for house mode and occupancy
   # 
-  - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/cards/kohbo_layout_card_mod.yaml
-    card:
-      type: custom:layout-card
-      layout_type: custom:grid-layout
-      layout:
-        grid-template-columns: 60% 40%
-        margin: 0px 0px 0px 0px
-        padding: 0px
-        card_margin: 0px
-      cards:
-        # 
-        # Room State & Occupancy
-        # 
-        - type: horizontal-stack
-          cards:            
-            - type: custom:mushroom-chips-card
-              chips:
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                  icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
-                  content: "{{ states(entity) }}"
-                  entity: input_select.office
-                  tap_action:
-                    action: more-info
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - mode: input_select.office
+      - occupancy: input_boolean.office_occupied
+      - room: "office"
 
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod_occupancy.yaml
-                  icon: mdi:circle
-                  entity: input_boolean.office_occupied
-                  content: "{{ 'Occupied' if states(entity) == 'on' else 'Unoccupied' }}"
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_occupancy_icon_color.yaml
-                  tap_action:
-                    action: more-info
-
-        # 
-        # People in the room
-        # 
-        - type: custom:mod-card
-          style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
-          card:
-            type: horizontal-stack
-            cards:
-              - type: custom:button-card
-                entity: person.john_koht
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#john'
-                visibility:
-                  - condition: state
-                    entity: sensor.john_room_presence
-                    state: "office"
-              - type: custom:button-card
-                entity: person.cristina_falbo
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#cristina'
-                visibility:
-                  - condition: state
-                    entity: sensor.cristina_room_presence
-                    state: "office"
-              - type: custom:button-card
-                entity: person.mary_falbo
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.mary_room_presence
-                    state: "office"
-              - type: custom:button-card
-                entity: person.katia
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.katia_room_presence
-                    state: "office"
 
   # 
   # Climate Overview
   # 
-  - type: custom:stack-in-card
-    card_mod: !include /config/dashboards/templates/includes/cards/climate_card/kohbo_climate_card_stack_styles.yaml
-    cards:
-      - type: custom:mini-graph-card
-        entities:
-          - entity: sensor.office_awair_temperature
-            color: "#59A5D8"
-        name: Office Climate
-        icon: mdi:thermometer
-        card_mod: !include /config/dashboards/templates/includes/cards/climate_card/kohbo_climate_card_graph_styles.yaml
-
-      - type: custom:stack-in-card
-        mode: horizontal
-        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_bg.yaml
-        cards:
-          - type: custom:button-card
-            entity: sensor.office_awair_humidity
-            template: kohbo_aqi_humidity_item
-          
-          - type: custom:button-card
-            entity: sensor.office_awair_carbon_dioxide
-            template: kohbo_aqi_co2_item
-  
-          - type: custom:button-card
-            entity: sensor.office_awair_vocs
-            template: kohbo_aqi_tvocs_item
-
-          - type: custom:button-card
-            entity: sensor.office_awair_pm2_5
-            template: kohbo_aqi_pm25_item
-
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.office_awair_temperature
+      - humidity_sensor: sensor.office_awair_humidity
+      - carbon_dioxide_sensor: sensor.office_awair_carbon_dioxide
+      - vocs_sensor: sensor.office_awair_vocs
+      - pm25_sensor: sensor.office_awair_pm2_5
+      - room_name: Office
 
                     
   # 
@@ -135,48 +41,96 @@ cards:
     template: section_title
     name: Lights
 
-  - type: custom:mushroom-light-card
+  # Ceiling Lights
+  - type: tile
     entity: light.office_lights
     name: Ceiling Lights
-    layout: horizontal
-    show_brightness_control: true
-    show_color_control: false
-    fill_container: true
-    use_light_color: true
-    show_color_temp_control: false
-    collapsible_controls: false
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
     tap_action:
-      action: more-info
-
-  - type: custom:mushroom-light-card
+      action: navigate
+      navigation_path: '#office_ceiling_lights'
+  
+  # Desk Lamp
+  - type: tile
     entity: light.office_el_gato_light
     name: Desk Lamp
     icon: mdi:desk-lamp
-    layout: horizontal
-    show_brightness_control: true
-    show_color_control: false
-    fill_container: true
-    use_light_color: true
-    show_color_temp_control: false
-    collapsible_controls: false
-    tap_action:
-      action: more-info
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
 
-  - type: custom:mushroom-light-card
+  # Shelf Lights
+  - type: tile
     entity: light.office_shelves
     name: Shelf Lights
     icon: kohbo:kohbo-device-string-light
-    layout: horizontal
-    show_brightness_control: true
-    show_color_control: false
-    fill_container: true
-    use_light_color: true
-    show_color_temp_control: false
-    collapsible_controls: false
-    tap_action:
-      action: more-info
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
 
-  
+  # - type: custom:simple-swipe-card
+  #   view_mode: carousel
+  #   card_min_width: 400
+  #   card_spacing: 14
+  #   show_pagination: false
+  #   auto_hide_pagination: 0
+  #   loop_mode: none
+  #   cards:
+  #     - type: horizontal-stack
+  #       cards:
+  #         - type: custom:decluttering-card
+  #           template: office_ceiling_lights_scenes_button
+  #           name: Read
+  #           variables:
+  #             - scene_id: 035b6ecf-414e-4781-abc7-3911556097cb
+
+  #         - type: custom:decluttering-card
+  #           template: office_ceiling_lights_scenes_button
+  #           name: Concentrate
+  #           variables:
+  #             - scene_id: 0cbec4e8-d064-4457-986a-fe6078a63f39
+
+  #     - type: horizontal-stack
+  #       cards:
+  #         - type: custom:decluttering-card
+  #           template: office_ceiling_lights_scenes_button
+  #           name: Tokyo
+  #           variables:
+  #             - scene_id: de7eda64-84bf-4ed6-a4fa-76e0ebdd1968
+
+  #         - type: custom:decluttering-card
+  #           template: office_ceiling_lights_scenes_button
+  #           name: Soho
+  #           variables:
+  #             - scene_id: 3580a7b2-ef38-4f34-bb5b-6416dde9df81
+
+  #     - type: horizontal-stack
+  #       cards:
+  #         - type: custom:decluttering-card
+  #           template: office_ceiling_lights_scenes_button
+  #           name: Tyrell
+  #           variables:
+  #             - scene_id: 66893c7e-4535-46d4-b9c7-fb6f5a80faa9
+
+  #         - type: custom:decluttering-card
+  #           template: office_ceiling_lights_scenes_button
+  #           name: Resplendent
+  #           variables:
+  #             - scene_id: ce4a5344-e052-43da-904a-123d7c024bf3
+
+
   # 
   # Media Player
   # 
@@ -184,32 +138,39 @@ cards:
     template: section_title
     name: Music
 
-  - type: "custom:mediocre-media-player-card"
-    entity_id: media_player.sonos_office
-    # ma_entity_id: media_player.sonos_office
-    # ma_favorite_button_entity_id: button.sonos_office_favorite
-    tap_opens_popup: true
-    card_mod:
-      style: |
-        .mmpc-1pnwwh8 {
-          align-items: end !important;
-        }
-    ma_entity_id: media_player.sonos_office
-    speaker_group:
-      entities:
-        - media_player.sonos_kitchen
-        - media_player.sonos_family_room
-        - media_player.sonos_living_room
-        - media_player.sonos_main_bedroom
-        - media_player.sonos_playroom
-        - media_player.sonos_patio
-        - media_player.sonos_pool
-        - media_player.sonos_gazebo
-        - media_player.sonos_office
-    # action:
-    #   tap_action:
-    #     action: navigate
-    #     navigation_path: '#office_media_player'
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.sonos_office
+      - room_name: Office
+      - navigation_path: '#office_media_player'
+
+  # - type: "custom:mediocre-media-player-card"
+  #   entity_id: media_player.sonos_office
+  #   # ma_entity_id: media_player.sonos_office
+  #   # ma_favorite_button_entity_id: button.sonos_office_favorite
+  #   tap_opens_popup: true
+  #   card_mod:
+  #     style: |
+  #       .mmpc-1pnwwh8 {
+  #         align-items: end !important;
+  #       }
+  #   ma_entity_id: media_player.sonos_office
+  #   speaker_group:
+  #     entities:
+  #       - media_player.sonos_kitchen
+  #       - media_player.sonos_family_room
+  #       - media_player.sonos_living_room
+  #       - media_player.sonos_main_bedroom
+  #       - media_player.sonos_playroom
+  #       - media_player.sonos_patio
+  #       - media_player.sonos_pool
+  #       - media_player.sonos_gazebo
+  #       - media_player.sonos_office
+  #   # action:
+  #   #   tap_action:
+  #   #     action: navigate
+  #   #     navigation_path: '#office_media_player'
   
   # 
   # Devices
@@ -374,7 +335,7 @@ cards:
         icon: kohbo:kohbo-room-occupancy
         name: Occupancy Sensor
         entity: binary_sensor.office_aqara_occupancy
-        state: "{{ 'Occupied' if states['binary_sensor.office_aqara_occupancy'].state == 'on' else 'Clear' }}"
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
         secondary: "{{ states['binary_sensor.office_aqara_occupancy'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
@@ -384,11 +345,576 @@ cards:
         icon: mdi:motion-sensor
         name: Motion Sensor
         entity: binary_sensor.office_aqara_motion_sensor
-        state: "{{ 'Motion Detected' if states['binary_sensor.office_aqara_motion_sensor'].state == 'on' else 'Clear' }}"
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
         secondary: "{{ states['binary_sensor.office_aqara_motion_sensor'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
 
 
 
-  
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#office_ceiling_lights'
+        close_by_clicking_outside: false
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
+
+      # - type: custom:button-card
+      #   template: kohbo_page_title
+      #   name: Ceiling Lights
+
+      - type: custom:more-info-card
+        entity: light.office_lights
+        title: 'Ceiling Lights'
+        card_mod:
+          style: 
+            .: |
+              ha-card {
+                background: transparent !important;
+                text-align: center !important;
+
+                .card-content {
+                  padding: 0px !important;
+                }
+              }
+
+              state-card-content {
+                display: none !important;
+              }
+
+            more-info-content$: |
+              hui-section {
+                display: none !important;
+              }
+
+      - type: custom:button-card
+        template: section_title
+        name: Default
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Rest
+                variables:
+                  - scene_id: e03267e7-9914-4f47-97fe-63c0bd317fe7
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Relax
+                variables:
+                  - scene_id: e71b2ef3-1b15-4c4b-b036-4b3d6efe58f8
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Read
+                variables:
+                  - scene_id: 035b6ecf-414e-4781-abc7-3911556097cb
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Concentrate
+                variables:
+                  - scene_id: 0cbec4e8-d064-4457-986a-fe6078a63f39
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Bright
+                variables:
+                  - scene_id: 84ebc26c-9d61-4d25-830c-41ea66f1c325
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Dimmed
+                variables:
+                  - scene_id: 8f55e62a-e5f8-456a-9e8b-61f314bd4e99
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Nightlight
+                variables:
+                  - scene_id: b6f58e22-677f-4670-8677-3dea4ac60383
+
+      - type: custom:button-card
+        template: section_title
+        name: Cozy
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:              
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Rolling Hills
+                variables:
+                  - scene_id: 49c61bae-d3ec-4df2-89a4-65235705f3a1
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Dreamy Dusk
+                variables:
+                  - scene_id: a127f9ef-0371-48dc-bc79-852e2e5b2cc3
+              
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Warm Embrace
+                variables:
+                  - scene_id: 73b2c0b3-b4c5-4307-8873-eb231c83e996
+
+      - type: custom:button-card
+        template: section_title
+        name: Party Vibes
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Miami
+                variables:
+                  - scene_id: a592fa63-4ba6-4399-a120-1c0b79ac832d
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Cancun
+                variables:
+                  - scene_id: c321d848-51a8-4d09-9ad0-5e6b44bc7f2c
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Rio
+                variables:
+                  - scene_id: 94fc428e-2855-4f67-877e-3d1e1dd95b7d
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Chinatown
+                variables:
+                  - scene_id: 7581da02-1688-4128-9bb9-b635f3b89999
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Ibiza
+                variables:
+                  - scene_id: eaa0d424-ac66-4247-8342-06d2b128ac31
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Tokyo
+                variables:
+                  - scene_id: de7eda64-84bf-4ed6-a4fa-76e0ebdd1968
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Motown
+                variables:
+                  - scene_id: 7dded6f8-a2aa-4726-b391-21e9a0f76eee
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Fairfax
+                variables:
+                  - scene_id: abfc5768-5c2c-4d61-bd03-2b64660e813f
+
+      - type: custom:button-card
+        template: section_title
+        name: Serenity
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Galaxy
+                variables:
+                  - scene_id: a6ba3a6e-1e3a-41fd-84f2-f7b021935deb
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Starlight
+                variables:
+                  - scene_id: a2f95aab-e80a-4aca-ae32-142cdc7ad3e0
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Blood Moon
+                variables:
+                  - scene_id: 8d0f34db-78fd-475d-9bed-a502b787964d
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Arctic Aurora
+                variables:
+                  - scene_id: 940fd864-51e1-4761-95d3-75d4d68835ea
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Nebula
+                variables:
+                  - scene_id: 3c8662e5-e650-4f6a-a4b2-03b66d502f77
+
+      - type: custom:button-card
+        template: section_title
+        name: Dreamy
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Still Waters
+                variables:
+                  - scene_id: 0629d5c4-ecbb-4ffd-afc3-6e6239e5e25d
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Adrift
+                variables:
+                  - scene_id: 67f8677a-ba4e-45d4-9a7e-601a7bdbd04d
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Pensive
+                variables:
+                  - scene_id: ad1b1e0d-191d-4144-aaa5-b85b2fc5dc10
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Majestic Morning
+                variables:
+                  - scene_id: a07439ee-8a0b-4d86-9378-687acf1c1954
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Lake Placid
+                variables:
+                  - scene_id: a489caa2-c7fd-4c01-b83c-2e7e87ce2cd6
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Frosty Dawn
+                variables:
+                  - scene_id: 8a896d0a-85d5-4658-86d7-8f8a10f4f1c9
+
+      - type: custom:button-card
+        template: section_title
+        name: Sunrise
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Beginnings
+                variables:
+                  - scene_id: dfac784a-5df9-4d7d-8866-df77ded6182b
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: First Flight
+                variables:
+                  - scene_id: 2db685df-7ca9-42b6-9a09-7da9c5590398
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Valley Dawn
+                variables:
+                  - scene_id: b7529bf3-2efc-4cd2-88aa-c9afbfaec604
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Emerald Flutter
+                variables:
+                  - scene_id: 95048fa7-6283-4253-9ca8-ad090b33f3e7
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Memento
+                variables:
+                  - scene_id: c3058e2f-695d-445c-b859-b6567c856e4e
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Resplendent
+                variables:
+                  - scene_id: ce4a5344-e052-43da-904a-123d7c024bf3
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Scarlet Dream
+                variables:
+                  - scene_id: 51960d8b-e47a-4b04-9163-28e3bbc91601
+
+      - type: custom:button-card
+        template: section_title
+        name: Futuristic
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Soho
+                variables:
+                  - scene_id: 3580a7b2-ef38-4f34-bb5b-6416dde9df81
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Vapor Wave
+                variables:
+                  - scene_id: 3984c3b7-6608-482f-84be-d2ffe39dbb1a
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Megneto
+                variables:
+                  - scene_id: 7fd8b7d2-7dd3-46b3-8188-23e34841eb98
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Tyrell
+                variables:
+                  - scene_id: 66893c7e-4535-46d4-b9c7-fb6f5a80faa9
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Disturbia
+                variables:
+                  - scene_id: 1a379a13-fd93-4f1d-977d-f0816b4385a4
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Hal
+                variables:
+                  - scene_id: 78bbd5e7-720c-4343-9655-19602852e630
+
+      - type: custom:button-card
+        template: section_title
+        name: Halloween
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Trick Or Treat
+                variables:
+                  - scene_id: 8a363ceb-f4c2-4c7f-9cd3-a71a6181b471
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Glowing Grins
+                variables:
+                  - scene_id: 938da1ed-edbc-4cf0-b9ab-bdc3d7d0659f
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Spellbound
+                variables:
+                  - scene_id: 0d2a6c4f-9c71-4279-950c-05f3f84b6dbd
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Hocus Pocus
+                variables:
+                  - scene_id: 00b65abf-df21-4f15-a379-c1742fb786fb
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Toil And Trouble
+                variables:
+                  - scene_id: 074338f3-f7f3-4402-9f30-46ac70e5a0e6
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Witching Hour
+                variables:
+                  - scene_id: 2ad04284-2f0a-40d9-b2a9-6b929a475fa1
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Pandemonium
+                variables:
+                  - scene_id: 0cbcc8ed-5474-471c-b3c1-45b4acc555b1
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Phantom
+                variables:
+                  - scene_id: d824598f-0c09-4e67-beb2-972a8d5813e2
+
+      - type: custom:button-card
+        template: section_title
+        name: Winter Holidays
+
+      - type: custom:simple-swipe-card
+        view_mode: carousel
+        card_min_width: 400
+        card_spacing: 14
+        show_pagination: false
+        auto_hide_pagination: 0
+        loop_mode: none
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Snow Sparkle
+                variables:
+                  - scene_id: 6a794ffd-3564-493d-a9ad-a1abcec8b81c
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Under The Tree
+                variables:
+                  - scene_id: 85b8bc42-c564-4661-b058-f4e5792a6a6c
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Nutcracker
+                variables:
+                  - scene_id: 33c32d2a-e5ad-4b26-8e6f-07090b4c6487
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Jolly
+                variables:
+                  - scene_id: 77d10893-7b6f-4586-a77b-694b2b78fd3a
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Golden Star
+                variables:
+                  - scene_id: a5a12d6a-430d-4324-9078-cf7a74538b52
+
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Silent Night
+                variables:
+                  - scene_id: 4760abd5-e5a6-425a-be32-8f37f6e2acfd
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: office_ceiling_lights_scenes_button
+                name: Color Burst
+                variables:
+                  - scene_id: e24e9183-747e-4d4e-a950-a746c6291c90
+
+                  
+
+          
+
+              
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml
+
+  # 
+  # Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_office
+      - hash: '#office_media_player'

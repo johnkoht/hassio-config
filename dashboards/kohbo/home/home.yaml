@@ -13,7 +13,7 @@ cards:
   # Overview Area for house mode and occupancy
   # 
   - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/cards/kohbo_layout_card_mod.yaml
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
     # card_mod:
     #   style:
     #     layout-card $ grid-layout $: "#root { --masonry-view-card-margin: 0; }"

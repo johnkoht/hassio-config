@@ -9,5 +9,5 @@
   {% elif state in off_states %}
     var(--light-grey-color)
   {% else %}
-    red
+    #6C757D
   {% endif %}

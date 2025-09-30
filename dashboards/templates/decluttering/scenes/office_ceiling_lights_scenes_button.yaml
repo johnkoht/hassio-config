@@ -1,0 +1,11 @@
+office_ceiling_lights_scenes_button:
+  card:
+    type: custom:decluttering-card
+    template: kohbo_scene_button
+    variables:
+      - scene_id: '[[scene_id]]'
+      - entity_id: 
+        - light.office_1
+        - light.office_2
+        - light.office_3
+        - light.office_4

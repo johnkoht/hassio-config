@@ -18,7 +18,7 @@ routes:
   - url: /dashboard-kohbo/security
     icon: kohbo:kohbo-security
     label: Security
-
+haptic: true
 styles: |
   .navbar-card {
     border-radius: 20px 20px 0 0;

@@ -91,10 +91,10 @@
       supported_features: 27
       state: heat_cool
   icon: mdi:home-minus-outline
-- id: '1752206867869'
-  name: Office Osaka
+- id: '1759117533284'
+  name: Osaka
   entities:
-    light.office_lights:
+    light.office_1:
       min_color_temp_kelvin: 2000
       max_color_temp_kelvin: 6535
       min_mireds: 153
@@ -107,25 +107,147 @@
       color_temp_kelvin:
       color_temp:
       hs_color:
-      - 0.469
-      - 50.196
+      - 38.065
+      - 72.941
       rgb_color:
       - 255
-      - 128
-      - 127
+      - 187
+      - 69
       xy_color:
-      - 0.5279
-      - 0.313525
-      entity_id:
-      - light.office_1
-      - light.office_2
-      - light.office_3
-      - light.office_4
-      icon: mdi:lightbulb-group
-      friendly_name: Office Lights
+      - 0.513
+      - 0.4237
+      mode: normal
+      dynamics: none
+      icon: mdi:ceiling-light
+      friendly_name: Office 1
       supported_features: 40
       state: 'on'
-  icon: phu:scene-dynamic
+    light.office_2:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: xy
+      brightness: 91
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 0
+      - 62.353
+      rgb_color:
+      - 255
+      - 96
+      - 96
+      xy_color:
+      - 0.5935
+      - 0.308
+      mode: normal
+      dynamics: none
+      icon: mdi:ceiling-light
+      friendly_name: Office 2
+      supported_features: 40
+      state: 'on'
+    light.office_3:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: xy
+      brightness: 91
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 336.947
+      - 74.51
+      rgb_color:
+      - 255
+      - 65
+      - 138
+      xy_color:
+      - 0.5532
+      - 0.2547
+      mode: normal
+      dynamics: none
+      icon: mdi:ceiling-light
+      friendly_name: Office 3
+      supported_features: 40
+      state: 'on'
+    light.office_4:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: xy
+      brightness: 91
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 335.41
+      - 47.843
+      rgb_color:
+      - 255
+      - 133
+      - 183
+      xy_color:
+      - 0.4519
+      - 0.2677
+      mode: normal
+      dynamics: none
+      icon: mdi:ceiling-light
+      friendly_name: Office 4
+      supported_features: 40
+      state: 'on'
+  icon: mdi:ceiling-light
   metadata:
-    light.office_lights:
+    light.office_1:
+      entity_only: true
+    light.office_2:
+      entity_only: true
+    light.office_3:
+      entity_only: true
+    light.office_4:
+      entity_only: true
+- id: '1759205779140'
+  name: Office All Lights Tokyo
+  entities:
+    light.office_1:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: xy
+      brightness: 119
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 249.388
+      - 57.647
+      rgb_color:
+      - 131
+      - 108
+      - 255
+      xy_color:
+      - 0.2142
+      - 0.1332
+      mode: normal
+      dynamics: none
+      icon: mdi:ceiling-light
+      friendly_name: Office 1
+      supported_features: 40
+      state: 'on'
+  icon: mdi:globe-light
+  metadata:
+    light.office_1:
       entity_only: true

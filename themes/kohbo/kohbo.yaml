@@ -133,3 +133,6 @@ kohbo:
   # Locks
   state-lock-locked-color: var(--success-color)
   state-lock-unlocked-color: var(--error-color)
+
+  mmpc-on-dialog: var(--primary-text-color)
+  mmpc-on-dialog: var(--secondary-text-color)

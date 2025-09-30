@@ -1,0 +1,35 @@
+# 
+# Climate Overview
+# 
+climate_overview:
+  card:
+    type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:mini-graph-card
+        entities:
+          - entity: '[[temperature_sensor]]'
+            color: "#59A5D8"
+        name: '[[room_name]] Climate'
+        icon: mdi:thermometer
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            entity: '[[humidity_sensor]]'
+            template: kohbo_aqi_humidity_item
+          
+          - type: custom:button-card
+            entity: '[[carbon_dioxide_sensor]]'
+            template: kohbo_aqi_co2_item
+  
+          - type: custom:button-card
+            entity: '[[vocs_sensor]]'
+            template: kohbo_aqi_tvocs_item
+
+          - type: custom:button-card
+            entity: '[[pm25_sensor]]'
+            template: kohbo_aqi_pm25_item

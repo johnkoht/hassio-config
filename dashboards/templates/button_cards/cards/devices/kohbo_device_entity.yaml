@@ -5,6 +5,7 @@ kohbo_device_entity:
   size: 100%
   tap_action:
     action: more-info
+  haptic: light
   styles:
     card:
       - height: 155px
