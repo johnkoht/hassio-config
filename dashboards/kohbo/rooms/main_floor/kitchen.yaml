@@ -22,6 +22,7 @@ cards:
   # 
   # Climate Overview
   # 
+
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -40,31 +41,32 @@ cards:
     template: section_title
     name: Lights
 
-  - type: custom:mushroom-light-card
+  # Main Lights
+  - type: tile
     entity: light.kitchen_main_light_switch
-    name: Main Lights
-    layout: horizontal
-    show_brightness_control: true
-    show_color_control: false
-    fill_container: true
-    use_light_color: true
-    show_color_temp_control: false
-    collapsible_controls: false
-    tap_action:
-      action: more-info
+    name: Main Light
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+    # tap_action:
+    #   action: navigate
+    #   navigation_path: '#office_ceiling_lights'
 
-  - type: custom:mushroom-light-card
+  # Table Lights
+  - type: tile
     entity: light.kitchen_table_light_switch
-    name: Table Lights
-    layout: horizontal
-    show_brightness_control: true
-    show_color_control: false
-    fill_container: true
-    use_light_color: true
-    show_color_temp_control: false
-    collapsible_controls: false
-    tap_action:
-      action: more-info
+    name: Table Light
+    icon: mdi:desk-lamp
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
 
 
   # 
@@ -73,29 +75,13 @@ cards:
   - type: custom:button-card
     template: section_title
     name: Music
-
-  - type: "custom:mediocre-media-player-card"
-    entity_id: media_player.sonos_kitchen
-    # ma_entity_id: media_player.sonos_office
-    # ma_favorite_button_entity_id: button.sonos_office_favorite
-    tap_opens_popup: true
-    card_mod:
-      style: |
-        .mmpc-1pnwwh8 {
-          align-items: end !important;
-        }
-    ma_entity_id: media_player.sonos_kitchen
-    speaker_group:
-      entities:
-        - media_player.sonos_office
-        - media_player.sonos_family_room
-        - media_player.sonos_living_room
-        - media_player.sonos_main_bedroom
-        - media_player.sonos_playroom
-        - media_player.sonos_patio
-        - media_player.sonos_pool
-        - media_player.sonos_gazebo
-        - media_player.sonos_kitchen
+  
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.sonos_kitchen
+      - room_name: Kitchen
+      - navigation_path: '#kitchen_media_player'
 
 
   # 
@@ -290,3 +276,17 @@ cards:
   #   popup_card_id: kitchen_sensors
   #   card:
             
+
+  # 
+  # Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_kitchen
+      - hash: '#kitchen_media_player'
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

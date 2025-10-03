@@ -83,4 +83,9 @@ room_overview:
                     state: "[[room]]"
 
 
-
+        # 
+        # People
+        # 
+        - !include /config/dashboards/templates/button_cards/people/john.yaml
+        - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+        - !include /config/dashboards/templates/button_cards/people/nonna.yaml

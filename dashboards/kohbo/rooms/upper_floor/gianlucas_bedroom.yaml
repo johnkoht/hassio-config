@@ -1,0 +1,169 @@
+type: custom:vertical-layout
+title: Gianluca's Bedroom
+path: gianluca-bedroom
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+cards:
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Gianluca's Room
+
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - mode: input_select.gianlucas_bedroom
+      - occupancy: input_boolean.gianlucas_room_occupied
+      - room: "gianluca_bedroom"
+
+
+  # 
+  # Climate Overview
+  # 
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.gianluca_bedroom_awair_temperature
+      - humidity_sensor: sensor.gianluca_bedroom_awair_humidity
+      - carbon_dioxide_sensor: sensor.gianluca_bedroom_awair_carbon_dioxide
+      - vocs_sensor: sensor.gianluca_bedroom_awair_vocs
+      - pm25_sensor: sensor.gianluca_bedroom_awair_pm2_5
+      - room_name: Gianluca's Bedroom
+
+
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Ceiling Lights
+  - type: tile
+    entity: light.gianluca_bedroom_lights
+    name: Ceiling Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+    tap_action:
+      action: navigate
+      navigation_path: '#gianluca_bedroom_ceiling_lights'
+  
+  # Bedside Lamp
+  - type: tile
+    entity: light.gianluca_lamp
+    name: Bedside Lamp
+    icon: mdi:desk-lamp
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Air Purifier
+      - type: custom:button-card
+        entity: fan.gianlucas_bedroom_air_purifier
+        name: Air Purifier
+        template: kohbo_device_air_purifier_entity
+
+      # Awair AQI
+      - type: custom:button-card
+        entity: sensor.gianluca_bedroom_awair_score
+        name: Awair AQI
+        template: kohbo_device_entity
+        icon: mdi:blur
+
+      # Heater Outlet
+      - type: custom:button-card
+        entity: switch.hue_smart_plug_1
+        name: Heater
+        template: kohbo_device_smart_plug_entity
+
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.gianlucas_door_sensor_status
+        name: Door
+        template: kohbo_device_door_entity
+  
+
+
+  # 
+  # Automations
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # Air Quality Sensor Detections
+      - entity: automation.gianluca_s_bedroom_air_quality_sensor_detections
+        name: Air Quality Automations
+        icon: mdi:air-filter
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Gianluca's heater
+      - entity: automation.gianluca_heater_on
+        name: Heater Automations
+        icon: mdi:radiator
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Gianluca's heater
+      - entity: automation.gianluca_heater_turn_on_upon_arrival
+        name: Turn on Heater Upon Arrival
+        icon: mdi:radiator
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: automation.gianluca_room_temperature_alert
+        name: Room Temperature Alert
+        icon: mdi:alert
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+
+
+  # 
+  # Ceiling Lights Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: light_popup
+    variables:
+      - light_entity: light.gianluca_bedroom_lights
+      - popup_hash: '#gianluca_bedroom_ceiling_lights'
+      - popup_title: 'Ceiling Lights'
+      - entity_id: 
+        - light.gianluca_room_1
+        - light.gianluca_room_2
+        - light.gianluca_room_3
+        - light.gianluca_room_4
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

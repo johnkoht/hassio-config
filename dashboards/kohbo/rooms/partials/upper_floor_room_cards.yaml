@@ -1,0 +1,138 @@
+type: vertical-stack
+cards:
+  # 
+  # Main Bedroom
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.main_bedroom_occupied
+      - room_name: Main Bedroom
+      - navigation_path: '/dashboard-kohbo/main-bedroom'
+      - temperature: "[[[ return states['sensor.main_bedroom_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.main_bedroom_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.main_bedroom_air_quality'].state ]]]"
+      - room_devices:
+        # Lights
+        - type: custom:button-card
+          entity: light.main_bedroom_main_lights
+          name: Ceiling Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+          color: auto
+        # Music
+        - type: custom:button-card
+          entity: media_player.sonos_main_bedroom
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+        # Door
+        - type: custom:button-card
+          entity: binary_sensor.main_bedroom_door_sensor_status
+          name: Door
+          template: kohbo_room_card_device
+        # Air Purifier
+        - type: custom:button-card
+          entity: fan.main_bedroom_air_purifier
+          name: Air Purifier
+          template: kohbo_room_card_device
+          icon: mdi:air-purifier
+
+  # 
+  # Nino's Bedroom
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.ninos_bedroom_occupied
+      - room_name: Nino's Bedroom
+      - navigation_path: '/dashboard-kohbo/ninos-bedroom'
+      - temperature: "[[[ return states['sensor.nino_bedroom_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.nino_bedroom_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.nino_bedroom_air_quality'].state ]]]"
+      - room_devices:
+        - type: custom:button-card
+          entity: light.ninos_bedroom_main_lights
+          name: Ceiling Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+
+        - type: custom:button-card
+          entity: media_player.ninos_room
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+
+        - type: custom:button-card
+          entity: binary_sensor.ninos_door_sensor_status
+          name: Door
+          template: kohbo_room_card_device
+
+        - type: custom:button-card
+          entity: fan.ninos_bedroom_air_purifier
+          name: Air Purifier
+          template: kohbo_room_card_device
+          icon: mdi:air-purifier
+
+  # 
+  # Gianluca's Bedroom
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.gianlucas_room_occupied
+      - room_name: Gianluca's Bedroom
+      - navigation_path: '/dashboard-kohbo/gianluca-bedroom'
+      - temperature: "[[[ return states['sensor.gianluca_bedroom_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.gianluca_bedroom_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.gianluca_bedroom_air_quality'].state ]]]"
+      - room_devices:
+        - type: custom:button-card
+          entity: light.playroom_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+        
+        - type: custom:button-card
+          entity: binary_sensor.gianlucas_door_sensor_status
+          name: Door
+          template: kohbo_room_card_device
+        
+        - type: custom:button-card
+          entity: switch.hue_smart_plug_1
+          name: Heater
+          template: kohbo_room_card_device
+          icon: mdi:heat-wave
+
+        - type: custom:button-card
+          entity: fan.gianlucas_bedroom_air_purifier
+          name: Air Purifier
+          template: kohbo_room_card_device
+          icon: mdi:air-purifier
+
+
+  # 
+  # Upstairs Hallway
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.upstairs_hallway_occupied
+      - room_name: Upstairs Hallway
+      - navigation_path: '/dashboard-kohbo/upstairs-hallway'
+      - temperature: null
+      - humidity: null
+      - aqi: null
+      - room_devices:
+        # Ceiling Lights
+        - type: custom:button-card
+          entity: light.upstairs_hallway
+          name: Ceiling
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+        # Stairs lights
+        - type: custom:button-card
+          entity: light.stairs_light
+          name: Stairs
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights

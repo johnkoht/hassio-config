@@ -7,6 +7,8 @@ media_player_pop_up:
         hash: '[[hash]]'
         close_by_clicking_outside: true
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
+        margin_top_mobile: calc(100vh - 850px)
+        margin_top_desktop: calc(100vh - 850px)
 
       - type: "custom:mediocre-massive-media-player-card"
         entity_id: '[[media_player]]'

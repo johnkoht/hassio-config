@@ -8,233 +8,146 @@ cards:
     template: kohbo_page_title
     name: Rooms
 
-  # 
-  # Family Room
-  # 
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        ha-card {
-          opacity: {{"1" if states['input_boolean.family_room_occupied'].state == "on" else "0.5"}};
-        }
-    cards:
-      - type: custom:button-card
-        entity: input_boolean.family_room_occupied
-        name: Family Room
-        template: kohbo_room_card_header
-        icon: kohbo:kohbo-chair
-        variables:
-          temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
-          humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
-        tap_action:
-          action: navigate
-          navigation_path: '/dashboard-kohbo/family-room'
-  
-      - type: custom:stack-in-card
-        mode: horizontal
-        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-        cards:
-          - type: custom:button-card
-            entity: light.family_room_main_lights
-            name: Lights
-            template: kohbo_room_card_device                
-            icon: kohbo:kohbo-device-lights
+  - type: custom:simple-tabs
+    pre-load: true
+    # default_tab: 2
+    alignment: center
+    # background-color: "#2a2a2a"
+    border-color: transparent
+    # text-color: "#bbbbbb"
+    # hover-color: "#ffffff"
+    # active-text-color: "#000000"
+    active-background: transparent
+    tabs:
+        - title: Main
+          card: !include /config/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml
+        - title: Upper
+          card: !include /config/dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml
+        - title: Lower
+          card: !include /config/dashboards/kohbo/rooms/partials/lower_floor_room_cards.yaml
+        - title: Exterior
+          card: !include /config/dashboards/kohbo/rooms/partials/exterior_room_cards.yaml
+        - title: More
+          card: !include /config/dashboards/kohbo/rooms/partials/more_room_cards.yaml
 
-          - type: custom:button-card
-            entity: media_player.sony_bravia_tv
-            name: TV
-            template: kohbo_room_card_device
-            icon: kohbo:kohbo-device-tv
+      # - title: Weather
+      #   icon: mdi:weather-sunny
+      #   conditions:
+      #     - entity: input_boolean.zone_home
+      #       state: "on"
+      #     - template: "{{ now().hour < 17 }}"    
+      #   card:
+      #     type: markdown
+      #     content: Weather card goes here
+      # - title: "Lights on: {{ states.light | selectattr('state','eq','on') | list | count }}"
+      #   icon: mdi:lightbulb
+      #   card:
+      #     type: markdown
+      #     content: Lights goes here
 
-          - type: custom:button-card
-            entity: media_player.sonos_family_room
-            name: Music
-            template: kohbo_room_card_device
-            icon: kohbo:kohbo-device-speaker
+  # - type: custom:tabbed-card
+  #   styles:
+  #     --mdc-typography-button-font-size: 12px
+  #     --mdc-tab-horizontal-padding: 0
+  #     --mdc-tab-height: 28px
+  #   card_mod:
+  #     style:
+  #       tabbed-card:
+  #         .: |
+  #           mwc-tab:hover {
+  #             --mdc-theme-primary: var(--power-color);
+  #             --mdc-tab-color-default: var(--power-color);
+  #           }
+  #           mwc-tab-bar {
+  #             background: {{'var(--lovelace-background)'
+  #                           if is_state('binary_sensor.donker_thema','on')
+  #                           else 'var(--primary-color)'}};
+  #           }
 
-  # 
-  # Office
-  # 
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        ha-card {
-          opacity: {{"1" if states['input_boolean.office_occupied'].state == "on" else "0.5"}};
-        }
-    cards:
-      - type: custom:button-card
-        entity: input_boolean.office_occupied
-        name: Office
-        template: kohbo_room_card_header
-        icon: kohbo:kohbo-laptop
-        variables:
-          temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
-          aqi: "[[[ return states['sensor.office_air_quality'].state ]]]"
-          humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
-        tap_action:
-          action: navigate
-          navigation_path: '/dashboard-kohbo/office'
-  
-      - type: custom:stack-in-card
-        mode: horizontal
-        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-        cards:
-          - type: custom:button-card
-            entity: light.office_lights
-            name: Lights
-            template: kohbo_room_card_device                
-            icon: kohbo:kohbo-device-lights
-            color: auto
+  #         mwc-tab:
+  #           $:
+  #             mwc-tab-indicator $: |
+  #               .mdc-tab-indicator__content--underline {
+  #                   border-color: var(--active-color);
+  #                 }
 
-          - type: custom:button-card
-            entity: media_player.sonos_office
-            name: Music
-            template: kohbo_room_card_device
-            icon: kohbo:kohbo-device-speaker
+  #             .: |
+  #               .mdc-tab {
+  #                 min-width: 80px;
+  #               }
+  #               .material-icons {
+  #                 display: contents !important;
+  #               }
 
-          - type: custom:button-card
-            entity: binary_sensor.office_doors
-            name: Doors
-            template: kohbo_room_card_device
-            icon: >
-              [[[
-                if (entity.state == "on")
-                  return "kohbo:kohbo-door-open"
-                else
-                  return "kohbo:kohbo-door-closed"
-              ]]]
+  #               .mdc-tab--active {
+  #                 --mdc-icon-size: {{states('input_number.active_icon_size')}}px;
+  #                 /*background: var(--text-color-off) !important;*/
+  #               }
+  #       # tabbed-card $ mwc-tab-bar $: |
+  #       #   mwc-tab {
+  #       #     width: 45px !important;
+  #       #   }
+  #       #   mwc-tab-indicator {
+  #       #     display: none !important;
+  #       #   }
+  #     # style:
 
-  # 
-  # Kitchen
-  # 
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        ha-card {
-          opacity: {{"1" if states['input_boolean.kitchen_occupied'].state == "on" else "0.5"}};
-        }
-    cards:
-      - type: custom:button-card
-        entity: input_boolean.kitchen_occupied
-        name: Kitchen
-        template: kohbo_room_card_header
-        icon: kohbo:kohbo-fridge
-        variables:
-          temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
-          humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
-        tap_action:
-          action: navigate
-          navigation_path: '/dashboard-kohbo/kitchen'
-  
-      - type: custom:stack-in-card
-        mode: horizontal
-        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-        cards:
-          - type: custom:button-card
-            entity: light.kitchen_lights
-            name: Lights
-            template: kohbo_room_card_device                
-            icon: kohbo:kohbo-device-lights
+  #     #   .: |
+  #     #     background: red !important;
 
-          - type: custom:button-card
-            entity: media_player.sonos_kitchen
-            name: Music
-            template: kohbo_room_card_device
-            icon: kohbo:kohbo-device-speaker
-
-          - type: custom:button-card
-            entity: binary_sensor.kitchen_door
-            name: Doors
-            template: kohbo_room_card_device
-            icon: >
-              [[[
-                if (entity.state == "on")
-                  return "kohbo:kohbo-door-open"
-                else
-                  return "kohbo:kohbo-door-closed"
-              ]]]
-
-          - type: custom:button-card
-            entity: fan.kitchen_air_purifier
-            name: Air Purifier
-            template: kohbo_room_card_device
-            icon: mdi:air-purifier
-
-  # 
-  # Playroom
-  # 
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        ha-card {
-          opacity: {{"1" if states['input_boolean.playroom_occupied'].state == "on" else "0.5"}};
-        }
-    cards:
-      - type: custom:button-card
-        entity: input_boolean.playroom_occupied
-        name: Playroom
-        template: kohbo_room_card_header
-        icon: kohbo:kohbo-lego
-        variables:
-          temperature: "[[[ return states['sensor.playroom_temperature'].state ]]]"
-          humidity: "[[[ return states['sensor.playroom_humidity'].state ]]]"
-        tap_action:
-          action: navigate
-          navigation_path: '/dashboard-kohbo/playroom'
-  
-      - type: custom:stack-in-card
-        mode: horizontal
-        card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml
-        cards:
-          - type: custom:button-card
-            entity: light.playroom_lights
-            name: Lights
-            template: kohbo_room_card_device                
-            icon: kohbo:kohbo-device-lights
+  #     #   tabbed-card$: |
+  #     #     background: blue !important;
           
-          - type: custom:button-card
-            entity: switch.christmas_playroom_lights
-            name: Party Lights
-            template: kohbo_room_card_device                
-            icon: kohbo:kohbo-device-string-light
+  #     #     mwc-tab-indicator {
+  #     #       display: none !important;
+  #     #     }
 
-          - type: custom:button-card
-            entity: media_player.sonos_playroom
-            name: Music
-            template: kohbo_room_card_device
-            icon: kohbo:kohbo-device-speaker
+  #     #     mwc-tab {
+  #     #       width: 45px !important;
+  #     #     }
 
-          - type: custom:button-card
-            entity: binary_sensor.playroom_window_west_left_opening
-            name: Windows
-            template: kohbo_room_card_device
-            icon: >
-              [[[
-                if (entity.state == "on")
-                  return "kohbo:kohbo-window-open"
-                else
-                  return "kohbo:kohbo-window-closed"
-              ]]]
-
-
-  # 
-  # Dining Room
-  # 
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        ha-card {
-          opacity: {{"1" if states['input_boolean.dining_room_occupied'].state == "on" else "0.5"}};
-        }
-    cards:
-      - type: custom:button-card
-        entity: input_boolean.dining_room_occupied
-        name: Dining Room
-        template: kohbo_room_card_header
-        icon: kohbo:kohbo-dining
-        tap_action:
-          action: navigate
-          navigation_path: '/dashboard-kohbo/dining-room'
+  #     #     layout-card $ grid-layout $: |
+  #     #       #root {
+  #     #         --masonry-view-card-margin: 0;
+  #     #         --horizontal-stack-card-gap: 8px;
+  #     #       }
+  #   tabs:
+  #     # 
+  #     # Main Floor
+  #     # 
+  #     - card: 
+  #         !include /config/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml
+  #       attributes:
+  #         label: Main
+  #     # 
+  #     # Upper Floor
+  #     # 
+  #     - card: 
+  #         !include /config/dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml
+  #       attributes:
+  #         label: Upper
+  #     # 
+  #     # Lower Floor
+  #     # 
+  #     - card: 
+  #         !include /config/dashboards/kohbo/rooms/partials/lower_floor_room_cards.yaml
+  #       attributes:
+  #         label: Lower
+  #     # 
+  #     # Exterior
+  #     # 
+  #     - card: 
+  #         !include /config/dashboards/kohbo/rooms/partials/exterior_room_cards.yaml
+  #       attributes:
+  #         label: Exterior
+  #     # 
+  #     # More
+  #     # 
+  #     - card: 
+  #         !include /config/dashboards/kohbo/rooms/partials/more_room_cards.yaml
+  #       attributes:
+  #         label: More
+        
 
   
   # 

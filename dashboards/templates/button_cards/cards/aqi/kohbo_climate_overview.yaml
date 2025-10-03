@@ -3,6 +3,7 @@ card_mod:
   style: |
     :host {
       --stack-card-gap: 0;
+      --vertical-stack-card-gap: 0;
     }
 cards:
   - type: custom:mini-graph-card

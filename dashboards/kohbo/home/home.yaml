@@ -84,13 +84,31 @@ cards:
               - type: custom:button-card
                 entity: person.john_koht
                 template: kohbo_person_entity
+                variables:
+                  status: |
+                    [[[
+                      if (states['input_select.john_sleep_state'].state == "Sleep") {
+                        return "sleeping";
+                      } else if (states['input_boolean.john_dnd'].state == "on") {
+                        return "dnd";
+                      }
+                    ]]]
                 tap_action:
                   action: navigate
+                  haptic: heavy
                   navigation_path: '#john'
               - type: custom:button-card
                 entity: person.cristina_falbo
                 template: kohbo_person_entity
+                variables:
+                  status: |
+                    [[[
+                      if (states['input_select.cristina_sleep_state'].state == "Sleep") {
+                        return "sleeping";
+                      }
+                    ]]]
                 tap_action:
+                  haptic: heavy
                   action: navigate
                   navigation_path: '#cristina'
               - type: custom:button-card
@@ -100,6 +118,9 @@ cards:
                   - condition: state
                     entity: input_boolean.nonna_home
                     state: "on"
+                tap_action:
+                  action: navigate
+                  navigation_path: '#nonna'
               - type: custom:button-card
                 entity: person.katia
                 template: kohbo_person_entity
@@ -149,7 +170,44 @@ cards:
         name: Exterior Lights
         template: kohbo_device_entity
         icon: kohbo:kohbo-lamp
-    
+
+      # Main floor HVAC
+      - type: custom:button-card
+        entity: climate.nest_main_floor
+        name: Main Floor
+        template: kohbo_device_entity
+        icon: >
+          [[[
+            if (entity.state == "heat_cool")
+              return "mdi:sun-snowflake-variant"
+            else if (entity.state == "heat")
+              return "mdi:heat-wave"
+            else if (entity.state == "cool")
+              return "mdi:snowflake"
+          ]]]
+        tap_action:
+          action: navigate
+          navigation_path: '#main_floor_thermostat'
+
+      # Upper floor HVAC
+      - type: custom:button-card
+        entity: climate.nest_2nd_floor
+        name: Upper Floor
+        template: kohbo_device_entity
+        icon: >
+          [[[
+            if (entity.state == "heat_cool")
+              return "mdi:sun-snowflake-variant"
+            else if (entity.state == "heat")
+              return "mdi:heat-wave"
+            else if (entity.state == "cool")
+              return "mdi:snowflake"
+          ]]]
+        tap_action:
+          action: navigate
+          navigation_path: '#upper_floor_thermostat'
+
+      # Exterior Doors
       - type: custom:button-card
         entity: binary_sensor.exterior_doors
         name: Exterior Doors
@@ -162,6 +220,7 @@ cards:
               return "kohbo:kohbo-door-closed"
           ]]]
 
+      # Windows
       - type: custom:button-card
         entity: binary_sensor.windows
         name: Windows
@@ -174,6 +233,7 @@ cards:
               return "kohbo:kohbo-window-closed"
           ]]]
 
+      # Main Floor Vacuum
       - type: custom:button-card
         entity: vacuum.roborock_s7
         name: Main Floor Vacuum
@@ -183,6 +243,7 @@ cards:
           action: navigate
           navigation_path: '#main_floor_vacuum'
 
+      # Upstairs Vacuum
       - type: custom:button-card
         entity: vacuum.upstairs_robot_vacuum
         name: Upstairs Vacuum
@@ -225,9 +286,41 @@ cards:
   # 
   - !include /config/dashboards/templates/button_cards/people/john.yaml
   - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+  - !include /config/dashboards/templates/button_cards/people/nonna.yaml
 
   # 
   # Vacuums
   # 
   - !include /config/dashboards/kohbo/shared/kohbo_main_floor_vacuum_popup.yaml
   # - !include /config/dashboards/kohbo/shared/kohbo_upstairs_vacuum_popup.yaml
+
+
+  # 
+  
+  # Main Floor Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_popup
+    variables:
+      - hash: "#main_floor_thermostat"
+      - entity: climate.nest_main_floor
+      - eco_mode: binary_sensor.main_floor_nest_in_eco
+      - name: Main Floor
+      - temperature_sensor: sensor.main_floor_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+  
+  # 
+  # Upper Floor Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_popup
+    variables:
+      - hash: "#upper_floor_thermostat"
+      - entity: climate.nest_2nd_floor
+      - eco_mode: binary_sensor.second_floor_nest_in_eco
+      - name: Upper Floor
+      - temperature_sensor: sensor.second_floor_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+    
+  

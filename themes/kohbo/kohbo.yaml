@@ -6,10 +6,17 @@ kohbo:
   # lovelace-background: radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%) radial-gradient(110.43% 50.94% at 19.08% 11.09%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%) "#1D2023"
   #   # Global
   #background-image: "center / cover no-repeat fixed url('https://thatkookooguy.github.io/https-assets/bg-kibibit-theme.png')"
-  background-image: "radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), radial-gradient(110.43% 50.94% at 19.08% 11.09%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), #1D2023"
+  # background-image: "radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), radial-gradient(110.43% 50.94% at 19.08% 11.09%, rgba(73, 80, 87, 0.25) 0%, rgba(33, 37, 41, 0.25) 100%), #1D2023"
+  background-image: "radial-gradient(44.54% 29.43% at 50.13% 29.43%, rgba(73, 80, 87, 0.25) 0.69%, rgba(33, 37, 41, 0.25) 100%), #212529"
+
+  # background-color: "#212529"
+  # background-image: "radial-gradient(89.69% 48.24% at 1.65% 100%, rgba(33, 37, 41, 0.25) 0%, rgba(33, 37, 41, 0.125) 100%), #212529;"
   # background-image: url("/local/kohbo/images/gradient-bg.png");
   lovelace-background: var(--background-image)
   #lovelace-background: 'center / cover no-repeat url("/local/kohbo/images/gradient-bg.png") fixed'
+
+  app-header-background-color: "#212529"
+  primary-background-color: "#212529"
 
   # text
   primary-text-color: "#F8F9FA"
@@ -35,20 +42,20 @@ kohbo:
   # rgb-text-primary-color: 255, 255, 255
   # rgb-card-background-color: 255, 255, 255
 
-  error-color: "#ED4747"
-  warning-color: "#FFD166"
-  success-color: "#06D6A0"
-  info-color: "#ADD2EB"
-
   # Colors
   light-grey-color: "#ADB5BD"
   #red-color: var(--error-color)
   red-color: "#ED4747"
 
+  error-color: var(--red-color)
+  warning-color: var(--accent-color)
+  success-color: "#06D6A0"
+  info-color: var(--light-primary-color)
+
   # Backgrounds
-  card-background-color: "#343A40"
+  card-background-color: var(--dark-primary-color)
   # primary-background-color: "#fafafa"
-  # secondary-background-color: "#e5e5e5"
+  secondary-background-color: var(--darker-primary-color)
   # clear-background-color: "#ffffff"
 
   # Text
@@ -61,13 +68,15 @@ kohbo:
   # States and Badges
   state-icon-color: "#FFF"
   # state-icon-active-color: "#06D6A0"
+  state-inactive-color: var(--light-grey-color)
   # state-unavailable-color: var(--warning-color)
-  state-light-active-color: "#FFD166"
-  state-binary_sensor-active-color: "#59A5D8"
-  state-switch-active-color: "#59A5D8"
-  state-input_boolean-on-color: "#59A5D8"
-  state-input_boolean-active-color: "#59A5D8"
-  state-media_player-active-color: "#59A5D8"
+  state-light-active-color: var(--accent-color)
+  state-binary_sensor-active-color: var(--primary-color)
+  state-switch-active-color: var(--primary-color)
+  switch-unchecked-track-color: "495057"
+  state-input_boolean-on-color: var(--primary-color)
+  state-input_boolean-active-color: var(--primary-color)
+  state-media_player-active-color: var(--primary-color)
 
   
   # Cards
@@ -75,6 +84,8 @@ kohbo:
   ha-card-border-radius: 12px
   # ha-card-border-color: "#3A3F46"
   # ha-card-box-shadow: 0px 0px 15px 1px rgba(0,0,0,.2), 0 1px 2px rgba(0,0,0,.2)
+
+  vertical-stack-card-gap: 20px
 
   # Sections
   ha-section-grid-row-gap: 20px
@@ -88,19 +99,25 @@ kohbo:
   # Media Players
   state-media_player-paused-color: var(--light-grey-color)
   state-media_player-off-color: var(--light-grey-color)
+  state-media_player-idle-color: var(--light-grey-color)
   
   state-light-off-color: var(--light-grey-color)
 
   # Binary Sensors
-  state-binary_sensor-door-off-color: var(--light-grey-color)
-  state-binary_sensor-window-off-color: var(--light-grey-color)
   state-binary_sensor-door-on-color: var(--primary-color)
+  state-binary_sensor-door-off-color: var(--light-grey-color)
+  state-binary_sensor-opening-off-color: var(--light-grey-color)
+  state-binary_sensor-window-off-color: var(--light-grey-color)
   state-binary_sensor-window-on-color: var(--primary-color)
-
+  state-binary_sensor-off-color: var(--light-grey-color)
 
   # Fans
   state-fan-on-color: var(--primary-color)
   state-fan-off-color: var(--light-grey-color)
+
+  state-climate-cool-color: var(--primary-color)
+  state-climate-heat-color: var(--error-color)
+  state-climate-heat_cool-color: var(--info-color)
 
   # state-lock-unlocked-color: var(--primary-color)
   # state-lock-locked-color: var(--light-grey-color)
@@ -134,5 +151,33 @@ kohbo:
   state-lock-locked-color: var(--success-color)
   state-lock-unlocked-color: var(--error-color)
 
+  # Automations
+  state-automation-off-color: var(--light-grey-color)
+  state-automation-on-color: var(--primary-color)
+
+  # Climate
+  state-climate-off-color: var(--light-grey-color)
+  state-climate-inactive-color: var(--light-grey-color)
+
   mmpc-on-dialog: var(--primary-text-color)
   mmpc-on-dialog: var(--secondary-text-color)
+  mmpc-surface-higher: var(--card-background-color)
+
+  # Input components
+  # input-idle-line-color: rgba(0, 0, 0, 0.42);
+  # input-hover-line-color: rgba(0, 0, 0, 0.87);
+  # input-disabled-line-color: rgba(0, 0, 0, 0.06);
+  # input-outlined-idle-border-color: rgba(0, 0, 0, 0.38);
+  # input-outlined-hover-border-color: rgba(0, 0, 0, 0.87);
+  # input-outlined-disabled-border-color: rgba(0, 0, 0, 0.06);
+  input-fill-color: "#495057"
+  # input-disabled-fill-color: rgb(250, 250, 250);
+  input-ink-color: var(--primary-text-color)
+  input-label-ink-color: var(--text-light-primary-color)
+  # input-disabled-ink-color: rgba(0, 0, 0, 0.37);
+  # input-dropdown-icon-color: rgba(0, 0, 0, 0.54);
+
+
+  bubble-backdrop-background-color: rgba(45, 51, 57, 0.8)
+
+  

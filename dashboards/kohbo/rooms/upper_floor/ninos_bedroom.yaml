@@ -1,0 +1,238 @@
+type: custom:vertical-layout
+title: Nino's Bedroom
+path: ninos-bedroom
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+cards:
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Nino's Bedroom
+
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - mode: input_select.ninos_bedroom
+      - occupancy: input_boolean.ninos_bedroom_occupied
+      - room: "ninos_bedroom"
+
+
+  # 
+  # Climate Overview
+  # 
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.nino_bedroom_awair_temperature
+      - humidity_sensor: sensor.nino_bedroom_awair_humidity
+      - carbon_dioxide_sensor: sensor.nino_bedroom_awair_carbon_dioxide
+      - vocs_sensor: sensor.nino_bedroom_awair_vocs
+      - pm25_sensor: sensor.nino_bedroom_awair_pm2_5
+      - room_name: Nino's Bedroom
+
+
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Ceiling Lights
+  - type: tile
+    entity: light.ninos_bedroom_main_lights
+    name: Ceiling Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+    # tap_action:
+    #   action: navigate
+    #   navigation_path: '#office_ceiling_lights'
+  
+  # Nino's Lamp
+  - type: tile
+    entity: light.nino_bedroom_lamp
+    name: Nino's Lamp
+    icon: mdi:desk-lamp
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  # 
+  # Media Player
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Music
+
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.ninos_room
+      - room_name: Nino's Bedroom
+      - navigation_path: '#ninos_bedroom_media_player'
+
+
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Air Purifier
+      - type: custom:button-card
+        entity: fan.ninos_bedroom_air_purifier
+        name: Air Purifier
+        template: kohbo_device_air_purifier_entity
+
+      # Awair AQI
+      - type: custom:button-card
+        entity: sensor.nino_bedroom_awair_score
+        name: Awair AQI
+        template: kohbo_device_entity
+        icon: mdi:blur
+
+      # Radiant Heating
+      - type: custom:button-card
+        entity: climate.ninos_bedroom
+        name: Radiant Heating
+        template: kohbo_device_entity
+        icon: mdi:radiator
+
+      # North Outlet
+      - type: custom:button-card
+        entity: switch.smart_plug_1_switch
+        name: North Outlet
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_1_active_power
+          confirmation: true
+
+      # South Outlet
+      - type: custom:button-card
+        entity: switch.smart_plug_2_switch
+        name: South Outlet
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_2_active_power
+          confirmation: true
+    
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.ninos_door_sensor_status
+        name: Door
+        template: kohbo_device_door_entity
+      
+      # Leak sensor
+      - type: custom:button-card
+        entity: binary_sensor.nino_s_bathroom_leak_sensor_moisture
+        name: Bathroom Leak Sensor
+        template: kohbo_device_entity
+
+
+  # 
+  # Automations
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # Air Quality Sensor Detections
+      - entity: automation.nino_bedroom_air_quality_detections
+        name: Air Quality Automations
+        icon: mdi:air-filter
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Nino's heater
+      - entity: automation.nino_heater_on
+        name: Heater Automations
+        icon: mdi:radiator
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Nino's heater
+      - entity: automation.nino_bedroom_heater_turn_on_upon_arrival
+        name: Turn on Heater Upon Arrival
+        icon: mdi:radiator
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_ninos_bedroom
+        name: Adaptive Lighting
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_sleep_mode_ninos_bedroom
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  # 
+  # Sensors
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Sensors
+  - type: entities
+    entities:
+      # BLE Base Station
+      - type: custom:template-entity-row
+        icon: mdi:bluetooth
+        name: BLE Base Station
+        entity: binary_sensor.espresense_nino_bedroom
+        state: "{{ 'Connected' if states['binary_sensor.espresense_nino_bedroom'].state == 'on' else 'Disconnected' }}"
+        secondary: "{{ states['binary_sensor.espresense_nino_bedroom'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+  # 
+  # Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.ninos_room
+      - hash: '#ninos_bedroom_media_player'
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

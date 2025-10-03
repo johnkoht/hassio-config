@@ -12,9 +12,26 @@ views:
     # - !include /config/dashboards/kohbo/devices/devices.yaml
     - !include /config/dashboards/kohbo/security/security.yaml
 
-    # Rooms
+    # Main Floor
     - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/dining_room.yaml
+
+    # Upper Floor
+    - !include /config/dashboards/kohbo/rooms/upper_floor/main_bedroom.yaml
+    - !include /config/dashboards/kohbo/rooms/upper_floor/ninos_bedroom.yaml
+    - !include /config/dashboards/kohbo/rooms/upper_floor/gianlucas_bedroom.yaml
+    - !include /config/dashboards/kohbo/rooms/upper_floor/upstairs_hallway.yaml
+
+    # # Lower Floor
+    # - !include /config/dashboards/kohbo/rooms/lower_floor/laundry_room.yaml
+    # - !include /config/dashboards/kohbo/rooms/lower_floor/garage.yaml
+    # - !include /config/dashboards/kohbo/rooms/lower_floor/pool_room.yaml
+
+    # # Exterior
+    # - !include /config/dashboards/kohbo/rooms/exterior/exterior.yaml
+
+    # # More
+    # - !include /config/dashboards/kohbo/rooms/more/more.yaml

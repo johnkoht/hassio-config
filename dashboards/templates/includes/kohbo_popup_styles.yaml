@@ -29,3 +29,16 @@
   .mmpc-tvkd6n {
     z-index: 100 !important;
   }
+
+  .mmpc-1du5zii {
+    box-shadow: none !important;
+  }
+
+  .mmpc-1cr3thb {
+    box-shadow: 0 0px 80px black !important;
+  }
+
+  .mmpc-123u2ua {
+    width: 100% !important;
+  }
+  

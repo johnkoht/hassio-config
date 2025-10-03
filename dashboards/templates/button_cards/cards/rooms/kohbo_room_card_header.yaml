@@ -6,12 +6,14 @@ kohbo_room_card_header:
     [[[
       if (entity.state == "on")
         return "Occupied";
-      else
+      else if (entity.state == "off")
         return "Unoccupied";
+      else
+        return entity.state;
     ]]]
   variables: 
-    temperature: "72"
-    humidity: "40"
+    temperature: null
+    humidity: null
     aqi: null
   styles:
     grid:
@@ -21,7 +23,7 @@ kohbo_room_card_header:
     card:
       - --mdc-ripple-color: transparent
       - --mdc-ripple-press-opacity: 0
-      - padding: 20px
+      - padding: 20px 20px 12px 20px
       - background: transparent
       - backdrop-filter: none
       - -webkit-backdrop-filter: none
@@ -29,7 +31,6 @@ kohbo_room_card_header:
       - border: none
     name:
       - padding-left: 16px
-      # - padding-top: 4px
       - justify-self: start
       - align-self: end
       - font-size: 18px
@@ -60,13 +61,18 @@ kohbo_room_card_header:
 
   custom_fields:
     temperature: >
-      [[[ return Math.round(variables.temperature * 10) / 10 + "°" ]]]
+      [[[ 
+        if (variables.temperature) {
+          return Math.round(variables.temperature * 10) / 10 + "°";
+        }
+      ]]]
     secondary_climate: >
       [[[
+        console.log("aqi", variables.aqi);
         if (variables.aqi) {
           return "AQI - " + variables.aqi;
         }
-        else {
+        else if (variables.humidity) {
           return Math.round(variables.humidity * 10) / 10 + "% Humidity";
         }
       ]]]
@@ -81,7 +87,7 @@ kohbo_room_card_header:
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background-color: {{"#06D6A0" if states[config.entity].state == "on" else "#ADB5BD"}};
+        background-color: {{"#06D6A0" if (config and states[config.entity].state == "on") else "#ADB5BD"}};
         position: absolute;
         top: 1px;
         left: 16px;

@@ -1,4 +1,4 @@
-kohbo_scene_button:
+scene_button:
   card:
     type: custom:button-card
     show_icon: false

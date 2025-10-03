@@ -1,0 +1,172 @@
+thermostat_popup:
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '[[hash]]'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
+        margin_top_mobile: calc(100vh - 860px)
+        margin_top_desktop: calc(100vh - 860px)
+
+      - type: custom:button-card
+        template: kohbo_page_title
+        name: '[[name]]'
+
+      - type: thermostat
+        entity: '[[entity]]'
+        name: '[[name]]'
+        icon: mdi:thermometer
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent !important;
+            }
+
+            ha-card .title {
+              display: none !important;
+            }
+
+            .arc-colored {
+              
+            }
+
+      - type: entities
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+        entities:
+          # # Indoor Temperature
+          # - type: custom:decluttering-card
+          #   template: thermostat_popup_temperature_item
+          #   variables:
+          #     - name: '[[name]] Temperature'
+          #     - temperature_sensor: '[[temperature_sensor]]'
+
+          # # Outside Temperature
+          # - type: custom:decluttering-card
+          #   template: thermostat_popup_temperature_item
+          #   variables:
+          #     - name: "Outside Temperature"
+          #     - temperature_sensor: '[[outside_temperature_sensor]]'
+
+          - type: custom:template-entity-row
+            icon: mdi:home-thermometer
+            name: '[[name]]'
+            entity: '[[temperature_sensor]]'
+            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            state: "{{ (states(config.entity) | float) | round(0) }}°"
+
+          - type: custom:template-entity-row
+            icon: mdi:thermometer-lines
+            name: 'Outside Temperature'
+            entity: '[[outside_temperature_sensor]]'
+            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            state: "{{ (states(config.entity) | float) | round(0) }}°"
+
+          
+
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+            ha-card {
+              background: var(--darker-primary-color);
+              border-bottom-right-radius: 0;
+              border-bottom-left-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+
+              position: absolute;
+              bottom: 70px;
+              height: 110px;
+              width: 100%;
+              left: 0;
+            }
+
+        cards:
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Heat
+            template: kohbo_thermostat_action_item
+            icon: mdi:heat-wave
+            tap_action:
+              action: call-service
+              service: climate.set_hvac_mode
+              target:
+                entity_id: '[[entity]]'
+              data:
+                hvac_mode: heat
+
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Cool
+            template: kohbo_thermostat_action_item
+            icon: mdi:snowflake
+            tap_action:
+              action: call-service
+              service: climate.set_hvac_mode
+              target:
+                entity_id: '[[entity]]'
+              data:
+                hvac_mode: cool
+
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Heat/Cool
+            template: kohbo_thermostat_action_item
+            icon: mdi:sun-snowflake-variant
+            tap_action:
+              action: call-service
+              service: climate.set_hvac_mode
+              target:
+                entity_id: '[[entity]]'
+              data:
+                hvac_mode: heat_cool
+
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: '[[eco_mode]]'
+                state: 'off'
+            card:
+              type: custom:button-card
+              entity: '[[entity]]'
+              name: Eco
+              template: kohbo_thermostat_action_item
+              icon: mdi:leaf
+              tap_action:
+                action: call-service
+                service: climate.set_preset_mode
+                target:
+                  entity_id: '[[entity]]'
+                data:
+                  preset_mode: eco
+
+
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: '[[eco_mode]]'
+                state: 'on'
+            card:
+              type: custom:button-card
+              entity: '[[entity]]'
+              name: Eco
+              template: kohbo_thermostat_action_item
+              icon: mdi:leaf
+              tap_action:
+                action: call-service
+                service: climate.set_preset_mode
+                target:
+                  entity_id: '[[entity]]'
+                data:
+                  preset_mode: eco

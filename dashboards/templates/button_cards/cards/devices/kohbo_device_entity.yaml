@@ -6,6 +6,31 @@ kohbo_device_entity:
   tap_action:
     action: more-info
   haptic: light
+  state_display: >
+    [[[
+      const last = new Date(entity.last_changed);
+      const now = new Date();
+      const diff = Math.floor((now - last) / 1000);
+
+      function titleCase(str) {
+        return str
+          .replace(/_/g, " ")
+          .toLowerCase()
+          .split(" ")
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      }
+
+      const state = hass.formatEntityState ? hass.formatEntityState(entity): titleCase(entity.state);
+
+      if (diff < 3600) {
+        return `${state} - ${Math.floor(diff / 60) + "m"}`;
+      } else if (diff < 86400) {
+        return `${state} - ${Math.floor(diff / 3600) + "h"}`;
+      } else {
+        return `${state} - ${Math.floor(diff / 86400) + "d"}`;
+      }
+    ]]]
   styles:
     card:
       - height: 155px

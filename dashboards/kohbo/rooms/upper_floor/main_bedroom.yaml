@@ -1,0 +1,264 @@
+type: custom:vertical-layout
+title: Main Bedroom
+path: main-bedroom
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+cards:
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Main Bedroom
+
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - mode: input_select.main_bedroom
+      - occupancy: input_boolean.main_bedroom_occupied
+      - room: "main_bedroom"
+
+
+  # 
+  # Climate Overview
+  # 
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.main_bedroom_awair_temperature
+      - humidity_sensor: sensor.main_bedroom_awair_humidity
+      - carbon_dioxide_sensor: sensor.main_bedroom_awair_carbon_dioxide
+      - vocs_sensor: sensor.main_bedroom_awair_vocs
+      - pm25_sensor: sensor.main_bedroom_awair_pm2_5
+      - room_name: Main Bedroom
+
+                    
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Ceiling Lights
+  - type: tile
+    entity: light.main_bedroom_main_lights
+    name: Ceiling Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+    # tap_action:
+    #   action: navigate
+    #   navigation_path: '#office_ceiling_lights'
+  
+  # Desk Lamp
+  - type: tile
+    entity: light.hue_ambiance_lamp_1
+    name: John's Lamp
+    icon: mdi:desk-lamp
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  # Shelf Lights
+  - type: tile
+    entity: light.hue_ambiance_lamp_1_2
+    name: Cristina's Lamp
+    icon: mdi:desk-lamp
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  # 
+  # Media Player
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Music
+
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.sonos_main_bedroom
+      - room_name: Main Bedroom
+      - navigation_path: '#main_bedroom_media_player'
+
+
+  
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Air Purifier
+      - type: custom:button-card
+        entity: fan.main_bedroom_air_purifier
+        name: Air Purifier
+        template: kohbo_device_air_purifier_entity
+
+      # Desk Outlet
+      - type: custom:button-card
+        entity: switch.smart_plug_7_switch
+        name: Bedside Outlet
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_7_active_power
+          confirmation: true
+    
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.main_bedroom_door_sensor_status
+        name: Doors
+        template: kohbo_device_door_entity
+      
+      # Alexa Dot
+      - type: custom:button-card
+        entity: media_player.kohbo_dot_main_bedroom
+        name: Alexa Dot
+        template: kohbo_device_entity
+        icon: phu:alexa-logo
+
+
+  # 
+  # Automations
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # Air Quality Sensor Detections
+      - entity: automation.main_bedroom_air_quality_sensor_detections
+        name: Air Quality Automations
+        icon: mdi:air-filter
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # John Nightlight
+      - entity: automation.main_bedroom_night_light_for_john
+        name: John Nightlight
+        icon: hue:scene-nightlight
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      - entity: input_boolean.main_bedroom_speech_notifications
+        name: Speech Notifications
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Lighting Automations Toggle
+      - entity: input_boolean.main_bedroom_lighting_automations
+        name: Lighting Automations
+        icon: kohbo:kohbo-light-2
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_main_bedroom
+        name: Adaptive Lighting
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_sleep_mode_main_bedroom
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        
+        
+
+  # 
+  # Sensors
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Sensors
+  - type: entities
+    entities:
+      # BLE Base Station
+      - type: custom:template-entity-row
+        icon: mdi:bluetooth
+        name: BLE Base Station
+        entity: binary_sensor.espresense_main_bedroom
+        state: "{{ 'Connected' if states['binary_sensor.espresense_main_bedroom'].state == 'on' else 'Disconnected' }}"
+        secondary: "{{ states['binary_sensor.espresense_main_bedroom'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      - type: custom:template-entity-row
+        entity: binary_sensor.main_bedroom_west_presence
+        name: West Presence
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+        secondary: "{{ states['binary_sensor.main_bedroom_west_presence'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        
+      # Occupancy Sensor
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-room-occupancy
+        name: Occupancy Sensor
+        entity: binary_sensor.main_bedroom_motion_sensor_occupancy
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+        secondary: "{{ states['binary_sensor.main_bedroom_motion_sensor_occupancy'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      # Motion Sensor
+      - type: custom:template-entity-row
+        icon: mdi:motion-sensor
+        name: Motion Sensor
+        entity: binary_sensor.main_bedroom_motion_sensor
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+        secondary: "{{ states['binary_sensor.main_bedroom_motion_sensor'].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+  # 
+  # Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_main_bedroom
+      - hash: '#main_bedroom_media_player'
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

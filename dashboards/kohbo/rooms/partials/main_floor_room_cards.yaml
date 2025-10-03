@@ -1,0 +1,312 @@
+type: vertical-stack
+cards:
+  # 
+  # Family Room
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.family_room_occupied
+      - room_name: Family Room
+      - navigation_path: '/dashboard-kohbo/family-room'
+      - temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.kitchen_air_quality'].state ]]]"
+      - room_devices:
+        - type: custom:button-card
+          entity: light.family_room_main_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+
+        - type: custom:button-card
+          entity: media_player.sony_bravia_tv
+          name: TV
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-tv
+
+        - type: custom:button-card
+          entity: media_player.sonos_family_room
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+      
+
+  # 
+  # Office
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.office_occupied
+      - room_name: Office
+      - navigation_path: '/dashboard-kohbo/office'
+      - temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.office_air_quality'].state ]]]"
+      - room_devices:
+        - type: custom:button-card
+          entity: light.office_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+          color: auto
+
+        - type: custom:button-card
+          entity: media_player.sonos_office
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+
+        - type: custom:button-card
+          entity: binary_sensor.office_doors
+          name: Doors
+          template: kohbo_room_card_device
+          icon: >
+            [[[
+              if (entity.state == "on")
+                return "kohbo:kohbo-door-open"
+              else
+                return "kohbo:kohbo-door-closed"
+            ]]]
+
+        - type: custom:button-card
+          entity: fan.office_air_purifier
+          name: Air Purifier
+          template: kohbo_room_card_device
+          icon: mdi:air-purifier
+
+  # 
+  # Kitchen
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.kitchen_occupied
+      - room_name: Kitchen
+      - navigation_path: '/dashboard-kohbo/kitchen'
+      - temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.kitchen_air_quality'].state ]]]"
+      - room_devices:
+        - type: custom:button-card
+          entity: light.kitchen_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+
+        - type: custom:button-card
+          entity: media_player.sonos_kitchen
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+
+        - type: custom:button-card
+          entity: binary_sensor.kitchen_door
+          name: Doors
+          template: kohbo_room_card_device
+          icon: >
+            [[[
+              if (entity.state == "on")
+                return "kohbo:kohbo-door-open"
+              else
+                return "kohbo:kohbo-door-closed"
+            ]]]
+
+        - type: custom:button-card
+          entity: fan.kitchen_air_purifier
+          name: Air Purifier
+          template: kohbo_room_card_device
+          icon: mdi:air-purifier
+
+  # 
+  # Playroom
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.playroom_occupied
+      - room_name: Playroom
+      - navigation_path: '/dashboard-kohbo/playroom'
+      - temperature: "[[[ return states['sensor.playroom_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.playroom_humidity'].state ]]]"
+      - aqi: null
+      - room_devices:
+        - type: custom:button-card
+          entity: light.playroom_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+        
+        - type: custom:button-card
+          entity: switch.christmas_playroom_lights
+          name: Party Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-string-light
+
+        - type: custom:button-card
+          entity: media_player.sonos_playroom
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+
+        - type: custom:button-card
+          entity: binary_sensor.playroom_window_west_left_opening
+          name: Windows
+          template: kohbo_room_card_device
+          icon: >
+            [[[
+              if (entity.state == "on")
+                return "kohbo:kohbo-window-open"
+              else
+                return "kohbo:kohbo-window-closed"
+            ]]]
+
+
+  # 
+  # Dining Room
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.dining_room_occupied
+      - room_name: Dining Room
+      - navigation_path: '/dashboard-kohbo/dining-room'
+      - temperature: null
+      - humidity: null
+      - aqi: null
+      - room_devices:
+        - type: custom:button-card
+          entity: light.dining_room_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+        - type: custom:button-card
+          entity: media_player.sonos_living_room
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+
+
+  # 
+  # Jr. Suite
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_select.jr_suite
+      - room_name: Jr. Suite
+      - navigation_path: '/dashboard-kohbo/jr-suite'
+      - temperature: "[[[ return states['sensor.jr_suite_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.jr_suite_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.jr_suite_air_quality'].state ]]]"
+      - room_devices:
+        # Lights
+        - type: custom:button-card
+          entity: light.jr_suite_bedroom_main_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+        # Door
+        - type: custom:button-card
+          entity: binary_sensor.jr_suite_door_status
+          name: Door
+          template: kohbo_room_card_device
+          icon: >
+            [[[
+              if (entity.state == "on")
+                return "kohbo:kohbo-door-open"
+              else
+                return "kohbo:kohbo-door-closed"
+            ]]]
+        # Desk Power
+        - type: custom:button-card
+          entity: switch.smart_plug_22_switch
+          name: Desk Power
+          template: kohbo_room_card_device
+          icon: mdi:power-plug
+
+
+  # 
+  # Foyer
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      # - room_entity: input_boolean.dining_room_occupied
+      - room_entity: input_select.foyer
+      - room_name: Foyer
+      - navigation_path: '/dashboard-kohbo/foyer'
+      - temperature: null
+      - humidity: null
+      - aqi: null
+      - room_devices:
+        - type: custom:button-card
+          entity: light.foyer_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+        - type: custom:button-card
+          entity: binary_sensor.front_door
+          name: Front Door
+          template: kohbo_room_card_device
+          icon: >
+            [[[
+              if (entity.state == "on")
+                return "kohbo:kohbo-door-open"
+              else
+                return "kohbo:kohbo-door-closed"
+            ]]]
+        - type: custom:button-card
+          entity: lock.front_door
+          name: Lock
+          template: kohbo_room_card_device                
+          icon: >
+            [[[
+              if (entity.state == "locked")
+                return "kohbo:kohbo-lock-locked"
+              else
+                return "kohbo:kohbo-lock-unlocked"
+            ]]]
+        
+
+  # 
+  # Mudroom
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_select.mudroom
+      - room_name: Mudroom
+      - navigation_path: '/dashboard-kohbo/foyer'
+      - temperature: "[[[ return states['sensor.mudroom_motion_sensor_air_temperature'].state ]]]"
+      - humidity: null
+      - aqi: null
+      - room_devices:
+        - type: custom:button-card
+          entity: light.mudroom_main_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+        - type: custom:button-card
+          entity: binary_sensor.interior_garage_door
+          name: Back Door
+          template: kohbo_room_card_device
+          icon: >
+            [[[
+              if (entity.state == "on")
+                return "kohbo:kohbo-door-open"
+              else
+                return "kohbo:kohbo-door-closed"
+            ]]]
+        - type: custom:button-card
+          entity: lock.garage_entry_door
+          name:   Lock
+          template: kohbo_room_card_device                
+          icon: >
+            [[[
+              if (entity.state == "locked")
+                return "kohbo:kohbo-lock-locked"
+              else
+                return "kohbo:kohbo-lock-unlocked"
+            ]]]

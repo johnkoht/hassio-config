@@ -19,9 +19,19 @@ kohbo_person_entity:
       occupancy_state:
         - background-color: >
             [[[
-              if (entity.state == "home")
-                return "#06D6A0";
-              return "#ED4747";
+              if (variables.status) {
+                if (variables.status == "sleeping") {
+                  return "var(--warning-color)";
+                } else if (variables.status == "dnd") {
+                  return "var(--error-color)";
+                }
+              } else {
+                if (entity.state == "home") {
+                  return "var(--success-color)";
+                } else {
+                  return "var(--text-light-primary-color)";
+                }
+              }              
             ]]]
         - border-radius: 50%
         - position: absolute
@@ -35,3 +45,4 @@ kohbo_person_entity:
       [[[
         return "";
       ]]]
+

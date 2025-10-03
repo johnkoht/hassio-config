@@ -1,0 +1,20 @@
+kohbo_thermostat_action_item:
+  show_state: false
+  styles:
+    card:
+      - background: transparent
+      - box-shadow: none
+      - padding: 20px 0px
+      - border: none
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+    icon:
+      - color: var(--primary-text-color)
+      - height: 24px;
+      - margin-bottom: 8px;
+    name:
+      - font-weight: 700
+      - color: var(--primary-text-color)
+      - font-size: 13px;
+
+    

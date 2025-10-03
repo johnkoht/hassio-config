@@ -11,6 +11,15 @@ cards:
   - type: custom:button-card
     entity: person.john_koht
     template: people_profile_picture
+    variables:
+      status: |
+        [[[
+          if (states['input_select.john_sleep_state'].state == "Sleep") {
+            return "sleeping";
+          } else if (states['input_boolean.john_dnd'].state == "on") {
+            return "dnd";
+          }
+        ]]]
 
   # 
   # Heading
@@ -32,7 +41,11 @@ cards:
               return "Home - " + location;
             }
           } else {
-            return "Away - " + states['person.john_koht'].state;
+            if (states['person.john_koht'].state == "not_home") {
+              return "Away";
+            } else {
+              return "Away - " + states['person.john_koht'].state;
+            }
           }
         ]]]
 

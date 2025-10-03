@@ -1,4 +1,8 @@
 style: |
+  :host {
+    --stack-card-gap: 0;
+    --vertical-stack-card-gap: 0 !important;
+  }
   ha-card {
     background: var(--darker-primary-color);
     border-top-right-radius: 0;

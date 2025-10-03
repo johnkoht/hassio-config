@@ -1,0 +1,5 @@
+template:
+  - binary_sensor:
+      - name: Main Floor Nest in Eco
+        state: >
+          {{ state_attr("climate.nest_main_floor", "preset_mode") == "eco" }}
