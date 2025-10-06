@@ -66,7 +66,8 @@ kohbo:
   # text-dark-color: "#FFF"
   
   # States and Badges
-  state-icon-color: "#FFF"
+  # state-icon-color: "#FFF"
+  state-icon-color: var(--light-grey-color)
   # state-icon-active-color: "#06D6A0"
   state-inactive-color: var(--light-grey-color)
   # state-unavailable-color: var(--warning-color)

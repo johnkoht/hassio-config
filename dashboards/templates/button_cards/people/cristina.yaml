@@ -61,7 +61,7 @@ cards:
           {% if states['person.cristina_falbo'].state == "home" %}
             #06D6A0
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
@@ -73,7 +73,7 @@ cards:
         secondary: "{{ states['sensor.cristina_room_presence'].last_changed | relative_time }} ago"
         color: >
           {% if states['sensor.cristina_room_presence'].state == "not_home" %}
-            white
+            #ADB5BD
           {% else %}
             #06D6A0
           {% endif %}
@@ -85,7 +85,6 @@ cards:
         entity: sensor.home_cristina_distance
         secondary: "{{ states['sensor.home_cristina_distance'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: white
 
       - type: custom:template-entity-row
         icon: kohbo:kohbo-steps
@@ -94,7 +93,6 @@ cards:
         state: "{{ '{:,}'.format(states('sensor.cfalb2_steps') | int(0)) }}"
         secondary: "{{ states['sensor.cfalb2_steps'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: white
 
       - type: custom:template-entity-row
         icon: kohbo:kohbo-train
@@ -107,7 +105,7 @@ cards:
           {% if states['input_boolean.cristina_commuting'].state == "on" %}
             #06D6A0
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
 
 
@@ -183,7 +181,7 @@ cards:
           {% if states['binary_sensor.cristina_bed_occupied'].state == "on" %}
             #E36001
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
@@ -221,7 +219,7 @@ cards:
           {% elif battery_level <= 20 %}
             #E36001
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -232,5 +230,4 @@ cards:
         name: Wifi Network
         entity: sensor.cfalb2_ssid
         secondary: "{{ states['sensor.cfalb2_ssid'].last_changed | relative_time }} ago"
-        color: white
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml

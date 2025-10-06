@@ -1,0 +1,148 @@
+# 
+# Camera Popup
+# 
+camera_popup:
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '[[hash]]'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 800px)
+        margin_top_desktop: calc(100vh - 800px)
+
+      - type: custom:button-card
+        template: kohbo_page_title
+        name: '[[name]]'
+      
+      - type: horizontal-stack
+        cards:            
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+                content: "{{ 'On' if states(entity) == 'on' else 'Off' }}"
+                entity: '[[notifications_entity]]'
+                icon: >
+                  {% if states(entity) == 'on' %}
+                    mdi:bell
+                  {% else %}
+                    mdi:bell-off
+                  {% endif %}
+                icon_color: >
+                  {% if states(entity) == 'on' %}
+                    #59A5D8
+                  {% else %}
+                    #ED4747
+                  {% endif %}
+                tap_action:
+                  action: toggle
+
+              # 
+              # Snooze Timer
+              # 
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: '[[timer_entity]]'
+                    state: "active"
+                chip:
+                  type: template
+                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+                  icon: mdi:rewind-15
+                  entity: '[[timer_entity]]'
+                  content: "{{ states['[[countdown_sensor]]'].state }}"
+                  icon_color: >
+                    {% if states(entity) == 'active' %}
+                      #06D6A0
+                    {% else %}
+                      #ADD2EB
+                    {% endif %}
+                  tap_action:
+                    action: more-info
+
+              # 
+              # Snooze Action
+              # 
+              - type: conditional
+                conditions:
+                  - condition: or
+                    conditions:
+                      - condition: state
+                        entity: '[[timer_entity]]'
+                        state: "idle"
+                      - condition: state
+                        entity: '[[timer_entity]]'
+                        state: "paused"
+                chip:
+                  type: template
+                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+                  icon: mdi:alarm-snooze
+                  entity: '[[timer_entity]]'
+                  content: Snooze
+                  icon_color: "#ADB5BD"
+                  tap_action:
+                    action: call-service
+                    service: timer.start
+                    service_data:
+                      entity_id: '[[timer_entity]]'
+
+
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: '[[camera_entity]]'
+        live:
+          controls:
+            thumbnails:
+              mode: below
+              events_media_type: all
+              media_type: events
+              show_details: false
+              show_download_control: false
+              show_favorite_control: false
+              show_timeline_control: false
+        
+
+
+      - type: entities
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+        entities:
+          # Motion
+          - type: custom:template-entity-row
+            icon: mdi:motion-sensor
+            name: Motion Detected
+            entity: '[[motion_entity]]'
+            state: "{{ states['[[motion_entity]]'].state | title }}"
+            secondary: "{{ states['[[motion_entity]]'].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+          # Person Detected
+          - type: custom:template-entity-row
+            icon: mdi:account-alert
+            name: Person Detected
+            entity: '[[person_entity]]'
+            state: "{{ states['[[person_entity]]'].state | title }}"
+            secondary: "{{ states['[[person_entity]]'].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+          # Camera Notifications
+          - entity: '[[notifications_entity]]'
+            icon: kohbo:kohbo-notification
+            name: '[[name]] Notifications'
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          # Snooze Timer
+          - type: custom:template-entity-row
+            icon: mdi:alarm-snooze
+            name: Snooze Timer
+            entity: '[[timer_entity]]'
+            state: >
+              {% if states['[[timer_entity]]'].state == 'active' %}
+                {{ states['[[countdown_sensor]]'].state }}
+              {% else %}
+                Idle
+              {% endif %}
+            secondary: "{{ states['[[timer_entity]]'].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+ 

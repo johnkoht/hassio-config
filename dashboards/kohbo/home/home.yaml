@@ -42,34 +42,6 @@ cards:
                   tap_action:
                     action: more-info
 
-        # - type: custom:button-card
-        #   entity: input_select.house
-        #   layout: icon_state
-        #   show_name: false
-        #   show_state: true
-        #   icon: kohbo:kohbo-house-auto
-        #   template: kohbo_pill
-        #   state_display: >
-        #     [[[
-        #       if (entity.state == "Auto" || entity.state == "Quiet" || entity.state == "Away")
-        #         return entity.state + " Mode"
-        #       else if (entity.state == "Entertainment")
-        #         return "Entertain"
-        #       else
-        #         return entity.state
-        #     ]]]
-        #   icon: >
-        #     [[[
-        #       if (entity.state == "Quiet" || entity.state == "Bedtime")
-        #         return "kohbo:kohbo-house-quiet"
-        #       else if (entity.state == "Entertainment")
-        #         return "kohbo:kohbo-house-entertain"
-        #       else if (entity.state == "Away")
-        #         return "kohbo:kohbo-house-away"
-        #       else
-        #         return "kohbo:kohbo-house-auto"
-        #     ]]]
-
         - type: custom:mod-card
           style:
             hui-horizontal-stack-card$: |
@@ -324,3 +296,264 @@ cards:
       - outside_temperature_sensor: sensor.tempest_temperature
     
   
+  # 
+  # Front Door Camera Notification
+  # 
+  - type: custom:button-card
+    name: "Person detected at the front door"
+    icon: mdi:alert-circle
+    layout: icon_name
+    show_icon: true
+    size: 24px;
+    tap_action:
+      action: navigate
+      navigation_path: '#front_door_camera'
+    styles:
+      card:
+        - backdrop-filter: blur(10px)
+        - -webkit-backdrop-filter: blur(10px)
+        - padding: 10px
+      grid:
+        - grid-template-areas: '"i n"'
+        - grid-template-columns: 40px 1fr
+      name:
+        - justify-self: start
+        - font-weight: 600
+    card_mod:
+      style: |
+        ha-card {
+          background: rgba(237, 71, 71, 0.8) !important;
+          position: fixed !important;
+          bottom: 85px !important;
+          z-index: 1 !important;
+          height: 50px !important;
+          left: 24px !important;
+          right: 24px !important;
+          width: calc(100% - 48px) !important;
+        }
+    visibility:
+      - condition: state
+        entity: binary_sensor.front_door_person_occupancy
+        state: "on"
+
+
+  # 
+  # Driveway Front Camera Notification
+  # 
+  - type: custom:button-card
+    name: "Person detected on the driveway"
+    icon: mdi:alert-circle
+    layout: icon_name
+    show_icon: true
+    size: 24px;
+    tap_action:
+      action: navigate
+      navigation_path: '#driveway_front_camera'
+    styles:
+      card:
+        - backdrop-filter: blur(10px)
+        - -webkit-backdrop-filter: blur(10px)
+        - padding: 10px
+      grid:
+        - grid-template-areas: '"i n"'
+        - grid-template-columns: 40px 1fr
+      name:
+        - justify-self: start
+        - font-weight: 600
+    card_mod:
+      style: |
+        ha-card {
+          background: rgba(237, 71, 71, 0.8) !important;
+          position: fixed !important;
+          bottom: 85px !important;
+          z-index: 1 !important;
+          height: 50px !important;
+          left: 24px !important;
+          right: 24px !important;
+          width: calc(100% - 48px) !important;
+        }
+    # visibility:
+    #   - condition: state
+    #     entity: binary_sensor.driveway_front_person_occupancy
+    #     state: "on"
+
+
+  # 
+  # Front Door Camera Popup
+  # 
+  - type: custom:decluttering-card
+    template: camera_popup
+    variables:
+      - hash: '#front_door_camera'
+      - name: Front Door
+      - notifications_entity: input_boolean.front_door_camera_notifications
+      - timer_entity: timer.front_door_camera_notifications_snooze_timer
+      - countdown_sensor: sensor.front_door_timer_countdown
+      - camera_entity: camera.front_door
+      - motion_entity: binary_sensor.front_door_motion
+      - person_entity: binary_sensor.front_door_person_occupancy
+
+
+  # 
+  # Driveway Front Camera Popup
+  # 
+  - type: custom:decluttering-card
+    template: camera_popup
+    variables:
+      - hash: '#driveway_front_camera'
+      - name: Driveway Front
+      - notifications_entity: input_boolean.driveway_front_camera_notifications
+      - timer_entity: timer.driveway_front_camera_notifications_snooze_timer
+      - countdown_sensor: sensor.driveway_front_timer_countdown
+      - camera_entity: camera.driveway_front
+      - motion_entity: binary_sensor.driveway_front_motion
+      - person_entity: binary_sensor.driveway_front_person_occupancy
+
+
+  # # 
+  # # Front Door Camera Popup
+  # # 
+  # - type: vertical-stack
+  #   cards:
+  #     - type: custom:bubble-card
+  #       card_type: pop-up
+  #       hash: '#front_door_camera'
+  #       close_by_clicking_outside: true
+  #       styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+  #       margin_top_mobile: calc(100vh - 800px)
+  #       margin_top_desktop: calc(100vh - 800px)
+
+  #     - type: custom:button-card
+  #       template: kohbo_page_title
+  #       name: 'Front Door'
+      
+  #     - type: horizontal-stack
+  #       cards:            
+  #         - type: custom:mushroom-chips-card
+  #           chips:
+  #             - type: template
+  #               card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+  #               content: "{{ 'On' if states(entity) == 'on' else 'Off' }}"
+  #               entity: input_boolean.front_door_camera_notifications
+  #               icon: >
+  #                 {% if states(entity) == 'on' %}
+  #                   mdi:bell
+  #                 {% else %}
+  #                   mdi:bell-off
+  #                 {% endif %}
+  #               icon_color: >
+  #                 {% if states(entity) == 'on' %}
+  #                   #59A5D8
+  #                 {% else %}
+  #                   #ED4747
+  #                 {% endif %}
+  #               tap_action:
+  #                 action: toggle
+
+  #             # 
+  #             # Snooze Timer
+  #             # 
+  #             - type: conditional
+  #               conditions:
+  #                 - condition: state
+  #                   entity: timer.front_door_camera_notifications_snooze_timer
+  #                   state: "active"
+  #               chip:
+  #                 type: template
+  #                 card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+  #                 icon: mdi:rewind-15
+  #                 entity: timer.front_door_camera_notifications_snooze_timer
+  #                 content: "{{ states.sensor.front_door_timer_countdown.state }}"
+  #                 icon_color: >
+  #                   {% if states(entity) == 'active' %}
+  #                     #06D6A0
+  #                   {% else %}
+  #                     #ADD2EB
+  #                   {% endif %}
+  #                 tap_action:
+  #                   action: more-info
+
+  #             # 
+  #             # Snooze Action
+  #             # 
+  #             - type: conditional
+  #               conditions:
+  #                 - condition: or
+  #                   conditions:
+  #                     - condition: state
+  #                       entity: timer.front_door_camera_notifications_snooze_timer
+  #                       state: "idle"
+  #                     - condition: state
+  #                       entity: timer.front_door_camera_notifications_snooze_timer
+  #                       state: "paused"
+  #               chip:
+  #                 type: template
+  #                 card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+  #                 icon: mdi:alarm-snooze
+  #                 entity: timer.front_door_camera_notifications_snooze_timer
+  #                 content: Snooze
+  #                 icon_color: "#ADB5BD"
+  #                 tap_action:
+  #                   action: call-service
+  #                   service: timer.start
+  #                   service_data:
+  #                     entity_id: timer.front_door_camera_notifications_snooze_timer
+
+
+  #     - type: custom:advanced-camera-card
+  #       cameras:
+  #         - camera_entity: camera.front_door
+  #       live:
+  #         controls:
+  #           thumbnails:
+  #             mode: below
+  #             events_media_type: all
+  #             media_type: events
+  #             show_details: false
+  #             show_download_control: false
+  #             show_favorite_control: false
+  #             show_timeline_control: false
+        
+
+
+  #     - type: entities
+  #       card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+  #       entities:
+  #         # Motion
+  #         - type: custom:template-entity-row
+  #           icon: mdi:motion-sensor
+  #           name: Motion Detected
+  #           entity: binary_sensor.front_door_motion
+  #           state: "{{ states('binary_sensor.front_door_motion') | title }}"
+  #           secondary: "{{ states['binary_sensor.front_door_motion'].last_changed | relative_time }} ago"
+  #           card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+  #         # Person Detected
+  #         - type: custom:template-entity-row
+  #           icon: mdi:account-alert
+  #           name: Person Detected
+  #           entity: binary_sensor.front_door_person_occupancy
+  #           state: "{{ states('binary_sensor.front_door_person_occupancy') | title }}"
+  #           secondary: "{{ states['binary_sensor.front_door_person_occupancy'].last_changed | relative_time }} ago"
+  #           card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+  #         # Camera Notifications
+  #         - entity: input_boolean.front_door_camera_notifications
+  #           icon: kohbo:kohbo-notification
+  #           name: Front Door Notifications
+  #           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+  #           secondary_info: last-changed
+  #           state_color: true
+  #         # Snooze Timer
+  #         - type: custom:template-entity-row
+  #           icon: mdi:alarm-snooze
+  #           name: Snooze Timer
+  #           entity: timer.front_door_camera_notifications_snooze_timer
+  #           # state: "{{ states('timer.front_door_camera_notifications_snooze_timer') | title }}"
+  #           state: >
+  #             {% if states['timer.front_door_camera_notifications_snooze_timer'].state == 'active' %}
+  #               {{ states.sensor.front_door_timer_countdown.state }}
+  #             {% else %}
+  #               Idle
+  #             {% endif %}
+  #           secondary: "{{ states['timer.front_door_camera_notifications_snooze_timer'].last_changed | relative_time }} ago"
+  #           card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+ 

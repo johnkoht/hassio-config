@@ -65,7 +65,7 @@ cards:
           {% if states['person.john_koht'].state == "home" %}
             #06D6A0
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
@@ -77,7 +77,7 @@ cards:
         secondary: "{{ states['sensor.john_room_presence'].last_changed | relative_time }} ago"
         color: >
           {% if states['sensor.john_room_presence'].state == "not_home" %}
-            white
+            #ADB5BD
           {% else %}
             #06D6A0
           {% endif %}
@@ -89,7 +89,7 @@ cards:
         entity: sensor.home_john_distance
         secondary: "{{ states['sensor.home_john_distance'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: white
+        # color: white
 
       - type: custom:template-entity-row
         icon: kohbo:kohbo-steps
@@ -98,7 +98,7 @@ cards:
         state: "{{ '{:,}'.format(states('sensor.jk_iphone_14_steps') | int(0)) }}"
         secondary: "{{ states['sensor.jk_iphone_14_steps'].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: white
+        # color: white
 
       - type: custom:template-entity-row
         icon: kohbo:kohbo-train
@@ -111,7 +111,7 @@ cards:
           {% if states['input_boolean.john_commuting'].state == "on" %}
             #06D6A0
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
 
   #
@@ -172,7 +172,7 @@ cards:
           {% if states['binary_sensor.john_bed_occupied'].state == "on" %}
             #E36001
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -183,7 +183,7 @@ cards:
         name: Sleep Score
         entity: sensor.withings_sleep_score
         secondary: "{{ states['sensor.withings_sleep_score'].last_changed | relative_time }} ago"
-        color: white
+        # color: white
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
   # 
@@ -220,7 +220,7 @@ cards:
           {% elif battery_level <= 20 %}
             #E36001
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -239,7 +239,7 @@ cards:
           {% elif battery_level <= 20 %}
             #E36001
           {% else %}
-            white
+            #ADB5BD
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -250,5 +250,5 @@ cards:
         name: Wifi Network
         entity: sensor.jk_iphone_14_ssid
         secondary: "{{ states['sensor.jk_iphone_14_ssid'].last_changed | relative_time }} ago"
-        color: white
+        # color: white
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
