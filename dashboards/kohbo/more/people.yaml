@@ -9,9 +9,9 @@ cards:
     name: People
 
 
-  # # 
-  # # Family
-  # # 
+  # 
+  # Family
+  # 
   - type: grid
     columns: 2
     square: false
@@ -25,7 +25,7 @@ cards:
         variables:
           status: >
             [[[
-              if (states['input_select.john_sleep_state'].state == "Sleep") {
+              if (states['input_select.john_sleep_state'].state == "Sleep" || states['input_select.john_sleep_state'].state == "Just Laid Down") {
                 return "sleeping";
               } else if (states['input_boolean.john_dnd'].state == "on") {
                 return "dnd";
@@ -42,7 +42,7 @@ cards:
         state_display: >
           [[[
             if (states['person.john_koht'].state == "home") {
-              if (states['input_select.john_sleep_state'].state == "Sleep") {
+              if (states['input_select.john_sleep_state'].state == "Sleep" || states['input_select.john_sleep_state'].state == "Just Laid Down") {
                 return "Home - Sleeping"
               } else if (states['input_boolean.john_dnd'].state == "on") {
                 return "Home - Do Not Disturb"
@@ -73,7 +73,7 @@ cards:
         variables:
           status: >
             [[[
-              if (states['input_select.cristina_sleep_state'].state == "Sleep") {
+              if (states['input_select.cristina_sleep_state'].state == "Sleep" || states['input_select.cristina_sleep_state'].state == "Just Laid Down") {
                 return "sleeping";
               }
             ]]]
@@ -88,11 +88,15 @@ cards:
         state_display: >
           [[[
             if (states['person.cristina_falbo'].state == "home") {
-              if (states['input_select.cristina_sleep_state'].state == "Sleep") {
+              if (states['input_select.cristina_sleep_state'].state == "Sleep" || states['input_select.cristina_sleep_state'].state == "Just Laid Down") {
                 return "Home - Sleeping"
               } else {
                 var location = states['sensor.cristina_room_presence'].state.replace('_', ' ');
                 location = location.charAt(0).toUpperCase() + location.slice(1);
+                console.log(location);
+                if (location == "Cristina's Work") {
+                  location = "Work";
+                }
                 return "Home - " + location;
               }
             } else {
