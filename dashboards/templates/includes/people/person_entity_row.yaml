@@ -1,0 +1,29 @@
+style: 
+  .: |
+    div#wrapper {
+      padding: 4px !important;
+    }
+  div#wrapper: |
+    .row {
+      padding-top: 4px !important;
+      padding-bottom: 4px !important;
+    }
+    .info {
+      font-weight: 700 !important;
+      padding-left: 10px !important;
+      font-size: 15px !important;
+      line-height: 15px !important;
+      padding-top: 2px !important;
+
+      .secondary {
+        font-weight: 400 !important;
+        font-size: 12px !important;
+        color: #ADB5BD !important;
+        margin-top: 3px !important;
+        line-height: 12px !important;
+      }
+    }
+
+    state-badge {
+      flex: 0 0 40px !important;
+    }

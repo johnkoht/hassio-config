@@ -100,6 +100,9 @@ cards:
                   - condition: state
                     entity: input_boolean.katia_home
                     state: "on"
+                tap_action:
+                  action: navigate
+                  navigation_path: '#katia'
       
   # 
   # Security Overview
@@ -256,9 +259,8 @@ cards:
   # 
   # People
   # 
-  - !include /config/dashboards/templates/button_cards/people/john.yaml
-  - !include /config/dashboards/templates/button_cards/people/cristina.yaml
-  - !include /config/dashboards/templates/button_cards/people/nonna.yaml
+  - type: vertical-stack
+    cards: !include /config/dashboards/kohbo/shared/people.yaml
 
   # 
   # Vacuums
@@ -372,10 +374,10 @@ cards:
           right: 24px !important;
           width: calc(100% - 48px) !important;
         }
-    # visibility:
-    #   - condition: state
-    #     entity: binary_sensor.driveway_front_person_occupancy
-    #     state: "on"
+    visibility:
+      - condition: state
+        entity: binary_sensor.driveway_front_person_occupancy
+        state: "on"
 
 
   # 

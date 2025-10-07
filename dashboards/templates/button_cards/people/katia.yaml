@@ -1,0 +1,97 @@
+  type: vertical-stack
+  cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#katia'
+      styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+      
+    # 
+    # Profile Picture
+    # 
+    - type: custom:button-card
+      entity: person.katia
+      template: people_profile_picture
+
+
+    # 
+    # Heading
+    # 
+    - type: custom:button-card
+      name: "Katia"
+      template: kohbo_person_heading
+      custom_fields:
+        location: '[[[ return states["person.katia"].state == "home" ? "Home" : "Away" ]]]'
+          
+
+    # 
+    # Details
+    # 
+    - type: entities
+      card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+      entities:
+        # 
+        # Status
+        # 
+        - type: custom:template-entity-row
+          icon: kohbo:kohbo-person-status
+          name: Status
+          entity: input_select.katia_status
+          secondary: "{{ states['input_select.katia_status'].last_changed | relative_time }} ago"
+          color: >
+            {% set status = states['input_select.katia_status'].state %}
+            {% if status == "Home" or status == "Just Arrived" %}
+              var(--success-color)
+            {% else %}
+              var(--light-grey-color)
+            {% endif %}
+          card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        # 
+        # Room
+        # 
+        - type: custom:template-entity-row
+          icon: kohbo:kohbo-room-occupancy
+          name: Room
+          entity: sensor.katia_room_presence
+          state: "{{ states('sensor.katia_room_presence') | replace('_', ' ') | title }}"
+          secondary: "{{ states['sensor.katia_room_presence'].last_changed | relative_time }} ago"
+          color: >
+            {% if states['sensor.katia_room_presence'].state == "not_home" %}
+              var(--light-grey-color)
+            {% else %}
+              var(--success-color)
+            {% endif %}
+          card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        # 
+        # Unlock Privilege
+        # 
+        - entity: input_boolean.katia_unlock_privilege
+          name: Unlock Privilege
+          icon: mdi:key
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+
+    # 
+    # Automations
+    # 
+    - type: custom:button-card
+      template: section_title
+      name: Automations
+    - type: entities
+      entities:
+        # Announce Arrival
+        - entity: automation.katia_announce_arrival
+          name: Announce Arrival
+          icon: mdi:home-plus
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Announce Departure
+        - entity: automation.katia_announce_departure
+          name: Announce Departure
+          icon: mdi:home-remove
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true

@@ -31,51 +31,6 @@ cards:
           template: kohbo_room_card_device
           icon: kohbo:kohbo-device-speaker
       
-
-  # 
-  # Office
-  # 
-  - type: custom:decluttering-card
-    template: room_card
-    variables:
-      - room_entity: input_boolean.office_occupied
-      - room_name: Office
-      - navigation_path: '/dashboard-kohbo/office'
-      - temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
-      - humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
-      - aqi: "[[[ return states['sensor.office_air_quality'].state ]]]"
-      - room_devices:
-        - type: custom:button-card
-          entity: light.office_lights
-          name: Lights
-          template: kohbo_room_card_device                
-          icon: kohbo:kohbo-device-lights
-          color: auto
-
-        - type: custom:button-card
-          entity: media_player.sonos_office
-          name: Music
-          template: kohbo_room_card_device
-          icon: kohbo:kohbo-device-speaker
-
-        - type: custom:button-card
-          entity: binary_sensor.office_doors
-          name: Doors
-          template: kohbo_room_card_device
-          icon: >
-            [[[
-              if (entity.state == "on")
-                return "kohbo:kohbo-door-open"
-              else
-                return "kohbo:kohbo-door-closed"
-            ]]]
-
-        - type: custom:button-card
-          entity: fan.office_air_purifier
-          name: Air Purifier
-          template: kohbo_room_card_device
-          icon: mdi:air-purifier
-
   # 
   # Kitchen
   # 
@@ -161,6 +116,51 @@ cards:
               else
                 return "kohbo:kohbo-window-closed"
             ]]]
+
+
+  # 
+  # Office
+  # 
+  - type: custom:decluttering-card
+    template: room_card
+    variables:
+      - room_entity: input_boolean.office_occupied
+      - room_name: Office
+      - navigation_path: '/dashboard-kohbo/office'
+      - temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
+      - humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
+      - aqi: "[[[ return states['sensor.office_air_quality'].state ]]]"
+      - room_devices:
+        - type: custom:button-card
+          entity: light.office_lights
+          name: Lights
+          template: kohbo_room_card_device                
+          icon: kohbo:kohbo-device-lights
+          color: auto
+
+        - type: custom:button-card
+          entity: media_player.sonos_office
+          name: Music
+          template: kohbo_room_card_device
+          icon: kohbo:kohbo-device-speaker
+
+        - type: custom:button-card
+          entity: binary_sensor.office_doors
+          name: Doors
+          template: kohbo_room_card_device
+          icon: >
+            [[[
+              if (entity.state == "on")
+                return "kohbo:kohbo-door-open"
+              else
+                return "kohbo:kohbo-door-closed"
+            ]]]
+
+        - type: custom:button-card
+          entity: fan.office_air_purifier
+          name: Air Purifier
+          template: kohbo_room_card_device
+          icon: mdi:air-purifier
 
 
   # 

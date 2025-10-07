@@ -42,7 +42,7 @@ cards:
           {% if status == "Home" or status == "Just Arrived" %}
             var(--success-color)
           {% else %}
-            var(--light-primary-color)
+            var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -56,11 +56,20 @@ cards:
         secondary: "{{ states['sensor.mary_room_presence'].last_changed | relative_time }} ago"
         color: >
           {% if states['sensor.mary_room_presence'].state == "not_home" %}
-            var(--light-primary-color)
+            var(--light-grey-color)
           {% else %}
             var(--success-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+      # 
+      # Unlock Privilege
+      # 
+      - entity: input_boolean.nonna_unlock_privilege
+        name: Unlock Privilege
+        icon: mdi:key
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
         
 
   # 

@@ -59,9 +59,9 @@ cards:
         secondary: "{{ states['person.cristina_falbo'].last_changed | relative_time }} ago"
         color: >
           {% if states['person.cristina_falbo'].state == "home" %}
-            #06D6A0
+            var(--success-color)
           {% else %}
-            #ADB5BD
+            var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
@@ -73,9 +73,9 @@ cards:
         secondary: "{{ states['sensor.cristina_room_presence'].last_changed | relative_time }} ago"
         color: >
           {% if states['sensor.cristina_room_presence'].state == "not_home" %}
-            #ADB5BD
+            var(--light-grey-color)
           {% else %}
-            #06D6A0
+            var(--success-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
@@ -103,9 +103,9 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         color: >
           {% if states['input_boolean.cristina_commuting'].state == "on" %}
-            #06D6A0
+            var(--success-color)
           {% else %}
-            #ADB5BD
+            var(--light-grey-color)
           {% endif %}
 
 
@@ -163,7 +163,7 @@ cards:
         color: >
           {% set status = states['input_select.cristina_sleep_state'].state %}
           {% if status == "Awake" or status == "Just Got Up" %}
-            #06D6A0
+            var(--success-color)
           {% else %}
             #E36001
           {% endif %}
@@ -181,7 +181,7 @@ cards:
           {% if states['binary_sensor.cristina_bed_occupied'].state == "on" %}
             #E36001
           {% else %}
-            #ADB5BD
+            var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
@@ -215,11 +215,11 @@ cards:
         color: >
           {% set battery_level = states[config.entity].state | int(0) %}
           {% if battery_level > 80 %}
-            #06D6A0
+            var(--success-color)
           {% elif battery_level <= 20 %}
             #E36001
           {% else %}
-            #ADB5BD
+            var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 

@@ -63,9 +63,9 @@ cards:
         secondary: "{{ states['person.john_koht'].last_changed | relative_time }} ago"
         color: >
           {% if states['person.john_koht'].state == "home" %}
-            #06D6A0
+          var(--success-color)
           {% else %}
-            #ADB5BD
+            var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
         
@@ -77,42 +77,11 @@ cards:
         secondary: "{{ states['sensor.john_room_presence'].last_changed | relative_time }} ago"
         color: >
           {% if states['sensor.john_room_presence'].state == "not_home" %}
-            #ADB5BD
+            var(--light-grey-color)
           {% else %}
-            #06D6A0
+            var(--success-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        
-      - type: custom:template-entity-row
-        icon: kohbo:kohbo-proximity
-        name: Proximity
-        entity: sensor.home_john_distance
-        secondary: "{{ states['sensor.home_john_distance'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        # color: white
-
-      - type: custom:template-entity-row
-        icon: kohbo:kohbo-steps
-        name: Steps
-        entity: sensor.jk_iphone_14_steps
-        state: "{{ '{:,}'.format(states('sensor.jk_iphone_14_steps') | int(0)) }}"
-        secondary: "{{ states['sensor.jk_iphone_14_steps'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        # color: white
-
-      - type: custom:template-entity-row
-        icon: kohbo:kohbo-train
-        name: Commuting
-        entity: input_boolean.john_commuting
-        state: "{{ states('input_boolean.john_commuting') | title }}"
-        secondary: "{{ states['input_boolean.john_commuting'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: >
-          {% if states['input_boolean.john_commuting'].state == "on" %}
-            #06D6A0
-          {% else %}
-            #ADB5BD
-          {% endif %}
 
   #
   # work Details
@@ -154,7 +123,7 @@ cards:
         color: >
           {% set status = states['input_select.john_sleep_state'].state %}
           {% if status == "Awake" or status == "Just Got Up" %}
-            #06D6A0
+            var(--success-color)
           {% else %}
             #E36001
           {% endif %}
@@ -172,7 +141,7 @@ cards:
           {% if states['binary_sensor.john_bed_occupied'].state == "on" %}
             #E36001
           {% else %}
-            #ADB5BD
+            var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -216,11 +185,11 @@ cards:
         color: >
           {% set battery_level = states[config.entity].state | int(0) %}
           {% if battery_level > 80 %}
-            #06D6A0
+            var(--success-color)
           {% elif battery_level <= 20 %}
             #E36001
           {% else %}
-            #ADB5BD
+            var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -235,11 +204,11 @@ cards:
         color: >
           {% set battery_level = states[config.entity].state | int(0) %}
           {% if battery_level > 80 %}
-            #06D6A0
+            var(--success-color)
           {% elif battery_level <= 20 %}
-            #E36001
+            var(--error-color)
           {% else %}
-            #ADB5BD
+            var(--warning-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 

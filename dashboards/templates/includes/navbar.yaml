@@ -9,16 +9,33 @@ routes:
   - url: /dashboard-kohbo/climate
     icon: kohbo:kohbo-climate
     label: Climate
-  - url: /lovelace/media
-    icon: kohbo:kohbo-media
-    label: Media
-  - url: /lovelace/devices
-    icon: kohbo:kohbo-devices
-    label: Devices
   - url: /dashboard-kohbo/security
     icon: kohbo:kohbo-security
     label: Security
+  - icon: mdi:dots-horizontal
+    label: More
+    tap_action:
+      action: open-popup
+    popup:
+      - icon: mdi:account-circle
+        url: /dashboard-kohbo/people
+        label: People
+      - icon: kohbo:kohbo-devices
+        url: /dashboard-kohbo/devices
+        label: Devices
+      - icon: kohbo:kohbo-media
+        url: /dashboard-kohbo/media
+        label: Media
+      - icon: mdi:halloween
+        url: /dashboard-kohbo/halloween
+        label: Halloween
+      - icon: mdi:hexagram
+        url: /dashboard-kohbo/christmas
+        label: Christmas
 haptic: true
+mobile:
+  show_labels: true
+  show_popup_label_backgrounds: true
 styles: |
   .navbar-card {
     border-radius: 20px 20px 0 0;
