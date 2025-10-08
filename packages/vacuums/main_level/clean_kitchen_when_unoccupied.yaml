@@ -68,6 +68,14 @@ automation:
           command: app_segment_clean
           params: [24]
 
+      # Update the last cleaning text
+      - action: input_text.update
+        target:
+          entity_id: input_text.vacuum_main_floor_last_cleaning
+        data:
+          value: "Kitchen"
+
+
   # Return to dock when house is occupied
   # 
   # This automation is used to return the vacuum to the dock

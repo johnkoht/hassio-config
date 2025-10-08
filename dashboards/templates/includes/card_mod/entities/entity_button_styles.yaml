@@ -1,0 +1,15 @@
+style:
+  .flex ha-button:
+    $: |
+      .button.button {
+        background: var(--primary-color) !important;
+        border: none !important;
+        color: var(--primary-text-color) !important;
+      }
+  .: |
+    .flex {
+      font-weight: 700 !important;
+      font-size: 15px !important;
+      line-height: 15px !important;
+      margin-left: 4px !important;
+    }

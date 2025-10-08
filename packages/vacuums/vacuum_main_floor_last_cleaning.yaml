@@ -1,0 +1,5 @@
+input_text:
+  vacuum_main_floor_last_cleaning:
+    name: Main Floor Vacuum Last Cleaning
+    icon: mdi:vacuum
+    mode: text

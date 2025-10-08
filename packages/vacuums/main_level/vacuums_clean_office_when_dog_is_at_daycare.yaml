@@ -21,4 +21,11 @@ automation:
         data:
           command: app_segment_clean
           params: [29]
+
+      # Update the last cleaning text
+      - action: input_text.update
+        target:
+          entity_id: input_text.vacuum_main_floor_last_cleaning
+        data:
+          value: "Office"
       

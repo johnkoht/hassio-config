@@ -158,6 +158,9 @@ cards:
                         command: app_segment_clean
                         params: [29]
 
+  # 
+  # Vacuum Status
+  # 
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -178,22 +181,10 @@ cards:
               return "mdi:robot-vacuum-off"
           ]]]
         show_state: true
-        # state_display: |
-        #   [[[
-        #     if (entity.state == "Partially Secure")
-        #       return "Home Partial Secure"
-        #     else if (entity.state == "Totally Secure")
-        #       return "Home Secure"
-        #     else
-        #       return "Home Vulnerable"
-        #   ]]]
         show_icon: true
         show_name: false
         show_label: true
         layout: icon_name_state
-        # tap_action:
-        #   action: navigate
-        #   navigation_path: '/dashboard-kohbo/security'
         styles:
           card:
             - background: transparent
@@ -269,53 +260,7 @@ cards:
             icon: mdi:timer-outline
             color: var(--light-grey-color)
 
-          # # Water level
-          # - type: custom:button-card
-          #   entity: binary_sensor.roborock_s7_water_shortage
-          #   name: Water Level
-          #   template: kohbo_security_item
-          #   state:
-          #     - value: "on"
-          #       color: var(--error-color)
-          #     - value: "off"
-          #       color: var(--success-color)
-
-          # # Filter life
-          # - type: custom:button-card
-          #   entity: sensor.roborock_s7_filter_left
-          #   name: Filter Life
-          #   template: kohbo_security_item
-          #   state_display: |
-          #     [[[
-          #       return Math.round(parseFloat(entity.state) / 3600) + ' h';
-          #     ]]]
-          #   state:
-          #     - operator: '<'
-          #       value: 5000
-          #       color: var(--error-color)
-          #     - operator: '>'
-          #       value: 5000
-          #       color: var(--success-color)
-
-          # # Sensors
-          # - type: custom:button-card
-          #   entity: sensor.roborock_s7_sensor_dirty_left
-          #   name: Sensors
-          #   template: kohbo_security_item
-          #   state_display: |
-          #     [[[
-          #       return Math.round(parseFloat(entity.state) / 3600) + ' h';
-          #     ]]]
-          #   state:
-          #     - operator: '<'
-          #       value: 5000
-          #       color: var(--error-color)
-          #     - operator: '>'
-          #       value: 5000
-          #       color: var(--success-color)
-
-   #
-  
+  #
   # Vacuum Details
   # 
   - type: entities
@@ -351,6 +296,71 @@ cards:
             var(--error-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+      # Water Level
+      - type: custom:template-entity-row
+        entity: binary_sensor.roborock_s7_water_shortage
+        name: Water Level
+        state: "{{ 'Okay' if states[config.entity].state == 'off' else 'Low' }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        color: >
+          {% if states[config.entity].state == "on" %}
+            var(--error-color)
+          {% else %}
+            var(--success-color)
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+      # Filter life
+      - type: custom:template-entity-row
+        entity: sensor.roborock_s7_filter_left
+        name: Filter Life
+        state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        color: >
+          {% set filter_left = states[config.entity].state | int(0) %}
+          {% if filter_left < 5000 %}
+            var(--error-color)
+          {% else %}
+            var(--success-color)
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+
+
+  # 
+  # Vacuum Actions
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      # Reset Filter
+      - type: button
+        entity: button.roborock_s7_reset_filter
+        action_name: Reset
+        name: Reset Filter
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+      # Reset Main Brush
+      - type: button
+        entity: button.roborock_s7_reset_main_brush
+        action_name: Reset
+        name: Reset Main Brush
+        icon: mdi:brush-variant
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+      # Reset Side Brush
+      - type: button
+        entity: button.roborock_s7_reset_side_brush
+        action_name: Reset
+        name: Reset Side Brush
+        icon: mdi:brush-variant
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+      # Reset Sensor Dirty
+      - type: button
+        entity: button.roborock_s7_reset_sensor_dirty
+        action_name: Reset
+        name: Reset Sensors
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+      
       
 
 

@@ -181,4 +181,6 @@ kohbo:
 
   bubble-backdrop-background-color: rgba(45, 51, 57, 0.8)
 
-  
+  # Buttons
+  wa-color-fill-normal: var(--primary-color)
+  wa-color-on-normal: var(--primary-text-color)
