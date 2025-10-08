@@ -59,11 +59,11 @@ cards:
         icon: kohbo:kohbo-location
         name: Location
         entity: person.john_koht
-        state: "{{ states('person.john_koht') | replace('_', ' ') | title }}"
-        secondary: "{{ states['person.john_koht'].last_changed | relative_time }} ago"
+        state: "{{ states[config.entity].state | replace('_', ' ') | title }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         color: >
-          {% if states['person.john_koht'].state == "home" %}
-          var(--success-color)
+          {% if states[config.entity].state == "home" %}
+            var(--success-color)
           {% else %}
             var(--light-grey-color)
           {% endif %}
@@ -73,15 +73,44 @@ cards:
         icon: kohbo:kohbo-room-occupancy
         name: Room
         entity: sensor.john_room_presence
-        state: "{{ states('sensor.john_room_presence') | replace('_', ' ') | title }}"
-        secondary: "{{ states['sensor.john_room_presence'].last_changed | relative_time }} ago"
+        state: "{{ states[config.entity].state | replace('_', ' ') | title }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         color: >
-          {% if states['sensor.john_room_presence'].state == "not_home" %}
+          {% if states[config.entity].state == "not_home" %}
             var(--light-grey-color)
           {% else %}
             var(--success-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-proximity
+        name: Proximity
+        entity: sensor.home_john_distance
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-steps
+        name: Steps
+        entity: sensor.jk_iphone_14_steps
+        state: "{{ '{:,}'.format(states[config.entity].state | int(0)) }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-train
+        name: Commuting
+        entity: input_boolean.john_commuting
+        state: "{{ states[config.entity].state | title }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: >
+          {% if states[config.entity].state == "on" %}
+            var(--success-color)
+          {% else %}
+            var(--light-grey-color)
+          {% endif %}
 
   #
   # work Details
@@ -101,8 +130,8 @@ cards:
         icon: kohbo:kohbo-focus-mode
         name: Focus Mode
         entity: input_select.john_focus_mode
-        state: "{{ states('input_select.john_focus_mode') | title }}"
-        secondary: "{{ states['input_select.john_focus_mode'].last_changed | relative_time }} ago"
+        state: "{{ states[config.entity].state | title }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
   # 
@@ -119,9 +148,9 @@ cards:
         name: Status
         entity: input_select.john_sleep_state
         # state: "{{ states('person.john_koht') | replace('_', ' ') | title }}"
-        secondary: "{{ states['input_select.john_sleep_state'].last_changed | relative_time }} ago"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         color: >
-          {% set status = states['input_select.john_sleep_state'].state %}
+          {% set status = states[config.entity].state %}
           {% if status == "Awake" or status == "Just Got Up" %}
             var(--success-color)
           {% else %}
@@ -135,10 +164,10 @@ cards:
         icon: kohbo:kohbo-bed
         name: Bed Occupancy
         entity: binary_sensor.john_bed_occupied
-        state: "{{ 'Detected' if states('binary_sensor.john_bed_occupied') == 'on' else 'Clear' }}"
-        secondary: "{{ states['binary_sensor.john_bed_occupied'].last_changed | relative_time }} ago"
+        state: "{{ 'Detected' if states[config.entity].state == 'on' else 'Clear' }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         color: >
-          {% if states['binary_sensor.john_bed_occupied'].state == "on" %}
+          {% if states[config.entity].state == "on" %}
             #E36001
           {% else %}
             var(--light-grey-color)
@@ -151,8 +180,7 @@ cards:
         icon: kohbo:kohbo-moon-2
         name: Sleep Score
         entity: sensor.withings_sleep_score
-        secondary: "{{ states['sensor.withings_sleep_score'].last_changed | relative_time }} ago"
-        # color: white
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
   # 
@@ -165,32 +193,12 @@ cards:
       # Phone Battery Level
       # 
       - type: custom:template-entity-row
-        icon: kohbo:kohbo-battery-50
-        # icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
-        # icon: >
-        #   {% set battery_level = states[config.entity].state | int(0) %}
-        #   {% if battery_level >= 90 %}
-        #     '{{"kohbo:kohbo-battery-100"}}'
-        #   {% elif battery_level >= 75 %}
-        #     '{{"kohbo:kohbo-battery-75"}}'
-        #   {% elif battery_level >= 50 %}
-        #     '{{"kohbo:kohbo-battery-50"}}'
-        #   {% else %}
-        #     '{{"kohbo:kohbo-battery-25"}}'
-        #   {% endif %}
+        icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
         name: Battery
         entity: sensor.jk_iphone_14_battery_level
-        state: "{{ states['sensor.jk_iphone_14_battery_level'].state }}%"
-        secondary: "{{ states['sensor.jk_iphone_14_battery_level'].last_changed | relative_time }} ago"
-        color: >
-          {% set battery_level = states[config.entity].state | int(0) %}
-          {% if battery_level > 80 %}
-            var(--success-color)
-          {% elif battery_level <= 20 %}
-            #E36001
-          {% else %}
-            var(--light-grey-color)
-          {% endif %}
+        state: "{{ states[config.entity].state }}%"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        color: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon_color.yaml
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Watch Battery Level
@@ -200,16 +208,8 @@ cards:
         name: Watch Battery
         entity: sensor.jk_2_watch_battery
         state: "{{ states[config.entity].state }}%"
-        secondary: "{{ states['sensor.jk_2_watch_battery'].last_changed | relative_time }} ago"
-        color: >
-          {% set battery_level = states[config.entity].state | int(0) %}
-          {% if battery_level > 80 %}
-            var(--success-color)
-          {% elif battery_level <= 20 %}
-            var(--error-color)
-          {% else %}
-            var(--warning-color)
-          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        color: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon_color.yaml
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
       # Network Details
@@ -218,6 +218,5 @@ cards:
         icon: kohbo:kohbo-wifi
         name: Wifi Network
         entity: sensor.jk_iphone_14_ssid
-        secondary: "{{ states['sensor.jk_iphone_14_ssid'].last_changed | relative_time }} ago"
-        # color: white
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml

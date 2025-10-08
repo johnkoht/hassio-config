@@ -1,11 +1,9 @@
->
+> 
   {% set battery_level = states[config.entity].state | int(0) %}
-  {% if battery_level >= 90 %}
-    kohbo:kohbo-battery-100
-  {% elif battery_level >= 75 %}
-    kohbo:kohbo-battery-75
-  {% elif battery_level >= 50 %}
-    kohbo:kohbo-battery-50
+  {% set rounded = ((battery_level + 9) // 10) * 10 %}
+
+  {% if rounded >= 90 %}
+    mdi:battery          
   {% else %}
-    kohbo:kohbo-battery-25
+    mdi:battery-{{rounded}}
   {% endif %}

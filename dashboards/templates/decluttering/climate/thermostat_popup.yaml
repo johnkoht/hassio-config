@@ -97,7 +97,14 @@ thermostat_popup:
             entity: '[[entity]]'
             name: Heat
             template: kohbo_thermostat_action_item
+            show_icon: true
             icon: mdi:heat-wave
+            color_type: icon
+            state:
+              - color: var(--state-climate-heat-color)
+                value: 'heat'
+              - color: var(--light-grey-color)
+                operator: default
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
@@ -111,6 +118,12 @@ thermostat_popup:
             name: Cool
             template: kohbo_thermostat_action_item
             icon: mdi:snowflake
+            color_type: icon
+            state:
+              - color: var(--state-climate-cool-color)
+                value: 'cool'
+              - color: var(--light-grey-color)
+                operator: default
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
@@ -124,6 +137,11 @@ thermostat_popup:
             name: Heat/Cool
             template: kohbo_thermostat_action_item
             icon: mdi:sun-snowflake-variant
+            state:
+              - color: var(--state-climate-heat_cool-color)
+                value: 'heat_cool'
+              - color: var(--light-grey-color)
+                operator: default
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
@@ -143,6 +161,12 @@ thermostat_popup:
               name: Eco
               template: kohbo_thermostat_action_item
               icon: mdi:leaf
+              state:
+                - color: var(--success-color)
+                  operator: template
+                  value: "[[[ return entity.attributes.preset_mode === 'eco' ]]]"
+                - color: var(--light-grey-color)
+                  operator: default
               tap_action:
                 action: call-service
                 service: climate.set_preset_mode

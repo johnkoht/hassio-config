@@ -1,0 +1,9 @@
+>
+  {% set battery_level = states[config.entity].state | int(0) %}
+  {% if battery_level > 80 %}
+    var(--success-color)
+  {% elif battery_level <= 20 %}
+    #E36001
+  {% else %}
+    var(--warning-color)
+  {% endif %}
