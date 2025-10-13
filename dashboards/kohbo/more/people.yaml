@@ -93,17 +93,19 @@ cards:
               } else {
                 var location = states['sensor.cristina_room_presence'].state.replace('_', ' ');
                 location = location.charAt(0).toUpperCase() + location.slice(1);
-                console.log(location);
-                if (location == "Cristina's Work") {
-                  location = "Work";
-                }
                 return "Home - " + location;
               }
             } else {
               if (states['person.cristina_falbo'].state == "not_home") {
                 return "Away";
               } else {
-                return "Away - " + states['person.cristina_falbo'].state;
+                var location = states['person.cristina_falbo'].state;
+                console.log(location);
+                if (location == "Cristina's Work") {
+                  return "Away - Work";
+                } else {
+                  return "Away - " + location;
+                }
               }
             }
           ]]]

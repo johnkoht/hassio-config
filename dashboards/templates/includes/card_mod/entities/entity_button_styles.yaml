@@ -1,7 +1,7 @@
 style:
   .flex ha-button:
     $: |
-      .button.button {
+      .button {
         background: var(--primary-color) !important;
         border: none !important;
         color: var(--primary-text-color) !important;

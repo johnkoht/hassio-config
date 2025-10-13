@@ -101,10 +101,11 @@ thermostat_popup:
             icon: mdi:heat-wave
             color_type: icon
             state:
+              - color: var(--light-grey-color)
+                operator: template
+                value: "[[[ return entity.state != 'heat' || entity.attributes.preset_mode === 'eco' ]]]"
               - color: var(--state-climate-heat-color)
                 value: 'heat'
-              - color: var(--light-grey-color)
-                operator: default
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
@@ -120,10 +121,11 @@ thermostat_popup:
             icon: mdi:snowflake
             color_type: icon
             state:
+              - color: var(--light-grey-color)
+                operator: template
+                value: "[[[ return entity.state != 'cool' || entity.attributes.preset_mode === 'eco' ]]]"
               - color: var(--state-climate-cool-color)
                 value: 'cool'
-              - color: var(--light-grey-color)
-                operator: default
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
@@ -141,7 +143,8 @@ thermostat_popup:
               - color: var(--state-climate-heat_cool-color)
                 value: 'heat_cool'
               - color: var(--light-grey-color)
-                operator: default
+                operator: template
+                value: "[[[ return entity.state != 'heat_cool' || entity.attributes.preset_mode === 'eco' ]]]"
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
@@ -150,47 +153,67 @@ thermostat_popup:
               data:
                 hvac_mode: heat_cool
 
-          - type: conditional
-            conditions:
-              - condition: state
-                entity: '[[eco_mode]]'
-                state: 'off'
-            card:
-              type: custom:button-card
-              entity: '[[entity]]'
-              name: Eco
-              template: kohbo_thermostat_action_item
-              icon: mdi:leaf
-              state:
-                - color: var(--success-color)
-                  operator: template
-                  value: "[[[ return entity.attributes.preset_mode === 'eco' ]]]"
-                - color: var(--light-grey-color)
-                  operator: default
-              tap_action:
-                action: call-service
-                service: climate.set_preset_mode
-                target:
-                  entity_id: '[[entity]]'
-                data:
-                  preset_mode: eco
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Eco
+            template: kohbo_thermostat_action_item
+            icon: mdi:leaf
+            state:
+              - color: var(--success-color)
+                operator: template
+                value: "[[[ return entity.attributes.preset_mode === 'eco' ]]]"
+              - color: var(--light-grey-color)
+                operator: default
+            tap_action:
+              action: call-service
+              service: climate.set_preset_mode
+              target:
+                entity_id: '[[entity]]'
+              data:
+                preset_mode: eco
+
+          # - type: conditional
+          #   conditions:
+          #     - condition: state
+          #       entity: '[[eco_mode]]'
+          #       state: 'off'
+          #   card:
+          #     type: custom:button-card
+          #     entity: '[[entity]]'
+          #     name: Eco 2
+          #     template: kohbo_thermostat_action_item
+          #     icon: mdi:leaf
+          #     state:
+          #       - color: var(--success-color)
+          #         operator: template
+          #         value: "[[[ return entity.attributes.preset_mode === 'eco' ]]]"
+          #       - color: var(--light-grey-color)
+          #         operator: default
+          #     tap_action:
+          #       action: call-service
+          #       service: climate.set_preset_mode
+          #       target:
+          #         entity_id: '[[entity]]'
+          #       data:
+          #         preset_mode: eco
 
 
-          - type: conditional
-            conditions:
-              - condition: state
-                entity: '[[eco_mode]]'
-                state: 'on'
-            card:
-              type: custom:button-card
-              entity: '[[entity]]'
-              name: Eco
-              template: kohbo_thermostat_action_item
-              icon: mdi:leaf
-              tap_action:
-                action: call-service
-                service: climate.set_preset_mode
-                target:
-                  entity_id: '[[entity]]'
-                data:
-                  preset_mode: eco
+          # - type: conditional
+          #   conditions:
+          #     - condition: state
+          #       entity: '[[eco_mode]]'
+          #       state: 'on'
+          #   card:
+          #     type: custom:button-card
+          #     entity: '[[entity]]'
+          #     name: Eco ON
+          #     template: kohbo_thermostat_action_item
+          #     icon: mdi:leaf
+          #     color: var(--primary-color)
+          #     tap_action:
+          #       action: call-service
+          #       service: climate.set_preset_mode
+          #       target:
+          #         entity_id: '[[entity]]'
+          #       data:
+          #         preset_mode: "none"

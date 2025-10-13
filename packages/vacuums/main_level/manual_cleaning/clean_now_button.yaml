@@ -1,0 +1,15 @@
+# button:
+#   main_floor_clean_now:
+#     type: button
+#     name: Clean Now
+#     show_state: false
+#     tap_action:
+#       action: perform-action
+#       perform_action: script.clean_selected_rooms
+#       data:
+#         entity_id: script.clean_selected_rooms
+
+input_button:
+  main_floor_clean_now:
+    name: Clean Now
+    icon: mdi:robot-vacuum

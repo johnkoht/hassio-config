@@ -43,6 +43,7 @@ kohbo:
   # rgb-card-background-color: 255, 255, 255
 
   # Colors
+  divider-color: "#495057"
   light-grey-color: "#ADB5BD"
   #red-color: var(--error-color)
   red-color: "#ED4747"
@@ -74,7 +75,7 @@ kohbo:
   state-light-active-color: var(--accent-color)
   state-binary_sensor-active-color: var(--primary-color)
   state-switch-active-color: var(--primary-color)
-  switch-unchecked-track-color: "495057"
+  switch-unchecked-track-color: var(--divider-color)
   state-input_boolean-on-color: var(--primary-color)
   state-input_boolean-active-color: var(--primary-color)
   state-media_player-active-color: var(--primary-color)
@@ -171,7 +172,7 @@ kohbo:
   # input-outlined-idle-border-color: rgba(0, 0, 0, 0.38);
   # input-outlined-hover-border-color: rgba(0, 0, 0, 0.87);
   # input-outlined-disabled-border-color: rgba(0, 0, 0, 0.06);
-  input-fill-color: "#495057"
+  input-fill-color: var(--divider-color)
   # input-disabled-fill-color: rgb(250, 250, 250);
   input-ink-color: var(--primary-text-color)
   input-label-ink-color: var(--text-light-primary-color)
@@ -184,3 +185,6 @@ kohbo:
   # Buttons
   wa-color-fill-normal: var(--primary-color)
   wa-color-on-normal: var(--primary-text-color)
+
+  # Dividers
+  entities-divider-color: var(--divider-color)

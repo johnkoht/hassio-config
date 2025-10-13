@@ -40,7 +40,11 @@ cards:
             if (states['person.cristina_falbo'].state == "not_home") {
               return "Away";
             } else {
-              return "Away - " + states['person.cristina_falbo'].state;
+              if (states['person.cristina_falbo'].state == "Cristina's Work") {
+                return "Away - Work";
+              } else {
+                return "Away - " + states['person.cristina_falbo'].state;
+              }
             }
           }
         ]]]

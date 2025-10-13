@@ -260,9 +260,143 @@ cards:
             icon: mdi:timer-outline
             color: var(--light-grey-color)
 
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Clean
+  - type: custom:stack-in-card
+    cards:
+    - type: entities
+      entities:
+        - entity: input_boolean.vacuum_kitchen
+          icon: mdi:fridge
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_family_room
+          icon: mdi:sofa
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_dining_room
+          icon: mdi:silverware-fork-knife
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_office
+          icon: mdi:desk
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_foyer
+          icon: mdi:door-open
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_mudroom
+          icon: mdi:shoe-formal
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_jr_suite
+          icon: mdi:bed-empty
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_laundry_room
+          icon: mdi:washing-machine
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_mudroom_bathroom
+          icon: mdi:toilet
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_powder_room
+          icon: mdi:spray-bottle
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.vacuum_playroom
+          icon: mdi:castle
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        # - type: divider
+        # - type: button
+        #   entity: input_button.main_floor_clean_now
+        #   action_name: Clean Now
+        #   name: Clean Now
+        #   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+        # - type: button
+        #   entity: vacuum.roborock_s7
+        #   action_name: Schedule
+        #   name: Clean when house is empty
+        #   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+        # - type: divider
+        # - type: buttons
+        #   entities:
+        #     - type: button
+        #       entity: input_button.main_floor_clean_now
+        #       action_name: Clean Now
+        #       name: Clean Now
+        #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+        #     - type: button
+        #       entity: vacuum.roborock_s7
+        #       action_name: Schedule
+        #       name: Clean When Empty
+        #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+        #   card_mod:
+        #     style: |
+    - type: custom:stack-in-card
+      mode: horizontal
+      card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+      cards:
+        - type: custom:button-card
+          name: Clean Now
+          show_icon: false
+          tap_action:
+            action: perform-action
+            perform_action: script.clean_selected_rooms
+          card_mod:
+            style: |
+              :host {
+                padding: 30px 0 30px 20px !important;
+              }
+              ha-card {
+                background: var(--primary-color) !important;
+                color: var(--primary-text-color) !important;
+                border-radius: 20px !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                padding: 10px !important;
+              }
+        - type: custom:button-card
+          name: When Empty
+          show_icon: false
+          card_mod:
+            style: |
+              :host {
+                padding: 30px 20px 30px 0 !important;
+              }
+              ha-card {
+                background: var(--primary-color) !important;
+                color: var(--primary-text-color) !important;
+                border-radius: 20px !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                padding: 10px !important;
+              }
+
   #
   # Vacuum Details
   # 
+  - type: custom:button-card
+    template: section_title
+    name: Sensors
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
@@ -331,6 +465,9 @@ cards:
   # 
   # Vacuum Actions
   # 
+  - type: custom:button-card
+    template: section_title
+    name: Maintenance
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
