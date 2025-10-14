@@ -216,7 +216,8 @@ cards:
         icon: mdi:robot-vacuum
         tap_action:
           action: navigate
-          navigation_path: '#main_floor_vacuum'
+          # navigation_path: '#main_floor_vacuum'
+          navigation_path: '/dashboard-kohbo/main-floor-vacuum'
 
       # Upstairs Vacuum
       - type: custom:button-card
@@ -265,7 +266,7 @@ cards:
   # 
   # Vacuums
   # 
-  - !include /config/dashboards/kohbo/shared/kohbo_main_floor_vacuum_popup.yaml
+  # - !include /config/dashboards/kohbo/shared/kohbo_main_floor_vacuum_popup.yaml
   # - !include /config/dashboards/kohbo/shared/kohbo_upstairs_vacuum_popup.yaml
 
 

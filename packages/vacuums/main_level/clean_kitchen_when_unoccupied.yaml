@@ -21,6 +21,16 @@ automation:
       - condition: state
         entity_id: vacuum.roborock_s7
         state: "docked"
+      - or:
+          - condition: state
+            entity_id: input_boolean.vacuum_family_room_when_house_empty
+            state: "on"
+          - condition: state
+            entity_id: input_boolean.vacuum_kitchen_when_house_empty
+            state: "on"
+          - condition: state
+            entity_id: input_boolean.vacuum_mudroom_when_house_empty
+            state: "on"
       # Either weekday morning OR weekend morning time windows
       - condition: or
         conditions:
@@ -66,14 +76,36 @@ automation:
           entity_id: vacuum.roborock_s7
         data:
           command: app_segment_clean
-          params: [24]
+          params: >
+            {% set segments = [] %}
+            {% if is_state('input_boolean.vacuum_kitchen_when_house_empty', 'on') %}
+              {% set segments = segments + [24] %}
+            {% endif %}
+            {% if is_state('input_boolean.vacuum_family_room_when_house_empty', 'on') %}
+              {% set segments = segments + [26] %}
+            {% endif %}
+            {% if is_state('input_boolean.vacuum_mudroom_when_house_empty', 'on') %}
+              {% set segments = segments + [25] %}
+            {% endif %}
+            {{ segments }}
 
       # Update the last cleaning text
       - action: input_text.update
         target:
           entity_id: input_text.vacuum_main_floor_last_cleaning
         data:
-          value: "Kitchen"
+          value: >
+            {% set segments = [] %}
+            {% if is_state('input_boolean.vacuum_kitchen_when_house_empty', 'on') %}
+              {% set segments = segments + [24] %}
+            {% endif %}
+            {% if is_state('input_boolean.vacuum_family_room_when_house_empty', 'on') %}
+              {% set segments = segments + [26] %}
+            {% endif %}
+            {% if is_state('input_boolean.vacuum_mudroom_when_house_empty', 'on') %}
+              {% set segments = segments + [25] %}
+            {% endif %}
+            {{ segments }}
 
 
   # Return to dock when house is occupied

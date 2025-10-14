@@ -1,0 +1,10 @@
+# 
+# Input booleans for the family room cleaning automations
+# 
+input_boolean:
+  vacuum_family_room_at_night:
+    name: Vacuum Family Room at Night
+    icon: mdi:robot-vacuum
+  vacuum_family_room_when_house_empty:
+    name: Vacuum Family Room When House Empty
+    icon: mdi:robot-vacuum

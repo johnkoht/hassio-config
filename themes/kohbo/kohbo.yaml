@@ -45,6 +45,7 @@ kohbo:
   # Colors
   divider-color: "#495057"
   light-grey-color: "#ADB5BD"
+  semi-dark-grey-color: "#ADB5BD"
   #red-color: var(--error-color)
   red-color: "#ED4747"
 

@@ -1,0 +1,18 @@
+# 
+# Input booleans for the kitchen cleaning automations
+# 
+input_boolean:
+  vacuum_kitchen_at_night:
+    name: Vacuum Kitchen at Night
+    icon: mdi:robot-vacuum
+  vacuum_kitchen_when_house_empty:
+    name: Vacuum Kitchen When House Empty
+    icon: mdi:robot-vacuum
+
+input_datetime:
+  kitchen_last_cleaned_at:
+    name: Kitchen Last Cleaned At
+    icon: mdi:calendar
+    # initial: 2025-01-01 00:00:00
+    has_date: true
+    has_time: true

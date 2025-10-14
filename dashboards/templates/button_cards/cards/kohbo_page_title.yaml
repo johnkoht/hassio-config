@@ -10,3 +10,4 @@ kohbo_page_title:
     name:
       - color: '#F8F9FA'
       - font-size: 45px
+      # - justify-self: start

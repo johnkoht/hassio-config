@@ -115,9 +115,17 @@ cards:
     name: Automations
   - type: entities
     entities:
-      # Vacuum Clean Kitchen and Family Room at Night
-      - entity: automation.vacuum_clean_kitchen_and_family_room_at_night
+      # Vacuum Clean Family Room at Night
+      - entity: input_boolean.vacuum_family_room_at_night
         name: Clean at Night
+        icon: mdi:robot-vacuum
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      
+      # Clean Family Room When Unoccupied
+      - entity: input_boolean.vacuum_family_room_when_house_empty
+        name: Clean When House Is Empty
         icon: mdi:robot-vacuum
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed

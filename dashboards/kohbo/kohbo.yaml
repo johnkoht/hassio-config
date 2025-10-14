@@ -2,14 +2,14 @@ button_card_templates: !include_dir_merge_named /config/dashboards/templates/but
 decluttering_templates: !include_dir_merge_named /config/dashboards/templates/decluttering
 
 kiosk_mode:
-  hide_header: false
+  hide_header: true
 
 swipe_nav:
   # wrap: false
   enable_mouse_swipe: true
   animate: swipe
   skip_subviews: false
-  # skip_tabs: 5,6,7,8
+  skip_tabs: 9
   prevent_default: true
   swipe_amount: 30
   logger_level: debug
@@ -29,6 +29,7 @@ views:
     - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/dining_room.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/vacuum.yaml
 
     # Upper Floor
     - !include /config/dashboards/kohbo/rooms/upper_floor/main_bedroom.yaml

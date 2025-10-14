@@ -5,6 +5,107 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
 cards:
+  # - type: custom:button-card
+  #   template: kohbo_page_title
+  #   name: Office
+
+  # - type: horizontal-stack
+  #   cards:
+  #     - type: custom:button-card
+  #       icon: mdi:arrow-left
+  #       size: 24px
+  #       layout: icon_name
+  #       tap_action:
+  #         action: navigate
+  #         navigation_path: /dashboard-kohbo/rooms
+  #       styles:
+  #         grid:
+  #           - grid-template-areas: '"i n"'
+  #           - grid-template-columns: 24px 1fr
+  #         card:
+  #           - background: transparent
+  #           - border: none
+  #           - box-shadow: none
+  #           - margin: 0
+  #           - padding: 0
+  #           - height: 100%
+  #         name:
+  #           - place-self: start
+  #           - line-height: 24px
+  #           - font-weight: 500
+  #           - padding-left: 10px
+  #         icon:
+  #           - width: 24px
+  #     - type: custom:button-card
+  #       template: kohbo_page_title
+  #       name: Office
+  #     - type: custom:button-card
+  #       icon: mdi:cog
+  #       tap_action:
+  #         action: navigate
+  #         navigation_path: /dashboard-kohbo/settings
+  #       styles:
+  #         card:
+  #           - background: transparent
+  #           - border: none
+  #           - box-shadow: none
+  #           - margin: 0
+  #           - padding: 0
+  #           - height: 100%
+  #         img_cell:
+  #           - justify-content: end
+  #         icon:
+  #           - width: 24px
+  #           - margin-right: 0px
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        icon: mdi:arrow-left
+        size: 24px
+        name: Rooms
+        layout: icon_name
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-kohbo/rooms
+        styles:
+          grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+          card:
+            - background: transparent
+            - border: none
+            - box-shadow: none
+            - margin: 0
+            - padding: 0
+          name:
+            - place-self: start
+            - line-height: 24px
+            - font-weight: 500
+            - padding-left: 10px
+            - color: var(--semi-dark-grey-color)
+          icon:
+            - width: 24px
+            - color: var(--semi-dark-grey-color)
+      - type: custom:button-card
+        icon: mdi:cog
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-kohbo/settings
+        styles:
+          card:
+            - background: transparent
+            - border: none
+            - box-shadow: none
+            - margin: 0
+            - padding: 0
+          icon:
+            - width: 24px
+            - margin-right: 0px
+            - color: var(--semi-dark-grey-color)
+
+            
+
   - type: custom:button-card
     template: kohbo_page_title
     name: Office
