@@ -1,0 +1,60 @@
+automation:
+  - id: "main_level_vacuum_reset_selection_when_complete"
+    alias: "Main Level Vacuum - Reset Selection When Complete"
+    description: "Turns off all room selection booleans when the vacuum completes cleaning"
+    mode: single
+    trigger:
+      # Vacuum is returning to dock
+      - platform: state
+        entity_id: vacuum.roborock_s7
+        to: 'returning'
+
+    # 
+    # Get the room ids from the room selection group
+    # 
+    variables:
+      room_ids: >
+        {% set rooms = state_attr('group.main_level_vacuum_room_groups', 'entity_id') | select('is_state', 'on') | list %}
+        {% set room_list = namespace(rooms=[]) %}
+        {% for room in rooms %}
+          {% set room_list.rooms = room_list.rooms + [room.split('.')[-1].replace("vacuum_", "")] %}
+        {% endfor %}
+        {{ room_list.rooms }}
+      
+    actions:
+      # Turn off all room selection booleans
+      - action: input_boolean.turn_off
+        data:
+          entity_id: >
+            {{ expand('group.main_level_vacuum_room_groups')
+              | map(attribute='entity_id')
+              | join(', ') }}
+
+      # 
+      # Clear the currently cleaning text
+      # 
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.main_level_vacuum_currently_cleaning
+        data:
+          value: '[]'
+
+      # 
+      # Skip if no rooms are selected
+      # 
+      - choose:
+          - conditions: "{{ room_ids | count == 0 }}"
+            sequence:
+              - stop: "No rooms to update."
+
+      # 
+      # Set the last cleaned at datetime for each room
+      # 
+      - repeat:
+          for_each: "{{ room_ids }}"
+          sequence:
+            - action: input_datetime.set_datetime
+              data:
+                entity_id: "input_datetime.{{ repeat.item.lower() }}_last_cleaned_at"
+                datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+                

@@ -1,0 +1,242 @@
+# 
+# Input Booleans for the main level vacuum room helpers
+# 
+input_boolean:
+  # 
+  # Family Room
+  # 
+  # At night
+  vacuum_family_room_at_night:
+    name: Vacuum Family Room at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_family_room:
+    name: Vacuum Family Room
+    icon: mdi:robot-vacuum
+
+  # 
+  # Kitchen
+  # 
+  # At night
+  vacuum_kitchen_at_night:
+    name: Vacuum Kitchen at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_kitchen:
+    name: Vacuum Kitchen When House Empty
+    icon: mdi:robot-vacuum
+
+  # 
+  # Mudroom
+  # 
+  # At night
+  vacuum_mudroom_at_night:
+    name: Vacuum Mudroom at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_mudroom:
+    name: Vacuum Mudroom When House Empty
+    icon: mdi:robot-vacuum
+
+
+  # 
+  # Dining Room
+  # 
+  # At night
+  vacuum_dining_room_at_night:
+    name: Vacuum Dining Room at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_dining_room:
+    name: Vacuum Dining Room When House Empty
+    icon: mdi:robot-vacuum
+
+  # 
+  # Foyer
+  # 
+  # At night
+  vacuum_foyer_at_night:
+    name: Vacuum Foyer at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_foyer:
+    name: Vacuum Foyer When House Empty
+    icon: mdi:robot-vacuum
+
+  # 
+  # Jr Suite
+  # 
+  # At night
+  vacuum_jr_suite_at_night:
+    name: Vacuum Jr Suite at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_jr_suite:
+    name: Vacuum Jr Suite When House Empty
+    icon: mdi:robot-vacuum
+  
+  # 
+  # Laundry Room
+  # 
+  # At night
+  vacuum_laundry_room_at_night:
+    name: Vacuum Laundry Room at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_laundry_room:
+    name: Vacuum Laundry Room When House Empty
+    icon: mdi:robot-vacuum
+  
+  # 
+  # Mudroom Bathroom
+  # 
+  # At night
+  vacuum_mudroom_bathroom_at_night:
+    name: Vacuum Mudroom Bathroom at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_mudroom_bathroom:
+    name: Vacuum Mudroom Bathroom When House Empty
+    icon: mdi:robot-vacuum
+
+  # 
+  # Office
+  # 
+  # At night
+  vacuum_office_at_night:
+    name: Vacuum Office at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_office:
+    name: Vacuum Office When House Empty
+    icon: mdi:robot-vacuum
+
+  # 
+  # Playroom
+  # 
+  # At night
+  vacuum_playroom_at_night:
+    name: Vacuum Playroom at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_playroom:
+    name: Vacuum Playroom When House Empty
+    icon: mdi:robot-vacuum
+  
+  # 
+  # Powder Room
+  # 
+  # At night
+  vacuum_powder_room_at_night:
+    name: Vacuum Powder Room at Night
+    icon: mdi:robot-vacuum
+  # Quick or scheduled vacuuming
+  vacuum_powder_room:
+    name: Vacuum Powder Room When House Empty
+    icon: mdi:robot-vacuum
+  
+  
+# 
+# Last Cleaned At
+# 
+input_datetime:
+  # 
+  # Family Room
+  # 
+  family_room_last_cleaned_at:
+    name: Family Room Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+
+  # 
+  # Kitchen
+  # 
+  kitchen_last_cleaned_at:
+    name: Kitchen Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+
+  # 
+  # Mudroom
+  # 
+  mudroom_last_cleaned_at:
+    name: Mudroom Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Dining Room
+  # 
+  dining_room_last_cleaned_at:
+    name: Dining Room Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Foyer
+  # 
+  foyer_last_cleaned_at:
+    name: Foyer Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Jr Suite
+  # 
+  jr_suite_last_cleaned_at:
+    name: Jr Suite Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Laundry Room
+  # 
+  laundry_room_last_cleaned_at:
+    name: Laundry Room Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Mudroom Bathroom
+  # 
+  mudroom_bathroom_last_cleaned_at:
+    name: Mudroom Bathroom Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Office
+  # 
+  office_last_cleaned_at:
+    name: Office Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Playroom
+  # 
+  playroom_last_cleaned_at:
+    name: Playroom Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  # 
+  # Powder Room
+  # 
+  powder_room_last_cleaned_at:
+    name: Powder Room Last Cleaned At
+    icon: mdi:calendar
+    has_date: true
+    has_time: true
+    
+  

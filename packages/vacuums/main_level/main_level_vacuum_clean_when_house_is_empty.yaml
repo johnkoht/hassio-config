@@ -1,0 +1,85 @@
+script:
+  # 
+  # Clean When House Is Empty
+  # 
+  # This script is a helper for the dashboard to call to 
+  # toggle a helper for scheduled cleanings
+  # 
+  main_level_vacuum_clean_when_house_is_empty:
+    alias: Main Level Vacuum - Clean When House Is Empty
+    mode: single
+    sequence:
+      # Turn on the main level vacuum clean when house empty boolean
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.main_level_vacuum_clean_when_house_empty
+
+
+  # 
+  # Cancel Scheduled Cleaning
+  # 
+  # This script is a helper to cancel the scheduled cleaning
+  # and turn off the booleans for the selected rooms
+  # 
+  main_level_vacuum_cancel_clean_when_house_is_empty:
+    alias: Main Level Vacuum - Cancel Clean When House Is Empty
+    mode: single
+    sequence:    
+      # Turn off all room selection booleans
+      - action: input_boolean.turn_off
+        data:
+          entity_id: >
+            {{ expand('group.main_level_vacuum_room_groups')
+              | map(attribute='entity_id')
+              | join(', ') }}
+              
+      # Turn off the main level vacuum clean when house empty boolean
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.main_level_vacuum_clean_when_house_empty
+
+
+automation:
+  - id: "main_level_vacuum_clean_when_house_is_empty"
+    alias: "Main Level Vacuum - Clean When House Is Empty"
+    mode: single
+    triggers:
+      # House is empty for 5 minutes
+      - platform: state
+        entity_id: input_boolean.house
+        to: "off"
+        for:
+          minutes: 5
+    conditions:
+      # The boolean for scheduling the cleaning is on
+      - condition: state
+        entity_id: input_boolean.main_level_vacuum_clean_when_house_empty
+        state: "on"
+    actions:
+      - variables:
+          # 
+          # Get the room_ids we'll use for vacuum cleaning script
+          # from the input_boolean entity ids. This returns a list
+          # like ["family_room", "kitchen"]
+          # 
+          rooms_ids: >
+            {% set rooms = state_attr('group.main_level_vacuum_room_groups', 'entity_id') | select('is_state', 'on') | list %}
+
+            {% set room_list = namespace(rooms=[]) %}
+            
+            {% for room in rooms %}
+              {% set room_list.rooms = room_list.rooms + [room.split('.')[-1].replace("vacuum_", "")] %}
+            {% endfor %}
+            
+            {{ room_list.rooms }}
+
+      # 
+      # Clean the selected rooms
+      # 
+      - action: script.main_level_vacuum_clean_selected_rooms
+        data:
+          rooms: "{{ rooms_ids }}"
+
+      # 
+      # Turn off the boolean for scheduling the cleaning
+      # 
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.main_level_vacuum_clean_when_house_empty

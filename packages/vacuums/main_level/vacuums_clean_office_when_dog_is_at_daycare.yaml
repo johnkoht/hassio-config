@@ -23,7 +23,7 @@ automation:
           params: [29]
 
       # Update the last cleaning text
-      - action: input_text.update
+      - action: input_text.set_value
         target:
           entity_id: input_text.vacuum_main_floor_last_cleaning
         data:

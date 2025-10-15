@@ -1,35 +1,35 @@
-# Input booleans for each room that can be vacuumed
-input_boolean:
-  vacuum_powder_room:
-    name: Powder Room
-    icon: mdi:spray-bottle
-  vacuum_playroom:
-    name: Playroom
-    icon: mdi:castle
-  vacuum_foyer:
-    name: Foyer
-    icon: mdi:door-open
-  vacuum_jr_suite:
-    name: Jr Suite
-    icon: mdi:bed-empty
-  vacuum_dining_room:
-    name: Dining Room
-    icon: mdi:silverware-fork-knife
-  vacuum_kitchen:
-    name: Kitchen
-    icon: mdi:stove
-  vacuum_mudroom:
-    name: Mudroom
-    icon: mdi:shoe-formal
-  vacuum_family_room:
-    name: Family Room
-    icon: mdi:sofa
-  vacuum_laundry_room:
-    name: Laundry Room
-    icon: mdi:washing-machine
-  vacuum_mudroom_bathroom:
-    name: Mudroom Bathroom
-    icon: mdi:toilet
-  vacuum_office:
-    name: Office
-    icon: mdi:desk 
+# # Input booleans for each room that can be vacuumed
+# input_boolean:
+#   vacuum_powder_room:
+#     name: Powder Room
+#     icon: mdi:spray-bottle
+#   vacuum_playroom:
+#     name: Playroom
+#     icon: mdi:castle
+#   vacuum_foyer:
+#     name: Foyer
+#     icon: mdi:door-open
+#   vacuum_jr_suite:
+#     name: Jr Suite
+#     icon: mdi:bed-empty
+#   vacuum_dining_room:
+#     name: Dining Room
+#     icon: mdi:silverware-fork-knife
+#   vacuum_kitchen:
+#     name: Kitchen
+#     icon: mdi:stove
+#   vacuum_mudroom:
+#     name: Mudroom
+#     icon: mdi:shoe-formal
+#   vacuum_family_room:
+#     name: Family Room
+#     icon: mdi:sofa
+#   vacuum_laundry_room:
+#     name: Laundry Room
+#     icon: mdi:washing-machine
+#   vacuum_mudroom_bathroom:
+#     name: Mudroom Bathroom
+#     icon: mdi:toilet
+#   vacuum_office:
+#     name: Office
+#     icon: mdi:desk 

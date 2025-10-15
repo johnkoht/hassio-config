@@ -1,0 +1,15 @@
+group:
+  main_level_vacuum_room_groups:
+    name: Main Level Vacuum Room Groups
+    entities:
+      - input_boolean.vacuum_kitchen
+      - input_boolean.vacuum_family_room
+      - input_boolean.vacuum_mudroom
+      - input_boolean.vacuum_dining_room
+      - input_boolean.vacuum_foyer
+      - input_boolean.vacuum_jr_suite
+      - input_boolean.vacuum_laundry_room
+      - input_boolean.vacuum_mudroom_bathroom
+      - input_boolean.vacuum_office
+      - input_boolean.vacuum_playroom
+      - input_boolean.vacuum_powder_room

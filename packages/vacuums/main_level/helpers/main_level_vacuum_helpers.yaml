@@ -1,0 +1,16 @@
+input_text:
+  main_level_vacuum_currently_cleaning:
+    name: Main Level Vacuum Currently Cleaning
+    icon: mdi:vacuum
+    mode: text
+
+  main_level_vacuum_last_cleaning:
+    name: Main Level Vacuum Last Cleaning
+    icon: mdi:vacuum
+    mode: text
+
+
+input_boolean:
+  main_level_vacuum_clean_when_house_empty:
+    name: Main Level Vacuum Clean When House Empty
+    icon: mdi:vacuum

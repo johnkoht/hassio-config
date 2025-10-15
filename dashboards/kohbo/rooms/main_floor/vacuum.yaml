@@ -393,6 +393,41 @@ cards:
       - type: custom:button-card
         template: kohbo_page_title
         name: Quick Clean
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.main_level_vacuum_clean_when_house_empty
+            state: 'on'
+        card:
+          type: custom:button-card
+          name: The following rooms are scheduled to be cleaned when the house is empty
+          icon: mdi:alert-circle-outline
+          layout: icon_name
+          show_icon: true
+          size: 24px
+          styles:
+            card:
+              - backdrop-filter: blur(10px)
+              - -webkit-backdrop-filter: blur(10px)
+              - padding: 10px
+            grid:
+              - grid-template-areas: '"i n"'
+              - grid-template-columns: 40px 1fr
+            name:
+              - justify-self: start
+              - font-weight: 500
+              - white-space: normal
+          card_mod:
+            style: |
+              ha-card {
+                background: rgba(237, 71, 71, 0.8) !important;
+                height: 80px !important;
+                width: 100% !important;
+                padding-right: 15px !important;
+              }
+
+
+
       # 
       # Quick Clean Tiles
       # 
@@ -470,7 +505,7 @@ cards:
             show_icon: false
             tap_action:
               action: perform-action
-              perform_action: script.clean_selected_rooms
+              perform_action: script.main_level_quick_clean
             card_mod:
               style: |
                 :host {
@@ -485,8 +520,17 @@ cards:
                   padding: 15px 10px !important;
                 }
           - type: custom:button-card
-            name: When House Is Empty
+            name: >
+              [[[
+                return states['input_boolean.main_level_vacuum_clean_when_house_empty'].state === 'on' ? 'Cancel Scheduled Cleanings' : 'Clean When House Is Empty';
+              ]]]
             show_icon: false
+            tap_action:
+              action: perform-action
+              perform_action: >
+                [[[
+                  return states['input_boolean.main_level_vacuum_clean_when_house_empty'].state === 'on' ? 'script.main_level_vacuum_cancel_clean_when_house_is_empty' : 'script.main_level_vacuum_clean_when_house_is_empty';
+                ]]]
             card_mod:
               style: |
                 :host {
