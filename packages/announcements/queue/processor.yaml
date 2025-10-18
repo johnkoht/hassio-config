@@ -37,12 +37,22 @@ automation:
         to: "on"
         for:
           minutes: 5
+      # Quiet mode is off
+      - trigger: state
+        entity_id: input_boolean.quiet_mode
+        to: "off"
+        for:
+          minutes: 3
 
     condition:
       # Make sure the house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Make sure quiet mode is off
+      - condition: state
+        entity_id: input_boolean.quiet_mode
+        state: "off"
       # Make sure the queue is not empty
       - condition: template
         value_template: >
