@@ -112,7 +112,16 @@ script:
 
             {% if states.input_boolean.primary_school_day.state == "on" %}
               Today is a school day, so make sure to let Nino know. 
-              While Nino doesn't usually get hot lunch from school, I'd like to share some of the items on the menu to see if any peak his interest. He likes chicken nuggets (not the the plant based one, please don't mention these), pizza, cheeseburgers, and caesar salad. If any of these items are in the list below, please let us know. Please don't just tell him those things are available if they are not in the menu below. If there's nothing that he'll like then please don't share any food announcements.
+
+              Please remind us to check the lunch menu and let Nino know if he likes anything on the menu. He likes
+              - chicken nuggets (not the the plant based one, please don't mention these)
+              - pizza
+              - cheeseburgers
+              - caesar salad
+
+              If any of these items are on the below for the day say something like "Yum! Nino, there's pizza on the menu today! Don't forget to look at the lunch menu today to see what else there is."
+              If there are no items that he likes, then please just say "Hey Nino, dont' forget to check the lunch menu!"
+              
               Here is the menu: 
                 {{ states.sensor.primary_school_lunch_menu.attributes.lunch_menu }}
             {% endif %}
