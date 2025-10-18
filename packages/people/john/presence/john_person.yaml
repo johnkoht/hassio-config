@@ -12,5 +12,6 @@ template:
         state: "{{ states.person.john_koht.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.john_unlock_privilege.state }}"
+          fingerprint_id: !secret john_fingerprint_id
 
 

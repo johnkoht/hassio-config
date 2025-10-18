@@ -1,0 +1,47 @@
+# Unlock Front Door by Fingerprint
+#
+# If a fingerprint is identified and allowed then
+# unlock the front door and notify via push notification
+#
+automation:
+  - id: "security_unlock_front_door_by_fingerprint"
+    alias: "Security Unlock Front Door by Fingerprint"
+    mode: "single"
+    variables:
+      fingerprint_ids: >
+        {% set people = expand('group.people_sensors') %}
+        {% set fingerprint_ids = people 
+          | map(attribute='attributes.fingerprint_id') 
+          | select('defined') 
+          | list %}
+        {{ fingerprint_ids }}
+    trigger:
+      - platform: event
+        event_type: state_changed
+        event_data:
+          entity_id: event.front_door_camera_fingerprint
+    condition:
+      # Fingerprint is identified and allowed
+      - condition: template
+        value_template: >
+          {{
+            not trigger.event.data.old_state.attributes.get('restored', false) and
+            not trigger.event.data.old_state.state == 'unavailable' and
+            trigger.event.data.new_state is not none and
+            trigger.event.data.new_state.attributes.event_type == 'identified' and
+            (trigger.event.data.new_state.attributes.ulp_id|default('')) != '' and
+            trigger.event.data.new_state.attributes.ulp_id in fingerprint_ids
+          }}
+      # Front door is locked
+      - condition: state
+        entity_id: lock.front_door
+        state: "locked"
+    action:
+      # Unlock the front door
+      - service: lock.unlock
+        entity_id: lock.front_door
+      # Notify via push notification
+      - service: notify.mobile_app_jk_2
+        data:
+          message: "Fingerprint identified with ID: {{ trigger.event.data.new_state.attributes.ulp_id }} and unlocked the front door"
+          title: "Fingerprint Scan Notification"

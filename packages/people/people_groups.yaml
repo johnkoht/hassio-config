@@ -61,3 +61,18 @@ group:
       - sensor.joe_room_presence
       # - sensor.nino_ipad_room_presence
       # - sensor.roscoe_room_presence
+
+
+  people_sensors:
+    name: People Sensors
+    entities:
+      - sensor.john_person
+      - sensor.cristina_person
+      - sensor.nonna_person
+      - sensor.tayta_person
+      - sensor.jido_person
+      - sensor.katia_person
+      - sensor.joe_person
+      - sensor.sylvia_person
+      - sensor.alex_person
+      - sensor.nonno_person
