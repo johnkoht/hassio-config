@@ -1,0 +1,4 @@
+input_boolean:
+  mudroom_occupied:
+    name: Mudroom Occupied
+    icon: mdi:foot-print

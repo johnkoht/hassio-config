@@ -66,31 +66,31 @@ automation:
           - condition: state
             entity_id: input_boolean.cristina_in_bed
             state: "off"
-      # Auto mode between 5-midnight
-      # OR bedtime mode and between 6am-9pm
-      - condition: or
-        conditions:
-          # Auto mode between 5am - 11:59
-          - condition: and
-            conditions:
-              # Not in bedtime mode
-              - condition: template
-                value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
-              # Between 5 - 12am
-              - condition: time
-                after: "05:00:00"
-                before: "23:59:59"
-          # OR it's bedtime mode and betwen 4-10
-          - condition: and
-            conditions:
-              # Not in bedtime mode
-              - condition: state
-                entity_id: input_select.main_bedroom
-                state: "Bedtime"
-              # It's between 6am - 9pm
-              - condition: time
-                after: "06:00:00"
-                before: "21:00:00"
+      # # Auto mode between 5-midnight
+      # # OR bedtime mode and between 6am-9pm
+      # - condition: or
+      #   conditions:
+      #     # Auto mode between 5am - 11:59
+      #     - condition: and
+      #       conditions:
+      #         # Not in bedtime mode
+      #         - condition: template
+      #           value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
+      #         # Between 5 - 12am
+      #         - condition: time
+      #           after: "05:00:00"
+      #           before: "23:59:59"
+      #     # OR it's bedtime mode and betwen 4-10
+      #     - condition: and
+      #       conditions:
+      #         # Not in bedtime mode
+      #         - condition: state
+      #           entity_id: input_select.main_bedroom
+      #           state: "Bedtime"
+      #         # It's between 6am - 9pm
+      #         - condition: time
+      #           after: "06:00:00"
+      #           before: "21:00:00"
     action:
       - action: input_boolean.turn_off
         entity_id: input_boolean.main_bedroom_occupied

@@ -1,0 +1,128 @@
+# 
+# Room State & Occupancy
+# 
+room_card_occupancy:
+  card:
+    type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 50% 50%
+        margin: 0px 0px 0px 0px
+        padding: 20px 20px 0px 20px
+        card_margin: 0px
+      cards:
+        # 
+        # Room State & Occupancy
+        # 
+        - type: horizontal-stack
+          cards:            
+            - type: custom:mushroom-chips-card
+              chips:
+                - type: template
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/room/kohbo_room_chip_card_mod_occupancy.yaml
+                  icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
+                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
+                  content: "{{ states(entity) }}"
+                  entity: '[[mode]]'
+                  tap_action:
+                    action: more-info
+
+                - type: template
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/room/kohbo_room_chip_card_mod_occupancy.yaml
+                  icon: mdi:circle
+                  entity: '[[occupancy]]'
+                  content: "{{ 'Occupied' if states(entity) == 'on' else 'Empty' }}"
+                  # content: >
+                  #   {% if states(entity) != "unknown" %}
+                  #     {% set state = "" %}
+                  #     {% if states(entity) == 'on' %}
+                  #       {% set state = "Occupied" %}
+                  #     {% else %}
+                  #       {% set state = "Empty" %}
+                  #     {% endif %}
+
+                  #     {% set last_changed = states[entity].last_changed %}
+                  #     {% set now = now() %}
+                  #     {% set diff = (now - last_changed).total_seconds() %}
+
+                  #     {% if diff <= 0 %}
+                  #       {{ state }}
+                  #     {% elif diff < 3600 %}
+                  #       {{ state }} - {{ (diff // 60)|int }}m
+                  #     {% elif diff < 86400 %}
+                  #       {{ state }} - {{ (diff // 3600)|int }}h
+                  #     {% else %}
+                  #       {{ state }} - {{ (diff // 86400)|int }}d
+                  #     {% endif %}
+                  #   {% else %}
+                  #     Empty
+                  #   {% endif %}
+                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_occupancy_icon_color.yaml
+                  tap_action:
+                    action: more-info
+
+        # 
+        # People in the room
+        # 
+        - type: custom:mod-card
+          # style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  height: 100% !important;
+                }
+              hui-horizontal-stack-card$: |
+                #root {
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: person.john_koht
+                template: kohbo_room_card_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#john'
+                visibility:
+                  - condition: state
+                    entity: sensor.john_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.cristina_falbo
+                template: kohbo_room_card_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#cristina'
+                visibility:
+                  - condition: state
+                    entity: sensor.cristina_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.mary_falbo
+                template: kohbo_room_card_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.mary_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.katia
+                template: kohbo_room_card_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.katia_room_presence
+                    state: "[[room]]"
+
+
+        # 
+        # People
+        # 
+        - !include /config/dashboards/templates/button_cards/people/john.yaml
+        - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+        - !include /config/dashboards/templates/button_cards/people/nonna.yaml

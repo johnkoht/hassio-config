@@ -1,0 +1,78 @@
+# Vacuum - Clean Kitchen and Family Room at Night
+#
+# Automation logic to handle vacuuming the
+# kitchen and family room at night. 
+#
+automation:
+  - id: "main_level_vacuum_nightly_cleaning"
+    alias: "Main Level Vacuum - Nightly Cleaning"
+    mode: "single"
+    variables:
+      # 
+      # Get the room_ids we'll use for vacuum cleaning script
+      # from the input_boolean entity ids. This returns a list
+      # like ["kitchen", "family_room", "mudroom"]
+      # 
+      rooms_ids: >
+        {% set rooms = state_attr('group.main_level_vacuum_nightly_cleaning_group', 'entity_id') | select('is_state', 'on') | list %}
+
+        {% set room_list = namespace(rooms=[]) %}
+        
+        {% for room in rooms %}
+          {% set room_list.rooms = room_list.rooms + [room.split('.')[-1].replace("vacuum_", "").replace("_at_night", "")] %}
+        {% endfor %}
+        
+        {{ room_list.rooms }}
+    triggers:
+      # Bedtime mode is on for 30 minutes
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+        for:
+          minutes: 30
+      # At 1:01am
+      - trigger: time
+        at: "01:01:00"
+    conditions:
+      # # Guest mode is OFF
+      # - condition: state
+      #   entity_id: input_boolean.guest_mode
+      #   state: "off"
+      # Only run between 10pm and 5am
+      # Otherwise, if we get out of bed at 5 for whatever reason, 
+      # then get back in, it will run unnecessarily.
+      - condition: time
+        after: "22:00:00"
+        before: "05:00:00"
+      # Make sure at least one room is set to vacuum
+      - condition: state
+        entity_id: group.main_level_vacuum_nightly_cleaning_group
+        state: "on"
+      # Jr. Suite door is OPEN
+      # otherwise the vacuum will get stuck in the Jr. Suite
+      - condition: state
+        entity_id: binary_sensor.jr_suite_door_status
+        state: "on"
+      # Either not in vacation mode OR vacation mode just started (within 24 hours)
+      # we don't need the vacuum running if we're on vacation, but I definitely
+      # want it to run once after we leave so we return to a clean house
+      - condition: or
+        conditions:
+          # Not in vacation mode
+          - condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "off"
+          # OR vacation mode started less than 24 hours ago
+          - condition: template
+            value_template: >
+              {% set vacation_last_changed = states.input_boolean.vacation_mode.last_changed %}
+              {% if states.input_boolean.vacation_mode.state == "on" %}
+                {{ (now() - vacation_last_changed).total_seconds() < 86400 }}
+              {% else %}
+                {{ false }}
+              {% endif %}
+    actions:
+      # Clean the selected rooms
+      - action: script.main_level_vacuum_clean_selected_rooms
+        data:
+          rooms: "{{ rooms_ids }}"

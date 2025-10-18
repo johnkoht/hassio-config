@@ -1,0 +1,24 @@
+kohbo_page_back_button:
+  # icon: mdi:arrow-left
+  icon: mdi:chevron-left
+  size: 28px
+  layout: icon_name
+  styles:
+    grid:
+      - grid-template-areas: '"i n"'
+      - grid-template-columns: 28px 1fr
+    card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - margin: 0
+      - padding: 0
+    name:
+      - place-self: start
+      - line-height: 24px
+      - font-weight: 500
+      - padding-left: 5px
+      - color: var(--semi-dark-grey-color)
+    icon:
+      - width: 28px
+      - color: var(--semi-dark-grey-color)

@@ -1,0 +1,18 @@
+type: conditional
+conditions:
+  - condition: state
+    entity: input_select.upstairs_washer_status
+    state: "Clean"
+card:
+  type: custom:bubble-card
+  name: Upstairs Washer Complete
+  icon: mdi:washing-machine
+  card_type: button
+  button_type: switch
+  entity: input_select.upstairs_washer_status
+  show_state: true
+  button_action:
+    tap_action:
+      action: none
+  tap_action:
+    action: none

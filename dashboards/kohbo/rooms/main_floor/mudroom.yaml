@@ -1,0 +1,192 @@
+type: custom:vertical-layout
+title: Mudroom
+path: mudroom
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/kohbo_nested_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  # - type: horizontal-stack
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # Back button
+        - type: custom:button-card
+          template: kohbo_page_back_button
+          tap_action:
+            action: navigate
+            navigation_path: /dashboard-kohbo/rooms
+        # Page title
+        - type: custom:button-card
+          template: kohbo_nested_page_title
+          name: Mudroom
+        # Settings button
+        # - type: custom:button-card
+        #   template: kohbo_page_settings_button
+        #   tap_action:
+        #     action: navigate
+        #     navigation_path: "#jr_suite_settings_popup"
+  # - type: custom:button-card
+  #   template: kohbo_page_title
+  #   name: Jr. Suite
+
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - mode: input_select.mudroom
+      - occupancy: input_boolean.mudroom_occupied
+      - room: "mudroom"
+
+  # 
+  # Climate Overview
+  # 
+  - type: custom:decluttering-card
+    template: climate_temperature_only
+    variables:
+      - temperature_sensor: sensor.mudroom_motion_sensor_air_temperature
+      - room_name: Mudroom
+
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Ceiling Lights
+  - type: tile
+    entity: light.mudroom_main_lights
+    name:  Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Garage Door Lock
+      - type: custom:button-card
+        entity: lock.garage_entry_door
+        name: Garage Door Lock
+        template: kohbo_device_entity
+      
+      # Interior Garage Door
+      - type: custom:button-card
+        entity: binary_sensor.interior_garage_door
+        name: Interior Garage Door
+        template: kohbo_device_door_entity
+
+
+  # 
+  # Automations
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # Garage Entry Door - Unlock Upon Arrival
+      - entity: automation.garage_entry_door_unlock_upon_arrival
+        name: Unlock Upon Arrival
+        icon: mdi:door-open
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      # Autolock Garage Entry Door
+      - entity: automation.garage_entry_door_lock_at_bedtime
+        name: Autolock Garage Entry Door
+        icon: mdi:lock
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_mudroom_laundry
+        name: Adaptive Lighting
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_sleep_mode_mudroom_laundry
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  # 
+  # Sensors
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Sensors
+  - type: entities
+    entities:
+      # Motion Sensor
+      - type: custom:template-entity-row
+        icon: mdi:motion-sensor
+        name: Motion Sensor
+        entity: binary_sensor.mudroom_motion_sensor_motion_detection
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      # Illuminance
+      - type: custom:template-entity-row
+        icon: mdi:brightness-5
+        name: Illuminance
+        entity: sensor.mudroom_motion_sensor_illuminance
+        state: "{{ states[config.entity].state }} lx"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      - type: custom:template-entity-row
+        # icon: mdi:battery
+        icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
+        name: Lock Battery Level
+        entity: sensor.garage_entry_door_battery_level
+        state: "{{ states[config.entity].state }}%"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon_color.yaml
+
+      
+        
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

@@ -7,13 +7,13 @@
 # should run again.
 #
 automation:
-  - id: "vacuum_clean_dining_and_foyer_at_night"
-    alias: "Vacuum - Clean Dining and Foyer at Night"
+  - id: "main_level_vacuum_evening_cleaning"
+    alias: "Main Level Vacuum - Evening Cleaning"
     mode: "single"
     triggers:
       # Run daily at 9pm
       - trigger: time
-        at: "21:00:00"
+        at: input_datetime.main_level_vacuum_evening_start_time
         id: nightly_check
       # When guest mode turns off between 9pm and 11pm
       - trigger: state
@@ -36,8 +36,8 @@ automation:
               - condition: trigger
                 id: guest_mode_off
               - condition: time
-                after: "21:00:00"
-                before: "23:00:00"
+                after: input_datetime.main_level_vacuum_evening_start_time
+                before: input_datetime.main_level_vacuum_evening_end_time
       # Guest mode is OFF
       - condition: state
         entity_id: input_boolean.guest_mode
@@ -90,17 +90,10 @@ automation:
           {{ states('input_boolean.sylvia_home') == 'off' 
              and (now() - states.input_boolean.sylvia_home.last_changed).total_seconds() > 86400 }}
     actions:
-      # Vacuum the dining room and foyer
-      - action: vacuum.send_command
-        target:
-          entity_id: vacuum.roborock_s7
+      # Clean the selected rooms
+      - action: script.main_level_vacuum_clean_selected_rooms
         data:
-          command: app_segment_clean
-          params: [20, 23]
+          rooms: 
+            - foyer
+            - dining_room
 
-      # Update the last cleaning text
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.vacuum_main_floor_last_cleaning
-        data:
-          value: "Foyer & Dining Room"

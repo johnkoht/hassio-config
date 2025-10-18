@@ -33,6 +33,7 @@ cards:
           cards:            
             - type: custom:mushroom-chips-card
               chips:
+                # House Mode
                 - type: template
                   card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
                   icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
@@ -41,6 +42,16 @@ cards:
                   entity: input_select.house
                   tap_action:
                     action: more-info
+                # Notifications
+                - type: template
+                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+                  icon: mdi:bell
+                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
+                  # content: "{{ states(entity) }}"
+                  # entity: input_select.house
+                  tap_action:
+                    action: navigate
+                    navigation_path: '#notifications'
 
         - type: custom:mod-card
           style:
@@ -150,16 +161,7 @@ cards:
       - type: custom:button-card
         entity: climate.nest_main_floor
         name: Main Floor
-        template: kohbo_device_entity
-        icon: >
-          [[[
-            if (entity.state == "heat_cool")
-              return "mdi:sun-snowflake-variant"
-            else if (entity.state == "heat")
-              return "mdi:heat-wave"
-            else if (entity.state == "cool")
-              return "mdi:snowflake"
-          ]]]
+        template: kohbo_thermostat_entity
         tap_action:
           action: navigate
           navigation_path: '#main_floor_thermostat'
@@ -168,16 +170,7 @@ cards:
       - type: custom:button-card
         entity: climate.nest_2nd_floor
         name: Upper Floor
-        template: kohbo_device_entity
-        icon: >
-          [[[
-            if (entity.state == "heat_cool")
-              return "mdi:sun-snowflake-variant"
-            else if (entity.state == "heat")
-              return "mdi:heat-wave"
-            else if (entity.state == "cool")
-              return "mdi:snowflake"
-          ]]]
+        template: kohbo_thermostat_entity
         tap_action:
           action: navigate
           navigation_path: '#upper_floor_thermostat'
@@ -271,7 +264,6 @@ cards:
 
 
   # 
-  
   # Main Floor Thermostat Popup
   # 
   - type: custom:decluttering-card
@@ -327,7 +319,7 @@ cards:
         ha-card {
           background: rgba(237, 71, 71, 0.8) !important;
           position: fixed !important;
-          bottom: 85px !important;
+          bottom: 110px !important;
           z-index: 1 !important;
           height: 50px !important;
           left: 24px !important;
@@ -368,7 +360,7 @@ cards:
         ha-card {
           background: rgba(237, 71, 71, 0.8) !important;
           position: fixed !important;
-          bottom: 85px !important;
+          bottom: 110px !important;
           z-index: 1 !important;
           height: 50px !important;
           left: 24px !important;
@@ -413,6 +405,15 @@ cards:
       - person_entity: binary_sensor.driveway_front_person_occupancy
 
 
+  # 
+  # Notifications Popup
+  # 
+  - !include /config/dashboards/kohbo/shared/kohbo_notification_popup.yaml
+
+
+
+      
+  
   # # 
   # # Front Door Camera Popup
   # # 

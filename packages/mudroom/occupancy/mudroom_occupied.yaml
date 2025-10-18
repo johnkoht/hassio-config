@@ -1,0 +1,27 @@
+# Mudroom Occupied
+#
+automation:
+  - id: "mudroom_occupied"
+    initial_state: on
+    alias: "Mudroom occupied"
+    triggers:
+      # Mudroom motion sensor detects motion
+      - trigger: state
+        entity_id: binary_sensor.mudroom_motion_sensor_motion_detection
+        to: "on"
+      # Mudroom lights are turned on
+      - trigger: state
+        entity_id: light.mudroom_main_lights
+        to: "on"
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Mudroom is not already occupied
+      - condition: state
+        entity_id: input_boolean.mudroom_occupied
+        state: "off"
+    actions:
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.mudroom_occupied

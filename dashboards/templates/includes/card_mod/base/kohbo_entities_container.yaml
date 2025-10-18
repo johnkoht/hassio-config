@@ -1,0 +1,10 @@
+style: |
+  ha-card {
+    box-shadow: none !important;
+    border: none !important;
+
+    #states {
+      padding: 0 !important;
+    }
+  }
+

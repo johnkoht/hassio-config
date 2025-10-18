@@ -1,0 +1,23 @@
+automation:
+  - id: "mudroom_not_occupied"
+    initial_state: on
+    alias: "Mudroom not occupied"
+    triggers:
+      # Mudroom motion sensor does not detect motion
+      - trigger: state
+        entity_id: binary_sensor.mudroom_motion_sensor_motion_detection
+        to: "off"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.mudroom_occupied
+        state: "on"
+      # Mudroom motion sensor does not detect motion
+      - condition: state
+        entity_id: binary_sensor.mudroom_motion_sensor_motion_detection
+        state: "off"
+      # # Nobody via BLE
+      # - condition: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'mudroom')|map(attribute='name')|list | length == 0 }}"
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.mudroom_occupied

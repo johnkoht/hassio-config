@@ -1,0 +1,39 @@
+# Foyer Occupied
+#
+automation:
+  - id: "foyer_occupied"
+    initial_state: on
+    alias: "Foyer occupied"
+    trigger:
+      # Entry motion sensor detects motion
+      - platform: state
+        entity_id: binary_sensor.foyer_motion
+        to: "on"
+      # Hassio resloads/starts
+      - platform: event
+        event_type: automation_reloaded
+      - platform: homeassistant
+        event: start
+    condition:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Foyer is not already occupied
+      - condition: state
+        entity_id: input_boolean.foyer_occupied
+        state: "off"
+      # Occupancy detetected
+      - condition: or
+        conditions:
+          # Foyer sensor detects occupancy
+          - condition: state
+            entity_id: binary_sensor.foyer_occupancy
+            state: "on"
+          # Foyer motion sensor detects motion
+          - condition: state
+            entity_id: binary_sensor.foyer_motion
+            state: "on"
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.foyer_occupied

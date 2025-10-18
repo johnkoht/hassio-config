@@ -1,0 +1,275 @@
+type: custom:vertical-layout
+title: Foyer
+path: foyer
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/kohbo_nested_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  # - type: horizontal-stack
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # Back button
+        - type: custom:button-card
+          template: kohbo_page_back_button
+          tap_action:
+            action: navigate
+            navigation_path: /dashboard-kohbo/rooms
+        # Page title
+        - type: custom:button-card
+          template: kohbo_nested_page_title
+          name: Foyer
+        # Settings button
+        # - type: custom:button-card
+        #   template: kohbo_page_settings_button
+        #   tap_action:
+        #     action: navigate
+        #     navigation_path: "#jr_suite_settings_popup"
+  # - type: custom:button-card
+  #   template: kohbo_page_title
+  #   name: Jr. Suite
+
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - mode: input_select.foyer
+      - occupancy: input_boolean.foyer_occupied
+      - room: "foyer"
+
+  # # 
+  # # Climate Overview
+  # # 
+  # - type: custom:decluttering-card
+  #   template: climate_overview
+  #   variables:
+  #     - temperature_sensor: sensor.jr_suite_awair_temperature
+  #     - humidity_sensor: sensor.jr_suite_awair_humidity
+  #     - carbon_dioxide_sensor: sensor.jr_suite_awair_carbon_dioxide
+  #     - vocs_sensor: sensor.jr_suite_awair_vocs
+  #     - pm25_sensor: sensor.jr_suite_awair_pm2_5
+  #     - room_name: Jr. Suite
+
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Ceiling Lights
+  - type: tile
+    entity: light.foyer_ceiling_lights
+    name: Ceiling Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+  # Chandelier
+  - type: tile
+    entity: light.foyer_chandelier
+    name: Chandelier
+    icon: mdi:chandelier
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+  # Coat Closet
+  - type: tile
+    entity: light.foyer_coat_closet
+    name: Coat Closet
+    icon: mdi:wardrobe
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+  # Stairs Light
+  - type: tile
+    entity: light.stairs_light
+    name: Stairs Light
+    icon: mdi:stairs
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Front Door Lock
+      - type: custom:button-card
+        entity: lock.front_door
+        name: Front Door Lock
+        template: kohbo_device_entity
+      
+      # Front Door
+      - type: custom:button-card
+        entity: binary_sensor.front_door
+        name: Front Door
+        template: kohbo_device_door_entity
+
+      # Foyer Outlet
+      - type: custom:button-card
+        entity: switch.smart_plug_10_switch
+        name: Foyer Outlet
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_10_active_power
+          confirmation: true
+
+
+  # 
+  # Automations
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # Nightlight
+      - entity: automation.foyer_lights_nightlight
+        name: Nightlight
+        icon: mdi:lightbulb-night
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      # Autolock Front Door
+      - entity: automation.front_door_lock_if_open_too_long
+        name: Autolock Front Door
+        icon: mdi:lock
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+        
+
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_foyer
+        name: Adaptive Lighting
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_sleep_mode_foyer
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  # 
+  # Sensors
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Sensors
+  - type: entities
+    entities:
+      # BLE Base Station
+      - type: custom:template-entity-row
+        icon: mdi:bluetooth
+        name: BLE Proxy
+        entity: device_tracker.atom_bluetooth_proxy_cefb10_2
+        state: "{{ 'Disconnected' if states[config.entity].state == 'unavailable' else 'Connected' }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
+        color: >
+          {% set state = states[config.entity].state | lower %}
+          
+          {% if state in ['available', 'home', 'not_home'] %}
+            var(--primary-color)
+          {% else %}
+            var(--error-color)
+          {% endif %}
+
+      # Occupancy Sensor
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-room-occupancy
+        name: Occupancy Sensor
+        entity: binary_sensor.foyer_occupancy
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      # Motion Sensor
+      - type: custom:template-entity-row
+        icon: mdi:motion-sensor
+        name: Motion Sensor
+        entity: binary_sensor.foyer_motion
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      # Illuminance
+      - type: custom:template-entity-row
+        icon: mdi:brightness-5
+        name: Illuminance
+        entity: sensor.foyer_motion_illuminance
+        state: "{{ states[config.entity].state }} lux"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      - type: custom:template-entity-row
+        icon: mdi:filter
+        name: Lock Signal Strength
+        entity: sensor.front_door_lock_signal_strength
+        state: "{{ states[config.entity].state }} dBm"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: >
+          {% set signal_strength = states[config.entity].state | int(0) %}
+          {% if signal_strength < -80 %}
+            var(--error-color)
+          {% elif signal_strength < -50 %}
+            var(--success-color)
+          {% else %}
+            var(--error-color)
+          {% endif %}
+
+      
+        
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

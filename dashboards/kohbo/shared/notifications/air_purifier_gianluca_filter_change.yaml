@@ -1,0 +1,18 @@
+# 
+# Air Purifier Gianluca Filter Change
+# 
+type: conditional
+conditions:
+  - condition: numeric_state
+    entity: sensor.gianlucas_bedroom_air_purifier_filter_life
+    below: 20
+card:
+  type: custom:bubble-card
+  card_type: button
+  button_type: switch
+  entity: sensor.gianlucas_bedroom_air_purifier_filter_life
+  button_action:
+    tap_action:
+      action: none
+  tap_action:
+    action: none

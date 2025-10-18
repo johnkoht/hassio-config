@@ -1,0 +1,98 @@
+kohbo_room_card_overview:
+  size: 100%
+  show_icon: true
+  show_state: true
+  state_display: >
+    [[[
+      if (entity == null) {
+        return "Empty";
+      } else {
+        const occupancy = entity.state == "on" ? "Occupied" : "Empty";
+      
+        const last = new Date(entity.last_changed);
+        const now = new Date();
+        const diff = Math.floor((now - last) / 1000);
+
+        if (diff < 3600) {
+          return `${occupancy} for ${Math.floor(diff / 60) + "m"}`;
+        } else if (diff < 86400) {
+          return `${occupancy} for ${Math.floor(diff / 3600) + "h"}`;
+        } else {
+          return `${occupancy} for ${Math.floor(diff / 86400) + "d"}`;
+        }
+      }
+    ]]]
+  variables: 
+    temperature: null
+    humidity: null
+    aqi: null
+  styles:
+    grid:
+      - grid-template-areas: '"i n temperature" "i s secondary_climate"'
+      - grid-template-columns: 40px 1fr 100px
+      - grid-template-rows: 1fr 1fr
+    card:
+      - --mdc-ripple-color: transparent
+      - --mdc-ripple-press-opacity: 0
+      - padding: 0 20px 0 20px
+      - background: transparent
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+      - box-shadow: none
+      - border: none
+    name:
+      - padding-left: 16px
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - line-height: 19px
+      - font-weight: 700
+      - color: "#F8F9FA"
+    state:
+      - padding-left: 16px
+      - justify-self: start
+      - font-size: 11px
+      - line-height: 11px
+      - font-weight: 500
+      - color: var(--secondary-text-color)
+      - align-self: start
+      - padding-top: 4px
+    custom_fields:
+      temperature:
+        - font-size: 20px
+        - line-height: 20px
+        - font-weight: 400
+        - color: "#F8F9FA"
+        - justify-self: end
+        - align-self: end
+      secondary_climate:
+        - font-size: 11px
+        - line-height: 11px
+        - font-weight: 400
+        - color: var(--secondary-text-color)
+        - justify-self: end
+
+  custom_fields:
+    temperature: >
+      [[[ 
+        if (variables.temperature) {
+          return Math.round(variables.temperature * 10) / 10 + "°";
+        }
+      ]]]
+    secondary_climate: >
+      [[[
+        console.log("aqi", variables.aqi);
+        if (variables.aqi) {
+          return "AQI - " + variables.aqi;
+        }
+        else if (variables.humidity) {
+          return Math.round(variables.humidity * 10) / 10 + "% Humidity";
+        }
+      ]]]
+  card_mod:
+    debug: true
+    style: |
+      #state {
+        position: relative;
+      }
+      

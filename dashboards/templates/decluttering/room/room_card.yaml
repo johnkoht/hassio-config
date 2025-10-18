@@ -4,25 +4,37 @@
 room_card:
   card:
     type: custom:stack-in-card
-    card_mod:
-      style: |
-        ha-card {
-          opacity: {{"1" if states['[[room_entity]]'].state == "on" else "0.5"}};
-        }
     cards:
+      # 
+      # Room State & Occupancy
+      # 
+      - type: custom:decluttering-card
+        template: room_card_occupancy
+        variables:
+          - mode: '[[mode]]'
+          - occupancy: '[[occupancy]]'
+          - room: '[[room]]'
+
+      # 
+      # Room Overview
+      # 
       - type: custom:button-card
-        entity: '[[room_entity]]'
+        entity: '[[occupancy]]'
         name: '[[room_name]]'
-        template: kohbo_room_card_header
-        icon: kohbo:kohbo-chair
+        template: kohbo_room_card_overview
+        icon: '[[icon]]'
         variables:
           temperature: '[[temperature]]'
           humidity: '[[humidity]]'
           aqi: '[[aqi]]'
+          mode: '[[mode]]'
         tap_action:
           action: navigate
           navigation_path: '[[navigation_path]]'
 
+      # 
+      # Room Devices
+      # 
       - type: custom:stack-in-card
         mode: horizontal
         card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml

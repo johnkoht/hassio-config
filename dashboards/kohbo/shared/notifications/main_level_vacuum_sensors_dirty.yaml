@@ -1,0 +1,25 @@
+# 
+# Main Level Vacuum Maintenance - Sensor Dirty
+# 
+type: conditional
+conditions:
+  - condition: numeric_state
+    entity: sensor.roborock_s7_sensor_dirty_left
+    below: 7200
+card:
+  type: custom:bubble-card
+  card_type: button
+  button_type: switch
+  entity: sensor.roborock_s7_sensor_dirty_left
+  button_action:
+    tap_action:
+      action: none
+  tap_action:
+    action: none
+  sub_button:
+    - entity: button.roborock_s7_reset_sensor_dirty
+      tap_action:
+        action: perform-action
+        perform_action: button.press
+        target:
+          entity_id: button.roborock_s7_reset_sensor_dirty

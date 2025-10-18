@@ -1,0 +1,4 @@
+input_boolean:
+  foyer_occupied:
+    name: Foyer Occupied
+    icon: mdi:home

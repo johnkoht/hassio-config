@@ -1,0 +1,9 @@
+kohbo_card_section_title:
+  styles:
+    card:
+      - padding: 0
+    name:
+      - font-weight: 700
+      - font-size: 16px
+      - text-align: left
+      - justify-self: start

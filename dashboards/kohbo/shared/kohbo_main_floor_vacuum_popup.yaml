@@ -28,23 +28,6 @@ cards:
           cards:            
             - type: custom:mushroom-chips-card
               chips:
-                # - type: conditional
-                #   conditions:
-                #     - entity: vacuum.roborock_s7
-                #       state: 'docked'
-                #   chip:
-                #     type: template
-                #     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                #     # icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                #     # icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
-                #     content: "{{ states(entity) }}"
-                #     icon: mdi:play
-                #     # entity: vacuum.roborock_s7
-                #     tap_action:
-                #       action: perform-action
-                #       perform_action: vacuum.start
-                #       data:
-                #         entity_id: vacuum.roborock_s7
                 # 
                 # Pause Cleaning (if running)
                 # 
@@ -55,8 +38,6 @@ cards:
                   chip:
                     type: template
                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                    # icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                    # icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
                     icon: mdi:pause
                     tap_action:
                       action: perform-action
@@ -73,8 +54,6 @@ cards:
                   chip:
                     type: template
                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                    # icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                    # icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
                     icon: mdi:play
                     tap_action:
                       action: perform-action

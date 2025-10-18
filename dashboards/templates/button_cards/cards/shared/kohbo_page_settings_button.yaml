@@ -1,0 +1,16 @@
+
+kohbo_page_settings_button:
+  icon: mdi:cog
+  styles:
+    card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - margin: 0
+      - padding: 0
+      - --mdc-ripple-color: transparent
+      - -webkit-tap-highlight-color: transparent
+    icon:
+      - width: 24px
+      - margin-right: 0px
+      - color: var(--semi-dark-grey-color)

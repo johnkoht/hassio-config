@@ -13,6 +13,10 @@ input_boolean:
   vacuum_family_room:
     name: Vacuum Family Room
     icon: mdi:robot-vacuum
+  # Daily vacuuming when house is empty
+  vacuum_family_room_when_house_empty:
+    name: Vacuum Family Room
+    icon: mdi:robot-vacuum
 
   # 
   # Kitchen
@@ -25,6 +29,10 @@ input_boolean:
   vacuum_kitchen:
     name: Vacuum Kitchen When House Empty
     icon: mdi:robot-vacuum
+  # Daily vacuuming when house is empty
+  vacuum_kitchen_when_house_empty:
+    name: Vacuum Kitchen
+    icon: mdi:robot-vacuum
 
   # 
   # Mudroom
@@ -36,6 +44,10 @@ input_boolean:
   # Quick or scheduled vacuuming
   vacuum_mudroom:
     name: Vacuum Mudroom When House Empty
+    icon: mdi:robot-vacuum
+  # Daily vacuuming when house is empty
+  vacuum_mudroom_when_house_empty:
+    name: Vacuum Family Room
     icon: mdi:robot-vacuum
 
 

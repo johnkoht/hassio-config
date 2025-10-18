@@ -48,12 +48,12 @@ automation:
         event_type: timer.finished
         event_data: 
           entity_id: timer.nino_daily_medication_timer
-      # Nino is awake for 1 hour
-      - trigger: state
-        entity_id: input_select.nino_sleep_state
-        to: "Awake"
-        for:
-          hours: 1
+      # # Nino is awake for 1 hour
+      # - trigger: state
+      #   entity_id: input_select.nino_sleep_state
+      #   to: "Awake"
+      #   for:
+      #     hours: 1
     conditions:
       # Only run if Nino has not taken his morning medication
       - condition: state
@@ -67,10 +67,10 @@ automation:
       - condition: state
         entity_id: input_select.nino_sleep_state
         state: "Awake"
-      # After <time> and before <time>
-      - condition: time
-        after: "00:00:00"
-        before: "00:00:00"
+      # # After <time> and before <time>
+      # - condition: time
+      #   after: "00:00:00"
+      #   before: "00:00:00"
     actions:
       #  
       #  Voice Announcement

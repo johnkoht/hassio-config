@@ -1,0 +1,11 @@
+kohbo_room_card_person_entity:
+  template: kohbo_person_entity
+  size: 26px
+  styles:
+    card:
+      - height: 26px
+      - width: 26px
+
+    custom_fields:
+      occupancy_state:
+        - display: none

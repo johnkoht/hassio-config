@@ -8,13 +8,13 @@ trigger:
   - platform: state
     entity_id: input_select.mudroom
     to: "Away"
-  # If the house turns to off
-  - platform: state
-    entity_id: input_select.house
-    to: "Off"
   # If motion is no longer detected
   - platform: state
     entity_id: binary_sensor.mudroom_motion_sensor_motion_detection
+    to: "off"
+  # Mudroom is not occupied
+  - platform: state
+    entity_id: input_boolean.mudroom_occupied
     to: "off"
 condition:
   # Make sure lighting automations are on
@@ -24,6 +24,16 @@ condition:
   - condition: state
     entity_id: light.mudroom_main_lights
     state: "on"
+  - condition: or
+    conditions:
+      # Mudroom is not occupied
+      - condition: state
+        entity_id: input_boolean.mudroom_occupied
+        state: "off"
+      # Mudroom is away
+      - condition: state
+        entity_id: input_select.mudroom
+        state: "Away"
 action:
   - service: light.turn_off
     entity_id: light.mudroom_main_lights

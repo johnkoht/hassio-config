@@ -1,8 +1,14 @@
 >
   {% if states(entity) == 'DnD' %}
-    red
+    #ED4747
   {% elif states(entity) == 'Off' %}
-    light-grey
+    #ADB5BD
+  {% elif states(entity) == "Bedtime" %}
+    #E36001
   {% else %}
     primary
   {% endif %}
+
+
+
+  

@@ -1,0 +1,48 @@
+# 
+# Main Level Vacuum Timeframes
+# 
+input_datetime:
+  # 
+  # Main Level Vacuum Daily Weekday Timeframe
+  # 
+  main_level_vacuum_daily_weekday_timeframe_start:
+    name: Main Level Vacuum Daily Weekday Timeframe Start
+    icon: mdi:clock
+    has_date: false
+    has_time: true
+  # Main Level Vacuum Daily Timeframe End
+  main_level_vacuum_daily_weekday_timeframe_end:
+    name: Main Level Vacuum Daily Weekday Timeframe End
+    icon: mdi:clock
+    has_date: false
+    has_time: true
+
+  # 
+  # Main Level Vacuum Daily Weekend Timeframe
+  # 
+  main_level_vacuum_daily_weekend_timeframe_start:
+    name: Main Level Vacuum Daily Weekend Timeframe Start
+    icon: mdi:clock
+    has_date: false
+    has_time: true
+  # Main Level Vacuum Daily Timeframe End
+  main_level_vacuum_daily_weekend_timeframe_end:
+    name: Main Level Vacuum Daily Weekend Timeframe End
+    icon: mdi:clock
+    has_date: false
+    has_time: true
+
+  # 
+  # Main Level Vacuum Evening Timeframe
+  # 
+  main_level_vacuum_evening_start_time:
+    name: Main Level Vacuum Evening Start Time
+    icon: mdi:clock
+    has_date: false
+    has_time: true
+
+  main_level_vacuum_evening_end_time:
+    name: Main Level Vacuum Evening End Time
+    icon: mdi:clock
+    has_date: false
+    has_time: true

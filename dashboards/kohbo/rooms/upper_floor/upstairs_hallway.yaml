@@ -73,13 +73,32 @@ cards:
     columns: 2
     square: false
     cards:
+      # Upper floor HVAC
+      - type: custom:button-card
+        entity: climate.nest_2nd_floor
+        name: Thermostat
+        template: kohbo_device_entity
+        icon: >
+          [[[
+            if (entity.state == "heat_cool")
+              return "mdi:sun-snowflake-variant"
+            else if (entity.state == "heat")
+              return "mdi:heat-wave"
+            else if (entity.state == "cool")
+              return "mdi:snowflake"
+          ]]]
+        tap_action:
+          action: navigate
+          navigation_path: '#upper_floor_thermostat'
+
       # Smart Plug
       - type: custom:button-card
         entity: switch.smart_plug_3_switch
-        name: Heater
+        name: Outlet
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_3_power
+      
 
 
   # 
@@ -114,8 +133,48 @@ cards:
         secondary_info: last-changed
         state_color: true
 
+  # 
+  # Sensors
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Sensors
+  - type: entities
+    entities:
+      # Motion Sensor
+      - type: custom:template-entity-row
+        icon: mdi:motion-sensor
+        name: Motion Sensor
+        entity: binary_sensor.upstairs_hallway_nightlight_motion
+        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+      # Illuminance
+      - type: custom:template-entity-row
+        icon: mdi:brightness-5
+        name: Illuminance
+        entity: sensor.upstairs_hallway_nightlight_illuminance
+        state: "{{ states[config.entity].state }} lux"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
   
   # 
   # Navbar
   # 
   - !include /config/dashboards/templates/includes/navbar.yaml
+
+  # 
+  # Upper Floor Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_popup
+    variables:
+      - hash: "#upper_floor_thermostat"
+      - entity: climate.nest_2nd_floor
+      - eco_mode: binary_sensor.second_floor_nest_in_eco
+      - name: Upper Floor
+      - temperature_sensor: sensor.second_floor_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature

@@ -1,0 +1,141 @@
+# Main Level Vacuum - Daily Clean When House Empty
+#
+# Automation logic to handle vacuuming the
+# kitchen (and other possible rooms) when the
+# house becomes unoccupied during morning hours
+# on weekdays (8-10) or weekends (8:30-11).
+#
+automation:
+  - id: "main_level_vacuum_daily_clean_when_house_empty"
+    alias: "Main Level Vacuum - Daily Clean When House Empty"
+    mode: "single"
+    variables:
+      # 
+      # Get the room_ids we'll use for vacuum cleaning script
+      # from the input_boolean entity ids. This returns a list
+      # like ["kitchen", "family_room", "mudroom"]
+      # 
+      rooms_ids: >
+        {% set rooms = state_attr('group.main_level_vacuum_daily_empty_house_cleaning_group', 'entity_id') | select('is_state', 'on') | list %}
+
+        {% set room_list = namespace(rooms=[]) %}
+        
+        {% for room in rooms %}
+          {% set room_list.rooms = room_list.rooms + [room.split('.')[-1].replace("vacuum_", "").replace("_when_house_empty", "")] %}
+        {% endfor %}
+        
+        {{ room_list.rooms }}
+    triggers:
+      # When house becomes unoccupied for 5 minutes
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: 5
+    conditions:
+      # Only if vacuum is docked
+      - condition: state
+        entity_id: vacuum.roborock_s7
+        state: "docked"
+      # Don't run if a empty house cleaning is scheduled
+      - condition: state
+        entity_id: input_boolean.main_level_vacuum_clean_when_house_empty
+        state: "on"
+      # Make sure at least one room is set to vacuum
+      - condition: state
+        entity_id: group.main_level_vacuum_daily_empty_house_cleaning_group
+        state: "on"
+      # Either weekday morning OR weekend morning time windows
+      - condition: or
+        conditions:
+          # Weekday between 8:00-10:00
+          - condition: and
+            conditions:
+              - condition: time
+                after: input_datetime.main_level_vacuum_daily_weekday_timeframe_start
+                before: input_datetime.main_level_vacuum_daily_weekday_timeframe_end
+              - condition: time
+                weekday:
+                  - mon
+                  - tue
+                  - wed
+                  - thu
+                  - fri
+          # Weekend between 8:30-11:00
+          - condition: and
+            conditions:
+              - condition: time
+                after: input_datetime.main_level_vacuum_daily_weekend_timeframe_start
+                before: input_datetime.main_level_vacuum_daily_weekend_timeframe_end
+              - condition: time
+                weekday:
+                  - sat
+                  - sun
+      # Guest mode is OFF
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      # Jr. Suite door is OPEN (consistent with other vacuum automations)
+      - condition: state
+        entity_id: binary_sensor.jr_suite_door_status
+        state: "on"
+      # Not in vacation mode
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "off"
+    actions:
+      - action: script.main_level_vacuum_clean_selected_rooms
+        data:
+          rooms: "{{ rooms_ids }}"
+
+
+  # Main Level Vacuum - Return to Dock When House Occupied
+  # 
+  # This automation is used to return the vacuum to the dock
+  # when the house is occupied. It is only triggered during
+  # our morning cleaning window.
+  #
+  - id: "main_level_vacuum_return_to_dock_when_house_occupied"
+    alias: "Main Level Vacuum - Return to Dock When House Occupied"
+    mode: "single"
+    triggers:
+      # When house becomes occupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    conditions:
+      # Only if vacuum is cleaning
+      - condition: state
+        entity_id: vacuum.roborock_s7
+        state: "cleaning"
+      # And it's during our morning cleaning window
+      - condition: or
+        conditions:
+          # Weekday between 8:00-10:00
+          - condition: and
+            conditions:
+              - condition: time
+                after: input_datetime.main_level_vacuum_daily_weekday_timeframe_start
+                before: input_datetime.main_level_vacuum_daily_weekday_timeframe_end
+              - condition: time
+                weekday:
+                  - mon
+                  - tue
+                  - wed
+                  - thu
+                  - fri
+          # Weekend between 8:30-11:00
+          - condition: and
+            conditions:
+              - condition: time
+                after: input_datetime.main_level_vacuum_daily_weekend_timeframe_start
+                before: input_datetime.main_level_vacuum_daily_weekend_timeframe_end
+              - condition: time
+                weekday:
+                  - sat
+                  - sun
+    actions:
+      # Return to dock
+      - action: vacuum.return_to_base
+        target:
+          entity_id: vacuum.roborock_s7 

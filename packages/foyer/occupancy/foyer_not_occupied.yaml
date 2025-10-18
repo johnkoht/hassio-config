@@ -1,0 +1,29 @@
+automation:
+  - id: "foyer_not_occupied"
+    initial_state: on
+    alias: "Foyer not occupied"
+    triggers:
+      # No motion for 5 minutes
+      - trigger: state
+        entity_id: binary_sensor.foyer_motion
+        to: "off"
+        for:
+          minutes: 5
+      # Foyer sensor no longer detects occupancy
+      - trigger: state
+        entity_id: binary_sensor.foyer_occupancy
+        to: "off"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.foyer_occupied
+        state: "on"
+      # Entry motion sensor does not detect motion
+      - condition: state
+        entity_id: binary_sensor.foyer_motion
+        state: "off"
+      # # Nobody via BLE
+      # - condition: template
+      #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'mudroom')|map(attribute='name')|list | length == 0 }}"
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.foyer_occupied

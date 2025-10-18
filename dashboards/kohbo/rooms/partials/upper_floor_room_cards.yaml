@@ -6,17 +6,20 @@ cards:
   - type: custom:decluttering-card
     template: room_card
     variables:
-      - room_entity: input_boolean.main_bedroom_occupied
+      - mode: input_select.main_bedroom
+      - occupancy: input_boolean.main_bedroom_occupied
+      - room: "main_bedroom"
       - room_name: Main Bedroom
       - navigation_path: '/dashboard-kohbo/main-bedroom'
       - temperature: "[[[ return states['sensor.main_bedroom_awair_temperature'].state ]]]"
       - humidity: "[[[ return states['sensor.main_bedroom_awair_humidity'].state ]]]"
       - aqi: "[[[ return states['sensor.main_bedroom_air_quality'].state ]]]"
+      - icon: kohbo:kohbo-bed-king
       - room_devices:
         # Lights
         - type: custom:button-card
-          entity: light.main_bedroom_main_lights
-          name: Ceiling Lights
+          entity: light.main_bedroom_lights
+          name: Lights
           template: kohbo_room_card_device                
           icon: kohbo:kohbo-device-lights
           color: auto
@@ -44,16 +47,19 @@ cards:
   - type: custom:decluttering-card
     template: room_card
     variables:
-      - room_entity: input_boolean.ninos_bedroom_occupied
+      - mode: input_select.ninos_bedroom
+      - occupancy: input_boolean.ninos_bedroom_occupied
+      - room: "ninos_bedroom"
       - room_name: Nino's Bedroom
       - navigation_path: '/dashboard-kohbo/ninos-bedroom'
       - temperature: "[[[ return states['sensor.nino_bedroom_awair_temperature'].state ]]]"
       - humidity: "[[[ return states['sensor.nino_bedroom_awair_humidity'].state ]]]"
       - aqi: "[[[ return states['sensor.nino_bedroom_air_quality'].state ]]]"
+      - icon: kohbo:kohbo-bed-single
       - room_devices:
         - type: custom:button-card
           entity: light.ninos_bedroom_main_lights
-          name: Ceiling Lights
+          name: Lights
           template: kohbo_room_card_device                
           icon: kohbo:kohbo-device-lights
 
@@ -80,15 +86,18 @@ cards:
   - type: custom:decluttering-card
     template: room_card
     variables:
-      - room_entity: input_boolean.gianlucas_room_occupied
+      - mode: input_select.gianlucas_bedroom
+      - occupancy: input_boolean.gianlucas_room_occupied
+      - room: "gianlucas_bedroom"
       - room_name: Gianluca's Bedroom
       - navigation_path: '/dashboard-kohbo/gianluca-bedroom'
       - temperature: "[[[ return states['sensor.gianluca_bedroom_awair_temperature'].state ]]]"
       - humidity: "[[[ return states['sensor.gianluca_bedroom_awair_humidity'].state ]]]"
       - aqi: "[[[ return states['sensor.gianluca_bedroom_air_quality'].state ]]]"
+      - icon: kohbo:kohbo-bed-single
       - room_devices:
         - type: custom:button-card
-          entity: light.playroom_lights
+          entity: light.gianluca_bedroom_lights
           name: Lights
           template: kohbo_room_card_device                
           icon: kohbo:kohbo-device-lights
@@ -117,12 +126,15 @@ cards:
   - type: custom:decluttering-card
     template: room_card
     variables:
-      - room_entity: input_boolean.upstairs_hallway_occupied
+      - mode: input_select.upstairs_hallway
+      - occupancy: input_boolean.upstairs_hallway_occupied
+      - room: "upstairs_hallway"
       - room_name: Upstairs Hallway
       - navigation_path: '/dashboard-kohbo/upstairs-hallway'
       - temperature: null
       - humidity: null
       - aqi: null
+      - icon: mdi:call-split
       - room_devices:
         # Ceiling Lights
         - type: custom:button-card

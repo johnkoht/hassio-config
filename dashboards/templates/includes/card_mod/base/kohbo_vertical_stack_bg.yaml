@@ -1,0 +1,17 @@
+style: |
+  :host {
+    --stack-card-gap: 14px;
+    --vertical-stack-card-gap: 14px !important;
+  }
+
+  ha-card {
+    background: var(--darker-primary-color);
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    border: none;
+    box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+    padding: 20px !important;
+  }

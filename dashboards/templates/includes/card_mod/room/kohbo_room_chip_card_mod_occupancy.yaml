@@ -1,0 +1,10 @@
+style: |
+  ha-card {
+    --chip-background: var(--divider-color);
+    --chip-height: 26px;
+    --chip-border-radius: 13px;
+    --chip-font-size: 11px;
+    --chip-font-weight: 600;
+    --chip-padding: 0 8px;
+    --chip-icon-size: 12px;
+  }

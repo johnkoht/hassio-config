@@ -78,10 +78,10 @@ script:
         data:
           value: "{{ rooms }}"
 
-      # # Start cleaning the selected rooms
-      # - service: vacuum.send_command
-      #   target:
-      #     entity_id: vacuum.roborock_s7
-      #   data:
-      #     command: app_segment_clean
-      #     params: "{{ selected_segments }}" 
+      # Start cleaning the selected rooms
+      - service: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_s7
+        data:
+          command: app_segment_clean
+          params: "{{ selected_segments }}" 

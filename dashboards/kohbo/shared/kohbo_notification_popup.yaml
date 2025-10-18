@@ -1,0 +1,35 @@
+# 
+# Notifications Popup
+# 
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#notifications'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Notifications
+
+  - !include /config/dashboards/kohbo/shared/notifications/nino_med_reminder.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/garbage_day.yaml
+
+  # Main Level Vacuum Notifications
+  - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_water_shortage.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_filter_life.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_sensors_dirty.yaml
+
+  # Air Purifier Notifications
+  - !include /config/dashboards/kohbo/shared/notifications/air_purifier_office_filter_change.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/air_purifier_kitchen_filter_change.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/air_purifier_main_bedroom_filter_change.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/air_purifier_nino_filter_change.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/air_purifier_gianluca_filter_change.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/air_purifier_jr_suite_filter_change.yaml
+
+  # Laundry Notifications
+  - !include /config/dashboards/kohbo/shared/notifications/laundry_main_level_washer_complete.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/laundry_main_level_dryer_complete.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/laundry_upstairs_washer_complete.yaml

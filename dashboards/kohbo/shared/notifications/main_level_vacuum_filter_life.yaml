@@ -1,0 +1,26 @@
+# 
+# Main Level Vacuum Maintenance - Filter Life
+# 
+type: conditional
+conditions:
+  - condition: numeric_state
+    entity: sensor.roborock_s7_filter_left
+    below: 7200
+card:
+  type: custom:bubble-card
+  card_type: button
+  button_type: switch
+  entity: sensor.roborock_s7_filter_left
+  show_state: true
+  tap_action:
+    action: none
+  button_action:
+    tap_action:
+      action: none
+  sub_button:
+    - entity: button.roborock_s7_reset_filter
+      tap_action:
+        action: perform-action
+        perform_action: button.press
+        target:
+          entity_id: button.roborock_s7_reset_filter

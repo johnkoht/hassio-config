@@ -1,0 +1,12 @@
+kohbo_card_section_description:
+  styles:
+    card:
+      - padding: 0
+    name:
+      - font-weight: normal
+      - font-size: 14px
+      - line-height: 18px
+      - text-overflow: inherit;
+      - text-wrap: auto;
+      - text-align: left;
+      - color: var(--semi-dark-grey-color)

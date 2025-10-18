@@ -1,0 +1,9 @@
+style: 
+  hui-generic-entity-row $: |
+    state-badge {
+      display: none !important;
+    }
+
+    .info {
+      padding-left: 0 !important;
+    }

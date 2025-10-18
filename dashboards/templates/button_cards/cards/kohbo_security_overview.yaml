@@ -87,13 +87,10 @@ cards:
         template: kohbo_security_item
         state_display: |
           [[[
-            if (states['lock.front_door'].state === 'unlocked' && states['lock.garage_entry_door'].state === 'unlocked')
-              return 'Unlocked';
-
-            else if (states['lock.front_door'].state === 'locked' && states['lock.garage_entry_door'].state === 'locked')
-              return 'Locked';
+            if (entity.state == "locked")
+              return "Locked";
             else
-              return '1 Unlocked';
+              return entity.attributes.entity_id.filter(id => states[id]?.state === 'unlocked').length + " Unlocked";
           ]]]
         state:
           - value: 'unlocked'
@@ -106,4 +103,11 @@ cards:
         name: Garage
         template: kohbo_security_item
         icon: kohbo:kohbo-garage-closed
+        state_display: |
+          [[[
+            if (entity.state == "closed")
+              return "Closed";
+            else
+              return entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
+          ]]]
         

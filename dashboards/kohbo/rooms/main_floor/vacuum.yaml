@@ -5,6 +5,23 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
 cards:
+  # 
+  # Page Header
+  # 
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_page_back_button
+        tap_action:
+          action: nothing
+          navigation_path: >
+            [[[ return window.history.back(); ]]]
+      - type: custom:button-card
+        template: kohbo_page_settings_button
+        tap_action:
+          action: navigate
+          navigation_path: '#main_floor_vacuum_settings_popup'
+
   - type: custom:button-card
     template: kohbo_page_title
     name: Vacuum
@@ -18,7 +35,6 @@ cards:
       type: custom:layout-card
       layout_type: custom:horizontal-layout
       layout:
-        # grid-template-columns: 60% 40%
         margin: 0px 0px 0px 0px
         padding: 0px
         card_margin: 0px
@@ -37,8 +53,6 @@ cards:
                   chip:
                     type: template
                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                    # icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                    # icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
                     icon: mdi:pause
                     tap_action:
                       action: perform-action
@@ -55,8 +69,6 @@ cards:
                   chip:
                     type: template
                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                    # icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                    # icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
                     icon: mdi:play
                     tap_action:
                       action: perform-action
@@ -75,14 +87,28 @@ cards:
                   chip:
                     type: template
                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                    # icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                    # icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
                     icon: mdi:robot-vacuum-off
                     tap_action:
                       action: perform-action
                       perform_action: vacuum.return_to_base
                       data:
                         entity_id: vacuum.roborock_s7
+                
+                # 
+                # Quick Clean
+                # 
+                - type: conditional
+                  conditions:
+                    - entity: vacuum.roborock_s7
+                      state: 'docked'
+                  chip:
+                    type: template
+                    card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+                    icon: mdi:lightning-bolt
+                    tap_action:
+                      action: navigate
+                      navigation_path: '#main_floor_quick_clean_popup'
+
                 # 
                 # Clean Kitchen & Family (if docked)
                 # 
@@ -96,11 +122,11 @@ cards:
                     content: "Kitchen/Family"
                     tap_action:
                       action: perform-action
-                      perform_action: vacuum.send_command
+                      perform_action: script.main_level_vacuum_clean_selected_rooms
                       data:
-                        entity_id: vacuum.roborock_s7
-                        command: app_segment_clean
-                        params: [24, 26]
+                        rooms: 
+                          - kitchen
+                          - family_room
 
                 # 
                 # Clean Main Living (if docked)
@@ -115,11 +141,11 @@ cards:
                     content: "Dining/Foyer"
                     tap_action:
                       action: perform-action
-                      perform_action: vacuum.send_command
+                      perform_action: script.main_level_vacuum_clean_selected_rooms
                       data:
-                        entity_id: vacuum.roborock_s7
-                        command: app_segment_clean
-                        params: [20, 23]
+                        rooms: 
+                          - dining_room
+                          - foyer
 
                 # 
                 # Clean Office (if docked)
@@ -134,23 +160,10 @@ cards:
                     content: "Office"
                     tap_action:
                       action: perform-action
-                      perform_action: vacuum.send_command
+                      perform_action: script.main_level_vacuum_clean_selected_rooms
                       data:
-                        entity_id: vacuum.roborock_s7
-                        command: app_segment_clean
-                        params: [29]
-
-                - type: conditional
-                  conditions:
-                    - entity: vacuum.roborock_s7
-                      state: 'docked'
-                  chip:
-                    type: template
-                    card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                    icon: mdi:lightning-bolt
-                    tap_action:
-                      action: navigate
-                      navigation_path: '#main_floor_quick_clean_popup'
+                        rooms: 
+                          - office
 
   # 
   # Vacuum Status
@@ -233,9 +246,6 @@ cards:
               - operator: template
                 value:  "[[[ return Math.round(parseFloat(entity.attributes.battery_level)) <= 20 ]]]"
                 color: var(--error-color)
-              # - operator: template
-              #   value:  "[[[ return Math.round(parseFloat(entity.attributes.battery_level)) >= 60 ]]]"
-              #   color: var(--success-color)
               - operator: template
                 value:  "[[[ return Math.round(parseFloat(entity.attributes.battery_level)) > 20 && Math.round(parseFloat(entity.attributes.battery_level)) < 60 ]]]"
                 color: var(--warning-color)
@@ -546,7 +556,186 @@ cards:
                   padding: 15px 10px !important;
                 }
 
-      
+
+  # 
+  # Vacuum Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#main_floor_vacuum_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_page_title
+        name: Vacuum Settings
+
+      # 
+      # Main Vacuum Daily Clean When House Empty
+      # 
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Daily Clean When House Empty
+              - entity: automation.main_level_vacuum_daily_clean_when_house_empty
+                name: Daily Clean When House Empty
+                icon: mdi:robot
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+          - type: conditional
+            conditions:
+              - entity: automation.main_level_vacuum_daily_clean_when_house_empty
+                state: 'on'
+            card:
+              type: custom:stack-in-card
+              mode: vertical
+              card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+              cards:
+                - type: custom:button-card
+                  name: Daily Weekday Timeframe
+                  template: kohbo_card_section_title
+
+                - type: custom:button-card
+                  name: The following sets a timeframe for when the vacuum will run an automated daily cleaning on the weekdays. This will be ignored if a schedule clean is set.
+                  template: kohbo_card_section_description
+
+                - type: entities
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+                  entities:
+                    - entity: input_datetime.main_level_vacuum_daily_weekday_timeframe_start
+                      name: Start Time
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+                    - entity: input_datetime.main_level_vacuum_daily_weekday_timeframe_end
+                      name: End Time
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+                - type: custom:bubble-card
+                  card_type: separator
+                  card_mod:
+                    style: |
+                      .bubble-line {
+                        background-color: var(--divider-color) !important;
+                      }
+
+                - type: custom:button-card
+                  name: Daily Weekend Timeframe
+                  template: kohbo_card_section_title
+
+                - type: custom:button-card
+                  name: The following sets a timeframe for when the vacuum will run an automated daily cleaning on the weekends. This will be ignored if a schedule clean is set.
+                  template: kohbo_card_section_description
+
+                - type: entities
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+                  entities:
+                    - entity: input_datetime.main_level_vacuum_daily_weekend_timeframe_start
+                      name: Start Time
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+                    - entity: input_datetime.main_level_vacuum_daily_weekend_timeframe_end
+                      name: End Time
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+          
+
+      #  
+      # Main Vacuum Daily Weekend Timeframe
+      # 
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Evening Cleaning
+              - entity: automation.main_level_vacuum_evening_cleaning
+                name: Evening Cleaning
+                icon: mdi:robot
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+          - type: conditional
+            conditions:
+              - entity: automation.main_level_vacuum_evening_cleaning
+                state: 'on'
+            card:
+              type: custom:stack-in-card
+              mode: vertical
+              card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+              cards:
+                - type: custom:button-card
+                  name: Evening Cleaning Timeframe
+                  template: kohbo_card_section_title
+
+                - type: custom:button-card
+                  name: The following sets the timeframe for when the vacuum will run an automated evening cleaning. The earliest is the start time and the latest is the end time. 
+                  template: kohbo_card_section_description
+
+                - type: entities
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+                  entities:
+                    - entity: input_datetime.main_level_vacuum_evening_start_time
+                      name: Start Time
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+                    - entity: input_datetime.main_level_vacuum_evening_end_time
+                      name: End Time
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+    
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Return Vacuum When Occupied
+          - entity: automation.main_level_vacuum_return_to_dock_when_house_occupied
+            name: Return to Dock When Occupied
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Clean Office When Rio is at Daycare
+          - entity: automation.vacuum_clean_office_when_dog_is_at_daycare
+            name: Clean Office When Rio is at Daycare
+            icon: mdi:dog
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Maintenance Reminders
+          - entity: automation.robot_vacuum_maintenance_reminder
+            name: Maintenance Reminders
+            icon: mdi:alert-circle-outline
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          
+
 
 
 

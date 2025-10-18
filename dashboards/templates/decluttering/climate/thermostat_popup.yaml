@@ -35,20 +35,6 @@ thermostat_popup:
       - type: entities
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
         entities:
-          # # Indoor Temperature
-          # - type: custom:decluttering-card
-          #   template: thermostat_popup_temperature_item
-          #   variables:
-          #     - name: '[[name]] Temperature'
-          #     - temperature_sensor: '[[temperature_sensor]]'
-
-          # # Outside Temperature
-          # - type: custom:decluttering-card
-          #   template: thermostat_popup_temperature_item
-          #   variables:
-          #     - name: "Outside Temperature"
-          #     - temperature_sensor: '[[outside_temperature_sensor]]'
-
           - type: custom:template-entity-row
             icon: mdi:home-thermometer
             name: '[[name]]'
@@ -172,48 +158,4 @@ thermostat_popup:
               data:
                 preset_mode: eco
 
-          # - type: conditional
-          #   conditions:
-          #     - condition: state
-          #       entity: '[[eco_mode]]'
-          #       state: 'off'
-          #   card:
-          #     type: custom:button-card
-          #     entity: '[[entity]]'
-          #     name: Eco 2
-          #     template: kohbo_thermostat_action_item
-          #     icon: mdi:leaf
-          #     state:
-          #       - color: var(--success-color)
-          #         operator: template
-          #         value: "[[[ return entity.attributes.preset_mode === 'eco' ]]]"
-          #       - color: var(--light-grey-color)
-          #         operator: default
-          #     tap_action:
-          #       action: call-service
-          #       service: climate.set_preset_mode
-          #       target:
-          #         entity_id: '[[entity]]'
-          #       data:
-          #         preset_mode: eco
-
-
-          # - type: conditional
-          #   conditions:
-          #     - condition: state
-          #       entity: '[[eco_mode]]'
-          #       state: 'on'
-          #   card:
-          #     type: custom:button-card
-          #     entity: '[[entity]]'
-          #     name: Eco ON
-          #     template: kohbo_thermostat_action_item
-          #     icon: mdi:leaf
-          #     color: var(--primary-color)
-          #     tap_action:
-          #       action: call-service
-          #       service: climate.set_preset_mode
-          #       target:
-          #         entity_id: '[[entity]]'
-          #       data:
-          #         preset_mode: "none"
+          

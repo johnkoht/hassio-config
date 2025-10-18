@@ -43,8 +43,8 @@ automation:
     mode: single
     triggers:
       # House is empty for 5 minutes
-      - platform: state
-        entity_id: input_boolean.house
+      - trigger: state
+        entity_id: input_boolean.house_occupied
         to: "off"
         for:
           minutes: 5

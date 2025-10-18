@@ -13,3 +13,27 @@ group:
       - input_boolean.vacuum_office
       - input_boolean.vacuum_playroom
       - input_boolean.vacuum_powder_room
+
+
+  main_level_vacuum_nightly_cleaning_group:
+    name: Main Level Vacuum Nightly Cleaning Group
+    entities:
+      - input_boolean.vacuum_family_room_at_night
+      - input_boolean.vacuum_kitchen_at_night
+      - input_boolean.vacuum_mudroom_at_night
+      - input_boolean.vacuum_dining_room_at_night
+      - input_boolean.vacuum_foyer_at_night
+      - input_boolean.vacuum_jr_suite_at_night
+      - input_boolean.vacuum_laundry_room_at_night
+      - input_boolean.vacuum_mudroom_bathroom_at_night
+      - input_boolean.vacuum_office_at_night
+      - input_boolean.vacuum_playroom_at_night
+      - input_boolean.vacuum_powder_room_at_night
+
+
+  main_level_vacuum_daily_empty_house_cleaning_group:
+    name: Main Level Vacuum Daily Empty House Cleaning Group
+    entities:
+      - input_boolean.vacuum_family_room_when_house_empty
+      - input_boolean.vacuum_kitchen_when_house_empty
+      - input_boolean.vacuum_mudroom_when_house_empty

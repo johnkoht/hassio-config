@@ -10,144 +10,20 @@ cards:
 
   - type: custom:simple-tabs
     pre-load: true
-    # default_tab: 2
     alignment: center
-    # background-color: "#2a2a2a"
     border-color: transparent
-    # text-color: "#bbbbbb"
-    # hover-color: "#ffffff"
-    # active-text-color: "#000000"
     active-background: transparent
     tabs:
         - title: Main
           card: !include /config/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml
         - title: Upper
           card: !include /config/dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml
-        - title: Lower
-          card: !include /config/dashboards/kohbo/rooms/partials/lower_floor_room_cards.yaml
+        - title: Laundry
+          card: !include /config/dashboards/kohbo/rooms/partials/laundry_room_cards.yaml
         - title: Exterior
           card: !include /config/dashboards/kohbo/rooms/partials/exterior_room_cards.yaml
         - title: More
           card: !include /config/dashboards/kohbo/rooms/partials/more_room_cards.yaml
-
-      # - title: Weather
-      #   icon: mdi:weather-sunny
-      #   conditions:
-      #     - entity: input_boolean.zone_home
-      #       state: "on"
-      #     - template: "{{ now().hour < 17 }}"    
-      #   card:
-      #     type: markdown
-      #     content: Weather card goes here
-      # - title: "Lights on: {{ states.light | selectattr('state','eq','on') | list | count }}"
-      #   icon: mdi:lightbulb
-      #   card:
-      #     type: markdown
-      #     content: Lights goes here
-
-  # - type: custom:tabbed-card
-  #   styles:
-  #     --mdc-typography-button-font-size: 12px
-  #     --mdc-tab-horizontal-padding: 0
-  #     --mdc-tab-height: 28px
-  #   card_mod:
-  #     style:
-  #       tabbed-card:
-  #         .: |
-  #           mwc-tab:hover {
-  #             --mdc-theme-primary: var(--power-color);
-  #             --mdc-tab-color-default: var(--power-color);
-  #           }
-  #           mwc-tab-bar {
-  #             background: {{'var(--lovelace-background)'
-  #                           if is_state('binary_sensor.donker_thema','on')
-  #                           else 'var(--primary-color)'}};
-  #           }
-
-  #         mwc-tab:
-  #           $:
-  #             mwc-tab-indicator $: |
-  #               .mdc-tab-indicator__content--underline {
-  #                   border-color: var(--active-color);
-  #                 }
-
-  #             .: |
-  #               .mdc-tab {
-  #                 min-width: 80px;
-  #               }
-  #               .material-icons {
-  #                 display: contents !important;
-  #               }
-
-  #               .mdc-tab--active {
-  #                 --mdc-icon-size: {{states('input_number.active_icon_size')}}px;
-  #                 /*background: var(--text-color-off) !important;*/
-  #               }
-  #       # tabbed-card $ mwc-tab-bar $: |
-  #       #   mwc-tab {
-  #       #     width: 45px !important;
-  #       #   }
-  #       #   mwc-tab-indicator {
-  #       #     display: none !important;
-  #       #   }
-  #     # style:
-
-  #     #   .: |
-  #     #     background: red !important;
-
-  #     #   tabbed-card$: |
-  #     #     background: blue !important;
-          
-  #     #     mwc-tab-indicator {
-  #     #       display: none !important;
-  #     #     }
-
-  #     #     mwc-tab {
-  #     #       width: 45px !important;
-  #     #     }
-
-  #     #     layout-card $ grid-layout $: |
-  #     #       #root {
-  #     #         --masonry-view-card-margin: 0;
-  #     #         --horizontal-stack-card-gap: 8px;
-  #     #       }
-  #   tabs:
-  #     # 
-  #     # Main Floor
-  #     # 
-  #     - card: 
-  #         !include /config/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml
-  #       attributes:
-  #         label: Main
-  #     # 
-  #     # Upper Floor
-  #     # 
-  #     - card: 
-  #         !include /config/dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml
-  #       attributes:
-  #         label: Upper
-  #     # 
-  #     # Lower Floor
-  #     # 
-  #     - card: 
-  #         !include /config/dashboards/kohbo/rooms/partials/lower_floor_room_cards.yaml
-  #       attributes:
-  #         label: Lower
-  #     # 
-  #     # Exterior
-  #     # 
-  #     - card: 
-  #         !include /config/dashboards/kohbo/rooms/partials/exterior_room_cards.yaml
-  #       attributes:
-  #         label: Exterior
-  #     # 
-  #     # More
-  #     # 
-  #     - card: 
-  #         !include /config/dashboards/kohbo/rooms/partials/more_room_cards.yaml
-  #       attributes:
-  #         label: More
-        
 
   
   # 
@@ -155,12 +31,47 @@ cards:
   # 
   - !include /config/dashboards/templates/includes/navbar.yaml
 
+  # 
+  # Office Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_office
+      - hash: '#office_media_player'
 
   # 
-  # Room Popups
+  # Kitchen Media Player Pop Up
   # 
-  # - !include /config/dashboards/kohbo/rooms/media_players/office_media_player.yaml
-  # - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
-  # - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
-  # - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_kitchen
+      - hash: '#kitchen_media_player'
 
+  # 
+  # Dining Room Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_living_room
+      - hash: '#dining_room_media_player'
+
+  # 
+  # Family Room Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_family_room
+      - hash: '#family_room_media_player'
+
+  # 
+  # Playroom Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_playroom
+      - hash: '#playroom_media_player'

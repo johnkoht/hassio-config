@@ -9,7 +9,7 @@ swipe_nav:
   enable_mouse_swipe: true
   animate: swipe
   skip_subviews: false
-  skip_tabs: 9
+  skip_tabs: 12
   prevent_default: true
   swipe_amount: 30
   logger_level: debug
@@ -28,7 +28,10 @@ views:
     - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/jr_suite.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/dining_room.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/foyer.yaml
+    - !include /config/dashboards/kohbo/rooms/main_floor/mudroom.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/vacuum.yaml
 
     # Upper Floor
