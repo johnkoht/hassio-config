@@ -8,60 +8,332 @@ cards:
     template: kohbo_page_title
     name: Climate
 
+  - type: weather-forecast
+    show_current: true
+    show_forecast: false
+    forecast_type: hourly
+    name: Current Weather
+    entity: weather.kpwk
 
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        :host {
-          --stack-card-gap: 0;
-        }
+  
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - room_name: Main Floor
+      - navigation_path: /dashboard-kohbo/climate
+      - temperature_sensor: sensor.main_floor_temperature
+      - humidity_sensor: sensor.main_floor_humidity
+      - pm25_sensor: sensor.main_floor_air_quality_pm2_5
+      - carbon_dioxide_sensor: sensor.main_floor_air_quality_co2
+      - vocs_sensor: sensor.main_floor_air_quality_tvoc
+
+
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - room_name: Upper Floor
+      - navigation_path: /dashboard-kohbo/climate
+      - temperature_sensor: sensor.second_floor_temperature
+      - humidity_sensor: sensor.second_floor_humidity
+      - pm25_sensor: sensor.upper_floor_air_quality_pm2_5
+      - carbon_dioxide_sensor: sensor.upper_floor_air_quality_co2
+      - vocs_sensor: sensor.upper_floor_air_quality_tvoc
+
+  - type: grid
+    columns: 2
+    square: false
     cards:
-      - type: thermostat
+      # Main floor HVAC
+      - type: custom:button-card
         entity: climate.nest_main_floor
         name: Main Floor
-        icon: mdi:thermometer
-        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
-      - type: custom:stack-in-card
-        mode: horizontal
-        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
-        cards:
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: navigate
+          navigation_path: '#main_floor_thermostat'
 
-          # - type: custom:button-card
-          #   entity: sensor.average_indoor_humidity
-          #   template: kohbo_aqi_humidity_item
+      # Upper floor HVAC
+      - type: custom:button-card
+        entity: climate.nest_2nd_floor
+        name: Upper Floor
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: navigate
+          navigation_path: '#upper_floor_thermostat'
 
-          - type: custom:button-card
-            name: Heat
-            action: call-service
-            service: climate.set_hvac_mode
+  
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: group.radiant_floor_heating_group
+        state: 'off'
+    card:
+      type: entities
+      card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+      entities:
+        - type: custom:template-entity-row
+          icon: mdi:radiator
+          name: Radiant Floor Heating
+          entity: group.radiant_floor_heating_group
+          state: "{{ states[config.entity].state | replace('_', ' ') | title }}"
+          secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+          card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+          tap_action:
+            action: navigate
+            navigation_path: '#radiant_floor_heating'
 
 
-          # - type: custom:button-cardtap_action:
-          #             action: perform-action
-          #             perform_action: vacuum.send_command
-          #             data:
-          #               entity_id: vacuum.roborock_s7
-          #               command: app_segment_clean
-          #               params: [24, 26]
-            
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: group.radiant_floor_heating_group
+        state: 'on'
+    card:
+      type: grid
+      columns: 2
+      square: false
+      cards:
+        # Jr Suite Thermostat
+        - type: custom:button-card
+          entity: climate.jr_suite
+          name: Jr Suite
+          template: kohbo_thermostat_entity
+          tap_action:
+            action: navigate
+            navigation_path: '#jr_suite_thermostat'
 
-          # - type: custom:button-card
-          #   entity: sensor.indoor_air_quality_pm2_5
-          #   template: kohbo_aqi_pm25_item
+        # Main Bedroom Thermostat
+        - type: custom:button-card
+          entity: climate.main_bedroom
+          name: Main Bedroom
+          template: kohbo_thermostat_entity
+          tap_action:
+            action: navigate
+            navigation_path: '#main_bedroom_thermostat'
 
-          # - type: custom:button-card
-          #   entity: sensor.indoor_air_quality_co2
-          #   template: kohbo_aqi_co2_item
-          
-          # - type: custom:button-card
-          #   entity: sensor.indoor_air_quality_tvoc
-          #   template: kohbo_aqi_tvocs_item
+        # Main Bedroom Thermostat
+        - type: custom:button-card
+          entity: climate.ninos_bedroom
+          name: "Nino's Bedroom"
+          template: kohbo_thermostat_entity
+          tap_action:
+            action: navigate
+            navigation_path: '#ninos_bedroom_thermostat'
 
-    
+        # Basement Thermostat
+        - type: custom:button-card
+          entity: climate.basement
+          name: Basement
+          template: kohbo_thermostat_entity
+          tap_action:
+            action: navigate
+            navigation_path: '#basement_thermostat'
 
+
+  - type: custom:button-card
+    name: Main Floor Temperatures
+    template: kohbo_card_section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mini-graph-card
+        name: Kitchen
+        icon: mdi:fridge
+        entities:
+          - entity: sensor.kitchen_awair_temperature
+            color: var(--state-climate-cool-color)
+        card_mod:
+          style: |
+            ha-card {
+              border: none;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+            }
+            ha-card .header {
+              padding-bottom: 2px;
+            }
 
 
   # 
   # Navbar
   # 
   - !include /config/dashboards/templates/includes/navbar.yaml
+
+  # 
+  # Main Floor Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_popup
+    variables:
+      - hash: "#main_floor_thermostat"
+      - entity: climate.nest_main_floor
+      - eco_mode: binary_sensor.main_floor_nest_in_eco
+      - name: Main Floor
+      - temperature_sensor: sensor.main_floor_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+  
+  # 
+  # Upper Floor Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_popup
+    variables:
+      - hash: "#upper_floor_thermostat"
+      - entity: climate.nest_2nd_floor
+      - eco_mode: binary_sensor.second_floor_nest_in_eco
+      - name: Upper Floor
+      - temperature_sensor: sensor.second_floor_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+  # 
+  # Jr Suite Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_radiant_floor_popup
+    variables:
+      - hash: "#jr_suite_thermostat"
+      - entity: climate.jr_suite
+      - name: Jr Suite
+      - temperature_sensor: sensor.jr_suite_awair_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+  # 
+  # Main Bedroom Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_radiant_floor_popup
+    variables:
+      - hash: "#main_bedroom_thermostat"
+      - entity: climate.main_bedroom
+      - name: Main Bedroom
+      - temperature_sensor: sensor.main_bedroom_mean_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+  # 
+  # Ninos Bedroom Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_radiant_floor_popup
+    variables:
+      - hash: "#ninos_bedroom_thermostat"
+      - entity: climate.ninos_bedroom
+      - name: "Nino's Bedroom"
+      - temperature_sensor: sensor.nino_room_mean_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+  # 
+  # Basement Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_radiant_floor_popup
+    variables:
+      - hash: "#basement_thermostat"
+      - entity: climate.basement
+      - name: Basement
+      - temperature_sensor: sensor.sensor.basement_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+
+  # 
+  # Radiant Floor Heating Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#radiant_floor_heating'
+        close_by_clicking_outside: false
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 500px)
+        margin_top_desktop: calc(100vh - 500px)
+
+      - type: custom:button-card
+        template: kohbo_page_title
+        name: Floor Heating
+
+      - type: custom:bubble-card
+        card_type: climate
+        entity: climate.main_bedroom
+        sub_button:
+          - name: HVAC modes menu
+            select_attribute: hvac_modes
+            state_background: false
+            show_arrow: false
+            entity: climate.main_bedroom
+            icon: ""
+        name: Main Bedroom
+        icon: mdi:heat-wave
+        show_state: true
+        show_last_changed: true
+        show_last_updated: false
+        show_attribute: false
+        force_icon: false
+        hide_temperature: false
+        state_color: false
+
+      - type: custom:bubble-card
+        card_type: climate
+        entity: climate.ninos_bedroom
+        sub_button:
+          - name: HVAC modes menu
+            select_attribute: hvac_modes
+            state_background: false
+            show_arrow: false
+            entity: climate.ninos_bedroom
+            icon: ""
+        name: "Nino's Bedroom"
+        icon: mdi:heat-wave
+        show_state: true
+        show_last_changed: true
+        show_last_updated: false
+        show_attribute: false
+        force_icon: false
+        hide_temperature: false
+        state_color: false
+      
+      - type: custom:bubble-card
+        card_type: climate
+        entity: climate.jr_suite
+        sub_button:
+          - name: HVAC modes menu
+            select_attribute: hvac_modes
+            state_background: false
+            show_arrow: false
+            entity: climate.jr_suite
+            icon: ""
+        name: Jr Suite
+        icon: mdi:heat-wave
+        show_state: true
+        show_last_changed: true
+        show_last_updated: false
+        show_attribute: false
+        force_icon: false
+        hide_temperature: false
+        state_color: false
+
+      - type: custom:bubble-card
+        card_type: climate
+        entity: climate.basement
+        sub_button:
+          - name: HVAC modes menu
+            select_attribute: hvac_modes
+            state_background: false
+            show_arrow: false
+            entity: climate.basement
+            icon: ""
+        name: Basement
+        icon: mdi:heat-wave
+        show_state: true
+        show_last_changed: true
+        show_last_updated: false
+        show_attribute: false
+        force_icon: false
+        hide_temperature: false
+        state_color: false
+
+
+  

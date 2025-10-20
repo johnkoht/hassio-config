@@ -25,6 +25,9 @@ routes:
       - icon: mdi:account-circle
         url: /dashboard-kohbo/people
         label: People
+      - icon: mdi:school
+        url: /dashboard-kohbo/school
+        label: School
       - icon: kohbo:kohbo-devices
         url: /dashboard-kohbo/devices
         label: Devices

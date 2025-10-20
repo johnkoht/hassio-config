@@ -1,5 +1,7 @@
 - !include /config/dashboards/templates/button_cards/people/john.yaml
 - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+- !include /config/dashboards/templates/button_cards/people/nino.yaml
+- !include /config/dashboards/templates/button_cards/people/gianluca.yaml
 - !include /config/dashboards/templates/button_cards/people/nonna.yaml
 - !include /config/dashboards/templates/button_cards/people/joe.yaml
 - !include /config/dashboards/templates/button_cards/people/tayta.yaml

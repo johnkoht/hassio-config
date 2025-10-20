@@ -22,7 +22,7 @@ kohbo_thermostat_entity:
       else if (entity.state == "cool")
         return `Cool – ${entity.attributes.temperature}`
       else
-        return "Unknown"
+        return "Off"
     ]]]
   styles:
     icon:
@@ -36,28 +36,6 @@ kohbo_thermostat_entity:
               return "var(--state-climate-heat-color)";
             else if (entity.state == "cool")
               return "var(--state-climate-cool-color)";
+            else if (entity.state == "off")
+              return "var(--light-grey-color)";
           ]]]
-
-
-
-
-  # <template TemplateState(<state climate.nest_main_floor=heat_cool; hvac_modes=[<HVACMode.HEAT: 'heat'>,
-  # <HVACMode.COOL: 'cool'>,
-  # <HVACMode.HEAT_COOL: 'heat_cool'>,
-  # <HVACMode.OFF: 'off'>],
-  # min_temp=50,
-  # max_temp=90,
-  # fan_modes=['on',
-  # 'off'],
-  # preset_modes=['none',
-  # 'eco'],
-  # current_temperature=74,
-  # temperature=None,
-  # target_temp_high=77,
-  # target_temp_low=72,
-  # current_humidity=47.0,
-  # fan_mode=off,
-  # hvac_action=idle,
-  # preset_mode=none,
-  # friendly_name=Nest Main Floor,
-  # supported_features=411 @ 2025-10-16T13:11:07.555720-05:00>)>

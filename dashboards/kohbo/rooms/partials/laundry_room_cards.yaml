@@ -1,3 +1,27 @@
 type: vertical-stack
 cards:
-  
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: input_select.main_level_washer_status
+        name: Downstairs Washer
+        # template: kohbo_person_card
+        template: kohbo_laundry_machine_card
+        show_entity_picture: true
+        show_icon: true
+        icon: mdi:washing-machine
+        variables:
+          smart_plug: switch.main_level_washing_machine
+          # door_sensor: binary_sensor.main_level_washer_door_sensor_status
+        #  status: >
+        #     [[[
+        #       if (states['input_select.main_level_washer_status'].state == "Running") {
+        #         return "running";
+        #       } else if (states['input_select.main_level_washer_status'].state == "Finishing") {
+        #         return "finishing";
+        #       } else {
+        #         return "idle";
+        #       }
+        #     ]]]

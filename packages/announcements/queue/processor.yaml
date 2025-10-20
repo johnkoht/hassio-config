@@ -49,10 +49,12 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # Make sure quiet mode is off
-      - condition: state
-        entity_id: input_boolean.quiet_mode
-        state: "off"
+      # Make sure quiet mode is off, unless it's before 9am
+      - condition: template
+        value_template: >
+          {% set quiet = is_state('input_boolean.quiet_mode', 'on') %}
+          {% set hour = now().hour %}
+          {{ not (quiet and hour < 9) }}
       # Make sure the queue is not empty
       - condition: template
         value_template: >

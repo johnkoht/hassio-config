@@ -220,3 +220,44 @@ cards:
         entity: sensor.jk_iphone_14_ssid
         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+
+  # 
+  # Automations
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # John Announce Arrival
+      - entity: automation.john_announce_arrival
+        name: Announce Arrival
+        icon: mdi:home-plus
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # John Announce Departure
+      - entity: automation.john_announce_departure
+        name: Announce Departure
+        icon: mdi:home-remove
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # John Set Focus Mode
+      - entity: automation.john_set_focus_mode
+        name: Set Focus Mode
+        icon: mdi:garage-open
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # John Daily Report
+      - entity: automation.john_daily_report
+        name: Daily Report
+        icon: mdi:garage-open
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true

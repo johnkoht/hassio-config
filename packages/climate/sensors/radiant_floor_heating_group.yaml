@@ -1,0 +1,8 @@
+group:
+  radiant_floor_heating_group:
+    name: "Radiant Floor Heating Group"
+    entities:
+      - climate.jr_suite
+      - climate.main_bedroom
+      - climate.ninos_bedroom
+      - climate.basement

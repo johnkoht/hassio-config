@@ -4,6 +4,11 @@
 room_card:
   card:
     type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          opacity: {{"1" if states['[[occupancy]]'].state == "on" else "0.5"}};
+        }
     cards:
       # 
       # Room State & Occupancy

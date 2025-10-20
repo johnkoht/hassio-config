@@ -67,6 +67,121 @@ sensor:
       - sensor.main_bedroom_awair_vocs
       - sensor.office_awair_vocs
 
+  
+
+  # #########################################################
+
+  # 
+  # Main Floor Air Quality Score
+  # 
+  - platform: min_max
+    name: Main Floor Air Quality Score
+    unique_id: main_floor_air_quality_score
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_score
+      - sensor.jr_suite_awair_score
+      - sensor.office_awair_score
+
+  # 
+  # Main Floor Air Quality PM2.5
+  # 
+  - platform: min_max
+    name: Main Floor Air Quality PM2.5
+    unique_id: main_floor_air_quality_pm2_5
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_pm2_5
+      - sensor.jr_suite_awair_pm2_5
+      - sensor.office_awair_pm2_5
+
+  # 
+  # Main Floor Air Quality CO2
+  # 
+  - platform: min_max
+    name: Main Floor Air Quality CO2
+    unique_id: main_floor_air_quality_co2
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_carbon_dioxide
+      - sensor.jr_suite_awair_carbon_dioxide
+      - sensor.office_awair_carbon_dioxide
+
+  # 
+  # Main Floor Air Quality TVOC
+  # 
+  - platform: min_max
+    name: Main Floor Air Quality TVOC
+    unique_id: main_floor_air_quality_tvoc
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.kitchen_awair_vocs
+      - sensor.jr_suite_awair_vocs
+      - sensor.office_awair_vocs
+
+
+
+  # 
+  # Upper Floor Air Quality Score
+  # 
+  - platform: min_max
+    name: Upper Floor Air Quality Score
+    unique_id: upper_floor_air_quality_score
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.gianluca_bedroom_awair_score
+      - sensor.nino_bedroom_awair_score
+      - sensor.main_bedroom_awair_score
+
+  # 
+  # Upper Floor Air Quality PM2.5
+  # 
+  - platform: min_max
+    name: Upper Floor Air Quality PM2.5
+    unique_id: upper_floor_air_quality_pm2_5
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.gianluca_bedroom_awair_pm2_5
+      - sensor.nino_bedroom_awair_pm2_5
+      - sensor.main_bedroom_awair_pm2_5
+
+  # 
+  # Upper Floor Air Quality CO2
+  # 
+  - platform: min_max
+    name: Upper Floor Air Quality CO2
+    unique_id: upper_floor_air_quality_co2
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.gianluca_bedroom_awair_carbon_dioxide
+      - sensor.nino_bedroom_awair_carbon_dioxide
+      - sensor.main_bedroom_awair_carbon_dioxide
+
+  # 
+  # Upper Floor Air Quality TVOC
+  # 
+  - platform: min_max
+    name: Upper Floor Air Quality TVOC
+    unique_id: upper_floor_air_quality_tvoc
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.gianluca_bedroom_awair_vocs
+      - sensor.nino_bedroom_awair_vocs
+      - sensor.main_bedroom_awair_vocs
+
+
+  # #########################################################
+
+
+
 
 template:
   - sensor:

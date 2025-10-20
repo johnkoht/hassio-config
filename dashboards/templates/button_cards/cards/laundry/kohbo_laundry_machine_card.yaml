@@ -1,0 +1,97 @@
+kohbo_laundry_machine_card:
+  template: kohbo_device_entity
+  show_entity_picture: true
+  size: 130px
+  styles:
+    grid:
+      - grid-template-areas: '"i i" "occupancy_state occupancy_state" "n n" "s s" "battery_level proximity"'
+      - grid-template-columns: 1fr 1fr
+      - grid-template-rows: auto auto
+    card:
+      - position: relative
+      - height: 175px
+    name:
+      - justify-self: center
+      - margin-bottom: 3px
+    state:
+      - justify-self: center
+      - width: 100%
+      - margin-bottom: 10px
+    img_cell:
+      - border-radius: 50%
+      - justify-self: center
+      - height: 60px
+      - width: 60px
+    custom_fields:
+      location:
+        - font-size: 16px
+        - color: white
+        - font-weight: 400
+        - width: 100%
+      # occupancy_state:
+      #   - background-color: >
+      #       [[[
+      #         if (variables.status) {
+      #           if (variables.status == "sleeping") {
+      #             return "var(--warning-color)";
+      #           } else if (variables.status == "dnd") {
+      #             return "var(--error-color)";
+      #           }
+      #         } else {
+      #           if (entity.state == "home") {
+      #             return "var(--success-color)";
+      #           } else {
+      #             return "var(--text-light-primary-color)";
+      #           }
+      #         }              
+      #       ]]]
+      #   - border-radius: 50%
+      #   - margin: auto;
+      #   - margin-top: -19px;
+      #   - z-index: 1;
+      #   - height: 10px
+      #   - width: 10px
+      #   - box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5)
+      battery_level:
+        - font-size: 12px
+        - color: var(--text-light-primary-color)
+        - font-weight: 400
+        - line-height: 17px
+      proximity:
+        - font-size: 12px
+        - color: var(--text-light-primary-color)
+        - font-weight: 400
+        - line-height: 17px
+  custom_fields:
+    # occupancy_state: >
+    #   [[[
+    #     return "";
+    #   ]]]
+    battery_level: >
+      [[[
+        var battery_level = Math.ceil(parseFloat(variables.battery_level) / 10) * 10;
+        var icon = "mdi:battery";
+        var color = "var(--success-color)";
+
+        if (battery_level < 100) {
+          icon = "mdi:battery-" + battery_level;
+        }
+
+        if (battery_level <= 20) {
+          color = "var(--error-color)";
+        } else if (battery_level <= 60) {
+          color = "var(--warning-color)";
+        }
+        
+        return `
+          <ha-icon icon="${icon}" style="width: 16px; height: 16px; color: ${color};"></ha-icon>
+          ${variables.battery_level}
+        `;
+      ]]]
+    proximity: >
+      [[[
+        return `
+          <ha-icon icon="mdi:near-me" style="width: 16px; height: 16px;"></ha-icon>
+          ${variables.proximity}
+        `;
+      ]]]
