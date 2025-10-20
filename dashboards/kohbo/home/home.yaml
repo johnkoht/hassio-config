@@ -123,7 +123,15 @@ cards:
   # 
   # Climate Overview
   # 
-  - !include /config/dashboards/templates/button_cards/cards/aqi/kohbo_climate_overview.yaml          
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - room_name: Indoor Climate
+      - temperature_sensor: sensor.average_indoor_temperature
+      - humidity_sensor: sensor.average_indoor_humidity
+      - pm25_sensor: sensor.indoor_air_quality_pm2_5
+      - carbon_dioxide_sensor: sensor.indoor_air_quality_co2
+      - vocs_sensor: sensor.indoor_air_quality_tvoc
 
 
   # 

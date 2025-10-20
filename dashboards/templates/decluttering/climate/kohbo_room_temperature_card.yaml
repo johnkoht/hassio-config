@@ -1,0 +1,26 @@
+kohbo_room_temperature_card:
+  card:
+    type: custom:mini-graph-card
+    name: '[[name]]'
+    decimals: 0
+    icon: '[[icon]]'
+    points_per_hour: 2
+    line_width: 4
+    decimals: 0
+    smoothing: true
+    color_thresholds_transition: smooth
+    color_thresholds:
+      - color: "#59A5D8"
+        value: 14
+      - color: "#ADD2EB"
+        value: 45
+      - color: "#06D6A0"
+        value: 65
+      - color: "#FFD166"
+        value: 77
+      - color: "#ED4747"
+        value: 90
+    entities:
+      - entity: '[[entity]]'
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+    animate: true

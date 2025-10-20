@@ -4,18 +4,29 @@ path: climate
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
 cards:
+  # 
+  # Page title
+  # 
   - type: custom:button-card
     template: kohbo_page_title
     name: Climate
 
+  # 
+  # Current Weather
+  # 
   - type: weather-forecast
     show_current: true
     show_forecast: false
     forecast_type: hourly
     name: Current Weather
     entity: weather.kpwk
+    tap_action:
+      action: navigate
+      navigation_path: "#weather"
 
-  
+  # 
+  # Main Floor Climate
+  # 
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -28,6 +39,9 @@ cards:
       - vocs_sensor: sensor.main_floor_air_quality_tvoc
 
 
+  # 
+  # Upper Floor Climate
+  # 
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -39,6 +53,9 @@ cards:
       - carbon_dioxide_sensor: sensor.upper_floor_air_quality_co2
       - vocs_sensor: sensor.upper_floor_air_quality_tvoc
 
+  # 
+  # HVAC Controls
+  # 
   - type: grid
     columns: 2
     square: false
@@ -62,6 +79,9 @@ cards:
           navigation_path: '#upper_floor_thermostat'
 
   
+  # 
+  # Radiant Floor Heating
+  # 
   - type: conditional
     conditions:
       - condition: state
@@ -83,6 +103,9 @@ cards:
             navigation_path: '#radiant_floor_heating'
 
 
+  # 
+  # Radiant Floor Heating Thermostats
+  # 
   - type: conditional
     conditions:
       - condition: state
@@ -130,33 +153,152 @@ cards:
             navigation_path: '#basement_thermostat'
 
 
+  # 
+  # Main Floor Room Climate
+  # 
   - type: custom:button-card
-    name: Main Floor Temperatures
-    template: kohbo_card_section_title
+    name: Main Floor
+    template: section_title
 
   - type: grid
     columns: 2
     square: false
     cards:
-      - type: custom:mini-graph-card
-        name: Kitchen
-        icon: mdi:fridge
-        entities:
+      # Kitchen
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Kitchen
           - entity: sensor.kitchen_awair_temperature
-            color: var(--state-climate-cool-color)
-        card_mod:
-          style: |
-            ha-card {
-              border: none;
-              backdrop-filter: none;
-              -webkit-backdrop-filter: none;
-              box-shadow: none;
-            }
-            ha-card .header {
-              padding-bottom: 2px;
-            }
+          - icon: mdi:fridge
+      
+      # Family Room
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Family Room
+          - entity: sensor.kitchen_awair_temperature
+          - icon: mdi:sofa
+
+      # Playroom
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Playroom
+          - entity: sensor.playroom_temperature
+          - icon: kohbo:kohbo-lego
+
+      # Jr. Suite
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Jr. Suite
+          - entity: sensor.jr_suite_awair_temperature
+          - icon: kohbo:kohbo-bed
+
+      # Office
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Office
+          - entity: sensor.office_awair_temperature
+          - icon: kohbo:kohbo-laptop
+
+      # Mudroom
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Mudroom
+          - entity: sensor.mudroom_motion_sensor_air_temperature
+          - icon: kohbo:kohbo-foot-print
 
 
+  # 
+  # Upper Floor Room Climate
+  # 
+  - type: custom:button-card
+    name: Upper Floor
+    template: section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Main Bedroom
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Main Bedroom
+          - entity: sensor.main_bedroom_mean_temperature
+          - icon: kohbo:kohbo-bed-king
+
+      # Main Bathroom
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Main Bathroom
+          - entity: sensor.main_bathroom_temperature
+          - icon: mdi:shower
+
+      # Gianluca's Bedroom
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Gianluca's Bedroom
+          - entity: sensor.gianluca_room_mean_temperature
+          - icon: kohbo:kohbo-bed-single
+
+      # Nino's Bedroom
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Nino's Bedroom
+          - entity: sensor.nino_room_mean_temperature
+          - icon: kohbo:kohbo-bed-single
+
+      # # Guest Bedroom
+      # - type: custom:decluttering-card
+      #   template: kohbo_room_temperature_card
+      #   variables:
+      #     - name: Guest Bedroom
+      #     - entity: sensor.guest_bedroom_temperature
+      #     - icon: kohbo:kohbo-bed
+
+  # 
+  # Misc. Climate
+  # 
+  - type: custom:button-card
+    name: Misc.
+    template: section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Attic
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Attic
+          - entity: sensor.attic_climate_temperature
+          - icon: mdi:home-floor-a
+
+      # # Basement
+      # - type: custom:decluttering-card
+      #   template: kohbo_room_temperature_card
+      #   variables:
+      #     - name: Basement
+      #     - entity: sensor.basement_temperature
+      #     - icon: mdi:home-floor-b
+
+      # Basement
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Datacenter
+          - entity: sensor.basement_datacenter_climate_temperature
+          - icon: mdi:server
+      
   # 
   # Navbar
   # 
@@ -336,4 +478,175 @@ cards:
         state_color: false
 
 
-  
+  # 
+  # Weather Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#weather'
+        close_by_clicking_outside: false
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        
+      # Popup Title
+      - type: custom:button-card
+        template: kohbo_page_title
+        name: Weather
+      
+      # 
+      # Weather Card
+      # 
+      - type: custom:stack-in-card
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+
+            ha-card {
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              padding: 0 !important;
+              margin: 0 !important;
+            }
+        cards:
+          - type: custom:simple-weather-card
+            entity: weather.pirateweather
+            name: " "
+            card_mod:
+              style: |
+                .weather__info__state,
+                .weather__info--add {
+                  display: none !important;
+                }
+
+                .weather__info:first-child {
+                  justify-content: center !important;
+                }
+
+                ha-card {
+                  grid-template-columns: 1fr;
+                  justify-content: center !important;
+                  background: transparent !important;
+                  border: none !important;
+                  box-shadow: none !important;
+                  padding: 0 !important;
+                  margin: 0 0 10px 0 !important;
+                }
+
+                .weather__info__title {
+                  font-size: 42px !important;
+                }
+
+                .weather__icon {
+                  width: 60px !important;
+                  height: 60px !important;
+                  flex: 0 0 60px !important;
+                  margin-right: 6px !important;
+                }
+
+          # 
+          # Heading
+          # 
+          - type: custom:button-card
+            name: "[[[ return states['weather.pirateweather'].state.replace('_', ' ') ]]]"
+            custom_fields:
+              weather_details: >
+                [[[
+                  const feels_like = Math.ceil(states['sensor.pirateweather_apparent_temperature'].state);
+                  const day_high = Math.ceil(states['sensor.pirateweather_daytime_high_temperature_0d'].state);
+                  const night_low = Math.ceil(states['sensor.pirateweather_overnight_low_temperature_0d'].state);
+                  
+                  return `Feels Like ${feels_like}° – High ${day_high}° Low ${night_low}°`;
+                ]]]
+            styles:
+              grid:
+                - grid-template-areas: '"n n" "weather_details weather_details"'
+                - grid-template-rows: 1fr
+              card:
+                - padding: 0
+                - background: transparent
+                - border: none
+                - box-shadow: none
+                - margin: 0
+                - padding-bottom: 0
+                - align-items: center
+                - justify-content: center
+              name:
+                - font-size: 16px
+                - font-weight: 700
+                - color: var(--primary-text-color)
+                - text-transform: capitalize
+                - margin-bottom: 5px
+              custom_fields:
+                weather_details:
+                  - font-size: 12px
+                  - font-weight: 400
+                  - color: var(--secondary-text-color)
+            
+
+      - type: custom:stack-in-card
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+        cards:
+          # # 
+          # # Current Weather
+          # # 
+          # - type: weather-forecast
+          #   show_current: true
+          #   show_forecast: false
+          #   forecast_type: hourly
+          #   name: Current Weather
+          #   entity: weather.kpwk
+
+          # - type: custom:hourly-weather
+          #   entity: weather.kpwk
+          #   num_segments: "12"
+          #   name: " "
+          #   icons: true
+          #   show_wind: "false"
+          #   show_date: "false"
+          #   show_precipitation_amounts: false
+          #   show_precipitation_probability: false
+          #   round_temperatures: true
+          #   colors:
+          #     clear-night: "#2e3440"
+          #     cloudy: "#4c566a"
+          #     partlycloudy: "#b2b7bf"
+          #     rainy: "#5e81ac"
+          #     sunny: "#ebcb8b"
+
+          - type: weather-forecast
+            show_current: false
+            show_forecast: true
+            entity: weather.pirateweather
+            forecast_type: hourly
+            forecast_slots: 5
+
+          # 
+          # Daily Weather
+          # 
+          - type: custom:clock-weather-card
+            entity: weather.kpwk
+            # title: Home
+            animated_icon: true
+            date_pattern: ccc, d.MM.yy
+            hide_today_section: true
+            hide_clock: true
+
+      
+
+      # weather alerts
+      # Tempest weather
+      # current temp / humdity / pressure
+      # wind speed
+      # humidity
+      # AQI (PM2.5, CO2, TVOC)
+      # weather forecast
+      # rain graph
+      # radar
+      # moon phase
+
+      

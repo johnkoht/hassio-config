@@ -4,7 +4,7 @@ sensor:
     type: mean
     round_digits: 1
     entity_ids:
-      - sensor.kitchen_temperature
-      - sensor.office_weather_temperature
-      - sensor.playroom_temperature
-      - sensor.jr_suite_temperature
+      - sensor.kitchen_awair_temperature
+      - sensor.office_awair_temperature
+      - sensor.playroom_awair_temperature
+      - sensor.jr_suite_awair_temperature
