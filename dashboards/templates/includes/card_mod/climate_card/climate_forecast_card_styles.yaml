@@ -1,0 +1,37 @@
+style: |
+  .forecast {
+    overflow-x: auto;
+    gap: 5px;
+  }
+
+  .forecast::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .forecast > div .templow {
+    display: none !important;
+  }
+
+  .forecast > div {
+    flex: 0 0 75px !important; 
+    background-color: var(--darker-primary-color);
+    border-radius: 8px !important;
+    padding: 10px 3px !important;
+    height: 110px;
+    align-items: center;
+    align-content: space-between;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .forecast > div > div:first-child {
+    font-size: 13px !important;
+    color: var(--light-grey-color) !important;
+  }
+
+  .forecast > div.temp {
+    font-size: 15px !important;
+    color: var(--primary-text-color) !important;
+    font-weight: 500 !important;
+  }

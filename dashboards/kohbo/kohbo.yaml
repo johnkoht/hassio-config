@@ -4,15 +4,15 @@ decluttering_templates: !include_dir_merge_named /config/dashboards/templates/de
 kiosk_mode:
   hide_header: false
 
-swipe_nav:
-  # wrap: false
-  enable_mouse_swipe: true
-  animate: swipe
-  skip_subviews: false
-  skip_tabs: 12
-  prevent_default: true
-  swipe_amount: 30
-  logger_level: debug
+# swipe_nav:
+#   # wrap: false
+#   enable_mouse_swipe: true
+#   animate: swipe
+#   skip_subviews: false
+#   skip_tabs: 12
+#   prevent_default: true
+#   swipe_amount: 60
+#   logger_level: debug
   
 views:
 
