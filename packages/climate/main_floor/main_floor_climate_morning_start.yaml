@@ -1,0 +1,29 @@
+# Main Floor Morning Start
+#
+# If the house is occupied in the morning
+# then turn off eco to pre-heat/cool the house
+# before we wake up
+#
+automation:
+  - id: "main_floor_climate_morning_start"
+    alias: "Main Floor Climate - Morning Start"
+    initial_state: on
+    triggers:
+      # At 6am
+      - trigger: time
+        at: "06:00:00"
+    conditions: 
+      # The house is occupied or we're nearly home
+      - condition: or
+        conditions:
+          # House is occupied
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "on"
+          # OR we're nearly home
+          - condition: state
+            entity_id: input_boolean.nearly_home
+            state: "on"
+    actions:
+      - action: script.main_floor_climate_to_resume
+        data: {}

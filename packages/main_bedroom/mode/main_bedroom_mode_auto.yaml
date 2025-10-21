@@ -39,7 +39,13 @@ automation:
           - binary_sensor.john_bed_occupied
           - binary_sensor.cristina_bed_occupied
         state: "off"
-      
+      # Both of us are Awake (e.g. out of bed for at least 5 minutes)
+      - condition: state
+        entity_id:
+          - input_select.john_sleep_state
+          - input_select.cristina_sleep_state
+        state: "Awake"
+
     actions:
       - choose: 
           # 
@@ -57,6 +63,21 @@ automation:
                   - condition: state
                     entity_id: input_boolean.house_occupied
                     state: "on"
+                then:
+                  - action: script.main_bedroom_mode_turn_on_auto
+
+          # If the trigger is the house is turned to Auto mode
+          # then let's make sure is NOT
+          - conditions:
+              - condition: trigger
+                id: "house_auto"
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: input_select.main_bedroom
+                    state: "Wake"
+                    for:
+                      minutes: 10
                 then:
                   - action: script.main_bedroom_mode_turn_on_auto
 
