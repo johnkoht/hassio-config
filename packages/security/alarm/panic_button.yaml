@@ -1,0 +1,13 @@
+automation:
+  - id: "panic_button"
+    alias: "Security - Panic Button"
+    mode: "single"
+    trigger:
+      - type: remote_button_short_press
+        device_id: "7bc8344290f9b88df35fe372e93be11e"
+        domain: zha
+        subtype: remote_button_short_press
+        trigger: device
+    actions:
+      - action: script.security_alarm_alert
+        data: {}
