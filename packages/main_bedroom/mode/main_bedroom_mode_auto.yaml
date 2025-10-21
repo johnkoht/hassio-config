@@ -45,6 +45,9 @@ automation:
           - input_select.john_sleep_state
           - input_select.cristina_sleep_state
         state: "Awake"
+      # Not already in Auto mode
+      - condition: template
+        value_template: "{{ not is_state('input_select.main_bedroom','Auto') }}"
 
     actions:
       - choose: 
@@ -67,17 +70,24 @@ automation:
                   - action: script.main_bedroom_mode_turn_on_auto
 
           # If the trigger is the house is turned to Auto mode
-          # then let's make sure is NOT
+          # then let's make sure is waking up or that it's off
           - conditions:
               - condition: trigger
                 id: "house_auto"
             sequence:
               - if:
-                  - condition: state
-                    entity_id: input_select.main_bedroom
-                    state: "Wake"
-                    for:
-                      minutes: 10
+                  - condition: or
+                    conditions:
+                      # Not waking up
+                      - condition: state
+                        entity_id: input_select.main_bedroom
+                        state: Wake
+                        for:
+                          minutes: 10
+                      # OR if it's off, then we can go to auto mode
+                      - condition: state
+                        entity_id: input_select.main_bedroom
+                        state: "Off"
                 then:
                   - action: script.main_bedroom_mode_turn_on_auto
 
