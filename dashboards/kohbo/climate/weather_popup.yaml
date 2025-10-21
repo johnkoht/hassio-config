@@ -159,22 +159,22 @@ cards:
                 show_current: false
                 show_forecast: true
                 entity: weather.kpwk
-                forecast_type: hourly
-                forecast_slots: 20
+                forecast_type: twice_daily
+                forecast_slots: 10
                 card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/climate_forecast_card_styles.yaml
               attributes:
-                label: Hourly  
+                label: Outlook
 
             - card:
                 type: weather-forecast
                 show_current: false
                 show_forecast: true
                 entity: weather.kpwk
-                forecast_type: twice_daily
-                forecast_slots: 10
+                forecast_type: hourly
+                forecast_slots: 20
                 card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/climate_forecast_card_styles.yaml
               attributes:
-                label: Outlook
+                label: Hourly  
 
       - type: custom:button-card
         layout: icon_name
@@ -220,6 +220,100 @@ cards:
             - color: var(--secondary-text-color)
             - justify-self: start !important
             - margin-left: 10px !important
+
+      # - type: custom:stack-in-card
+      #   mode: horizontal
+      #   card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+      #   cards:
+      #     - type: custom:button-card
+      #       entity: sensor.desplns_illinois_usa_air_quality_index
+      #       template: kohbo_aqi_index_item
+
+      #     - type: custom:button-card
+      #       entity: sensor.tempest_humidity
+      #       template: kohbo_aqi_humidity_item
+  
+      #     - type: custom:button-card
+      #       entity: sensor.desplns_illinois_usa_ozone
+      #       template: kohbo_aqi_ozone_item
+
+      #     - type: custom:button-card
+      #       entity: sensor.desplns_illinois_usa_pm2_5
+      #       template: kohbo_aqi_pm25_item
+
+
+
+
+  # Daily Weather
+  # 
+  - type: custom:clock-weather-card
+    entity: weather.kpwk
+    forecast_rows: 7
+    animated_icon: true
+    date_pattern: ccc, d.MM.yy
+    hide_today_section: true
+    hide_clock: true
+    card_mod:
+      style: |
+        clock-weather-card-forecast-row {
+          border: 1px solid var(--divider-color);
+          border-radius: 6px;
+          padding: 12px;
+          margin-bottom: 10px;
+          grid-template-columns: 40px 30px 2.1rem auto 2.1rem !important;
+
+          forecast-text {
+            font-size: 13px;
+            color: var(--secondary-text-color);
+          }
+
+          forecast-text:first-child {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--primary-text-color);
+          }
+
+          forecast-temperature-bar {
+            height: 6px !important;
+            border-radius: 3px !important;
+          }
+
+          forecast-temperature-bar-current-indicator {
+            opacity: 1;
+            box-shadow: none;
+            border: none;
+          }
+
+          forecast-temperature-bar-current-indicator-dot {
+            width: 6px !important;
+            height: 6px !important;
+            border-radius: 50% !important;
+            box-shadow: none;
+            border: none;
+          }
+        }
+        
+
+  # 
+  # Sun and moon phase
+  # 
+  - type: custom:horizon-card
+    moon: true
+    refresh_period: 60
+    southern_flip: false
+    moon_phase_rotation: -10
+    card_mod:
+      style: |
+        .horizon-card-field-name {
+          font-size: 14px !important;
+          color: var(--light-grey-color) !important;
+        }
+
+        .horizon-card-field-value {
+          color: var(--primary-text-color) !important;
+          font-size: 16px !important;
+          font-weight: 500 !important;
+        }
           
 
   # - type: custom:stack-in-card
@@ -343,6 +437,10 @@ cards:
 
   
 
+  # PRECIPITATION
+  # if it's going to rain,
+  # show a rain graph/list per hour
+
   # weather alerts
   # Tempest weather
   # current temp / humdity / pressure
@@ -353,3 +451,10 @@ cards:
   # rain graph
   # radar
   # moon phase
+
+
+  # AQI
+  # Humidity
+  # Carbon Dioxide
+  # TVOC
+  # PM2.5

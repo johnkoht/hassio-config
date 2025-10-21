@@ -1,0 +1,31 @@
+kohbo_aqi_ozone_item:
+  template: kohbo_aqi_item
+  name: Ozone
+  icon: mdi:molecule
+  state_display: |
+    [[[
+      var ozone = entity.state.trim(); 
+      // ozone = Math.round(ozone).toString();
+      console.log("ozone", ozone);
+      return ozone;
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: >
+      [[[
+        var ozone = parseFloat(entity.state);
+        console.log("ozone", ozone);
+        if (ozone <= 54) {
+          return 'Good';
+        } else if (ozone <= 60) {
+          return 'Acceptable';
+        } else if (ozone <= 70) {
+          return 'Moderate';
+        } else if (ozone <= 105) {
+          return 'Poor';
+        } else {
+          return 'Hazardous';
+        }
+      ]]]
+  custom_fields:
+    unit: "ppb"

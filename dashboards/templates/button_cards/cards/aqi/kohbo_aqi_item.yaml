@@ -42,7 +42,7 @@ kohbo_aqi_item:
         if (variables.aqi_status === 'Moderate') {
           return '<img src="/local/kohbo/images/aqi/moderate.png" alt="AQI Moderate" />'
         }
-        if (variables.aqi_status === 'Unhealthy') {
+        if (variables.aqi_status === 'Poor') {
           return '<img src="/local/kohbo/images/aqi/unhealthy.png" alt="AQI Unhealthy" />'
         }
         return '<img src="/local/kohbo/images/aqi/hazardous.png" alt="AQI Hazardous" />'

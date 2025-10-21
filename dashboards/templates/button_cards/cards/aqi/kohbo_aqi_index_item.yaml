@@ -1,0 +1,29 @@
+kohbo_aqi_index_item:
+  template: kohbo_aqi_item
+  name: AQI
+  icon: mdi:air-filter
+  state_display: |
+    [[[
+      var index = entity.state.replace("%", "").trim(); 
+      index = Math.round(index).toString();
+      return index;
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: >
+      [[[
+        var index = parseFloat(entity.state);
+        if (index <= 50) {
+          return 'Good';
+        } else if (index <= 100) {
+          return 'Acceptable';
+        } else if (index <= 150) {
+          return 'Moderate';
+        } else if (index <= 200) {
+          return 'Poor';
+        } else {
+          return 'Hazardous';
+        }
+      ]]]
+  custom_fields:
+    unit: "%"
