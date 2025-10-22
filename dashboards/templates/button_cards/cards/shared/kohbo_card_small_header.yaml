@@ -1,0 +1,10 @@
+kohbo_card_small_header:
+  styles:
+    card:
+      - padding: 20px 20px 10px 20px
+    name:
+      - color: var(--primary-text-color)
+      - font-size: 14px
+      - font-weight: 700
+      - text-align: left
+      - justify-self: start

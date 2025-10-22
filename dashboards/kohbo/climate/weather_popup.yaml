@@ -109,6 +109,96 @@ cards:
 
 
   # 
+  # Precipitation
+  # 
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: binary_sensor.weather_currently_raining
+        state: "on"
+    card:
+      type: custom:stack-in-card
+      card_mod:
+        style: |
+          :host {
+            --stack-card-gap: 0;
+            --vertical-stack-card-gap: 0 !important;
+          }
+      cards:
+        - type: custom:button-card
+          template: kohbo_card_small_header
+          name: Next Precipitation
+          styles:
+            card:
+              - padding-bottom: 0
+        # 
+        # Next Precipitation
+        # 
+        - type: custom:apexcharts-card
+          header:
+            show: true
+          graph_span: 10h
+          span:
+            start: hour
+          now:
+            show: true
+          apex_config:
+            dataLabels:
+              enabled: false
+            chart:
+              height: 150
+            grid:
+              yaxis:
+                lines:
+                  show: false
+            xaxis:
+              crosshairs:
+                show: false
+              tooltip:
+                enabled: false
+            yaxis:
+              - id: rain
+                opposite: false
+          series:
+            - entity: sensor.pirateweather_hourly_forecast
+              name: Rain
+              type: column
+              # yaxis_id: rain
+              data_generator: |
+                return entity.attributes.forecast.map(f => {
+                  let val = f.precipitation;
+                  let color = '#ADB5BD';
+                  if (val > 0 && val < 2.5) {
+                    color = '#59A5D8';
+                  } else if (val < 7.6) {
+                    color = '#0288D1';
+                  } else if (val < 35) {
+                    color = '#01579B';
+                  } else {
+                    color = '#311B92';
+                  }
+                  return {
+                    x: new Date(f.datetime).getTime(),
+                    y: val,
+                    fillColor: color
+                  };
+                });
+            # - entity: sensor.pirateweather_hourly_forecast
+            #   name: Temp
+            #   type: line
+            #   curve: smooth
+            #   yaxis_id: temp
+            #   stroke_width: 2
+            #   color: '#E53935'
+            #   data_generator: |
+            #     return entity.attributes.forecast.map(f => {
+            #       return {
+            #         x: new Date(f.datetime).getTime(),
+            #         y: f.temperature
+            #       };
+            #     });
+
+  # 
   # Weather Forecast
   # 
   - type: custom:stack-in-card
@@ -161,7 +251,7 @@ cards:
                 show_forecast: true
                 entity: weather.pirateweather
                 forecast_type: hourly
-                forecast_slots: 20
+                forecast_slots: 14
                 card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/climate_forecast_card_styles.yaml
               attributes:
                 label: Hourly 
@@ -172,7 +262,7 @@ cards:
                 show_forecast: true
                 entity: weather.pirateweather
                 forecast_type: daily
-                forecast_slots: 10
+                forecast_slots: 14
                 card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/climate_forecast_card_styles.yaml
               attributes:
                 label: Outlook
@@ -223,27 +313,6 @@ cards:
             - justify-self: start !important
             - margin-left: 10px !important
 
-      # - type: custom:stack-in-card
-      #   mode: horizontal
-      #   card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
-      #   cards:
-      #     - type: custom:button-card
-      #       entity: sensor.desplns_illinois_usa_air_quality_index
-      #       template: kohbo_aqi_index_item
-
-      #     - type: custom:button-card
-      #       entity: sensor.tempest_humidity
-      #       template: kohbo_aqi_humidity_item
-  
-      #     - type: custom:button-card
-      #       entity: sensor.desplns_illinois_usa_ozone
-      #       template: kohbo_aqi_ozone_item
-
-      #     - type: custom:button-card
-      #       entity: sensor.desplns_illinois_usa_pm2_5
-      #       template: kohbo_aqi_pm25_item
-
-
 
   # 
   # Daily Weather
@@ -257,16 +326,8 @@ cards:
         }
     cards:
       - type: custom:button-card
+        template: kohbo_card_small_header
         name: Daily Forecast
-        styles:
-          card:
-            - padding: 20px 20px 10px 20px
-          name:
-            - color: var(--primary-text-color)
-            - font-size: 14px
-            - font-weight: 500
-            - text-align: left
-            - justify-self: start
       # 
       # Daily Weather
       # 
@@ -316,7 +377,140 @@ cards:
                 border: none;
               }
             }
-        
+
+
+
+  #
+  # AQI
+  #
+  - type: custom:button-card
+    name: Air Quality
+    template: section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # AQI 
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: AQI
+          - entity: sensor.desplns_illinois_usa_air_quality_index
+          - icon: mdi:air-filter
+          - value_1: 50
+          - value_2: 100
+          - value_3: 150
+          - value_4: 200
+          - value_5: 300
+
+      # AQI 
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Humidity
+          - entity: sensor.tempest_humidity
+          - icon: mdi:water-percent
+          - value_1: 14
+          - value_2: 25
+          - value_3: 40
+          - value_4: 65
+          - value_5: 90
+
+      # AQI 
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Ozone
+          - entity: sensor.desplns_illinois_usa_ozone
+          - icon: mdi:molecule
+          - value_1: 0
+          - value_2: 50
+          - value_3: 100
+          - value_4: 150
+          - value_5: 200
+
+      # AQI 
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: PM2.5
+          - entity: sensor.desplns_illinois_usa_pm2_5
+          - icon: phu:pm2-5
+          - value_1: 0
+          - value_2: 12
+          - value_3: 35
+          - value_4: 55
+          - value_5: 150
+
+
+
+  # 
+  # Allergies
+  # 
+  - type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_small_header
+        name: Allergies
+
+      - type: custom:mod-card
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                padding: 10px 0 20px 16px !important;
+              }
+
+            hui-horizontal-stack-card$: |
+              #root {
+                overflow-x: auto;
+                width: 100% !important;
+                gap: 5px !important;
+
+                button-card {
+                  flex: 0 0 100px !important;
+                }
+              }
+              #root::-webkit-scrollbar {
+                display: none !important;
+              }
+        card:
+          type: horizontal-stack
+          cards:
+            # Weeds Pollen
+            - type: custom:button-card
+              template: kohbo_allergy_card
+              entity: sensor.kleenex_pollen_radar_home_weeds_level
+              name: Weeds
+              icon: mdi:flower-pollen
+            # Grass Pollen
+            - type: custom:button-card
+              template: kohbo_allergy_card
+              entity: sensor.kleenex_pollen_radar_home_grass_level
+              name: Grass
+              icon: mdi:grass
+            # Tree Pollen
+            - type: custom:button-card
+              template: kohbo_allergy_card
+              entity: sensor.kleenex_pollen_radar_home_trees_level
+              name: Trees
+              icon: mdi:tree
+            # Poaceae Pollen
+            - type: custom:button-card
+              template: kohbo_allergy_card
+              entity: sensor.kleenex_pollen_radar_home_poaceae_level
+              name: Poaceae
+              icon: mdi:flower-pollen
+            # Ragweed Pollen
+            - type: custom:button-card
+              template: kohbo_allergy_card
+              entity: sensor.kleenex_pollen_radar_home_ragweed_level
+              name: Ragweed
+              icon: mdi:grass
+
+
 
   # 
   # Horizon
@@ -330,16 +524,8 @@ cards:
         }
     cards:
       - type: custom:button-card
+        template: kohbo_card_small_header
         name: Horizon
-        styles:
-          card:
-            - padding: 20px 20px 10px 20px
-          name:
-            - color: var(--primary-text-color)
-            - font-size: 14px
-            - font-weight: 500
-            - text-align: left
-            - justify-self: start
 
       # 
       # Sun and moon phase
@@ -362,213 +548,6 @@ cards:
               font-weight: 500 !important;
             }
           
-
-  # - type: custom:stack-in-card
-  #   card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
-  #   cards:
-  #     # # 
-  #     # # Current Weather
-  #     # # 
-  #     # - type: weather-forecast
-  #     #   show_current: true
-  #     #   show_forecast: false
-  #     #   forecast_type: hourly
-  #     #   name: Current Weather
-  #     #   entity: weather.kpwk
-
-  #     # - type: custom:hourly-weather
-  #     #   entity: weather.kpwk
-  #     #   num_segments: "12"
-  #     #   name: " "
-  #     #   icons: true
-  #     #   show_wind: "false"
-  #     #   show_date: "false"
-  #     #   show_precipitation_amounts: false
-  #     #   show_precipitation_probability: false
-  #     #   round_temperatures: true
-  #     #   colors:
-  #     #     clear-night: "#2e3440"
-  #     #     cloudy: "#4c566a"
-  #     #     partlycloudy: "#b2b7bf"
-  #     #     rainy: "#5e81ac"
-  #     #     sunny: "#ebcb8b"
-
-  #     - type: weather-forecast
-  #       show_current: false
-  #       show_forecast: true
-  #       entity: weather.pirateweather
-  #       forecast_type: hourly
-  #       forecast_slots: 20
-  #       card_mod:
-  #         style: |
-  #           .forecast {
-  #             overflow-x: auto;
-  #             padding-bottom: 10px !important;
-  #             gap: 5px;
-  #           }
-
-  #           .forecast::-webkit-scrollbar {
-  #             display: none !important;
-  #           }
-
-  #           .forecast > div {
-  #             flex: 0 0 75px !important; 
-  #             background-color: var(--darker-primary-color);
-  #             border-radius: 8px !important;
-  #             padding: 10px 3px !important;
-  #           }
-
-  #           .forecast > div > div:first-child {
-  #             font-size: 13px !important;
-  #             color: var(--light-grey-color) !important;
-  #           }
-
-  #           .forecast > div.temp {
-  #             font-size: 15px !important;
-  #             color: var(--primary-text-color) !important;
-  #             font-weight: 500 !important;
-  #           }
-
-  #     - type: weather-forecast
-  #       show_current: false
-  #       show_forecast: true
-  #       type: weather-forecast
-  #       entity: weather.kpwk
-  #       forecast_type: twice_daily
-  #       forecast_slots: 10
-  #       card_mod:
-  #         style: |
-  #           .forecast {
-  #             overflow-x: auto;
-  #             padding-bottom: 10px !important;
-  #             gap: 5px;
-  #           }
-
-  #           .forecast::-webkit-scrollbar {
-  #             display: none !important;
-  #           }
-
-  #           .forecast > div .templow {
-  #             display: none !important;
-  #           }
-
-  #           .forecast > div {
-  #             flex: 0 0 75px !important; 
-  #             background-color: var(--darker-primary-color);
-  #             border-radius: 8px !important;
-  #             padding: 10px 3px !important;
-  #           }
-
-  #           .forecast > div > div:first-child {
-  #             font-size: 13px !important;
-  #             color: var(--light-grey-color) !important;
-  #           }
-
-  #           .forecast > div.temp {
-  #             font-size: 15px !important;
-  #             color: var(--primary-text-color) !important;
-  #             font-weight: 500 !important;
-  #           }
-
-
-  #     # 
-  #     # Daily Weather
-  #     # 
-  #     - type: custom:clock-weather-card
-  #       entity: weather.kpwk
-  #       # title: Home
-  #       animated_icon: true
-  #       date_pattern: ccc, d.MM.yy
-  #       hide_today_section: true
-  #       hide_clock: true
-
-
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        :host {
-          --stack-card-gap: 0;
-          --vertical-stack-card-gap: 0 !important;
-        }
-    cards:
-      - type: custom:button-card
-        name: Next Precipitation
-        styles:
-          card:
-            - padding: 20px 20px 0 20px
-          name:
-            - color: var(--primary-text-color)
-            - font-size: 14px
-            - font-weight: 500
-            - text-align: left
-            - justify-self: start
-
-      # 
-      # Next Precipitation
-      # 
-      - type: custom:apexcharts-card
-        header:
-          show: true
-        graph_span: 10h
-        span:
-          start: hour
-        now:
-          show: true
-        apex_config:
-          dataLabels:
-            enabled: false
-          chart:
-            height: 150
-          grid:
-            yaxis:
-              lines:
-                show: false
-          xaxis:
-            crosshairs:
-              show: false
-            tooltip:
-              enabled: false
-          yaxis:
-            - id: rain
-              opposite: false
-        series:
-          - entity: sensor.pirateweather_hourly_forecast
-            name: Rain
-            type: column
-            # yaxis_id: rain
-            data_generator: |
-              return entity.attributes.forecast.map(f => {
-                let val = f.precipitation;
-                let color = '#9e9e9e';
-                if (val > 0 && val < 2.5) {
-                  color = '#4FC3F7';
-                } else if (val < 7.6) {
-                  color = '#0288D1';
-                } else if (val < 35) {
-                  color = '#01579B';
-                } else {
-                  color = '#311B92';
-                }
-                return {
-                  x: new Date(f.datetime).getTime(),
-                  y: val,
-                  fillColor: color
-                };
-              });
-          # - entity: sensor.pirateweather_hourly_forecast
-          #   name: Temp
-          #   type: line
-          #   curve: smooth
-          #   yaxis_id: temp
-          #   stroke_width: 2
-          #   color: '#E53935'
-          #   data_generator: |
-          #     return entity.attributes.forecast.map(f => {
-          #       return {
-          #         x: new Date(f.datetime).getTime(),
-          #         y: f.temperature
-          #       };
-          #     });
 
   
 
@@ -593,3 +572,11 @@ cards:
   # Carbon Dioxide
   # TVOC
   # PM2.5
+
+  # allergies
+  # ----
+  # grass pollen
+  # Poaceae
+  # ragweed ?
+  # trees
+  # weeds

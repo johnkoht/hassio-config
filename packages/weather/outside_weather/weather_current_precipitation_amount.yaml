@@ -1,0 +1,21 @@
+template:
+  - sensor:
+      - name: "Weather - Current Precipitation Amount"
+        state: >
+          {{ states('sensor.pirateweather_precip_intensity_0h') | float | round(1, default=0) }}
+        state_class: measurement
+        unit_of_measurement: "in"
+        icon: mdi:water-percent
+        device_class: precipitation
+
+
+# 
+# Binary Sensor whether it's currently raining
+# 
+binary_sensor:
+  - platform: template
+    sensors:
+      weather_currently_raining:
+        friendly_name: "Weather Currently Raining"
+        value_template: >
+          {{ states.sensor.weather_current_precipitation_amount.state | float > 0.01 }}

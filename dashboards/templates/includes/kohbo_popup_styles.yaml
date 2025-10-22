@@ -4,7 +4,7 @@
   }
 
   .bubble-pop-up-container {
-    padding: 30px 30px calc(140px + var(--custom-height-offset-mobile)) 30px !important;
+    padding: 20px 20px calc(140px + var(--custom-height-offset-mobile)) 20px !important;
   }
 
   .bubble-header-container {

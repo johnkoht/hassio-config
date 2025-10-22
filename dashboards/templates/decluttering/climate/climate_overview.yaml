@@ -18,9 +18,9 @@ climate_overview:
           - color: "#ADD2EB"
             value: 45
           - color: "#06D6A0"
-            value: 65
+            value: 67
           - color: "#FFD166"
-            value: 77
+            value: 78
           - color: "#ED4747"
             value: 90
         entities:

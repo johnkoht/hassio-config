@@ -1,0 +1,52 @@
+kohbo_allergy_card:
+  size: 24px
+  show_state: true
+  variables:
+    level_color: >
+      [[[
+        const level = entity.state;
+        const color = {'low':'green','moderate':'orange','high':'red','very-high':'maroon'};
+        const level_color = color[level] || 'gray';
+        return level_color;
+      ]]]
+    percentage: >
+      [[[
+        const circle = {'low':'25','moderate':'50','high':'75','very-high':'100'};
+        const percentage = circle[entity.state] || '25';
+        return percentage;
+      ]]]
+  styles:
+    grid:
+      - grid-template-areas: '"n n" "i i" "s s"'
+      - grid-template-rows: auto auto auto
+    card:
+      - padding: 20px
+      - background-color: var(--darker-primary-color);
+      - border-radius: 8px !important;
+      - padding: 10px 3px !important;
+      - height: 150px;
+      - align-items: center;
+      - align-content: space-between;
+      - justify-content: space-between;
+      - display: flex;
+      - flex-direction: column;
+    img_cell:
+      - height: 50px
+      - width: 50px
+      - border-radius: 24px;
+      - background: >
+          [[[
+            return `radial-gradient(var(--darker-primary-color) 60%,transparent calc(60% + 1px)), conic-gradient(${variables.level_color} ${variables.percentage}% 0%, var(--divider-color) 0% 100%)`;
+          ]]]
+      - color: '[[[ return variables.level_color ]]]'
+      - position: relative
+    icon:
+      - color: var(--light-grey-color)
+    name:
+      - font-size: 13px !important;
+      - color: var(--light-grey-color)
+    state:
+      - font-size: 15px !important;
+      - color: var(--primary-text-color)
+      - font-weight: 500 !important;
+  

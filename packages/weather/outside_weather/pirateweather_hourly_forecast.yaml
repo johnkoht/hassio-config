@@ -15,10 +15,10 @@ template:
           entity_id: weather.pirateweather
         response_variable: weather_forecast
     #
-    # This is the sensor that provide the forecast data (first 10)
+    # This is the sensor that provide the forecast data (first 20)
     sensor:
       - name: Pirateweather Hourly Forecast
         unique_id: pirateweather_hourly_forecast
         state: "{{ now().isoformat() }}"
         attributes:
-          forecast: "{{ weather_forecast['weather.pirateweather'].forecast }}"
+          forecast: "{{ weather_forecast['weather.pirateweather'].forecast[:20] }}"

@@ -1,4 +1,10 @@
 kohbo_room_temperature_card:
+  default:
+    - value_1: 14
+    - value_2: 45
+    - value_3: 67
+    - value_4: 78
+    - value_5: 90
   card:
     type: custom:mini-graph-card
     name: '[[name]]'
@@ -11,15 +17,15 @@ kohbo_room_temperature_card:
     color_thresholds_transition: smooth
     color_thresholds:
       - color: "#59A5D8"
-        value: 14
+        value: '[[value_1]]'
       - color: "#ADD2EB"
-        value: 45
+        value: '[[value_2]]'
       - color: "#06D6A0"
-        value: 65
+        value: '[[value_3]]'
       - color: "#FFD166"
-        value: 77
+        value: '[[value_4]]'
       - color: "#ED4747"
-        value: 90
+        value: '[[value_5]]'
     entities:
       - entity: '[[entity]]'
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
