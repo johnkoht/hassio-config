@@ -20,19 +20,21 @@ cards:
           tap_action:
             action: navigate
             navigation_path: /dashboard-kohbo/rooms
-        # Page title
-        - type: custom:button-card
-          template: kohbo_nested_page_title
-          name: Playroom
         # Settings button
         # - type: custom:button-card
         #   template: kohbo_page_settings_button
         #   tap_action:
         #     action: navigate
         #     navigation_path: "#playroom_settings_popup"
-  # - type: custom:button-card
-  #   template: kohbo_page_title
-  #   name: Playroom
+
+  # 
+  # Room Header
+  # 
+  - type: custom:decluttering-card
+    template: room_header
+    variables:
+      - room_name: Playroom
+      - room: "playroom"
 
   # 
   # Overview Area for house mode and occupancy

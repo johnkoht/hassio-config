@@ -8,7 +8,6 @@ cards:
   # 
   # Page Header
   # 
-  # - type: horizontal-stack
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
@@ -20,22 +19,23 @@ cards:
           tap_action:
             action: navigate
             navigation_path: /dashboard-kohbo/rooms
-        # Page title
-        - type: custom:button-card
-          template: kohbo_nested_page_title
-          name: Office
         # Settings button
-        # - type: custom:button-card
-        #   template: kohbo_page_settings_button
-        #   tap_action:
-        #     action: navigate
-        #     navigation_path: "#office_settings_popup"
+        - type: custom:button-card
+          template: kohbo_page_settings_button
+          tap_action:
+            action: navigate
+            navigation_path: "#office_settings_popup"
 
             
+  # 
+  # Room Header
+  # 
+  - type: custom:decluttering-card
+    template: room_header
+    variables:
+      - room_name: Office
+      - room: "office"
 
-  # - type: custom:button-card
-  #   template: kohbo_page_title
-  #   name: Office
 
   # 
   # Overview Area for house mode and occupancy

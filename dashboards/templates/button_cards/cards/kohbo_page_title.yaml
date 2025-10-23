@@ -1,7 +1,7 @@
 kohbo_page_title:
   styles:
     card:
-      - height: 60px
+      - height: 50px
       - background: transparent
       - border: none
       - box-shadow: none
@@ -9,5 +9,5 @@ kohbo_page_title:
       - padding: 0
     name:
       - color: '#F8F9FA'
-      - font-size: 45px
-      # - justify-self: start
+      - font-size: 40px
+      - justify-self: start

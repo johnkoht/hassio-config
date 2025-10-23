@@ -22,6 +22,16 @@ routes:
     tap_action:
       action: open-popup
     popup:
+      - icon: mdi:refresh
+        name: Reload Page
+        tap_action:
+          action: call-service
+          service: browser_mod.javascript
+          data:
+            code: lovelace_reload()
+            browser_id: ff9aa457-0f3695c9
+
+
       - icon: mdi:account-circle
         url: /dashboard-kohbo/people
         label: People

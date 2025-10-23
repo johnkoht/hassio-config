@@ -4,11 +4,11 @@ kohbo_person_entity:
   show_state: false
   show_name: false
   show_entity_picture: true
-  size: 45px
+  size: 40px
   styles:
     card:
-      - height: 45px
-      - width: 45px
+      - height: 40px
+      - width: 40px
       - padding: 0
       - background: transparent
       - border: none

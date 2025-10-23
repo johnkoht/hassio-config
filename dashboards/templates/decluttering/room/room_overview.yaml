@@ -39,53 +39,53 @@ room_overview:
                   tap_action:
                     action: more-info
 
-        # 
-        # People in the room
-        # 
-        - type: custom:mod-card
-          style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
-          card:
-            type: horizontal-stack
-            cards:
-              - type: custom:button-card
-                entity: person.john_koht
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#john'
-                visibility:
-                  - condition: state
-                    entity: sensor.john_room_presence
-                    state: "[[room]]"
-              - type: custom:button-card
-                entity: person.cristina_falbo
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#cristina'
-                visibility:
-                  - condition: state
-                    entity: sensor.cristina_room_presence
-                    state: "[[room]]"
-              - type: custom:button-card
-                entity: person.mary_falbo
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.mary_room_presence
-                    state: "[[room]]"
-              - type: custom:button-card
-                entity: person.katia
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.katia_room_presence
-                    state: "[[room]]"
+        # # 
+        # # People in the room
+        # # 
+        # - type: custom:mod-card
+        #   style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
+        #   card:
+        #     type: horizontal-stack
+        #     cards:
+        #       - type: custom:button-card
+        #         entity: person.john_koht
+        #         template: kohbo_person_entity
+        #         tap_action:
+        #           action: navigate
+        #           navigation_path: '#john'
+        #         visibility:
+        #           - condition: state
+        #             entity: sensor.john_room_presence
+        #             state: "[[room]]"
+        #       - type: custom:button-card
+        #         entity: person.cristina_falbo
+        #         template: kohbo_person_entity
+        #         tap_action:
+        #           action: navigate
+        #           navigation_path: '#cristina'
+        #         visibility:
+        #           - condition: state
+        #             entity: sensor.cristina_room_presence
+        #             state: "[[room]]"
+        #       - type: custom:button-card
+        #         entity: person.mary_falbo
+        #         template: kohbo_person_entity
+        #         visibility:
+        #           - condition: state
+        #             entity: sensor.mary_room_presence
+        #             state: "[[room]]"
+        #       - type: custom:button-card
+        #         entity: person.katia
+        #         template: kohbo_person_entity
+        #         visibility:
+        #           - condition: state
+        #             entity: sensor.katia_room_presence
+        #             state: "[[room]]"
 
 
-        # 
-        # People
-        # 
-        - !include /config/dashboards/templates/button_cards/people/john.yaml
-        - !include /config/dashboards/templates/button_cards/people/cristina.yaml
-        - !include /config/dashboards/templates/button_cards/people/nonna.yaml
+        # # 
+        # # People
+        # # 
+        # - !include /config/dashboards/templates/button_cards/people/john.yaml
+        # - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+        # - !include /config/dashboards/templates/button_cards/people/nonna.yaml

@@ -48,6 +48,7 @@ kohbo:
   semi-dark-grey-color: "#ADB5BD"
   #red-color: var(--error-color)
   red-color: "#ED4747"
+  orange-color: "#E36001"
 
   error-color: var(--red-color)
   warning-color: var(--accent-color)

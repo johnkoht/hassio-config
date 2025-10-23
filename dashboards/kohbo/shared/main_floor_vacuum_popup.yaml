@@ -1,0 +1,178 @@
+# 
+# Quick Clean Popup
+# 
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#main_floor_quick_clean_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 700px)
+    margin_top_desktop: calc(100vh - 700px)
+  # 
+  # Title
+  # 
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Quick Clean
+
+  - type: conditional
+    conditions:
+      - entity: input_boolean.main_level_vacuum_clean_when_house_empty
+        state: 'on'
+    card:
+      type: custom:button-card
+      name: The following rooms are scheduled to be cleaned when the house is empty
+      icon: mdi:alert-circle-outline
+      layout: icon_name
+      show_icon: true
+      size: 24px
+      styles:
+        card:
+          - backdrop-filter: blur(10px)
+          - -webkit-backdrop-filter: blur(10px)
+          - padding: 10px
+        grid:
+          - grid-template-areas: '"i n"'
+          - grid-template-columns: 40px 1fr
+        name:
+          - justify-self: start
+          - font-weight: 500
+          - white-space: normal
+      card_mod:
+        style: |
+          ha-card {
+            background: rgba(237, 71, 71, 0.8) !important;
+            height: 80px !important;
+            width: 100% !important;
+            padding-right: 15px !important;
+          }
+
+  # 
+  # Quick Clean Tiles
+  # 
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: tile
+        entity: input_boolean.vacuum_kitchen
+        name: Kitchen
+        icon: mdi:fridge
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_family_room
+        name: Family Room
+        icon: mdi:sofa
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_dining_room
+        name: Dining Room
+        icon: mdi:silverware-fork-knife
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_office
+        name: Office
+        icon: mdi:desk
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_foyer
+        name: Foyer
+        icon: mdi:door-open
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_mudroom
+        name: Mudroom
+        icon: mdi:shoe-formal
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_jr_suite
+        name: Jr Suite
+        icon: mdi:bed-empty
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_laundry_room
+        name: Laundry Room
+        icon: mdi:washing-machine
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_mudroom_bathroom
+        name: Mudroom Bathroom
+        icon: mdi:toilet
+        state_content: last-changed
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: input_boolean.vacuum_powder_room
+        name: Powder Room
+        icon: mdi:spray-bottle
+        state_content: last-changed
+        tap_action:
+          action: toggle
+  # 
+  # Quick Clean Buttons
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:button-card
+        name: Clean Now
+        show_icon: false
+        tap_action:
+          action: perform-action
+          perform_action: script.main_level_quick_clean
+        card_mod:
+          style: |
+            :host {
+              padding: 15px 0 0 0 !important;
+            }
+            ha-card {
+              background: var(--primary-color) !important;
+              color: var(--primary-text-color) !important;
+              border-radius: 30px !important;
+              font-size: 14px !important;
+              font-weight: 500 !important;
+              padding: 15px 10px !important;
+            }
+      - type: custom:button-card
+        name: >
+          [[[
+            return states['input_boolean.main_level_vacuum_clean_when_house_empty'].state === 'on' ? 'Cancel Scheduled Cleanings' : 'Clean When House Is Empty';
+          ]]]
+        show_icon: false
+        tap_action:
+          action: perform-action
+          perform_action: >
+            [[[
+              return states['input_boolean.main_level_vacuum_clean_when_house_empty'].state === 'on' ? 'script.main_level_vacuum_cancel_clean_when_house_is_empty' : 'script.main_level_vacuum_clean_when_house_is_empty';
+            ]]]
+        card_mod:
+          style: |
+            :host {
+              padding: 0 !important;
+            }
+            ha-card {
+              background: transparent !important;
+              border: 1px solid var(--primary-color) !important;
+              color: var(--primary-text-color) !important;
+              border-radius: 30px !important;
+              font-size: 14px !important;
+              font-weight: 500 !important;
+              padding: 15px 10px !important;
+            }

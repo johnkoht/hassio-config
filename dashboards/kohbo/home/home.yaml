@@ -4,63 +4,73 @@ path: home
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
 cards:
-  - type: custom:button-card
-    template: kohbo_page_title
-    name: Home
 
-  
   # 
-  # Overview Area for house mode and occupancy
+  # Page Header
+  # 
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:            
+        - type: custom:mushroom-chips-card
+          alignment: end
+          chips:
+            # Assist
+            - type: template
+              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+              icon: mdi:comment-processing
+              icon_color: var(--secondary-text-color)
+              tap_action:
+                action: assist
+            # Notifications
+            - type: template
+              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+              icon: mdi:bell
+              icon_color: var(--secondary-text-color)
+              tap_action:
+                action: navigate
+                navigation_path: '#notifications'
+
+
+  # 
+  # Home Title and People
   # 
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
-    # card_mod:
-    #   style:
-    #     layout-card $ grid-layout $: "#root { --masonry-view-card-margin: 0; }"
     card:
       type: custom:layout-card
       layout_type: custom:grid-layout
       layout:
-        grid-template-columns: 40% 60%
+        grid-template-columns: 60% 40%
         margin: 0px 0px 0px 0px
         padding: 0px
         card_margin: 0px
       cards:
         # 
-        # Room State & Occupancy
+        # Home Title
         # 
-        - type: horizontal-stack
-          cards:            
-            - type: custom:mushroom-chips-card
-              chips:
-                # House Mode
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                  icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
-                  content: "{{ states(entity) }}"
-                  entity: input_select.house
-                  tap_action:
-                    action: more-info
-                # Notifications
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
-                  icon: mdi:bell
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
-                  # content: "{{ states(entity) }}"
-                  # entity: input_select.house
-                  tap_action:
-                    action: navigate
-                    navigation_path: '#notifications'
+        - type: custom:button-card
+          template: kohbo_page_title
+          name: Home
 
+        # 
+        # People in the room
+        # 
         - type: custom:mod-card
-          style:
-            hui-horizontal-stack-card$: |
-              #root {
-                display: flex;
-                justify-content: flex-end;
-                align-items: flex-end;
-              }
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                }
+              .: |
+                ha-card {
+                  height: 100% !important;
+                  align-self: center !important;
+                }
           card:
             type: horizontal-stack
             cards:
@@ -114,6 +124,137 @@ cards:
                 tap_action:
                   action: navigate
                   navigation_path: '#katia'
+
+  
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap; /* optional, if you want wrapping */
+      }
+    card:
+      type: horizontal-stack
+      cards:
+        # # 
+        # # Room State & Occupancy
+        # #  
+        # - type: custom:mushroom-chips-card
+        #   chips:
+        #     - type: template
+        #       card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+        #       icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
+        #       icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
+        #       content: "{{ states(entity) }}"
+        #       entity: input_select.house
+        #       tap_action:
+        #         action: more-info
+
+        #     # Notifications
+        #     - type: template
+        #       card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+        #       icon: mdi:bell
+        #       icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
+        #       content: "{{user}}"
+        #       tap_action:
+        #         action: navigate
+        #         navigation_path: '#notifications'
+
+        # - type: custom:state-switch
+        #   entity: user
+        #   default: default
+        #   states:
+        #     John:
+        #       type: custom:button-card
+        #       template: kohbo_chip_card
+        #       icon: mdi:account
+        #       # tap_action:
+        #       #   action: more-info
+
+
+        # 
+        # House Mode
+        # 
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_select.house
+          state:
+            - value: "Auto"
+              icon: kohbo:kohbo-house-auto
+              color: var(--primary-color)
+            - value: "Away"
+              icon: kohbo:kohbo-house-away
+              color: var(--warning-color)
+            - value: "Quiet"
+              icon: kohbo:kohbo-house-quiet
+              color: var(--orange-color)
+            - value: "Bedtime"
+              icon: kohbo:kohbo-house-bedtime
+              color: var(--orange-color)
+            - value: "Entertainment"
+              icon: kohbo:kohbo-house-entertain
+              color: var(--success-color)
+            - value: "Vacation"
+              icon: kohbo:kohbo-house-away
+              color: var(--error-color)
+
+        
+        # 
+        # Electricity Usage
+        # 
+        - type: custom:button-card
+          template: kohbo_chip_card
+          name: Electricity Usage
+          icon: mdi:lightning-bolt
+          entity: sensor.total_grid_consumption
+          show_state: true
+          # tap_action:
+          #   action: navigate
+          #   navigation_path: '#main_floor_quick_clean_popup'
+          
+        # 
+        # Guest Mode
+        # 
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_boolean.guest_mode
+          show_state: false
+          icon: mdi:account-group
+          color: var(--primary-color)
+          state:
+            - value: "on"
+              icon: mdi:account-group
+              color: var(--primary-color)
+            - value: "off"
+              icon: mdi:account-group
+              color: var(--light-grey-color)
+
+        # 
+        # Quick Clean
+        # 
+        - type: conditional
+          conditions:
+            - entity: vacuum.roborock_s7
+              state: 'docked'
+          card:
+            type: custom:button-card
+            template: kohbo_chip_card
+            name: Quick Clean
+            icon: mdi:robot-vacuum
+            color: var(--light-grey-color)
+            tap_action:
+              action: navigate
+              navigation_path: '#main_floor_quick_clean_popup'
+          
+          
+
+        
       
   # 
   # Security Overview
@@ -267,7 +408,7 @@ cards:
   # 
   # Vacuums
   # 
-  # - !include /config/dashboards/kohbo/shared/kohbo_main_floor_vacuum_popup.yaml
+  - !include /config/dashboards/kohbo/shared/main_floor_vacuum_popup.yaml
   # - !include /config/dashboards/kohbo/shared/kohbo_upstairs_vacuum_popup.yaml
 
 

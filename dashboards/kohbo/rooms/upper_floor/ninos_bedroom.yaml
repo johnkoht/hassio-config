@@ -3,11 +3,37 @@ title: Nino's Bedroom
 path: ninos-bedroom
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+layout: !include /config/dashboards/templates/includes/kohbo_nested_page_layout.yaml
 cards:
-  - type: custom:button-card
-    template: kohbo_page_title
-    name: Nino's Bedroom
+  # 
+  # Page Header
+  # 
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # Back button
+        - type: custom:button-card
+          template: kohbo_page_back_button
+          tap_action:
+            action: navigate
+            navigation_path: /dashboard-kohbo/rooms
+        # Settings button
+        # - type: custom:button-card
+        #   template: kohbo_page_settings_button
+        #   tap_action:
+        #     action: navigate
+        #     navigation_path: "#office_settings_popup"
+
+  # 
+  # Room Header
+  # 
+  - type: custom:decluttering-card
+    template: room_header
+    variables:
+      - room_name: Nino's Bedroom
+      - room: "ninos_bedroom"
 
   # 
   # Overview Area for house mode and occupancy

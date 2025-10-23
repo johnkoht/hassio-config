@@ -5,4 +5,5 @@ style: |
     --chip-font-size: 14px;
     --chip-font-weight: 600;
     --chip-padding: 0 14px;
+    --chip-border-color: transparent;
   }

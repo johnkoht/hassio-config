@@ -2,7 +2,7 @@ button_card_templates: !include_dir_merge_named /config/dashboards/templates/but
 decluttering_templates: !include_dir_merge_named /config/dashboards/templates/decluttering
 
 kiosk_mode:
-  hide_header: false
+  hide_header: true
 
 # swipe_nav:
 #   # wrap: false
@@ -50,4 +50,3 @@ views:
 
     # More
     - !include /config/dashboards/kohbo/more/people.yaml
-

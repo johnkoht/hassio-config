@@ -9,14 +9,11 @@ style:
       left: 0 !important;
       right: 0 !important;
       width: 100% !important;
-      padding: 10px 20px !important;
+      padding: 0 15px 10px 15px !important;
       border-radius: 0 !important;
     }
 
   hui-horizontal-stack-card$: |
     #root {
       align-items: center;
-      display: grid !important;
-      grid-template: "a b c" !important;
-      grid-template-columns: 30px 1fr 30px !important;
     }

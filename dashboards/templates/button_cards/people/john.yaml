@@ -154,7 +154,7 @@ cards:
           {% if status == "Awake" or status == "Just Got Up" %}
             var(--success-color)
           {% else %}
-            #E36001
+            var(--orange-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # 
@@ -168,7 +168,7 @@ cards:
         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         color: >
           {% if states[config.entity].state == "on" %}
-            #E36001
+            var(--orange-color)
           {% else %}
             var(--light-grey-color)
           {% endif %}

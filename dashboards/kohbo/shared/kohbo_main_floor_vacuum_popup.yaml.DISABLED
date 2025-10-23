@@ -1,0 +1,705 @@
+# type: vertical-stack
+# cards:
+#   - type: custom:bubble-card
+#     card_type: pop-up
+#     hash: '#main_floor_vacuum'
+#     close_by_clicking_outside: false
+#     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+#   - type: custom:button-card
+#     template: kohbo_page_title
+#     name: Main Vacuum
+
+#   # 
+#   # Quick Actions
+#   # 
+#   - type: custom:mod-card
+#     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+#     card:
+#       type: custom:layout-card
+#       layout_type: custom:horizontal-layout
+#       layout:
+#         # grid-template-columns: 60% 40%
+#         margin: 0px 0px 0px 0px
+#         padding: 0px
+#         card_margin: 0px
+#       cards:
+#         - type: horizontal-stack
+#           cards:            
+#             - type: custom:mushroom-chips-card
+#               chips:
+#                 # 
+#                 # Pause Cleaning (if running)
+#                 # 
+#                 - type: conditional
+#                   conditions:
+#                     - entity: vacuum.roborock_s7
+#                       state: 'cleaning'
+#                   chip:
+#                     type: template
+#                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+#                     icon: mdi:pause
+#                     tap_action:
+#                       action: perform-action
+#                       perform_action: vacuum.pause
+#                       data:
+#                         entity_id: vacuum.roborock_s7
+#                 # 
+#                 # Resume Cleaning (if paused)
+#                 # 
+#                 - type: conditional
+#                   conditions:
+#                     - entity: vacuum.roborock_s7
+#                       state: 'paused'
+#                   chip:
+#                     type: template
+#                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+#                     icon: mdi:play
+#                     tap_action:
+#                       action: perform-action
+#                       perform_action: vacuum.start
+#                       data:
+#                         entity_id: vacuum.roborock_s7
+#                 # 
+#                 # Return to Dock (if cleaning)
+#                 # 
+#                 - type: conditional
+#                   conditions:
+#                     - entity: vacuum.roborock_s7
+#                       state: 
+#                         - 'cleaning'
+#                         - 'paused'
+#                   chip:
+#                     type: template
+#                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+#                     # icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
+#                     # icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
+#                     icon: mdi:robot-vacuum-off
+#                     tap_action:
+#                       action: perform-action
+#                       perform_action: vacuum.return_to_base
+#                       data:
+#                         entity_id: vacuum.roborock_s7
+#                 # 
+#                 # Clean Kitchen & Family (if docked)
+#                 # 
+#                 - type: conditional
+#                   conditions:
+#                     - entity: vacuum.roborock_s7
+#                       state: 'docked'
+#                   chip:
+#                     type: template
+#                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+#                     content: "Kitchen & Family"
+#                     tap_action:
+#                       action: perform-action
+#                       perform_action: vacuum.send_command
+#                       data:
+#                         entity_id: vacuum.roborock_s7
+#                         command: app_segment_clean
+#                         params: [24, 26]
+
+#                 # 
+#                 # Clean Main Living (if docked)
+#                 # 
+#                 - type: conditional
+#                   conditions:
+#                     - entity: vacuum.roborock_s7
+#                       state: 'docked'
+#                   chip:
+#                     type: template
+#                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+#                     content: "Dining & Foyer"
+#                     tap_action:
+#                       action: perform-action
+#                       perform_action: vacuum.send_command
+#                       data:
+#                         entity_id: vacuum.roborock_s7
+#                         command: app_segment_clean
+#                         params: [20, 23]
+
+#                 # 
+#                 # Clean Office (if docked)
+#                 # 
+#                 - type: conditional
+#                   conditions:
+#                     - entity: vacuum.roborock_s7
+#                       state: 'docked'
+#                   chip:
+#                     type: template
+#                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
+#                     content: "Office"
+#                     tap_action:
+#                       action: perform-action
+#                       perform_action: vacuum.send_command
+#                       data:
+#                         entity_id: vacuum.roborock_s7
+#                         command: app_segment_clean
+#                         params: [29]
+
+#   # 
+#   # Vacuum Status
+#   # 
+#   - type: custom:stack-in-card
+#     card_mod:
+#       style: |
+#         :host {
+#           --vertical-stack-card-gap: 8px;
+#         }
+#     cards:
+#       - type: custom:button-card
+#         entity: vacuum.roborock_s7
+#         label: Vacuum Status
+#         icon: |
+#           [[[
+#             if (entity.state == "docked")
+#               return "mdi:robot-vacuum-off"
+#             else if (entity.state == "cleaning")
+#               return "mdi:robot-vacuum"
+#             else
+#               return "mdi:robot-vacuum-off"
+#           ]]]
+#         show_state: true
+#         show_icon: true
+#         show_name: false
+#         show_label: true
+#         layout: icon_name_state
+#         styles:
+#           card:
+#             - background: transparent
+#             - backdrop-filter: none
+#             - -webkit-backdrop-filter: none
+#             - padding: 20px 20px 12px 20px
+#             - box-shadow: none
+#             - display: flex
+#             - align-items: center
+#             - justify-content: flex-start
+#             - gap: 12px
+#             - border: none
+#           grid:
+#             - grid-template-areas: "\"i n\" \"i l\""
+#             - grid-template-columns: min-content 1fr
+#             - align-items: center
+#           icon:
+#             - color: >
+#                 [[[
+#                   return entity.state === 'docked' ? '#06D6A0' : '#FFD166';
+#                 ]]]
+#             - width: 38px
+#             - height: 38px
+#             - margin-right: 15px
+#           name:
+#             - font-size: 20px
+#             - font-weight: regular
+#             - color: white
+#             - justify-self: start
+#             - margin-bottom: 4px;
+#           label:
+#             - font-size: 12px
+#             - color: "#CED4DA"
+#             - justify-self: start
+
+
+#       - type: custom:stack-in-card
+#         mode: horizontal
+#         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+#         cards:
+#           # Battery level
+#           - type: custom:button-card
+#             entity: vacuum.roborock_s7
+#             name: Battery Level
+#             template: kohbo_security_item
+#             icon: mdi:battery
+#             state_display: |
+#               [[[
+#                 return entity.attributes.battery_level + '%'
+#               ]]]
+#             state:
+#               - operator: template
+#                 value:  "[[[ return Math.round(parseFloat(entity.attributes.battery_level)) <= 20 ]]]"
+#                 color: var(--error-color)
+#               # - operator: template
+#               #   value:  "[[[ return Math.round(parseFloat(entity.attributes.battery_level)) >= 60 ]]]"
+#               #   color: var(--success-color)
+#               - operator: template
+#                 value:  "[[[ return Math.round(parseFloat(entity.attributes.battery_level)) > 20 && Math.round(parseFloat(entity.attributes.battery_level)) < 60 ]]]"
+#                 color: var(--warning-color)
+#           # Cleaning Area
+#           - type: custom:button-card
+#             entity: sensor.roborock_s7_current_clean_area
+#             name: Cleaning Area
+#             template: kohbo_security_item
+#             icon: mdi:map-marker-outline
+#             color: var(--light-grey-color)
+#           # Cleaning Time
+#           - type: custom:button-card
+#             entity: sensor.roborock_s7_last_clean_duration
+#             name: Cleaning Time
+#             template: kohbo_security_item
+#             icon: mdi:timer-outline
+#             color: var(--light-grey-color)
+
+#   # 
+#   # Quick Settings
+#   # 
+#   - type: custom:button-card
+#     template: section_title
+#     name: Quick Clean
+
+#   - type: button
+#     name: Quick Clean
+#     tap_action:
+#       action: fire-dom-event
+#       browser_mod:
+#         service: browser_mod.popup
+#         data:
+#           popup_card_id: main_floor_vacuum_popup
+
+#   - type: custom:popup-card
+#     popup_card_id: main_floor_vacuum_popup
+#     card:
+#       type: custom:stack-in-card
+#       cards:
+#         - type: entities
+#           entities:
+#             - entity: input_boolean.vacuum_kitchen
+#               icon: mdi:fridge
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_family_room
+#               icon: mdi:sofa
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_dining_room
+#               icon: mdi:silverware-fork-knife
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_office
+#               icon: mdi:desk
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_foyer
+#               icon: mdi:door-open
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_mudroom
+#               icon: mdi:shoe-formal
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_jr_suite
+#               icon: mdi:bed-empty
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_laundry_room
+#               icon: mdi:washing-machine
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_mudroom_bathroom
+#               icon: mdi:toilet
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_powder_room
+#               icon: mdi:spray-bottle
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             - entity: input_boolean.vacuum_playroom
+#               icon: mdi:castle
+#               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#               secondary_info: last-changed
+#               state_color: true
+#             # - type: divider
+#             # - type: button
+#             #   entity: input_button.main_floor_clean_now
+#             #   action_name: Clean Now
+#             #   name: Clean Now
+#             #   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#             # - type: button
+#             #   entity: vacuum.roborock_s7
+#             #   action_name: Schedule
+#             #   name: Clean when house is empty
+#             #   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#             # - type: divider
+#             # - type: buttons
+#             #   entities:
+#             #     - type: button
+#             #       entity: input_button.main_floor_clean_now
+#             #       action_name: Clean Now
+#             #       name: Clean Now
+#             #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#             #     - type: button
+#             #       entity: vacuum.roborock_s7
+#             #       action_name: Schedule
+#             #       name: Clean When Empty
+#             #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#             #   card_mod:
+#             #     style: |
+#         - type: custom:stack-in-card
+#           mode: horizontal
+#           card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+#           cards:
+#             - type: custom:button-card
+#               name: Clean Now
+#               show_icon: false
+#               tap_action:
+#                 action: perform-action
+#                 perform_action: script.clean_selected_rooms
+#               card_mod:
+#                 style: |
+#                   :host {
+#                     padding: 30px 0 30px 20px !important;
+#                   }
+#                   ha-card {
+#                     background: var(--primary-color) !important;
+#                     color: var(--primary-text-color) !important;
+#                     border-radius: 20px !important;
+#                     font-size: 14px !important;
+#                     font-weight: 500 !important;
+#                     padding: 10px !important;
+#                   }
+#             - type: custom:button-card
+#               name: When Empty
+#               show_icon: false
+#               card_mod:
+#                 style: |
+#                   :host {
+#                     padding: 30px 20px 30px 0 !important;
+#                   }
+#                   ha-card {
+#                     background: var(--primary-color) !important;
+#                     color: var(--primary-text-color) !important;
+#                     border-radius: 20px !important;
+#                     font-size: 14px !important;
+#                     font-weight: 500 !important;
+#                     padding: 10px !important;
+#                   }
+
+
+#   # - type: button
+#   #   name: Roborock S7
+#   #   tap_action:
+#   #     action: fire-dom-event
+#   #     browser_mod:
+#   #       service: browser_mod.popup
+#   #       data:
+#   #         title: Which rooms to vacuum?
+#   #         right_button: Start
+#   #         right_button_action:
+#   #           service: vacuum.send_command
+#   #           data:
+#   #             entity_id: vacuum.roborock_s7
+#   #             command: app_segment_clean
+#   #         content:
+#   #           - name: params
+#   #             label: Select Rooms
+#   #             selector:
+#   #               select:
+#   #                 multiple: true
+#   #                 options:
+#   #                   - label: Living Room
+#   #                     value: 1
+#   #                   - label: Dining Room
+#   #                     value: 2
+#   #                   - label: Kids Bedroom
+#   #                     value: 3
+#   #                   - label: Kitchen
+#   #                     value: 4
+#   #                   - label: Main Hallway
+#   #                     value: 5
+                      
+#   - type: custom:stack-in-card
+#     cards:
+#     - type: entities
+#       entities:
+#         - entity: input_boolean.vacuum_kitchen
+#           icon: mdi:fridge
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_family_room
+#           icon: mdi:sofa
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_dining_room
+#           icon: mdi:silverware-fork-knife
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_office
+#           icon: mdi:desk
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_foyer
+#           icon: mdi:door-open
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_mudroom
+#           icon: mdi:shoe-formal
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_jr_suite
+#           icon: mdi:bed-empty
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_laundry_room
+#           icon: mdi:washing-machine
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_mudroom_bathroom
+#           icon: mdi:toilet
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_powder_room
+#           icon: mdi:spray-bottle
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         - entity: input_boolean.vacuum_playroom
+#           icon: mdi:castle
+#           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+#           secondary_info: last-changed
+#           state_color: true
+#         # - type: divider
+#         # - type: button
+#         #   entity: input_button.main_floor_clean_now
+#         #   action_name: Clean Now
+#         #   name: Clean Now
+#         #   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#         # - type: button
+#         #   entity: vacuum.roborock_s7
+#         #   action_name: Schedule
+#         #   name: Clean when house is empty
+#         #   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#         # - type: divider
+#         # - type: buttons
+#         #   entities:
+#         #     - type: button
+#         #       entity: input_button.main_floor_clean_now
+#         #       action_name: Clean Now
+#         #       name: Clean Now
+#         #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#         #     - type: button
+#         #       entity: vacuum.roborock_s7
+#         #       action_name: Schedule
+#         #       name: Clean When Empty
+#         #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#         #   card_mod:
+#         #     style: |
+#     - type: custom:stack-in-card
+#       mode: horizontal
+#       card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+#       cards:
+#         - type: custom:button-card
+#           name: Clean Now
+#           show_icon: false
+#           tap_action:
+#             action: perform-action
+#             perform_action: script.clean_selected_rooms
+#           card_mod:
+#             style: |
+#               :host {
+#                 padding: 30px 0 30px 20px !important;
+#               }
+#               ha-card {
+#                 background: var(--primary-color) !important;
+#                 color: var(--primary-text-color) !important;
+#                 border-radius: 20px !important;
+#                 font-size: 14px !important;
+#                 font-weight: 500 !important;
+#                 padding: 10px !important;
+#               }
+#         - type: custom:button-card
+#           name: When Empty
+#           show_icon: false
+#           card_mod:
+#             style: |
+#               :host {
+#                 padding: 30px 20px 30px 0 !important;
+#               }
+#               ha-card {
+#                 background: var(--primary-color) !important;
+#                 color: var(--primary-text-color) !important;
+#                 border-radius: 20px !important;
+#                 font-size: 14px !important;
+#                 font-weight: 500 !important;
+#                 padding: 10px !important;
+#               }
+
+#   #
+#   # Vacuum Details
+#   # 
+#   - type: custom:button-card
+#     template: section_title
+#     name: Sensors
+#   - type: entities
+#     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+#     entities:
+#       # Main Brush
+#       - type: custom:template-entity-row
+#         entity: sensor.roborock_s7_main_brush_left
+#         icon: mdi:brush-variant
+#         name: Main Brush
+#         state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
+#         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+#         color: >
+#           {% set main_brush_left = states[config.entity].state | int(0) %}
+#           {% if main_brush_left > 100000 %}
+#             var(--success-color)
+#           {% else %}
+#             var(--error-color)
+#           {% endif %}
+#         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+#       # Side Brush
+#       - type: custom:template-entity-row
+#         entity: sensor.roborock_s7_side_brush_left
+#         icon: mdi:brush-variant
+#         name: Side Brush
+#         state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
+#         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+#         color: >
+#           {% set main_brush_left = states[config.entity].state | int(0) %}
+#           {% if main_brush_left > 100000 %}
+#             var(--success-color)
+#           {% else %}
+#             var(--error-color)
+#           {% endif %}
+#         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+#       # Water Level
+#       - type: custom:template-entity-row
+#         entity: binary_sensor.roborock_s7_water_shortage
+#         name: Water Level
+#         state: "{{ 'Okay' if states[config.entity].state == 'off' else 'Low' }}"
+#         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+#         color: >
+#           {% if states[config.entity].state == "on" %}
+#             var(--error-color)
+#           {% else %}
+#             var(--success-color)
+#           {% endif %}
+#         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+#       # Filter life
+#       - type: custom:template-entity-row
+#         entity: sensor.roborock_s7_filter_left
+#         name: Filter Life
+#         state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
+#         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+#         color: >
+#           {% set filter_left = states[config.entity].state | int(0) %}
+#           {% if filter_left < 5000 %}
+#             var(--error-color)
+#           {% else %}
+#             var(--success-color)
+#           {% endif %}
+#         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+
+
+#   # 
+#   # Vacuum Actions
+#   # 
+#   - type: custom:button-card
+#     template: section_title
+#     name: Maintenance
+#   - type: entities
+#     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+#     entities:
+#       # Reset Filter
+#       - type: button
+#         entity: button.roborock_s7_reset_filter
+#         action_name: Reset
+#         name: Reset Filter
+#         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#       # Reset Main Brush
+#       - type: button
+#         entity: button.roborock_s7_reset_main_brush
+#         action_name: Reset
+#         name: Reset Main Brush
+#         icon: mdi:brush-variant
+#         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#       # Reset Side Brush
+#       - type: button
+#         entity: button.roborock_s7_reset_side_brush
+#         action_name: Reset
+#         name: Reset Side Brush
+#         icon: mdi:brush-variant
+#         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+#       # Reset Sensor Dirty
+#       - type: button
+#         entity: button.roborock_s7_reset_sensor_dirty
+#         action_name: Reset
+#         name: Reset Sensors
+#         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+      
+      
+
+
+# # Overview
+# # - Current Status
+# # - Items
+#     # - battery
+#     # - water level
+#     # - sensors
+
+# # Clean
+# # - room list
+# # - when: now, departure
+# # - start cleaning button
+
+
+
+# # Quick actions
+# #  run
+# #  pause
+# #  return to dock
+
+# # Quick Cleans
+# #  Kitchen 
+# #  Kitchen + Family Room
+# #  Foyer
+# #  Dining room
+
+# # Data
+# #  status (running, docked, etc)
+# #  battery level
+
+
+# # filter life
+# # water level
+# # main brush life
+# # side brush life
+# # sensor dirty life
+# # battery level
+# # cleaning time
+# # cleaning area
+# # cleaning mode
+# # cleaning speed
+# # cleaning history
+# # cleaning schedule
+
+
+# # TODO
+# #  - add dust bag replacement 
+# #   - button -> marks replaced date
+# #   - reminder after 3 months of last date
+# #   - button appears again
+
+# #  - add main brush reset button
+# #  - add side brush reset button

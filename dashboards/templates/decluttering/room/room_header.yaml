@@ -1,0 +1,85 @@
+# 
+# Room Header
+# 
+room_header:
+  card:
+    type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 60% 40%
+        margin: 0px 0px 0px 0px
+        padding: 0px
+        card_margin: 0px
+      cards:
+        # 
+        # Room Name
+        # 
+        - type: custom:button-card
+          template: kohbo_page_title
+          name: "[[room_name]]"
+
+        # 
+        # People in the room
+        # 
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                }
+              .: |
+                ha-card {
+                  height: 100% !important;
+                  align-self: center !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: person.john_koht
+                template: kohbo_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#john'
+                visibility:
+                  - condition: state
+                    entity: sensor.john_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.cristina_falbo
+                template: kohbo_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#cristina'
+                visibility:
+                  - condition: state
+                    entity: sensor.cristina_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.mary_falbo
+                template: kohbo_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.mary_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.katia
+                template: kohbo_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.katia_room_presence
+                    state: "[[room]]"
+
+
+        # 
+        # People
+        # 
+        - !include /config/dashboards/templates/button_cards/people/john.yaml
+        - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+        - !include /config/dashboards/templates/button_cards/people/nonna.yaml

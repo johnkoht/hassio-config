@@ -21,7 +21,7 @@ people_profile_picture:
             [[[
               if (variables.status) {
                 if (variables.status == "sleeping") {
-                  return "#E36001";
+                  return "var(--orange-color)";
                 } else if (variables.status == "dnd") {
                   return "var(--error-color)";
                 }
