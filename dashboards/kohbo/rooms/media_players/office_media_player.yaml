@@ -10,7 +10,7 @@ cards:
       navigation_path: '#office'
   
   - type: custom:button-card
-    template: kohbo_page_title
+    template: kohbo_popup_page_title
     name: MEDIA PLAYER
 
   # - type: "custom:mediocre-massive-media-player-card"

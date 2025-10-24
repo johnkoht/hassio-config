@@ -1,0 +1,17 @@
+template:
+  - sensor:
+      - name: "Energy Current Consumption"
+        unique_id: energy_current_consumption
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        state: >
+          {{ 
+            (
+              (states('sensor.home_energy_meter_1_electric_consumption_w') | float(0)
+              + states('sensor.home_energy_meter_1_electric_consumption_w_2') | float(0))
+              + states('sensor.home_energy_meter_2_electric_consumption_w') | float(0)
+              + states('sensor.home_energy_meter_2_electric_consumption_w_1') | float(0)
+            )
+            | round(0)
+          }}

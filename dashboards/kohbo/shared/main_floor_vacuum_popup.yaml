@@ -14,7 +14,7 @@ cards:
   # Title
   # 
   - type: custom:button-card
-    template: kohbo_page_title
+    template: kohbo_popup_page_title
     name: Quick Clean
 
   - type: conditional

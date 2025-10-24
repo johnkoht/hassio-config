@@ -394,7 +394,7 @@ cards:
         margin_top_desktop: calc(100vh - 500px)
 
       - type: custom:button-card
-        template: kohbo_page_title
+        template: kohbo_popup_page_title
         name: Floor Heating
 
       - type: custom:bubble-card

@@ -1,0 +1,5 @@
+kohbo_popup_page_title:
+  template: kohbo_page_title
+  styles:
+    name:
+      - justify-self: center

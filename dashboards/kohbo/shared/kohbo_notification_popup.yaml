@@ -10,7 +10,7 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
 
   - type: custom:button-card
-    template: kohbo_page_title
+    template: kohbo_popup_page_title
     name: Notifications
 
   - !include /config/dashboards/kohbo/shared/notifications/nino_med_reminder.yaml

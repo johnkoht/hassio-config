@@ -11,7 +11,7 @@ automation:
     triggers:
       # At 6am
       - trigger: time
-        at: "06:00:00"
+        at: "05:00:00"
     conditions: 
       # The house is occupied or we're nearly home
       - condition: or

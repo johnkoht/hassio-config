@@ -77,3 +77,7 @@ styles: |
   .icon.active {
     fill: white !important;
   }
+
+  ha-ripple {
+    display: none !important;
+  }
