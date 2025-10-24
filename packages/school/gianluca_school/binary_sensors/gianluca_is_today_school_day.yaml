@@ -20,7 +20,7 @@ template:
         state: >-
           {% set fms = namespace(event=false) %}
           {%- for key, value in calendar.items() if fms.event is false %}
-            {%- for event in value.events if fms.event is false and 'School Day' in event.summary%}
+            {%- for event in value.events if fms.event is false and 'Gianluca School' in event.summary %}
               {%- set fms.event = true %}
             {%- endfor -%}
           {%- endfor %}

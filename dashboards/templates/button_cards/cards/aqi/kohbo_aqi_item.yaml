@@ -23,13 +23,13 @@ kohbo_aqi_item:
       - font-weight: normal
       - color: "#F8F9FA"
       - font-size: 16px;
-      - margin: 6px 0
+      - margin: 4px 0
     custom_fields:
       unit:
         - font-size: 11px
         - color: "#ADB5BD"
-      aqi:
-        - margin-bottom: 5px
+      # aqi:
+      #   - margin-bottom: 5px
   custom_fields:
     aqi: >
       [[[  

@@ -1,0 +1,38 @@
+kohbo_stacked_card_top:
+  show_state: true
+  show_icon: true
+  show_name: false
+  show_label: true
+  layout: icon_name_state
+  tap_action:
+    action: nothing
+  styles:
+    card:
+      - background: transparent
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+      - padding: 20px 20px 0 20px
+      - box-shadow: none
+      - display: flex
+      - align-items: center
+      - justify-content: flex-start
+      - gap: 12px
+      - border: none
+    grid:
+      - grid-template-areas: "\"i n\" \"i l\""
+      - grid-template-columns: min-content 1fr
+      - align-items: center
+    icon:
+      - width: 38px
+      - height: 38px
+      - margin-right: 15px
+    name:
+      - font-size: 20px
+      - font-weight: regular
+      - color: white
+      - justify-self: start
+      - margin-bottom: 4px;
+    label:
+      - font-size: 12px
+      - color: "#CED4DA"
+      - justify-self: start
