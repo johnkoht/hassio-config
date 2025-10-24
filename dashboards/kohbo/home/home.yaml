@@ -130,16 +130,7 @@ cards:
   # Overview Area for house mode and occupancy
   # 
   - type: custom:mod-card
-    style: |
-      ha-card {
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        justify-content: flex-start;
-        align-items: center;
-        flex-wrap: wrap;
-        height: 45px !important;
-      }
+    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
     card:
       type: horizontal-stack
       cards:
@@ -268,7 +259,7 @@ cards:
   - type: custom:decluttering-card
     template: climate_overview
     variables:
-      - room_name: Indoor Climate
+      - room_name: Indoor
       - temperature_sensor: sensor.average_indoor_temperature
       - humidity_sensor: sensor.average_indoor_humidity
       - pm25_sensor: sensor.indoor_air_quality_pm2_5

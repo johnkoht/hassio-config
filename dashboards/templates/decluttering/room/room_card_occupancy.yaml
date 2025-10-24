@@ -35,31 +35,6 @@ room_card_occupancy:
                   icon: mdi:circle
                   entity: '[[occupancy]]'
                   content: "{{ 'Occupied' if states(entity) == 'on' else 'Empty' }}"
-                  # content: >
-                  #   {% if states(entity) != "unknown" %}
-                  #     {% set state = "" %}
-                  #     {% if states(entity) == 'on' %}
-                  #       {% set state = "Occupied" %}
-                  #     {% else %}
-                  #       {% set state = "Empty" %}
-                  #     {% endif %}
-
-                  #     {% set last_changed = states[entity].last_changed %}
-                  #     {% set now = now() %}
-                  #     {% set diff = (now - last_changed).total_seconds() %}
-
-                  #     {% if diff <= 0 %}
-                  #       {{ state }}
-                  #     {% elif diff < 3600 %}
-                  #       {{ state }} - {{ (diff // 60)|int }}m
-                  #     {% elif diff < 86400 %}
-                  #       {{ state }} - {{ (diff // 3600)|int }}h
-                  #     {% else %}
-                  #       {{ state }} - {{ (diff // 86400)|int }}d
-                  #     {% endif %}
-                  #   {% else %}
-                  #     Empty
-                  #   {% endif %}
                   icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_occupancy_icon_color.yaml
                   tap_action:
                     action: more-info

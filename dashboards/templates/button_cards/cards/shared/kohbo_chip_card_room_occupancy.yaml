@@ -1,0 +1,19 @@
+kohbo_chip_card_room_occupancy:
+  template: kohbo_chip_card
+  size: 12px
+  state_display: >
+    [[[
+      return entity.state == 'on' ? 'Occupied' : 'Empty';
+    ]]]
+  styles:
+    card:
+      - padding-left: 10px
+    state:
+      - margin-left: 4px
+  state:
+    - value: "on"
+      icon: mdi:circle
+      color: var(--success-color)
+    - value: "off"
+      icon: mdi:circle
+      color: var(--light-grey-color)

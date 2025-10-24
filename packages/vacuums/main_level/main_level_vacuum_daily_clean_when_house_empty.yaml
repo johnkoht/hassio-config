@@ -40,7 +40,7 @@ automation:
       # Don't run if a empty house cleaning is scheduled
       - condition: state
         entity_id: input_boolean.main_level_vacuum_clean_when_house_empty
-        state: "on"
+        state: "off"
       # Make sure at least one room is set to vacuum
       - condition: state
         entity_id: group.main_level_vacuum_daily_empty_house_cleaning_group

@@ -8,25 +8,42 @@ cards:
   # 
   # Page Header
   # 
-  # - type: horizontal-stack
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
       type: horizontal-stack
-      cards:
-        # Back button
-        - type: custom:button-card
-          template: kohbo_page_back_button
-          tap_action:
-            action: navigate
-            navigation_path: /dashboard-kohbo/rooms
-        # Settings button
-        # - type: custom:button-card
-        #   template: kohbo_page_settings_button
-        #   tap_action:
-        #     action: navigate
-        #     navigation_path: "#jr_suite_settings_popup"
-  
+      cards:            
+        # Left side buttons
+        - type: custom:mushroom-chips-card
+          alignment: start
+          chips:
+            # Back button
+            - type: template
+              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+              icon: mdi:arrow-left
+              icon_color: var(--secondary-text-color)
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms
+        # Right side buttons
+        - type: custom:mushroom-chips-card
+          alignment: end
+          chips:
+            # Assist
+            - type: template
+              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+              icon: mdi:comment-processing
+              icon_color: var(--secondary-text-color)
+              tap_action:
+                action: assist
+            # Settings button
+            - type: template
+              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+              icon: mdi:cog
+              icon_color: var(--secondary-text-color)
+              tap_action:
+                action: navigate
+                navigation_path: "#jr_suite_settings_popup"
 
   # 
   # Room Header
@@ -40,12 +57,30 @@ cards:
   # 
   # Overview Area for house mode and occupancy
   # 
-  - type: custom:decluttering-card
-    template: room_overview
-    variables:
-      - mode: input_select.jr_suite
-      - occupancy: input_boolean.jr_suite_occupied
-      - room: "jr_suite"
+  - type: custom:mod-card
+    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # Jr. Suite Mode
+        - type: custom:button-card
+          template: kohbo_chip_card_room_mode
+          entity: input_select.jr_suite
+        # # Jr. Suite Occupancy
+        # - type: custom:button-card
+        #   template: kohbo_chip_card_room_occupancy
+        #   entity: input_boolean.jr_suite_occupied
+        # Vacuum the Jr. Suite now
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: vacuum.roborock_s7
+          show_state: false
+          tap_action:
+            action: perform-action
+            perform_action: script.main_level_vacuum_clean_selected_rooms
+            data:
+              rooms: 
+                - jr_suite
 
   # 
   # Climate Overview

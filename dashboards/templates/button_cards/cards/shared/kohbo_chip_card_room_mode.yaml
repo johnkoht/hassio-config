@@ -1,0 +1,19 @@
+kohbo_chip_card_room_mode:
+  template: kohbo_chip_card
+  state:
+    - value: "Auto"
+      icon: kohbo:kohbo-house-auto
+      color: var(--primary-color)
+    - value: "Away"
+      icon: kohbo:kohbo-house-away
+      color: var(--light-grey-color)
+    - value: "Off"
+      icon: kohbo:kohbo-house-away
+      color: var(--light-grey-color)
+    - value: "Bedtime"
+      icon: kohbo:kohbo-house-quiet
+      color: var(--orange-color)
+    - value: "DnD"
+      icon: kohbo:kohbo-dnd-on
+      color: var(--error-color)
+    
