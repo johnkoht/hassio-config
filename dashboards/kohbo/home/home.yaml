@@ -564,6 +564,11 @@ cards:
   - !include /config/dashboards/kohbo/home/house_mode_popup.yaml
 
 
+  # 
+  # House Locks Popup
+  # 
+  - !include /config/dashboards/kohbo/shared/house_locks_popup.yaml
+
   # # 
   # # Front Door Camera Popup
   # # 

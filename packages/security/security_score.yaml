@@ -79,4 +79,8 @@ template:
           {% endif %}
 
           {# Final Evaluation #}
-          {{ score }}
+          {% if score < 0 %}
+            0
+          {% else %}
+            {{ score }}
+          {% endif %}

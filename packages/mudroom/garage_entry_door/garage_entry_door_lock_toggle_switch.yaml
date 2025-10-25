@@ -1,0 +1,12 @@
+template:
+  - switch:
+      - name: Garage Entry Door Lock Switch
+        state: "{{ is_state('lock.garage_entry_door', 'locked') }}"
+        turn_on:
+          action: lock.lock
+          target:
+            entity_id: lock.garage_entry_door
+        turn_off:
+          action: lock.unlock
+          target:
+            entity_id: lock.garage_entry_door

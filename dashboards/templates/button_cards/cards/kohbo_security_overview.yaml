@@ -1,5 +1,8 @@
 type: custom:stack-in-card
 cards:
+  # 
+  # Security Status / Overview
+  # 
   - type: custom:button-card
     template: kohbo_stacked_card_top
     entity: sensor.house_security_status
@@ -37,11 +40,16 @@ cards:
               return entity.state === 'Totally Secure' ? '#06D6A0' : '#FFD166';
             ]]]
 
- 
+  # 
+  # Security Items
+  # 
   - type: custom:stack-in-card
     mode: horizontal
     card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
     cards:
+      # 
+      # Alarm
+      # 
       - type: custom:button-card
         entity: alarm_control_panel.panel
         name: Alarm
@@ -54,6 +62,9 @@ cards:
           - value: 'armed_away'
             icon: kohbo:kohbo-alarm-armed-away
 
+      # 
+      # Locks
+      # 
       - type: custom:button-card
         entity: lock.house_locks
         name: Locks
@@ -70,7 +81,13 @@ cards:
             icon: kohbo:kohbo-lock-unlocked
           - value: 'locked'
             icon: kohbo:kohbo-lock-locked
+        tap_action:
+          action: navigate
+          navigation_path: '#house_locks_popup'
 
+      # 
+      # Garage Doors
+      # 
       - type: custom:button-card
         entity: cover.garage_doors
         name: Garage

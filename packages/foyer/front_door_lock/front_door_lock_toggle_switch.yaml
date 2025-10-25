@@ -1,0 +1,12 @@
+template:
+  - switch:
+      - name: Front Door Lock Switch
+        state: "{{ is_state('lock.front_door', 'locked') }}"
+        turn_on:
+          action: lock.lock
+          target:
+            entity_id: lock.front_door
+        turn_off:
+          action: lock.unlock
+          target:
+            entity_id: lock.front_door

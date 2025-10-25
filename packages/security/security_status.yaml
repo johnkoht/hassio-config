@@ -4,8 +4,10 @@ template:
         unique_id: house_security_status
         state: >-
           {% set score = states.sensor.house_security_score.state | int %}
-          {% if score >= 85 %}
+          {% if score >= 90 %}
             Totally Secure
+          {% elif score >= 80 %}
+            Secure
           {% elif score >= 50 %}
             Partially Secure
           {% else %}

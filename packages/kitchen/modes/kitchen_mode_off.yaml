@@ -2,33 +2,33 @@ automation:
   - id: "kitchen_mode_off"
     initial_state: on
     alias: "Kitchen mode off"
-    trigger:
+    triggers:
       # House becomes unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # # Kitchen becomes unoccupied
-      # - platform: state
+      # - trigger: state
       #   entity_id: input_boolean.kitchen_occupied
       #   to: "off"
       # House is turned to Away
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Away"
       # # House is turned to Bedtime
-      # - platform: state
+      # - trigger: state
       #   entity_id: input_select.house
       #   to: "Bedtime"
       # Bedtime mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Hassio restart/relaod
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    condition:
+    conditions:
       # # Kitchen is not occupied
       # - condition: state
       #   entity_id: input_boolean.kitchen_occupied
@@ -58,8 +58,11 @@ automation:
           # - condition: state
           #   entity_id: input_boolean.kitchen_occupied
           #   state: "off"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.kitchen
           option: "Off"
+      # Make the kitchen as unoccupied
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.kitchen_occupied
