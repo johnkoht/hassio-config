@@ -189,6 +189,9 @@ cards:
           name: Electricity Usage
           icon: mdi:lightning-bolt
           entity: sensor.energy_current_consumption
+          tap_action:
+            action: navigate
+            navigation_path: '#energy_usage'
           show_state: true
           styles:
             state:
@@ -571,6 +574,98 @@ cards:
   - !include /config/dashboards/kohbo/security/front_door_lock_popup.yaml
   - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml
 
+  # 
+  # Front Door Lock Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#energy_usage'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Energy Usage
+
+      - type: custom:mini-graph-card
+        entities:
+          - entity: sensor.energy_current_consumption
+        name: Energy Usage
+        show:
+          graph: bar
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+        points_per_hour: 2
+        line_width: 4
+        decimals: 0
+        smoothing: true
+        color_thresholds_transition: smooth
+        color_thresholds:
+          - color: "#59A5D8"
+            value: 400
+          - color: "#ADD2EB"
+            value: 600
+          - color: "#06D6A0"
+            value: 1000
+          - color: "#FFD166"
+            value: 2000
+          - color: "#ED4747"
+            value: 3000
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: gauge
+            name: Daily Energy Usage
+            unit: 'kWh'
+            entity: sensor.daily_energy_consumption
+            min: 0
+            max: 40
+            needle: true
+            segments:
+              - from: 0
+                color: var(--success-color)
+              - from: 10
+                color: var(--warning-color)
+              - from: 25
+                color: var(--error-color)
+
+          # Weekly Energy Usage
+          - type: gauge
+            name: Weekly Energy Usage
+            unit: 'kWh'
+            entity: sensor.weekly_energy_consumption
+            min: 0
+            max: 40
+            needle: true
+            segments:
+              - from: 0
+                color: var(--success-color)
+              - from: 10
+                color: var(--warning-color)
+              - from: 25
+                color: var(--error-color)
+
+          # Monthly Energy Usage
+          - type: gauge
+            name: Monthly Energy Usage
+            unit: 'kWh'
+            entity: sensor.monthly_energy_consumption
+            min: 0
+            max: 40
+            needle: true
+            segments:
+              - from: 0
+                color: var(--success-color)
+              - from: 10
+                color: var(--warning-color)
+              - from: 25
+                color: var(--error-color)
+
+      
+  
   # # 
   # # Front Door Camera Popup
   # # 

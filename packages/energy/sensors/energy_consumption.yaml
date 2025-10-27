@@ -1,0 +1,36 @@
+template:
+  # 
+  # Daily Energy Consumption
+  # 
+  - sensor:
+      - name: "Daily Energy Consumption"
+        unique_id: daily_energy_consumption
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        state: >
+          {{ (states('sensor.panel_1_energy_meter') | float(0) + states('sensor.panel_2_energy_meter') | float(0)) | round(2) }}
+
+  # 
+  # Weekly Energy Consumption
+  # 
+  - sensor:
+      - name: "Weekly Energy Consumption"
+        unique_id: weekly_energy_consumption
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        state: >
+          {{ (states('sensor.panel_1_energy_meter_weekly') | float(0) + states('sensor.panel_2_energy_meter_weekly') | float(0)) | round(2) }}
+
+  # 
+  # Monthly Energy Consumption
+  # 
+  - sensor:
+      - name: "Monthly Energy Consumption"
+        unique_id: monthly_energy_consumption
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        state: >
+          {{ (states('sensor.panel_1_energy_meter_monthly') | float(0) + states('sensor.panel_2_energy_meter_monthly') | float(0)) | round(2) }}

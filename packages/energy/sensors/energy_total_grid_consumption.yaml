@@ -1,9 +1,0 @@
-template:
-  - sensor:
-      - name: "Total Grid Consumption"
-        unique_id: total_grid_consumption
-        unit_of_measurement: "kWh"
-        device_class: energy
-        state_class: total_increasing
-        state: >
-          {{ (states('sensor.panel_1_energy_meter') | float(0) + states('sensor.panel_2_energy_meter') | float(0)) | round(2) }}
