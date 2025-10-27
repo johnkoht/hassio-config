@@ -22,6 +22,7 @@ views:
     # - !include /config/dashboards/kohbo/media/media.yaml
     # - !include /config/dashboards/kohbo/devices/devices.yaml
     - !include /config/dashboards/kohbo/security/security.yaml
+    # - !include /config/dashboards/kohbo/security/front_door_lock.yaml
 
     # Main Floor
     - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml

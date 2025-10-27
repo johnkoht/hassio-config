@@ -156,7 +156,7 @@ cards:
         secondary_info: last-changed
         state_color: true
       # Autolock Garage Entry Door
-      - entity: automation.garage_entry_door_lock_at_bedtime
+      - entity: automation.garage_entry_door_lock_auto_lock
         name: Autolock Garage Entry Door
         icon: mdi:lock
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml

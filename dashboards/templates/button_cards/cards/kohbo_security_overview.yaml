@@ -11,7 +11,7 @@ cards:
       [[[
         if (entity.state == "Partially Secure")
           return "kohbo:kohbo-security-low"
-        else if (entity.state == "Totally Secure")
+        else if (entity.state == "Totally Secure" || entity.state == "Secure")
           return "kohbo:kohbo-security-high"
         else
           return "kohbo:kohbo-security-low"
@@ -21,7 +21,7 @@ cards:
       [[[
         if (entity.state == "Partially Secure")
           return "Partially Secure"
-        else if (entity.state == "Totally Secure")
+        else if (entity.state == "Totally Secure" || entity.state == "Secure")
           return "Home Secure"
         else
           return "Home Vulnerable"
@@ -37,7 +37,7 @@ cards:
       icon:
         - color: >
             [[[
-              return entity.state === 'Totally Secure' ? '#06D6A0' : '#FFD166';
+              return entity.state === 'Totally Secure' || entity.state === 'Secure' ? '#06D6A0' : '#FFD166';
             ]]]
 
   # 

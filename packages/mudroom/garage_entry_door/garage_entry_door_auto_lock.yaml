@@ -1,31 +1,44 @@
+# 
+# Garagae Entry Door - Auto Lock
+# 
+# This automation will lock the garage entry door
+# when the house goes into bedtime mode and the
+# house becomes unoccupied.
+# 
 automation:
-  - id: "garage_entry_door_auto_lock"
-    alias: "Garage Entry Door - Auto Lock"
+  - id: "garage_entry_door_lock_auto_lock"
+    alias: "Garage Entry Door Lock - Auto Lock"
     initial_state: on
-    trigger:
-      # # If door has been unlocked for a while
-      # - platform: state
-      #   entity_id: lock.garage_entry_door
-      #   to: "unlocked"
-      #   for:
-      #     hours: 1
-      # At 10pm
-      - platform: time
-        at: "22:00:00"
-    condition:
+    triggers:
+      # House goes into bedtime mode
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # House becomes unoccupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # At the lock time
+      - trigger: time
+        at: input_datetime.garage_entry_door_lock_time
+    conditions:
       # Garage entry door is unlocked
       - condition: state
         entity_id: lock.garage_entry_door
         state: "unlocked"
-      # House is NOT in entertainment mode
-      - not:
-          - condition: state
-            entity_id: input_boolean.entertainment_mode
-            state: "on"
-    action:
+    actions:
       # Lock the door!
-      - service: lock.lock
+      - action: lock.lock
         entity_id: lock.garage_entry_door
 
 
-
+# 
+# Garage Entry Door Lock Time
+# 
+input_datetime:
+  garage_entry_door_lock_time:
+    name: Garage Entry Door Lock Time
+    icon: mdi:lock
+    initial: "22:00:00"
+    has_date: false
+    has_time: true

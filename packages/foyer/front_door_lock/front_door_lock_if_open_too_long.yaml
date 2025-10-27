@@ -8,19 +8,19 @@ automation:
   - id: "front_door_lock_if_open_too_long"
     alias: "Front Door - Lock If Open Too Long"
     initial_state: on
-    trigger:
+    triggers:
       # If door has been unlocked for a while
-      - platform: state
+      - trigger: state
         entity_id: lock.front_door
         to: "unlocked"
         for:
-          minutes: 15
+          minutes: "{{ states.input_number.front_door_lock_if_open_too_long_timeout.state | int }}"
       # Entertainment mode is turned OFF
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.entertainment_mode
         from: "on"
         to: "off"
-    condition:
+    conditions:
       # Door is unlocked
       - condition: state
         entity_id: lock.front_door
@@ -36,7 +36,19 @@ automation:
           # OR it's late (10pm)
           - condition: time
             after: "22:00:00"
-    action:
+    actions:
       # Lock the door!
       - service: lock.lock
         entity_id: lock.front_door
+
+
+input_number:
+  front_door_lock_if_open_too_long_timeout:
+    name: Front Door Lock If Open Too Long Timeout
+    min: 1
+    max: 120
+    step: 1
+    unit_of_measurement: minutes
+    icon: mdi:timer-outline
+    mode: box
+    initial: 15

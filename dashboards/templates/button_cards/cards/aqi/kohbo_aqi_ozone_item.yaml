@@ -5,8 +5,6 @@ kohbo_aqi_ozone_item:
   state_display: |
     [[[
       var ozone = entity.state.trim(); 
-      // ozone = Math.round(ozone).toString();
-      console.log("ozone", ozone);
       return ozone;
     ]]]
   show_state: true
@@ -14,7 +12,6 @@ kohbo_aqi_ozone_item:
     aqi_status: >
       [[[
         var ozone = parseFloat(entity.state);
-        console.log("ozone", ozone);
         if (ozone <= 54) {
           return 'Good';
         } else if (ozone <= 60) {

@@ -11,39 +11,15 @@ cards:
     # margin_top_mobile: calc(100vh - 700px)
     # margin_top_desktop: calc(100vh - 700px)
 
-  # - type: custom:button-card
-  #   template: kohbo_popup_page_title
-  #   name: House Locks
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: House Locks
 
 
   - type: custom:more-info-card
     entity: lock.house_locks
     title: House Locks
-    card_mod:
-      style: 
-        .: |
-          ha-card {
-            background: transparent !important;
-            text-align: center !important;
-
-            .card-content {
-              padding: 0px !important;
-            }
-          }
-
-          state-card-content {
-            display: none !important;
-          }
-
-        more-info-content$: |
-          hui-section {
-            display: none !important;
-          }
-
-        more-info-content$ more-info-lock$: |
-          ha-control-button {
-            display: none !important;
-          }
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
 
 
   # 
@@ -64,21 +40,22 @@ cards:
         template: kohbo_device_lock_entity
         entity: lock.front_door
         name: Front Door
+        tap_action:
+          action: navigate
+          navigation_path: "#front_door_lock_popup"
 
-      - type: custom:mod-card
+      - type: entities
         card_mod:
-          style:
-            hui-entities-card$: |
+          style: |
+            ha-card {
               #states {
                 padding: 0px !important;
               }
-        card:
-          type: entities
-          entities:
-            - entity: switch.front_door_lock_switch
-              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/input_boolean_embedded.yaml
-              secondary_info: last-changed
-
+            }
+        entities:
+          - entity: switch.front_door_lock_switch
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/input_boolean_embedded.yaml
+            secondary_info: last-changed
 
   # 
   # Garage Entry Door Lock
@@ -98,28 +75,20 @@ cards:
         template: kohbo_device_lock_entity
         entity: lock.garage_entry_door
         name: Garage Entry Door
+        tap_action:
+          action: navigate
+          navigation_path: "#garage_entry_lock_popup"
 
-      - type: custom:mod-card
+      - type: entities
         card_mod:
-          style:
-            hui-entities-card$: |
+          style: |
+            ha-card {
               #states {
                 padding: 0px !important;
               }
-        card:
-          type: entities
-          entities:
-            - entity: switch.garage_entry_door_lock_switch
-              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/input_boolean_embedded.yaml
-              secondary_info: last-changed
+            }
+        entities:
+          - entity: switch.garage_entry_door_lock_switch
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/input_boolean_embedded.yaml
+            secondary_info: last-changed
 
-
-
-  
-        
-
-  # Lock All Locks
-  # front door lock
-  # garage entry door lock
-  # lock settings
-  

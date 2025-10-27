@@ -1,3 +1,9 @@
+# 
+# Garage Entry Door Lock Toggle Switch
+# 
+# This switch is just used to make a toggle switch
+# for the garage entry door lock in the dashboard.
+# 
 template:
   - switch:
       - name: Garage Entry Door Lock Switch

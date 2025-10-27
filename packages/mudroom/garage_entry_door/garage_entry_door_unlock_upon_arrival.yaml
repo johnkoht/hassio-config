@@ -2,9 +2,9 @@ automation:
   - id: "garage_entry_door_unlock_upon_arrival"
     alias: "Garage Entry Door - Unlock Upon Arrival"
     initial_state: on
-    trigger:
+    triggers:
       # Somebody arrives at the house
-      - platform: state
+      - trigger: state
         entity_id:
           - person.john_koht
           - person.cristina_falbo
@@ -15,10 +15,10 @@ automation:
           - person.joe_falbo
         to: "home"
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
-    condition:
+    conditions:
       # Garage entry door is unlocked
       - condition: state
         entity_id: lock.garage_entry_door
@@ -27,7 +27,7 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
+    actions:
       # Unlock the door!
-      - service: lock.unlock
+      - action: lock.unlock
         entity_id: lock.garage_entry_door

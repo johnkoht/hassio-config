@@ -1,0 +1,26 @@
+style: 
+  .: |
+    ha-card {
+      text-align: center !important;
+      padding: 40px 20px 20px 20px !important;
+
+      .card-content {
+        padding: 0px !important;
+      }
+    }
+
+    state-card-content {
+      display: none !important;
+    }
+  more-info-content$: |
+    hui-section {
+      display: none !important;
+    }
+  more-info-content$ more-info-lock$: |
+    ha-control-button {
+      display: none !important;
+    }
+  $: |
+    h1 {
+      display: none !important;
+    }

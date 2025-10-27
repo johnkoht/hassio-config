@@ -1,0 +1,140 @@
+# 
+# Front Door Lock Popup
+# 
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#front_door_lock_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Front Door Lock
+
+  # 
+  # Front Door Lock Status
+  # 
+  - type: custom:more-info-card
+    entity: lock.front_door
+    title: Front Door Lock
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
+
+  # 
+  # Autolock Settings
+  #         
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          # Autolock at Night & Empty
+          - entity: automation.front_door_auto_lock
+            name: Autolock at Night & Empty
+            icon: mdi:lock
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-triggered
+            state_color: true
+
+  - type: custom:button-card
+    name: If enabled, the front door will automatically lock at bedtime or when the house is empty.
+    template: kohbo_card_section_description
+
+  # 
+  # Lock If Open Too Long Settings
+  # 
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+        ha-card {
+          margin-top: 20px !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          # Lock If Open Too Long
+          - entity: automation.front_door_lock_if_open_too_long
+            name: Lock If Open Too Long
+            icon: mdi:lock
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-triggered
+            state_color: true
+      
+      - type: conditional
+        conditions:
+          - entity: automation.front_door_lock_if_open_too_long
+            state: 'on'
+        card:
+          type: custom:stack-in-card
+          mode: vertical
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+          cards:
+            - type: entities
+              card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+              entities:
+                - entity: input_number.front_door_lock_if_open_too_long_timeout
+                  name: Lock Timeout
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+
+  - type: custom:button-card
+    name: If enabled, the front door will automatically lock if it's been unlocked longer than the timeout.
+    template: kohbo_card_section_description
+    styles:
+      card:
+        - margin-bottom: 20px
+
+
+  # 
+  # Fingerprint Unlock Settings
+  #         
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          # Fingerprint Unlock
+          - entity: automation.security_unlock_front_door_by_fingerprint
+            name: Fingerprint Unlock
+            icon: mdi:fingerprint
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-triggered
+            state_color: true
+
+  - type: custom:button-card
+    name: If enabled, the front door will automatically unlock when a fingerprint is identified and allowed.
+    template: kohbo_card_section_description
+    styles:
+      card:
+        - margin-bottom: 20px
+
+
+  # 
+  # Signal Strength
+  # 
+  - type: entities
+    entities:
+      - entity: sensor.front_door_lock_signal_strength
+        name: Signal Strength
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        icon: mdi:bluetooth
+

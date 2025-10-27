@@ -81,7 +81,6 @@ kohbo_room_card_overview:
       ]]]
     secondary_climate: >
       [[[
-        console.log("aqi", variables.aqi);
         if (variables.aqi) {
           return "AQI - " + variables.aqi;
         }
@@ -90,7 +89,6 @@ kohbo_room_card_overview:
         }
       ]]]
   card_mod:
-    debug: true
     style: |
       #state {
         position: relative;
