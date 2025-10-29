@@ -47,44 +47,11 @@ cards:
       - ble_presence: sensor.office_people_list
 
 
-  # # 
-  # # Overview Area for house mode and occupancy
-  # # 
-  # - type: custom:mod-card
-  #   style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
-  #   card:
-  #     type: horizontal-stack
-  #     cards:
-  #       # Office Mode
-  #       - type: custom:button-card
-  #         template: kohbo_chip_card_room_mode
-  #         entity: input_select.office
-  #       # Office Occupancy
-  #       - type: custom:button-card
-  #         template: kohbo_chip_card_room_occupancy
-  #         entity: input_boolean.office_occupied
-  #       # Office Motion
-  #       - type: custom:button-card
-  #         template: kohbo_chip_card
-  #         entity: binary_sensor.office_aqara_motion_sensor
-  #         show_state: false
-  #       # Vacuum the office now
-  #       - type: custom:button-card
-  #         template: kohbo_chip_card
-  #         entity: vacuum.roborock_s7
-  #         show_state: false
-  #         tap_action:
-  #           action: perform-action
-  #           perform_action: script.main_level_vacuum_clean_selected_rooms
-  #           data:
-  #             rooms: 
-  #               - office
-
   # 
   # Climate Overview
   # 
   - type: custom:decluttering-card
-    template: climate_overview
+    template: climate_overview_linkable
     variables:
       - temperature_sensor: sensor.office_awair_temperature
       - humidity_sensor: sensor.office_awair_humidity
@@ -92,7 +59,7 @@ cards:
       - vocs_sensor: sensor.office_awair_vocs
       - pm25_sensor: sensor.office_awair_pm2_5
       - room_name: Office
-
+      - navigation_path: '#office_climate_popup'
                     
   # 
   # Lights
@@ -228,6 +195,12 @@ cards:
         variables:
           power_sensor: sensor.smart_plug_11_active_power
           confirmation: true
+      
+      # Awair AQI
+      - type: custom:button-card
+        entity: sensor.office_awair_score
+        name: Awair AQI
+        template: kohbo_device_aqi_entity
     
       - type: custom:button-card
         entity: binary_sensor.office_doors
@@ -253,45 +226,6 @@ cards:
         template: kohbo_device_window_entity
         
   
-  # 
-  # Automations
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Automations
-  - type: entities
-    entities:
-      # Air Quality Sensor Detections
-      - entity: automation.office_air_quality_detections
-        name: Air Quality Automations
-        icon: mdi:air-filter
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # Music Automation
-      - entity: automation.office_music_resume
-        name: Music Automation
-        icon: mdi:music-note
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # Deep Work Lighting
-      - entity: automation.office_shelf_lights_turn_on_deep_work_lighting
-        name: Deep Work Lighting
-        icon: mdi:lightbulb-variant
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # Treadmill Off
-      - entity: automation.office_treadmill_off
-        name: Treadmill Off
-        icon: mdi:walk
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
 
   # 
   # Quick Settings
@@ -345,44 +279,6 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-  # 
-  # Sensors
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Sensors
-  - type: entities
-    entities:
-      # BLE Base Station
-      - type: custom:template-entity-row
-        icon: mdi:bluetooth
-        name: BLE Base Station
-        entity: binary_sensor.espresense_office
-        state: "{{ 'Connected' if states['binary_sensor.espresense_office'].state == 'on' else 'Disconnected' }}"
-        secondary: "{{ states['binary_sensor.espresense_office'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-        
-      # Occupancy Sensor
-      - type: custom:template-entity-row
-        icon: kohbo:kohbo-room-occupancy
-        name: Occupancy Sensor
-        entity: binary_sensor.office_aqara_occupancy
-        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-        secondary: "{{ states['binary_sensor.office_aqara_occupancy'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
-      # Motion Sensor
-      - type: custom:template-entity-row
-        icon: mdi:motion-sensor
-        name: Motion Sensor
-        entity: binary_sensor.office_aqara_motion_sensor
-        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-        secondary: "{{ states['binary_sensor.office_aqara_motion_sensor'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
 
   # 
   # Ceiling Lights Pop Up
@@ -420,6 +316,9 @@ cards:
         hash: '#office_settings_popup'
         close_by_clicking_outside: true
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 750px)
+        margin_top_desktop: calc(100vh - 750px)
+        
       # 
       # Title
       # 
@@ -427,6 +326,196 @@ cards:
         template: kohbo_popup_page_title
         name: Office Settings
 
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      
+      - type: entities
+        entities:
+          # Air Quality Sensor Detections
+          - entity: automation.office_air_quality_detections
+            name: Air Quality Automations
+            icon: mdi:air-filter
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Music Automation
+          - entity: automation.office_music_resume
+            name: Music Automation
+            icon: mdi:music-note
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Deep Work Lighting
+          - entity: automation.office_shelf_lights_turn_on_deep_work_lighting
+            name: Deep Work Lighting
+            icon: mdi:lightbulb-variant
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Treadmill Off
+          - entity: automation.office_treadmill_off
+            name: Treadmill Off
+            icon: mdi:walk
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Clean Office When Rio is at Daycare
+          - entity: automation.vacuum_clean_office_when_dog_is_at_daycare
+            name: Clean Office When Rio is at Daycare
+            icon: mdi:dog
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # BLE Base Station
+          - type: custom:template-entity-row
+            icon: mdi:bluetooth
+            name: BLE Base Station
+            entity: binary_sensor.espresense_office
+            state: "{{ 'Connected' if states['binary_sensor.espresense_office'].state == 'on' else 'Disconnected' }}"
+            secondary: "{{ states['binary_sensor.espresense_office'].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
+            color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+            
+          # Occupancy Sensor
+          - type: custom:template-entity-row
+            icon: kohbo:kohbo-room-occupancy
+            name: Occupancy Sensor
+            entity: binary_sensor.office_aqara_occupancy
+            state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+            secondary: "{{ states['binary_sensor.office_aqara_occupancy'].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+          # Motion Sensor
+          - type: custom:template-entity-row
+            icon: mdi:motion-sensor
+            name: Motion Sensor
+            entity: binary_sensor.office_aqara_motion_sensor
+            state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
+            secondary: "{{ states['binary_sensor.office_aqara_motion_sensor'].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+
+  
+  # 
+  # Office Climate Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#office_climate_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 750px)
+        margin_top_desktop: calc(100vh - 750px)
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Office Climate
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.office_awair_temperature
+              # - entity: sensor.office_awair_score
+            name: Temperature
+            card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+            hours_to_show: 12
+            points_per_hour: 2
+            line_width: 4
+            decimals: 0
+            smoothing: true
+            color_thresholds_transition: smooth
+            color_thresholds:
+              - color: "#59A5D8"
+                value: 14
+              - color: "#ADD2EB"
+                value: 45
+              - color: "#06D6A0"
+                value: 67
+              - color: "#FFD166"
+                value: 78
+              - color: "#ED4747"
+                value: 90
+
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.office_awair_score
+            name: AQI Score
+            card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+            hours_to_show: 12
+            points_per_hour: 4
+            line_width: 4
+            decimals: 0
+            smoothing: true
+            color_thresholds_transition: smooth
+            color_thresholds:
+              - color: "#6155F5"
+                value: 0
+              - color: "#ED4747"
+                value: 20
+              - color: "#E36001"
+                value: 40
+              - color: "#FFD166"
+                value: 60
+              - color: "#06D6A0"
+                value: 100
+                
+          # Humidity
+          - type: custom:decluttering-card
+            template: kohbo_room_temperature_card
+            variables:
+              - name: Humidity
+              - entity: sensor.office_awair_humidity
+              - icon: mdi:water-percent
+          
+          # Carbon Dioxide
+          - type: custom:decluttering-card
+            template: kohbo_room_temperature_card
+            variables:
+              - name: Carbon Dioxide
+              - entity: sensor.office_awair_carbon_dioxide
+              - icon: mdi:molecule-co2
+
+          # VOCs
+          - type: custom:decluttering-card
+            template: kohbo_room_temperature_card
+            variables:
+              - name: VOCs
+              - entity: sensor.office_awair_vocs
+              - icon: mdi:molecule
+
+          # PM2.5
+          - type: custom:decluttering-card
+            template: kohbo_room_temperature_card
+            variables:
+              - name: PM2.5
+              - entity: sensor.office_awair_pm2_5
+              - icon: phu:pm2-5
+
+  
+  
   # 
   # Navbar
   # 

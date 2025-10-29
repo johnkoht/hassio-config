@@ -1,0 +1,19 @@
+kohbo_device_aqi_entity:
+  template: kohbo_device_entity
+  icon: mdi:blur
+  state:
+    - operator: template
+      value:  "[[[ return Math.round(parseFloat(entity.state)) < 20 ]]]"
+      color: "#6155F5"
+    - operator: template
+      value:  "[[[ return Math.round(parseFloat(entity.state)) < 40 ]]]"
+      color: var(--error-color)
+    - operator: template
+      value:  "[[[ return Math.round(parseFloat(entity.state)) < 60 ]]]"
+      color: var(--orange-color)
+    - operator: template
+      value:  "[[[ return Math.round(parseFloat(entity.state)) < 80 ]]]"
+      color: var(--warning-color)
+    - operator: template
+      value:  "[[[ return Math.round(parseFloat(entity.state)) >= 80 ]]]"
+      color: var(--success-color)

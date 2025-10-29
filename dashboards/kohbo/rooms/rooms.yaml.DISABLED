@@ -1,0 +1,387 @@
+# type: custom:vertical-layout
+# title: Rooms
+# path: rooms
+# theme: kohbo
+# layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_room_page_layout.yaml
+# cards:
+#   # 
+#   # Page Header
+#   # 
+#   - type: custom:mod-card
+#     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+#     card:
+#       type: vertical-stack
+#       cards:
+#         - type: horizontal-stack
+#           cards:
+#             # Assist
+#             - type: custom:button-card
+#               template: kohbo_header_chip_card
+#               icon: mdi:comment-processing
+#               tap_action:
+#                 action: assist
+            
+#             # Room Name
+#             - type: custom:button-card
+#               template: kohbo_header_page_title
+#               name: Rooms
+
+#             # Settings button
+#             - type: custom:button-card
+#               template: kohbo_header_chip_card
+#               icon: mdi:cog
+#               icon_color: var(--secondary-text-color)
+#               tap_action:
+#                 action: navigate
+#                 navigation_path: '#rooms_settings_popup'
+
+#         - type: custom:navbar-card
+#           routes:
+#             - url: /dashboard-kohbo/home
+#               icon: mdi:home-floor-1
+#               label: Main
+#             - url: /dashboard-kohbo/rooms
+#               icon: mdi:home-floor-2
+#               label: Upper
+#             - url: /dashboard-kohbo/climate
+#               icon: mdi:grass
+#               label: Exterior
+#             - url: /dashboard-kohbo/security
+#               icon: mdi:washing-machine
+#               label: Laundry
+#           haptic: true
+#           mobile:
+#             show_labels: true
+#             show_popup_label_backgrounds: true
+#           styles: |
+#             .navbar {
+#               top: 60px !important;
+#               bottom: auto !important;
+#             }
+
+#             .navbar-card {
+#               background: var(--app-header-background-color) !important;
+#               box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.1) !important;
+#               padding: 0 15px !important;
+#             }
+
+#             .button {
+#               display: none !important;
+#             }
+
+#             .label {
+#               padding: 12px 0 !important;
+#               font-size: 12px !important;
+#               text-transform: uppercase;
+#               font-family: 'Inter', sans-serif !important; 
+#               font-weight: 600 !important;
+#               color: var(--semi-dark-grey-color) !important;
+#             }
+
+#             .label.active {
+#               color: var(--primary-text-color) !important;
+#             }
+
+#             .route.active {
+#               border-bottom: 2px solid var(--primary-text-color) !important;
+#             }
+        
+
+#     # # 
+#   # # Page Header
+#   # # 
+#   # - type: custom:mod-card
+#   #   # card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+#   #   card_mod:
+#   #     style:
+#   #       .: |
+#   #         ha-card {
+#   #           background: var(--app-header-background-color) !important;
+#   #           position: fixed !important;
+#   #           top: 0px !important;
+#   #           z-index: 1 !important;
+#   #           height: 56px !important;
+#   #           left: 0 !important;
+#   #           right: 0 !important;
+#   #           width: 100% !important;
+#   #           padding: 0 15px 10px 15px !important;
+#   #           border-radius: 0 !important;
+#   #         }
+
+#   #       hui-horizontal-stack-card$: |
+#   #         #root {
+#   #           align-items: center;
+#   #           display: grid !important;
+#   #           grid-template-columns: 25% 50% 25% !important;
+#   #         }
+#   #   card:
+#   #     type: horizontal-stack
+#   #     cards:
+#   #       - type: custom:bubble-card
+#   #         card_type: empty-column
+
+#   #       - type: custom:bubble-card
+#   #         card_type: select
+#   #         entity: input_select.house_areas
+#   #         show_name: false
+#   #         show_state: true
+#   #         scrolling_effect: false
+#   #         card_layout: normal
+#   #         show_icon: false
+#   #         card_mod:
+#   #           style: |
+#   #             .bubble-select-container {
+#   #               height: 36px !important;
+#   #             }
+
+#   #             .bubble-buttons-container {
+#   #               margin-right: 2px !important;
+#   #             }
+
+#   #             .display-state {
+#   #               font-size: 14px !important;
+#   #               font-weight: 500 !important;
+#   #             }
+
+#   #             .bubble-dropdown-arrow {
+#   #               height: 30px !important;
+#   #               width: 30px !important;
+#   #             }
+
+#   #       - type: custom:mushroom-chips-card
+#   #         alignment: end
+#   #         chips:
+#   #           # Assist
+#   #           - type: template
+#   #             card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+#   #             icon: mdi:comment-processing
+#   #             icon_color: var(--secondary-text-color)
+#   #             tap_action:
+#   #               action: assist
+#   #           # Notifications
+#   #           - type: template
+#   #             card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+#   #             icon: mdi:bell
+#   #             icon_color: var(--secondary-text-color)
+#   #             tap_action:
+#   #               action: navigate
+#   #               navigation_path: '#notifications'
+
+
+#   # - type: custom:button-card
+#   #   template: kohbo_page_title
+#   #   name: Rooms
+
+#   # - type: custom:simple-tabs
+#   #   pre-load: true
+#   #   alignment: center
+#   #   # border-color: transparent
+#   #   # active-background: transparent
+#   #   tabs:
+#   #       - title: Main
+#   #         card: !include /config/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml
+#   #       - title: Upper
+#   #         card: !include /config/dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml
+#   #       - title: Laundry
+#   #         card: !include /config/dashboards/kohbo/rooms/partials/laundry_room_cards.yaml
+#   #       - title: Exterior
+#   #         card: !include /config/dashboards/kohbo/rooms/partials/exterior_room_cards.yaml
+#   #       - title: More
+#   #         card: !include /config/dashboards/kohbo/rooms/partials/more_room_cards.yaml
+
+
+#   # - type: custom:stack-in-card
+#   #   # card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+#   #   cards:
+
+
+#   # style:
+#   # .: |
+#   #   ha-card {
+#   #     background: var(--app-header-background-color) !important;
+#   #     position: fixed !important;
+#   #     top: 0px !important;
+#   #     z-index: 1 !important;
+#   #     height: 56px !important;
+#   #     left: 0 !important;
+#   #     right: 0 !important;
+#   #     width: 100% !important;
+#   #     padding: 0 15px 10px 15px !important;
+#   #     border-radius: 0 !important;
+#   #   }
+
+#   # hui-horizontal-stack-card$: |
+#   #   #root {
+#   #     align-items: center;
+#   #   }
+
+#   # - type: custom:mod-card
+#   #   card_mod:
+#   #     style:
+#   #       # tabbed-card$: |
+#   #       #   mwc-tab-bar {
+#   #       #     background-color: var(--darker-primary-color);
+#   #       #     border-radius: 6px !important;
+#   #       #     padding: 4px;
+#   #       #   }
+
+#   #       tabbed-card$: |
+#   #         mwc-tab-bar {
+#   #           margin-bottom: 30px !important;
+#   #         }
+          
+#   #         mwc-tab-bar mwc-tab {
+#   #           flex: 0 0 auto !important;
+#   #           height: 40px !important;
+#   #           margin-right: 16px !important;
+#   #         }
+
+#   #       tabbed-card $ mwc-tab$: |
+#   #         .mdc-tab {
+#   #           font-family: Inter, sans-serif !important;
+#   #           letter-spacing: normal !important;
+#   #           font-size: 12px !important;
+#   #           font-weight: 600 !important;
+
+#   #           min-width: auto !important;
+#   #           padding-bottom: 10px !important;
+#   #         }
+
+#   #         .mdc-tab--active {
+#   #           color: var(--primary-text-color) !important;
+#   #         }
+
+#   #         .mdc-tab:not(.mdc-tab--active) {
+#   #           color: var(--semi-dark-grey-color) !important;
+#   #         }
+          
+#   #         mwc-ripple {
+#   #           display: none !important;
+#   #         }
+
+#   #       tabbed-card $ mwc-tab-bar $ mwc-tab-scroller$: |
+#   #         .mdc-tab-scroller__scroll-content {
+#   #           justify-content: space-between;
+#   #         }
+
+#   #   card:
+#   #     type: custom:tabbed-card
+#   #     styles:
+#   #       --mdc-tab-horizontal-padding: 0 !important;
+#   #       --mdc-tab-height: 40px !important;
+#   #       --mdc-ripple-press-opacity: 0 !important;
+#   #     tabs:
+#   #       - card: !include /config/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml
+#   #         attributes:
+#   #           label: Main
+#   #       - card: !include /config/dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml
+#   #         attributes:
+#   #           label: Upper
+#   #       - card: !include /config/dashboards/kohbo/rooms/partials/exterior_room_cards.yaml
+#   #         attributes:
+#   #           label: Exterior
+#   #       - card: !include /config/dashboards/kohbo/rooms/partials/laundry_room_cards.yaml
+#   #         attributes:
+#   #           label: Laundry
+#   #       - card: !include /config/dashboards/kohbo/rooms/partials/more_room_cards.yaml
+#   #         attributes:
+#   #           label: More
+
+
+
+#   # # 
+#   # # Overview Area for house mode and occupancy
+#   # # 
+#   # - type: custom:mod-card
+#   #   style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+#   #   card:
+#   #     type: horizontal-stack
+#   #     cards:
+#   #       # Office Occupancy
+#   #       - type: custom:button-card
+#   #         template: kohbo_chip_card_room_occupancy
+#   #         entity: binary_sensor.first_floor_occupied
+        
+#   #       # Lights
+#   #       - type: custom:button-card
+#   #         template: kohbo_chip_card
+#   #         entity: light.main_floor_lights
+#   #         state_display: >
+#   #           [[[
+#   #             if (states['light.main_floor_lights'].state == "on")
+#   #               return `${states['sensor.main_floor_lights_on'].state} On`
+#   #             else
+#   #               return "Off"
+#   #           ]]]
+#   #         tap_action:
+#   #           action: more-info
+#   #       # Temperature
+#   #       - type: custom:button-card
+#   #         template: kohbo_chip_card
+#   #         entity: sensor.average_indoor_temperature
+#   #         icon: mdi:home-thermometer
+#   #         color: var(--light-grey-color)
+#   #       # Motion
+#   #       - type: custom:button-card
+#   #         template: kohbo_chip_card
+#   #         entity: binary_sensor.first_floor_motion
+#   #         show_state: false
+
+
+#   # - !include /config/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml
+  
+#   # 
+#   # Navbar
+#   # 
+#   - !include /config/dashboards/templates/includes/navbar.yaml
+
+#   # 
+#   # Notifications Popup
+#   # 
+#   - !include /config/dashboards/kohbo/shared/kohbo_notification_popup.yaml
+
+#   # 
+#   # Office Media Player Pop Up
+#   # 
+#   - type: custom:decluttering-card
+#     template: media_player_pop_up
+#     variables:
+#       - media_player: media_player.sonos_office
+#       - hash: '#office_media_player'
+
+#   # 
+#   # Kitchen Media Player Pop Up
+#   # 
+#   - type: custom:decluttering-card
+#     template: media_player_pop_up
+#     variables:
+#       - media_player: media_player.sonos_kitchen
+#       - hash: '#kitchen_media_player'
+
+#   # 
+#   # Dining Room Media Player Pop Up
+#   # 
+#   - type: custom:decluttering-card
+#     template: media_player_pop_up
+#     variables:
+#       - media_player: media_player.sonos_living_room
+#       - hash: '#dining_room_media_player'
+
+#   # 
+#   # Family Room Media Player Pop Up
+#   # 
+#   - type: custom:decluttering-card
+#     template: media_player_pop_up
+#     variables:
+#       - media_player: media_player.sonos_family_room
+#       - hash: '#family_room_media_player'
+
+#   # 
+#   # Playroom Media Player Pop Up
+#   # 
+#   - type: custom:decluttering-card
+#     template: media_player_pop_up
+#     variables:
+#       - media_player: media_player.sonos_playroom
+#       - hash: '#playroom_media_player'
+

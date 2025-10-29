@@ -17,7 +17,7 @@ kiosk_mode:
 views:
 
     - !include /config/dashboards/kohbo/home/home.yaml
-    - !include /config/dashboards/kohbo/rooms/rooms.yaml
+    # - !include /config/dashboards/kohbo/rooms/rooms.yaml
     - !include /config/dashboards/kohbo/climate/climate.yaml
     # - !include /config/dashboards/kohbo/media/media.yaml
     # - !include /config/dashboards/kohbo/devices/devices.yaml

@@ -1,0 +1,65 @@
+# 
+# Climate Overview
+# 
+climate_overview_linkable:
+  card:
+    type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:mini-graph-card
+        points_per_hour: 2
+        line_width: 4
+        decimals: 0
+        smoothing: true
+        color_thresholds_transition: smooth
+        color_thresholds:
+          - color: "#59A5D8"
+            value: 14
+          - color: "#ADD2EB"
+            value: 45
+          - color: "#06D6A0"
+            value: 67
+          - color: "#FFD166"
+            value: 78
+          - color: "#ED4747"
+            value: 90
+        entities:
+          - entity: '[[temperature_sensor]]'
+        name: '[[room_name]] Climate'
+        icon: mdi:thermometer
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+        tap_action:
+          action: navigate
+          navigation_path: '[[navigation_path]]'
+
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            entity: '[[humidity_sensor]]'
+            template: kohbo_aqi_humidity_item
+            tap_action:
+              action: navigate
+              navigation_path: '[[navigation_path]]'
+          
+          - type: custom:button-card
+            entity: '[[carbon_dioxide_sensor]]'
+            template: kohbo_aqi_co2_item
+            tap_action:
+              action: navigate
+              navigation_path: '[[navigation_path]]'
+  
+          - type: custom:button-card
+            entity: '[[vocs_sensor]]'
+            template: kohbo_aqi_tvocs_item
+            tap_action:
+              action: navigate
+              navigation_path: '[[navigation_path]]'
+
+          - type: custom:button-card
+            entity: '[[pm25_sensor]]'
+            template: kohbo_aqi_pm25_item
+            tap_action:
+              action: navigate
+              navigation_path: '[[navigation_path]]'
