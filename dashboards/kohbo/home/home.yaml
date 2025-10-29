@@ -2,7 +2,7 @@ type: custom:vertical-layout
 title: Home
 path: home
 theme: kohbo
-layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_layout.yaml
 cards:
 
   # 
@@ -612,6 +612,40 @@ cards:
             value: 2000
           - color: "#ED4747"
             value: 3000
+
+      # PANEL 1
+      - type: custom:mini-graph-card
+        name: Panel 1 - Daily Energy Usage
+        entities:
+          - sensor.panel_1_energy_meter
+        hours_to_show: 168  # 7 days
+        points_per_hour: 1
+        group_by: date
+        show:
+          graph: bar
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+
+      # ALL PANELS
+      - type: custom:mini-graph-card
+        name: Daily Energy Usage
+        entities:
+          - sensor.daily_energy_consumption
+        hours_to_show: 168  # 7 days
+        points_per_hour: 1
+        group_by: date
+        show:
+          graph: bar
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+
+      # - type: custom:mini-graph-card
+      #   entities:
+      #     - entity: sensor.daily_energy_consumption
+      #   name: Energy Usage
+      #   hours_to_show: 168
+      #   aggregate_func: max
+      #   group_by: date
+      #   show:
+      #     graph: bar
 
       - type: grid
         columns: 2

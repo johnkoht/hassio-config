@@ -1,5 +1,47 @@
 type: vertical-stack
 cards:
+  - type: custom:button-card
+    template: kohbo_page_title
+    name: Main Floor
+  
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:mod-card
+    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # Office Occupancy
+        - type: custom:button-card
+          template: kohbo_chip_card_room_occupancy
+          entity: binary_sensor.first_floor_occupied
+        
+        # Lights
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: light.main_floor_lights
+          state_display: >
+            [[[
+              if (states['light.main_floor_lights'].state == "on")
+                return `${states['sensor.main_floor_lights_on'].state} On`
+              else
+                return "Off"
+            ]]]
+          tap_action:
+            action: more-info
+        # Temperature
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: sensor.average_indoor_temperature
+          icon: mdi:home-thermometer
+          color: var(--light-grey-color)
+        # Motion
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: binary_sensor.first_floor_motion
+          show_state: false
+
   - type: custom:decluttering-card
     template: room_card
     variables:

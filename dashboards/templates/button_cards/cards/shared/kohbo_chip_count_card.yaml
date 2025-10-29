@@ -1,0 +1,12 @@
+kohbo_chip_count_card:
+  template: kohbo_chip_card
+  show_label: true
+  show_entity_picture: false
+  show_state: false
+  styles:
+    grid:
+      - grid-template-areas: '"l"'
+    card:
+      - background-color: var(--darker-primary-color)
+    label:
+      - font-weight: 600

@@ -52,4 +52,7 @@ binary_sensor:
             or states.input_boolean.family_room_occupied.state == "on"
             or states.input_boolean.playroom_occupied.state == "on"
             or states.input_boolean.office_occupied.state == "on"
+            or states.input_boolean.dining_room_occupied.state == "on"
+            or states.input_boolean.mudroom_occupied.state == "on"
+            or states.input_boolean.foyer_occupied.state == "on"
           }}

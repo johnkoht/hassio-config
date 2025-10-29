@@ -3,7 +3,7 @@ title: Kitchen
 path: kitchen
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
 cards:
   # 
   # Page Header
@@ -12,80 +12,39 @@ cards:
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
       type: horizontal-stack
-      cards:            
-        # Left side buttons
-        - type: custom:mushroom-chips-card
-          alignment: start
-          chips:
-            # Back button
-            - type: template
-              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
-              icon: mdi:arrow-left
-              icon_color: var(--secondary-text-color)
-              tap_action:
-                action: navigate
-                navigation_path: /dashboard-kohbo/rooms
-        # Right side buttons
-        - type: custom:mushroom-chips-card
-          alignment: end
-          chips:
-            # Assist
-            - type: template
-              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
-              icon: mdi:comment-processing
-              icon_color: var(--secondary-text-color)
-              tap_action:
-                action: assist
-            # Settings button
-            - type: template
-              card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
-              icon: mdi:cog
-              icon_color: var(--secondary-text-color)
-              tap_action:
-                action: navigate
-                navigation_path: "#kitchen_settings_popup"
+      cards:
+        # Back button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
+          tap_action:
+            action: navigate
+            navigation_path: /dashboard-kohbo/rooms-main-floor
+        
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Kitchen
+
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:cog
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#kitchen_settings_popup'
 
   # 
-  # Room Header
+  # Room Overview
   # 
   - type: custom:decluttering-card
-    template: room_header
+    template: room_overview
     variables:
-      - room_name: Kitchen
-      - room: "kitchen"
-
-  # 
-  # Overview Area for house mode and occupancy
-  # 
-  - type: custom:mod-card
-    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
-    card:
-      type: horizontal-stack
-      cards:
-        # Office Mode
-        - type: custom:button-card
-          template: kohbo_chip_card_room_mode
-          entity: input_select.kitchen
-        # Office Occupancy
-        - type: custom:button-card
-          template: kohbo_chip_card_room_occupancy
-          entity: input_boolean.kitchen_occupied
-        # Office Motion
-        - type: custom:button-card
-          template: kohbo_chip_card
-          entity: binary_sensor.kitchen_motion_sensor_status
-          show_state: false
-        # Vacuum the office now
-        - type: custom:button-card
-          template: kohbo_chip_card
-          entity: vacuum.roborock_s7
-          show_state: false
-          tap_action:
-            action: perform-action
-            perform_action: script.main_level_vacuum_clean_selected_rooms
-            data:
-              rooms: 
-                - kitchen
+      - occupancy: input_boolean.kitchen_occupied
+      - mode: input_select.kitchen
+      - ble_presence: sensor.kitchen_people_list
+      
 
   # 
   # Climate Overview

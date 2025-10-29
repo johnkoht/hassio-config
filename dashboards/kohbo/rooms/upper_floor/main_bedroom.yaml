@@ -3,7 +3,7 @@ title: Main Bedroom
 path: main-bedroom
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
 cards:
   # 
   # Page Header
@@ -15,36 +15,36 @@ cards:
       cards:
         # Back button
         - type: custom:button-card
-          template: kohbo_page_back_button
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
           tap_action:
             action: navigate
-            navigation_path: /dashboard-kohbo/rooms
+            navigation_path: /dashboard-kohbo/rooms-upper-floor
+        
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Main Bedroom
+
         # Settings button
-        # - type: custom:button-card
-        #   template: kohbo_page_settings_button
-        #   tap_action:
-        #     action: navigate
-        #     navigation_path: "#office_settings_popup"
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:cog
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#main_bedroom_settings_popup'
 
-
+            
   # 
-  # Room Header
-  # 
-  - type: custom:decluttering-card
-    template: room_header
-    variables:
-      - room_name: Main Bedroom
-      - room: "main_bedroom"
-
-  # 
-  # Overview Area for house mode and occupancy
+  # Room Overview
   # 
   - type: custom:decluttering-card
     template: room_overview
     variables:
-      - mode: input_select.main_bedroom
       - occupancy: input_boolean.main_bedroom_occupied
-      - room: "main_bedroom"
+      - mode: input_select.main_bedroom
+      - ble_presence: sensor.main_bedroom_people_list
 
 
   # 

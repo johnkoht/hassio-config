@@ -1,85 +1,421 @@
-# 
-# Room Header
-# 
-room_header:
-  card:
-    type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
-    card:
-      type: custom:layout-card
-      layout_type: custom:grid-layout
-      layout:
-        grid-template-columns: 60% 40%
-        margin: 0px 0px 0px 0px
-        padding: 0px
-        card_margin: 0px
-      cards:
-        # 
-        # Room Name
-        # 
-        - type: custom:button-card
-          template: kohbo_page_title
-          name: "[[room_name]]"
-
-        # 
-        # People in the room
-        # 
-        - type: custom:mod-card
-          card_mod:
-            style:
-              hui-horizontal-stack-card$: |
-                #root {
-                  display: flex;
-                  justify-content: flex-end;
-                  align-items: center;
-                }
-              .: |
-                ha-card {
-                  height: 100% !important;
-                  align-self: center !important;
-                }
-          card:
-            type: horizontal-stack
-            cards:
-              - type: custom:button-card
-                entity: person.john_koht
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#john'
-                visibility:
-                  - condition: state
-                    entity: sensor.john_room_presence
-                    state: "[[room]]"
-              - type: custom:button-card
-                entity: person.cristina_falbo
-                template: kohbo_person_entity
-                tap_action:
-                  action: navigate
-                  navigation_path: '#cristina'
-                visibility:
-                  - condition: state
-                    entity: sensor.cristina_room_presence
-                    state: "[[room]]"
-              - type: custom:button-card
-                entity: person.mary_falbo
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.mary_room_presence
-                    state: "[[room]]"
-              - type: custom:button-card
-                entity: person.katia
-                template: kohbo_person_entity
-                visibility:
-                  - condition: state
-                    entity: sensor.katia_room_presence
-                    state: "[[room]]"
 
 
-        # 
-        # People
-        # 
-        - !include /config/dashboards/templates/button_cards/people/john.yaml
-        - !include /config/dashboards/templates/button_cards/people/cristina.yaml
-        - !include /config/dashboards/templates/button_cards/people/nonna.yaml
+
+# # 
+# # Room Header
+# # 
+# room_header:
+#   card:
+#     type: custom:mod-card
+#     # card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+#     style:
+#       .: |
+#         ha-card {
+#           background: var(--app-header-background-color) !important;
+#           position: fixed !important;
+#           top: 0px !important;
+#           z-index: 1 !important;
+#           height: 60px !important;
+#           left: 0 !important;
+#           right: 0 !important;
+#           width: 100% !important;
+#           padding: 5px 20px !important;
+#           border-radius: 0 !important;
+#         }
+
+#       hui-horizontal-stack-card$: |
+#         #root {
+#           align-items: center;
+#           justify-content: space-between;
+#         }
+#     card:
+#       type: horizontal-stack
+#       cards:
+#         # Back button
+#         - type: custom:button-card
+#           template: kohbo_header_chip_card
+#           icon: mdi:arrow-left
+#           tap_action:
+#             action: navigate
+#             navigation_path: /dashboard-kohbo/rooms
+        
+#         # Room Name
+#         - type: custom:button-card
+#           template: kohbo_header_page_title
+#           name: Office
+
+#         # Settings button
+#         - type: custom:button-card
+#           template: kohbo_header_chip_card
+#           icon: mdi:cog
+#           icon_color: var(--secondary-text-color)
+#           tap_action:
+#             action: navigate
+#             navigation_path: '#office_settings_popup'
+
+
+
+
+#   # 
+#     type: custom:mod-card
+#     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+#     card:
+#       type: custom:layout-card
+#       layout_type: custom:grid-layout
+#       layout:
+#         grid-template-columns: 60% 40%
+#         margin: 0px 0px 0px 0px
+#         padding: 0px
+#         card_margin: 0px
+#         gap: 5px
+#       cards:
+#         # # 
+#         # # Room Name
+#         # # 
+#         # - type: custom:button-card
+#         #   template: kohbo_page_title
+#         #   name: "[[room_name]]"
+
+#         - type: custom:mod-card
+#           card_mod:
+#             style:
+#               hui-horizontal-stack-card$: |
+#                 #root {
+#                   gap: 5px !important;
+#                 }
+#           card:
+#             type: horizontal-stack
+#             cards:
+#               # Room Mode
+#               - type: custom:button-card
+#                 template: kohbo_chip_card_room_mode
+#                 entity: input_select.office
+
+#               # Room Occupancy
+#               - type: custom:button-card
+#                 template: kohbo_chip_card_room_occupancy
+#                 entity: input_boolean.office_occupied
+
+
+#         # 
+#         # People in the room
+#         # 
+#         - type: custom:mod-card
+#           card_mod:
+#             style:
+#               hui-horizontal-stack-card$: |
+#                 #root {
+#                   display: flex;
+#                   justify-content: flex-end;
+#                   align-items: start;
+#                 }
+#               .: |
+#                 ha-card {
+#                   height: 100% !important;
+#                   align-self: center !important;
+#                 }
+#           card:
+#             type: horizontal-stack
+#             cards:
+#               - type: custom:button-card
+#                 variables:
+#                   person: "[[[ return states['[[ble_presence]]'].attributes.people[0]; ]]]"
+#                   picture: "[[[ return states[variables.person].attributes.avatar; ]]]"
+#                   z_hash: >
+#                     [[[
+#                       const slug = variables.person.replace('sensor.', '').replace('_person', '');
+#                       return `#${slug}`;
+#                     ]]]
+#                 entity: "[[[ return variables.person ]]]"
+#                 template: kohbo_person_entity
+#                 entity_picture: "[[[ return variables.picture ]]]"
+#                 tap_action:
+#                   action: navigate
+#                   navigation_path: "[[[ return variables.z_hash; ]]]"
+#                 visibility:
+#                   - condition: numeric_state
+#                     entity: '[[ble_presence]]'
+#                     above: 0
+
+#               - type: custom:button-card
+#                 variables:
+#                   person: "[[[ return states['[[ble_presence]]'].attributes.people[1]; ]]]"
+#                   picture: "[[[ return states[variables.person].attributes.avatar; ]]]"
+#                   z_hash: >
+#                     [[[
+#                       const slug = variables.person.replace('sensor.', '').replace('_person', '');
+#                       return `#${slug}`;
+#                     ]]]
+#                 entity: "[[[ return variables.person ]]]"
+#                 template: kohbo_person_entity
+#                 entity_picture: "[[[ return variables.picture ]]]"
+#                 tap_action:
+#                   action: navigate
+#                   navigation_path: "[[[ return variables.z_hash; ]]]"
+#                 visibility:
+#                   - condition: numeric_state
+#                     entity: '[[ble_presence]]'
+#                     above: 1
+
+#               - type: custom:button-card
+#                 template: kohbo_chip_count_card
+#                 show_label: true
+#                 label: >
+#                   [[[
+#                     const extra = states['[[ble_presence]]'].state - 2;
+#                     return '+' + extra;
+#                   ]]]
+#                 tap_action:
+#                   action: navigate
+#                   navigation_path: "[[[ return variables.z_hash; ]]]"
+#                 visibility:
+#                   - condition: numeric_state
+#                     entity: '[[ble_presence]]'
+#                     above: 2
+
+
+#               # # Show first person in the room
+#               # - type: conditional
+#               #   conditions:
+#               #     - condition: numeric_state
+#               #       entity: '[[ble_presence]]'
+#               #       above: 0
+#               #   card:
+#               #     type: custom:button-card
+#               #     variables:
+#               #       person: "[[[ return states['[[ble_presence]]'].attributes.people[0]; ]]]"
+#               #       picture: "[[[ return states[variables.person].attributes.avatar; ]]]"
+#               #       z_hash: >
+#               #         [[[
+#               #           const slug = variables.person.replace('sensor.', '').replace('_person', '');
+#               #           return `#${slug}`;
+#               #         ]]]
+#               #     entity: "[[[ return variables.person ]]]"
+#               #     template: kohbo_person_entity
+#               #     entity_picture: "[[[ return variables.picture ]]]"
+#               #     tap_action:
+#               #       action: navigate
+#               #       navigation_path: "[[[ return variables.z_hash; ]]]"
+
+#               # Show second person in the room
+#               # - type: conditional
+#               #   conditions:
+#               #     - condition: numeric_state
+#               #       entity: '[[ble_presence]]'
+#               #       above: 1
+#               #   card:
+#               #     type: custom:button-card
+#               #     variables:
+#               #       person: "[[[ return states['[[ble_presence]]'].attributes.people[1]; ]]]"
+#               #       picture: "[[[ return states[variables.person].attributes.avatar; ]]]"
+#               #       z_hash: >
+#               #         [[[
+#               #           const slug = variables.person.replace('sensor.', '').replace('_person', '');
+#               #           return `#${slug}`;
+#               #         ]]]
+#               #     entity: "[[[ return variables.person ]]]"
+#               #     template: kohbo_person_entity
+#               #     entity_picture: "[[[ return variables.picture ]]]"
+#               #     tap_action:
+#               #       action: navigate
+#               #       navigation_path: "[[[ return variables.z_hash; ]]]"
+
+
+#               # - type: conditional
+#               #   conditions:
+#               #     - condition: template
+#               #       value_template: "{{ states('[[ble_presence]]').state | length >= 2 }}"
+#               #   card:
+#               #     type: custom:button-card
+#               #     entity: >
+#               #       [[[
+#               #         return states['[[ble_presence]]'].attributes.people[1];
+#               #       ]]]
+#               #     template: person_avatar
+#               #     variables:
+#               #       hash: >
+#               #         [[[
+#               #           const name = states[states['[[ble_presence]]'].attributes.people[1]].attributes.friendly_name;
+#               #           return '#' + name.toLowerCase().replace(' person', '').trim();
+#               #         ]]]
+
+#               # - type: conditional
+#               #   conditions:
+#               #     - condition: template
+#               #       value_template: "{{ states('[[ble_presence]]').state | length >= 2 }}"
+#               #   card:
+#               #     type: custom:button-card
+#               #     entity: >
+#               #       [[[
+#               #         const extra = states['[[ble_presence]]'].attributes.people.length - 2;
+#               #         return '+' + extra;
+#               #       ]]]
+#               #     name: >
+#               #       [[[
+#               #         const extra = states['[[ble_presence]]'].attributes.people.length - 2;
+#               #         return '+' + extra;
+#               #       ]]]
+#               #     template: avatar_plus_button
+#               #     tap_action:
+#               #       action: navigate
+#               #       navigation_path: '#office'
+                  
+#         # - type: custom:button-card
+#         #   show_name: false
+#         #   show_icon: false
+#         #   custom_fields:
+#         #     avatars: >
+#         #       [[[
+#         #         const room = '[[room]]';
+#         #         const group = states['group.people_sensors'];
+#         #         const people = group?.attributes?.entity_id ?? [];
+#         #         console.log("people", people);
+
+#         #         // Filter to only those in the same room
+#         #         const present = people.filter(id => {
+#         #           const s = states[id];
+#         #           return s?.attributes?.room_presence === room;
+#         #         });
+#         #         console.log("present", present);
+#         #         // Show up to 2 people
+#         #         const visible = present.slice(0, 2);
+#         #         const overflow = present.length - visible.length;
+#         #         console.log("overflow", overflow);
+
+#         #         const renderAvatar = (id) => {
+#         #           const s = states[id];
+#         #           const pic = s?.attributes?.avatar;
+#         #           const name = s?.attributes?.friendly_name ?? '';
+                  
+#         #           // Extract "john" from "John Person"
+#         #           const slug = name.toLowerCase().replace(' person', '').trim();
+
+#         #           return pic
+#         #             ? `<img
+#         #                 src="${pic}"
+#         #                 title="${name}"
+#         #                 class="avatar avatar-link"
+#         #                 onclick="window.dispatchEvent(new CustomEvent('custom:bubble-card', {
+#         #                   detail: { hash: '#${slug}' },
+#         #                   bubbles: true,
+#         #                   composed: true
+#         #                 }))"
+#         #               />`
+#         #             : '';
+#         #         };
+
+#         #         // Build HTML
+#         #         let output = visible.map(renderAvatar).join('');
+#         #         if (overflow > 0) {
+#         #           output += `<div class="avatar overflow">+${overflow}</div>`;
+#         #         }
+#         #         return output;
+#         #       ]]]
+#         #   styles:
+#         #     grid:
+#         #       - display: flex
+#         #     card:
+#         #       # - padding: 0 14px
+#         #       - padding: 0
+#         #       - background: transparent
+#         #       - border: none
+#         #       - box-shadow: none
+
+#         #       - align-items: center
+#         #       - height: 45px
+#         #       - width: auto
+#         #       - box-sizing: border-box
+#         #       - border-radius: 23px
+#         #       - flex-direction: row
+#         #       - align-items: center
+#         #       - justify-content: center
+#         #     custom_fields:
+#         #       avatars:
+#         #         - display: flex
+#         #         - align-items: center
+#         #         - justify-content: flex-start
+#         #         - gap: 4px
+#         #   extra_styles: |
+#         #     .avatar {
+#         #       width: 40px;
+#         #       height: 40px;
+#         #       border-radius: 50%;
+#         #       object-fit: cover;
+#         #       /* border: 2px solid white; */
+#         #     }
+#         #     .avatar.overflow {
+#         #       display: flex;
+#         #       align-items: center;
+#         #       justify-content: center;
+#         #       background-color: #ccc;
+#         #       color: #000;
+#         #       font-weight: 600;
+#         #     }
+
+
+          
+
+#         # # 
+#         # # People in the room
+#         # # 
+#         # - type: custom:mod-card
+#         #   card_mod:
+#         #     style:
+#         #       hui-horizontal-stack-card$: |
+#         #         #root {
+#         #           display: flex;
+#         #           justify-content: flex-end;
+#         #           align-items: center;
+#         #         }
+#         #       .: |
+#         #         ha-card {
+#         #           height: 100% !important;
+#         #           align-self: center !important;
+#         #         }
+#         #   card:
+#         #     type: horizontal-stack
+#         #     cards:
+#         #       - type: custom:button-card
+#         #         entity: person.john_koht
+#         #         template: kohbo_person_entity
+#         #         tap_action:
+#         #           action: navigate
+#         #           navigation_path: '#john'
+#         #         visibility:
+#         #           - condition: state
+#         #             entity: sensor.john_room_presence
+#         #             state: "[[room]]"
+#         #       - type: custom:button-card
+#         #         entity: person.cristina_falbo
+#         #         template: kohbo_person_entity
+#         #         tap_action:
+#         #           action: navigate
+#         #           navigation_path: '#cristina'
+#         #         # visibility:
+#         #         #   - condition: state
+#         #         #     entity: sensor.cristina_room_presence
+#         #         #     state: "[[room]]"
+#         #       - type: custom:button-card
+#         #         entity: person.mary_falbo
+#         #         template: kohbo_person_entity
+#         #         # visibility:
+#         #         #   - condition: state
+#         #         #     entity: sensor.mary_room_presence
+#         #         #     state: "[[room]]"
+#         #       - type: custom:button-card
+#         #         entity: person.katia
+#         #         template: kohbo_person_entity
+#         #         # visibility:
+#         #         #   - condition: state
+#         #         #     entity: sensor.katia_room_presence
+#         #         #     state: "[[room]]"
+
+
+
+
+#         # 
+#         # People
+#         # 
+#         - !include /config/dashboards/templates/button_cards/people/john.yaml
+#         - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+#         - !include /config/dashboards/templates/button_cards/people/nonna.yaml

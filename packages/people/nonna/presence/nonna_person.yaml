@@ -12,5 +12,7 @@ template:
         state: "{{ states.person.mary_falbo.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.nonna_unlock_privilege.state }}"
+          avatar: "{{ states.person.mary_falbo.attributes.entity_picture }}"
+          room_presence: "{{ states.sensor.mary_room_presence.state }}"
 
 

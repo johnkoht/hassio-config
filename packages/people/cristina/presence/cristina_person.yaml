@@ -12,5 +12,7 @@ template:
         state: "{{ states.person.cristina_falbo.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.cristina_unlock_privilege.state }}"
+          avatar: "{{ states.person.cristina_falbo.attributes.entity_picture }}"
+          room_presence: "{{ states.sensor.cristina_room_presence.state }}"
 
 

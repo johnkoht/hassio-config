@@ -1,14 +1,13 @@
 kohbo_person_entity:
-  # template: kohbo_entity
-  # layout: vertical
   show_state: false
   show_name: false
   show_entity_picture: true
-  size: 40px
+  size: 45px
+  icon: mdi:account
   styles:
     card:
-      - height: 40px
-      - width: 40px
+      - height: 45px
+      - width: 45px
       - padding: 0
       - background: transparent
       - border: none

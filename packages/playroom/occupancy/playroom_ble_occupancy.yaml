@@ -1,0 +1,13 @@
+template:
+  - sensor:
+      - name: "Playroom People List"
+        unique_id: playroom_people_list
+        state: >
+          {% set people = expand('group.people_sensors') %}
+          {% set in_room = people | selectattr('attributes.room_presence', 'equalto', 'playroom') | map(attribute='entity_id') | list %}
+          {{ in_room | length }}
+        attributes:
+          people: >
+            {% set people = expand('group.people_sensors') %}
+            {% set in_room = people | selectattr('attributes.room_presence', 'equalto', 'playroom') | map(attribute='entity_id') | list %}
+            {{ in_room }}

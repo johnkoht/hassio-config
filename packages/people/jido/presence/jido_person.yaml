@@ -9,8 +9,10 @@ template:
   - sensor:
       - name: "Jido Person"
         unique_id: jido_person
-        state: "{{ states.person.jido.state }}"
+        state: "{{ states.person.antoun_koht.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.jido_unlock_privilege.state }}"
+          avatar: "{{ states.person.antoun_koht.attributes.entity_picture }}"
+          room_presence: "{{ states.sensor.antoun_room_presence.state }}"
 
 

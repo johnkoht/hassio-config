@@ -1,0 +1,20 @@
+# 
+# Header Chip Card
+# 
+# This card is based on the default chip card, but 
+# modified for the fixed header bar.
+# 
+kohbo_header_chip_card:
+  template: kohbo_chip_card
+  styles:
+    card:
+      - display: flex
+      - justify-content: center
+      - align-items: center
+      - padding: 0
+      - background-color: var(--darker-primary-color)
+    grid:
+      - grid-template-areas: '"i"'
+      - grid-template-columns: auto
+      - justify-content: center
+      - align-items: center

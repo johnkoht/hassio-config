@@ -1,0 +1,9 @@
+empty_column:
+  template: kohbo_chip_card
+  styles:
+    card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - margin: 0
+      - padding: 0

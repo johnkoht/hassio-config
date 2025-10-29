@@ -12,5 +12,7 @@ template:
         state: "{{ states.person.katia.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.katia_unlock_privilege.state }}"
+          avatar: "{{ states.person.katia.attributes.entity_picture }}"
+          room_presence: "{{ states.sensor.katia_room_presence.state }}"
 
 

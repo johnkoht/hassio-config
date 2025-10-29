@@ -3,7 +3,7 @@ title: Upstairs Hallway
 path: upstairs-hallway
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
 cards:
   # 
   # Page Header
@@ -15,35 +15,36 @@ cards:
       cards:
         # Back button
         - type: custom:button-card
-          template: kohbo_page_back_button
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
           tap_action:
             action: navigate
-            navigation_path: /dashboard-kohbo/rooms
+            navigation_path: /dashboard-kohbo/rooms-upper-floor
+        
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Upstairs Hallway
+
         # Settings button
-        # - type: custom:button-card
-        #   template: kohbo_page_settings_button
-        #   tap_action:
-        #     action: navigate
-        #     navigation_path: "#office_settings_popup"
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:cog
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#upstairs_hallway_settings_popup'
 
+            
   # 
-  # Room Header
-  # 
-  - type: custom:decluttering-card
-    template: room_header
-    variables:
-      - room_name: Upstairs Hallway
-      - room: "upstairs_hallway"
-
-  # 
-  # Overview Area for house mode and occupancy
+  # Room Overview
   # 
   - type: custom:decluttering-card
     template: room_overview
     variables:
-      - mode: input_select.upstairs_hallway
       - occupancy: input_boolean.upstairs_hallway_occupied
-      - room: "upstairs_hallway"
+      - mode: input_select.upstairs_hallway
+      - ble_presence: sensor.upstairs_hallway_people_list
 
   # 
   # Lights

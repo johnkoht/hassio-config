@@ -9,8 +9,8 @@ template:
   - sensor:
       - name: "Tayta Person"
         unique_id: tayta_person
-        state: "{{ states.person.tayta.state }}"
+        state: "{{ states.person.sonia_koht.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.tayta_unlock_privilege.state }}"
-
-
+          avatar: "{{ states.person.sonia_koht.attributes.entity_picture }}"
+          room_presence: "{{ states.sensor.sonia_room_presence.state }}"

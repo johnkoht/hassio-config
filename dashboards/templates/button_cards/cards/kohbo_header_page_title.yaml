@@ -1,0 +1,6 @@
+kohbo_header_page_title:
+  template: kohbo_page_title
+  styles:
+    name:
+      - justify-self: center
+      - font-size: 28px

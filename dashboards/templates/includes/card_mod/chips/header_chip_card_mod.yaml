@@ -1,6 +1,6 @@
 style: |
   ha-card {
-    --chip-background: transparent;
-    --chip-border-color: var(--divider-color);
-    --chip-border-width: 1px;
+    --chip-border-width: 0px;
+    --chip-border-color: transparent;
+    --chip-background: var(--darker-primary-color);
   }

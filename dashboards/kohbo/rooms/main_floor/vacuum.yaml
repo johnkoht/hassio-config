@@ -3,7 +3,7 @@ title: Vacuum
 path: main-floor-vacuum
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_layout.yaml
 cards:
   # 
   # Page Header

@@ -1,0 +1,55 @@
+binary_sensor:
+  # Upper Floor Motion Group
+  #
+  - platform: group
+    name: Upper Floor Motion
+    unique_id: upper_floor_motion
+    device_class: motion
+    entities:
+      - binary_sensor.upstairs_hallway_nightlight_motion
+      - binary_sensor.main_bedroom_motion_sensor
+      - binary_sensor.main_bathroom_motion_sensor_status
+
+  # Upper Floor Occupancy Group
+  #
+  - platform: group
+    name: Upper Floor Occupancy
+    unique_id: upper_floor_occupancy
+    device_class: occupancy
+    entities:
+      - binary_sensor.main_bedroom_motion_sensor_occupancy
+      - binary_sensor.main_bathroom_motion_sensor_occupancy
+
+  # Upper Floor Room Presence
+  #
+  # Binary sensor to reeturn if anybody is detected
+  # via BLE presence.
+  - platform: template
+    sensors:
+      upper_floor_any_room_presence:
+        friendly_name: Upper Floor Any Room Presence
+        value_template: >-
+          {{ 
+            expand('group.room_presence_devices') |
+            selectattr('state', 'in', ['main_bedroom', 'main_bathroom', 'gianluca_bedroom', 'ninos_bedroom', 'upstairs_guest_bedroom']) |
+            map(attribute='name') |
+            list |
+            length > 0
+          }}
+
+  # 
+  # Upper Floor Occupied
+  # 
+  - platform: template
+    sensors:
+      upper_floor_occupied:
+        friendly_name: Upper Floor Occupied
+        unique_id: upper_floor_occupied
+        value_template: >-
+          {{
+            states.input_boolean.main_bedroom_occupied.state == "on"
+            or states.input_boolean.main_bathroom_occupied.state == "on"
+            or states.input_boolean.gianlucas_room_occupied.state == "on"
+            or states.input_boolean.ninos_bedroom_occupied.state == "on"
+            or states.input_boolean.upstairs_hallway_occupied.state == "on"
+          }}

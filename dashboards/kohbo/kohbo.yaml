@@ -25,6 +25,7 @@ views:
     # - !include /config/dashboards/kohbo/security/front_door_lock.yaml
 
     # Main Floor
+    - !include /config/dashboards/kohbo/rooms/main_floor/main_floor_index.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
@@ -36,6 +37,7 @@ views:
     - !include /config/dashboards/kohbo/rooms/main_floor/vacuum.yaml
 
     # Upper Floor
+    - !include /config/dashboards/kohbo/rooms/upper_floor/upper_floor_index.yaml
     - !include /config/dashboards/kohbo/rooms/upper_floor/main_bedroom.yaml
     - !include /config/dashboards/kohbo/rooms/upper_floor/ninos_bedroom.yaml
     - !include /config/dashboards/kohbo/rooms/upper_floor/gianlucas_bedroom.yaml

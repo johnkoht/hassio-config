@@ -2,14 +2,71 @@ type: custom:vertical-layout
 title: Climate
 path: climate
 theme: kohbo
-layout: !include /config/dashboards/templates/includes/kohbo_screen_layout.yaml
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
 cards:
+  # # 
+  # # Page Header
+  # # 
+  # - type: custom:mod-card
+  #   card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+  #   card:
+  #     type: horizontal-stack
+  #     cards:            
+  #       - type: custom:mushroom-chips-card
+  #         alignment: end
+  #         chips:
+  #           # Assist
+  #           - type: template
+  #             card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+  #             icon: mdi:comment-processing
+  #             icon_color: var(--secondary-text-color)
+  #             tap_action:
+  #               action: assist
+  #           # Notifications
+  #           - type: template
+  #             card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
+  #             icon: mdi:bell
+  #             icon_color: var(--secondary-text-color)
+  #             tap_action:
+  #               action: navigate
+  #               navigation_path: '#notifications'
+                
+  # # 
+  # # Page title
+  # # 
+  # - type: custom:button-card
+  #   template: kohbo_page_title
+  #   name: Climate
+
   # 
-  # Page title
+  # Page Header
   # 
-  - type: custom:button-card
-    template: kohbo_page_title
-    name: Climate
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # Assist
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:comment-processing
+          tap_action:
+            action: assist
+            
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Climate
+
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:cog
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#climate_settings_popup'
 
   # 
   # Current Weather

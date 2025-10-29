@@ -163,7 +163,7 @@ kohbo:
   state-climate-off-color: var(--light-grey-color)
   state-climate-inactive-color: var(--light-grey-color)
 
-  mmpc-on-dialog: var(--primary-text-color)
+  # mmpc-on-dialog: var(--primary-text-color)
   mmpc-on-dialog: var(--secondary-text-color)
   mmpc-surface-higher: var(--card-background-color)
 

@@ -1,0 +1,10 @@
+input_select:
+  house_areas:
+    name: House Areas
+    initial: "Main Floor"
+    options:
+      - "Main Floor"
+      - "Upper Floor"
+      - "Laundry Room"
+      - "Exterior"
+      - "More"

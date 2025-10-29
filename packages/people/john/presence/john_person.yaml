@@ -13,5 +13,7 @@ template:
         attributes:
           unlock_privilege: "{{ states.input_boolean.john_unlock_privilege.state }}"
           fingerprint_id: !secret john_fingerprint_id
+          avatar: "{{ states.person.john_koht.attributes.entity_picture }}"
+          room_presence: "{{ states.sensor.john_room_presence.state }}"
 
 
