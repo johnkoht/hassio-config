@@ -4,10 +4,10 @@ template:
         unique_id: ninos_room_people_list
         state: >
           {% set people = expand('group.people_sensors') %}
-          {% set in_room = people | selectattr('attributes.room_presence', 'equalto', 'ninos_room') | map(attribute='entity_id') | list %}
+          {% set in_room = people | selectattr('attributes.room_presence', 'equalto', 'nino_bedroom') | map(attribute='entity_id') | list %}
           {{ in_room | length }}
         attributes:
           people: >
             {% set people = expand('group.people_sensors') %}
-            {% set in_room = people | selectattr('attributes.room_presence', 'equalto', 'ninos_room') | map(attribute='entity_id') | list %}
+            {% set in_room = people | selectattr('attributes.room_presence', 'equalto', 'nino_bedroom') | map(attribute='entity_id') | list %}
             {{ in_room }} 

@@ -123,6 +123,38 @@ cards:
         name: West Window
         template: kohbo_device_window_entity
 
+      - type: custom:button-card
+        entity: switch.smart_plug_15_switch
+        name: South Wall
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_15_active_power
+          confirmation: true
+
+      - type: custom:button-card
+        entity: switch.smart_plug_18_switch
+        name: Bay Window
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_16_active_power
+          confirmation: true
+
+      - type: custom:button-card
+        entity: switch.smart_plug_16_switch
+        name: North Wall Left
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_16_active_power
+          confirmation: true
+
+      - type: custom:button-card
+        entity: switch.smart_plug_17_switch
+        name: North Wall Right
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_17_active_power
+          confirmation: true
+
 
   # 
   # Quick Settings
@@ -162,44 +194,6 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-
-  # 
-  # Sensors
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Sensors
-  - type: entities
-    entities:
-      # Presence Sensor
-      - type: custom:template-entity-row
-        icon: kohbo:kohbo-room-occupancy
-        name: Presence Sensor
-        entity: binary_sensor.playroom_presence_sensor
-        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-        secondary: "{{ states['binary_sensor.playroom_presence_sensor'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-        
-      # Occupancy Sensor
-      - type: custom:template-entity-row
-        icon: kohbo:kohbo-room-occupancy
-        name: Occupancy Sensor
-        entity: binary_sensor.playroom_occupancy
-        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-        secondary: "{{ states['binary_sensor.playroom_occupancy'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
-      # Motion Sensor
-      - type: custom:template-entity-row
-        icon: mdi:motion-sensor
-        name: Motion Sensor
-        entity: binary_sensor.playroom_motion
-        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-        secondary: "{{ states['binary_sensor.playroom_motion'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
       
 
   # 
@@ -228,6 +222,60 @@ cards:
         - light.playroom_4
         - light.playroom_5
         - light.playroom_6
+
+
+  # 
+  # Playroom Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#playroom_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 500px)
+        margin_top_desktop: calc(100vh - 500px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # Presence Sensor
+          - entity: binary_sensor.playroom_presence_sensor
+            icon: kohbo:kohbo-room-occupancy
+            name: Presence Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            
+          # Occupancy Sensor
+          - entity: binary_sensor.playroom_occupancy
+            icon: kohbo:kohbo-room-occupancy
+            name: Occupancy Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Motion Sensor
+          - entity: binary_sensor.playroom_motion
+            icon: mdi:motion-sensor
+            name: Motion Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
 
   # 
   # Navbar

@@ -316,8 +316,8 @@ cards:
         hash: '#office_settings_popup'
         close_by_clicking_outside: true
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 750px)
-        margin_top_desktop: calc(100vh - 750px)
+        margin_top_mobile: calc(100vh - 900px)
+        margin_top_desktop: calc(100vh - 900px)
         
       # 
       # Title
@@ -384,34 +384,43 @@ cards:
       - type: entities
         entities:
           # BLE Base Station
-          - type: custom:template-entity-row
+          - entity: binary_sensor.espresense_office
             icon: mdi:bluetooth
             name: BLE Base Station
-            entity: binary_sensor.espresense_office
-            state: "{{ 'Connected' if states['binary_sensor.espresense_office'].state == 'on' else 'Disconnected' }}"
-            secondary: "{{ states['binary_sensor.espresense_office'].last_changed | relative_time }} ago"
-            card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
-            color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-            
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
           # Occupancy Sensor
-          - type: custom:template-entity-row
+          - entity: binary_sensor.office_aqara_occupancy
             icon: kohbo:kohbo-room-occupancy
             name: Occupancy Sensor
-            entity: binary_sensor.office_aqara_occupancy
-            state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-            secondary: "{{ states['binary_sensor.office_aqara_occupancy'].last_changed | relative_time }} ago"
-            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-            color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+            secondary_info: last-changed
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
           # Motion Sensor
-          - type: custom:template-entity-row
+          - entity: binary_sensor.office_aqara_motion_sensor
             icon: mdi:motion-sensor
             name: Motion Sensor
-            entity: binary_sensor.office_aqara_motion_sensor
-            state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-            secondary: "{{ states['binary_sensor.office_aqara_motion_sensor'].last_changed | relative_time }} ago"
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          - type: custom:template-entity-row
+            icon: mdi:air-filter
+            name: Air Purifier Filter Life
+            entity: sensor.office_air_purifier_filter_life
+            state: "{{ states[config.entity].state }}%"
+            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
             card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-            color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+            # color: green
+            color: >
+              {% set filter_left = states[config.entity].state | int(0) %}
+              {% if filter_left < 20 %}
+                var(--error-color)
+              {% else %}
+                var(--success-color)
+              {% endif %}
 
   
   # 
@@ -430,6 +439,29 @@ cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Office Climate
+      
+      - type: custom:button-card
+        template: kohbo_horizontal_info_card
+        entity: sensor.office_air_quality
+        label: Office Air Quality Overview
+        state:
+          - value: "Acceptable"
+            icon: mdi:check-decagram
+            color: var(--primary-color)
+          - value: "Moderate"
+            icon: mdi:alert-circle
+            color: var(--warning-color)
+          - value: "Unhealthy"
+            icon: mdi:alert
+            color: var(--error-color)
+          - value: "Hazardous"
+            icon: mdi:alert
+            color: var(--error-color)
+        state_display: |
+          [[[
+            return `${entity.state} Air Quality`
+          ]]]
+      
 
       - type: grid
         columns: 2
@@ -438,13 +470,13 @@ cards:
           - type: custom:mini-graph-card
             entities:
               - entity: sensor.office_awair_temperature
-              # - entity: sensor.office_awair_score
             name: Temperature
             card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
             hours_to_show: 12
             points_per_hour: 2
             line_width: 4
             decimals: 0
+            lower_bound: 0
             smoothing: true
             color_thresholds_transition: smooth
             color_thresholds:
@@ -489,6 +521,11 @@ cards:
               - name: Humidity
               - entity: sensor.office_awair_humidity
               - icon: mdi:water-percent
+              - value_1: 14
+              - value_2: 25
+              - value_3: 40
+              - value_4: 65
+              - value_5: 90
           
           # Carbon Dioxide
           - type: custom:decluttering-card
@@ -497,6 +534,11 @@ cards:
               - name: Carbon Dioxide
               - entity: sensor.office_awair_carbon_dioxide
               - icon: mdi:molecule-co2
+              - value_1: 600 # blue / acceptable
+              - value_2: 1000 # light blue / moderate
+              - value_3: 5 # green / great
+              - value_4: 2000 # yellow / poor
+              - value_5: 4500 # red / hazardous
 
           # VOCs
           - type: custom:decluttering-card
@@ -505,6 +547,11 @@ cards:
               - name: VOCs
               - entity: sensor.office_awair_vocs
               - icon: mdi:molecule
+              - value_1: 300 # blue / acceptable
+              - value_2: 500 # light blue / moderate
+              - value_3: 5 # green / great
+              - value_4: 3000 # yellow / poor
+              - value_5: 25000 # red / hazardous
 
           # PM2.5
           - type: custom:decluttering-card
@@ -513,6 +560,11 @@ cards:
               - name: PM2.5
               - entity: sensor.office_awair_pm2_5
               - icon: phu:pm2-5
+              - value_1: 12 # blue / acceptable
+              - value_2: 35 # light blue / moderate
+              - value_3: 5 # green / great
+              - value_4: 55 # yellow / poor
+              - value_5: 150 # red / hazardous
 
   
   

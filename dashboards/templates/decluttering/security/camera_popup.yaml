@@ -14,7 +14,7 @@ camera_popup:
         margin_top_desktop: calc(100vh - 800px)
 
       - type: custom:button-card
-        template: kohbo_page_title
+        template: kohbo_popup_page_title
         name: '[[name]]'
       
       - type: horizontal-stack
@@ -110,39 +110,31 @@ camera_popup:
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
         entities:
           # Motion
-          - type: custom:template-entity-row
+          - entity: '[[motion_entity]]'
             icon: mdi:motion-sensor
             name: Motion Detected
-            entity: '[[motion_entity]]'
-            state: "{{ states['[[motion_entity]]'].state | title }}"
-            secondary: "{{ states['[[motion_entity]]'].last_changed | relative_time }} ago"
-            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
           # Person Detected
-          - type: custom:template-entity-row
+          - entity: '[[person_entity]]'
             icon: mdi:account-alert
             name: Person Detected
-            entity: '[[person_entity]]'
-            state: "{{ states['[[person_entity]]'].state | title }}"
-            secondary: "{{ states['[[person_entity]]'].last_changed | relative_time }} ago"
-            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
           # Camera Notifications
           - entity: '[[notifications_entity]]'
             icon: kohbo:kohbo-notification
             name: '[[name]] Notifications'
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
           # Snooze Timer
-          - type: custom:template-entity-row
+          - entity: '[[timer_entity]]'
             icon: mdi:alarm-snooze
             name: Snooze Timer
-            entity: '[[timer_entity]]'
-            state: >
-              {% if states['[[timer_entity]]'].state == 'active' %}
-                {{ states['[[countdown_sensor]]'].state }}
-              {% else %}
-                Idle
-              {% endif %}
-            secondary: "{{ states['[[timer_entity]]'].last_changed | relative_time }} ago"
-            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
  

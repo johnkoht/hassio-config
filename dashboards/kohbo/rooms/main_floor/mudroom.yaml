@@ -97,29 +97,6 @@ cards:
         template: kohbo_device_door_entity
 
 
-  # 
-  # Automations
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Automations
-  - type: entities
-    entities:
-      # Garage Entry Door - Unlock Upon Arrival
-      - entity: automation.garage_entry_door_unlock_upon_arrival
-        name: Unlock Upon Arrival
-        icon: mdi:door-open
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-      # Autolock Garage Entry Door
-      - entity: automation.garage_entry_door_lock_auto_lock
-        name: Autolock Garage Entry Door
-        icon: mdi:lock
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
 
   # 
   # Quick Settings
@@ -145,46 +122,84 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-  # 
-  # Sensors
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Sensors
-  - type: entities
-    entities:
-      # Motion Sensor
-      - type: custom:template-entity-row
-        icon: mdi:motion-sensor
-        name: Motion Sensor
-        entity: binary_sensor.mudroom_motion_sensor_motion_detection
-        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
-      # Illuminance
-      - type: custom:template-entity-row
-        icon: mdi:brightness-5
-        name: Illuminance
-        entity: sensor.mudroom_motion_sensor_illuminance
-        state: "{{ states[config.entity].state }} lx"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
-      - type: custom:template-entity-row
-        # icon: mdi:battery
-        icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
-        name: Lock Battery Level
-        entity: sensor.garage_entry_door_battery_level
-        state: "{{ states[config.entity].state }}%"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon_color.yaml
-
-      
+  
         
+
+   
+  # Mudroom Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#mudroom_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 675px)
+        margin_top_desktop: calc(100vh - 675px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Garage Entry Door - Unlock Upon Arrival
+          - entity: automation.garage_entry_door_unlock_upon_arrival
+            name: Unlock Upon Arrival
+            icon: mdi:door-open
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          # Autolock Garage Entry Door
+          - entity: automation.garage_entry_door_lock_auto_lock
+            name: Autolock Garage Entry Door
+            icon: mdi:lock
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # Motion Sensor
+          - entity: binary_sensor.mudroom_motion_sensor_motion_detection
+            icon: mdi:motion-sensor
+            name: Motion Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Illuminance
+          - entity: sensor.mudroom_motion_sensor_illuminance
+            name: Illuminance
+            entity: sensor.mudroom_motion_sensor_illuminance
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          - entity: sensor.garage_entry_door_battery_level
+            name: Lock Battery Level
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          
+
 
   # 
   # Navbar

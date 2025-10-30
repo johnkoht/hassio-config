@@ -44,7 +44,7 @@ cards:
     variables:
       - occupancy: input_boolean.gianlucas_room_occupied
       - mode: input_select.gianlucas_bedroom
-      - ble_presence: sensor.gianluca_room_people_list
+      - ble_presence: sensor.gianlucas_room_people_list
 
 
   # 
@@ -131,47 +131,6 @@ cards:
         entity: binary_sensor.gianlucas_door_sensor_status
         name: Door
         template: kohbo_device_door_entity
-  
-
-
-  # 
-  # Automations
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Automations
-  - type: entities
-    entities:
-      # Air Quality Sensor Detections
-      - entity: automation.gianluca_s_bedroom_air_quality_sensor_detections
-        name: Air Quality Automations
-        icon: mdi:air-filter
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # Gianluca's heater
-      - entity: automation.gianluca_heater_on
-        name: Heater Automations
-        icon: mdi:radiator
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # Gianluca's heater
-      - entity: automation.gianluca_heater_turn_on_upon_arrival
-        name: Turn on Heater Upon Arrival
-        icon: mdi:radiator
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      - entity: automation.gianluca_room_temperature_alert
-        name: Room Temperature Alert
-        icon: mdi:alert
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
 
 
 
@@ -190,6 +149,104 @@ cards:
         - light.gianluca_room_3
         - light.gianluca_room_4
 
+
+  # 
+  # Gianluca's Bedroom Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#gianluca_bedroom_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 650px)
+        margin_top_desktop: calc(100vh - 650px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Air Quality Sensor Detections
+          - entity: automation.gianluca_s_bedroom_air_quality_sensor_detections
+            name: Air Quality Automations
+            icon: mdi:air-filter
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Gianluca's heater
+          - entity: automation.gianluca_heater_on
+            name: Heater Automations
+            icon: mdi:radiator
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Gianluca's heater
+          - entity: automation.gianluca_heater_turn_on_upon_arrival
+            name: Turn on Heater Upon Arrival
+            icon: mdi:radiator
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          - entity: automation.gianluca_room_temperature_alert
+            name: Room Temperature Alert
+            icon: mdi:alert
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+            
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # Bed Occupancy
+          # - type: custom:template-entity-row
+          - entity: binary_sensor.gianluca_bed_occupied
+            icon: mdi:bed
+            name: Bed Occupancy
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+          # Bed Sensor Left
+          - entity: sensor.gianluca_bed_left_sensor
+            icon: mdi:bed
+            name: Bed Sensor Left            
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+          # Bed Sensor Right
+          - entity: sensor.gianluca_bed_right_sensor
+            icon: mdi:bed
+            name: Bed Sensor Right
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+          # Bed Trigger Level
+          - entity: number.esphome_gianluca_bed_sensor_gianluca_bed_trigger_level
+            icon: mdi:arrow-collapse-down
+            name: Trigger Level
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            
   # 
   # Navbar
   # 

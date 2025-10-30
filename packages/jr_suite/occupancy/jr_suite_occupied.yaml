@@ -1,0 +1,4 @@
+input_boolean:
+  jr_suite_occupied:
+    name: Jr. Suite Occupied
+    icon: mdi:bed-double

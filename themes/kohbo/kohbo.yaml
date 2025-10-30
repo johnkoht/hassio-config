@@ -190,3 +190,12 @@ kohbo:
 
   # Dividers
   entities-divider-color: var(--divider-color)
+
+
+  # People
+  state-person-home-color: var(--success-color)
+  state-person-away-color: var(--light-grey-color)
+  state-person-active-color: var(--primary-color)
+  state-person-inactive-color: var(--light-grey-color)
+  state-person-unavailable-color: var(--light-grey-color)
+  state-person-unavailable-color: var(--light-grey-color)

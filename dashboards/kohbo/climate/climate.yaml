@@ -148,13 +148,12 @@ cards:
       type: entities
       card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
       entities:
-        - type: custom:template-entity-row
+        - entity: group.radiant_floor_heating_group
           icon: mdi:radiator
           name: Radiant Floor Heating
-          entity: group.radiant_floor_heating_group
-          state: "{{ states[config.entity].state | replace('_', ' ') | title }}"
-          secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-          card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+          card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
           tap_action:
             action: navigate
             navigation_path: '#radiant_floor_heating'

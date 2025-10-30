@@ -159,39 +159,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-
-  # 
-  # Sensors
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Sensors
-  - type: entities
-    entities:
-      # Motion Sensor
-      - type: custom:template-entity-row
-        icon: mdi:motion-sensor
-        name: Motion Sensor
-        entity: binary_sensor.upstairs_hallway_nightlight_motion
-        state: !include /config/dashboards/templates/includes/cards/kohbo_entity_row_occupancy_state_display.yaml
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
-      # Illuminance
-      - type: custom:template-entity-row
-        icon: mdi:brightness-5
-        name: Illuminance
-        entity: sensor.upstairs_hallway_nightlight_illuminance
-        state: "{{ states[config.entity].state }} lux"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
   
-  # 
-  # Navbar
-  # 
-  - !include /config/dashboards/templates/includes/navbar.yaml
 
   # 
   # Upper Floor Thermostat Popup
@@ -205,3 +173,53 @@ cards:
       - name: Upper Floor
       - temperature_sensor: sensor.second_floor_temperature
       - outside_temperature_sensor: sensor.tempest_temperature
+
+
+  # 
+  # Upstairs Hallway Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#upstairs_hallway_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 650px)
+        margin_top_desktop: calc(100vh - 650px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # Motion Sensor
+          - entity: binary_sensor.upstairs_hallway_nightlight_motion
+            icon: mdi:motion-sensor
+            name: Motion Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Illuminance
+          - entity: sensor.upstairs_hallway_nightlight_illuminance
+            icon: mdi:brightness-5
+            name: Illuminance
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

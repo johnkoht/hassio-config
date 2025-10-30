@@ -171,40 +171,6 @@ cards:
         entity: binary_sensor.nino_s_bathroom_leak_sensor_moisture
         name: Bathroom Leak Sensor
         template: kohbo_device_entity
-
-
-  # 
-  # Automations
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Automations
-  - type: entities
-    entities:
-      # Air Quality Sensor Detections
-      - entity: automation.nino_bedroom_air_quality_detections
-        name: Air Quality Automations
-        icon: mdi:air-filter
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # Nino's heater
-      - entity: automation.nino_heater_on
-        name: Heater Automations
-        icon: mdi:radiator
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # Nino's heater
-      - entity: automation.nino_bedroom_heater_turn_on_upon_arrival
-        name: Turn on Heater Upon Arrival
-        icon: mdi:radiator
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
       
 
   # 
@@ -232,24 +198,6 @@ cards:
         state_color: true
 
   # 
-  # Sensors
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Sensors
-  - type: entities
-    entities:
-      # BLE Base Station
-      - type: custom:template-entity-row
-        icon: mdi:bluetooth
-        name: BLE Base Station
-        entity: binary_sensor.espresense_nino_bedroom
-        state: "{{ 'Connected' if states['binary_sensor.espresense_nino_bedroom'].state == 'on' else 'Disconnected' }}"
-        secondary: "{{ states['binary_sensor.espresense_nino_bedroom'].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
-        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-
-  # 
   # Media Player Pop Up
   # 
   - type: custom:decluttering-card
@@ -257,6 +205,98 @@ cards:
     variables:
       - media_player: media_player.ninos_room
       - hash: '#ninos_bedroom_media_player'
+
+
+  # 
+  # Nino's Bedroom Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#ninos_bedroom_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 650px)
+        margin_top_desktop: calc(100vh - 650px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Air Quality Sensor Detections
+          - entity: automation.nino_bedroom_air_quality_detections
+            name: Air Quality Automations
+            icon: mdi:air-filter
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Nino's heater
+          - entity: automation.nino_heater_on
+            name: Heater Automations
+            icon: mdi:radiator
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Nino's heater
+          - entity: automation.nino_bedroom_heater_turn_on_upon_arrival
+            name: Turn on Heater Upon Arrival
+            icon: mdi:radiator
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # BLE Base Station
+          - entity: binary_sensor.espresense_nino_bedroom
+            icon: mdi:bluetooth
+            name: BLE Base Station
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Bed Occupancy
+          - entity: binary_sensor.nino_bed_occupied
+            icon: mdi:bed
+            name: Bed Occupancy
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+          
+          # Bed Sensor 
+          - entity: sensor.nino_bed_sensor
+            icon: mdi:bed
+            name: Bed Sensor Right
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+          
+          # Bed Trigger Level
+          - entity: number.nino_bed_trigger_level
+            icon: mdi:arrow-collapse-down
+            name: Trigger Level
+            secondary_info: last-changed
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
 
   # 

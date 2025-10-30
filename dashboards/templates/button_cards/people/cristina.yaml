@@ -55,62 +55,40 @@ cards:
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      - type: custom:template-entity-row
+      - entity: person.cristina_falbo
         icon: kohbo:kohbo-location
         name: Location
-        entity: person.cristina_falbo
-        state: "{{ states[config.entity].state | replace('_', ' ') | title }}"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        color: >
-          {% if states[config.entity].state == "home" %}
-            var(--success-color)
-          {% else %}
-            var(--light-grey-color)
-          {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        
-      - type: custom:template-entity-row
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+      - entity: sensor.cristina_room_presence
         icon: kohbo:kohbo-room-occupancy
         name: Room
-        entity: sensor.cristina_room_presence
-        state: "{{ states[config.entity].state | replace('_', ' ') | title }}"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        color: >
-          {% if states[config.entity].state == "not_home" %}
-            var(--light-grey-color)
-          {% else %}
-            var(--success-color)
-          {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
         
-      - type: custom:template-entity-row
+      - entity: sensor.home_cristina_distance
         icon: kohbo:kohbo-proximity
         name: Proximity
-        entity: sensor.home_cristina_distance
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-      - type: custom:template-entity-row
+      - entity: sensor.cfalb2_steps
         icon: kohbo:kohbo-steps
         name: Steps
-        entity: sensor.cfalb2_steps
-        state: "{{ '{:,}'.format(states[config.entity].state | int(0)) }}"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-      - type: custom:template-entity-row
+      - entity: input_boolean.cristina_commuting
         icon: kohbo:kohbo-train
         name: Commuting
-        entity: input_boolean.cristina_commuting
-        state: "{{ states[config.entity].state | title }}"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: >
-          {% if states[config.entity].state == "on" %}
-            var(--success-color)
-          {% else %}
-            var(--light-grey-color)
-          {% endif %}
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
 
   # 
@@ -126,13 +104,12 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-      - type: custom:template-entity-row
+      - entity: timer.cristina_daily_medication_timer
         icon: kohbo:kohbo-timer
         name: Daily Reminder
-        entity: timer.cristina_daily_medication_timer
-        state: "{{ states[config.entity].state | title }}"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
       - entity: input_boolean.cristina_friday_medication_taken
         icon: kohbo:kohbo-medication
@@ -141,13 +118,12 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-      - type: custom:template-entity-row
+      - entity: timer.cristina_friday_medication_timer
         icon: kohbo:kohbo-timer
         name: Friday Reminder
-        entity: timer.cristina_friday_medication_timer
-        state: "{{ states[config.entity].state | title }}"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
   # 
   # Sleep Details
@@ -197,23 +173,21 @@ cards:
       # 
       # Phone Battery Level
       # 
-      - type: custom:template-entity-row
-        icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
+      - entity: sensor.cfalb2_battery_level
+        # icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
         name: Battery
-        entity: sensor.cfalb2_battery_level
-        state: "{{ states[config.entity].state }}%"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        color: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon_color.yaml
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
       # 
       # Network Details
       # 
-      - type: custom:template-entity-row
+      - entity: sensor.cfalb2_ssid
         icon: kohbo:kohbo-wifi
         name: Wifi Network
-        entity: sensor.cfalb2_ssid
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
 
   # 

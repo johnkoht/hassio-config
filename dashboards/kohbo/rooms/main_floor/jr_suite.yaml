@@ -124,22 +124,6 @@ cards:
         template: kohbo_device_door_entity
 
 
-  # 
-  # Automations
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Automations
-  - type: entities
-    entities:
-      # Air Quality Sensor Detections
-      - entity: automation.jr_suite_air_quality_sensor_detections
-        name: Air Quality Automations
-        icon: mdi:air-filter
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
 
   # # 
   # # Quick Settings
@@ -157,28 +141,69 @@ cards:
   #       secondary_info: last-changed
   #       state_color: true
 
-  # 
-  # Sensors
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Sensors
-  - type: entities
-    entities:
-      - type: custom:template-entity-row
-        icon: mdi:filter
-        name: Air Purifier Filter Life
-        entity: sensor.jr_suite_air_purifier_filter_life
-        state: "{{ states[config.entity].state }}%"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-        color: >
-          {% set filter_left = states[config.entity].state | int(0) %}
-          {% if filter_left < 20 %}
-            var(--error-color)
-          {% else %}
-            var(--success-color)
+  
         
+
+  # 
+  # Jr. Suite Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#jr_suite_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 825px)
+        margin_top_desktop: calc(100vh - 825px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Air Quality Sensor Detections
+          - entity: automation.jr_suite_air_quality_sensor_detections
+            name: Air Quality Automations
+            icon: mdi:air-filter
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          - type: custom:template-entity-row
+            icon: mdi:air-filter
+            name: Air Purifier Filter Life
+            entity: sensor.jr_suite_air_purifier_filter_life
+            state: "{{ states[config.entity].state }}%"
+            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            color: >
+              {% set filter_left = states[config.entity].state | int(0) %}
+              {% if filter_left < 20 %}
+                var(--error-color)
+              {% else %}
+                var(--success-color)
+              {% endif %}
+
+
 
   # 
   # Navbar

@@ -1,0 +1,25 @@
+style:
+  .: |
+    hui-generic-entity-row {
+      padding: 4px;
+    }
+  hui-generic-entity-row$: |
+      state-badge {
+        flex: 0 0 30px !important;
+      }
+      .info {
+        margin-left: 0 !important;
+        padding-left: 10px !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        line-height: 17px !important;
+        padding-top: 2px !important;
+
+        .secondary {
+          font-weight: 400 !important;
+          font-size: 12px !important;
+          color: #ADB5BD !important;
+          margin-top: 3px !important;
+          line-height: 12px !important;
+        }
+      }

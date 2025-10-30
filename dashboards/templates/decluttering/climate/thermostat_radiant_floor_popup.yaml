@@ -35,21 +35,19 @@ thermostat_radiant_floor_popup:
       - type: entities
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
         entities:
-          - type: custom:template-entity-row
+          - entity: '[[temperature_sensor]]'
             icon: mdi:home-thermometer
             name: '[[name]]'
-            entity: '[[temperature_sensor]]'
-            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-            state: "{{ (states(config.entity) | float) | round(0) }}°"
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-          - type: custom:template-entity-row
+          - entity: '[[outside_temperature_sensor]]'
             icon: mdi:thermometer-lines
             name: 'Outside Temperature'
-            entity: '[[outside_temperature_sensor]]'
-            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-            state: "{{ (states(config.entity) | float) | round(0) }}°"
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
           
 

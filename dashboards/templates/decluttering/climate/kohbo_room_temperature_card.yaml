@@ -16,14 +16,19 @@ kohbo_room_temperature_card:
     smoothing: true
     color_thresholds_transition: smooth
     color_thresholds:
+      # Blue
       - color: "#59A5D8"
         value: '[[value_1]]'
+      # Light Blue
       - color: "#ADD2EB"
         value: '[[value_2]]'
+      # Green
       - color: "#06D6A0"
         value: '[[value_3]]'
+      # Yellow
       - color: "#FFD166"
         value: '[[value_4]]'
+      # Red
       - color: "#ED4747"
         value: '[[value_5]]'
     entities:
