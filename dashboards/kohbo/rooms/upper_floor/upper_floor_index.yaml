@@ -3,17 +3,12 @@ title: Upper Floor
 path: rooms-upper-floor
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_room_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
   - !include /config/dashboards/templates/includes/rooms/kohbo_room_page_header.yaml
 
   - type: vertical-stack
     cards:
-      - type: custom:button-card
-        template: kohbo_page_title
-        name: Upper Floor
-
-
       # 
       # Overview Area for the upper floor
       # 
@@ -104,7 +99,7 @@ cards:
         variables:
           - mode: input_select.ninos_bedroom
           - occupancy: input_boolean.ninos_bedroom_occupied
-          - room: "ninos_bedroom"
+          - room: "nino_bedroom"
           - room_name: Nino's Bedroom
           - navigation_path: '/dashboard-kohbo/ninos-bedroom'
           - temperature: "[[[ return states['sensor.nino_bedroom_awair_temperature'].state ]]]"
@@ -143,7 +138,7 @@ cards:
         variables:
           - mode: input_select.gianlucas_bedroom
           - occupancy: input_boolean.gianlucas_room_occupied
-          - room: "gianlucas_bedroom"
+          - room: "gianluca_room"
           - room_name: Gianluca's Bedroom
           - navigation_path: '/dashboard-kohbo/gianluca-bedroom'
           - temperature: "[[[ return states['sensor.gianluca_bedroom_awair_temperature'].state ]]]"

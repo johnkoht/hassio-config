@@ -3,15 +3,15 @@ title: Main Floor
 path: rooms-main-floor
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_room_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
   - !include /config/dashboards/templates/includes/rooms/kohbo_room_page_header.yaml
 
   - type: vertical-stack
     cards:
-      - type: custom:button-card
-        template: kohbo_page_title
-        name: Main Floor
+      # - type: custom:button-card
+      #   template: kohbo_page_title
+      #   name: Main Floor
       
       # 
       # Overview Area for the main floor
@@ -251,7 +251,7 @@ cards:
         variables:
           - mode: input_select.dining_room
           - occupancy: input_boolean.playroom_occupied
-          - room: "dining_room"
+          - room: "living_room"
           - room_name: Dining Room
           - navigation_path: '/dashboard-kohbo/dining-room'
           - temperature: null

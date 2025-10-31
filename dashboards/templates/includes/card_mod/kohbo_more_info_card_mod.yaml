@@ -3,6 +3,7 @@ style:
     ha-card {
       text-align: center !important;
       padding: 40px 20px 20px 20px !important;
+      
 
       .card-content {
         padding: 0px !important;
@@ -17,7 +18,11 @@ style:
       display: none !important;
     }
   more-info-content$ more-info-lock$: |
-    ha-control-button {
+    ha-state-control-lock-toggle {
+      margin-bottom: 0px !important;
+    }
+    
+    .buttons {
       display: none !important;
     }
   $: |

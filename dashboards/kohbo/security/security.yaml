@@ -2,13 +2,494 @@ type: custom:vertical-layout
 title: Security
 path: security
 theme: kohbo
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
+  # # 
+  # # Page Header
+  # # 
+  # - type: custom:decluttering-card
+  #   template: top_toolbar
+  #   variables:
+  #     - cards:
+  #       - type: custom:button-card
+  #         template: empty_column
+            
+  #       # Room Name
+  #       - type: custom:button-card
+  #         template: kohbo_header_page_title
+  #         name: Security
+
+  #       # Settings button
+  #       - type: custom:button-card
+  #         template: kohbo_header_chip_card
+  #         icon: mdi:dots-horizontal
+  #         icon_color: var(--secondary-text-color)
+  #         tap_action:
+  #           action: navigate
+  #           navigation_path: '#security_settings_popup'
+
+
+
+  # SUBPAGES
+  #  - cameras
+  #  - doors
+  #  - windows
+  #  - leak sensors
+  #  - motion
+  #  - 
+
+
+
+  # 
+  # Page Header
+  # 
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:decluttering-card
+          template: top_toolbar
+          variables:
+            - cards:
+              - type: custom:button-card
+                template: empty_column
+
+              # Room Name
+              - type: custom:button-card
+                template: kohbo_header_page_title
+                name: Security
+
+              # Settings button
+              - type: custom:button-card
+                template: kohbo_header_chip_card
+                icon: mdi:dots-horizontal
+                icon_color: var(--secondary-text-color)
+                tap_action:
+                  action: navigate
+                  navigation_path: '#security_settings_popup'
+
+        - type: custom:navbar-card
+          routes:
+            - url: /dashboard-kohbo/security
+              icon: mdi:shield-check
+              label: Overview
+            - url: /dashboard-kohbo/security-cameras
+              icon: mdi:camera
+              label: Cameras
+            - url: /dashboard-kohbo/security-openings
+              icon: mdi:door-open
+              label: Openings
+            - url: /dashboard-kohbo/security-leak-sensors
+              icon: mdi:moisture
+              label: Leak Sensors
+          haptic: true
+          mobile:
+            show_labels: true
+            show_popup_label_backgrounds: true
+          styles: |
+            .navbar {
+              top: 60px !important;
+              bottom: auto !important;
+            }
+
+            .navbar-card {
+              background: var(--app-header-background-color) !important;
+              box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.1) !important;
+              padding: 0 19px !important;
+            }
+
+            .button {
+              display: none !important;
+            }
+
+            .label {
+              padding: 12px 0 !important;
+              font-size: 12px !important;
+              text-transform: uppercase;
+              font-family: 'Inter', sans-serif !important; 
+              font-weight: 600 !important;
+              color: var(--semi-dark-grey-color) !important;
+            }
+
+            .label.active {
+              color: var(--primary-text-color) !important;
+            }
+
+            .route.active {
+              border-bottom: 2px solid var(--primary-text-color) !important;
+            }
+
+
+  # 
+  # Security Overview
+  # 
   - type: custom:button-card
-    template: kohbo_page_title
-    name: Security
+    template: kohbo_card_wide
+    entity: sensor.house_security_status
+    label: Security Overview
+    icon: |
+      [[[
+        if (entity.state == "Partially Secure")
+          return "kohbo:kohbo-security-low"
+        else if (entity.state == "Totally Secure" || entity.state == "Secure")
+          return "kohbo:kohbo-security-high"
+        else
+          return "kohbo:kohbo-security-low"
+      ]]]
+    show_state: true
+    state_display: |
+      [[[
+        if (entity.state == "Partially Secure")
+          return "Partially Secure"
+        else if (entity.state == "Totally Secure")
+          return "Totally Secure"
+        else if (entity.state == "Secure")
+          return "Home Secure"
+        else
+          return "Vulnerable"
+      ]]]
+    show_icon: true
+    show_name: false
+    show_label: true
+    layout: icon_name_state
+    tap_action:
+      action: navigate
+      navigation_path: '/dashboard-kohbo/security'
+    styles:
+      icon:
+        - color: >
+            [[[
+              return entity.state === 'Totally Secure' || entity.state === 'Secure' ? '#06D6A0' : '#FFD166';
+            ]]]
+
+
+
+
+
+  # # 
+  # # Security Overview
+  # # 
+  # # - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
+  # - type: custom:stack-in-card
+  #   card_mod:
+  #     style: |
+  #       :host {
+  #         --keep-border_radius: 'true';
+  #         --keep-background: 'true';
+  #         --keep-border-radius: 'true';
+  #       }
+  #   keep:
+  #     border_radius: true
+  #     background: true
+  #   cards:
+  #     # 
+  #     # Security Status / Overview
+  #     # 
+  #     - type: custom:button-card
+  #       template: kohbo_stacked_card_top
+  #       entity: alarm_control_panel.panel
+  #       label: Alarm System Status
+  #       icon: |
+  #         [[[
+  #           if (entity.state == "armed_home")
+  #             return "kohbo:kohbo-alarm-armed-home"
+  #           else if (entity.state == "armed_away")
+  #             return "kohbo:kohbo-alarm-armed-away"
+  #           else if (entity.state == "disarmed")
+  #             return "kohbo:kohbo-alarm-disarmed"
+  #           else
+  #             return "kohbo:kohbo-alarm-disarmed"
+  #         ]]]
+  #       show_state: true
+  #       # state_display: |
+  #       #   [[[
+  #       #     if (entity.state == "armed_home")
+  #       #       return "Partially Secure"
+  #       #     else if (entity.state == "Totally Secure")
+  #       #       return "Totally Secure"
+  #       #     else if (entity.state == "Secure")
+  #       #       return "Home Secure"
+  #       #     else
+  #       #       return "Vulnerable"
+  #       #   ]]]
+  #       show_icon: true
+  #       show_name: false
+  #       show_label: true
+  #       layout: icon_name_state
+  #       # tap_action:
+  #       #   action: navigate
+  #       #   navigation_path: '/dashboard-kohbo/security'
+  #       # styles:
+  #       #   icon:
+  #       #     - color: >
+  #       #         [[[
+  #       #           return entity.state === 'Totally Secure' || entity.state === 'Secure' ? '#06D6A0' : '#FFD166';
+  #       #         ]]]
+
+  #     # 
+  #     # Security Items
+  #     # 
+  #     - type: custom:stack-in-card
+  #       mode: horizontal
+  #       card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_buttons_bg.yaml
+  #       keep:
+  #         border_radius: true
+  #         background: true
+  #       cards:
+  #         # 
+  #         # Arm Home
+  #         # 
+  #         - type: custom:button-card
+  #           entity: alarm_control_panel.panel
+  #           name: Home
+  #           template: security_alarm_action_button
+  #           icon: kohbo:kohbo-alarm-armed-home
+  #           tap_action:
+  #             action: perform-action
+  #             perform_action: alarm_control_panel.alarm_arm_home
+  #             data:
+  #               entity_id: alarm_control_panel.panel
+  #           state:
+  #             - value: 'armed_home'
+
+  #         # 
+  #         # Disarm
+  #         # 
+  #         - type: custom:button-card
+  #           entity: alarm_control_panel.panel
+  #           name: Disarm
+  #           template: security_alarm_action_button
+  #           icon: kohbo:kohbo-alarm-disarmed
+  #           tap_action:
+  #             action: perform-action
+  #             perform_action: alarm_control_panel.alarm_disarm
+  #             data:
+  #               entity_id: alarm_control_panel.panel
+
+  #         # 
+  #         # Arm Away
+  #         # 
+  #         - type: custom:button-card
+  #           entity: alarm_control_panel.panel
+  #           name: Away
+  #           template: security_alarm_action_button
+  #           icon: kohbo:kohbo-alarm-armed-away
+  #           tap_action:
+  #             action: perform-action
+  #             perform_action: alarm_control_panel.alarm_arm_away
+  #             data:
+  #               entity_id: alarm_control_panel.panel
+
+
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        :host {
+          --keep-border_radius: 'true';
+          --keep-background: 'true';
+          --keep-border-radius: 'true';
+        }
+    keep:
+      border_radius: true
+      background: true
+    cards:
+      # 
+      # Security Status / Overview
+      # 
+      - type: custom:button-card
+        template: kohbo_stacked_card_top
+        entity: alarm_control_panel.panel
+        label: Alarm System Status
+        icon: |
+          [[[
+            if (entity.state == "armed_home")
+              return "kohbo:kohbo-alarm-armed-home"
+            else if (entity.state == "armed_away")
+              return "kohbo:kohbo-alarm-armed-away"
+            else if (entity.state == "disarmed")
+              return "kohbo:kohbo-alarm-disarmed"
+            else
+              return "kohbo:kohbo-alarm-disarmed"
+          ]]]
+        show_state: true
+        # state_display: |
+        #   [[[
+        #     if (entity.state == "armed_home")
+        #       return "Partially Secure"
+        #     else if (entity.state == "Totally Secure")
+        #       return "Totally Secure"
+        #     else if (entity.state == "Secure")
+        #       return "Home Secure"
+        #     else
+        #       return "Vulnerable"
+        #   ]]]
+        show_icon: true
+        show_name: false
+        show_label: true
+        layout: icon_name_state
+        # tap_action:
+        #   action: navigate
+        #   navigation_path: '/dashboard-kohbo/security'
+        # styles:
+        #   icon:
+        #     - color: >
+        #         [[[
+        #           return entity.state === 'Totally Secure' || entity.state === 'Secure' ? '#06D6A0' : '#FFD166';
+        #         ]]]
+
+
+
+      # 
+      # Security Alarm Overview & Actions
+      # 
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_buttons_bg.yaml
+        keep:
+          border_radius: true
+          background: true
+        cards:
+          # 
+          # Arm Home
+          # 
+          - type: custom:button-card
+            entity: alarm_control_panel.panel
+            name: Home
+            template: security_alarm_action_button
+            icon: kohbo:kohbo-alarm-armed-home
+            tap_action:
+              action: perform-action
+              perform_action: alarm_control_panel.alarm_arm_home
+              target:
+                entity_id: alarm_control_panel.panel
+            styles:
+              card:
+                - background: '[[[ return entity.state === "armed_home" ? "var(--dark-primary-color)" : "transparent"; ]]]'
+              icon:
+                - color: '[[[ return entity.state === "armed_home" ? "var(--success-color)" : "var(--primary-text-color)"; ]]]'
+
+          # 
+          # Disarm
+          # 
+          - type: custom:button-card
+            entity: alarm_control_panel.panel
+            name: Disarm
+            template: security_alarm_action_button
+            icon: kohbo:kohbo-alarm-disarmed
+            tap_action:
+              action: perform-action
+              perform_action: alarm_control_panel.alarm_disarm
+              target:
+                entity_id: alarm_control_panel.panel
+            styles:
+              card:
+                - background: '[[[ return entity.state === "disarmed" ? "var(--dark-primary-color)" : "transparent"; ]]]'
+              icon:
+                - color: '[[[ return entity.state === "disarmed" ? "var(--error-color)" : "var(--primary-text-color)"; ]]]'
+            
+
+          # 
+          # Arm Away
+          # 
+          - type: custom:button-card
+            entity: alarm_control_panel.panel
+            name: Away
+            template: security_alarm_action_button
+            icon: kohbo:kohbo-alarm-armed-away
+            tap_action:
+              action: perform-action
+              perform_action: alarm_control_panel.alarm_arm_away
+              target:
+                entity_id: alarm_control_panel.panel
+            styles:
+              card:
+                - background: '[[[ return entity.state === "armed_away" ? "var(--dark-primary-color)" : "transparent"; ]]]'
+              icon:
+                - color: '[[[ return entity.state === "armed_away" ? "var(--success-color)" : "var(--primary-text-color)"; ]]]'
+
+  
+  # 
+  # Front Door Lock
+  # 
+  - type: custom:stack-in-card
+    mode: horizontal
+    keep:
+      border_radius: true
+      background: true
+    card_mod:
+      style:
+        hui-horizontal-stack-card$: |
+          #root {
+            /*display: grid !important;
+            grid-template-columns: 75% 25% !important;*/
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px !important;
+          }
+    cards:
+      - type: custom:button-card
+        template: kohbo_device_lock_entity
+        entity: cover.garage_doors
+        name: Garage Doors
+        icon: kohbo:kohbo-garage-closed
+        state_display: |
+          [[[
+            if (entity.state == "closed")
+              return "Closed";
+            else
+              return entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
+          ]]]
+        tap_action:
+          action: navigate
+          navigation_path: "#garage_doors_popup"
+
+      - type: custom:button-card
+        template: kohbo_header_chip_card
+        icon: mdi:arrow-down
+        name: Close Garage Doors
+        styles:
+          card:
+            - background: var(--darker-primary-color)
+            - justify-self: end
+        tap_action:
+          action: perform-action
+          perform_action: cover.close_cover
+          target:
+            entity_id: cover.garage_doors
+        visibility:
+          - condition: state
+            entity: cover.garage_doors
+            state: 'open'
+
+    
+  
+  # 
+  # Locks
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Door Locks
+
+  # 
+  # Front Door Lock
+  # 
+  - !include /config/dashboards/kohbo/security/components/front_door_lock_component.yaml
+
+  # 
+  # Garage Entry Door Lock
+  # 
+  - !include /config/dashboards/kohbo/security/components/garage_entry_door_lock_component.yaml
+
 
   # 
   # Navbar
   # 
   - !include /config/dashboards/templates/includes/navbar.yaml
+
+  # 
+  # Lock popups
+  # 
+  - !include /config/dashboards/kohbo/security/front_door_lock_popup.yaml
+  - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml

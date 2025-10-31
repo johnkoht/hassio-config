@@ -3,4 +3,6 @@ kohbo_header_page_title:
   styles:
     name:
       - justify-self: center
-      - font-size: 28px
+      - font-size: 26px
+      - font-weight: 500
+      - letter-spacing: -.7px

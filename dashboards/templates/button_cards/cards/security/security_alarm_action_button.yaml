@@ -1,0 +1,72 @@
+security_alarm_action_button:
+  show_state: false
+  layout: vertical
+  size: 22px
+  styles:
+    card:
+      # - background: var(--dark-primary-color)
+      - background: transparent
+      - box-shadow: none
+      - padding: 20px
+      - border: none
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+      - --keep-background: 'true'
+      - --keep-border_radius: 'true'
+      - --keep-border-radius: 'true'
+      - border-radius: 8px !important
+    img_cell:
+      - height: 22px
+    icon:
+      - height: 18px;
+      # - color: var(--primary-text-color)
+    name:
+      - font-weight: bold
+      - color: var(--primary-text-color)
+      - font-size: 13px
+      - justify-self: center
+      - margin-top: 8px
+    
+
+
+# ayout: vertical
+#             size: 22px
+#             styles:
+#               card:
+#                 - padding: 20px
+#               img_cell: 
+#                 - height: 22px
+#               icon:
+#                 - width: 18px
+#                 - height: 18px
+#                 - color: var(--success-color)
+#               name:
+#                 - justify-self: center
+#                 - margin-top: 8px
+
+
+
+# security_alarm_action_button:
+#   show_state: false
+#   layout: icon_name
+#   size: 18px
+#   styles:
+#     card:
+#       - background: var(--dark-primary-color)
+#       - box-shadow: none
+#       - padding: 10px
+#       - border: none
+#       - backdrop-filter: none
+#       - -webkit-backdrop-filter: none
+#       - --keep-background: 'true'
+#       - --keep-border_radius: 'true'
+#       - --keep-border-radius: 'true'
+#       - border-radius: 8px !important
+#     icon:
+#       - height: 18px;
+#       - color: var(--primary-text-color)
+#     name:
+#       - font-weight: bold
+#       - color: var(--primary-text-color)
+#       - font-size: 13px
+#       - justify-self: start

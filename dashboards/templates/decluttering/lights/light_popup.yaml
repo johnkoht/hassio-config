@@ -8,38 +8,31 @@ light_popup:
         close_by_clicking_outside: false
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
 
-      # - type: custom:button-card
-      #   template: kohbo_page_title
-      #   name: Ceiling Lights
+      # 
+      # Light Popup Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: '[[popup_title]]'
 
+      # 
+      # Light More Info Card
+      # 
       - type: custom:more-info-card
         entity: '[[light_entity]]'
         title: '[[popup_title]]'
-        card_mod:
-          style: 
-            .: |
-              ha-card {
-                background: transparent !important;
-                text-align: center !important;
+        card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
 
-                .card-content {
-                  padding: 0px !important;
-                }
-              }
-
-              state-card-content {
-                display: none !important;
-              }
-
-            more-info-content$: |
-              hui-section {
-                display: none !important;
-              }
-
+      # 
+      # Default Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Default
 
+      # 
+      # Default Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400
@@ -105,10 +98,16 @@ light_popup:
                   - scene_id: b6f58e22-677f-4670-8677-3dea4ac60383
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Cozy Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Cozy
 
+      # 
+      # Cozy Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400
@@ -142,10 +141,16 @@ light_popup:
                   - scene_id: 73b2c0b3-b4c5-4307-8873-eb231c83e996
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Party Vibes Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Party Vibes
 
+      # 
+      # Party Vibes Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400
@@ -218,10 +223,16 @@ light_popup:
                   - scene_id: abfc5768-5c2c-4d61-bd03-2b64660e813f
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Serenity Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Serenity
 
+      # 
+      # Serenity Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400
@@ -271,10 +282,16 @@ light_popup:
                   - scene_id: 3c8662e5-e650-4f6a-a4b2-03b66d502f77
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Dreamy Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Dreamy
 
+      # 
+      # Dreamy Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400
@@ -331,10 +348,16 @@ light_popup:
                   - scene_id: 8a896d0a-85d5-4658-86d7-8f8a10f4f1c9
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Sunrise Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Sunrise
 
+      # 
+      # Sunrise Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400
@@ -400,6 +423,9 @@ light_popup:
                   - scene_id: 51960d8b-e47a-4b04-9163-28e3bbc91601
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Futuristic Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Futuristic
@@ -460,10 +486,16 @@ light_popup:
                   - scene_id: 78bbd5e7-720c-4343-9655-19602852e630
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Halloween Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Halloween
 
+      # 
+      # Halloween Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400
@@ -536,10 +568,16 @@ light_popup:
                   - scene_id: d824598f-0c09-4e67-beb2-972a8d5813e2
                   - entity_id: '[[entity_id]]'
 
+      # 
+      # Winter Holidays Scene
+      # 
       - type: custom:button-card
         template: section_title
         name: Winter Holidays
 
+      # 
+      # Winter Holidays Scene Swipe Card
+      # 
       - type: custom:simple-swipe-card
         view_mode: carousel
         card_min_width: 400

@@ -1,0 +1,24 @@
+template:
+  - sensor:
+      - name: "People Home Count"
+        unique_id: people_home_count
+        icon: mdi:account-group
+        state: >
+          {{ expand('group.people_sensors')
+             | selectattr('state', 'equalto', 'home')
+             | list
+             | count }}
+        attributes:
+          people_home: >
+            {{ expand('group.people_sensors')
+               | selectattr('state', 'equalto', 'home')
+               | map(attribute='name')
+               | list
+               | join(', ') }}
+
+          people_home_ids: >
+            {{ expand('group.people_sensors')
+               | selectattr('state', 'equalto', 'home')
+               | map(attribute='entity_id')
+               | list
+               | join(', ') }}

@@ -13,11 +13,6 @@ routes:
   - url: /dashboard-kohbo/security
     icon: kohbo:kohbo-security
     label: Security
-    tap_action:
-      action: call-service
-      service: browser_mod.window_reload
-      target: {}
-      data: {}
   - icon: mdi:dots-horizontal
     label: More
     tap_action:

@@ -3,28 +3,17 @@ title: Vacuum
 path: main-floor-vacuum
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
   # 
   # Page Header
   # 
-  - type: horizontal-stack
-    cards:
-      - type: custom:button-card
-        template: kohbo_page_back_button
-        tap_action:
-          action: nothing
-          navigation_path: >
-            [[[ return window.history.back(); ]]]
-      - type: custom:button-card
-        template: kohbo_page_settings_button
-        tap_action:
-          action: navigate
-          navigation_path: '#main_floor_vacuum_settings_popup'
-
-  - type: custom:button-card
-    template: kohbo_page_title
-    name: Vacuum
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Main Floor Vacuum
+      - navigation_path: /dashboard-kohbo/home
+      - settings_path: '#main_floor_vacuum_settings_popup'
 
   # 
   # Quick Actions

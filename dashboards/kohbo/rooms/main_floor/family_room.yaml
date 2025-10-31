@@ -3,37 +3,17 @@ title: Family Room
 path: family-room
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
   # 
   # Page Header
   # 
-  - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
-    card:
-      type: horizontal-stack
-      cards:
-        # Back button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:arrow-left
-          tap_action:
-            action: navigate
-            navigation_path: /dashboard-kohbo/rooms-main-floor
-        
-        # Room Name
-        - type: custom:button-card
-          template: kohbo_header_page_title
-          name: Family Room
-
-        # Settings button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:cog
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#family_room_settings_popup'
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Family Room
+      - navigation_path: /dashboard-kohbo/rooms-main-floor
+      - settings_path: '#family_room_settings_popup'
 
   # 
   # Room Overview

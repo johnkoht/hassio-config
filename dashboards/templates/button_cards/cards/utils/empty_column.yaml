@@ -1,5 +1,11 @@
+# 
+# Empty Column
+# 
+# This card is used to create an empty column
+# in the header toolbar to balance the layout.
+# 
 empty_column:
-  template: kohbo_chip_card
+  template: kohbo_header_chip_card
   styles:
     card:
       - background: transparent

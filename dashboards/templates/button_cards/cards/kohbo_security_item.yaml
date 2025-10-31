@@ -18,14 +18,14 @@ kohbo_security_item:
       #       || entity.state === 'closed'
       #       ) ? '#06D6A0' : '#ED4747';
       #     ]]]
-      - height: 24px;
-      - margin-bottom: 15px;
+      - height: 24px
+      - margin-bottom: 15px
     name:
       - font-size: 11px
       - color: "#ADB5BD"
     state:
       - font-weight: bold
       - color: "#F8F9FA"
-      - font-size: 13px;
-      - margin-top: 2px;
+      - font-size: 13px
+      - margin-top: 2px
     

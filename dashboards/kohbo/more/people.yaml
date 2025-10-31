@@ -2,13 +2,86 @@ type: custom:vertical-layout
 title: People
 path: people
 theme: kohbo
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_screen_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  - type: custom:button-card
-    template: kohbo_page_title
-    name: People
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        - type: custom:button-card
+          template: empty_column
 
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: People
 
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#people_settings_popup'
+
+  
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:mod-card
+    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # 
+        # How many people are in the house
+        # 
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: sensor.people_home_count
+          name: People Home Count
+          icon: mdi:home-account
+          state_display: >
+            [[[
+              if (states['sensor.people_home_count'].state == 1) {
+                return "1 person";
+              } else if (states['sensor.people_home_count'].state == 0) {
+                return "Empty";
+              } else {
+                return states['sensor.people_home_count'].state + ' people';
+              }
+            ]]]
+          state:
+            - value: 0
+              color: var(--light-grey-color)
+            - operator: >
+              value: 6
+              color: var(--success-color)
+            - operator: default
+              color: var(--primary-color)
+
+        # Guest Mode
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_boolean.guest_mode
+          name: Guest Mode
+          icon: mdi:account-group
+          state_display: >
+            [[[
+              return states['input_boolean.guest_mode'].state == "on" ? "Guest Mode On" : "Guest Mode Off";
+            ]]]
+
+        # Entertainment Mode
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_boolean.entertainment_mode
+          name: Entertainment Mode
+          icon: mdi:party-popper
+  
   # 
   # Family
   # 
@@ -37,7 +110,8 @@ cards:
             ]]]
           proximity: >
             [[[
-              return states['sensor.home_john_distance'].state + 'm';
+              const distance = parseFloat(states['sensor.home_john_distance'].state);
+              return Math.round((distance + Number.EPSILON) * 100) / 100 + 'mi';
             ]]]
         state_display: >
           [[[
@@ -83,7 +157,8 @@ cards:
             ]]]
           proximity: >
             [[[
-              return states['sensor.home_cristina_distance'].state + 'm';
+              const distance = parseFloat(states['sensor.home_cristina_distance'].state);
+              return Math.round((distance + Number.EPSILON) * 100) / 100 + 'mi';
             ]]]
         state_display: >
           [[[

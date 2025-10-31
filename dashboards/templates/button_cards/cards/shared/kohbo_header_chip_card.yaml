@@ -13,6 +13,8 @@ kohbo_header_chip_card:
       - align-items: center
       - padding: 0
       - background-color: var(--darker-primary-color)
+      - height: 40px
+      - min-width: 40px
     grid:
       - grid-template-areas: '"i"'
       - grid-template-columns: auto

@@ -38,7 +38,7 @@ cards:
           # Autolock at Night & Empty
           - entity: automation.front_door_auto_lock
             name: Autolock at Night & Empty
-            icon: mdi:lock
+            icon: kohbo:kohbo-lock-locked
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true
@@ -67,7 +67,7 @@ cards:
           # Lock If Open Too Long
           - entity: automation.front_door_lock_if_open_too_long
             name: Lock If Open Too Long
-            icon: mdi:lock
+            icon: kohbo:kohbo-lock-locked
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true

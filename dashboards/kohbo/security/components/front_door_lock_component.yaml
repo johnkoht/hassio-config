@@ -1,0 +1,34 @@
+# 
+# Front Door Lock
+# 
+type: custom:stack-in-card
+mode: horizontal
+card_mod:
+  style:
+    hui-horizontal-stack-card$: |
+      #root {
+        display: grid !important;
+        grid-template-columns: 75% 25% !important;
+        padding: 20px !important;
+      }
+cards:
+  - type: custom:button-card
+    template: kohbo_device_lock_entity
+    entity: lock.front_door
+    name: Front Door
+    tap_action:
+      action: navigate
+      navigation_path: "#front_door_lock_popup"
+
+  - type: entities
+    card_mod:
+      style: |
+        ha-card {
+          #states {
+            padding: 0px !important;
+          }
+        }
+    entities:
+      - entity: switch.front_door_lock_switch
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/input_boolean_embedded.yaml
+        secondary_info: last-changed

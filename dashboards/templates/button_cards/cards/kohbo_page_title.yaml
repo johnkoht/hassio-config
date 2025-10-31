@@ -9,5 +9,8 @@ kohbo_page_title:
       - padding: 0
     name:
       - color: '#F8F9FA'
-      - font-size: 40px
+      # - font-size: 40px
       - justify-self: start
+      - font-size: 26px
+      - font-weight: 500
+      - letter-spacing: -.7px

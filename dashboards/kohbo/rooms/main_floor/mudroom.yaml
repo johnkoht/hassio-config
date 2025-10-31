@@ -3,37 +3,17 @@ title: Mudroom
 path: mudroom
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
   # 
   # Page Header
   # 
-  - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
-    card:
-      type: horizontal-stack
-      cards:
-        # Back button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:arrow-left
-          tap_action:
-            action: navigate
-            navigation_path: /dashboard-kohbo/rooms-main-floor
-        
-        # Room Name
-        - type: custom:button-card
-          template: kohbo_header_page_title
-          name: Mudroom
-
-        # Settings button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:cog
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#mudroom_settings_popup'
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Mudroom
+      - navigation_path: /dashboard-kohbo/rooms-main-floor
+      - settings_path: '#mudroom_settings_popup'
 
   # 
   # Room Overview
@@ -164,6 +144,12 @@ cards:
           - entity: automation.garage_entry_door_lock_auto_lock
             name: Autolock Garage Entry Door
             icon: mdi:lock
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: input_boolean.vacuum_mudroom_at_night
+            name: Clean at Night
+            icon: mdi:robot-vacuum
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true

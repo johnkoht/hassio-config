@@ -21,10 +21,12 @@ cards:
       [[[
         if (entity.state == "Partially Secure")
           return "Partially Secure"
-        else if (entity.state == "Totally Secure" || entity.state == "Secure")
+        else if (entity.state == "Totally Secure")
+          return "Totally Secure"
+        else if (entity.state == "Secure")
           return "Home Secure"
         else
-          return "Home Vulnerable"
+          return "Vulnerable"
       ]]]
     show_icon: true
     show_name: false

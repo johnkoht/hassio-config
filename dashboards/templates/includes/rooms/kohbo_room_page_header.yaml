@@ -6,28 +6,26 @@ card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_p
 card:
   type: vertical-stack
   cards:
-    - type: horizontal-stack
-      cards:
-        # Assist
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:comment-processing
-          tap_action:
-            action: assist
-        
-        # Room Name
-        - type: custom:button-card
-          template: kohbo_header_page_title
-          name: Rooms
+    - type: custom:decluttering-card
+      template: top_toolbar
+      variables:
+        - cards:
+          - type: custom:button-card
+            template: empty_column
 
-        # Settings button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:cog
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#rooms_settings_popup'
+          # Room Name
+          - type: custom:button-card
+            template: kohbo_header_page_title
+            name: Rooms
+
+          # Settings button
+          - type: custom:button-card
+            template: kohbo_header_chip_card
+            icon: mdi:dots-horizontal
+            icon_color: var(--secondary-text-color)
+            tap_action:
+              action: navigate
+              navigation_path: '#rooms_settings_popup'
 
     - type: custom:navbar-card
       routes:
@@ -56,7 +54,7 @@ card:
         .navbar-card {
           background: var(--app-header-background-color) !important;
           box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.1) !important;
-          padding: 0 15px !important;
+          padding: 0 19px !important;
         }
 
         .button {

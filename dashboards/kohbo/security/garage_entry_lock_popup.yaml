@@ -38,7 +38,7 @@ cards:
           # Auto lock
           - entity: automation.garage_entry_door_lock_auto_lock
             name: Auto Lock
-            icon: mdi:lock
+            icon: kohbo:kohbo-lock-locked
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true
@@ -67,7 +67,7 @@ cards:
           # Lock If Open Too Long
           - entity: automation.garage_entry_door_lock_if_open_too_long
             name: Lock If Open Too Long
-            icon: mdi:lock
+            icon: kohbo:kohbo-lock-locked
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true
@@ -114,7 +114,7 @@ cards:
           # Auto Unlock Upon Arrival
           - entity: automation.garage_entry_door_unlock_upon_arrival
             name: Auto Unlock Upon Arrival
-            icon: mdi:lock-open
+            icon: kohbo:kohbo-lock-locked-open
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true
@@ -143,7 +143,7 @@ cards:
         name: Lock Jammed
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
-        icon: mdi:lock-alert
+        icon: kohbo:kohbo-lock-locked
       - entity: sensor.node_37_node_status
         name: Node Status
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml

@@ -7,10 +7,15 @@ kohbo_device_lock_entity:
       - grid-template-columns: 24px auto;
     card:
       - padding: 0px
+      - --button-card-ripple-pressed-opacity: 0
+      - --button-card-ripple-hover-color: transparent
+      - --button-card-ripple-hover-opacity: 0
+      - --button-card-ripple-color: transparent
+      - --button-card-ripple-pressed-color: transparent
     name:
       - font-size: 15px
       - font-weight: 700
-      - line-height: 15px
+      - line-height: 18px
       - justify-self: start
       - padding-left: 12px
     state:
@@ -21,6 +26,11 @@ kohbo_device_lock_entity:
       - color: var(--light-grey-color)
       - margin-top: 3px
       - padding-left: 12px
+  state:
+    - value: 'unlocked'
+      icon: kohbo:kohbo-lock-unlocked
+    - value: 'locked'
+      icon: kohbo:kohbo-lock-locked
   state_display: |
     [[[
       const last = new Date(entity.last_changed);

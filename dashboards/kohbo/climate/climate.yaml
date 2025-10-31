@@ -3,56 +3,17 @@ title: Climate
 path: climate
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # # 
-  # # Page Header
-  # # 
-  # - type: custom:mod-card
-  #   card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
-  #   card:
-  #     type: horizontal-stack
-  #     cards:            
-  #       - type: custom:mushroom-chips-card
-  #         alignment: end
-  #         chips:
-  #           # Assist
-  #           - type: template
-  #             card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
-  #             icon: mdi:comment-processing
-  #             icon_color: var(--secondary-text-color)
-  #             tap_action:
-  #               action: assist
-  #           # Notifications
-  #           - type: template
-  #             card_mod: !include /config/dashboards/templates/includes/card_mod/chips/header_chip_card_mod.yaml
-  #             icon: mdi:bell
-  #             icon_color: var(--secondary-text-color)
-  #             tap_action:
-  #               action: navigate
-  #               navigation_path: '#notifications'
-                
-  # # 
-  # # Page title
-  # # 
-  # - type: custom:button-card
-  #   template: kohbo_page_title
-  #   name: Climate
-
   # 
   # Page Header
   # 
-  - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
-    card:
-      type: horizontal-stack
-      cards:
-        # Assist
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
         - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:comment-processing
-          tap_action:
-            action: assist
+          template: empty_column
             
         # Room Name
         - type: custom:button-card
@@ -62,7 +23,7 @@ cards:
         # Settings button
         - type: custom:button-card
           template: kohbo_header_chip_card
-          icon: mdi:cog
+          icon: mdi:dots-horizontal
           icon_color: var(--secondary-text-color)
           tap_action:
             action: navigate

@@ -3,37 +3,17 @@ title: Main Bedroom
 path: main-bedroom
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
   # 
   # Page Header
   # 
-  - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
-    card:
-      type: horizontal-stack
-      cards:
-        # Back button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:arrow-left
-          tap_action:
-            action: navigate
-            navigation_path: /dashboard-kohbo/rooms-upper-floor
-        
-        # Room Name
-        - type: custom:button-card
-          template: kohbo_header_page_title
-          name: Main Bedroom
-
-        # Settings button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:cog
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#main_bedroom_settings_popup'
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Main Bedroom
+      - navigation_path: /dashboard-kohbo/rooms-upper-floor
+      - settings_path: '#main_bedroom_settings_popup'
 
             
   # 
@@ -165,31 +145,6 @@ cards:
 
 
   # 
-  # Automations
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Automations
-  - type: entities
-    entities:
-      # Air Quality Sensor Detections
-      - entity: automation.main_bedroom_air_quality_sensor_detections
-        name: Air Quality Automations
-        icon: mdi:air-filter
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      # John Nightlight
-      - entity: automation.main_bedroom_night_light_for_john
-        name: John Nightlight
-        icon: hue:scene-nightlight
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-
-  # 
   # Quick Settings
   # 
   - type: custom:button-card
@@ -248,8 +203,8 @@ cards:
         hash: '#main_bedroom_settings_popup'
         close_by_clicking_outside: true
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 650px)
-        margin_top_desktop: calc(100vh - 650px)
+        margin_top_mobile: calc(100vh - 700px)
+        margin_top_desktop: calc(100vh - 700px)
         
       # 
       # Title
@@ -257,6 +212,30 @@ cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Air Quality Sensor Detections
+          - entity: automation.main_bedroom_air_quality_sensor_detections
+            name: Air Quality Automations
+            icon: mdi:air-filter
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # John Nightlight
+          - entity: automation.main_bedroom_night_light_for_john
+            name: John Nightlight
+            icon: hue:scene-nightlight
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
 
       #  
       # Sensors

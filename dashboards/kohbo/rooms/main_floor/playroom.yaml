@@ -3,37 +3,17 @@ title: Playroom
 path: playroom
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_nested_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
   # 
   # Page Header
   # 
-  - type: custom:mod-card
-    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
-    card:
-      type: horizontal-stack
-      cards:
-        # Back button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:arrow-left
-          tap_action:
-            action: navigate
-            navigation_path: /dashboard-kohbo/rooms-main-floor
-        
-        # Room Name
-        - type: custom:button-card
-          template: kohbo_header_page_title
-          name: Playroom
-
-        # Settings button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:cog
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#playroom_settings_popup'
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Playroom
+      - navigation_path: /dashboard-kohbo/rooms-main-floor
+      - settings_path: '#playroom_settings_popup'
 
   # 
   # Room Overview
@@ -155,6 +135,13 @@ cards:
           power_sensor: sensor.smart_plug_17_active_power
           confirmation: true
 
+      # Alexa Dot
+      - type: custom:button-card
+        entity: media_player.john_s_2nd_echo_dot
+        name: Alexa Dot
+        template: kohbo_device_entity
+        icon: phu:alexa-logo
+
 
   # 
   # Quick Settings
@@ -234,8 +221,8 @@ cards:
         hash: '#playroom_settings_popup'
         close_by_clicking_outside: true
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 500px)
-        margin_top_desktop: calc(100vh - 500px)
+        margin_top_mobile: calc(100vh - 600px)
+        margin_top_desktop: calc(100vh - 600px)
         
       # 
       # Title
@@ -243,6 +230,21 @@ cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          - entity: input_boolean.vacuum_playroom_at_night
+            name: Clean at Night
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
 
       # 
       # Sensors
