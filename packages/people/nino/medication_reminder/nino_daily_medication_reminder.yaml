@@ -26,6 +26,13 @@ timer:
     restore: true
     icon: mdi:rewind-15
 
+input_datetime:
+  nino_daily_medication_time:
+    name: Nino Daily Medication Time
+    icon: mdi:clock
+    has_date: false
+    has_time: true
+
 # 
 # Automations
 # 
@@ -42,7 +49,7 @@ automation:
     trigger:
       # Trigger at <time>
       - trigger: time
-        at: "00:00:00"
+        at: input_datetime.nino_daily_medication_time
       # Trigger when the timer is finished
       - trigger: event
         event_type: timer.finished
