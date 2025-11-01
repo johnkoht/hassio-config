@@ -28,10 +28,10 @@ automation:
         state: "on"
       - condition: and
         conditions:
-          # Nino's door is OPEN
-          - condition: state
-            entity_id: binary_sensor.ninos_door_sensor_status
-            state: "on"
+          # # Nino's door is OPEN
+          # - condition: state
+          #   entity_id: binary_sensor.ninos_door_sensor_status
+          #   state: "on"
           # AND Lights turned OFF
           - condition: state
             entity_id: light.ninos_bedroom_main_lights
