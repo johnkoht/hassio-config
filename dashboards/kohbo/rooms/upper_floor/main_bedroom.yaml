@@ -203,8 +203,8 @@ cards:
         hash: '#main_bedroom_settings_popup'
         close_by_clicking_outside: true
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 700px)
-        margin_top_desktop: calc(100vh - 700px)
+        margin_top_mobile: calc(100vh - 850px)
+        margin_top_desktop: calc(100vh - 850px)
         
       # 
       # Title
@@ -273,6 +273,44 @@ cards:
             name: Motion Sensor
             secondary_info: last-changed
             state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+      # 
+      # Bed Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Bed Sensors
+      - type: entities
+        entities:
+          # John's Bed Sensor 
+          - entity: sensor.john_bed_sensor
+            icon: mdi:bed
+            name: John's Bed Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+          
+          # John's Trigger Level
+          - entity: number.john_bed_trigger_level
+            icon: mdi:arrow-collapse-down
+            name: John's Trigger Level
+            secondary_info: last-changed
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Cristina's Bed Sensor 
+          - entity: sensor.cristina_bed_sensor
+            icon: mdi:bed
+            name: Cristina's Bed Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+          
+          # Cristina's Trigger Level
+          - entity: number.cristina_bed_trigger_level
+            icon: mdi:arrow-collapse-down
+            name: Cristina's Trigger Level
+            secondary_info: last-changed
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
   # 

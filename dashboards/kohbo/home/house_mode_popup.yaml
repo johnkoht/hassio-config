@@ -8,8 +8,8 @@ cards:
     hash: '#house_mode'
     close_by_clicking_outside: true
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    margin_top_mobile: calc(100vh - 750px)
-    margin_top_desktop: calc(100vh - 750px)
+    margin_top_mobile: calc(100vh - 800px)
+    margin_top_desktop: calc(100vh - 800px)
 
   # 
   # Popup Title
@@ -103,6 +103,14 @@ cards:
       - entity: input_boolean.quiet_mode
         name: Quiet Mode
         icon: kohbo:kohbo-house-quiet
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Bedtime Mode
+      - entity: input_boolean.bedtime
+        name: Bedtime Mode
+        icon: kohbo:kohbo-bed
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true

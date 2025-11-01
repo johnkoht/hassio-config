@@ -266,7 +266,7 @@ cards:
           # Bed Sensor 
           - entity: sensor.nino_bed_sensor
             icon: mdi:bed
-            name: Bed Sensor Right
+            name: Bed Sensor
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
