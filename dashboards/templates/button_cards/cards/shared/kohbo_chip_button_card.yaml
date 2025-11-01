@@ -1,0 +1,18 @@
+kohbo_chip_button_card:
+  template: kohbo_chip_card
+  show_state: false
+  show_name: true
+  show_icon: false
+  styles:
+    grid:
+      - grid-template-areas: '"n"'
+      - grid-template-columns: auto
+    card:
+      - height: 40px
+      - background-color: var(--darker-primary-color)
+    name:
+      - color: var(--primary-text-color)
+      - font-size: 13px
+      - font-weight: 600
+      - justify-self: start
+      - line-height: 13px

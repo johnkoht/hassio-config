@@ -10,8 +10,6 @@ template:
             {% set score = score + 30 %}
           {% elif is_state('alarm_control_panel.panel', 'armed_home') %}
             {% set score = score + 20 %}
-          {% elif is_state('alarm_control_panel.panel', 'disarmed') %}
-            {% set score = score + 10 %}
           {% elif is_state('alarm_control_panel.panel', 'triggered') %}
             {% set score = score - 50 %}
           {% endif %}
@@ -25,11 +23,11 @@ template:
 
           {# Garage Entry Door Logic #}
           {% if is_state('lock.garage_entry_door', 'locked') %}
-            {% set score = score + 10 %}
+            {% set score = score + 20 %}
           {% elif is_state('lock.garage_entry_door', 'unlocked') and is_state('cover.garage_doors', 'closed') %}
-            {% set score = score + 5 %}
+            {% set score = score + 10 %}
           {% else %}
-            {% set score = score - 20 %}
+            {% set score = score - 10 %}
           {% endif %}
 
           {# Garage Door Remotes #}
@@ -43,14 +41,14 @@ template:
           {% if is_state('binary_sensor.windows', 'off') %}
             {% set score = score + 10 %}
           {% else %}
-            {% set score = score - 20 %}
+            {% set score = score - 10 %}
           {% endif %}
 
           {# Exterior Doors #}
           {% if is_state('binary_sensor.exterior_doors', 'off') %}
             {% set score = score + 10 %}
           {% else %}
-            {% set score = score - 20 %}
+            {% set score = score - 10 %}
           {% endif %}
 
           {# Garage Doors #}
@@ -81,6 +79,8 @@ template:
           {# Final Evaluation #}
           {% if score < 0 %}
             0
+          {% elif score > 100 %}
+            100
           {% else %}
             {{ score }}
           {% endif %}

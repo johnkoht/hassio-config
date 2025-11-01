@@ -1,0 +1,48 @@
+# 
+# Horizontal Action Card
+# 
+# This card renders a horizontal card displaying an entity, icon,
+# state, and optional action buttons.
+# 
+horizontal_action_card:
+  default:
+    - template: kohbo_device_lock_entity
+  card:
+    type: custom:stack-in-card
+    mode: horizontal
+    keep:
+      border_radius: true
+      background: true
+    card_mod:
+      style:
+        hui-horizontal-stack-card$: |
+          #root {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px !important;
+          }
+    cards:
+      - type: custom:button-card
+        template: '[[template]]'
+        entity: '[[entity]]'
+        name: '[[name]]'
+        icon: '[[icon]]'
+        tap_action:
+          action: '[[tap_action]]'
+          navigation_path: '[[navigation_path]]'
+
+      - type: custom:mod-card
+        card_mod:
+          style: 
+            hui-horizontal-stack-card$: |
+              #root {
+                display: flex;
+                justify-content: end;
+                align-items: center;
+                gap: 5px !important;
+              }
+        card:
+          type: horizontal-stack
+          cards: '[[action_cards]]'
+            

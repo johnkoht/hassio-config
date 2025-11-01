@@ -102,4 +102,9 @@ cards:
             else
               return entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
           ]]]
+        state:
+          - value: 'open'
+            icon: kohbo:kohbo-garage-open
+          - value: 'closed'
+            icon: kohbo:kohbo-garage-closed
         

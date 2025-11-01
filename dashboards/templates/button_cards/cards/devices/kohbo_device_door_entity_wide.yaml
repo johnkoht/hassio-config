@@ -1,0 +1,8 @@
+kohbo_device_door_entity_wide:
+  template: kohbo_device_lock_entity
+  state:
+    - value: 'unlocked'
+      icon: kohbo:kohbo-lock-unlocked
+    - value: 'locked'
+      icon: kohbo:kohbo-lock-locked
+  
