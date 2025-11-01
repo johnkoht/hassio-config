@@ -477,6 +477,294 @@ cards:
             
 
 
+  # NEW SECURITY OVERVIEW CARD
+  - type: custom:stack-in-card
+    mode: horizontal
+    cards:
+      # 
+      # Security Score Gauge
+      # 
+      - type: gauge
+        name: Score
+        entity: sensor.house_security_score
+        min: 0
+        max: 100
+        # severity:
+        #   green: 90
+        #   yellow: 50
+        #   red: 0
+        needle: true
+        segments:
+          - from: 0
+            color: '#ed4747'
+          - from: 1
+            color: '#ed4843'
+          - from: 2
+            color: '#ec4a3f'
+          - from: 3
+            color: '#ec4c3c'
+          - from: 4
+            color: '#ec4e38'
+          - from: 5
+            color: '#ec5035'
+          - from: 6
+            color: '#ec5231'
+          - from: 7
+            color: '#ec542e'
+          - from: 8
+            color: '#eb562a'
+          - from: 9
+            color: '#eb5827'
+          - from: 10
+            color: '#eb5923'
+          - from: 11
+            color: '#ea5b1f'
+          - from: 12
+            color: '#ea5d1b'
+          - from: 13
+            color: '#ea5f17'
+          - from: 14
+            color: '#e96112'
+          - from: 15
+            color: '#e9620d'
+          - from: 16
+            color: '#e8640a'
+          - from: 17
+            color: '#e76608'
+          - from: 18
+            color: '#e76806'
+          - from: 19
+            color: '#e66904'
+          - from: 20
+            color: '#e56b03'
+          - from: 21
+            color: '#e56d01'
+          - from: 22
+            color: '#e46e00'
+          - from: 23
+            color: '#e37000'
+          - from: 24
+            color: '#e27200'
+          - from: 25
+            color: '#e17400'
+          - from: 26
+            color: '#e07600'
+          - from: 27
+            color: '#df7700'
+          - from: 28
+            color: '#de7900'
+          - from: 29
+            color: '#dd7b00'
+          - from: 30
+            color: '#dc7d00'
+          - from: 31
+            color: '#db7e00'
+          - from: 32
+            color: '#da8000'
+          - from: 33
+            color: '#d88200'
+          - from: 34
+            color: '#d78300'
+          - from: 35
+            color: '#d68500'
+          - from: 36
+            color: '#d38800'
+          - from: 37
+            color: '#d58700'
+          - from: 38
+            color: '#d28a00'
+          - from: 39
+            color: '#d08c00'
+          - from: 40
+            color: '#cf8e00'
+          - from: 41
+            color: '#cd9000'
+          - from: 42
+            color: '#cb9200'
+          - from: 43
+            color: '#c99300'
+          - from: 44
+            color: '#c79500'
+          - from: 45
+            color: '#c59700'
+          - from: 46
+            color: '#c39801'
+          - from: 47
+            color: '#c29a02'
+          - from: 48
+            color: '#c09c04'
+          - from: 49
+            color: '#be9d06'
+          - from: 50
+            color: '#bc9f09'
+          - from: 51
+            color: '#baa00c'
+          - from: 52
+            color: '#b8a20f'
+          - from: 53
+            color: '#b6a312'
+          - from: 54
+            color: '#b4a515'
+          - from: 55
+            color: '#b2a618'
+          - from: 56
+            color: '#b0a81b'
+          - from: 57
+            color: '#ada91e'
+          - from: 58
+            color: '#abab21'
+          - from: 59
+            color: '#a9ac24'
+          - from: 60
+            color: '#a6ae26'
+          - from: 61
+            color: '#a4af29'
+          - from: 62
+            color: '#a1b12c'
+          - from: 63
+            color: '#9fb22f'
+          - from: 64
+            color: '#9cb332'
+          - from: 65
+            color: '#99b535'
+          - from: 66
+            color: '#97b638'
+          - from: 67
+            color: '#94b73b'
+          - from: 68
+            color: '#91b93e'
+          - from: 69
+            color: '#8eba41'
+          - from: 70
+            color: '#8bbb44'
+          - from: 71
+            color: '#88bd47'
+          - from: 72
+            color: '#85be4a'
+          - from: 73
+            color: '#82bf4d'
+          - from: 74
+            color: '#7fc050'
+          - from: 75
+            color: '#7cc154'
+          - from: 76
+            color: '#78c257'
+          - from: 77
+            color: '#75c45a'
+          - from: 78
+            color: '#72c55d'
+          - from: 79
+            color: '#6ec660'
+          - from: 80
+            color: '#6bc763'
+          - from: 81
+            color: '#67c866'
+          - from: 82
+            color: '#63c969'
+          - from: 83
+            color: '#60ca6d'
+          - from: 84
+            color: '#58cb73'
+          - from: 85
+            color: '#5ccb70'
+          - from: 86
+            color: '#54cc76'
+          - from: 87
+            color: '#50cd79'
+          - from: 88
+            color: '#4cce7d'
+          - from: 89
+            color: '#47cf80'
+          - from: 90
+            color: '#3ed086'
+          - from: 91
+            color: '#43d083'
+          - from: 92
+            color: '#39d189'
+          - from: 93
+            color: '#34d28d'
+          - from: 94
+            color: '#29d393'
+          - from: 95
+            color: '#2fd390'
+          - from: 96
+            color: '#1bd499'
+          - from: 97
+            color: '#23d496'
+          - from: 98
+            color: '#13d59c'
+          - from: 99
+            color: '#06d6a0'
+        card_mod:
+          style:
+            ha-gauge $: |
+              path.dial,
+              path.value,
+              path.level {
+                stroke-width: 10px !important;
+              }
+
+              path.dial {
+                stroke: var(--darker-primary-color) !important;
+              }
+
+              .text {
+                bottom: 10px !important;
+              }
+
+              .value-text {
+                font-size: 35px !important;
+              }
+              
+            .: |
+              ha-card {
+                padding-top: 0 !important;
+              }
+              .name {
+                margin-top: -15px !important;
+                color: var(--secondary-text-color) !important;
+                font-size: 12px !important;
+              }
+
+
+      - type: custom:stack-in-card
+        cards:
+          - type: custom:button-card
+            entity: alarm_control_panel.panel
+            name: Alarm
+            icon: kohbo:kohbo-alarm-disarmed
+            layout: icon_state
+            size: 18px
+            show_name: false
+            show_state: true
+            show_icon: true
+            state_display: |
+              [[[
+                if (entity.state == "disarmed")
+                  return "Home is Disarmed";
+                else if (entity.state == "armed_home")
+                  return "Home is Armed Home";
+                else if (entity.state == "armed_away")
+                  return "Home is Armed Away";
+              ]]]
+            styles:
+              grid:
+                - grid-template-areas: '"i s"'
+                - grid-template-columns: 30px 1fr
+              card:
+                - background: transparent
+                - box-shadow: none
+                - padding: 20px
+                - border: none
+                - backdrop-filter: none
+                - -webkit-backdrop-filter: none
+                - align-items: center
+              state:
+                - justify-self: start
+                - margin-left: 10px
+              
+            
+
   # # 
   # # Security Overview
   # # 
