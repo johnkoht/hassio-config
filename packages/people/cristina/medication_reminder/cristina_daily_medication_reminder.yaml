@@ -171,6 +171,7 @@ automation:
   # 
   - id: "cristina_medication_reminder_reset"
     alias: "Cristina Medication Reminder Reset"
+    initial_state: false
     trigger:
       - trigger: time
         at: "03:00:01"

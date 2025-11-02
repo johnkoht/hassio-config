@@ -133,6 +133,7 @@ automation:
   # 
   - id: "cristina_friday_medication_reminder_reset"
     alias: "Cristina Friday Medication Reminder Reset"
+    initial_state: false
     triggers:
       - trigger: time
         at: "03:00:01"

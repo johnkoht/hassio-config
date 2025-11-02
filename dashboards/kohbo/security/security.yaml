@@ -627,6 +627,11 @@ cards:
                 entity_id: binary_sensor.playroom_motion_sensor_motion
               - options: {}
                 entity_id: binary_sensor.playroom_motion_sensor_entry_motion_detection
+              - options: {}
+                entity_id: binary_sensor.stairs_motion_sensor
+              - options: {}
+                entity_id: binary_sensor.upstairs_hallway_south_motion
+              
 
           # type: custom:auto-entities
           # card:
