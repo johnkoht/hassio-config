@@ -1,0 +1,22 @@
+security_overview_item:
+  layout: icon_state
+  size: 14px
+  show_name: false
+  show_state: true
+  show_icon: true
+  styles:
+    grid:
+      - grid-template-areas: '"i s"'
+      - grid-template-columns: 30px 1fr
+    card:
+      - background: transparent
+      - box-shadow: none
+      - padding: 2px 0
+      - border: none
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+      - align-items: center
+    state:
+      - justify-self: start
+      - margin-left: 10px
+      - font-size: 11px;

@@ -1,0 +1,70 @@
+motion_detected_card:
+  size: 24px
+  show_state: true
+  name: >
+      [[[
+        console.log("entity", entity);
+        const device_id = hass.entities[entity.entity_id].device_id;
+        var area_id = null;
+
+        if (device_id) {
+          area_id = hass.devices[device_id].area_id;;
+        } else {
+          area_id = hass.entities[entity.entity_id].area_id;
+        }
+
+        if (area_id) {
+          return area_id.replace("_", " ");
+        } else {
+          return entity.attributes.friendly_name;
+        }
+      ]]]
+  state_display: >
+    [[[
+      const last = new Date(entity.last_changed);
+      const now = new Date();
+      const diff = Math.floor((now - last) / 1000);
+
+      if (diff < 60) {
+        return `Now`;
+      } else if (diff < 3600) {
+        return `${Math.floor(diff / 60)} mins ago`;
+      } else if (diff < 86400) {
+        return `${Math.floor(diff / 3600)} hrs ago`;
+      } else {
+        return `${Math.floor(diff / 86400)} days ago`;
+      }
+    ]]]
+  state:
+    - value: 'on'
+      color: var(--error-color)
+    - value: 'off'
+      color: var(--light-grey-color)
+  styles:
+    grid:
+      - grid-template-areas: '"n n" "i i" "s s"'
+      - grid-template-rows: 50px auto auto
+    card:
+      - flex: 0 0 120px !important
+      - padding: 20px
+      - background-color: var(--darker-primary-color);
+      - border-radius: 8px !important;
+      - padding: 10px 6px !important;
+      - height: 170px;
+      - width: 120px;
+      - align-items: center;
+      - align-content: space-between;
+      - justify-content: space-between;
+      - display: flex;
+      - flex-direction: column;
+    name:
+      - font-size: 14px !important;
+      - color: var(--primary-text-color)
+      - text-transform: capitalize
+      - font-weight: 500 !important
+      - text-wrap: auto
+    state:
+      - font-size: 12px !important;
+      - color: var(--light-grey-color)
+      - font-weight: 400 !important
+  

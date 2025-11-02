@@ -39,6 +39,7 @@ automation:
   # 
   - id: "cristina_friday_medication_reminder"
     alias: "Cristina Friday Medication Reminder"
+    initial_state: false
     triggers:
       # Trigger at <time> on Fridays
       - trigger: time
