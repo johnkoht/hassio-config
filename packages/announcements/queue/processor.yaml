@@ -11,8 +11,8 @@
 automation:
   - id: announcement_queue_processor
     alias: "Announcement Queue - Processor"
-    mode: single
-    initial_state: on
+    mode: queued
+    initial_state: true
 
     #
     # Trigger
@@ -28,9 +28,9 @@ automation:
       - trigger: state
         entity_id: input_boolean.announcement_queue_running
         to: "off"
-      # Announcement Queue State
-      - trigger: mqtt
-        topic: home/announcement_queue/state
+      # # Announcement Queue State
+      # - trigger: mqtt
+      #   topic: home/announcement_queue/state
       # House Occupied for 5 minutes
       - trigger: state
         entity_id: input_boolean.house_occupied

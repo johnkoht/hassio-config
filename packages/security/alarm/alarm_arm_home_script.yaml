@@ -12,7 +12,7 @@ script:
     sequence:
       # Arm Home
       - action: alarm_control_panel.alarm_arm_home
-        entity_id: alarm_control_panel.panel
+        entity_id: alarm_control_panel.kohbo
 
       # Notify John
       - action: script.general_notification

@@ -5,7 +5,7 @@ automation:
     triggers:
       # Security alarm is triggered
       - trigger: state
-        entity_id: alarm_control_panel.panel
+        entity_id: alarm_control_panel.kohbo
         to: "triggered"
     actions:
       - action: script.security_alarm_alert

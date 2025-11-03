@@ -15,7 +15,7 @@ automation:
     actions:
       # Arm Away
       - action: alarm_control_panel.alarm_arm_away
-        entity_id: alarm_control_panel.panel
+        entity_id: alarm_control_panel.kohbo
 
       # Send a notification
       - action: script.general_notification

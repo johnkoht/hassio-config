@@ -418,7 +418,7 @@ cards:
               # Alarm
               # 
               - type: custom:button-card
-                entity: alarm_control_panel.panel
+                entity: alarm_control_panel.kohbo
                 name: Alarm
                 template: kohbo_security_item
                 state:
@@ -938,7 +938,7 @@ cards:
   #       cards:
   #         # Alarm
   #         - type: custom:button-card
-  #           entity: alarm_control_panel.panel
+  #           entity: alarm_control_panel.kohbo
   #           template: security_overview_item
   #           name: Alarm
   #           state:
@@ -1096,7 +1096,7 @@ cards:
   #     # 
   #     - type: custom:button-card
   #       template: kohbo_stacked_card_top
-  #       entity: alarm_control_panel.panel
+  #       entity: alarm_control_panel.kohbo
   #       label: Alarm System Status
   #       icon: |
   #         [[[
@@ -1149,7 +1149,7 @@ cards:
   #         # Arm Home
   #         # 
   #         - type: custom:button-card
-  #           entity: alarm_control_panel.panel
+  #           entity: alarm_control_panel.kohbo
   #           name: Home
   #           template: security_alarm_action_button
   #           icon: kohbo:kohbo-alarm-armed-home
@@ -1157,7 +1157,7 @@ cards:
   #             action: perform-action
   #             perform_action: alarm_control_panel.alarm_arm_home
   #             data:
-  #               entity_id: alarm_control_panel.panel
+  #               entity_id: alarm_control_panel.kohbo
   #           state:
   #             - value: 'armed_home'
 
@@ -1165,7 +1165,7 @@ cards:
   #         # Disarm
   #         # 
   #         - type: custom:button-card
-  #           entity: alarm_control_panel.panel
+  #           entity: alarm_control_panel.kohbo
   #           name: Disarm
   #           template: security_alarm_action_button
   #           icon: kohbo:kohbo-alarm-disarmed
@@ -1173,13 +1173,13 @@ cards:
   #             action: perform-action
   #             perform_action: alarm_control_panel.alarm_disarm
   #             data:
-  #               entity_id: alarm_control_panel.panel
+  #               entity_id: alarm_control_panel.kohbo
 
   #         # 
   #         # Arm Away
   #         # 
   #         - type: custom:button-card
-  #           entity: alarm_control_panel.panel
+  #           entity: alarm_control_panel.kohbo
   #           name: Away
   #           template: security_alarm_action_button
   #           icon: kohbo:kohbo-alarm-armed-away
@@ -1187,7 +1187,7 @@ cards:
   #             action: perform-action
   #             perform_action: alarm_control_panel.alarm_arm_away
   #             data:
-  #               entity_id: alarm_control_panel.panel
+  #               entity_id: alarm_control_panel.kohbo
 
 
 
@@ -1197,7 +1197,7 @@ cards:
   - type: custom:decluttering-card
     template: horizontal_action_card
     variables:
-      - entity: alarm_control_panel.panel
+      - entity: alarm_control_panel.kohbo
       - name: Alarm System
       - template: kohbo_horizontal_action_card_alarm_entity
       - tap_action: navigate
@@ -1212,10 +1212,10 @@ cards:
             action: perform-action
             perform_action: alarm_control_panel.alarm_arm_home
             target:
-              entity_id: alarm_control_panel.panel
+              entity_id: alarm_control_panel.kohbo
           visibility:
             - condition: state
-              entity: alarm_control_panel.panel
+              entity: alarm_control_panel.kohbo
               state: 'disarmed'
 
         # Disarm Button
@@ -1227,10 +1227,10 @@ cards:
             action: perform-action
             perform_action: alarm_control_panel.alarm_disarm
             target:
-              entity_id: alarm_control_panel.panel
+              entity_id: alarm_control_panel.kohbo
           visibility:
             - condition: state
-              entity: alarm_control_panel.panel
+              entity: alarm_control_panel.kohbo
               state: 
                 - armed_home
                 - armed_away

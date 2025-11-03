@@ -23,7 +23,7 @@ automation:
     condition:
       # Alarm is current disarmed
       - condition: state
-        entity_id: alarm_control_panel.panel
+        entity_id: alarm_control_panel.kohbo
         state: "disarmed"
       # Make sure the house is not occupied
       - condition: state

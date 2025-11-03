@@ -1,0 +1,54 @@
+template:
+  - binary_sensor:
+      - name: "Cameras Available"
+        unique_id: cameras_available
+        state: >
+          {% set cameras = [
+            'sensor.g4_bullet_uptime',
+            'sensor.g4_bullet_uptime_2',
+            'sensor.g4_bullet_uptime_3',
+            'sensor.g4_bullet_uptime_4',
+            'sensor.driveway_front_camera_uptime',
+            'sensor.front_door_camera_uptime',
+            'sensor.g5_turret_ultra_uptime_2'
+          ] %}
+
+          {% set offline = cameras
+            | select('in', [None, 'unknown', 'unavailable'])
+            | list
+            | length %}
+          {{ offline == 0 }}
+        attributes:
+          unavailable_count: >
+            {% set cameras = [
+              'sensor.g4_bullet_uptime',
+              'sensor.g4_bullet_uptime_2',
+              'sensor.g4_bullet_uptime_3',
+              'sensor.g4_bullet_uptime_4',
+              'sensor.driveway_front_camera_uptime',
+              'sensor.front_door_camera_uptime',
+              'sensor.g5_turret_ultra_uptime_2'
+            ] %}
+
+            {% set offline = cameras
+              | select('in', [None, 'unknown', 'unavailable'])
+              | list
+              | length %}
+            {{ offline }}
+          unavailable_list: >
+            {% set cameras = [
+              'sensor.g4_bullet_uptime',
+              'sensor.g4_bullet_uptime_2',
+              'sensor.g4_bullet_uptime_3',
+              'sensor.g4_bullet_uptime_4',
+              'sensor.driveway_front_camera_uptime',
+              'sensor.front_door_camera_uptime',
+              'sensor.g5_turret_ultra_uptime_2'
+            ] %}
+
+            {% set offline = cameras
+              | select('in', [None, 'unknown', 'unavailable'])
+              | list %}
+            {{ offline }}
+          total_cameras: 7
+          friendly_name: "Cameras Available (Uptime)"

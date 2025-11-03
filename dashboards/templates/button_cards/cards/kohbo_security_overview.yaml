@@ -33,7 +33,7 @@ cards:
       # Alarm
       # 
       - type: custom:button-card
-        entity: alarm_control_panel.panel
+        entity: alarm_control_panel.kohbo
         name: Alarm
         template: kohbo_security_item
         state:

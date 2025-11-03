@@ -5,7 +5,7 @@ automation:
     triggers:
       # Smoke detector detects smoke
       - trigger: state
-        entity_id: binary_sensor.smoke_detector
+        entity_id: binary_sensor.smoke_detector_2
         from: "off"
         to: "on"
     actions:
