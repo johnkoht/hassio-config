@@ -1,0 +1,63 @@
+# 
+# Horizontal Action Card Entity
+# 
+# This is the primary entity for the horizontal action card.
+# 
+kohbo_horizontal_action_card_entity:
+  show_state: true
+  layout: icon_name_state2nd
+  size: 24px
+  styles:
+    grid:
+      - grid-template-columns: 24px auto;
+    card:
+      - padding: 0px
+      - --button-card-ripple-pressed-opacity: 0
+      - --button-card-ripple-hover-color: transparent
+      - --button-card-ripple-hover-opacity: 0
+      - --button-card-ripple-color: transparent
+      - --button-card-ripple-pressed-color: transparent
+    name:
+      - font-size: 15px
+      - font-weight: 700
+      - line-height: 18px
+      - justify-self: start
+      - padding-left: 12px
+    state:
+      - justify-self: start
+      - font-size: 12px
+      - font-weight: 400
+      - line-height: 12px
+      - color: var(--light-grey-color)
+      - margin-top: 3px
+      - padding-left: 12px
+  state:
+    - value: 'unlocked'
+      icon: kohbo:kohbo-lock-unlocked
+    - value: 'locked'
+      icon: kohbo:kohbo-lock-locked
+  state_display: |
+    [[[
+      const last = new Date(entity.last_changed);
+      const now = new Date();
+      const diff = Math.floor((now - last) / 1000);
+
+      function titleCase(str) {
+        return str
+          .replace(/_/g, " ")
+          .toLowerCase()
+          .split(" ")
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      }
+
+      const state = hass.formatEntityState ? hass.formatEntityState(entity): titleCase(entity.state);
+
+      if (diff < 3600) {
+        return `${state} - ${Math.floor(diff / 60) + "m"}`;
+      } else if (diff < 86400) {
+        return `${state} - ${Math.floor(diff / 3600) + "h"}`;
+      } else {
+        return `${state} - ${Math.floor(diff / 86400) + "d"}`;
+      }
+    ]]]

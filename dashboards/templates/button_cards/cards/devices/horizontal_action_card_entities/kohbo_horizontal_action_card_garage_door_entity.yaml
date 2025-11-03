@@ -1,0 +1,43 @@
+kohbo_horizontal_action_card_garage_door_entity:
+  template: kohbo_horizontal_action_card_entity
+  state:
+    - value: 'closed'
+      icon: kohbo:kohbo-garage-closed
+    - value: 'open'
+      icon: kohbo:kohbo-garage-open
+
+  state_display: |
+    [[[
+      const last = new Date(entity.last_changed);
+      const now = new Date();
+      const diff = Math.floor((now - last) / 1000);
+      const raw_state = entity.state;
+      var state = entity.state;
+
+      function titleCase(str) {
+        return str
+          .replace(/_/g, " ")
+          .toLowerCase()
+          .split(" ")
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      }
+
+      if (raw_state == "open") {
+        state = entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
+      } else if (raw_state == "opening") {
+        return entity.attributes.entity_id.filter(id => states[id]?.state === 'opening').length + " Opening";
+      } else if (raw_state == "closing") {
+        return entity.attributes.entity_id.filter(id => states[id]?.state === 'closing').length + " Closing";
+      } else {
+        state = hass.formatEntityState ? hass.formatEntityState(entity): titleCase(entity.state);
+      }
+
+      if (diff < 3600) {
+        return `${state} - ${Math.floor(diff / 60) + "m"}`;
+      } else if (diff < 86400) {
+        return `${state} - ${Math.floor(diff / 3600) + "h"}`;
+      } else {
+        return `${state} - ${Math.floor(diff / 86400) + "d"}`;
+      }
+    ]]]

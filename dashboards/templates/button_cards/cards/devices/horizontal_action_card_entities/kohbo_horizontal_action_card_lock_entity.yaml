@@ -1,31 +1,5 @@
-kohbo_device_lock_entity:
-  show_state: true
-  layout: icon_name_state2nd
-  size: 24px
-  styles:
-    grid:
-      - grid-template-columns: 24px auto;
-    card:
-      - padding: 0px
-      - --button-card-ripple-pressed-opacity: 0
-      - --button-card-ripple-hover-color: transparent
-      - --button-card-ripple-hover-opacity: 0
-      - --button-card-ripple-color: transparent
-      - --button-card-ripple-pressed-color: transparent
-    name:
-      - font-size: 15px
-      - font-weight: 700
-      - line-height: 18px
-      - justify-self: start
-      - padding-left: 12px
-    state:
-      - justify-self: start
-      - font-size: 12px
-      - font-weight: 400
-      - line-height: 12px
-      - color: var(--light-grey-color)
-      - margin-top: 3px
-      - padding-left: 12px
+kohbo_horizontal_action_card_lock_entity:
+  template: kohbo_horizontal_action_card_entity
   state:
     - value: 'unlocked'
       icon: kohbo:kohbo-lock-unlocked

@@ -77,13 +77,10 @@ template:
           {# OCCUPANCY CONTEXT                                                  #}
           {# ------------------------------------------------------------------- #}
           {% if is_state('input_boolean.house_occupied', 'on') %}
-            {% set score = score + 5 %}
+            {% set score = score + 10 %}
           {% else %}
             {% if alarm_state == 'disarmed' %}
-              {% set score = score - 20 %}
-            {% endif %}
-            {% if is_state('lock.front_door', 'unlocked') or is_state('lock.garage_entry_door', 'unlocked') %}
-              {% set score = score - 10 %}
+              {% set score = score - 25 %}
             {% endif %}
           {% endif %}
 
@@ -128,11 +125,16 @@ template:
           {# ------------------------------------------------------------------- #}
           {% set hour = now().hour %}
           {% if 22 <= hour or hour < 5 %}
-            {% if alarm_state != 'armed_home' %}
-              {% set score = score - 15 %}
-            {% endif %}
-            {% if is_state('binary_sensor.windows', 'on') or is_state('binary_sensor.exterior_doors', 'on') or is_state('cover.garage_doors', 'open') %}
-              {% set score = score - 10 %}
+            {% if is_state('input_boolean.house_occupied', 'off') %}
+              {# nobody home + not armed = risky #}
+              {% if alarm_state != 'armed_away' %}
+                {% set score = score - 20 %}
+              {% endif %}
+            {% else %}
+              {# occupied + disarmed = fine, small deduction #}
+              {% if alarm_state == 'disarmed' %}
+                {% set score = score - 5 %}
+              {% endif %}
             {% endif %}
           {% elif 5 <= hour < 9 %}
             {% set score = score + 5 %}

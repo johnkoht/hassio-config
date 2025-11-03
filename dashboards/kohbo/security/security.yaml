@@ -1194,83 +1194,53 @@ cards:
   # 
   # Alarm Panel
   # 
-  - type: custom:stack-in-card
-    mode: horizontal
-    keep:
-      border_radius: true
-      background: true
-    card_mod:
-      style:
-        hui-horizontal-stack-card$: |
-          #root {
-            
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px !important;
-          }
-    cards:
-      - type: custom:button-card
-        template: kohbo_device_lock_entity
-        entity: alarm_control_panel.panel
-        name: Alarm System
-        icon: kohbo:kohbo-alarm-disarmed
-        # tap_action:
-        #   action: navigate
-        #   navigation_path: "#garage_doors_popup"
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: alarm_control_panel.panel
+      - name: Alarm System
+      - template: kohbo_horizontal_action_card_alarm_entity
+      - tap_action: navigate
+      - navigation_path: "#alarm_popup"
+      - action_cards:
+        # Arm Home Button
+        - type: custom:button-card
+          template: kohbo_chip_button_card
+          icon: kohbo:kohbo-alarm-armed-home
+          name: Arm Home
+          tap_action:
+            action: perform-action
+            perform_action: alarm_control_panel.alarm_arm_home
+            target:
+              entity_id: alarm_control_panel.panel
+          visibility:
+            - condition: state
+              entity: alarm_control_panel.panel
+              state: 'disarmed'
 
-      - type: custom:mod-card
-        card_mod:
-          style: 
-            hui-horizontal-stack-card$: |
-              #root {
-                display: flex;
-                justify-content: end;
-                align-items: center;
-                gap: 5px !important;
-              }
-        card:
-          type: horizontal-stack
-          cards:
-            # Arm Home Button
-            - type: custom:button-card
-              template: kohbo_chip_button_card
-              icon: kohbo:kohbo-alarm-armed-home
-              name: Arm Home
-              tap_action:
-                action: perform-action
-                perform_action: alarm_control_panel.alarm_arm_home
-                target:
-                  entity_id: alarm_control_panel.panel
-              visibility:
-                - condition: state
-                  entity: alarm_control_panel.panel
-                  state: 'disarmed'
-
-            # Disarm Button
-            - type: custom:button-card
-              template: kohbo_chip_button_card
-              icon: kohbo:kohbo-alarm-armed-home
-              name: Disarm
-              tap_action:
-                action: perform-action
-                perform_action: alarm_control_panel.alarm_disarm
-                target:
-                  entity_id: alarm_control_panel.panel
-              visibility:
-                - condition: state
-                  entity: alarm_control_panel.panel
-                  state: 
-                    - armed_home
-                    - armed_away
-                    - triggered
-                    - armed_custom_bypass
-                    - armed_night
-                    - armed_vacation
-
-            - type: custom:button-card
-              template: kohbo_chip_icon_action_card
-              icon: mdi:chevron-right
+        # Disarm Button
+        - type: custom:button-card
+          template: kohbo_chip_button_card
+          icon: kohbo:kohbo-alarm-armed-home
+          name: Disarm
+          tap_action:
+            action: perform-action
+            perform_action: alarm_control_panel.alarm_disarm
+            target:
+              entity_id: alarm_control_panel.panel
+          visibility:
+            - condition: state
+              entity: alarm_control_panel.panel
+              state: 
+                - armed_home
+                - armed_away
+                - triggered
+                - armed_custom_bypass
+                - armed_night
+                - armed_vacation
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:chevron-right
 
 
   # 
@@ -1281,7 +1251,7 @@ cards:
     variables:
       - entity: cover.garage_doors
       - name: Garage Doors
-      - template: kohbo_device_garage_door_entity
+      - template: kohbo_horizontal_action_card_garage_door_entity
       - tap_action: navigate
       - navigation_path: "#garage_doors_popup"
       - action_cards:
@@ -1302,7 +1272,8 @@ cards:
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
 
-
+  
+  
   
   # # 
   # # Garage Doors
@@ -1325,7 +1296,7 @@ cards:
   #         }
   #   cards:
   #     - type: custom:button-card
-  #       template: kohbo_device_lock_entity
+  #       template: kohbo_horizontal_action_card_lock_entity
   #       entity: cover.garage_doors
   #       name: Garage Doors
   #       icon: kohbo:kohbo-garage-closed
@@ -1368,28 +1339,29 @@ cards:
     variables:
       - entity: lock.house_locks
       - name: House Locks
-      - template: kohbo_device_lock_entity
+      - template: kohbo_horizontal_action_card_lock_entity
       - tap_action: navigate
       - navigation_path: "#front_door_lock_popup"
       #  Action Cards
       - action_cards:
-        # - type: entities
-        #   card_mod:
-        #     style: |
-        #       ha-card {
-        #         #states {
-        #           padding: 0px !important;
-        #         }
-        #       }
-        #   entities:
-        #     - entity: switch.front_door_lock_switch
-        #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/input_boolean_embedded.yaml
-        #       secondary_info: last-changed
-        # Open garage door details
+        # Arm Home Button
+        - type: custom:button-card
+          template: kohbo_chip_button_card
+          # icon: kohbo:kohbo-alarm-armed-home
+          name: Lock All
+          tap_action:
+            action: perform-action
+            perform_action: lock.lock
+            target:
+              entity_id: lock.house_locks
+          visibility:
+            - condition: state
+              entity: lock.house_locks
+              state: 'unlocked'
+        # Lock details
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
-
 
 
   
@@ -1419,7 +1391,7 @@ cards:
     variables:
       - entity: binary_sensor.exterior_doors
       - name: Exterior Doors
-      - template: kohbo_device_door_entity_wide
+      - template: kohbo_horizontal_action_card_door_entity
       - tap_action: navigate
       - navigation_path: "#exterior_doors_popup"
       - action_cards:
@@ -1428,68 +1400,64 @@ cards:
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
 
+  # - type: custom:stack-in-card
+  #   mode: horizontal
+  #   keep:
+  #     border_radius: true
+  #     background: true
+  #   card_mod:
+  #     style:
+  #       hui-horizontal-stack-card$: |
+  #         #root {
+  #           /*display: grid !important;
+  #           grid-template-columns: 75% 25% !important;*/
+  #           display: flex;
+  #           justify-content: space-between;
+  #           align-items: center;
+  #           padding: 20px !important;
+  #         }
+  #   cards:
+  #     - type: custom:button-card
+  #       template: kohbo_horizontal_action_card_lock_entity
+  #       entity: binary_sensor.exterior_doors
+  #       name: Exterior Doors
+  #       # icon: |
+  #       #   [[[
+  #       #     if (entity.state == "on")
+  #       #       return "kohbo:kohbo-door-open";
+  #       #     else
+  #       #       return "kohbo:kohbo-door-closed";
+  #       #   ]]]
+  #       state_display: |
+  #         [[[
+  #           if (entity.state == "off")
+  #             return "Closed";
+  #           else
+  #             return entity.attributes.entity_id.filter(id => states[id]?.state === 'on').length + " Open";
+  #         ]]]
+  #       state:
+  #         - value: 'on'
+  #           icon: kohbo:kohbo-door-open
+  #           color: var(--error-color)
+  #         - value: 'off'
+  #           icon: kohbo:kohbo-door-closed
+  #           color: var(--success-color)
+  #       # tap_action:
+  #       #   action: navigate
+  #       #   navigation_path: "#garage_doors_popup"
 
-  # 
-  # Exterior Doors
-  # 
-  - type: custom:stack-in-card
-    mode: horizontal
-    keep:
-      border_radius: true
-      background: true
-    card_mod:
-      style:
-        hui-horizontal-stack-card$: |
-          #root {
-            /*display: grid !important;
-            grid-template-columns: 75% 25% !important;*/
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px !important;
-          }
-    cards:
-      - type: custom:button-card
-        template: kohbo_device_lock_entity
-        entity: binary_sensor.exterior_doors
-        name: Exterior Doors
-        # icon: |
-        #   [[[
-        #     if (entity.state == "on")
-        #       return "kohbo:kohbo-door-open";
-        #     else
-        #       return "kohbo:kohbo-door-closed";
-        #   ]]]
-        state_display: |
-          [[[
-            if (entity.state == "off")
-              return "Closed";
-            else
-              return entity.attributes.entity_id.filter(id => states[id]?.state === 'on').length + " Open";
-          ]]]
-        state:
-          - value: 'on'
-            icon: kohbo:kohbo-door-open
-            color: var(--error-color)
-          - value: 'off'
-            icon: kohbo:kohbo-door-closed
-            color: var(--success-color)
-        # tap_action:
-        #   action: navigate
-        #   navigation_path: "#garage_doors_popup"
-
-      - type: custom:button-card
-        template: kohbo_chip_icon_action_card
-        icon: mdi:chevron-right
-        # styles:
-        #   card:
-        #     - background: var(--darker-primary-color)
-        #     - justify-self: end
-        # tap_action:
-        #   action: perform-action
-        #   perform_action: cover.close_cover
-        #   target:
-        #     entity_id: cover.garage_doors
+  #     - type: custom:button-card
+  #       template: kohbo_chip_icon_action_card
+  #       icon: mdi:chevron-right
+  #       # styles:
+  #       #   card:
+  #       #     - background: var(--darker-primary-color)
+  #       #     - justify-self: end
+  #       # tap_action:
+  #       #   action: perform-action
+  #       #   perform_action: cover.close_cover
+  #       #   target:
+  #       #     entity_id: cover.garage_doors
 
 
 

@@ -6,6 +6,7 @@ automation:
       # House becomes occupied
       - trigger: state
         entity_id: input_boolean.house_occupied
+        from: "off"
         to: "on"
     conditions:
       # Alarm is currently armed

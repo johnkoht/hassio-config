@@ -20,6 +20,7 @@ automation:
           - sensor.joe_person
           - sensor.alex_person
           - sensor.nonno_person
+        from: "not_home"
         to: "home"
     conditions:
       # Alarm is currently armed

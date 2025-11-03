@@ -1,7 +1,0 @@
-kohbo_device_garage_door_entity:
-  template: kohbo_device_lock_entity
-  state:
-    - value: 'closed'
-      icon: kohbo:kohbo-garage-closed
-    - value: 'open'
-      icon: kohbo:kohbo-garage-open

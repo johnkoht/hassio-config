@@ -6,7 +6,7 @@
 # 
 horizontal_action_card:
   default:
-    - template: kohbo_device_lock_entity
+    - template: kohbo_horizontal_action_card_entity
   card:
     type: custom:stack-in-card
     mode: horizontal
@@ -20,8 +20,13 @@ horizontal_action_card:
             display: flex;
             justify-content: space-between;
             align-items: center;
+          }
+
+        .: |
+          ha-card {
             padding: 20px !important;
           }
+        
     cards:
       - type: custom:button-card
         template: '[[template]]'
