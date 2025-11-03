@@ -13,7 +13,7 @@ card_mod:
       }
 cards:
   - type: custom:button-card
-    template: kohbo_device_lock_entity
+    template: kohbo_horizontal_action_card_lock_entity
     entity: lock.front_door
     name: Front Door
     tap_action:

@@ -13,7 +13,7 @@ card_mod:
       }
 cards:
   - type: custom:button-card
-    template: kohbo_device_lock_entity
+    template: kohbo_horizontal_action_card_lock_entity
     entity: lock.garage_entry_door
     name: Garage Entry Door
     tap_action:
