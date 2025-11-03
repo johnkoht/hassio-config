@@ -1273,64 +1273,7 @@ cards:
           icon: mdi:chevron-right
 
   
-  
-  
-  # # 
-  # # Garage Doors
-  # # 
-  # - type: custom:stack-in-card
-  #   mode: horizontal
-  #   keep:
-  #     border_radius: true
-  #     background: true
-  #   card_mod:
-  #     style:
-  #       hui-horizontal-stack-card$: |
-  #         #root {
-  #           /*display: grid !important;
-  #           grid-template-columns: 75% 25% !important;*/
-  #           display: flex;
-  #           justify-content: space-between;
-  #           align-items: center;
-  #           padding: 20px !important;
-  #         }
-  #   cards:
-  #     - type: custom:button-card
-  #       template: kohbo_horizontal_action_card_lock_entity
-  #       entity: cover.garage_doors
-  #       name: Garage Doors
-  #       icon: kohbo:kohbo-garage-closed
-  #       state_display: |
-  #         [[[
-  #           if (entity.state == "closed")
-  #             return "Closed";
-  #           else
-  #             return entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
-  #         ]]]
-  #       tap_action:
-  #         action: navigate
-  #         navigation_path: "#garage_doors_popup"
 
-  #     - type: custom:button-card
-  #       template: kohbo_chip_icon_action_card
-  #       icon: mdi:arrow-down
-  #       name: Close Garage Doors
-  #       # styles:
-  #       #   card:
-  #       #     - background: var(--darker-primary-color)
-  #       #     - justify-self: end
-  #       tap_action:
-  #         action: perform-action
-  #         perform_action: cover.close_cover
-  #         target:
-  #           entity_id: cover.garage_doors
-  #       visibility:
-  #         - condition: state
-  #           entity: cover.garage_doors
-  #           state: 'open'
-
-  
-   
   # 
   # Locks
   # 
@@ -1399,66 +1342,6 @@ cards:
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
-
-  # - type: custom:stack-in-card
-  #   mode: horizontal
-  #   keep:
-  #     border_radius: true
-  #     background: true
-  #   card_mod:
-  #     style:
-  #       hui-horizontal-stack-card$: |
-  #         #root {
-  #           /*display: grid !important;
-  #           grid-template-columns: 75% 25% !important;*/
-  #           display: flex;
-  #           justify-content: space-between;
-  #           align-items: center;
-  #           padding: 20px !important;
-  #         }
-  #   cards:
-  #     - type: custom:button-card
-  #       template: kohbo_horizontal_action_card_lock_entity
-  #       entity: binary_sensor.exterior_doors
-  #       name: Exterior Doors
-  #       # icon: |
-  #       #   [[[
-  #       #     if (entity.state == "on")
-  #       #       return "kohbo:kohbo-door-open";
-  #       #     else
-  #       #       return "kohbo:kohbo-door-closed";
-  #       #   ]]]
-  #       state_display: |
-  #         [[[
-  #           if (entity.state == "off")
-  #             return "Closed";
-  #           else
-  #             return entity.attributes.entity_id.filter(id => states[id]?.state === 'on').length + " Open";
-  #         ]]]
-  #       state:
-  #         - value: 'on'
-  #           icon: kohbo:kohbo-door-open
-  #           color: var(--error-color)
-  #         - value: 'off'
-  #           icon: kohbo:kohbo-door-closed
-  #           color: var(--success-color)
-  #       # tap_action:
-  #       #   action: navigate
-  #       #   navigation_path: "#garage_doors_popup"
-
-  #     - type: custom:button-card
-  #       template: kohbo_chip_icon_action_card
-  #       icon: mdi:chevron-right
-  #       # styles:
-  #       #   card:
-  #       #     - background: var(--darker-primary-color)
-  #       #     - justify-self: end
-  #       # tap_action:
-  #       #   action: perform-action
-  #       #   perform_action: cover.close_cover
-  #       #   target:
-  #       #     entity_id: cover.garage_doors
-
 
 
   # 
