@@ -5,60 +5,64 @@ template:
         state: >
           {% set score = 0 %}
 
-          {# Alarm Panel #}
-          {% if is_state('alarm_control_panel.panel', 'armed_away') %}
-            {% set score = score + 30 %}
-          {% elif is_state('alarm_control_panel.panel', 'armed_home') %}
+          {# ------------------------------------------------------------------- #}
+          {# ALARM PANEL                                                        #}
+          {# ------------------------------------------------------------------- #}
+          {% set alarm_state = states('alarm_control_panel.panel') %}
+          {% if alarm_state == 'armed_away' %}
+            {% set score = score + 25 %}
+          {% elif alarm_state == 'armed_home' %}
             {% set score = score + 20 %}
-          {% elif is_state('alarm_control_panel.panel', 'triggered') %}
+          {% elif alarm_state == 'triggered' %}
             {% set score = score - 50 %}
+          {% elif alarm_state == 'disarmed' %}
+            {% set score = score - 5 %}
           {% endif %}
 
-          {# Front Door Lock #}
+          {# ------------------------------------------------------------------- #}
+          {# LOCKS / DOORS / WINDOWS                                            #}
+          {# ------------------------------------------------------------------- #}
           {% if is_state('lock.front_door', 'locked') %}
-            {% set score = score + 20 %}
+            {% set score = score + 15 %}
           {% else %}
-            {% set score = score - 20 %}
+            {% set score = score - 15 %}
           {% endif %}
 
-          {# Garage Entry Door Logic #}
           {% if is_state('lock.garage_entry_door', 'locked') %}
-            {% set score = score + 20 %}
-          {% elif is_state('lock.garage_entry_door', 'unlocked') and is_state('cover.garage_doors', 'closed') %}
             {% set score = score + 10 %}
+          {% elif is_state('lock.garage_entry_door', 'unlocked') and is_state('cover.garage_doors', 'closed') %}
+            {% set score = score + 5 %}
           {% else %}
             {% set score = score - 10 %}
           {% endif %}
 
-          {# Garage Door Remotes #}
           {% if is_state('lock.garage_door_remote_locks', 'locked') %}
             {% set score = score + 5 %}
           {% else %}
             {% set score = score - 5 %}
           {% endif %}
 
-          {# Windows #}
           {% if is_state('binary_sensor.windows', 'off') %}
             {% set score = score + 10 %}
           {% else %}
             {% set score = score - 10 %}
           {% endif %}
 
-          {# Exterior Doors #}
           {% if is_state('binary_sensor.exterior_doors', 'off') %}
             {% set score = score + 10 %}
           {% else %}
             {% set score = score - 10 %}
           {% endif %}
 
-          {# Garage Doors #}
           {% if is_state('cover.garage_doors', 'closed') %}
             {% set score = score + 10 %}
           {% else %}
             {% set score = score - 20 %}
           {% endif %}
 
-          {# Camera Notifications #}
+          {# ------------------------------------------------------------------- #}
+          {# CAMERA NOTIFICATIONS                                                #}
+          {# ------------------------------------------------------------------- #}
           {% if is_state('input_boolean.camera_notifications', 'on') %}
             {% if is_state('input_boolean.dark_outside', 'on') %}
               {% set score = score + 10 %}
@@ -69,14 +73,74 @@ template:
             {% set score = score - 10 %}
           {% endif %}
 
-          {# Time of Day Logic #}
-          {% if now().hour >= 22 or now().hour < 5 %}
-            {% if is_state('binary_sensor.windows', 'on') or is_state('binary_sensor.exterior_doors', 'on') or is_state('cover.garage_doors', 'open') %}
+          {# ------------------------------------------------------------------- #}
+          {# OCCUPANCY CONTEXT                                                  #}
+          {# ------------------------------------------------------------------- #}
+          {% if is_state('input_boolean.house_occupied', 'on') %}
+            {% set score = score + 5 %}
+          {% else %}
+            {% if alarm_state == 'disarmed' %}
+              {% set score = score - 20 %}
+            {% endif %}
+            {% if is_state('lock.front_door', 'unlocked') or is_state('lock.garage_entry_door', 'unlocked') %}
               {% set score = score - 10 %}
             {% endif %}
           {% endif %}
 
-          {# Final Evaluation #}
+          {# ------------------------------------------------------------------- #}
+          {# UPS / POWER CONTEXT                                                #}
+          {# ------------------------------------------------------------------- #}
+          {% set ups_status = states('sensor.apc_ups_status_data') %}
+          {% set runtime = states('sensor.apc_ups_battery_runtime') | int(9999) %}
+          {% if ups_status == 'OB' %}  {# On Battery #}
+            {% set score = score - 15 %}
+          {% elif ups_status == 'LB' %}  {# Low Battery #}
+            {% set score = score - 25 %}
+          {% elif runtime < 600 %}  {# <10 minutes runtime remaining #}
+            {% set score = score - 20 %}
+          {% elif ups_status == 'OL' %}  {# Online and healthy #}
+            {% set score = score + 5 %}
+          {% endif %}
+
+          {# ------------------------------------------------------------------- #}
+          {# SENSOR HEALTH CHECK                                                #}
+          {# ------------------------------------------------------------------- #}
+          {% set critical = [
+            'binary_sensor.windows',
+            'binary_sensor.exterior_doors',
+            'lock.front_door',
+            'cover.garage_doors'
+          ] %}
+          {% set unavailable = critical | select('is_state', 'unavailable') | list | length %}
+          {% if unavailable > 0 %}
+            {% set score = score - (unavailable * 5) %}
+          {% endif %}
+
+          {# ------------------------------------------------------------------- #}
+          {# EXTERIOR LIGHTING DETERRENCE                                       #}
+          {# ------------------------------------------------------------------- #}
+          {% if is_state('group.exterior_lights', 'on') and is_state('input_boolean.dark_outside', 'on') %}
+            {% set score = score + 5 %}
+          {% endif %}
+
+          {# ------------------------------------------------------------------- #}
+          {# TIME OF DAY / NIGHTTIME LOGIC                                      #}
+          {# ------------------------------------------------------------------- #}
+          {% set hour = now().hour %}
+          {% if 22 <= hour or hour < 5 %}
+            {% if alarm_state != 'armed_home' %}
+              {% set score = score - 15 %}
+            {% endif %}
+            {% if is_state('binary_sensor.windows', 'on') or is_state('binary_sensor.exterior_doors', 'on') or is_state('cover.garage_doors', 'open') %}
+              {% set score = score - 10 %}
+            {% endif %}
+          {% elif 5 <= hour < 9 %}
+            {% set score = score + 5 %}
+          {% endif %}
+
+          {# ------------------------------------------------------------------- #}
+          {# FINAL EVALUATION                                                   #}
+          {# ------------------------------------------------------------------- #}
           {% if score < 0 %}
             0
           {% elif score > 100 %}
@@ -84,3 +148,18 @@ template:
           {% else %}
             {{ score }}
           {% endif %}
+
+        attributes:
+          friendly_name: "House Security Score"
+          last_updated: "{{ now().isoformat() }}"
+          alarm_state: "{{ states('alarm_control_panel.panel') }}"
+          occupancy: "{{ states('input_boolean.house_occupied') }}"
+          ups_status: "{{ states('sensor.apc_ups_status_data') }}"
+          ups_runtime: "{{ states('sensor.apc_ups_battery_runtime') }}"
+          dark_outside: "{{ states('input_boolean.dark_outside') }}"
+          windows: "{{ states('binary_sensor.windows') }}"
+          exterior_doors: "{{ states('binary_sensor.exterior_doors') }}"
+          garage_doors: "{{ states('cover.garage_doors') }}"
+          front_door: "{{ states('lock.front_door') }}"
+          garage_entry_door: "{{ states('lock.garage_entry_door') }}"
+          camera_notifications: "{{ states('input_boolean.camera_notifications') }}"

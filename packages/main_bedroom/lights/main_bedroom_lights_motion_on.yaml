@@ -16,6 +16,10 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bedroom_lighting_automations
         state: "on"
+      # And lights were not manually toggled
+      - condition: state
+        entity_id: input_boolean.main_bedroom_lights_manually_toggled
+        state: "off"
       # Bedroom is Auto
       - condition: state
         entity_id: input_select.main_bedroom

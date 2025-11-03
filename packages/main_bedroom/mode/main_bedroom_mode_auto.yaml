@@ -115,10 +115,10 @@ script:
         entity_id:
           - automation.main_bedroom_john_night_light_off
           - automation.main_bedroom_night_light_for_john
-      # 
-      # Enable bedroom lighting automations
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.main_bedroom_lighting_automations
+      # # 
+      # # Enable bedroom lighting automations
+      # - action: input_boolean.turn_on
+      #   entity_id: input_boolean.main_bedroom_lighting_automations
       # 
       # Turn off adaptive lighting
       - action: switch.turn_off

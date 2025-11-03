@@ -16,6 +16,14 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.main_bedroom_lights_auto
-      # Deactivate the motion sensors
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.main_bedroom_lighting_automations
+      # # Deactivate the motion sensors
+      # - service: input_boolean.turn_off
+      #   entity_id: input_boolean.main_bedroom_lighting_automations
+
+      # If manually toggled off, then turn on the manually toggled boolean
+      - if:
+          - condition: template
+            value_template: "{{ trigger.to_state.context.parent_id == none }}"
+        then:  
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.main_bedroom_lights_manually_toggled

@@ -61,10 +61,12 @@ automation:
       # Nobody is in bed
       - and:
           - condition: state
-            entity_id: input_boolean.john_is_in_bed
+            # entity_id: input_boolean.john_is_in_bed
+            entity_id: binary_sensor.john_bed_occupied
             state: "off"
           - condition: state
-            entity_id: input_boolean.cristina_in_bed
+            # entity_id: input_boolean.cristina_in_bed
+            entity_id: binary_sensor.cristina_bed_occupied
             state: "off"
       # # Auto mode between 5-midnight
       # # OR bedtime mode and between 6am-9pm
@@ -95,9 +97,12 @@ automation:
       - action: input_boolean.turn_off
         entity_id: input_boolean.main_bedroom_occupied
 
-      # Wati 2 seconds to activate lighting automations
-      - alias: "Wait 2 seconds"
-        delay: 02
+      # # Wati 2 seconds to activate lighting automations
+      # - alias: "Wait 2 seconds"
+      #   delay: 02
 
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.main_bedroom_lighting_automations
+      # - action: input_boolean.turn_on
+      #   entity_id: input_boolean.main_bedroom_lighting_automations
+
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.main_bedroom_lights_manually_toggled

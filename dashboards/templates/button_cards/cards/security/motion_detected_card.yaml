@@ -1,6 +1,7 @@
 motion_detected_card:
   size: 24px
-  show_state: true
+  # show_state: true
+  show_last_changed: true
   name: >
       [[[
         console.log("entity", entity);
@@ -19,22 +20,22 @@ motion_detected_card:
           return entity.attributes.friendly_name;
         }
       ]]]
-  state_display: >
-    [[[
-      const last = new Date(entity.last_changed);
-      const now = new Date();
-      const diff = Math.floor((now - last) / 1000);
+  # state_display: >
+  #   [[[
+  #     const last = new Date(entity.last_changed);
+  #     const now = new Date();
+  #     const diff = Math.floor((now - last) / 1000);
 
-      if (diff < 60) {
-        return `Now`;
-      } else if (diff < 3600) {
-        return `${Math.floor(diff / 60)} mins ago`;
-      } else if (diff < 86400) {
-        return `${Math.floor(diff / 3600)} hrs ago`;
-      } else {
-        return `${Math.floor(diff / 86400)} days ago`;
-      }
-    ]]]
+  #     if (diff < 60) {
+  #       return `Now`;
+  #     } else if (diff < 3600) {
+  #       return `${Math.floor(diff / 60)} mins ago`;
+  #     } else if (diff < 86400) {
+  #       return `${Math.floor(diff / 3600)} hrs ago`;
+  #     } else {
+  #       return `${Math.floor(diff / 86400)} days ago`;
+  #     }
+  #   ]]]
   state:
     - value: 'on'
       color: var(--error-color)
@@ -42,7 +43,7 @@ motion_detected_card:
       color: var(--light-grey-color)
   styles:
     grid:
-      - grid-template-areas: '"n n" "i i" "s s"'
+      - grid-template-areas: '"n n" "i i" "l l"'
       - grid-template-rows: 50px auto auto
     card:
       - flex: 0 0 120px !important
@@ -63,7 +64,7 @@ motion_detected_card:
       - text-transform: capitalize
       - font-weight: 500 !important
       - text-wrap: auto
-    state:
+    label:
       - font-size: 12px !important;
       - color: var(--light-grey-color)
       - font-weight: 400 !important

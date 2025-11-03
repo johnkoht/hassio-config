@@ -2,14 +2,44 @@ template:
   - sensor:
       - name: "House Security Status"
         unique_id: house_security_status
-        state: >-
-          {% set score = states.sensor.house_security_score.state | int %}
-          {% if score >= 90 %}
-            Totally Secure
-          {% elif score >= 75 %}
-            Secure
-          {% elif score >= 50 %}
-            Partially Secure
-          {% else %}
+        state: >
+          {% set score = states('sensor.house_security_score') | float(0) %}
+          {% if score < 25 %}
             Vulnerable
+          {% elif score < 50 %}
+            At Risk
+          {% elif score < 70 %}
+            Partially Secure
+          {% elif score < 90 %}
+            Secure
+          {% else %}
+            Fully Secured
           {% endif %}
+        attributes:
+          friendly_name: "Home Security Status"
+          icon: >
+            {% set score = states('sensor.house_security_score') | float(0) %}
+            {% if score < 25 %}
+              kohbo:kohbo-security-low
+            {% elif score < 50 %}
+              kohbo:kohbo-security-low
+            {% elif score < 70 %}
+              kohbo:kohbo-security-low
+            {% elif score < 90 %}
+              kohbo:kohbo-security-high
+            {% else %}
+              kohbo:kohbo-alarm-armed-away
+            {% endif %}
+          color: >
+            {% set score = states('sensor.house_security_score') | float(0) %}
+            {% if score < 25 %}
+              var(--error-color)
+            {% elif score < 50 %}
+              var(--orange-color)
+            {% elif score < 70 %}
+              var(--warning-color)
+            {% elif score < 90 %}
+              var(--success-color)
+            {% else %}
+              var(--success-color)
+            {% endif %}

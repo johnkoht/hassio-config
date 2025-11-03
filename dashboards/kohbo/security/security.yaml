@@ -172,10 +172,6 @@ cards:
         entity: sensor.house_security_score
         min: 0
         max: 100
-        # severity:
-        #   green: 90
-        #   yellow: 50
-        #   red: 0
         needle: true
         segments:
           - from: 0
@@ -624,89 +620,22 @@ cards:
               - options: {}
                 entity_id: binary_sensor.g4_bullet_motion_2
               - options: {}
-                entity_id: binary_sensor.playroom_motion_sensor_motion
+                entity_id: binary_sensor.playroom_entry_motion_sensor_motion
               - options: {}
-                entity_id: binary_sensor.playroom_motion_sensor_entry_motion_detection
+                entity_id: binary_sensor.playroom_motion_sensor_motion
               - options: {}
                 entity_id: binary_sensor.stairs_motion_sensor
               - options: {}
                 entity_id: binary_sensor.upstairs_hallway_south_motion
-              
-
-          # type: custom:auto-entities
-          # card:
-          #   type: entities
-          #   state_color: true
-          # filter:
-          #   include:
-          #     - domain: binary_sensor
-          #       options:
-          #         secondary_info: last-changed
-          #         card_mod:
-          #           style: |
-          #             hui-generic-entity-row {
-
-          #             }
-          #       attributes:
-          #         device_class: motion
-          #       last_changed: < 60
-          #   exclude:
-          #     - options: {}
-          #       entity_id: binary_sensor.trisensor_motion_detection
-          #     - options: {}
-          #       entity_id: binary_sensor.first_floor_any_room_presence
-          #     - options: {}
-          #       entity_id: binary_sensor.first_floor_motion
-          #     - options: {}
-          #       device_manufacturer: Browser Mod
-          #     - options: {}
-          #       entity_id: binary_sensor.upper_floor_motion
-          #     - options: {}
-          #       device_manufacturer: Frigate
-          #     - options: {}
-          #       device_manufacturer: ApolloAutomation
-          #     - options: {}
-          #       entity_id: binary_sensor.kitchen_motion_sensor_table_motion_detection
-          #     - options: {}
-          #       entity_id: binary_sensor.kitchen_motion_sensor_main_motion_detection
+              - options: {}
+                entity_id: binary_sensor.stairs_motion_status
+              - options: {}
+                entity_id: binary_sensor.screek_human_sensor_l12_73d3d8_moving_target
           sort:
             method: last_changed
             reverse: true
             ignore_case: true
             numeric: false
-
-          # type: horizontal-stack
-          # cards:
-          #   # Weeds Pollen
-          #   - type: custom:button-card
-          #     template: kohbo_allergy_card
-          #     entity: binary_sensor.kitchen_motion_sensor_status
-          #     name: Kitchen
-          #     # icon: mdi:motion-sensor
-          #   # Grass Pollen
-          #   - type: custom:button-card
-          #     template: kohbo_allergy_card
-          #     entity: binary_sensor.family_room_motion_sensor
-          #     name: Family Room
-          #     # icon: mdi:motion-sensor
-          #   # Tree Pollen
-          #   - type: custom:button-card
-          #     template: kohbo_allergy_card
-          #     entity: binary_sensor.foyer_motion
-          #     name: Foyer
-          #     # icon: mdi:motion-sensor
-          #   # Poaceae Pollen
-          #   - type: custom:button-card
-          #     template: kohbo_allergy_card
-          #     entity: binary_sensor.office_aqara_motion_sensor
-          #     name: Office
-          #     # icon: mdi:motion-sensor
-          #   # Ragweed Pollen
-          #   - type: custom:button-card
-          #     template: kohbo_allergy_card
-          #     entity: binary_sensor.playroom_motion_sensor_motion
-          #     name: Playroom
-          #     # icon: mdi:motion-sensor
 
 
   # # NEW SECURITY OVERVIEW CARD

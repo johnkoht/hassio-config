@@ -1,0 +1,5 @@
+input_boolean:
+  main_bedroom_lights_manually_toggled:
+    name: Main Bedroom Lights Manually Toggled
+    icon: mdi:lightbulb-auto
+    initial: off
