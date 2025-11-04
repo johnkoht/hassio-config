@@ -77,3 +77,14 @@ automation:
     actions:
       - action: automation.turn_off
         entity_id: automation.alarm_arm_if_john_away
+
+
+# 
+# Alarm Arm If John Away Time
+# 
+input_datetime:
+  alarm_john_away_arm_time:
+    name: Alarm John Away - Arm Time
+    icon: mdi:clock
+    has_date: false
+    has_time: true

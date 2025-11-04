@@ -98,3 +98,17 @@ automation:
       # Turn off the garage lights
       - action: light.turn_off
         entity_id: light.garage_lights
+
+# 
+# Garage Doors Close When Home Timeout
+# 
+input_number:
+  garage_doors_close_when_home_timeout:
+    name: Garage Doors Close When Home Timeout
+    min: 1
+    max: 120
+    step: 1
+    unit_of_measurement: minutes
+    icon: mdi:timer-outline
+    mode: box
+    initial: 30

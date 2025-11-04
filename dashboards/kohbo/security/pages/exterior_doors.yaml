@@ -1,0 +1,99 @@
+# 
+# Exterior Doors
+# 
+type: custom:vertical-layout
+title: Exterior Doors
+path: security-exterior-doors
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Exterior Doors
+      - navigation_path: /dashboard-kohbo/security
+      - settings_path: '#exterior_doors_settings_popup'
+  
+
+  # 
+  # Doors
+  # 
+
+  - type: custom:button-card
+    template: kohbo_device_entity_horizontal
+    entity: binary_sensor.front_door
+    name: Front Door
+
+  - type: custom:button-card
+    template: kohbo_device_entity_horizontal
+    entity: binary_sensor.interior_garage_door
+    name: Interior Garage Door
+
+  - type: custom:button-card
+    template: kohbo_device_entity_horizontal
+    entity: binary_sensor.basement_exterior_door
+    name: Basement Exterior Door
+    
+  - type: custom:button-card
+    template: kohbo_device_entity_horizontal
+    entity: binary_sensor.upstairs_guest_bedroom_door
+    name: Upstairs Guest Bedroom Door
+    
+  - type: custom:button-card
+    template: kohbo_device_entity_horizontal
+    entity: binary_sensor.kitchen_door
+    name: Kitchen Door
+
+  
+  # 
+  # Exterior Doors Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#exterior_doors_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 425px)
+        margin_top_desktop: calc(100vh - 425px)
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Exterior Doors Settings
+
+      # 
+      # Door Left Open Alert
+      #         
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Door Left Open Alert
+              - entity: automation.door_left_open
+                name: Door Left Open Alert
+                icon: kohbo:kohbo-door-open
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-triggered
+                state_color: true
+
+      - type: custom:button-card
+        name: If enabled, a notification will be sent when a door is left open for too long.
+        template: kohbo_card_section_description
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

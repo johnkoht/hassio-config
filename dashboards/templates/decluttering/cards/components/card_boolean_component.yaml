@@ -1,0 +1,18 @@
+card_boolean_component:
+  card:
+    type: entities
+    card_mod:
+      style: |
+        ha-card {
+          #states {
+            padding: 0px !important;
+          }
+
+          ha-switch {
+            padding: 0 !important;
+          }
+        }
+    entities:
+    - entity: '[[entity]]'
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/input_boolean_embedded.yaml
+      secondary_info: last-changed

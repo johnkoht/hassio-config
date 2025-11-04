@@ -1,0 +1,58 @@
+# 
+# Horizontal Garage Door Card
+# 
+# Simple horizontal card for a garage door that wraps
+# the horizontal_action_card and displays garage
+# actions and logic.
+# 
+horizontal_garage_door_card:
+  card:
+    type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: "[[entity]]"
+      - name: "[[name]]"
+      - template: kohbo_horizontal_action_card_garage_door_entity
+      - tap_action: "[[tap_action]]"
+      - navigation_path: "[[navigation_path]]"
+      - action_cards:
+        # Close garage door
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:arrow-down
+          tap_action:
+            action: perform-action
+            perform_action: cover.close_cover
+            target:
+              entity_id: "[[entity]]"
+          styles:
+            card: 
+              - pointer-events: "[[[ return states['[[entity]]']?.state == 'open' ? 'auto' : 'none']]]"
+            icon:
+              - color: "[[[ return states['[[entity]]']?.state == 'open' ? 'var(--primary-text-color)' : 'var(--disabled-text-color)']]]"
+
+        # Stop garage door
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:stop
+          tap_action:
+            action: perform-action
+            perform_action: cover.stop_cover
+            target:
+              entity_id: "[[entity]]"
+              
+
+        # Open garage door
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:arrow-up
+          tap_action:
+            action: perform-action
+            perform_action: cover.open_cover
+            target:
+              entity_id: "[[entity]]"
+          styles:
+            card: 
+              - pointer-events: "[[[ return states['[[entity]]']?.state == 'closed' ? 'auto' : 'none']]]"
+            icon:
+              - color: "[[[ return states['[[entity]]']?.state == 'closed' ? 'var(--primary-text-color)' : 'var(--disabled-text-color)']]]"

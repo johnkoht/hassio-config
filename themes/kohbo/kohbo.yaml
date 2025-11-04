@@ -23,7 +23,7 @@ kohbo:
   secondary-text-color: "#CED4DA"
   text-primary-color: "#F8F9FA"
   text-light-primary-color: "#CED4DA"
-  disabled-text-color: "#bdbdbd"
+  disabled-text-color: "#6C757D"
 
   # main interface colors
   primary-color: "#59A5D8"

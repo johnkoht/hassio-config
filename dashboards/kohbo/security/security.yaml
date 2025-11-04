@@ -428,6 +428,9 @@ cards:
                     icon: kohbo:kohbo-alarm-armed-home
                   - value: 'armed_away'
                     icon: kohbo:kohbo-alarm-armed-away
+                tap_action:
+                  action: navigate
+                  navigation_path: '/dashboard-kohbo/security-alarm-panel'
 
               # 
               # Locks
@@ -450,7 +453,7 @@ cards:
                     icon: kohbo:kohbo-lock-locked
                 tap_action:
                   action: navigate
-                  navigation_path: '#house_locks_popup'
+                  navigation_path: '/dashboard-kohbo/security-house-locks'
 
               # 
               # Garage Doors
@@ -472,7 +475,11 @@ cards:
                     icon: kohbo:kohbo-garage-open
                   - value: 'closed'
                     icon: kohbo:kohbo-garage-closed
-            
+                tap_action:
+                  action: navigate
+                  navigation_path: '/dashboard-kohbo/security-garage-doors'
+
+
           - type: horizontal-stack
             cards:
               # Exterior Doors
@@ -494,6 +501,9 @@ cards:
                 styles:
                   card:
                     - padding-top: 5px !important;
+                tap_action:
+                  action: navigate
+                  navigation_path: "/dashboard-kohbo/security-exterior-doors"
 
               # Windows
               - type: custom:button-card
@@ -510,6 +520,9 @@ cards:
                 styles:
                   card:
                     - padding-top: 5px !important;
+                tap_action:
+                  action: navigate
+                  navigation_path: "/dashboard-kohbo/security-windows"
 
               # Camera Notifications
               - type: custom:button-card
@@ -1201,7 +1214,7 @@ cards:
       - name: Alarm System
       - template: kohbo_horizontal_action_card_alarm_entity
       - tap_action: navigate
-      - navigation_path: "#alarm_popup"
+      - navigation_path: "/dashboard-kohbo/security-alarm-panel"
       - action_cards:
         # Arm Home Button
         - type: custom:button-card
@@ -1241,6 +1254,9 @@ cards:
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/security-alarm-panel"
 
 
   # 
@@ -1253,7 +1269,7 @@ cards:
       - name: Garage Doors
       - template: kohbo_horizontal_action_card_garage_door_entity
       - tap_action: navigate
-      - navigation_path: "#garage_doors_popup"
+      - navigation_path: "/dashboard-kohbo/security-garage-doors"
       - action_cards:
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
@@ -1271,6 +1287,9 @@ cards:
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/security-garage-doors"
 
   
 
@@ -1284,7 +1303,7 @@ cards:
       - name: House Locks
       - template: kohbo_horizontal_action_card_lock_entity
       - tap_action: navigate
-      - navigation_path: "#front_door_lock_popup"
+      - navigation_path: "/dashboard-kohbo/security-house-locks"
       #  Action Cards
       - action_cards:
         # Arm Home Button
@@ -1305,6 +1324,9 @@ cards:
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/security-house-locks"
 
 
   
@@ -1336,12 +1358,36 @@ cards:
       - name: Exterior Doors
       - template: kohbo_horizontal_action_card_door_entity
       - tap_action: navigate
-      - navigation_path: "#exterior_doors_popup"
+      - navigation_path: "/dashboard-kohbo/security-exterior-doors"
       - action_cards:
         # Open exterior doors details
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/security-exterior-doors"
+
+
+  # 
+  # Windows
+  # 
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: binary_sensor.windows
+      - name: Windows
+      - template: kohbo_horizontal_action_card_window_entity
+      - tap_action: navigate
+      - navigation_path: "/dashboard-kohbo/security-windows"
+      - action_cards:
+        # Open windows details
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/security-windows"
 
 
   # 

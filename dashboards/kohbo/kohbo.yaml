@@ -21,8 +21,15 @@ views:
     - !include /config/dashboards/kohbo/climate/climate.yaml
     # - !include /config/dashboards/kohbo/media/media.yaml
     # - !include /config/dashboards/kohbo/devices/devices.yaml
-    - !include /config/dashboards/kohbo/security/security.yaml
     # - !include /config/dashboards/kohbo/security/front_door_lock.yaml
+
+    # Security
+    - !include /config/dashboards/kohbo/security/security.yaml
+    - !include /config/dashboards/kohbo/security/pages/house_locks.yaml
+    - !include /config/dashboards/kohbo/security/pages/garage_doors.yaml
+    - !include /config/dashboards/kohbo/security/pages/alarm_panel.yaml
+    - !include /config/dashboards/kohbo/security/pages/exterior_doors.yaml
+    - !include /config/dashboards/kohbo/security/pages/windows.yaml
 
     # Main Floor
     - !include /config/dashboards/kohbo/rooms/main_floor/main_floor_index.yaml

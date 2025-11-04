@@ -5,3 +5,17 @@ lock:
     entities:
       - lock.front_door
       - lock.garage_entry_door
+
+
+template:
+  - switch:
+      - name: House Locks Switch
+        state: "{{ is_state('lock.house_locks', 'locked') }}"
+        turn_on:
+          action: lock.lock
+          target:
+            entity_id: lock.house_locks
+        turn_off:
+          action: lock.unlock
+          target:
+            entity_id: lock.house_locks

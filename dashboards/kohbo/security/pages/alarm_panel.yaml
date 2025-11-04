@@ -1,0 +1,254 @@
+type: custom:vertical-layout
+title: Alarm Panel
+path: security-alarm-panel
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Alarm Panel
+      - navigation_path: /dashboard-kohbo/security
+      - settings_path: '#alarm_panel_settings_popup'
+  
+  - type: custom:more-info-card
+    entity: alarm_control_panel.kohbo
+    title: Alarm Panel
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
+
+
+  - type: logbook
+    target:
+      entity_id:
+        - alarm_control_panel.kohbo
+    hours_to_show: 48
+    card_mod: !include /config/dashboards/templates/includes/card_mod/logbook_card_mod.yaml
+
+  # # 
+  # # Disarm Button
+  # # 
+  # - type: custom:button-card
+  #   template: kohbo_alarm_action_card
+  #   entity: alarm_control_panel.kohbo
+  #   name: >
+  #     [[[
+  #       return entity.state === 'disarmed' ? 'Disarmed' : 'Disarm';
+  #     ]]]
+  #   state_display: Disable the alarm
+  #   icon: kohbo:kohbo-alarm-disarmed
+  #   styles:
+  #     card:
+  #       - background-color: "[[[ return entity.state === 'disarmed' ? 'var(--error-color)' : 'var(--card-background-color)' ]]]"
+  #   tap_action:
+  #     action: perform-action
+  #     perform_action: alarm_control_panel.alarm_disarm
+  #     target:
+  #       entity_id: alarm_control_panel.kohbo
+
+  # # 
+  # # Arm Home Button
+  # # 
+  # - type: custom:button-card
+  #   template: kohbo_alarm_action_card
+  #   entity: alarm_control_panel.kohbo
+  #   name: >
+  #     [[[
+  #       return entity.state === 'armed_home' ? 'Armed Home' : 'Arm Home';
+  #     ]]]
+  #   state_display: Arm when somebody is home
+  #   icon: kohbo:kohbo-alarm-armed-home
+  #   styles:
+  #     card:
+  #       - background-color: "[[[ return entity.state === 'armed_home' ? 'var(--success-color)' : 'var(--card-background-color)' ]]]"
+  #   tap_action:
+  #     action: perform-action
+  #     perform_action: alarm_control_panel.alarm_arm_home
+  #     target:
+  #       entity_id: alarm_control_panel.kohbo
+
+  # # 
+  # # Arm Away Button
+  # # 
+  # - type: custom:button-card
+  #   template: kohbo_alarm_action_card
+  #   entity: alarm_control_panel.kohbo
+  #   name: >
+  #     [[[
+  #       return entity.state === 'armed_away' ? 'Armed Away' : 'Arm Away';
+  #     ]]]
+  #   state_display: Arm when no one is home
+  #   icon: kohbo:kohbo-alarm-armed-away
+  #   styles:
+  #     card:
+  #       - background-color: "[[[ return entity.state === 'armed_away' ? 'var(--success-color)' : 'var(--card-background-color)' ]]]"
+  #   tap_action:
+  #     action: perform-action
+  #     perform_action: alarm_control_panel.alarm_arm_away
+  #     target:
+  #       entity_id: alarm_control_panel.kohbo
+
+
+  # 
+  # Alarm Panel Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#alarm_panel_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Alarm Panel Settings
+
+      
+      # 
+      # Occupancy Automations
+      #   
+      - type: custom:button-card
+        template: section_title
+        name: Occupancy Automations
+
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Arm When House Is Empty
+              - entity: automation.alarm_arm_when_house_is_empty
+                name: Arm When House is Empty
+                icon: kohbo:kohbo-alarm-armed-home
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-triggered
+                state_color: true
+              # Disarm When House Becomes Occupied
+              - entity: automation.alarm_disarm_when_house_becomes_occupied
+                name: Disarm When House is Occupied
+                icon: kohbo:kohbo-alarm-armed-home
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-triggered
+                state_color: true
+              # Disarm When Somebody Arrives and House Occupied
+              - entity: automation.alarm_disarm_when_somebody_arrives_and_house_occupied
+                name: Disarm When Somebody Arrives
+                icon: kohbo:kohbo-alarm-armed-home
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-triggered
+                state_color: true
+
+      - type: custom:button-card
+        name: Automatically set the alarm based on the occupancy of the house. Only people with unlock privileges will be able to disarm the house.
+        template: kohbo_card_section_description
+        styles:
+          card:
+            - margin-bottom: 20px
+
+
+      # 
+      # Bedtime Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Bedtime Automations
+ 
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Arm at Bedtime
+              - entity: automation.alarm_arm_at_bedtime
+                name: Arm at Bedtime
+                icon: kohbo:kohbo-alarm-armed-home
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-triggered
+                state_color: true
+              # Disarm in Morning
+              - entity: automation.alarm_disarm_in_morning
+                name: Disarm in Morning
+                icon: kohbo:kohbo-alarm-armed-home
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-triggered
+                state_color: true
+
+      - type: custom:button-card
+        name: These automations will automatically arm the house at bedtime and disarm in the morning. 
+        template: kohbo_card_section_description
+        styles:
+          card:
+            - margin-bottom: 20px
+
+      
+      # 
+      # Misc. Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Misc Automations
+ 
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Activate Alarm Automation if John is Away
+              - entity: automation.activate_alarm_automation_if_john_away
+                name: Early Arming When John is Away
+                icon: kohbo:kohbo-alarm-armed-home
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-triggered
+                state_color: true
+
+          - type: conditional
+            conditions:
+              - entity: automation.activate_alarm_automation_if_john_away
+                state: 'on'
+            card:
+              type: custom:stack-in-card
+              mode: vertical
+              card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+              cards:
+                - type: entities
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+                  entities:
+                    - entity: input_datetime.alarm_john_away_arm_time
+                      name: Arm House At
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+      - type: custom:button-card
+        name: This automation will automatically turn on when John is away for 2 hours or out of town. When enabled, the alarm will automatically go on at the specified time.
+        template: kohbo_card_section_description
+        styles:
+          card:
+            - margin-bottom: 20px
+
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

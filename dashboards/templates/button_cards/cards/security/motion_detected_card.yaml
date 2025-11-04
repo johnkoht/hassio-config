@@ -4,7 +4,6 @@ motion_detected_card:
   show_last_changed: true
   name: >
       [[[
-        console.log("entity", entity);
         const device_id = hass.entities[entity.entity_id].device_id;
         var area_id = null;
 

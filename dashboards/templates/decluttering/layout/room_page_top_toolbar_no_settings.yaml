@@ -1,0 +1,26 @@
+# 
+# Room Page Top Toolbar no settings
+# 
+# Same as the room_page_top_toolbar, but without the settings button.
+# 
+room_page_top_toolbar_no_settings:
+  card:
+    type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        # Back button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
+          tap_action:
+            action: navigate
+            navigation_path: '[[navigation_path]]'
+        
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: '[[name]]'
+
+        - type: custom:button-card
+          template: empty_column

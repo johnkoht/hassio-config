@@ -1,0 +1,35 @@
+kohbo_device_entity_horizontal:
+  template: kohbo_horizontal_action_card_entity
+  show_state: true
+  show_last_changed: true
+  state_display: '[[[ return entity.state == "on" ? "Open" : "Closed" ]]]'
+  styles:
+    grid:
+      - grid-template-areas: '"i n s" "i l s"'
+      - grid-template-columns: 24px auto 60px;
+      - grid-template-rows: 1fr
+    card:
+      - padding: 20px
+    label: 
+      - justify-self: start
+      - font-size: 12px
+      - font-weight: 400
+      - line-height: 12px
+      - color: var(--light-grey-color)
+      - margin-top: 3px
+      - padding-left: 12px
+    state:
+      - justify-self: end
+      - align-self: center
+      - font-size: 14px
+      - font-weight: 500
+      - line-height: 14px
+      - color: var(--primary-text-color)
+      - margin: 0
+  state:
+    - value: 'on'
+      icon: kohbo:kohbo-door-open
+      color: var(--error-color)
+    - value: 'off'
+      icon: kohbo:kohbo-door-closed
+      color: var(--success-color)

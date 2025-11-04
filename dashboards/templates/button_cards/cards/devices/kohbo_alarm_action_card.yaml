@@ -1,0 +1,11 @@
+kohbo_alarm_action_card:
+  template: kohbo_horizontal_action_card_entity
+  entity: alarm_control_panel.kohbo
+  spinner: true
+  styles:
+    card:
+      - padding: 20px
+    icon:
+      - color: var(--primary-text-color)
+    state:
+      - color: var(--primary-text-color)

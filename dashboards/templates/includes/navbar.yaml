@@ -13,6 +13,8 @@ routes:
   - url: /dashboard-kohbo/security
     icon: kohbo:kohbo-security
     label: Security
+    selected: >
+      ${window.location.pathname.startsWith("/security")}
   - icon: mdi:dots-horizontal
     label: More
     tap_action:
@@ -26,8 +28,6 @@ routes:
           data:
             code: lovelace_reload()
             browser_id: ff9aa457-0f3695c9
-
-
       - icon: mdi:account-circle
         url: /dashboard-kohbo/people
         label: People
