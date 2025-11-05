@@ -1,0 +1,43 @@
+#
+# Mudroom
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.mudroom
+  - occupancy: input_boolean.mudroom_occupied
+  - room: "foyer"
+  - room_name: Mudroom
+  - navigation_path: '/dashboard-kohbo/rooms-mudroom'
+  - temperature: "[[[ return states['sensor.mudroom_motion_sensor_air_temperature'].state ]]]"
+  - humidity: null
+  - aqi: null
+  - icon: kohbo:kohbo-foot-print
+  - room_devices:
+    - type: custom:button-card
+      entity: light.mudroom_main_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    - type: custom:button-card
+      entity: binary_sensor.interior_garage_door
+      name: Back Door
+      template: kohbo_room_card_device
+      icon: >
+        [[[
+          if (entity.state == "on")
+            return "kohbo:kohbo-door-open"
+          else
+            return "kohbo:kohbo-door-closed"
+        ]]]
+    - type: custom:button-card
+      entity: lock.garage_entry_door
+      name:   Lock
+      template: kohbo_room_card_device                
+      icon: >
+        [[[
+          if (entity.state == "locked")
+            return "kohbo:kohbo-lock-locked"
+          else
+            return "kohbo:kohbo-lock-unlocked"
+        ]]]

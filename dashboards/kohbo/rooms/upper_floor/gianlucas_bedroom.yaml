@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Gianluca's Bedroom
-path: gianluca-bedroom
+path: rooms-gianluca-bedroom
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

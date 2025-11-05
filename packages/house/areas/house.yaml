@@ -1,0 +1,69 @@
+# 
+# First Floor Sensor
+# 
+# This is a sensor that's acts like an object with various 
+# attributes based on the first floor areas.
+# 
+template:
+  - sensor:
+      - name: "House"
+        unique_id: house
+        state: "{{ states.input_boolean.house_occupied.state }}"
+        attributes:
+          mode: "{{ states.input_select.house.state }}"
+          areas: >
+            {{ 
+              expand('group.house_areas')
+              | map(attribute='entity_id')
+              | list
+              | join(', ')
+            }}
+
+          occupied_rooms: >
+            {{ 
+              expand('group.house_areas')
+              | selectattr('state', 'eq', 'on')
+              | map(attribute='entity_id')
+              | list
+              | join(', ')
+            }}
+
+          occupied_rooms_count: >
+            {{ 
+              expand('group.house_areas')
+              | selectattr('state', 'eq', 'on')
+              | map(attribute='entity_id')
+              | list
+              | length
+            }}
+
+          unoccupied_rooms: >
+            {{ 
+              expand('group.house_areas')
+              | selectattr('state', 'eq', 'off')
+              | map(attribute='entity_id')
+              | list
+              | join(', ')
+            }}
+
+          unoccupied_rooms_count: >
+            {{ 
+              expand('group.house_areas')
+              | selectattr('state', 'eq', 'off')
+              | map(attribute='entity_id')
+              | list
+              | length
+            }}
+
+
+
+
+# 
+# House Areas Group
+# 
+group:
+  house_areas:
+    name: House Areas
+    entities:
+      - group.first_floor_areas
+      - group.upper_floor_areas

@@ -1,0 +1,40 @@
+#
+# Jr. Suite
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.jr_suite
+  - occupancy: input_boolean.jr_suite_occupied
+  - room: "jr_suite"
+  - room_name: Jr. Suite
+  - navigation_path: '/dashboard-kohbo/rooms-jr-suite'
+  - temperature: "[[[ return states['sensor.jr_suite_awair_temperature'].state ]]]"
+  - humidity: "[[[ return states['sensor.jr_suite_awair_humidity'].state ]]]"
+  - aqi: "[[[ return states['sensor.jr_suite_air_quality'].state ]]]"
+  - icon: kohbo:kohbo-bed
+  - room_devices:
+    # Lights
+    - type: custom:button-card
+      entity: light.jr_suite_bedroom_main_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    # Door
+    - type: custom:button-card
+      entity: binary_sensor.jr_suite_door_status
+      name: Door
+      template: kohbo_room_card_device
+      icon: >
+        [[[
+          if (entity.state == "on")
+            return "kohbo:kohbo-door-open"
+          else
+            return "kohbo:kohbo-door-closed"
+        ]]]
+    # Desk Power
+    - type: custom:button-card
+      entity: switch.smart_plug_22_switch
+      name: Desk Power
+      template: kohbo_room_card_device
+      icon: mdi:power-plug

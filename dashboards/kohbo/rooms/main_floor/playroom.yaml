@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Playroom
-path: playroom
+path: rooms-playroom
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

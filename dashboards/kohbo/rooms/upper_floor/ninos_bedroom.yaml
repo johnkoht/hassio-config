@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Nino's Bedroom
-path: ninos-bedroom
+path: rooms-ninos-bedroom
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

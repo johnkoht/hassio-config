@@ -29,15 +29,27 @@ card:
 
     - type: custom:navbar-card
       routes:
+        # Active Rooms
+        - url: /dashboard-kohbo/rooms-active
+          icon: mdi:home-floor-3
+          label: Active
+
+        # Main Floor
         - url: /dashboard-kohbo/rooms-main-floor
           icon: mdi:home-floor-1
           label: Main
+
+        # Upper Floor
         - url: /dashboard-kohbo/rooms-upper-floor
           icon: mdi:home-floor-2
           label: Upper
+
+        # Exterior
         - url: /dashboard-kohbo/exterior
           icon: mdi:grass
           label: Exterior
+
+        # Laundry
         - url: /dashboard-kohbo/security
           icon: mdi:washing-machine
           label: Laundry
@@ -57,8 +69,13 @@ card:
           padding: 0 19px !important;
         }
 
-        .button {
+        .button ha-icon,
+        .button ha-ripple {
           display: none !important;
+        }
+
+        .button {
+          height: 0px !important;
         }
 
         .label {

@@ -1,0 +1,38 @@
+# 
+# Gianluca's Bedroom
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.gianlucas_bedroom
+  - occupancy: input_boolean.gianlucas_room_occupied
+  - room: "gianluca_room"
+  - room_name: Gianluca's Bedroom
+  - navigation_path: '/dashboard-kohbo/rooms-gianluca-bedroom'
+  - temperature: "[[[ return states['sensor.gianluca_bedroom_awair_temperature'].state ]]]"
+  - humidity: "[[[ return states['sensor.gianluca_bedroom_awair_humidity'].state ]]]"
+  - aqi: "[[[ return states['sensor.gianluca_bedroom_air_quality'].state ]]]"
+  - icon: kohbo:kohbo-bed-single
+  - room_devices:
+    - type: custom:button-card
+      entity: light.gianluca_bedroom_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    
+    - type: custom:button-card
+      entity: binary_sensor.gianlucas_door_sensor_status
+      name: Door
+      template: kohbo_room_card_device
+    
+    - type: custom:button-card
+      entity: switch.hue_smart_plug_1
+      name: Heater
+      template: kohbo_room_card_device
+      icon: mdi:heat-wave
+
+    - type: custom:button-card
+      entity: fan.gianlucas_bedroom_air_purifier
+      name: Air Purifier
+      template: kohbo_room_card_device
+      icon: mdi:air-purifier

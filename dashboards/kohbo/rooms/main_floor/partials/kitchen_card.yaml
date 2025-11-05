@@ -1,0 +1,49 @@
+# 
+# Kitchen
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.kitchen
+  - occupancy: input_boolean.kitchen_occupied
+  - room: "kitchen"
+  - room_name: Kitchen
+  - navigation_path: '/dashboard-kohbo/rooms-kitchen'
+  - temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
+  - humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
+  - aqi: "[[[ return states['sensor.kitchen_air_quality'].state ]]]"
+  - icon: kohbo:kohbo-fridge
+  - room_devices:
+    # Lights
+    - type: custom:button-card
+      entity: light.kitchen_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    # Music
+    - type: custom:button-card
+      entity: media_player.sonos_kitchen
+      name: Music
+      template: kohbo_room_card_device
+      icon: kohbo:kohbo-device-speaker
+      tap_action:
+        action: navigate
+        navigation_path: '#kitchen_media_player'
+    # Doors
+    - type: custom:button-card
+      entity: binary_sensor.kitchen_door
+      name: Doors
+      template: kohbo_room_card_device
+      icon: >
+        [[[
+          if (entity.state == "on")
+            return "kohbo:kohbo-door-open"
+          else
+            return "kohbo:kohbo-door-closed"
+        ]]]
+    # Air Purifier
+    - type: custom:button-card
+      entity: fan.kitchen_air_purifier
+      name: Air Purifier
+      template: kohbo_room_card_device
+      icon: mdi:air-purifier

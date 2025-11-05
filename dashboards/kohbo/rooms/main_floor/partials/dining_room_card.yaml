@@ -1,0 +1,31 @@
+#
+# Dining Room
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.dining_room
+  - occupancy: input_boolean.playroom_occupied
+  - room: "living_room"
+  - room_name: Dining Room
+  - navigation_path: '/dashboard-kohbo/rooms-dining-room'
+  - temperature: null
+  - humidity: null
+  - aqi: null
+  - icon: kohbo:kohbo-dining
+  - room_devices:
+    # Lights
+    - type: custom:button-card
+      entity: light.dining_room_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    # Music
+    - type: custom:button-card
+      entity: media_player.sonos_living_room
+      tap_action:
+        action: navigate
+        navigation_path: '#dining_room_media_player'
+      name: Music
+      template: kohbo_room_card_device
+      icon: kohbo:kohbo-device-speaker

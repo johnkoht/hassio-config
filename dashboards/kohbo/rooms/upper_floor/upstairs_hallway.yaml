@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Upstairs Hallway
-path: upstairs-hallway
+path: rooms-upstairs-hallway
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

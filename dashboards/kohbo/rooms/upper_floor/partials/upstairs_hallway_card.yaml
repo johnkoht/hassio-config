@@ -1,0 +1,28 @@
+# 
+# Upstairs Hallway
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.upstairs_hallway
+  - occupancy: input_boolean.upstairs_hallway_occupied
+  - room: "upstairs_hallway"
+  - room_name: Upstairs Hallway
+  - navigation_path: '/dashboard-kohbo/rooms-upstairs-hallway'
+  - temperature: null
+  - humidity: null
+  - aqi: null
+  - icon: mdi:call-split
+  - room_devices:
+    # Ceiling Lights
+    - type: custom:button-card
+      entity: light.upstairs_hallway
+      name: Ceiling
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    # Stairs lights
+    - type: custom:button-card
+      entity: light.stairs_light
+      name: Stairs
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights

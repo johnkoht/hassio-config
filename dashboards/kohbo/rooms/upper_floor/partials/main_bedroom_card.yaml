@@ -1,0 +1,43 @@
+# 
+# Main Bedroom
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.main_bedroom
+  - occupancy: input_boolean.main_bedroom_occupied
+  - room: "main_bedroom"
+  - room_name: Main Bedroom
+  - navigation_path: '/dashboard-kohbo/rooms-main-bedroom'
+  - temperature: "[[[ return states['sensor.main_bedroom_awair_temperature'].state ]]]"
+  - humidity: "[[[ return states['sensor.main_bedroom_awair_humidity'].state ]]]"
+  - aqi: "[[[ return states['sensor.main_bedroom_air_quality'].state ]]]"
+  - icon: kohbo:kohbo-bed-king
+  - room_devices:
+    # Lights
+    - type: custom:button-card
+      entity: light.main_bedroom_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+      color: auto
+    # Music
+    - type: custom:button-card
+      entity: media_player.sonos_main_bedroom
+      name: Music
+      template: kohbo_room_card_device
+      icon: kohbo:kohbo-device-speaker
+      tap_action:
+        action: navigate
+        navigation_path: '#main_bedroom_media_player'
+    # Door
+    - type: custom:button-card
+      entity: binary_sensor.main_bedroom_door_sensor_status
+      name: Door
+      template: kohbo_room_card_device
+    # Air Purifier
+    - type: custom:button-card
+      entity: fan.main_bedroom_air_purifier
+      name: Air Purifier
+      template: kohbo_room_card_device
+      icon: mdi:air-purifier

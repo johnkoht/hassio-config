@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Dining Room
-path: dining-room
+path: rooms-dining-room
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

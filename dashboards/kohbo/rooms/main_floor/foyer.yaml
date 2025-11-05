@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Foyer
-path: foyer
+path: rooms-foyer
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

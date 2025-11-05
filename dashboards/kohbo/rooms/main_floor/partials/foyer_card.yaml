@@ -1,0 +1,46 @@
+#
+# Foyer
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.foyer
+  - occupancy: input_boolean.foyer_occupied
+  - room: "foyer"
+  - room_name: Foyer
+  - navigation_path: '/dashboard-kohbo/rooms-foyer'
+  - temperature: null
+  - humidity: null
+  - aqi: null
+  - icon: kohbo:kohbo-double-door
+  - room_devices:
+    # Lights
+    - type: custom:button-card
+      entity: light.foyer_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    # Front Door
+    - type: custom:button-card
+      entity: binary_sensor.front_door
+      name: Front Door
+      template: kohbo_room_card_device
+      icon: >
+        [[[
+          if (entity.state == "on")
+            return "kohbo:kohbo-door-open"
+          else
+            return "kohbo:kohbo-door-closed"
+        ]]]
+    # Front Door Lock
+    - type: custom:button-card
+      entity: lock.front_door
+      name: Lock
+      template: kohbo_room_card_device                
+      icon: >
+        [[[
+          if (entity.state == "locked")
+            return "kohbo:kohbo-lock-locked"
+          else
+            return "kohbo:kohbo-lock-unlocked"
+        ]]]

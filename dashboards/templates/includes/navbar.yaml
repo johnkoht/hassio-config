@@ -3,18 +3,17 @@ routes:
   - url: /dashboard-kohbo/home
     icon: kohbo:kohbo-dashboard
     label: Home
-  # - url: /dashboard-kohbo/rooms
-  - url: /dashboard-kohbo/rooms-main-floor
+  - url: /dashboard-kohbo/rooms-active
     icon: kohbo:kohbo-rooms
     label: Rooms
+    selected: '[[[ return window.location.pathname.startsWith("/dashboard-kohbo/rooms") ]]]'
   - url: /dashboard-kohbo/climate
     icon: kohbo:kohbo-climate
     label: Climate
   - url: /dashboard-kohbo/security
     icon: kohbo:kohbo-security
     label: Security
-    selected: >
-      ${window.location.pathname.startsWith("/security")}
+    selected: '[[[ return window.location.pathname.startsWith("/dashboard-kohbo/security") ]]]'
   - icon: mdi:dots-horizontal
     label: More
     tap_action:

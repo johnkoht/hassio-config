@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Kitchen
-path: kitchen
+path: rooms-kitchen
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

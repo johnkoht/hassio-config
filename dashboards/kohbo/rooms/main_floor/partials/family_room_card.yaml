@@ -1,0 +1,36 @@
+# 
+# Family Room
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.family_room
+  - occupancy: input_boolean.family_room_occupied
+  - room: "family_room"
+  - room_name: Family Room
+  - navigation_path: '/dashboard-kohbo/rooms-family-room'
+  - temperature: "[[[ return states['sensor.kitchen_awair_temperature'].state ]]]"
+  - humidity: "[[[ return states['sensor.kitchen_awair_humidity'].state ]]]"
+  - aqi: "[[[ return states['sensor.kitchen_air_quality'].state ]]]"
+  - icon: kohbo:kohbo-chair
+  - room_devices:
+    - type: custom:button-card
+      entity: light.family_room_main_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+
+    - type: custom:button-card
+      entity: media_player.sony_bravia_tv
+      name: TV
+      template: kohbo_room_card_device
+      icon: kohbo:kohbo-device-tv
+
+    - type: custom:button-card
+      entity: media_player.sonos_family_room
+      name: Music
+      template: kohbo_room_card_device
+      icon: kohbo:kohbo-device-speaker
+      tap_action:
+        action: navigate
+        navigation_path: '#family_room_media_player'

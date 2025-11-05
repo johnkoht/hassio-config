@@ -1,0 +1,41 @@
+# 
+# Nino's Bedroom
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.ninos_bedroom
+  - occupancy: input_boolean.ninos_bedroom_occupied
+  - room: "nino_bedroom"
+  - room_name: Nino's Bedroom
+  - navigation_path: '/dashboard-kohbo/rooms-ninos-bedroom'
+  - temperature: "[[[ return states['sensor.nino_bedroom_awair_temperature'].state ]]]"
+  - humidity: "[[[ return states['sensor.nino_bedroom_awair_humidity'].state ]]]"
+  - aqi: "[[[ return states['sensor.nino_bedroom_air_quality'].state ]]]"
+  - icon: kohbo:kohbo-bed-single
+  - room_devices:
+    - type: custom:button-card
+      entity: light.ninos_bedroom_main_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+
+    - type: custom:button-card
+      entity: media_player.ninos_room
+      name: Music
+      template: kohbo_room_card_device
+      icon: kohbo:kohbo-device-speaker
+      tap_action:
+        action: navigate
+        navigation_path: '#ninos_bedroom_media_player'
+
+    - type: custom:button-card
+      entity: binary_sensor.ninos_door_sensor_status
+      name: Door
+      template: kohbo_room_card_device
+
+    - type: custom:button-card
+      entity: fan.ninos_bedroom_air_purifier
+      name: Air Purifier
+      template: kohbo_room_card_device
+      icon: mdi:air-purifier

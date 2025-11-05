@@ -1,6 +1,6 @@
 type: custom:vertical-layout
 title: Jr. Suite
-path: jr-suite
+path: rooms-jr-suite
 theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml

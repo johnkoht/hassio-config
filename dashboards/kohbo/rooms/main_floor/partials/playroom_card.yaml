@@ -1,0 +1,49 @@
+# 
+# Playroom
+# 
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.playroom
+  - occupancy: input_boolean.playroom_occupied
+  - room: "playroom"
+  - room_name: Playroom
+  - navigation_path: '/dashboard-kohbo/rooms-playroom'
+  - temperature: "[[[ return states['sensor.playroom_temperature'].state ]]]"
+  - humidity: "[[[ return states['sensor.playroom_humidity'].state ]]]"
+  - aqi: null
+  - icon: kohbo:kohbo-lego
+  - room_devices:
+    # Lights
+    - type: custom:button-card
+      entity: light.playroom_lights
+      name: Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-lights
+    # Party Lights
+    - type: custom:button-card
+      entity: switch.christmas_playroom_lights
+      name: Party Lights
+      template: kohbo_room_card_device                
+      icon: kohbo:kohbo-device-string-light
+    # Music
+    - type: custom:button-card
+      entity: media_player.sonos_playroom
+      name: Music
+      template: kohbo_room_card_device
+      icon: kohbo:kohbo-device-speaker
+      tap_action:
+        action: navigate
+        navigation_path: '#playroom_media_player'
+    # Windows
+    - type: custom:button-card
+      entity: binary_sensor.playroom_window_west_left_opening
+      name: Windows
+      template: kohbo_room_card_device
+      icon: >
+        [[[
+          if (entity.state == "on")
+            return "kohbo:kohbo-window-open"
+          else
+            return "kohbo:kohbo-window-closed"
+        ]]]
