@@ -1,0 +1,24 @@
+kohbo_horizontal_action_card_aqi_entity:
+  template: kohbo_horizontal_action_card_entity
+  icon: mdi:blur
+  layout: icon_state
+  show_state: true
+  show_name: false
+  size: 40px
+  state_display: "Air Quality is Good!"
+  state:
+    - operator: default
+      color: var(--success-color)
+      icon: mdi:blur
+  styles:
+    grid:
+      - grid-template-columns: 40px auto;
+      - flex: auto
+    state:
+      - font-size: 15px
+      - font-weight: 700
+      - line-height: 18px
+      - justify-self: start
+      - padding-left: 12px
+      - color: var(--primary-text-color)
+      - margin: 0

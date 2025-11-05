@@ -704,6 +704,15 @@ cards:
       - pm25_sensor: sensor.indoor_air_quality_pm2_5
       - carbon_dioxide_sensor: sensor.indoor_air_quality_co2
       - vocs_sensor: sensor.indoor_air_quality_tvoc
+      - aqi_score_sensor: sensor.indoor_air_quality_score
+      - action_cards:
+        # Open windows details
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/climate"
 
 
   # 

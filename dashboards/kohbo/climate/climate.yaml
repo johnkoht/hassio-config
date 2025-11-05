@@ -55,6 +55,10 @@ cards:
       - pm25_sensor: sensor.main_floor_air_quality_pm2_5
       - carbon_dioxide_sensor: sensor.main_floor_air_quality_co2
       - vocs_sensor: sensor.main_floor_air_quality_tvoc
+      - aqi_score_sensor: sensor.main_floor_air_quality_score
+      - action_cards:
+        - type: custom:button-card
+          template: empty_column
 
 
   # 
@@ -70,6 +74,10 @@ cards:
       - pm25_sensor: sensor.upper_floor_air_quality_pm2_5
       - carbon_dioxide_sensor: sensor.upper_floor_air_quality_co2
       - vocs_sensor: sensor.upper_floor_air_quality_tvoc
+      - aqi_score_sensor: sensor.upper_floor_air_quality_score
+      - action_cards:
+        - type: custom:button-card
+          template: empty_column
 
   # 
   # HVAC Controls

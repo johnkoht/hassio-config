@@ -22,6 +22,10 @@ horizontal_action_card:
             align-items: center;
           }
 
+          #root button-card {
+            flex: auto !important;
+          }
+
         .: |
           ha-card {
             padding: 20px !important;
