@@ -43,6 +43,9 @@ cards:
             icon: kohbo:kohbo-alarm-armed-home
           - value: 'armed_away'
             icon: kohbo:kohbo-alarm-armed-away
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/security-alarm-panel'
 
       # 
       # Locks
@@ -65,7 +68,7 @@ cards:
             icon: kohbo:kohbo-lock-locked
         tap_action:
           action: navigate
-          navigation_path: '#house_locks_popup'
+          navigation_path: '/dashboard-kohbo/security-house-locks'
 
       # 
       # Garage Doors
@@ -87,4 +90,7 @@ cards:
             icon: kohbo:kohbo-garage-open
           - value: 'closed'
             icon: kohbo:kohbo-garage-closed
-        
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/security-garage-doors'
+
