@@ -2,20 +2,24 @@ automation:
   - id: "main_bedroom_john_night_light"
     initial_state: on
     alias: "Main bedroom night light for John"
-    trigger:
+    triggers:
       # Motion is detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_motion_sensor_entry_motion
         to: "on"
       # The door closes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "off"
       # The door opens
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "on"
-    condition:
+      # John is in the room
+      - trigger: state
+        entity_id: sensor.john_room_presence
+        to: "main_bedroom"
+    conditions:
       # John is home
       - condition: state
         entity_id: input_boolean.john_home
@@ -61,6 +65,10 @@ automation:
         state: "Awake"
         for:
           minutes: 10
+      # John's in the room
+      - condition: state
+        entity_id: sensor.john_room_presence
+        to: "main_bedroom"
       # It's bedtime hours
       - condition: state
         entity_id: binary_sensor.bedtime
@@ -68,9 +76,9 @@ automation:
       - condition: time
         after: "20:00:00"
         before: "05:00:00"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.hue_ambiance_lamp_1
         data:
-          brightness_pct: 30
+          brightness_pct: 25
           transition: 0.5
