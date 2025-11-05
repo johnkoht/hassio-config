@@ -39,6 +39,10 @@ cards:
       - vocs_sensor: sensor.kitchen_awair_vocs
       - pm25_sensor: sensor.kitchen_awair_pm2_5
       - room_name: Kitchen
+      - aqi_score_sensor: sensor.kitchen_awair_score
+      - action_cards:
+        - type: custom:button-card
+          template: empty_column
 
 
   # 

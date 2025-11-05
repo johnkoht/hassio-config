@@ -29,46 +29,66 @@ climate_overview:
         icon: mdi:thermometer
         card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
 
-      - type: conditional
-        conditions:
-          - condition: numeric_state
-            entity: '[[aqi_score_sensor]]'
-            above: 80
-        card:
-          type: custom:decluttering-card
-          template: horizontal_action_card
-          variables:
-            - entity: '[[aqi_score_sensor]]'
-            - name: Air Quality
-            - template: kohbo_horizontal_action_card_aqi_entity
-            - tap_action: navigate
-            - navigation_path: "/dashboard-kohbo/climate"
-            - action_cards: '[[action_cards]]'
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            entity: '[[humidity_sensor]]'
+            template: kohbo_aqi_humidity_item
+          
+          - type: custom:button-card
+            entity: '[[carbon_dioxide_sensor]]'
+            template: kohbo_aqi_co2_item
+  
+          - type: custom:button-card
+            entity: '[[vocs_sensor]]'
+            template: kohbo_aqi_tvocs_item
+
+          - type: custom:button-card
+            entity: '[[pm25_sensor]]'
+            template: kohbo_aqi_pm25_item
+
+      # - type: conditional
+      #   conditions:
+      #     - condition: numeric_state
+      #       entity: '[[aqi_score_sensor]]'
+      #       above: 80
+      #   card:
+      #     type: custom:decluttering-card
+      #     template: horizontal_action_card
+      #     variables:
+      #       - entity: '[[aqi_score_sensor]]'
+      #       - name: Air Quality
+      #       - template: kohbo_horizontal_action_card_aqi_entity
+      #       - tap_action: navigate
+      #       - navigation_path: "/dashboard-kohbo/climate"
+      #       - action_cards: '[[action_cards]]'
 
                     
 
-      - type: conditional
-        conditions:
-          - condition: numeric_state
-            entity: '[[aqi_score_sensor]]'
-            below: 81
-        card:
-          type: custom:stack-in-card
-          mode: horizontal
-          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
-          cards:
-            - type: custom:button-card
-              entity: '[[humidity_sensor]]'
-              template: kohbo_aqi_humidity_item
+      # - type: conditional
+      #   conditions:
+      #     - condition: numeric_state
+      #       entity: '[[aqi_score_sensor]]'
+      #       below: 81
+      #   card:
+      #     type: custom:stack-in-card
+      #     mode: horizontal
+      #     card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+      #     cards:
+      #       - type: custom:button-card
+      #         entity: '[[humidity_sensor]]'
+      #         template: kohbo_aqi_humidity_item
             
-            - type: custom:button-card
-              entity: '[[carbon_dioxide_sensor]]'
-              template: kohbo_aqi_co2_item
+      #       - type: custom:button-card
+      #         entity: '[[carbon_dioxide_sensor]]'
+      #         template: kohbo_aqi_co2_item
     
-            - type: custom:button-card
-              entity: '[[vocs_sensor]]'
-              template: kohbo_aqi_tvocs_item
+      #       - type: custom:button-card
+      #         entity: '[[vocs_sensor]]'
+      #         template: kohbo_aqi_tvocs_item
 
-            - type: custom:button-card
-              entity: '[[pm25_sensor]]'
-              template: kohbo_aqi_pm25_item
+      #       - type: custom:button-card
+      #         entity: '[[pm25_sensor]]'
+      #         template: kohbo_aqi_pm25_item

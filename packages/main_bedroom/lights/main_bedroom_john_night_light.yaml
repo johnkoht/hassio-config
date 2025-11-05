@@ -68,7 +68,7 @@ automation:
       # John's in the room
       - condition: state
         entity_id: sensor.john_room_presence
-        to: "main_bedroom"
+        state: "main_bedroom"
       # It's bedtime hours
       - condition: state
         entity_id: binary_sensor.bedtime
