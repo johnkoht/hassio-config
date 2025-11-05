@@ -16,50 +16,60 @@ cards:
       # 
       # Overview Area for the main floor
       # 
-      # - type: custom:mod-card
-      #   style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
-      #   card:
-      #     type: horizontal-stack
-      #     cards:
-      #       # Occupancy
-      #       - type: custom:button-card
-      #         template: kohbo_chip_card_room_occupancy
-      #         entity: sensor.house
-      #         state_display: >
-      #           [[[ 
-      #             if (entity.attributes.occupied_rooms_count > 0)
-      #               return entity.attributes.occupied_rooms_count + " Occupied"
-      #             else
-      #               return "Empty"
-      #           ]]]
-            
-      #       # Lights
-      #       - type: custom:button-card
-      #         template: kohbo_chip_card
-      #         entity: light.main_floor_lights
-      #         state_display: >
-      #           [[[
-      #             if (states['light.main_floor_lights'].state == "on")
-      #               return `${states['sensor.main_floor_lights_on'].state} On`
-      #             else
-      #               return "Off"
-      #           ]]]
-      #         tap_action:
-      #           action: more-info
+      - type: custom:mod-card
+        style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+        card:
+          type: horizontal-stack
+          cards:
+            # First Floor Occupancy
+            - type: custom:button-card
+              template: kohbo_chip_card
+              entity: sensor.first_floor
+              icon: mdi:home-floor-1
+              state_display: >
+                [[[ 
+                  if (entity.attributes.occupied_rooms_count > 0)
+                    return entity.attributes.occupied_rooms_count + " Occupied"
+                  else
+                    return "Empty"
+                ]]]
+              state:
+                - value: "on"
+                  color: var(--success-color)
+                - value: "off"
+                  color: var(--light-grey-color)
 
-      #       # Temperature
-      #       - type: custom:button-card
-      #         template: kohbo_chip_card
-      #         entity: sensor.main_floor_temperature
-      #         icon: mdi:home-thermometer
-      #         color: var(--light-grey-color)
+            # Upper Floor Occupancy
+            - type: custom:button-card
+              template: kohbo_chip_card
+              entity: sensor.upper_floor
+              icon: mdi:home-floor-2
+              state_display: >
+                [[[ 
+                  if (entity.attributes.occupied_rooms_count > 0)
+                    return entity.attributes.occupied_rooms_count + " Occupied"
+                  else
+                    return "Empty"
+                ]]]
+              state:
+                - value: "on"
+                  color: var(--success-color)
+                - value: "off"
+                  color: var(--error-color)
             
-      #       # Motion
-      #       - type: custom:button-card
-      #         template: kohbo_chip_card
-      #         entity: binary_sensor.first_floor_motion
-      #         show_state: false
-
+            # Lights
+            - type: custom:button-card
+              template: kohbo_chip_card
+              entity: light.interior_lights
+              state_display: >
+                [[[
+                  if (states['light.interior_lights'].state == "on")
+                    return `${states['sensor.interior_lights_on'].state} On`
+                  else
+                    return "Off"
+                ]]]
+              tap_action:
+                action: more-info
 
 
       # 
