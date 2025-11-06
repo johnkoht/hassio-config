@@ -1,0 +1,29 @@
+# 
+# Leak Sensor Offline
+# 
+type: conditional
+conditions:
+  - condition: state
+    entity: sensor.leak_sensors_unavailable
+    state: "on"
+card:
+  type: custom:bubble-card
+  card_type: button
+  button_type: switch
+  entity: sensor.leak_sensors_unavailable
+  name: Leak Sensors Offline
+  icon: mdi:alert-circle
+  button_action:
+    tap_action:
+      action: navigate
+      navigation_path: '/dashboard-kohbo/security-leak-sensors'
+  tap_action:
+    action: navigate
+    navigation_path: '/dashboard-kohbo/security-leak-sensors'
+  styles: >
+    .bubble-background {
+      background-color: var(--error-color) !important;
+    }
+    .bubble-icon {
+      color: var(--error-color) !important;
+    }

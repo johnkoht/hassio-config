@@ -30,6 +30,8 @@ views:
     - !include /config/dashboards/kohbo/security/pages/alarm_panel.yaml
     - !include /config/dashboards/kohbo/security/pages/exterior_doors.yaml
     - !include /config/dashboards/kohbo/security/pages/windows.yaml
+    - !include /config/dashboards/kohbo/security/cameras/cameras.yaml
+    - !include /config/dashboards/kohbo/security/pages/leak_sensors.yaml
 
     # Rooms
     - !include /config/dashboards/kohbo/rooms/active_rooms.yaml

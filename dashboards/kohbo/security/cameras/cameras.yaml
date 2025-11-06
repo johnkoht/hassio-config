@@ -1,0 +1,107 @@
+type: custom:vertical-layout
+title: Cameras
+path: security-cameras
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - !include /config/dashboards/templates/includes/security/security_header.yaml
+
+
+
+  - type: custom:advanced-camera-card
+    cameras:
+      - camera_entity: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
+        title: Front Door
+    view:
+      actions:
+        entity: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
+        tap_action:
+          action: navigate
+          navigation_path: '#front_door_camera'
+      
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: camera.camera_proxy_camera_driveway_front_camera_high
+            title: Driveway Front
+            go2rtc:
+              stream: driveway_front_low
+              modes:
+                - mse
+                - webrtc
+                - mp4
+              url: http://10.0.10.207:1984
+            live_provider: go2rtc
+        view:
+          actions:
+            tap_action:
+              action: navigate
+              navigation_path: '#driveway_front_camera'
+
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: camera.camera_proxy_camera_garage_driveway_camera_high
+
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: camera.backyard_south_camera_high
+
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: camera.g5_turret_ultra_high_resolution_channel
+
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: camera.g4_bullet_high_resolution_channel
+
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: camera.g4_bullet_high_resolution_channel_2
+            title: Backyard Northwest
+
+
+    
+
+
+  # 
+  # Front Door Camera Popup
+  # 
+  - type: custom:decluttering-card
+    template: camera_popup
+    variables:
+      - hash: '#front_door_camera'
+      - name: Front Door
+      - notifications_entity: input_boolean.front_door_camera_notifications
+      - timer_entity: timer.front_door_camera_notifications_snooze_timer
+      - countdown_sensor: sensor.front_door_timer_countdown
+      - camera_entity: camera.front_door
+      - motion_entity: binary_sensor.front_door_motion
+      - person_entity: binary_sensor.front_door_person_occupancy
+
+
+  # 
+  # Driveway Front Camera Popup
+  # 
+  - type: custom:decluttering-card
+    template: camera_popup
+    variables:
+      - hash: '#driveway_front_camera'
+      - name: Driveway Front
+      - notifications_entity: input_boolean.driveway_front_camera_notifications
+      - timer_entity: timer.driveway_front_camera_notifications_snooze_timer
+      - countdown_sensor: sensor.driveway_front_timer_countdown
+      - camera_entity: camera.driveway_front
+      - motion_entity: binary_sensor.driveway_front_motion
+      - person_entity: binary_sensor.driveway_front_person_occupancy
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

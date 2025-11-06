@@ -24,27 +24,27 @@ cards:
   # 
 
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.front_door
     name: Front Door
 
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.interior_garage_door
     name: Interior Garage Door
 
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.basement_exterior_door
     name: Basement Exterior Door
     
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.upstairs_guest_bedroom_door
     name: Upstairs Guest Bedroom Door
     
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.kitchen_door
     name: Kitchen Door
 

@@ -13,6 +13,9 @@ cards:
     template: kohbo_popup_page_title
     name: Notifications
 
+  # Alerts
+  - !include /config/dashboards/kohbo/shared/notifications/leak_sensor_offline.yaml
+
   - !include /config/dashboards/kohbo/shared/notifications/nino_med_reminder.yaml
   - !include /config/dashboards/kohbo/shared/notifications/garbage_day.yaml
 

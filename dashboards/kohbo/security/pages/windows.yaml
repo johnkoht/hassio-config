@@ -24,27 +24,27 @@ cards:
   # 
 
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.kitchen_window_sensor
     name: Kitchen Window
 
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.kitchen_window_west_middle_sensor
     name: Kitchen West Middle Window
 
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.playroom_window_sensor
     name: Playroom Window
     
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.playroom_window_west_left_opening
     name: Playroom West Left Opening
     
   - type: custom:button-card
-    template: kohbo_device_entity_horizontal
+    template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.office_window_sensor
     name: Office Window
 

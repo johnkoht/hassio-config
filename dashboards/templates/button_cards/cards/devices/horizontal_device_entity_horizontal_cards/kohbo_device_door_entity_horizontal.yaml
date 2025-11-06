@@ -1,0 +1,10 @@
+kohbo_device_door_entity_horizontal:
+  template: kohbo_device_entity_horizontal
+  state_display: '[[[ return entity.state == "on" ? "Open" : "Closed" ]]]'
+  state:
+    - value: 'on'
+      icon: kohbo:kohbo-door-open
+      color: var(--error-color)
+    - value: 'off'
+      icon: kohbo:kohbo-door-closed
+      color: var(--success-color)

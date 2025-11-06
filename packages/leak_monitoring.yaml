@@ -1,3 +1,63 @@
+# 
+# Leak Sensors Group
+# 
+group:
+  leak_sensors:
+    name: Leak Sensors
+    entities:
+      - binary_sensor.kitchen_sink_leak_sensor
+      - binary_sensor.laundry_room_leak_sensor
+      - binary_sensor.basement_sum_pump_leak_sensor
+      - binary_sensor.upstairs_laundry_leak_sensor
+      - binary_sensor.storage_room_leak_sensor
+      - binary_sensor.basement_exterior_door_leak_sensor
+      - binary_sensor.basement_window_leak_sensor_moisture
+      - binary_sensor.furnace_pan_leak_sensor_moisture
+      - binary_sensor.leak_sensor_hvac_moisture
+      - binary_sensor.leak_sensor_basement_bathroom_moisture
+      - binary_sensor.main_bathroom_leak_sensor_moisture
+      - binary_sensor.nino_s_bathroom_leak_sensor_moisture
+      - binary_sensor.upstairs_hallway_bathroom_leak_sensor_moisture
+
+
+# 
+# Leak Sensors Unavailable Sensor
+# 
+template:
+  - sensor:
+      - name: "Leak Sensors Unavailable"
+        unique_id: leak_sensors_unavailable
+        state: >
+          {{
+            "on" if 
+            (
+              expand('group.leak_sensors')
+              | selectattr('state', 'eq', 'unavailable')
+              | list
+              | length > 0
+            )
+            else "off"
+          }}
+        attributes:
+          count: >
+            {{
+              expand('group.leak_sensors')
+              | selectattr('state', 'eq', 'unavailable')
+              | list
+              | length
+            }}
+          unavailable_list: >
+            {{
+              expand('group.leak_sensors')
+              | selectattr('state', 'eq', 'unavailable')
+              | map(attribute='name')
+              | list
+              | join(', ')
+            }}
+
+# 
+# Leak Sensors Binary Sensor
+# 
 binary_sensor:
   # Group of leak/water sensors
   - platform: group
@@ -9,10 +69,14 @@ binary_sensor:
       - binary_sensor.basement_sum_pump_leak_sensor
       - binary_sensor.upstairs_laundry_leak_sensor
       - binary_sensor.storage_room_leak_sensor
-      - binary_sensor.storage_room_leak_sensor
       - binary_sensor.basement_exterior_door_leak_sensor
       - binary_sensor.basement_window_leak_sensor_moisture
       - binary_sensor.furnace_pan_leak_sensor_moisture
+      - binary_sensor.leak_sensor_hvac_moisture
+      - binary_sensor.leak_sensor_basement_bathroom_moisture
+      - binary_sensor.main_bathroom_leak_sensor_moisture
+      - binary_sensor.nino_s_bathroom_leak_sensor_moisture
+      - binary_sensor.upstairs_hallway_bathroom_leak_sensor_moisture
 
   # Binary sensors to track if there is a leak while we're homem or away
   - platform: template

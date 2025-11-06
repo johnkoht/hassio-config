@@ -1,0 +1,22 @@
+kohbo_device_leak_entity_horizontal:
+  template: kohbo_device_entity_horizontal
+  state_display: >
+    [[[
+      if (entity.state == "unavailable") {
+        return "Offline";
+      } else if (entity.state == "on") {
+        return "Wet";
+      } else if (entity.state == "off") {
+        return "Dry";
+      }
+    ]]]
+  state:
+    - value: 'on'
+      icon: mdi:water-percent
+      color: var(--error-color)
+    - value: 'off'
+      icon: mdi:water-percent
+      color: var(--success-color)
+    - value: 'unavailable'
+      icon: mdi:water-percent
+      color: var(--warning-color)

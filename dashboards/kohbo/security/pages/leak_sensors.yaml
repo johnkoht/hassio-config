@@ -1,0 +1,135 @@
+type: custom:vertical-layout
+title: Leak Sensors
+path: security-leak-sensors
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - !include /config/dashboards/templates/includes/security/security_header.yaml
+
+  - type: custom:button-card
+    name: >
+      [[[
+        const count = states['sensor.leak_sensors_unavailable'].attributes.count;
+        return count + " Leak Sensors Offline";
+      ]]]
+    icon: mdi:alert-circle
+    layout: icon_name
+    show_icon: true
+    size: 24px;
+    styles:
+      card:
+        - background: rgba(237, 71, 71, 0.8) !important;
+        - padding: 20px
+      grid:
+        - grid-template-areas: '"i n"'
+        - grid-template-columns: 24px 1fr
+      name:
+        - justify-self: start
+        - font-weight: 600
+        - margin-left: 10px
+    visibility:
+      - condition: state
+        entity: sensor.leak_sensors_unavailable
+        state: "on"
+
+  # 
+  # Main Floor
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Main Floor
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.kitchen_sink_leak_sensor
+    name: Kitchen Sink
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.laundry_room_leak_sensor
+    name: Laundry Room
+
+
+  #  Upper Floor
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Upper Floor
+  
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.basement_sum_pump_leak_sensor
+    name: Basement Sum Pump
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.storage_room_leak_sensor
+    name: Storage Room
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.basement_exterior_door_leak_sensor
+    name: Basement Exterior Door
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.leak_sensor_hvac_moisture
+    name: Basement HVAC
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.basement_window_leak_sensor_moisture
+    name: Basement Window
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.leak_sensor_basement_bathroom_moisture
+    name: Basement Bathroom
+  
+  #
+  # Upper Floor
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Upper Floor
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.main_bathroom_leak_sensor_moisture
+    name: Main Bathroom
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.nino_s_bathroom_leak_sensor_moisture
+    name: Nino's Bathroom
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.upstairs_laundry_leak_sensor
+    name: Upstairs Laundry
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.upstairs_hallway_bathroom_leak_sensor_moisture
+    name: Upstairs Hallway Bathroom
+
+  #
+  # Upper Floor
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Attic
+
+  - type: custom:button-card
+    template: kohbo_device_leak_entity_horizontal
+    entity: binary_sensor.furnace_pan_leak_sensor_moisture
+    name: Attic Furnace Pan
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml
