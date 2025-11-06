@@ -1020,7 +1020,7 @@ cards:
   # - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml
 
   # 
-  # Front Door Lock Popup
+  # Energy Usage Popup
   # 
   - type: vertical-stack
     cards:
@@ -1033,6 +1033,233 @@ cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Energy Usage
+
+
+      - type: custom:stack-in-card
+        card_mod:
+          style: |
+            :host {
+              --keep-border_radius: 'true';
+              --keep-background: 'true';
+              --keep-border-radius: 'true';
+              --stack-card-gap: 10px !important;
+              --vertical-stack-card-gap: 10px !important;
+            }
+        keep:
+          border_radius: true
+          background: true
+        cards:
+          - type: custom:button-card
+            entity: sensor.whole_home_energy_daily_usage
+            name: Energy Consumption
+            state_display: >
+              [[[
+                if (entity.state > 25)
+                  return "Very High";
+                else if (entity.state > 20)
+                  return "High";
+                else if (entity.state > 10)
+                  return "Normal";
+                else
+                  return "Low";
+              ]]]
+            show_icon: false
+            show_state: true
+            styles:
+              grid:
+                - grid-template-areas: '"n n" "s s"'
+                - grid-template-columns: 1fr
+              card:
+                - justify-content: center
+                - padding-bottom: 0
+                - padding-top: 10px
+              name:
+                - justify-self: center
+                - font-size: 14px
+                - font-weight: 500
+                - color: var(--secondary-text-color)
+                - align-self: end
+                - margin-bottom: 2px
+              state:
+                - justify-self: center
+                - font-size: 28px
+                - font-weight: 400
+                - color: var(--primary-text-color)
+
+          # 
+          # Daily Energy Usage Gauge
+          # 
+          - type: gauge
+            name: Daily Consumption
+            unit: 'kWh'
+            entity: sensor.whole_home_energy_daily_usage
+            min: 0
+            max: 30
+            needle: true
+            segments:
+              - from: 0
+                color: '#06D6A0'
+              - from: 1
+                color: '#1ED59A'
+              - from: 2
+                color: '#37D594'
+              - from: 3
+                color: '#50D48E'
+              - from: 4
+                color: '#69D488'
+              - from: 5
+                color: '#82D383'
+              - from: 6
+                color: '#9BD37D'
+              - from: 7
+                color: '#B4D277'
+              - from: 8
+                color: '#CDD271'
+              - from: 9
+                color: '#E6D16B'
+              - from: 10
+                color: '#FFD166'
+              - from: 11
+                color: '#FCC55B'
+              - from: 12
+                color: '#F9BA51'
+              - from: 13
+                color: '#F6AF47'
+              - from: 14
+                color: '#F3A33D'
+              - from: 15
+                color: '#F19833'
+              - from: 16
+                color: '#EE8D29'
+              - from: 17
+                color: '#EB811F'
+              - from: 18
+                color: '#E87615'
+              - from: 19
+                color: '#E56B0B'
+              - from: 20
+                color: '#E36001'
+              - from: 21
+                color: '#E45D08'
+              - from: 22
+                color: '#E55B0F'
+              - from: 23
+                color: '#E65816'
+              - from: 24
+                color: '#E7561D'
+              - from: 25
+                color: '#E85324'
+              - from: 26
+                color: '#E9512B'
+              - from: 27
+                color: '#EA4E32'
+              - from: 28
+                color: '#EB4C39'
+              - from: 29
+                color: '#EC4940'
+              - from: 30
+                color: '#ED4747'
+            card_mod:
+              style:
+                ha-gauge $: |
+                  path.dial,
+                  path.value,
+                  path.level {
+                    stroke-width: 10px !important;
+                  }
+
+                  path.dial {
+                    stroke: var(--darker-primary-color) !important;
+                  }
+
+                  .text {
+                    bottom: 10px !important;
+                  }
+
+                  .value-text {
+                    font-size: 35px !important;
+                  }
+                  
+                .: |
+                  ha-card {
+                    padding-top: 0 !important;
+                  }
+                  .name {
+                    margin-top: -15px !important;
+                    color: var(--secondary-text-color) !important;
+                    font-size: 12px !important;
+                  }
+          
+
+          # # 
+          # # Security Items
+          # # 
+          # - type: custom:stack-in-card
+          #   mode: vertical
+          #   card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+          #   cards:
+      
+          # 
+          # Daily Energy Usage and Price
+          # 
+          - type: custom:apexcharts-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: var(--darker-primary-color);
+                  border-top-right-radius: 0;
+                  border-top-left-radius: 0;
+                  backdrop-filter: none;
+                  -webkit-backdrop-filter: none;
+                  box-shadow: none;
+                  border: none;
+                  box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+                }
+            graph_span: 24h
+            span:
+              start: day
+            stacked: true
+            header:
+              show: false
+            apex_config:
+              yaxis:
+                - id: usage
+                  show: 
+                    dataLabels: false
+                  title: 
+                    text: ""
+                  labels:
+                    formatter: |
+                      EVAL: (val) => `${val.toFixed(1)}`
+                - id: price  # Secondary Y-axis for price
+                  opposite: true
+                  show: 
+                    dataLabels: false
+                  title:
+                    text: ""
+                  labels:
+                    formatter: |
+                      EVAL: (val) => `$${val.toFixed(2)}`
+
+            series:
+              - entity: sensor.whole_home_energy_daily_usage
+                type: column
+                name: Energy Usage
+                statistics:
+                  type: change
+                  period: hour
+                  align: start
+                yaxis_id: usage
+              - entity: sensor.energy_price
+                type: line
+                name: Energy Price
+                stroke_width: 3
+                group_by:
+                  func: avg
+                  duration: 1h
+                yaxis_id: price
+
+
 
       - type: custom:mini-graph-card
         entities:
@@ -1058,11 +1285,116 @@ cards:
           - color: "#ED4747"
             value: 3000
 
+
+
+      - type: custom:apexcharts-card
+        graph_span: 24h
+        span:
+          start: day
+        stacked: true
+        header:
+          show: false
+        series:
+          - entity: sensor.panel_1_energy_meter
+            type: column
+            name: Panel 1
+            statistics:
+              type: change
+              period: hour
+              align: start
+          - entity: sensor.panel_2_energy_meter
+            type: column
+            name: Panel 2
+            statistics:
+              type: change
+              period: hour
+              align: start
+
+
+      # 
+      # Daily Energy Usage and Price
+      # 
+      - type: custom:apexcharts-card
+        graph_span: 24h
+        span:
+          start: day
+        stacked: true
+        header:
+          show: false
+        apex_config:
+          yaxis:
+            - id: usage
+              show: 
+                dataLabels: false
+              title: 
+                text: ""
+              labels:
+                formatter: |
+                  EVAL: (val) => `${val.toFixed(1)}`
+            - id: price  # Secondary Y-axis for price
+              opposite: true
+              show: 
+                dataLabels: false
+              title:
+                text: ""
+              labels:
+                formatter: |
+                  EVAL: (val) => `$${val.toFixed(2)}`
+
+        series:
+          - entity: sensor.whole_home_energy_daily_usage
+            type: column
+            name: Energy Usage
+            statistics:
+              type: change
+              period: hour
+              align: start
+            yaxis_id: usage
+          - entity: sensor.energy_price
+            type: line
+            name: Energy Price
+            stroke_width: 3
+            group_by:
+              func: avg
+              duration: 1h
+            yaxis_id: price
+            
+
+
+      # - type: grid
+      #   columns: 2
+      #   square: false
+      #   cards:
+      #     # PANEL 1
+      #     - type: custom:mini-graph-card
+      #       name: Panel 1 - Daily Energy Usage
+      #       entities:
+      #         - sensor.panel_1_energy_meter
+      #       hours_to_show: 168  # 7 days
+      #       points_per_hour: 1
+      #       group_by: date
+      #       show:
+      #         graph: bar
+      #       card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+
+      #     # PANEL 1
+      #     - type: custom:mini-graph-card
+      #       name: Panel 2 - Daily Energy Usage
+      #       entities:
+      #         - sensor.panel_2_energy_meter
+      #       hours_to_show: 168  # 7 days
+      #       points_per_hour: 1
+      #       group_by: date
+      #       show:
+      #         graph: bar
+      #       card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+    
       # PANEL 1
       - type: custom:mini-graph-card
-        name: Panel 1 - Daily Energy Usage
+        name: Daily Energy Usage
         entities:
           - sensor.panel_1_energy_meter
+          - sensor.panel_2_energy_meter
         hours_to_show: 168  # 7 days
         points_per_hour: 1
         group_by: date
@@ -1070,11 +1402,13 @@ cards:
           graph: bar
         card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
 
-      # ALL PANELS
+
+      # Panel 2
       - type: custom:mini-graph-card
         name: Daily Energy Usage
         entities:
-          - sensor.daily_energy_consumption
+          # - sensor.daily_energy_consumption
+          - sensor.whole_home_energy_daily_usage
         hours_to_show: 168  # 7 days
         points_per_hour: 1
         group_by: date
@@ -1099,48 +1433,48 @@ cards:
           - type: gauge
             name: Daily Energy Usage
             unit: 'kWh'
-            entity: sensor.daily_energy_consumption
+            entity: sensor.whole_home_energy_daily_usage
             min: 0
-            max: 40
+            max: 30
             needle: true
             segments:
               - from: 0
                 color: var(--success-color)
               - from: 10
                 color: var(--warning-color)
-              - from: 25
+              - from: 20
                 color: var(--error-color)
 
           # Weekly Energy Usage
           - type: gauge
             name: Weekly Energy Usage
             unit: 'kWh'
-            entity: sensor.weekly_energy_consumption
+            entity: sensor.whole_home_energy_weekly_usage
             min: 0
-            max: 40
+            max: 300
             needle: true
             segments:
               - from: 0
                 color: var(--success-color)
-              - from: 10
+              - from: 100
                 color: var(--warning-color)
-              - from: 25
+              - from: 200
                 color: var(--error-color)
 
           # Monthly Energy Usage
           - type: gauge
             name: Monthly Energy Usage
             unit: 'kWh'
-            entity: sensor.monthly_energy_consumption
+            entity: sensor.whole_home_energy_monthly_usage
             min: 0
-            max: 40
+            max: 1000
             needle: true
             segments:
               - from: 0
                 color: var(--success-color)
-              - from: 10
+              - from: 333
                 color: var(--warning-color)
-              - from: 25
+              - from: 666
                 color: var(--error-color)
 
       
