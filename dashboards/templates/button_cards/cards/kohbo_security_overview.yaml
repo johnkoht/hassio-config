@@ -4,7 +4,7 @@ cards:
   # Security Status / Overview
   # 
   - type: custom:button-card
-    template: kohbo_stacked_card_top
+    template: security_overview_header
     entity: sensor.house_security_status
     label: Security Overview
     icon: "[[[ return entity.attributes.icon ]]]"
@@ -21,6 +21,39 @@ cards:
             [[[
               return entity.attributes.color;
             ]]]
+    custom_fields:
+      score:
+        card:
+          type: custom:button-card
+          entity: sensor.house_security_score
+          name: House Security
+          show_icon: false
+          show_state: true
+          show_name: false
+          variables:
+            level_color: "[[[ return entity.attributes.color ]]]"
+          styles:
+            card:
+              - padding: 20px
+              - background-color: var(--darker-primary-color);
+              - border-radius: 8px !important;
+              - padding: 10px 3px !important;
+              - width: 42px
+              - height: 42px
+              - align-items: center;
+              - display: flex;
+              - border-radius: 25px;
+              - background: >
+                  [[[[
+                    return `radial-gradient(var(--dark-primary-color) 60%,transparent calc(60% + 1px)), conic-gradient(${variables.level_color} ${entity.state}% 0%, var(--divider-color) 0% 100%)`;
+                  ]]]]
+              - position: relative
+            state:
+              - font-size: 14px;
+              - color: var(--primary-text-color);
+          tap_action:
+            action: navigate
+            navigation_path: '/dashboard-kohbo/security'
 
   # 
   # Security Items
