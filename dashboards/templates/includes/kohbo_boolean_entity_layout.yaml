@@ -1,7 +1,15 @@
 style:
   .: |
     hui-generic-entity-row {
-      padding: 4px;
+      padding: 4px 0px !important;
+    }
+
+    hui-generic-entity-row:first-child {
+      padding-top: 0px !important;
+    }
+
+    hui-generic-entity-row:last-child {
+      padding-bottom: 0px !important;
     }
 
     ha-icon {

@@ -1,0 +1,224 @@
+type: custom:vertical-layout
+title: Laundry
+path: rooms-laundry
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  - !include /config/dashboards/templates/includes/rooms/kohbo_room_page_header.yaml
+
+  - type: custom:button-card
+    template: section_title
+    name: Downstairs Laundry
+
+  # 
+  # Downstairs Washer
+  # 
+  - type: custom:stack-in-card
+    cards: 
+      - type: custom:button-card
+        template: security_overview_header
+        entity: input_select.main_level_washer_status
+        label: Downstairs Washer
+        icon: mdi:washing-machine
+        show_icon: true
+        show_name: false
+        show_label: true
+        layout: icon_name_state
+      
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            template: kohbo_device_entity_horizontal
+            entity: sensor.main_level_washing_machine_electric_consumption_w
+            name: Power Consumption
+            icon: mdi:flash
+            show_icon: true
+            show_name: true
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state + " W";
+              ]]]
+            styles:
+              card:
+                - padding-bottom: 0px
+                
+          
+          - type: custom:button-card
+            template: kohbo_device_entity_horizontal
+            entity: binary_sensor.main_level_washer_door_sensor_status
+            name: Door Status
+            icon: mdi:door-open
+            show_icon: true
+            show_name: true
+            show_state: true
+            styles:
+              card:
+                - padding-bottom: 0px
+            
+          - type: entities
+            entities:
+              - entity: switch.main_level_washing_machine
+                name: Power
+                icon: mdi:power
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+  # 
+  # Downstairs Dryer
+  # 
+  - type: custom:stack-in-card
+    cards: 
+      - type: custom:button-card
+        template: security_overview_header
+        entity: input_select.main_level_dryer_status
+        label: Downstairs Dryer
+        icon: mdi:tumble-dryer
+        show_icon: true
+        show_name: false
+        show_label: true
+        layout: icon_name_state
+      
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            template: kohbo_device_entity_horizontal
+            entity: sensor.main_level_drying_machine_electric_consumption_w
+            name: Power Consumption
+            icon: mdi:flash
+            show_icon: true
+            show_name: true
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state + " W";
+              ]]]
+            styles:
+              card:
+                - padding-bottom: 0px
+            
+          - type: entities
+            entities:
+              - entity: switch.main_level_drying_machine
+                name: Power
+                icon: mdi:power
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+
+  - type: custom:button-card
+    template: section_title
+    name: Upstairs Laundry
+
+  # 
+  # Upstairs Washer
+  # 
+  - type: custom:stack-in-card
+    cards: 
+      - type: custom:button-card
+        template: security_overview_header
+        entity: input_select.upstairs_washer_status
+        label: Upstairs Washer
+        icon: mdi:washing-machine
+        show_icon: true
+        show_name: false
+        show_label: true
+        layout: icon_name_state
+      
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            template: kohbo_device_entity_horizontal
+            entity: sensor.washing_machine_electric_consumption_w
+            name: Power Consumption
+            icon: mdi:flash
+            show_icon: true
+            show_name: true
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state + " W";
+              ]]]
+            styles:
+              card:
+                - padding-bottom: 0px
+                
+          - type: custom:button-card
+            template: kohbo_device_entity_horizontal
+            entity: binary_sensor.upstairs_washer_door_sensor_status
+            name: Door Status
+            icon: mdi:door-open
+            show_icon: true
+            show_name: true
+            show_state: true
+            styles:
+              card:
+                - padding-bottom: 0px
+            
+          - type: entities
+            entities:
+              - entity: switch.washing_machine
+                name: Power
+                icon: mdi:power
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+  # 
+  # Upstairs Dryer
+  # 
+  - type: custom:stack-in-card
+    cards: 
+      - type: custom:button-card
+        template: security_overview_header
+        entity: input_select.upstairs_dryer_status
+        label: Upstairs Dryer
+        icon: mdi:tumble-dryer
+        show_icon: true
+        show_name: false
+        show_label: true
+        layout: icon_name_state
+      
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            template: kohbo_device_entity_horizontal
+            entity: sensor.upstairs_drying_machine_active_power
+            name: Power Consumption
+            icon: mdi:flash
+            show_icon: true
+            show_name: true
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state + " W";
+              ]]]
+            styles:
+              card:
+                - padding-bottom: 0px
+            
+          - type: entities
+            entities:
+              - entity: switch.upstairs_drying_machine
+                name: Power
+                icon: mdi:power
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

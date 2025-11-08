@@ -50,7 +50,7 @@ card:
           label: Exterior
 
         # Laundry
-        - url: /dashboard-kohbo/security
+        - url: /dashboard-kohbo/rooms-laundry
           icon: mdi:washing-machine
           label: Laundry
       haptic: true

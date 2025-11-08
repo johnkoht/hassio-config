@@ -1,0 +1,571 @@
+type: custom:vertical-layout
+title: Exterior Lighting
+path: exterior-lighting
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        # - type: custom:button-card
+        #   template: empty_column
+        # Back button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
+          tap_action:
+            action: navigate
+            navigation_path: /dashboard-kohbo/home
+
+        # Page Title
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Exterior Lighting
+
+        # Settings Button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#exterior_lighting_settings_popup'
+
+
+  # 
+  # Vacuum Status
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        :host {
+          --vertical-stack-card-gap: 8px;
+        }
+    cards:
+      # - type: entities
+      #   card_mod:
+      #     style: |
+      #       ha-card #states {
+      #         padding-bottom: 12px !important;
+      #       }
+      #   entities:
+      #     # Exterior House Lights
+      #     - entity: switch.exterior_lights
+      #       name: Exterior Lights
+      #       icon: mdi:wall-sconce
+      #       card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+      #       secondary_info: last-changed
+      #       state_color: true
+
+      - type: custom:button-card
+        # template: kohbo_stacked_card_top
+        entity: sun.sun
+        label: Sun Status
+        layout: icon_name_state
+        state_display: >
+          [[[
+            const sun = states['sun.sun'];
+            const lux = states['sensor.tempest_illuminance']
+              ? parseFloat(states['sensor.tempest_illuminance'].state)
+              : 0;
+            const now = new Date();
+            const nextSet = new Date(sun.attributes.next_setting);
+            const diffSet = (nextSet - now) / 3600000; // hours until sunset
+
+            if (sun.state === 'below_horizon') return "It's dark outside";
+            if (lux > 10000) return "It's bright outside ☀️";
+            if (lux > 1000 && diffSet > 2) return "It's sunny and clear";
+            if (diffSet <= 2 && diffSet > 0) return "The sun is setting 🌇";
+            if (lux < 200) return "It's getting dim — lights will turn on soon";
+            return "Partly bright outside";
+          ]]]
+        show_icon: true
+        show_name: false
+        show_label: true
+        show_state: true
+        styles:
+          card:
+            - background: transparent
+            - backdrop-filter: none
+            - -webkit-backdrop-filter: none
+            - padding: 20px 20px 12px 20px
+            - box-shadow: none
+            - display: flex
+            - align-items: center
+            - justify-content: flex-start
+            - gap: 12px
+            - border: none
+          grid:
+            - grid-template-areas: "\"i n\" \"i l\""
+            - grid-template-columns: min-content 1fr
+            - align-items: center
+          icon:
+            - color: >
+                [[[
+                  const lux = states['sensor.tempest_illuminance'].state ? parseFloat(states['sensor.tempest_illuminance'].state) : 0;
+                  if (lux < 10) return '#90a4ae';       // dim gray-blue (night)
+                  if (lux < 100) return '#ff8a65';      // early dawn / dusk orange
+                  if (lux < 1000) return '#ffd54f';     // morning yellow
+                  if (lux < 10000) return '#ffee58';    // bright yellow
+                  return '#fff176';                     // intense daylight
+                ]]]
+            - width: 38px
+            - height: 38px
+            - margin-right: 15px
+          name:
+            - font-size: 20px
+            - font-weight: regular
+            - color: white
+            - justify-self: start
+            - margin-bottom: 4px;
+          label:
+            - font-size: 12px
+            - color: "#CED4DA"
+            - justify-self: start
+
+      
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            template: kohbo_security_item
+            entity: sun.sun
+            name: Sun Status
+            icon: mdi:weather-sunny
+            styles:
+              icon:
+                - color: >
+                    [[[ 
+                      const sun = states['sun.sun'];
+                      if (sun.state === 'below_horizon') return '#a5b3cc'; // moon color
+                      const elevation = sun.attributes.elevation;
+                      if (elevation > 20) return '#fdd835'; // bright midday
+                      if (elevation > 5) return '#ffb300';  // rising or setting
+                      return '#ff7043'; // near horizon
+                    ]]]
+            state:
+              - value: above_horizon
+                icon: mdi:white-balance-sunny
+                # icon: >
+                #   [[[
+                #     const sun = states['sun.sun'];
+                #     const elevation = sun.attributes.elevation;
+                #     const now = new Date();
+                #     const nextSetting = new Date(states['sun.sun'].attributes.next_setting);
+                #     const nextRising = new Date(states['sun.sun'].attributes.next_rising);
+                #     const diffSet = (nextSetting - now) / 3600000; // hours until sunset
+                #     const diffRise = (nextRising - now) / 3600000; // hours until sunrise
+
+                #     if (diffSet <= 2 && diffSet > 0) return 'mdi:weather-sunset-down';
+                #     if (diffRise <= 2 && diffRise > 0) return 'mdi:weather-sunset-up';
+                #     if (elevation > 15) return 'mdi:weather-sunny';
+                #     if (elevation > 0) return 'mdi:white-balance-sunny';
+                #     return 'mdi:weather-night';
+                #   ]]]
+              - value: below_horizon
+                icon: mdi:weather-night
+                color: var(--orange-color)
+          
+          # Illuminance
+          - type: custom:button-card
+            entity: sensor.tempest_illuminance
+            name: Illuminance
+            template: kohbo_security_item
+            # icon: mdi:brightness-5
+            icon: >
+              [[[
+                const lux = entity.state ? parseFloat(entity.state) : 0;
+                if (lux < 10) return "mdi:weather-night";
+                if (lux < 100) return "mdi:weather-sunset";
+                if (lux < 1000) return "mdi:weather-partly-cloudy";
+                if (lux < 10000) return "mdi:weather-sunny";
+                return "mdi:white-balance-sunny";
+              ]]]
+            styles:
+              icon:
+                - color: >
+                    [[[
+                      const lux = entity.state ? parseFloat(entity.state) : 0;
+                      if (lux < 10) return '#90a4ae';       // dim gray-blue (night)
+                      if (lux < 100) return '#ff8a65';      // early dawn / dusk orange
+                      if (lux < 1000) return '#ffd54f';     // morning yellow
+                      if (lux < 10000) return '#ffee58';    // bright yellow
+                      return '#fff176';                     // intense daylight
+                    ]]]
+
+          - type: custom:button-card
+            template: kohbo_security_item
+            entity: sun.sun
+            name: >
+              [[[
+                const now = new Date();
+                const nextRise = new Date(states['sun.sun'].attributes.next_rising);
+                const nextSet = new Date(states['sun.sun'].attributes.next_setting);
+                if (nextRise < nextSet) return "Next Sunrise";
+                else return "Next Sunset";
+              ]]]
+            icon: >
+              [[[
+                const now = new Date();
+                const nextRise = new Date(states['sun.sun'].attributes.next_rising);
+                const nextSet = new Date(states['sun.sun'].attributes.next_setting);
+                if (nextRise < nextSet) return "mdi:weather-sunset-up";
+                else return "mdi:weather-sunset-down";
+              ]]]
+            state_display: >
+              [[[
+                const now = new Date();
+                const nextRise = new Date(states['sun.sun'].attributes.next_rising);
+                const nextSet = new Date(states['sun.sun'].attributes.next_setting);
+                const nextEvent = nextRise < nextSet ? nextRise : nextSet;
+                const options = { hour: 'numeric', minute: '2-digit' };
+                return nextEvent.toLocaleTimeString([], options);
+              ]]]
+            styles:
+              icon:
+                - color: >
+                    [[[
+                      const now = new Date();
+                      const nextRise = new Date(states['sun.sun'].attributes.next_rising);
+                      const nextSet = new Date(states['sun.sun'].attributes.next_setting);
+                      if (nextRise < nextSet) return '#ffcc80'; // sunrise orange
+                      else return '#ff8a65'; // sunset red-orange
+                    ]]]
+
+
+  
+  # 
+  # Exterior House Lights
+  #
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: switch.exterior_lights
+      - name: All Exterior Lights
+      - template: kohbo_horizontal_action_card_light_entity
+      - icon: kohbo:kohbo-lamp
+      - tap_action: nothing
+      - navigation_path: ""
+      #  Action Cards
+      - action_cards:
+        # Toggle Light
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: switch.exterior_lights
+            - name: Exterior House Lights
+
+
+  # 
+  # Exterior House Lights
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Exterior House Lights
+
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          # Daily Clean When House Empty
+          - entity: input_boolean.exterior_house_lights
+            name: Exterior House Lights
+            icon: kohbo:kohbo-lamp
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+        cards:
+          - type: entities
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+            entities:
+              - entity: light.exterior_front_porch_pendant
+                name: Front Porch Pendant
+                icon: mdi:ceiling-light
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.exterior_driveway_sconces
+                name: Driveway Sconces
+                icon: mdi:post-lamp
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.exterior_garage_sconces
+                name: Garage Sconces
+                icon: mdi:coach-lamp
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.exterior_back_porch_lights
+                name: Back Porch Lights
+                icon: mdi:coach-lamp
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+    
+
+
+  # 
+  # Exterior Flood Lights
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Exterior Flood Lights
+
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          # Daily Clean When House Empty
+          - entity: input_boolean.exterior_flood_lights
+            name: Exterior Flood Lights
+            icon: mdi:light-flood-down
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+        cards:
+          - type: entities
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+            entities:
+              - entity: light.exterior_backyard_flood_east
+                name: Backyard Flood East
+                icon: mdi:light-flood-down
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.exterior_backyard_flood_west
+                name: Backyard Flood West
+                icon: hue:wall-flood
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+  
+      
+  # 
+  # Exterior Accent Lights
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Exterior Accent Lights
+
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          - entity: input_boolean.exterior_accent_lights
+            name: Exterior Accent Lights
+            icon: kohbo:kohbo-lamp
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+        cards:
+          - type: entities
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+            entities:
+              - entity: light.exterior_hue_outdoor_spot_1 
+                name: Outdoor Spot 1
+                icon: hue:lily-xl
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.exterior_hue_outdoor_spot_2
+                name: Outdoor Spot 2
+                icon: hue:lily-xl
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.exterior_hue_outdoor_spot_3
+                name: Outdoor Spot 3
+                icon: hue:lily-xl
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_outdoor_spot_4
+                name: Outdoor Spot 4
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_outdoor_spot_5
+                name: Outdoor Spot 5
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_outdoor_spot_6
+                name: Outdoor Spot 6
+                icon: hue:lily   
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_outdoor_spot_7
+                name: Outdoor Spot 7
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_outdoor_spot_8
+                name: Outdoor Spot 8
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_outdoor_spot_9
+                name: Outdoor Spot 9
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_outdoor_spot_10
+                name: Outdoor Spot 10
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_spot_11_light
+                name: Outdoor Spot 11
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_spot_12_light
+                name: Outdoor Spot 12
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_spot_13_light
+                name: Outdoor Spot 13
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+              - entity: light.hue_spot_14_light
+                name: Outdoor Spot 14
+                icon: hue:lily
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+
+  # 
+  # Exterior Lighting Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#exterior_lighting_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 750px)
+        margin_top_desktop: calc(100vh - 750px)
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Activate Exterior Lighting at Sunset
+          - entity: automation.activate_exterior_lighting_at_sunset
+            name: Turn on at Sunet
+            icon: mdi:weather-sunset-down
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          # Deactivate Exterior Lighting at Sunrise
+          - entity: automation.deactivate_exterior_lighting_at_sunrise
+            name: Turn off at Sunrise
+            icon: mdi:weather-sunset-up
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          # Activate Exterior Lighting Due to Weather
+          - entity: automation.activate_exterior_lighting_due_to_weather
+            name: Turn on due to Weather
+            icon: mdi:weather-cloudy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.deactivate_exterior_accent_lighting_at_bedtime
+            name: Turn off Accent Lights at Bedtime
+            icon: mdi:weather-night
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Utility Automations
+      - type: entities
+        entities:
+          - entity: automation.garage_lights_accidentally_turned_off_fix
+            name: Accidental Turn Off
+            icon: mdi:auto-fix
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.garage_lights_accidentally_turned_on_fix
+            name: Accidental Turn On
+            icon: mdi:auto-fix
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      - type: custom:button-card
+        name: The interior and exterior garage light switches are right next to each other. People often confuse them and accidentally toggle the wrong light switch. This automation will turn the exterior garage lights back on if the interior garage lights are accidentally turned off. And vice versa.
+        template: kohbo_card_section_description
+
+
+      
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

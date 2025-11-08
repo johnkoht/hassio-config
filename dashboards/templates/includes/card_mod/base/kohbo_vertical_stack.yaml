@@ -1,0 +1,14 @@
+style: |
+  :host {
+    --stack-card-gap: 14px;
+    --vertical-stack-card-gap: 14px !important;
+  }
+
+  ha-card {
+    padding: 20px !important;
+
+    #states {
+      padding: 0 !important;
+    }
+  }
+  

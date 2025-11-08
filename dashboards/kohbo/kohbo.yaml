@@ -47,7 +47,9 @@ views:
     - !include /config/dashboards/kohbo/rooms/main_floor/dining_room.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/foyer.yaml
     - !include /config/dashboards/kohbo/rooms/main_floor/mudroom.yaml
+    
     - !include /config/dashboards/kohbo/rooms/main_floor/vacuum.yaml
+    - !include /config/dashboards/kohbo/rooms/laundry/laundry.yaml
 
     # Upper Floor
     - !include /config/dashboards/kohbo/rooms/upper_floor/upper_floor_index.yaml
@@ -61,8 +63,8 @@ views:
     # - !include /config/dashboards/kohbo/rooms/lower_floor/garage.yaml
     # - !include /config/dashboards/kohbo/rooms/lower_floor/pool_room.yaml
 
-    # # Exterior
-    # - !include /config/dashboards/kohbo/rooms/exterior/exterior.yaml
+    # Exterior
+    - !include /config/dashboards/kohbo/more/exterior_lighting.yaml
 
     # More
     - !include /config/dashboards/kohbo/more/people.yaml

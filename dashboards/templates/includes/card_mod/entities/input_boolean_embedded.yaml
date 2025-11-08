@@ -71,7 +71,7 @@ style:
             }
 
             .mdc-switch--checked .mdc-switch__track {
-              background: var(--success-color) !important;
+              background: var(--primary-color) !important;
             }
           
 

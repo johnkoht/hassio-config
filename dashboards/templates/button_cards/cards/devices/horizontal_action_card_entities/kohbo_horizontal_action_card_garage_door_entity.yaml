@@ -22,13 +22,22 @@ kohbo_horizontal_action_card_garage_door_entity:
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ");
       }
-
+  
       if (raw_state == "open") {
-        state = entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
+        if (entity.attributes.entity_id) 
+          state = entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
+        else
+          state = "Open";
       } else if (raw_state == "opening") {
-        return entity.attributes.entity_id.filter(id => states[id]?.state === 'opening').length + " Opening";
+        if (entity.attributes.entity_id)
+          state = entity.attributes.entity_id.filter(id => states[id]?.state === 'opening').length + " Opening";
+        else
+          state = "Opening";
       } else if (raw_state == "closing") {
-        return entity.attributes.entity_id.filter(id => states[id]?.state === 'closing').length + " Closing";
+        if (entity.attributes.entity_id)
+          state = entity.attributes.entity_id.filter(id => states[id]?.state === 'closing').length + " Closing";
+        else
+          state = "Closing";
       } else {
         state = hass.formatEntityState ? hass.formatEntityState(entity): titleCase(entity.state);
       }

@@ -745,6 +745,9 @@ cards:
         name: Exterior Lights
         template: kohbo_device_entity
         icon: kohbo:kohbo-lamp
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/exterior-lighting'
 
       # Main floor HVAC
       - type: custom:button-card
@@ -816,6 +819,7 @@ cards:
     template: section_title
     name: Quick Settings
   - type: entities
+    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack.yaml
     entities:
       - entity: input_boolean.speech_notifications
         icon: kohbo:kohbo-announcement
@@ -824,6 +828,7 @@ cards:
         state_color: true
       - entity: input_boolean.lighting_automations
         icon: kohbo:kohbo-light-2
+        name: Lighting Automations
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
@@ -1305,6 +1310,13 @@ cards:
           - entity: sensor.panel_2_energy_meter
             type: column
             name: Panel 2
+            statistics:
+              type: change
+              period: hour
+              align: start
+          - entity: sensor.whole_home_energy_daily_usage
+            type: column
+            name: Total Energy Usage
             statistics:
               type: change
               period: hour

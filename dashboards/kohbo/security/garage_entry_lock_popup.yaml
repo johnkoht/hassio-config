@@ -114,7 +114,7 @@ cards:
           # Auto Unlock Upon Arrival
           - entity: automation.garage_entry_door_unlock_upon_arrival
             name: Auto Unlock Upon Arrival
-            icon: kohbo:kohbo-lock-locked-open
+            icon: kohbo:kohbo-lock-locked
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true

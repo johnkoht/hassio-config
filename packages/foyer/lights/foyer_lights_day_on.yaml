@@ -15,14 +15,14 @@ automation:
       # It's getting dark outside
       - platform: numeric_state
         entity_id: sensor.tempest_illuminance
-        below: 40
+        below: 0
         for:
           minutes: 5
-      - platform: numeric_state
-        entity_id: sensor.foyer_motion_illuminance
-        below: 5
-        for:
-          minutes: 5
+      # - platform: numeric_state
+      #   entity_id: sensor.foyer_motion_illuminance
+      #   below: 5
+      #   for:
+      #     minutes: 5
       # At Sunrise
       - platform: sun
         event: sunrise

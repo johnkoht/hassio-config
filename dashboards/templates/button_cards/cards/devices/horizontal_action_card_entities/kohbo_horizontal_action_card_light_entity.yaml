@@ -1,0 +1,23 @@
+kohbo_horizontal_action_card_light_entity:
+  template: kohbo_horizontal_action_card_entity
+  show_state: false
+  show_last_changed: true
+  state:
+    - value: 'on'
+      icon: kohbo:kohbo-lamp
+      color: var(--accent-color)
+    - value: 'off'
+      icon: kohbo:kohbo-lamp
+      color: var(--light-grey-color)
+  styles:
+    grid:
+      - grid-template-areas: '"i n" "i l"'
+      - grid-template-rows: auto
+    label:
+      - justify-self: start
+      - font-size: 12px
+      - font-weight: 400
+      - line-height: 12px
+      - color: var(--light-grey-color)
+      - margin-top: 3px
+      - padding-left: 12px
