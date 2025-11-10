@@ -1,0 +1,24 @@
+type: custom:vertical-layout
+title: Christmas
+path: holidays-christmas
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+
+  # Christmas Season Active
+  # Christmas boolean
+  # christmas trees
+  
+
+  
+
+  # 
+  # Page Header
+  # 
+  - !include /config/dashboards/templates/includes/holidays/holiday_header.yaml
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml

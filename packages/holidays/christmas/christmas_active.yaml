@@ -1,3 +1,9 @@
+# 
+# Christmas Active Boolean
+# 
+# This boolean controls the daily 
+# activation and deactivation of the christmas lights
+# 
 input_boolean:
   christmas_active:
     name: Christmas Active

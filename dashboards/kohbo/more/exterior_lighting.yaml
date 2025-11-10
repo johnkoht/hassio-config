@@ -72,16 +72,29 @@ cards:
             const lux = states['sensor.tempest_illuminance']
               ? parseFloat(states['sensor.tempest_illuminance'].state)
               : 0;
+            const weather = states['weather.pirateweather']
+              ? states['weather.pirateweather'].state
+              : 'unknown';
             const now = new Date();
             const nextSet = new Date(sun.attributes.next_setting);
             const diffSet = (nextSet - now) / 3600000; // hours until sunset
 
-            if (sun.state === 'below_horizon') return "It's dark outside";
-            if (lux > 10000) return "It's bright outside ☀️";
-            if (lux > 1000 && diffSet > 2) return "It's sunny and clear";
-            if (diffSet <= 2 && diffSet > 0) return "The sun is setting 🌇";
-            if (lux < 200) return "It's getting dim — lights will turn on soon";
-            return "Partly bright outside";
+            // Map bad weather to overcast mood
+            const cloudyStates = ['cloudy', 'partlycloudy', 'fog', 'rainy', 'pouring', 'snowy', 'snowy-rainy', 'hail', 'exceptional'];
+
+            // NIGHT
+            if (sun.state === 'below_horizon') return "It's dark outside 🌙";
+
+            // DAYTIME WITH WEATHER & ILLUMINANCE
+            if (lux > 15000 && !cloudyStates.includes(weather)) return "It's bright and sunny ☀️";
+            if (lux > 10000 && cloudyStates.includes(weather)) return "It's bright but overcast ☁️";
+            if (lux > 3000 && cloudyStates.includes(weather)) return "It's daylight but gloomy 🌧️";
+            if (lux > 1000 && diffSet > 2 && !cloudyStates.includes(weather)) return "It's sunny and clear 🌤️";
+            if (lux > 1000 && diffSet <= 2 && diffSet > 0) return "The sun is setting 🌇";
+            if (lux < 500 && cloudyStates.includes(weather)) return "It's dim and cloudy — lights may help 💡";
+            if (lux < 200) return "It's getting dark — lights will turn on soon 💡";
+            
+            return "It's moderately bright outside";
           ]]]
         show_icon: true
         show_name: false
@@ -135,7 +148,14 @@ cards:
           - type: custom:button-card
             template: kohbo_security_item
             entity: sun.sun
-            name: Sun Status
+            # name: Sun Status
+            name: >
+              [[[
+                if (states['sun.sun'].state === 'below_horizon') 
+                  return 'Moon Phase';
+                else
+                  return 'Sun Status';
+              ]]]
             icon: mdi:weather-sunny
             styles:
               icon:
@@ -167,10 +187,27 @@ cards:
                 #     if (elevation > 0) return 'mdi:white-balance-sunny';
                 #     return 'mdi:weather-night';
                 #   ]]]
+                state_display: '[[[ return entity.state]]]'
               - value: below_horizon
-                icon: mdi:weather-night
                 color: var(--orange-color)
-          
+                icon: >
+                  [[[
+                    const moonPhase = states['sensor.moon'].state;
+                    if (moonPhase === 'new_moon') return 'mdi:moon-new';
+                    if (moonPhase === 'waxing_crescent') return 'mdi:moon-waxing-crescent';
+                    if (moonPhase === 'first_quarter') return 'mdi:moon-first-quarter';
+                    if (moonPhase === 'waxing_gibbous') return 'mdi:moon-waxing-crescent';
+                    if (moonPhase === 'full_moon') return 'mdi:moon-full';
+                    if (moonPhase === 'waning_gibbous') return 'mdi:moon-waning-gibbous';
+                    if (moonPhase === 'last_quarter') return 'mdi:moon-last-quarter';
+                    if (moonPhase === 'waning_crescent') return 'mdi:moon-waning-crescent';
+                  ]]]
+                state_display: >
+                  [[[ 
+                    return states['sensor.moon'].state.split('_')
+                    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                    .join(' ');
+                  ]]]
           # Illuminance
           - type: custom:button-card
             entity: sensor.tempest_illuminance
@@ -386,7 +423,7 @@ cards:
         entities:
           - entity: input_boolean.exterior_accent_lights
             name: Exterior Accent Lights
-            icon: kohbo:kohbo-lamp
+            icon: hue:lily-xl
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true

@@ -6,6 +6,7 @@ automation:
   - id: "christmas_disabled"
     alias: Christmas Disabled
     mode: "single"
+    initial_state: false
     trigger:
       - platform: homeassistant
         event: start

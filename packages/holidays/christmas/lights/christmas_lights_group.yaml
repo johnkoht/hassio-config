@@ -16,7 +16,7 @@ switch:
     unique_id: christmas_trees
     entities:
       # Family Room Tree
-      - switch.smart_plug_14_switch
+      - switch.smart_plug_4_switch
       # Dining Room Tree
       - switch.smart_plug_9_switch
 

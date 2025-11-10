@@ -65,6 +65,12 @@ views:
 
     # Exterior
     - !include /config/dashboards/kohbo/more/exterior_lighting.yaml
+    - !include /config/dashboards/kohbo/more/interior_lights.yaml
 
     # More
     - !include /config/dashboards/kohbo/more/people.yaml
+
+    # Holidays
+    - !include /config/dashboards/kohbo/holidays/holidays.yaml
+    - !include /config/dashboards/kohbo/holidays/christmas.yaml
+    - !include /config/dashboards/kohbo/holidays/halloween.yaml

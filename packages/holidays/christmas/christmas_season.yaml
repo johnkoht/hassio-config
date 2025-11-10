@@ -1,4 +1,36 @@
+# 
+# Christmas Season Active Boolean
+# If this boolean is enabled then it's Christmas season
+# and all related automations will be enabled
+#
 input_boolean:
   christmas_season_active:
     name: Christmas Season Active
     icon: mdi:pine-tree
+
+# 
+# Activate Christmas Season Automation
+# This automation will be triggered when the Christmas Season boolean is turned ON
+# and will turn ON all related automations
+#
+# 
+automation:
+  - id: "activate_christmas_season"
+    alias: Activate Christmas Season
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.christmas_season_active
+        to: "on"
+    action:
+      # Turn ON the Christmas Season boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.christmas_season_active
+
+      # Turn ON a bunch of automations
+      - service: automation.turn_on
+        entity_id:
+          - automation.christmas_activated
+          - automation.christmas_not_activated
+          - automation.turn_on_christmas_lights
+          - automation.turn_off_christmas_lights

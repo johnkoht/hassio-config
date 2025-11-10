@@ -739,6 +739,9 @@ cards:
             else
               return "Off"
           ]]]
+        # tap_action:
+        #   action: navigate
+        #   navigation_path: '/dashboard-kohbo/interior-lights'
 
       - type: custom:button-card
         entity: light.exterior_lights

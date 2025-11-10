@@ -1,0 +1,84 @@
+# 
+# Page Header
+# 
+type: custom:mod-card
+card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+card:
+  type: vertical-stack
+  cards:
+    - type: custom:decluttering-card
+      template: top_toolbar
+      variables:
+        - cards:
+          - type: custom:button-card
+            template: empty_column
+
+          # Room Name
+          - type: custom:button-card
+            template: kohbo_header_page_title
+            name: Holidays
+
+          # Settings button
+          - type: custom:button-card
+            template: kohbo_header_chip_card
+            icon: mdi:dots-horizontal
+            icon_color: var(--secondary-text-color)
+            tap_action:
+              action: navigate
+              navigation_path: '#holidays_settings_popup'
+
+    - type: custom:navbar-card
+      routes:
+        # Overview
+        - url: /dashboard-kohbo/holidays-christmas
+          icon: mdi:pine-tree
+          label: Christmas
+        
+        # Halloween
+        - url: /dashboard-kohbo/holidays-halloween
+          icon: mdi:halloween
+          label: Halloween
+          
+      haptic: true
+      mobile:
+        show_labels: true
+        show_popup_label_backgrounds: true
+      styles: |
+        .navbar {
+          top: 60px !important;
+          bottom: auto !important;
+        }
+
+        .navbar-card {
+          background: var(--app-header-background-color) !important;
+          box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.1) !important;
+          padding: 0 19px !important;
+        }
+
+        .button  ha-icon,
+        .button ha-ripple {
+          display: none !important;
+        }
+
+        .button {
+          height: 0px !important;
+          max-width: 100% !important;
+          width: 100% !important;
+        }
+
+        .label {
+          padding: 12px 0 !important;
+          font-size: 12px !important;
+          text-transform: uppercase;
+          font-family: 'Inter', sans-serif !important; 
+          font-weight: 600 !important;
+          color: var(--semi-dark-grey-color) !important;
+        }
+
+        .label.active {
+          color: var(--primary-text-color) !important;
+        }
+
+        .route.active {
+          border-bottom: 2px solid var(--primary-text-color) !important;
+        }

@@ -83,15 +83,11 @@ routes:
         url: /dashboard-kohbo/media
         label: Media
 
-      # Halloween
-      - icon: mdi:halloween
-        url: /dashboard-kohbo/halloween
-        label: Halloween
+      # Holidays
+      - icon: mdi:holidays
+        url: /dashboard-kohbo/holidays
+        label: Holidays
 
-      # Christmas
-      - icon: mdi:hexagram
-        url: /dashboard-kohbo/christmas
-        label: Christmas
 haptic:
   url: true
   tap_action: true

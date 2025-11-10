@@ -73,6 +73,7 @@ cards:
                       state: 
                         - 'cleaning'
                         - 'paused'
+                        - 'idle'
                   chip:
                     type: template
                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
@@ -466,7 +467,53 @@ cards:
                       name: End Time
                       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-          
+      
+      #  
+      # Main Vacuum Default Daily Clean Backup
+      # 
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Default Daily Clean Backup
+              - entity: input_boolean.main_level_vacuum_daily_clean_backup_enabled
+                name: Default Daily Clean Backup
+                icon: mdi:robot
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
+
+          - type: conditional
+            conditions:
+              - entity: input_boolean.main_level_vacuum_daily_clean_backup_enabled
+                state: 'on'
+            card:
+              type: custom:stack-in-card
+              mode: vertical
+              card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+              cards:
+                - type: custom:button-card
+                  name: Default Daily Clean Backup Timeframe
+                  template: kohbo_card_section_title
+
+                - type: custom:button-card
+                  name: This is a backup feature that will run a daily morning clean of the kitchen if house is occupied at the specific time. This is like a backup for the daily clean when the house is empty.
+                  template: kohbo_card_section_description
+
+                - type: entities
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+                  entities:
+                    - entity: input_datetime.main_level_vacuum_daily_weekday_timeframe_start_if_not_empty
+                      name: Start Time
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+
 
       #  
       # Main Vacuum Daily Weekend Timeframe

@@ -36,3 +36,7 @@ script:
         then:
           - action: input_boolean.turn_off
             entity_id: input_boolean.main_level_vacuum_clean_when_house_empty
+
+      # Turn on the room selection booleans
+      - action: input_boolean.turn_off
+        entity_id: group.main_level_vacuum_room_groups

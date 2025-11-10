@@ -46,3 +46,28 @@ input_datetime:
     icon: mdi:clock
     has_date: false
     has_time: true
+    
+
+  # 
+  # Main Level Vacuum Daily Clean Backup
+  # 
+  # If the hosue isn't empty, we might want to clean the house anyway. This controls
+  # whether that feature is enabled and when it runs.
+  # 
+  # If the house isn't empty, clean at the given time
+  main_level_vacuum_daily_weekday_timeframe_start_if_not_empty:
+    name: Main Level Vacuum Daily Weekday Timeframe Start If Not Empty
+    icon: mdi:clock
+    has_date: false
+    has_time: true
+
+input_boolean:
+  main_level_vacuum_daily_clean_backup_enabled:
+    name: Main Level Vacuum Daily Clean Backup Enabled
+    icon: mdi:vacuum
+    initial: on
+
+  main_level_vacuum_daily_clean_backup_weekend_enabled:
+    name: Main Level Vacuum Daily Clean Backup Weekend Enabled
+    icon: mdi:vacuum
+    initial: off

@@ -32,6 +32,11 @@ automation:
         to: "off"
         for:
           minutes: 5
+        id: house_unoccupied_trigger
+      # If the house isn't empty, clean at the given time
+      - trigger: time
+        at: input_datetime.main_level_vacuum_daily_weekday_timeframe_start_if_not_empty
+        id: weekday_timeframe_start_if_not_empty_trigger
     conditions:
       # Only if vacuum is docked
       - condition: state
@@ -45,36 +50,10 @@ automation:
       - condition: state
         entity_id: group.main_level_vacuum_daily_empty_house_cleaning_group
         state: "on"
-      # Either weekday morning OR weekend morning time windows
-      - condition: or
-        conditions:
-          # Weekday between 8:00-10:00
-          - condition: and
-            conditions:
-              - condition: time
-                after: input_datetime.main_level_vacuum_daily_weekday_timeframe_start
-                before: input_datetime.main_level_vacuum_daily_weekday_timeframe_end
-              - condition: time
-                weekday:
-                  - mon
-                  - tue
-                  - wed
-                  - thu
-                  - fri
-          # Weekend between 8:30-11:00
-          - condition: and
-            conditions:
-              - condition: time
-                after: input_datetime.main_level_vacuum_daily_weekend_timeframe_start
-                before: input_datetime.main_level_vacuum_daily_weekend_timeframe_end
-              - condition: time
-                weekday:
-                  - sat
-                  - sun
-      # Guest mode is OFF
-      - condition: state
-        entity_id: input_boolean.guest_mode
-        state: "off"
+      # # Guest mode is OFF
+      # - condition: state
+      #   entity_id: input_boolean.guest_mode
+      #   state: "off"
       # Jr. Suite door is OPEN (consistent with other vacuum automations)
       - condition: state
         entity_id: binary_sensor.jr_suite_door_status
@@ -83,11 +62,76 @@ automation:
       - condition: state
         entity_id: input_boolean.vacation_mode
         state: "off"
-    actions:
-      - action: script.main_level_vacuum_clean_selected_rooms
-        data:
-          rooms: "{{ rooms_ids }}"
 
+    actions:
+      - choose:
+          # 
+          # Empty House Trigger
+          # 
+          # If the automation is triggered by the empty house then check
+          # if it's within the timeframes before proceeding.
+          # 
+          - conditions:
+              - condition: trigger
+                id: "house_unoccupied_trigger"
+            sequence:
+              - if: 
+                  - condition: or
+                    conditions:
+                      # Weekday between 8:00-10:00
+                      - condition: and
+                        conditions:
+                          - condition: time
+                            after: input_datetime.main_level_vacuum_daily_weekday_timeframe_start
+                            before: input_datetime.main_level_vacuum_daily_weekday_timeframe_end
+                          - condition: time
+                            weekday:
+                              - mon
+                              - tue
+                              - wed
+                              - thu
+                              - fri
+                      # Weekend between 8:30-11:00
+                      - condition: and
+                        conditions:
+                          - condition: time
+                            after: input_datetime.main_level_vacuum_daily_weekend_timeframe_start
+                            before: input_datetime.main_level_vacuum_daily_weekend_timeframe_end
+                          - condition: time
+                            weekday:
+                              - sat
+                              - sun
+                then:
+                  - action: script.main_level_vacuum_clean_selected_rooms
+                    data:
+                      rooms: "{{ rooms_ids }}"
+
+          # Default Daily Clean Trigger
+          # 
+          # If the automation is triggered by the default daily clean timeframe
+          # then clean the selected rooms.
+          # 
+          - conditions:
+              - condition: trigger
+                id: "weekday_timeframe_start_if_not_empty_trigger"
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.main_level_vacuum_daily_clean_backup_enabled
+                    state: "on"
+                  - condition: time
+                    weekday:
+                      - mon
+                      - tue
+                      - wed
+                      - thu
+                      - fri
+                then:
+                  - action: script.main_level_vacuum_clean_selected_rooms
+                    data:
+                      rooms: "{{ rooms_ids }}"
+
+        
 
   # Main Level Vacuum - Return to Dock When House Occupied
   # 

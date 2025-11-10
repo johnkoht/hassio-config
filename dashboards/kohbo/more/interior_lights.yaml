@@ -1,0 +1,39 @@
+type: custom:vertical-layout
+title: Interior Lights
+path: interior-lights
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        # - type: custom:button-card
+        #   template: empty_column
+        # Back button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
+          tap_action:
+            action: navigate
+            navigation_path: /dashboard-kohbo/home
+
+        # Page Title
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Interior Lights
+
+        # Settings Button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#interior_lights_settings_popup'
+
+
+            

@@ -1,0 +1,24 @@
+type: custom:vertical-layout
+title: Holidays
+path: holidays
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  # SUBPAGES
+  #  - cameras
+  #  - doors
+  #  - windows
+  #  - leak sensors
+  #  - motion
+  #  - 
+
+  # 
+  # Page Header
+  # 
+  - !include /config/dashboards/templates/includes/holidays/holiday_header.yaml
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml
