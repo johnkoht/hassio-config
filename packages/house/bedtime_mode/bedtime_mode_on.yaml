@@ -12,6 +12,9 @@ automation:
       - trigger: state
         entity_id: binary_sensor.everybody_in_bed
         to: "on"
+      - trigger: state
+        entity_id: binary_sensor.adults_in_bed
+        to: "on"
     conditions:
       # House is occupied
       - condition: state

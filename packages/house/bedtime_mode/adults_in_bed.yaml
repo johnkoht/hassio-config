@@ -1,0 +1,22 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      adults_in_bed:
+        friendly_name: Bedtime Mode - Adults in Bed
+        unique_id: adults_in_bed
+        value_template: >-
+          {% set adults = [
+            {
+              'home': is_state('person.john_koht', 'home'),
+              'in_bed': is_state('input_boolean.john_is_in_bed', 'on')
+            },
+            {
+              'home': is_state('person.cristina_falbo', 'home'),
+              'in_bed': is_state('input_boolean.cristina_in_bed', 'on')
+            }
+          ] %}
+          
+          {% set all_adults_in_bed = adults | selectattr('home') | selectattr('in_bed') | list %}
+          {% set num_adults_home = adults | selectattr('home') | list | length %}
+
+          {{ all_adults_in_bed | length == num_adults_home and num_adults_home > 0 }}
