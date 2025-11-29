@@ -21,3 +21,6 @@ script:
             - media_player.sonos_kitchen
           media_content_id: https://github.com/johnkoht/hass-config/blob/master/config/sounds/santa/santa-welcome.mp3?raw=true
           media_content_type: music
+          announce: true
+          extra:
+            volume: 0.5
