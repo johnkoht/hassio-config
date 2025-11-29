@@ -3,9 +3,9 @@ automation:
     alias: "Security Lighting - Garage Flood Motion Off"
     mode: "single"
     initial_state: on
-    trigger:
+    triggers:
       # Front driveway doesn't detect an object for a bit
-      - platform: state
+      - trigger: state
         entity_id:
           - binary_sensor.driveway_front_camera_object_detected
           - binary_sensor.driveway_front_camera_person_detected
@@ -13,7 +13,7 @@ automation:
         for:
           minutes: 3
       # Front driveway doesn't detect an object for a bit
-      - platform: state
+      - trigger: state
         entity_id:
           - binary_sensor.driveway_front_camera_object_detected
           - binary_sensor.driveway_front_camera_person_detected
@@ -21,12 +21,12 @@ automation:
         for:
           minutes: 5
       # If the light is on for 30 minutes
-      - platform: state
+      - trigger: state
         entity_id: light.driveway_flood_light
         to: "on"
         for:
-          minutes: 30
-    condition:
+          minutes: 15
+    conditions:
       # Object, vehicle, or person are not detected
       - condition: state
         entity_id:
@@ -38,7 +38,7 @@ automation:
       - condition: state
         entity_id: light.driveway_flood_light
         state: "on"
-    action:
+    actions:
       # Turn the light off
       - action: light.turn_off
         entity_id: light.driveway_flood_light
