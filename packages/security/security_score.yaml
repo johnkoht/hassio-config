@@ -94,7 +94,7 @@ template:
           {# MAIN SCORING LOGIC                                                 #}
           {# ------------------------------------------------------------------- #}
 
-          {% set alarm_state = states('alarm_control_panel.panel') %}
+          {% set alarm_state = states('alarm_control_panel.kohbo') %}
           {% set vacation = is_state('input_boolean.vacation_mode', 'on') %}
           {% set occupied = is_state('input_boolean.house_occupied', 'on') %}
 
@@ -207,7 +207,7 @@ template:
         attributes:
           friendly_name: "House Security Score"
           last_updated: "{{ now().isoformat() }}"
-          alarm_state: "{{ states('alarm_control_panel.panel') }}"
+          alarm_state: "{{ states('alarm_control_panel.kohbo') }}"
           occupancy: "{{ states('input_boolean.house_occupied') }}"
           ups_status: "{{ states('sensor.apc_ups_status_data') }}"
           ups_runtime: "{{ states('sensor.apc_ups_battery_runtime') }}"
