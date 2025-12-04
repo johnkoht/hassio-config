@@ -3,7 +3,7 @@ style: |
     --stack-card-gap: 0;
     --vertical-stack-card-gap: 0 !important;
   }
-  ha-card.type-custom-stack-in-card {
+  ha-card {
     background: var(--darker-primary-color);
     border-top-right-radius: 0;
     border-top-left-radius: 0;

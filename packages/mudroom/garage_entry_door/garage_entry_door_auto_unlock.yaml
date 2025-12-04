@@ -2,11 +2,13 @@ automation:
   - id: "garage_entry_door_auto_unlock"
     alias: "Garage Entry Door - Auto Unlock"
     initial_state: on
-    trigger:
+    triggers:
       # The door is opened
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.interior_garage_door
-    condition:
+        from: "off"
+        to: "on"
+    conditions:
       # Garage entry door is locked
       - condition: state
         entity_id: lock.garage_entry_door
@@ -15,9 +17,9 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
+    actions:
       # Unlock the door!
-      - service: lock.unlock
+      - action: lock.unlock
         entity_id: lock.garage_entry_door
 
 

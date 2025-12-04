@@ -44,7 +44,9 @@ automation:
         entity_id:
           - input_select.john_sleep_state
           - input_select.cristina_sleep_state
-        state: "Awake"
+        state:
+          - "Awake"
+          - "Just Got Up"
       # Not already in Auto mode
       - condition: template
         value_template: "{{ not is_state('input_select.main_bedroom','Auto') }}"

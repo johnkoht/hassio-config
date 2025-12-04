@@ -224,7 +224,9 @@ var init_reactive_element = __esm(() => {
       const i3 = this.constructor, e3 = i3._$Eh.get(t2);
       if (e3 !== undefined && this._$Em !== e3) {
         const t3 = i3.getPropertyOptions(e3), h2 = typeof t3.converter == "function" ? { fromAttribute: t3.converter } : t3.converter?.fromAttribute !== undefined ? t3.converter : u;
-        this._$Em = e3, this[e3] = h2.fromAttribute(s2, t3.type) ?? this._$Ej?.get(e3) ?? null, this._$Em = null;
+        this._$Em = e3;
+        const r3 = h2.fromAttribute(s2, t3.type);
+        this[e3] = r3 ?? this._$Ej?.get(e3) ?? r3, this._$Em = null;
       }
     }
     requestUpdate(t2, s2, i3) {
@@ -299,7 +301,7 @@ var init_reactive_element = __esm(() => {
     updated(t2) {}
     firstUpdated(t2) {}
   };
-  y.elementStyles = [], y.shadowRootOptions = { mode: "open" }, y[d("elementProperties")] = new Map, y[d("finalized")] = new Map, p?.({ ReactiveElement: y }), (a.reactiveElementVersions ??= []).push("2.1.0");
+  y.elementStyles = [], y.shadowRootOptions = { mode: "open" }, y[d("elementProperties")] = new Map, y[d("finalized")] = new Map, p?.({ ReactiveElement: y }), (a.reactiveElementVersions ??= []).push("2.1.1");
 });
 
 // node_modules/lit-html/lit-html.js
@@ -443,7 +445,7 @@ class R {
     e4 < i4.length && (this._$AR(s3 && s3._$AB.nextSibling, e4), i4.length = e4);
   }
   _$AR(t3 = this._$AA.nextSibling, i4) {
-    for (this._$AP?.(false, true, i4);t3 && t3 !== this._$AB; ) {
+    for (this._$AP?.(false, true, i4);t3 !== this._$AB; ) {
       const i5 = t3.nextSibling;
       t3.remove(), t3 = i5;
     }
@@ -569,15 +571,15 @@ var init_lit_html = __esm(() => {
     }
   };
   j = t2.litHtmlPolyfillSupport;
-  j?.(N, R), (t2.litHtmlVersions ??= []).push("3.3.0");
+  j?.(N, R), (t2.litHtmlVersions ??= []).push("3.3.1");
 });
 
 // node_modules/lit-element/lit-element.js
 var s3, i4, o4;
 var init_lit_element = __esm(() => {
   init_reactive_element();
-  init_reactive_element();
   init_lit_html();
+  init_reactive_element();
   init_lit_html();
   s3 = globalThis;
   i4 = class i4 extends y {
@@ -605,7 +607,7 @@ var init_lit_element = __esm(() => {
   i4._$litElement$ = true, i4["finalized"] = true, s3.litElementHydrateSupport?.({ LitElement: i4 });
   o4 = s3.litElementPolyfillSupport;
   o4?.({ LitElement: i4 });
-  (s3.litElementVersions ??= []).push("4.2.0");
+  (s3.litElementVersions ??= []).push("4.2.1");
 });
 
 // node_modules/lit-html/is-server.js
@@ -869,21 +871,26 @@ var mapStringToEnum = (enumType, value) => {
 
 // src/utils/template.ts
 var templateFunctionCache, isTemplate = (value) => {
-  return typeof value === "string" && value.trim().startsWith("[[[") && value.trim().endsWith("]]]");
+  if (typeof value !== "string")
+    return false;
+  const trimmed = value.trim();
+  return trimmed.startsWith("[[[") && trimmed.endsWith("]]]");
 }, cleanTemplate = (value) => {
   if (!isTemplate(value))
     return null;
-  return value.replace(/\[\[\[|\]\]\]/g, "").trim();
+  return value.trim().slice(3, -3).trim();
 }, wrapTemplate = (value) => {
   return isTemplate(value) ? value : `[[[${value}]]]`;
-}, processTemplate = (hass, navbar, template) => {
+}, processTemplate = (hass, navbar, template, options) => {
   if (template == null || !isTemplate(template)) {
     return template;
   }
   try {
     const clean = cleanTemplate(template);
     if (clean === null) {
-      console.error(`NavbarCard: Invalid template format: ${template}`);
+      console.error(`[navbar-card] Invalid template format: ${template}`);
+      if (options?.returnNullIfInvalid)
+        return null;
       return template;
     }
     const hashed = generateHash(clean);
@@ -896,12 +903,18 @@ var templateFunctionCache, isTemplate = (value) => {
       isDesktop: navbar?.isDesktop ?? false
     });
     if (result === undefined) {
-      console.error(`NavbarCard: Template did not return a value: ${template}`);
+      if (!options?.disableEmptyReturnCheck) {
+        console.error(`[navbar-card] Template did not return a value: ${template}`);
+      }
+      if (options?.returnNullIfInvalid)
+        return null;
       return template;
     }
     return result;
   } catch (err) {
-    console.error(`NavbarCard: Error evaluating template: ${err}`);
+    console.error(`[navbar-card] Error evaluating template: ${err}`);
+    if (options?.returnNullIfInvalid)
+      return null;
     return template;
   }
 }, processBadgeTemplate = (hass, template) => {
@@ -911,7 +924,7 @@ var templateFunctionCache, isTemplate = (value) => {
     const func = new Function("states", `return ${template}`);
     return Boolean(func(hass.states));
   } catch (err) {
-    console.error("NavbarCard: Error evaluating badge template:", err);
+    console.error("[navbar-card] Error evaluating badge template:", err);
     return false;
   }
 };
@@ -921,7 +934,8 @@ var init_template = __esm(() => {
 });
 
 // src/utils/dom.ts
-function fireDOMEvent(node, type, options, detailOverride, EventConstructor) {
+function fireDOMEvent(node, type, data, EventConstructor) {
+  const { options, detailOverride } = data ?? {};
   const constructor = EventConstructor || Event;
   const event = new constructor(type, options);
   if (detailOverride !== undefined) {
@@ -938,7 +952,7 @@ var DASHBOARD_PADDING_STYLE_ID = "navbar-card-forced-padding-styles", DEFAULT_ST
   return null;
 }, forceResetRipple = (target) => {
   const rippleElements = target?.querySelectorAll("ha-ripple");
-  rippleElements.forEach((ripple) => {
+  rippleElements?.forEach((ripple) => {
     setTimeout(() => {
       ripple.hovered = false;
       ripple.pressed = false;
@@ -1036,8 +1050,6 @@ var DASHBOARD_PADDING_STYLE_ID = "navbar-card-forced-padding-styles", DEFAULT_ST
 }, injectStyles = (root, defaultStyles, userStyles) => {
   createStyleElement(root, DEFAULT_STYLES_ID, defaultStyles);
   createStyleElement(root, USER_STYLES_ID, userStyles);
-}, hapticFeedback = (hapticType = "selection") => {
-  return fireDOMEvent(window, "haptic", undefined, hapticType);
 }, preventEventDefault = (e5) => {
   e5.preventDefault();
   e5.stopPropagation();
@@ -1054,20 +1066,182 @@ var init_dom = __esm(() => {
   init_config();
 });
 
+// src/utils/haptic.ts
+var shouldTriggerHaptic = (context, actionType, isNavigation = false) => {
+  const hapticConfig = context.config?.haptic;
+  if (typeof hapticConfig === "boolean") {
+    return hapticConfig;
+  }
+  if (!hapticConfig) {
+    return !isNavigation;
+  }
+  if (isNavigation) {
+    return hapticConfig.url ?? false;
+  }
+  switch (actionType) {
+    case "tap":
+      return hapticConfig.tap_action ?? false;
+    case "hold":
+      return hapticConfig.hold_action ?? false;
+    case "double_tap":
+      return hapticConfig.double_tap_action ?? false;
+    default:
+      return false;
+  }
+}, triggerHaptic = (context, actionType, isNavigation = false) => {
+  if (shouldTriggerHaptic(context, actionType, isNavigation)) {
+    fireDOMEvent(window, "haptic", { detailOverride: "selection" });
+  }
+};
+var init_haptic = __esm(() => {
+  init_utils();
+});
+
 // src/utils/index.ts
 var init_utils = __esm(() => {
   init_template();
   init_dom();
+  init_haptic();
+});
+
+// node_modules/custom-card-helpers/dist/index.m.js
+var t5, r6, $2, ne = function(e7, t6, r7, n6) {
+  n6 = n6 || {}, r7 = r7 == null ? {} : r7;
+  var i7 = new Event(t6, { bubbles: n6.bubbles === undefined || n6.bubbles, cancelable: Boolean(n6.cancelable), composed: n6.composed === undefined || n6.composed });
+  return i7.detail = r7, e7.dispatchEvent(i7), i7;
+}, ie, de = function(e7, t6, r7) {
+  r7 === undefined && (r7 = false), r7 ? history.replaceState(null, "", t6) : history.pushState(null, "", t6), ne(window, "location-changed", { replace: r7 });
+};
+var init_index_m = __esm(() => {
+  (function(e7) {
+    e7.language = "language", e7.system = "system", e7.comma_decimal = "comma_decimal", e7.decimal_comma = "decimal_comma", e7.space_comma = "space_comma", e7.none = "none";
+  })(t5 || (t5 = {})), function(e7) {
+    e7.language = "language", e7.system = "system", e7.am_pm = "12", e7.twenty_four = "24";
+  }(r6 || (r6 = {}));
+  $2 = new Set(["fan", "input_boolean", "light", "switch", "group", "automation"]);
+  ie = new Set(["call-service", "divider", "section", "weblink", "cast", "select"]);
+});
+
+// src/lib/action-handler.ts
+var ACTIONS_WITH_CUSTOM_ENTITY, chooseKeyForQuickbar = (action) => {
+  switch (action.mode) {
+    case "devices":
+      return "d";
+    case "entities":
+      return "e";
+    case "commands":
+    default:
+      return "c";
+  }
+}, executeAction = (params) => {
+  const { context, target, action, actionType, data } = params;
+  const { route, popupItem } = data;
+  forceResetRipple(target);
+  if (action?.action !== "open-popup" /* openPopup */) {
+    if (route != null) {
+      route.popup.close();
+    } else if (popupItem != null) {
+      popupItem.closeParentPopup();
+    }
+  }
+  switch (action?.action) {
+    case "open-popup" /* openPopup */: {
+      if (!route)
+        return;
+      const popupItems = route.popup.items;
+      if (!popupItems) {
+        console.error(`[navbar-card] No popup items found for route: ${route.label}`);
+      } else {
+        triggerHaptic(context, actionType);
+        route.popup.open(target);
+      }
+      break;
+    }
+    case "toggle-menu" /* toggleMenu */:
+      triggerHaptic(context, actionType);
+      fireDOMEvent(context, "hass-toggle-menu", {
+        options: {
+          bubbles: true,
+          composed: true
+        }
+      });
+      break;
+    case "quickbar" /* quickbar */:
+      triggerHaptic(context, actionType);
+      fireDOMEvent(context, "keydown", {
+        options: {
+          bubbles: true,
+          composed: true,
+          key: chooseKeyForQuickbar(action)
+        }
+      }, KeyboardEvent);
+      break;
+    case "show-notifications" /* showNotifications */:
+      triggerHaptic(context, actionType);
+      fireDOMEvent(context, "hass-show-notifications", {
+        options: {
+          bubbles: true,
+          composed: true
+        }
+      });
+      break;
+    case "navigate-back" /* navigateBack */:
+      triggerHaptic(context, actionType, true);
+      window.history.back();
+      break;
+    case "open-edit-mode" /* openEditMode */:
+      triggerHaptic(context, actionType);
+      forceOpenEditMode();
+      break;
+    case "custom-js-action" /* customJSAction */:
+      triggerHaptic(context, actionType);
+      processTemplate(context._hass, context, action.code, {
+        disableEmptyReturnCheck: true
+      });
+      break;
+    case "logout" /* logout */:
+      triggerHaptic(context, actionType);
+      context._hass.auth.revoke();
+      break;
+    default:
+      if (action != null) {
+        triggerHaptic(context, actionType);
+        const extractedEntity = ACTIONS_WITH_CUSTOM_ENTITY.includes(action.action) ? action.entity ?? action.entity_id : undefined;
+        setTimeout(() => {
+          fireDOMEvent(context, "hass-action", {
+            options: { bubbles: true, composed: true },
+            detailOverride: {
+              action: actionType,
+              config: {
+                [`${actionType}_action`]: action,
+                entity: extractedEntity
+              }
+            }
+          });
+        }, 10);
+      } else if (actionType === "tap" && (route?.url || popupItem?.url)) {
+        triggerHaptic(context, actionType, true);
+        de(context, route?.url ?? popupItem?.url ?? "");
+      }
+      break;
+  }
+};
+var init_action_handler = __esm(() => {
+  init_index_m();
+  init_types();
+  init_utils();
+  ACTIONS_WITH_CUSTOM_ENTITY = ["more-info", "toggle"];
 });
 
 // src/styles.ts
-var HOST_STYLES, NAVBAR_CONTAINER_STYLES, MEDIA_PLAYER_STYLES, ROUTE_STYLES, POPUP_STYLES, EDITOR_STYLES, ROUTES_EDITOR_DND_STYLES, getDefaultStyles = () => {
+var HOST_STYLES, NAVBAR_CONTAINER_STYLES, MEDIA_PLAYER_STYLES, ROUTE_STYLES, POPUP_STYLES, EDITOR_STYLES, ROUTES_EDITOR_DND_STYLES, COMPONENTS_STYLES, getDefaultStyles = () => {
   return i`
     ${HOST_STYLES}
     ${NAVBAR_CONTAINER_STYLES}
     ${MEDIA_PLAYER_STYLES}
     ${ROUTE_STYLES}
     ${POPUP_STYLES}
+    ${COMPONENTS_STYLES}
   `;
 }, getEditorStyles = () => {
   return i`
@@ -1286,10 +1460,6 @@ var init_styles = __esm(() => {
   }
 
   .media-player .media-player-button {
-    width: 38px;
-    flex-shrink: 0;
-    --ha-button-height: 38px;
-    --ha-button-border-radius: 999px;
   }
 
   .media-player .media-player-button.media-player-button-play-pause {
@@ -1844,6 +2014,28 @@ var init_styles = __esm(() => {
     color: var(--error-color, #db4437) !important;
   }
 `;
+  COMPONENTS_STYLES = i`
+  .navbar-icon-button {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--primary-text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+  }
+
+  .navbar-icon-button.primary {
+    background-color: var(--navbar-primary-color);
+    color: var(--text-primary-color, #fff);
+  }
+`;
 });
 
 // node_modules/@kipk/load-ha-components/dist/load-ha-components.js
@@ -1959,6 +2151,7 @@ var init_navbar_card_editor = __esm(() => {
   init_types();
   init_utils();
   init_styles();
+  init_action_handler();
   ((HAActions2) => {
     HAActions2["tap_action"] = "tap_action";
     HAActions2["hold_action"] = "hold_action";
@@ -2043,8 +2236,8 @@ var init_navbar_card_editor = __esm(() => {
         .value=${genericGetProperty(this._config, options.configKey) ?? options.defaultValue}
         .disabled=${options.disabled}
         .hideClearIcon=${options.hideClearIcon}
-        @value-changed="${(e5) => {
-        this.updateConfigByKey(options.configKey, e5.detail.value);
+        @value-changed="${(e7) => {
+        this.updateConfigByKey(options.configKey, e7.detail.value);
       }}" />
     `;
     }
@@ -2062,8 +2255,8 @@ var init_navbar_card_editor = __esm(() => {
           .value=${genericGetProperty(this._config, options.configKey) ?? ""}
           .disabled=${options.disabled}
           .autocomplete=${options.autocomplete}
-          @input="${(e5) => {
-        this.updateConfigByKey(options.configKey, e5.target.value?.trim() == "" ? null : options.type == "number" ? parseInt(e5.target.value) : e5.target.value);
+          @input="${(e7) => {
+        this.updateConfigByKey(options.configKey, e7.target.value?.trim() == "" ? null : options.type == "number" ? parseInt(e7.target.value) : e7.target.value);
       }}"></ha-textfield>
       </div>
     `;
@@ -2078,8 +2271,8 @@ var init_navbar_card_editor = __esm(() => {
       .excludeDomains="${options.excludeDomains}"
       .disabled="${options.disabled}"
       allow-custom-entity
-      @value-changed="${(e5) => {
-        this.updateConfigByKey(options.configKey, e5.detail.value);
+      @value-changed="${(e7) => {
+        this.updateConfigByKey(options.configKey, e7.detail.value);
       }}"></ha-entity-picker>`;
     }
     makeIconPicker(options) {
@@ -2088,8 +2281,8 @@ var init_navbar_card_editor = __esm(() => {
         label=${options.label}
         .value=${genericGetProperty(this._config, options.configKey) ?? ""}
         .disabled=${options.disabled}
-        @value-changed="${(e5) => {
-        this.updateConfigByKey(options.configKey, e5.detail.value);
+        @value-changed="${(e7) => {
+        this.updateConfigByKey(options.configKey, e7.detail.value);
       }}" />
     `;
     }
@@ -2171,8 +2364,8 @@ var init_navbar_card_editor = __esm(() => {
           autocomplete-icons
           .hass=${this.hass}
           .value=${cleanTemplate(genericGetProperty(this._config, options.configKey) ?? "")}
-          @value-changed=${(e5) => {
-        const templateValue = e5.target.value?.trim() == "" ? options.allowNull ? null : "[[[]]]" : wrapTemplate(e5.target.value);
+          @value-changed=${(e7) => {
+        const templateValue = e7.target.value?.trim() == "" ? options.allowNull ? null : "[[[]]]" : wrapTemplate(e7.target.value);
         this.updateConfigByKey(options.configKey, templateValue);
       }}></ha-code-editor>
         ${options.helper ? x`<div class="template-editor-helper">${options.helper}</div>` : x``}
@@ -2185,8 +2378,8 @@ var init_navbar_card_editor = __esm(() => {
         <ha-switch
           .checked=${genericGetProperty(this._config, options.configKey) ?? options.defaultValue}
           .disabled=${options.disabled}
-          @change=${(e5) => {
-        const checked = e5.target.checked;
+          @change=${(e7) => {
+        const checked = e7.target.checked;
         this.updateConfigByKey(options.configKey, checked);
       }}></ha-switch>
         ${options.tooltip ? this.makeHelpTooltipIcon({ tooltip: options.tooltip }) : ""}
@@ -2204,30 +2397,30 @@ var init_navbar_card_editor = __esm(() => {
       const isPopup = popupIndex != null;
       const usesTemplate = !isPopup && isTemplate(item.popup);
       const baseConfigKey = isPopup ? `routes.${routeIndex}.popup.${popupIndex}` : `routes.${routeIndex}`;
-      const onDragStart = (e5, routeIndex2, popupIndex2) => {
+      const onDragStart = (e7, routeIndex2, popupIndex2) => {
         const dragData = {
           routeIndex: routeIndex2,
           popupIndex: popupIndex2
         };
-        e5.dataTransfer?.setData("application/json", JSON.stringify(dragData));
-        e5.dataTransfer.effectAllowed = "move";
-        e5.currentTarget.classList.add("dragging");
+        e7.dataTransfer?.setData("application/json", JSON.stringify(dragData));
+        e7.dataTransfer.effectAllowed = "move";
+        e7.currentTarget.classList.add("dragging");
       };
-      const onDragEnd = (e5) => {
-        e5.currentTarget.classList.remove("dragging");
+      const onDragEnd = (e7) => {
+        e7.currentTarget.classList.remove("dragging");
       };
-      const onDragOver = (e5) => {
-        e5.preventDefault();
-        e5.dataTransfer.dropEffect = "move";
-        e5.currentTarget.classList.add("drag-over");
+      const onDragOver = (e7) => {
+        e7.preventDefault();
+        e7.dataTransfer.dropEffect = "move";
+        e7.currentTarget.classList.add("drag-over");
       };
-      const onDragLeave = (e5) => {
-        e5.currentTarget.classList.remove("drag-over");
+      const onDragLeave = (e7) => {
+        e7.currentTarget.classList.remove("drag-over");
       };
-      const onDrop = (e5, routeIndex2, popupIndex2) => {
-        e5.preventDefault();
-        e5.currentTarget.classList.remove("drag-over");
-        const dragData = JSON.parse(e5.dataTransfer?.getData("application/json") || "{}");
+      const onDrop = (e7, routeIndex2, popupIndex2) => {
+        e7.preventDefault();
+        e7.currentTarget.classList.remove("drag-over");
+        const dragData = JSON.parse(e7.dataTransfer?.getData("application/json") || "{}");
         if (dragData.popupIndex != null !== (popupIndex2 != null))
           return;
         if (popupIndex2 == null) {
@@ -2253,13 +2446,13 @@ var init_navbar_card_editor = __esm(() => {
         class="draggable-route"
         @dragover=${onDragOver}
         @dragleave=${onDragLeave}
-        @drop=${(e5) => onDrop(e5, routeIndex, popupIndex)}>
+        @drop=${(e7) => onDrop(e7, routeIndex, popupIndex)}>
         <ha-expansion-panel outlined>
           <div
             slot="header"
             class="route-header"
             draggable="true"
-            @dragstart=${(e5) => onDragStart(e5, routeIndex, popupIndex)}
+            @dragstart=${(e7) => onDragStart(e7, routeIndex, popupIndex)}
             @dragend=${onDragEnd}>
             <span class="drag-handle" title="Drag to reorder">
               <ha-icon icon="mdi:drag"></ha-icon>
@@ -2275,9 +2468,9 @@ var init_navbar_card_editor = __esm(() => {
             </span>
 
             <ha-icon-button
-              @click=${(e5) => {
-        e5.preventDefault();
-        e5.stopPropagation();
+              @click=${(e7) => {
+        e7.preventDefault();
+        e7.stopPropagation();
         this.removeRouteOrPopup(routeIndex, popupIndex);
       }}
               class="delete-btn"
@@ -2302,6 +2495,12 @@ var init_navbar_card_editor = __esm(() => {
         inputType: "string",
         label: "Label",
         configKey: `${baseConfigKey}.label`,
+        templateHelper: STRING_JS_TEMPLATE_HELPER
+      })}
+            ${this.makeTemplatable({
+        inputType: "string",
+        label: "Selected color",
+        configKey: `${baseConfigKey}.selected_color`,
         templateHelper: STRING_JS_TEMPLATE_HELPER
       })}
             ${this.makeTemplatable({
@@ -2361,8 +2560,8 @@ var init_navbar_card_editor = __esm(() => {
       })}
                 ${this.makeTemplatable({
         inputType: "string",
-        label: "TextColor",
-        configKey: `${baseConfigKey}.badge.textColor`,
+        label: "Text color",
+        configKey: `${baseConfigKey}.badge.text_color`,
         templateHelper: STRING_JS_TEMPLATE_HELPER
       })}
               </div>
@@ -2525,8 +2724,8 @@ var init_navbar_card_editor = __esm(() => {
             autocomplete-icons
             .hass=${this.hass}
             .value=${this._config.styles}
-            @value-changed=${(e5) => {
-        const trimmedStyles = e5.target.value?.trim() == "" ? null : e5.target.value;
+            @value-changed=${(e7) => {
+        const trimmedStyles = e7.target.value?.trim() == "" ? null : e7.target.value;
         this.updateConfig({ styles: trimmedStyles });
       }}></ha-code-editor>
         </div>
@@ -2643,7 +2842,8 @@ var init_navbar_card_editor = __esm(() => {
         return x`
               ${actionValue != null ? this.makeActionSelector({
           actionType: type,
-          configKey: key
+          configKey: key,
+          disabledActions: ["open-popup" /* openPopup */]
         }) : x`
                     <ha-button
                       @click=${() => this.updateConfigByKey(key, {
@@ -2750,9 +2950,9 @@ var init_navbar_card_editor = __esm(() => {
       })}
           ${this.makeSwitch({
         label: "Show popup label backgrounds",
-        configKey: "desktop.show_popup_label_backgrounds",
+        configKey: "mobile.show_popup_label_backgrounds",
         disabled: ![true, "popup_only"].includes(labelVisibility),
-        defaultValue: DEFAULT_NAVBAR_CONFIG.desktop?.show_popup_label_backgrounds
+        defaultValue: DEFAULT_NAVBAR_CONFIG.mobile?.show_popup_label_backgrounds
       })}
           ${this.makeTemplateEditor({
         label: "Hidden",
@@ -2767,8 +2967,8 @@ var init_navbar_card_editor = __esm(() => {
       return x`
       <ha-expansion-panel
         outlined
-        @expanded-changed=${(e5) => {
-        if (e5.target.expanded) {
+        @expanded-changed=${(e7) => {
+        if (e7.target.expanded) {
           this.markSectionAsLazyLoaded("routes" /* routes */);
         }
       }}>
@@ -2779,8 +2979,8 @@ var init_navbar_card_editor = __esm(() => {
         <div class="editor-section">
           ${conditionallyRender(this._lazyLoadedSections["routes" /* routes */], () => x`
               <div class="routes-container">
-                ${(this._config.routes ?? []).map((route2, i5) => {
-        return this.makeDraggableRouteEditor(route2, i5);
+                ${(this._config.routes ?? []).map((route2, i7) => {
+        return this.makeDraggableRouteEditor(route2, i7);
       })}
               </div>
             `)}
@@ -2830,12 +3030,15 @@ var init_navbar_card_editor = __esm(() => {
         { label: "Quickbar", value: "quickbar" /* quickbar */ },
         { label: "Open Edit Mode", value: "open-edit-mode" /* openEditMode */ },
         { label: "Logout current user", value: "logout" /* logout */ },
-        { label: "Custom JS Action", value: "custom-js-action" /* customJSAction */ },
+        {
+          label: "Custom JS Action",
+          value: "custom-js-action" /* customJSAction */
+        },
         {
           label: "Show Notifications",
           value: "show-notifications" /* showNotifications */
         }
-      ];
+      ].filter((action) => !options.disabledActions?.includes(action.value));
       const raw = genericGetProperty(this._config, options.configKey);
       const selected = this.isCustomAction(raw?.action) ? raw?.action : "hass_action";
       return x`
@@ -2849,8 +3052,8 @@ var init_navbar_card_editor = __esm(() => {
           <ha-icon-button
             .label=${`Remove ${options.actionType}`}
             class="delete-btn"
-            @click=${(e5) => {
-        e5.stopPropagation();
+            @click=${(e7) => {
+        e7.stopPropagation();
         this.updateConfigByKey(options.configKey, null);
       }}>
             <ha-icon icon="mdi:delete"></ha-icon>
@@ -2862,8 +3065,8 @@ var init_navbar_card_editor = __esm(() => {
             .items=${ACTIONS}
             .value=${selected}
             .disabled=${options.disabled}
-            @value-changed=${(e5) => {
-        const newSel = e5.detail.value;
+            @value-changed=${(e7) => {
+        const newSel = e7.detail.value;
         if (newSel === "hass_action") {
           this.updateConfigByKey(options.configKey, { action: "none" });
         } else {
@@ -2943,6 +3146,11 @@ var init_navbar_card_editor = __esm(() => {
         this.updateConfigByKey(options.configKey, flatValue.action != null ? flatValue : { action: "none" });
       }}></ha-form>
               ` : x``}
+          ${selected === "hass_action" && ACTIONS_WITH_CUSTOM_ENTITY.includes(raw?.action) ? this.makeEntityPicker({
+        label: "",
+        configKey: `${options.configKey}.entity`,
+        disabled: options.disabled
+      }) : x``}
         </div>
       </ha-expansion-panel>
     `;
@@ -3018,34 +3226,14 @@ var init_navbar_card_editor = __esm(() => {
   ], NavbarCardEditor);
 });
 // package.json
-var version = "1.1.1";
+var version = "1.2.1";
 
 // src/navbar-card.ts
 init_lit();
 init_decorators();
 init_types();
 
-// node_modules/custom-card-helpers/dist/index.m.js
-var t4;
-var r6;
-(function(e5) {
-  e5.language = "language", e5.system = "system", e5.comma_decimal = "comma_decimal", e5.decimal_comma = "decimal_comma", e5.space_comma = "space_comma", e5.none = "none";
-})(t4 || (t4 = {})), function(e5) {
-  e5.language = "language", e5.system = "system", e5.am_pm = "12", e5.twenty_four = "24";
-}(r6 || (r6 = {}));
-var $2 = new Set(["fan", "input_boolean", "light", "switch", "group", "automation"]);
-var ne = function(e5, t5, r7, n5) {
-  n5 = n5 || {}, r7 = r7 == null ? {} : r7;
-  var i5 = new Event(t5, { bubbles: n5.bubbles === undefined || n5.bubbles, cancelable: Boolean(n5.cancelable), composed: n5.composed === undefined || n5.composed });
-  return i5.detail = r7, e5.dispatchEvent(i5), i5;
-};
-var ie = new Set(["call-service", "divider", "section", "weblink", "cast", "select"]);
-var de = function(e5, t5, r7) {
-  r7 === undefined && (r7 = false), r7 ? history.replaceState(null, "", t5) : history.pushState(null, "", t5), ne(window, "location-changed", { replace: r7 });
-};
-
 // src/components/navbar/route/base-route.ts
-init_types();
 init_utils();
 
 class BaseRoute {
@@ -3065,6 +3253,9 @@ class BaseRoute {
   }
   get badge() {
     return this._badgeInstance ??= new Badge(this._navbarCard, this);
+  }
+  get selected_color() {
+    return processTemplate(this._navbarCard._hass, this._navbarCard, this.data.selected_color, { returnNullIfInvalid: true });
   }
   get label() {
     if (!this._shouldShowLabels())
@@ -3086,85 +3277,6 @@ class BaseRoute {
   get double_tap_action() {
     return this.data.double_tap_action;
   }
-  executeAction = (target, element, action, actionType) => {
-    forceResetRipple(target);
-    const triggerHaptic = (strong) => {
-      if (this._shouldTriggerHaptic(actionType, strong)) {
-        hapticFeedback();
-      }
-    };
-    if (action?.action !== "open-popup" /* openPopup */) {
-      if (element instanceof Route) {
-        element.popup.close();
-      } else if (element instanceof PopupItem) {
-        element.closeParentPopup();
-      }
-    }
-    setTimeout(() => {
-      switch (action?.action) {
-        case "open-popup" /* openPopup */:
-          if (element instanceof Route) {
-            if (element.popup.items.length === 0) {
-              console.error(`[navbar-card] No popup items found for route: ${element.label}`);
-            } else {
-              triggerHaptic();
-              element.popup.open(target);
-            }
-          }
-          break;
-        case "toggle-menu" /* toggleMenu */:
-          triggerHaptic();
-          fireDOMEvent(this._navbarCard, "hass-toggle-menu", {
-            bubbles: true,
-            composed: true
-          });
-          break;
-        case "quickbar" /* quickbar */:
-          triggerHaptic();
-          fireDOMEvent(this._navbarCard, "keydown", {
-            bubbles: true,
-            composed: true,
-            key: this._chooseKeyForQuickbar(action)
-          }, undefined, KeyboardEvent);
-          break;
-        case "show-notifications" /* showNotifications */:
-          triggerHaptic();
-          fireDOMEvent(this._navbarCard, "hass-show-notifications", {
-            bubbles: true,
-            composed: true
-          });
-          break;
-        case "navigate-back" /* navigateBack */:
-          triggerHaptic(true);
-          window.history.back();
-          break;
-        case "open-edit-mode" /* openEditMode */:
-          triggerHaptic();
-          forceOpenEditMode();
-          break;
-        case "logout" /* logout */:
-          triggerHaptic();
-          this._navbarCard._hass.auth.revoke();
-          break;
-        case "custom-js-action" /* customJSAction */:
-          triggerHaptic();
-          processTemplate(this._navbarCard._hass, this._navbarCard, action.code);
-          break;
-        default:
-          if (action != null) {
-            triggerHaptic();
-            fireDOMEvent(this._navbarCard, "hass-action", { bubbles: true, composed: true }, {
-              action: actionType,
-              config: { [`${actionType}_action`]: action }
-            });
-          } else if (actionType === "tap" && element.url) {
-            triggerHaptic(true);
-            de(this, element.url);
-          }
-          break;
-      }
-    }, 10);
-  };
   _shouldShowLabels = () => {
     const config2 = this._navbarCard.isDesktop ? this._navbarCard.config?.desktop?.show_labels : this._navbarCard.config?.mobile?.show_labels;
     if (typeof config2 === "boolean")
@@ -3174,39 +3286,6 @@ class BaseRoute {
   _shouldShowLabelBackground = () => {
     const enabled = this._navbarCard.isDesktop ? this._navbarCard.config?.desktop?.show_popup_label_backgrounds : this._navbarCard.config?.mobile?.show_popup_label_backgrounds;
     return !!enabled;
-  };
-  _shouldTriggerHaptic(actionType, isNavigation = false) {
-    const hapticConfig = this._navbarCard.config?.haptic;
-    if (typeof hapticConfig === "boolean") {
-      return hapticConfig;
-    }
-    if (!hapticConfig) {
-      return !isNavigation;
-    }
-    if (isNavigation) {
-      return hapticConfig.url ?? false;
-    }
-    switch (actionType) {
-      case "tap":
-        return hapticConfig.tap_action ?? false;
-      case "hold":
-        return hapticConfig.hold_action ?? false;
-      case "double_tap":
-        return hapticConfig.double_tap_action ?? false;
-      default:
-        return false;
-    }
-  }
-  _chooseKeyForQuickbar = (action) => {
-    switch (action.mode) {
-      case "devices":
-        return "d";
-      case "entities":
-        return "e";
-      case "commands":
-      default:
-        return "c";
-    }
   };
 }
 // src/components/navbar/badge/badge.ts
@@ -3225,49 +3304,49 @@ var isValidInt = (value) => {
   }
   return true;
 };
-var hue2rgb = (p3, q, t5) => {
-  if (t5 < 0)
-    t5 += 1;
-  if (t5 > 1)
-    t5 -= 1;
-  if (t5 < 1 / 6)
-    return p3 + (q - p3) * 6 * t5;
-  if (t5 < 1 / 2)
+var hue2rgb = (p3, q, t4) => {
+  if (t4 < 0)
+    t4 += 1;
+  if (t4 > 1)
+    t4 -= 1;
+  if (t4 < 1 / 6)
+    return p3 + (q - p3) * 6 * t4;
+  if (t4 < 1 / 2)
     return q;
-  if (t5 < 2 / 3)
-    return p3 + (q - p3) * (2 / 3 - t5) * 6;
+  if (t4 < 2 / 3)
+    return p3 + (q - p3) * (2 / 3 - t4) * 6;
   return p3;
 };
-var complementaryRGBColor = (r7, g2, b3) => {
-  if (Math.max(r7, g2, b3) == Math.min(r7, g2, b3)) {
-    return { r: 255 - r7, g: 255 - g2, b: 255 - b3 };
+var complementaryRGBColor = (r6, g2, b3) => {
+  if (Math.max(r6, g2, b3) == Math.min(r6, g2, b3)) {
+    return { r: 255 - r6, g: 255 - g2, b: 255 - b3 };
   } else {
-    r7 /= 255, g2 /= 255, b3 /= 255;
-    const max = Math.max(r7, g2, b3), min = Math.min(r7, g2, b3);
+    r6 /= 255, g2 /= 255, b3 /= 255;
+    const max = Math.max(r6, g2, b3), min = Math.min(r6, g2, b3);
     let h3 = 0;
     const l3 = (max + min) / 2;
     const d3 = max - min;
     const s4 = l3 > 0.5 ? d3 / (2 - max - min) : d3 / (max + min);
     switch (max) {
-      case r7:
+      case r6:
         h3 = (g2 - b3) / d3 + (g2 < b3 ? 6 : 0);
         break;
       case g2:
-        h3 = (b3 - r7) / d3 + 2;
+        h3 = (b3 - r6) / d3 + 2;
         break;
       case b3:
-        h3 = (r7 - g2) / d3 + 4;
+        h3 = (r6 - g2) / d3 + 4;
         break;
     }
     h3 = Math.round(h3 * 60 + 180) % 360;
     h3 /= 360;
     const q = l3 < 0.5 ? l3 * (1 + s4) : l3 + s4 - l3 * s4;
     const p3 = 2 * l3 - q;
-    r7 = hue2rgb(p3, q, h3 + 1 / 3);
+    r6 = hue2rgb(p3, q, h3 + 1 / 3);
     g2 = hue2rgb(p3, q, h3);
     b3 = hue2rgb(p3, q, h3 - 1 / 3);
     return {
-      r: Math.round(r7 * 255),
+      r: Math.round(r6 * 255),
       g: Math.round(g2 * 255),
       b: Math.round(b3 * 255)
     };
@@ -3331,7 +3410,7 @@ Supported formats: [r,g,b] | [r,g,b,a]`);
     this.r = colorArray[0];
     this.g = colorArray[1];
     this.b = colorArray[2];
-    this.a = colorArray.at(3) ?? this.a;
+    this.a = colorArray.length > 3 ? colorArray[3] : this.a;
   }
   _parseRGBString(data) {
     const colorString = data.replace("rgb(", "").replace(")", "");
@@ -3382,8 +3461,8 @@ Supported formats: [r,g,b] | [r,g,b,a]`);
     return this;
   }
   complementary() {
-    const { r: r7, g: g2, b: b3 } = complementaryRGBColor(this.r, this.g, this.b);
-    return new Color([r7, g2, b3, this.a]);
+    const { r: r6, g: g2, b: b3 } = complementaryRGBColor(this.r, this.g, this.b);
+    return new Color([r6, g2, b3, this.a]);
   }
   shade(percent) {
     let R2 = this.r * (100 + percent) / 100;
@@ -3427,106 +3506,13 @@ Supported formats: [r,g,b] | [r,g,b,a]`);
     return [this.r, this.g, this.b, this.a];
   }
 }
-// src/components/action-events.ts
-var DOUBLE_TAP_DELAY = 250;
-var HOLD_ACTION_DELAY = 500;
-
-class ActionEvents {
-  holdTimeoutId = null;
-  holdTriggered = false;
-  pointerStartX = 0;
-  pointerStartY = 0;
-  lastTapTime = 0;
-  lastTapTarget = null;
-  tapTimeoutId = null;
-  preventPropagation = (handler) => {
-    return (e5, element) => {
-      e5.preventDefault();
-      e5.stopPropagation();
-      handler(e5, element);
-    };
-  };
-  handleMouseEnter = this.preventPropagation((e5, _element) => {
-    const ripple = e5.currentTarget.querySelector("ha-ripple");
-    if (ripple)
-      ripple.hovered = true;
-  });
-  handleMouseMove = this.preventPropagation((e5, _element) => {
-    const ripple = e5.currentTarget.querySelector("ha-ripple");
-    if (ripple)
-      ripple.hovered = true;
-  });
-  handleMouseLeave = this.preventPropagation((e5, _element) => {
-    const ripple = e5.currentTarget.querySelector("ha-ripple");
-    if (ripple)
-      ripple.hovered = false;
-  });
-  handlePointerDown = this.preventPropagation((e5, element) => {
-    this.pointerStartX = e5.clientX;
-    this.pointerStartY = e5.clientY;
-    if (element.hold_action) {
-      this.holdTriggered = false;
-      this.holdTimeoutId = window.setTimeout(() => {
-        this.holdTriggered = true;
-      }, HOLD_ACTION_DELAY);
-    }
-  });
-  handlePointerMove = this.preventPropagation((e5, _element) => {
-    if (!this.holdTimeoutId)
-      return;
-    const moveX = Math.abs(e5.clientX - this.pointerStartX);
-    const moveY = Math.abs(e5.clientY - this.pointerStartY);
-    if (moveX > 10 || moveY > 10) {
-      if (this.holdTimeoutId !== null) {
-        clearTimeout(this.holdTimeoutId);
-        this.holdTimeoutId = null;
-      }
-    }
-  });
-  handlePointerUp = this.preventPropagation((e5, element) => {
-    if (this.holdTimeoutId !== null) {
-      clearTimeout(this.holdTimeoutId);
-      this.holdTimeoutId = null;
-    }
-    const currentTarget = e5.currentTarget;
-    const currentTime = new Date().getTime();
-    const timeDiff = currentTime - this.lastTapTime;
-    const isDoubleTap = timeDiff < DOUBLE_TAP_DELAY && e5.target === this.lastTapTarget;
-    if (isDoubleTap && element.double_tap_action) {
-      if (this.tapTimeoutId !== null) {
-        clearTimeout(this.tapTimeoutId);
-        this.tapTimeoutId = null;
-      }
-      this.handleDoubleTapAction(currentTarget, element);
-      this.lastTapTime = 0;
-      this.lastTapTarget = null;
-    } else if (this.holdTriggered && element.hold_action) {
-      this.handleHoldAction(currentTarget, element);
-      this.lastTapTime = 0;
-      this.lastTapTarget = null;
-    } else {
-      this.lastTapTime = currentTime;
-      this.lastTapTarget = e5.target;
-      this.handleTapAction(currentTarget, element);
-    }
-    this.holdTriggered = false;
-  });
-  handleHoldAction = (target, element) => {
-    element.executeAction(target, element, element.hold_action, "hold");
-  };
-  handleDoubleTapAction = (target, element) => {
-    element.executeAction(target, element, element.double_tap_action, "double_tap");
-  };
-  handleTapAction = (target, element) => {
-    if (element.double_tap_action) {
-      this.tapTimeoutId = window.setTimeout(() => {
-        element.executeAction(target, element, element.tap_action, "tap");
-      }, DOUBLE_TAP_DELAY);
-    } else {
-      element.executeAction(target, element, element.tap_action, "tap");
-    }
-  };
-}
+var option = new Option;
+var isColor = (value) => {
+  if (typeof value !== "string")
+    return false;
+  option.style.color = value;
+  return option.style.color !== "";
+};
 // src/components/navbar/badge/badge.ts
 init_utils();
 
@@ -3556,7 +3542,7 @@ class Badge {
     return processTemplate(this._navbarCard._hass, this._navbarCard, this._route.data.badge?.color) ?? "red";
   }
   get textColor() {
-    return processTemplate(this._navbarCard._hass, this._navbarCard, this._route.data.badge?.textColor) ?? null;
+    return processTemplate(this._navbarCard._hass, this._navbarCard, this._route.data.badge?.text_color ?? this._route.data.badge?.textColor) ?? null;
   }
   get contrastingColor() {
     return this.textColor ?? Color.from(this.backgroundColor).contrastingColor().hex();
@@ -3576,6 +3562,57 @@ class Badge {
 }
 // src/components/navbar/icon/icon.ts
 init_lit();
+
+// node_modules/lit-html/directives/class-map.js
+init_lit_html();
+
+// node_modules/lit-html/directive.js
+var t4 = { ATTRIBUTE: 1, CHILD: 2, PROPERTY: 3, BOOLEAN_ATTRIBUTE: 4, EVENT: 5, ELEMENT: 6 };
+var e5 = (t5) => (...e6) => ({ _$litDirective$: t5, values: e6 });
+
+class i5 {
+  constructor(t5) {}
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  _$AT(t5, e6, i6) {
+    this._$Ct = t5, this._$AM = e6, this._$Ci = i6;
+  }
+  _$AS(t5, e6) {
+    return this.update(t5, e6);
+  }
+  update(t5, e6) {
+    return this.render(...e6);
+  }
+}
+
+// node_modules/lit-html/directives/class-map.js
+var e6 = e5(class extends i5 {
+  constructor(t5) {
+    if (super(t5), t5.type !== t4.ATTRIBUTE || t5.name !== "class" || t5.strings?.length > 2)
+      throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.");
+  }
+  render(t5) {
+    return " " + Object.keys(t5).filter((s4) => t5[s4]).join(" ") + " ";
+  }
+  update(s4, [i6]) {
+    if (this.st === undefined) {
+      this.st = new Set, s4.strings !== undefined && (this.nt = new Set(s4.strings.join(" ").split(/\s/).filter((t5) => t5 !== "")));
+      for (const t5 in i6)
+        i6[t5] && !this.nt?.has(t5) && this.st.add(t5);
+      return this.render(i6);
+    }
+    const r6 = s4.element.classList;
+    for (const t5 of this.st)
+      t5 in i6 || (r6.remove(t5), this.st.delete(t5));
+    for (const t5 in i6) {
+      const s5 = !!i6[t5];
+      s5 === this.st.has(t5) || this.nt?.has(t5) || (s5 ? (r6.add(t5), this.st.add(t5)) : (r6.remove(t5), this.st.delete(t5)));
+    }
+    return T;
+  }
+});
+// src/components/navbar/icon/icon.ts
 init_utils();
 class Icon {
   _navbarCard;
@@ -3599,10 +3636,9 @@ class Icon {
   get iconColor() {
     try {
       const rawValue = processTemplate(this._navbarCard._hass, this._navbarCard, this._route.data.icon_color);
-      if (isTemplate(rawValue)) {
+      if (!isColor(rawValue))
         return null;
-      }
-      return new Color(rawValue).rgbaString();
+      return rawValue;
     } catch (_err) {
       return null;
     }
@@ -3618,20 +3654,166 @@ class Icon {
       return x``;
     }
     return resolvedImage ? x` <img
-          class="image ${isSelected ? "active" : ""}"
+          class=${e6({
+      image: true,
+      active: isSelected
+    })}
           src="${isSelected && resolvedImageSelected ? resolvedImageSelected : resolvedImage}"
           alt="${this._route.label || ""}" />` : x` <ha-icon
-          class="icon ${isSelected ? "active" : ""}"
+          class=${e6({
+      icon: true,
+      active: isSelected
+    })}
           style="--icon-primary-color: ${resolvedIconColor ?? "inherit"}"
           icon="${isSelected && resolvedIconSelected ? resolvedIconSelected : resolvedIcon}"></ha-icon>`;
   }
 }
 // src/components/navbar/route/route.ts
 init_lit();
+
+// node_modules/lit-html/directives/style-map.js
+init_lit_html();
+var n5 = "important";
+var i6 = " !" + n5;
+var o6 = e5(class extends i5 {
+  constructor(t5) {
+    if (super(t5), t5.type !== t4.ATTRIBUTE || t5.name !== "style" || t5.strings?.length > 2)
+      throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+  }
+  render(t5) {
+    return Object.keys(t5).reduce((e7, r6) => {
+      const s4 = t5[r6];
+      return s4 == null ? e7 : e7 + `${r6 = r6.includes("-") ? r6 : r6.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${s4};`;
+    }, "");
+  }
+  update(e7, [r6]) {
+    const { style: s4 } = e7.element;
+    if (this.ft === undefined)
+      return this.ft = new Set(Object.keys(r6)), this.render(r6);
+    for (const t5 of this.ft)
+      r6[t5] == null && (this.ft.delete(t5), t5.includes("-") ? s4.removeProperty(t5) : s4[t5] = null);
+    for (const t5 in r6) {
+      const e8 = r6[t5];
+      if (e8 != null) {
+        this.ft.add(t5);
+        const r7 = typeof e8 == "string" && e8.endsWith(i6);
+        t5.includes("-") || r7 ? s4.setProperty(t5, r7 ? e8.slice(0, -11) : e8, r7 ? n5 : "") : s4[t5] = e8;
+      }
+    }
+    return T;
+  }
+});
+// src/components/navbar/route/route.ts
 init_utils();
+// src/lib/event-detection.ts
+init_action_handler();
+var LONG_PRESS_DELAY = 500;
+var DOUBLE_TAP_DELAY = 250;
+
+class EventDetectionDirective extends i5 {
+  lastTapTime = 0;
+  holdTimeout;
+  holdTriggered = false;
+  clickTimeout;
+  abortController;
+  boundHandlers = {};
+  constructor(partInfo) {
+    super(partInfo);
+    if (partInfo.type !== t4.ELEMENT) {
+      throw new Error("The `eventDetection` directive can only be used on elements.");
+    }
+  }
+  render(_config) {
+    return;
+  }
+  update(part, [config2]) {
+    const element = part.element;
+    this.abortController?.abort();
+    this.abortController = new AbortController;
+    const { signal } = this.abortController;
+    if (!config2.tap && !config2.hold && !config2.doubleTap)
+      return;
+    this.boundHandlers.tap = config2.tap ? (ev, target) => executeAction({
+      context: config2.context,
+      target: target ?? ev.currentTarget,
+      action: config2.tap,
+      actionType: "tap",
+      data: { route: config2.route, popupItem: config2.popupItem }
+    }) : undefined;
+    this.boundHandlers.hold = config2.hold ? (ev, target) => executeAction({
+      context: config2.context,
+      target: target ?? ev.currentTarget,
+      action: config2.hold,
+      actionType: "hold",
+      data: { route: config2.route, popupItem: config2.popupItem }
+    }) : undefined;
+    this.boundHandlers.doubleTap = config2.doubleTap ? (ev, target) => executeAction({
+      context: config2.context,
+      target: target ?? ev.currentTarget,
+      action: config2.doubleTap,
+      actionType: "double_tap",
+      data: { route: config2.route, popupItem: config2.popupItem }
+    }) : undefined;
+    if (this.boundHandlers.hold) {
+      const startHold = (ev) => {
+        const targetElement = ev.currentTarget;
+        this.holdTriggered = false;
+        clearTimeout(this.holdTimeout);
+        this.holdTimeout = window.setTimeout(() => {
+          this.holdTriggered = true;
+          this.boundHandlers.hold?.(ev, targetElement);
+        }, LONG_PRESS_DELAY);
+      };
+      const cancelHold = () => {
+        if (this.holdTimeout) {
+          clearTimeout(this.holdTimeout);
+          this.holdTimeout = undefined;
+        }
+      };
+      element.addEventListener("pointerdown", startHold, { signal });
+      element.addEventListener("pointerup", cancelHold, { signal });
+      element.addEventListener("pointercancel", cancelHold, { signal });
+      element.addEventListener("pointerleave", cancelHold, { signal });
+    }
+    if (this.boundHandlers.tap || this.boundHandlers.doubleTap) {
+      element.addEventListener("click", (ev) => this.handleClick(ev, DOUBLE_TAP_DELAY), { signal });
+    }
+  }
+  handleClick(ev, doubleTapDelay) {
+    if (this.holdTriggered)
+      return;
+    const targetElement = ev.currentTarget;
+    const now = Date.now();
+    const delta = now - this.lastTapTime;
+    this.lastTapTime = now;
+    const hasDoubleTap = !!this.boundHandlers.doubleTap;
+    const hasTap = !!this.boundHandlers.tap;
+    if (hasDoubleTap && delta < doubleTapDelay) {
+      clearTimeout(this.clickTimeout);
+      this.lastTapTime = 0;
+      this.boundHandlers.doubleTap?.(ev, targetElement);
+      return;
+    }
+    if (hasTap) {
+      if (hasDoubleTap) {
+        clearTimeout(this.clickTimeout);
+        this.clickTimeout = window.setTimeout(() => {
+          this.boundHandlers.tap?.(ev, targetElement);
+        }, doubleTapDelay);
+      } else {
+        this.boundHandlers.tap?.(ev, targetElement);
+      }
+    }
+  }
+  disconnected() {
+    this.abortController?.abort();
+  }
+}
+var eventDetection = e5(EventDetectionDirective);
+
+// src/components/navbar/route/route.ts
 class Route extends BaseRoute {
   _routeData;
-  _events = new ActionEvents;
   _popupInstance;
   constructor(_navbarCard, _routeData) {
     super(_navbarCard, _routeData);
@@ -3653,21 +3835,40 @@ class Route extends BaseRoute {
     const isActive = this.isSelfOrChildActive;
     return x`
       <div
-        class="route ${isActive ? "active" : ""}"
-        @click=${preventEventDefault}
-        @mouseenter=${(e5) => this._events.handleMouseEnter(e5, this)}
-        @mousemove=${(e5) => this._events.handleMouseMove(e5, this)}
-        @mouseleave=${(e5) => this._events.handleMouseLeave(e5, this)}
-        @pointerdown=${(e5) => this._events.handlePointerDown(e5, this)}
-        @pointermove=${(e5) => this._events.handlePointerMove(e5, this)}
-        @pointerup=${(e5) => this._events.handlePointerUp(e5, this)}
-        @pointercancel=${(e5) => this._events.handlePointerMove(e5, this)}>
-        <div class="button ${isActive ? "active" : ""}">
+        class=${e6({
+      route: true,
+      active: isActive
+    })}
+        style=${o6({
+      "--navbar-primary-color": this.selected_color ?? null
+    })}
+        ${eventDetection({
+      context: this._navbarCard,
+      route: this,
+      tap: this.tap_action ?? {
+        action: "navigate",
+        navigation_path: this.url ?? ""
+      },
+      hold: this.hold_action,
+      doubleTap: this.double_tap_action
+    })}>
+        <div
+          class=${e6({
+      button: true,
+      active: isActive
+    })}
+          style=${o6({
+      "--navbar-primary-color": this.selected_color ?? null
+    })}>
           ${this.icon.render()}
           <ha-ripple></ha-ripple>
           ${this.badge.render()}
         </div>
-        ${this.label ? x`<div class="label ${isActive ? "active" : ""}">
+        ${this.label ? x`<div
+              class=${e6({
+      label: true,
+      active: isActive
+    })}>
               ${this.label}
             </div>` : x``}
       </div>
@@ -3699,6 +3900,7 @@ class Popup {
   _navbarCard;
   _popupItemData;
   _popupItems = [];
+  _backdropClickListener;
   constructor(_navbarCard, _popupItemData) {
     this._navbarCard = _navbarCard;
     this._popupItemData = _popupItemData;
@@ -3709,19 +3911,23 @@ class Popup {
   get items() {
     return this._popupItems;
   }
+  get backdrop() {
+    return this._navbarCard.shadowRoot?.querySelector(".navbar-popup-backdrop") ?? null;
+  }
   open(target) {
     const anchorRect = target.getBoundingClientRect();
     const { style, labelPositionClassName, popupDirectionClassName } = this._getPopupStyles(anchorRect, !this._navbarCard.isDesktop ? "mobile" : this._navbarCard.config?.desktop?.position ?? "bottom" /* bottom */);
     this._navbarCard.focusedPopup = x`
       <div class="navbar-popup-backdrop"></div>
       <div
-        class="
-          navbar-popup
-          ${popupDirectionClassName}
-          ${labelPositionClassName}
-          ${this._navbarCard.isDesktop ? "desktop" : "mobile"}
-          ${this._shouldShowLabelBackground() ? "popuplabelbackground" : ""}
-        "
+        class=${e6({
+      "navbar-popup": true,
+      [popupDirectionClassName]: true,
+      [labelPositionClassName]: true,
+      desktop: this._navbarCard.isDesktop ?? false,
+      mobile: !this._navbarCard.isDesktop,
+      popuplabelbackground: this._shouldShowLabelBackground()
+    })}
         style="${style}">
         ${this.items.map((popupItem) => popupItem.render(popupDirectionClassName, labelPositionClassName)).filter((x2) => x2 != null)}
       </div>
@@ -3736,22 +3942,25 @@ class Popup {
     });
     window.addEventListener("keydown", this._onPopupKeyDownListener);
     setTimeout(() => {
-      const backdrop = this._navbarCard.shadowRoot?.querySelector(".navbar-popup-backdrop");
-      if (backdrop) {
-        backdrop.addEventListener("click", (e5) => {
-          e5.preventDefault();
-          e5.stopPropagation();
+      if (this.backdrop) {
+        this._backdropClickListener = (e7) => {
+          e7.preventDefault();
+          e7.stopPropagation();
           this.close();
-        });
+        };
+        this.backdrop.addEventListener("click", this._backdropClickListener);
       }
     }, 400);
   }
   close() {
     const popup = this._navbarCard.shadowRoot?.querySelector(".navbar-popup");
-    const backdrop = this._navbarCard.shadowRoot?.querySelector(".navbar-popup-backdrop");
-    if (popup && backdrop) {
+    if (this._backdropClickListener && this.backdrop) {
+      this.backdrop.removeEventListener("click", this._backdropClickListener);
+      this._backdropClickListener = undefined;
+    }
+    if (popup && this.backdrop) {
       popup.classList.remove("visible");
-      backdrop.classList.remove("visible");
+      this.backdrop.classList.remove("visible");
       setTimeout(() => {
         this._navbarCard.focusedPopup = null;
       }, 200);
@@ -3819,21 +4028,18 @@ class Popup {
       popupDirectionClassName: "open-up"
     };
   }
-  _onPopupKeyDownListener = (e5) => {
-    if (e5.key === "Escape" && this._navbarCard.focusedPopup) {
-      e5.preventDefault();
+  _onPopupKeyDownListener = (e7) => {
+    if (e7.key === "Escape" && this._navbarCard.focusedPopup) {
+      e7.preventDefault();
       this.close();
     }
   };
 }
 // src/components/navbar/route/popup/popup-item.ts
 init_lit();
-init_utils();
-
 class PopupItem extends BaseRoute {
   _parentPopup;
   _index;
-  _events = new ActionEvents;
   constructor(_navbarCard, _parentPopup, _data, _index) {
     super(_navbarCard, _data);
     this._parentPopup = _parentPopup;
@@ -3847,23 +4053,31 @@ class PopupItem extends BaseRoute {
       return null;
     const showLabelBackground = this._shouldShowLabelBackground();
     return x`<div
-      class="
-        popup-item
-        ${popupDirectionClassName}
-        ${labelPositionClassName}
-        ${showLabelBackground ? "popuplabelbackground" : ""}
-        ${this.selected ? "active" : ""}
-      "
-      style="--index: ${this._index}"
-      @click=${preventEventDefault}
-      @mouseenter=${(e5) => this._events.handleMouseEnter(e5, this)}
-      @mousemove=${(e5) => this._events.handleMouseMove(e5, this)}
-      @mouseleave=${(e5) => this._events.handleMouseLeave(e5, this)}
-      @pointerdown=${(e5) => this._events.handlePointerDown(e5, this)}
-      @pointermove=${(e5) => this._events.handlePointerMove(e5, this)}
-      @pointerup=${(e5) => this._events.handlePointerUp(e5, this)}
-      @pointercancel=${(e5) => this._events.handlePointerMove(e5, this)}>
-      <div class="button ${showLabelBackground ? "popuplabelbackground" : ""}">
+      class=${e6({
+      "popup-item": true,
+      [popupDirectionClassName]: true,
+      [labelPositionClassName]: true,
+      popuplabelbackground: showLabelBackground,
+      active: this.selected
+    })}
+      style=${o6({
+      "--index": this._index
+    })}
+      ${eventDetection({
+      context: this._navbarCard,
+      popupItem: this,
+      tap: this.tap_action ?? {
+        action: "navigate",
+        navigation_path: this.url ?? ""
+      },
+      hold: this.hold_action,
+      doubleTap: this.double_tap_action
+    })}>
+      <div
+        class=${e6({
+      button: true,
+      popuplabelbackground: showLabelBackground
+    })}>
         ${this.icon.render()}
         <md-ripple></md-ripple>
         ${this.badge.render()}
@@ -3882,7 +4096,6 @@ init_lit();
 init_utils();
 class MediaPlayer {
   _navbarCard;
-  _events = new ActionEvents;
   constructor(_navbarCard) {
     this._navbarCard = _navbarCard;
   }
@@ -3895,19 +4108,6 @@ class MediaPlayer {
   get double_tap_action() {
     return this._navbarCard.config?.media_player?.double_tap_action;
   }
-  executeAction = (_target, _element, action, actionType) => {
-    const entity = this._getEntity();
-    if (action) {
-      fireDOMEvent(this._navbarCard, "hass-action", { bubbles: true, composed: true }, {
-        action: actionType,
-        config: { [`${actionType}_action`]: action, entity }
-      });
-    } else if (actionType === "tap") {
-      if (entity) {
-        fireDOMEvent(this._navbarCard, "hass-more-info", { bubbles: true, composed: true }, { entityId: entity });
-      }
-    }
-  };
   shouldShowMediaPlayer = () => {
     const config2 = this._navbarCard.config?.media_player;
     if (!config2?.entity)
@@ -3928,9 +4128,9 @@ class MediaPlayer {
   _getEntity() {
     return processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.entity);
   }
-  _handleMediaPlayerSkipNextClick = (e5) => {
-    e5.preventDefault();
-    e5.stopPropagation();
+  _handleMediaPlayerSkipNextClick = (e7) => {
+    e7.preventDefault();
+    e7.stopPropagation();
     const entity = this._getEntity();
     if (entity) {
       this._navbarCard._hass.callService("media_player", "media_next_track", {
@@ -3938,9 +4138,9 @@ class MediaPlayer {
       });
     }
   };
-  _handleMediaPlayerPlayPauseClick = (e5) => {
-    e5.preventDefault();
-    e5.stopPropagation();
+  _handleMediaPlayerPlayPauseClick = (e7) => {
+    e7.preventDefault();
+    e7.stopPropagation();
     const entity = this._getEntity();
     if (!entity)
       return;
@@ -3970,11 +4170,15 @@ class MediaPlayer {
     return x`
       <ha-card
         class="media-player"
-        @pointerdown=${(e5) => this._events.handlePointerDown(e5, this)}
-        @pointermove=${(e5) => this._events.handlePointerMove(e5, this)}
-        @pointerup=${(e5) => this._events.handlePointerUp(e5, this)}
-        @mouseenter=${(e5) => this._events.handleMouseEnter(e5, this)}
-        @mouseleave=${(e5) => this._events.handleMouseLeave(e5, this)}>
+        ${eventDetection({
+      context: this._navbarCard,
+      tap: this.tap_action ?? {
+        action: "more-info",
+        entity
+      },
+      hold: this.hold_action,
+      doubleTap: this.double_tap_action
+    })}>
         <div
           class="media-player-bg"
           style=${this._navbarCard.config?.media_player?.album_cover_background ? `background-image: url(${mediaPlayerState.attributes.entity_picture});` : ""}></div>
@@ -3997,8 +4201,8 @@ class MediaPlayer {
             >${mediaPlayerState.attributes.media_artist}</span
           >
         </div>
-        <ha-button
-          class="media-player-button media-player-button-play-pause"
+        <button
+          class="navbar-icon-button media-player-button media-player-button-play-pause primary"
           appearance="accent"
           variant="brand"
           @click=${this._handleMediaPlayerPlayPauseClick}
@@ -4006,16 +4210,16 @@ class MediaPlayer {
           @pointerup=${preventEventDefault}>
           <ha-icon
             icon=${mediaPlayerState.state === "playing" ? "mdi:pause" : "mdi:play"}></ha-icon>
-        </ha-button>
-        <ha-button
-          class="media-player-button media-player-button-skip"
+        </button>
+        <button
+          class="navbar-icon-button media-player-button media-player-button-skip"
           appearance="plain"
           variant="neutral"
           @click=${this._handleMediaPlayerSkipNextClick}
           @pointerdown=${preventEventDefault}
           @pointerup=${preventEventDefault}>
           <ha-icon icon="mdi:skip-next"></ha-icon>
-        </ha-button>
+        </button>
       </ha-card>
     `;
   };
@@ -4057,6 +4261,7 @@ class NavbarCard extends i4 {
   connectedCallback() {
     super.connectedCallback();
     forceResetRipple(this);
+    window.removeEventListener("resize", this._checkDesktop);
     window.addEventListener("resize", this._checkDesktop);
     this._detectModes();
     this._checkDesktop();

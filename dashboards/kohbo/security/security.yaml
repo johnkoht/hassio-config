@@ -483,6 +483,7 @@ cards:
                   padding: 0 !important;
                   gap: 5px !important;
                   overflow-x: auto !important;
+                  flex-direction: initial !important;
 
                   &::-webkit-scrollbar {
                     display: none !important;
@@ -490,6 +491,8 @@ cards:
 
                   > div {
                     margin: 0 !important;
+
+
                   }
                 }
           filter:

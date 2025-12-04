@@ -13,6 +13,12 @@ style:
     state-card-content {
       display: none !important;
     }
+
+  ha-card$: |
+    .card-header {
+      display: none !important;
+    }
+
   more-info-content$: |
     hui-section {
       display: none !important;

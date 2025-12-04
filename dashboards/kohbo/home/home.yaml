@@ -1250,7 +1250,8 @@ cards:
                       EVAL: (val) => `$${val.toFixed(2)}`
 
             series:
-              - entity: sensor.whole_home_energy_daily_usage
+              # - entity: sensor.whole_home_energy_daily_usage
+              - entity: sensor.daily_energy_consumption
                 type: column
                 name: Energy Usage
                 statistics:
@@ -1313,11 +1314,11 @@ cards:
           - entity: sensor.panel_2_energy_meter
             type: column
             name: Panel 2
-            statistics:
-              type: change
-              period: hour
-              align: start
-          - entity: sensor.whole_home_energy_daily_usage
+            # statistics:
+            #   type: change
+            #   period: hour
+            #   align: start
+          - entity: sensor.energy_combined_daily
             type: column
             name: Total Energy Usage
             statistics:
@@ -1420,7 +1421,7 @@ cards:
 
       # Panel 2
       - type: custom:mini-graph-card
-        name: Daily Energy Usage
+        name: Whole Home Energy Daily Usage
         entities:
           # - sensor.daily_energy_consumption
           - sensor.whole_home_energy_daily_usage

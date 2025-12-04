@@ -41,9 +41,13 @@ template:
 
 utility_meter:
   energy_combined_daily:
+    name: Daily Energy Usage (Combined Sensor)
     source: sensor.total_energy_meter_combined
     cycle: daily
+    always_available: true
 
   energy_combined_monthly:
+    name: Monthly Energy Usage (Combined Sensor)
     source: sensor.total_energy_meter_combined
     cycle: monthly
+    always_available: true
