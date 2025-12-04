@@ -23,4 +23,4 @@ script:
           media_content_type: music
           announce: true
           extra:
-            volume: 0.5
+            volume: 50
