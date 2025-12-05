@@ -8,12 +8,12 @@ automation:
     mode: "single"
     initial_state: false
     trigger:
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
       # At 2am
-      - platform: time
+      - trigger: time
         at: "02:00:00"
-    condition:
+    conditions:
       # Between 12/1 - 1/07
       - condition: template
         value_template: >
@@ -23,10 +23,30 @@ automation:
       - condition: state
         entity_id: input_boolean.christmas_season_active
         state: "off"
-    action:
+    actions:
       # Turn the script to enable the booleans and automations
-      - service: script.turn_on
+      - action: script.turn_on
         entity_id: script.christmas_enable_automations
+
+  # 
+  # Christmas Manually Enabled
+  # 
+  # If Christmas boolean is manually enabled then we need to activate
+  # all of the automations for xmas.
+  # 
+  - id: "christmas_manually_enabled"
+    alias: "Christman Manually Enabled"
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.christmas_season_active
+        to: "on"
+    actions:
+      # Turn the script to enable the booleans and automations
+      - action: script.turn_on
+        entity_id: script.christmas_enable_automations
+
+
 
 script:
   christmas_enable_automations:
@@ -34,11 +54,11 @@ script:
     mode: "queued"
     sequence:
       # Turn on the Christmas Season boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.christmas_season_active
 
       # Turn on a bunch of automations
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id:
           - automation.christmas_activated
           - automation.christmas_not_activated
