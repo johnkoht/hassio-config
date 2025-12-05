@@ -28,6 +28,25 @@ automation:
       - service: script.turn_on
         entity_id: script.christmas_disable_automations
 
+  # 
+  # Christmas Manually Disabled
+  # 
+  # If Christmas boolean is manually disabled then we need to deactivate
+  # all of the automations for xmas.
+  # 
+  - id: "christmas_manually_disabled"
+    alias: "Christman Manually Disabled"
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.christmas_season_active
+        to: "off"
+    actions:
+      # Turn the script to enable the booleans and automations
+      - action: script.turn_on
+        entity_id: script.christmas_disable_automations
+        
+
 script:
   christmas_disable_automations:
     alias: Christmas - Disable Automations
