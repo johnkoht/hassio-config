@@ -37,7 +37,7 @@ cards:
 
 
   # 
-  # Vacuum Status
+  # Sun & Moon Status
   # 
   - type: custom:stack-in-card
     card_mod:
@@ -427,6 +427,10 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
+            tap_action:
+              action: navigate
+              navigation_path: "#accent_light_popup"
+              
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
@@ -599,7 +603,31 @@ cards:
         template: kohbo_card_section_description
 
 
-      
+
+  # 
+  # Accent Lights Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: light_popup
+    variables:
+      - light_entity: light.exterior_accent_lights
+      - popup_hash: '#accent_light_popup'
+      - popup_title: 'Exterior Accent Lights'
+      - entity_id: 
+        - light.exterior_hue_outdoor_spot_1
+        - light.exterior_hue_outdoor_spot_2
+        - light.exterior_hue_outdoor_spot_3
+        - light.hue_outdoor_spot_4
+        - light.hue_outdoor_spot_5
+        - light.hue_outdoor_spot_6
+        - light.hue_outdoor_spot_7
+        - light.hue_outdoor_spot_8
+        - light.hue_outdoor_spot_9
+        - light.hue_outdoor_spot_10
+        - light.hue_spot_11_light
+        - light.hue_spot_12_light
+        - light.hue_spot_13_light
+        - light.hue_spot_14_light
 
 
   # 
