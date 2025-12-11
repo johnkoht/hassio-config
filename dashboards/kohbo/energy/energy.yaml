@@ -1,0 +1,309 @@
+type: custom:vertical-layout
+title: Energy
+path: energy
+theme: kohbo
+# layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        - type: custom:button-card
+          template: empty_column
+
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Energy
+
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#energy_settings_popup'
+
+  # 
+  # Energy Consumption Overview
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        :host {
+          --keep-border_radius: 'true';
+          --keep-background: 'true';
+          --keep-border-radius: 'true';
+          --stack-card-gap: 10px !important;
+          --vertical-stack-card-gap: 10px !important;
+        }
+    keep:
+      border_radius: true
+      background: true
+    cards:
+      - type: custom:button-card
+        entity: sensor.whole_home_energy_daily_usage
+        name: Energy Consumption
+        state_display: >
+          [[[
+            if (entity.state > 25)
+              return "Very High";
+            else if (entity.state > 20)
+              return "High";
+            else if (entity.state > 10)
+              return "Normal";
+            else
+              return "Low";
+          ]]]
+        show_icon: false
+        show_state: true
+        styles:
+          grid:
+            - grid-template-areas: '"n n" "s s"'
+            - grid-template-columns: 1fr
+          card:
+            - justify-content: center
+            - padding-bottom: 0
+            - padding-top: 10px
+          name:
+            - justify-self: center
+            - font-size: 14px
+            - font-weight: 500
+            - color: var(--secondary-text-color)
+            - align-self: end
+            - margin-bottom: 2px
+          state:
+            - justify-self: center
+            - font-size: 28px
+            - font-weight: 400
+            - color: var(--primary-text-color)
+
+      # 
+      # Daily Energy Usage Gauge
+      # 
+      - type: gauge
+        name: Daily Consumption
+        unit: 'kWh'
+        entity: sensor.whole_home_energy_daily_usage
+        min: 0
+        max: 30
+        needle: true
+        segments:
+          - from: 0
+            color: '#06D6A0'
+          - from: 1
+            color: '#1ED59A'
+          - from: 2
+            color: '#37D594'
+          - from: 3
+            color: '#50D48E'
+          - from: 4
+            color: '#69D488'
+          - from: 5
+            color: '#82D383'
+          - from: 6
+            color: '#9BD37D'
+          - from: 7
+            color: '#B4D277'
+          - from: 8
+            color: '#CDD271'
+          - from: 9
+            color: '#E6D16B'
+          - from: 10
+            color: '#FFD166'
+          - from: 11
+            color: '#FCC55B'
+          - from: 12
+            color: '#F9BA51'
+          - from: 13
+            color: '#F6AF47'
+          - from: 14
+            color: '#F3A33D'
+          - from: 15
+            color: '#F19833'
+          - from: 16
+            color: '#EE8D29'
+          - from: 17
+            color: '#EB811F'
+          - from: 18
+            color: '#E87615'
+          - from: 19
+            color: '#E56B0B'
+          - from: 20
+            color: '#E36001'
+          - from: 21
+            color: '#E45D08'
+          - from: 22
+            color: '#E55B0F'
+          - from: 23
+            color: '#E65816'
+          - from: 24
+            color: '#E7561D'
+          - from: 25
+            color: '#E85324'
+          - from: 26
+            color: '#E9512B'
+          - from: 27
+            color: '#EA4E32'
+          - from: 28
+            color: '#EB4C39'
+          - from: 29
+            color: '#EC4940'
+          - from: 30
+            color: '#ED4747'
+        card_mod:
+          style:
+            ha-gauge $: |
+              path.dial,
+              path.value,
+              path.level {
+                stroke-width: 10px !important;
+              }
+
+              path.dial {
+                stroke: var(--darker-primary-color) !important;
+              }
+
+              .text {
+                bottom: 10px !important;
+              }
+
+              .value-text {
+                font-size: 35px !important;
+              }
+              
+            .: |
+              ha-card {
+                padding-top: 0 !important;
+              }
+              .name {
+                margin-top: -15px !important;
+                color: var(--secondary-text-color) !important;
+                font-size: 12px !important;
+              }
+      
+  
+      # 
+      # Daily Energy Usage and Price
+      # 
+      - type: custom:apexcharts-card
+        card_mod:
+          style: |
+            ha-card {
+              background: var(--darker-primary-color);
+              border-top-right-radius: 0;
+              border-top-left-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+            }
+        graph_span: 24h
+        # span:
+        #   start: day
+        stacked: true
+        header:
+          show: false
+        apex_config:
+          yaxis:
+            - id: usage
+              show: 
+                dataLabels: false
+              title: 
+                text: ""
+              labels:
+                formatter: |
+                  EVAL: (val) => `${val.toFixed(1)}`
+            - id: price  # Secondary Y-axis for price
+              opposite: true
+              show: 
+                dataLabels: false
+              title:
+                text: ""
+              labels:
+                formatter: |
+                  EVAL: (val) => `$${val.toFixed(2)}`
+
+        series:
+          # - entity: sensor.whole_home_energy_daily_usage
+          - entity: sensor.daily_energy_consumption
+            type: column
+            name: Energy Usage
+            statistics:
+              type: change
+              period: hour
+              align: start
+            yaxis_id: usage
+          - entity: sensor.energy_price
+            type: line
+            name: Energy Price
+            stroke_width: 3
+            group_by:
+              func: avg
+              duration: 1h
+            yaxis_id: price
+
+
+  # - type: custom:mini-graph-card
+  #   entities:
+  #     - entity: sensor.energy_current_consumption
+  #   name: Energy Usage
+  #   show:
+  #     graph: bar
+  #   card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+  #   points_per_hour: 2
+  #   line_width: 4
+  #   decimals: 0
+  #   smoothing: true
+  #   color_thresholds_transition: smooth
+  #   color_thresholds:
+  #     - color: "#59A5D8"
+  #       value: 400
+  #     - color: "#ADD2EB"
+  #       value: 600
+  #     - color: "#06D6A0"
+  #       value: 1000
+  #     - color: "#FFD166"
+  #       value: 2000
+  #     - color: "#ED4747"
+  #       value: 3000
+
+
+  - type: custom:apexcharts-card
+    experimental:
+      color_threshold: true
+    graph_span: 48h
+    stacked: true
+    header:
+      show: true
+      title: Energy Usage
+    series:
+      - entity: sensor.daily_energy_consumption
+        type: column
+        name: Total Energy Usage
+        statistics:
+          type: change
+          period: hour
+          align: start
+        color_threshold:
+          - value: 0
+            color: "#06D6A0"
+          - value: 0.5
+            color: "#FFD166"
+          - value: 1.0
+            color: "#E36001"
+          - value: 1.5
+            color: "#ED4747"
+          - value: 2.0
+            color: "#ED4747"
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml

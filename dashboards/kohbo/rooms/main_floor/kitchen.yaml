@@ -115,23 +115,16 @@ cards:
         entity: switch.smart_plug_8_switch
         name: South Wall Outlet
         template: kohbo_device_smart_plug_entity
-        variables:
-          power_sensor: sensor.smart_plug_8_active_power
-          confirmation: true
 
       - type: custom:button-card
         entity: switch.tradfri_smart_plug_2_switch
         name: Air Fryer
         template: kohbo_device_smart_plug_entity
-        variables:
-          confirmation: true
 
       - type: custom:button-card
         entity: switch.tradfri_smart_plug_4_switch
         name: Toaster Oven
         template: kohbo_device_smart_plug_entity
-        variables:
-          confirmation: true
     
       - type: custom:button-card
         entity: binary_sensor.kitchen_door

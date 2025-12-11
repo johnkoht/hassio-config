@@ -115,12 +115,14 @@ cards:
         template: kohbo_device_entity
         icon: mdi:blur
 
-      # Radiant Heating
+      # Main Bedroom Thermostat
       - type: custom:button-card
         entity: climate.ninos_bedroom
-        name: Radiant Heating
-        template: kohbo_device_entity
-        icon: mdi:radiator
+        name: Floor Heating
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: navigate
+          navigation_path: '#ninos_bedroom_thermostat'
 
       # North Outlet
       - type: custom:button-card
@@ -129,7 +131,6 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_1_active_power
-          confirmation: true
 
       # South Outlet
       - type: custom:button-card
@@ -138,7 +139,6 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_2_active_power
-          confirmation: true
     
       # Door
       - type: custom:button-card
@@ -283,3 +283,16 @@ cards:
   # Navbar
   # 
   - !include /config/dashboards/templates/includes/navbar.yaml
+
+
+  # 
+  # Ninos Bedroom Thermostat Popup
+  # 
+  - type: custom:decluttering-card
+    template: thermostat_radiant_floor_popup
+    variables:
+      - hash: "#ninos_bedroom_thermostat"
+      - entity: climate.ninos_bedroom
+      - name: "Nino's Bedroom"
+      - temperature_sensor: sensor.nino_room_mean_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature

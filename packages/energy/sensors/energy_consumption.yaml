@@ -33,4 +33,65 @@ template:
         device_class: energy
         state_class: total_increasing
         state: >
-          {{ (states('sensor.panel_1_energy_meter_monthly') | float(0) + states('sensor.panel_2_energy_meter_monthly') | float(0)) | round(2) }}
+          {{ (states('sensor.panel_1_energy_meter_monthly') | float(0) + states('sensor.panel_2_energy_meter_monthly') | float(0)) | round(2) }}r
+
+
+  # 
+  # Daily Energy Forecast
+  # 
+  - sensor:
+      - name: "Daily Home Energy Usage Forecast"
+        unique_id: daily_home_energy_usage_forecast
+        unit_of_measurement: "kWh"
+        state: >
+          {% set today = states('sensor.daily_energy_consumption') | float(0) %}
+          {% set now_ts = now() %}
+          {% set seconds_passed = now_ts.hour*3600 + now_ts.minute*60 + now_ts.second %}
+          {% set seconds_day = 24*3600 %}
+          {% if seconds_passed == 0 or today == 0 %}
+            0
+          {% else %}
+            {{ (today / seconds_passed) * seconds_day }}
+          {% endif %}
+
+  - sensor:
+      - name: "Whole Home Energy Trend"
+        unique_id: whole_home_energy_trend
+        icon: mdi:trending-up
+        state: >
+          {% set forecast = states('sensor.whole_home_energy_forecast_end_of_day') | float(0) %}
+          {% set avg = states('sensor.whole_home_daily_energy_stats') | float(0) %}
+          {% if avg == 0 %}
+            unknown
+          {% elif forecast > avg * 1.1 %}
+            above
+          {% elif forecast < avg * 0.9 %}
+            below
+          {% else %}
+            normal
+          {% endif %}
+    
+  - sensor:
+      - name: "Whole Home Energy Trend Percent"
+        unique_id: whole_home_energy_trend_percent
+        unit_of_measurement: "%"
+        state: >
+          {% set forecast = states('sensor.whole_home_energy_forecast_end_of_day') | float(0) %}
+          {% set avg = states('sensor.whole_home_daily_energy_stats') | float(0) %}
+          {% if avg == 0 %}
+            0
+          {% else %}
+            {{ ((forecast - avg) / avg * 100) | round(1) }}
+          {% endif %}       
+
+
+# 
+# Normal Daily Usage Stat
+# 
+sensor:
+  - platform: statistics
+    name: whole_home_daily_energy_stats
+    entity_id: sensor.daily_energy_consumption
+    state_characteristic: mean
+    max_age:
+      days: 30

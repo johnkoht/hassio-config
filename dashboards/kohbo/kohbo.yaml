@@ -69,6 +69,7 @@ views:
 
     # More
     - !include /config/dashboards/kohbo/more/people.yaml
+    - !include /config/dashboards/kohbo/energy/energy.yaml
 
     # Holidays
     - !include /config/dashboards/kohbo/holidays/holidays.yaml
