@@ -48,7 +48,7 @@ template:
           {% set now_ts = now() %}
           {% set seconds_passed = now_ts.hour*3600 + now_ts.minute*60 + now_ts.second %}
           {% set seconds_day = 24*3600 %}
-          {% if seconds_passed == 0 or today == 0 %}
+          {% if seconds_passed < 900 or today == 0 %}
             0
           {% else %}
             {{ (today / seconds_passed) * seconds_day }}
@@ -59,7 +59,7 @@ template:
         unique_id: whole_home_energy_trend
         icon: mdi:trending-up
         state: >
-          {% set forecast = states('sensor.whole_home_energy_forecast_end_of_day') | float(0) %}
+          {% set forecast = states('sensor.daily_home_energy_usage_forecast') | float(0) %}
           {% set avg = states('sensor.whole_home_daily_energy_stats') | float(0) %}
           {% if avg == 0 %}
             unknown
@@ -76,7 +76,7 @@ template:
         unique_id: whole_home_energy_trend_percent
         unit_of_measurement: "%"
         state: >
-          {% set forecast = states('sensor.whole_home_energy_forecast_end_of_day') | float(0) %}
+          {% set forecast = states('sensor.daily_home_energy_usage_forecast') | float(0) %}
           {% set avg = states('sensor.whole_home_daily_energy_stats') | float(0) %}
           {% if avg == 0 %}
             0
@@ -91,7 +91,7 @@ template:
 sensor:
   - platform: statistics
     name: whole_home_daily_energy_stats
-    entity_id: sensor.daily_energy_consumption
+    entity_id: sensor.whole_home_energy_daily_usage
     state_characteristic: mean
     max_age:
       days: 30
