@@ -122,3 +122,8 @@ script:
           announce: true
           extra:
             volume: "{{speech_volume}}"
+
+      - alias: "Wait for TTS to finish (approx)"
+        delay: >
+          {% set length = (speech_message|length) | float(0) %}
+          {{ ((length / 17) | round(0, 'ceil') + 1) | int(1) }}
