@@ -1,0 +1,16 @@
+automation:
+  - id: "main_bedroom_lights_reset_manual_toggle"
+    alias: "Main Bedroom Lights - Reset Manual Toggle"
+    triggers:
+      - trigger: state
+        entity_id: intput_boolean.main_bedroom_occupied
+        to: "off"
+        for:
+          seconds: 30
+    conditions:
+      - condition: state
+        entity_id: input_boolean.main_bedroom_lights_manually_toggled
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.main_bedroom_lights_manually_toggled
