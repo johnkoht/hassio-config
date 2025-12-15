@@ -45,5 +45,5 @@ condition:
     after: "18:30:00"
 action:
   # Switch the power plug on
-  - service: light.turn_on
-    entity_id: light.hue_smart_plug_1
+  - service: switch.turn_on
+    entity_id: switch.hue_smart_plug_1

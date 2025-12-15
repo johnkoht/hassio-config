@@ -282,7 +282,7 @@ cards:
     stacked: true
     header:
       show: true
-      title: Energy Usage
+      title: Energy Usage (48h)
     series:
       - entity: sensor.daily_energy_consumption
         type: column
@@ -302,6 +302,88 @@ cards:
             color: "#ED4747"
           - value: 2.0
             color: "#ED4747"
+
+
+  - type: custom:apexcharts-card
+    experimental:
+      color_threshold: true
+    graph_span: 30d
+    stacked: true
+    header:
+      show: true
+      title: Energy Usage (past month)
+    series:
+      - entity: sensor.daily_energy_consumption
+        type: column
+        name: Total Energy Usage
+        statistics:
+          type: change
+          period: day
+          align: start
+        color_threshold:
+          - value: 0
+            color: "#06D6A0"
+          - value: 0.5
+            color: "#FFD166"
+          - value: 1.0
+            color: "#E36001"
+          - value: 1.5
+            color: "#ED4747"
+          - value: 2.0
+            color: "#ED4747"
+  
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: gauge
+        name: Daily Energy Usage
+        unit: 'kWh'
+        entity: sensor.whole_home_energy_daily_usage
+        min: 0
+        max: 30
+        needle: true
+        segments:
+          - from: 0
+            color: var(--success-color)
+          - from: 10
+            color: var(--warning-color)
+          - from: 20
+            color: var(--error-color)
+
+      # Weekly Energy Usage
+      - type: gauge
+        name: Weekly Energy Usage
+        unit: 'kWh'
+        entity: sensor.whole_home_energy_weekly_usage
+        min: 0
+        max: 300
+        needle: true
+        segments:
+          - from: 0
+            color: var(--success-color)
+          - from: 100
+            color: var(--warning-color)
+          - from: 200
+            color: var(--error-color)
+
+      # Monthly Energy Usage
+      - type: gauge
+        name: Monthly Energy Usage
+        unit: 'kWh'
+        entity: sensor.whole_home_energy_monthly_usage
+        min: 0
+        max: 1000
+        needle: true
+        segments:
+          - from: 0
+            color: var(--success-color)
+          - from: 333
+            color: var(--warning-color)
+          - from: 666
+            color: var(--error-color)
+
 
   #
   # Navbar
