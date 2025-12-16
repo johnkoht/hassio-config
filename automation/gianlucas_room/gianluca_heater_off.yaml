@@ -38,7 +38,7 @@ condition:
         state: "off"
   # Plug is currently on
   - condition: state
-    entity_id: light.hue_smart_plug_1
+    entity_id: switch.hue_smart_plug_1
     state: "on"
 action:
   # Switch the power plug of
