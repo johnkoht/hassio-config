@@ -509,3 +509,154 @@ cards:
   - !include /config/dashboards/kohbo/climate/weather_popup.yaml
 
       
+  # 
+  # Climate Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#climate_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        # margin_top_mobile: calc(100vh - 550px)
+        # margin_top_desktop: calc(100vh - 550px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # General Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: General Automations
+      - type: entities
+        entities:
+          # Pre-heat/cool house
+          - entity: automation.main_floor_climate_morning_start
+            name: Pre-Heat/Cool in Morning
+            icon: mdi:weather-lightning-rainy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Activate climate when nearly home
+          - entity: automation.main_floor_climate_resume_when_nearly_home
+            name: Activate Climate When Nearly Home
+            icon: mdi:weather-lightning-rainy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          
+          # High energy price automations
+          - entity: input_boolean.climate_energy_price_automations
+            name: High Energy Price Automations
+            icon: kohbo:kohbo-light-2
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Auto Resume Climate Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automatically Resume Climate
+      - type: entities
+        entities:
+          # Automatically reactivate main floor climate
+          - entity: automation.main_floor_climate_resume
+            name: Main Floor Climate Resume Automation
+            icon: mdi:weather-lightning-rainy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Automatically reactivate main floor climate
+          - entity: automation.second_floor_climate_resume
+            name: Second Floor Climate Resume Automation
+            icon: mdi:weather-lightning-rainy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      - type: custom:button-card
+        name: Automatically resume thermostats when the house is occupied. The upper floor will resume if any room is occupied during the day.
+        template: kohbo_card_section_description
+
+      # 
+      # Auto-Eco Climate Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Eco-Mode Automations
+      - type: entities
+        entities:
+          # Auto eco for main floor
+          - entity: automation.main_floor_climate_to_eco
+            name: Main Floor Auto Eco Mode
+            icon: mdi:weather-lightning-rainy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Auto eco for upper floor
+          - entity: automation.second_floor_climate_off
+            name: Second Floor Auto Eco Mode
+            icon: mdi:weather-lightning-rainy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      - type: custom:button-card
+        name: Automatically enable eco mode for the thermostats if the house is unoccupied. The main floor will turn to eco if the house enters bedtime mode (and there are not guests).
+        template: kohbo_card_section_description
+
+
+      # 
+      # Weather Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Severe Weather
+      - type: entities
+        entities:
+          # Severe Weather Warning
+          - entity: automation.severe_weather_warning
+            name: Severe Weather Warning
+            icon: mdi:weather-lightning-rainy
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Severe Rain Incoming
+          - entity: automation.severe_rain_incoming
+            name: Severe Rain Incoming
+            icon: mdi:weather-pouring
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Tempest Rain Alert
+          - entity: automation.tempest_rain_alert
+            name: Tempest Rain Alert
+            icon: mdi:weather-pouring
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # High UV Alert
+          - entity: automation.tempest_high_uv_alert
+            name: High UV Alert
+            icon: mdi:sun-wireless
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          
+
+            

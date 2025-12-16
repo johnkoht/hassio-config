@@ -26,6 +26,10 @@ automation:
       - condition: state
         entity_id: binary_sensor.extreme_climate
         state: "off"
+      # Energy price automations are enabled
+      - condition: state
+        entity: input_boolean.climate_energy_price_automations
+        state: "on"
       # Between 7am and 10pm
       - condition: time
         after: "07:00:00"

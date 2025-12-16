@@ -79,7 +79,7 @@ cards:
         entity: sensor.jr_suite_awair_score
         name: Awair AQI
         template: kohbo_device_entity
-        icon: mdi:blur\
+        icon: mdi:blur
 
       # Radiant Heating
       - type: custom:button-card

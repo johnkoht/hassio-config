@@ -28,6 +28,10 @@ automation:
       - condition: state
         entity_id: binary_sensor.extreme_climate
         state: "off"
+      # Energy price automations are enabled
+      - condition: state
+        entity: input_boolean.climate_energy_price_automations
+        state: "on"
       # Make sure the Nest isn't set to a preset already
       - condition: template
         value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode == 'none' }}"

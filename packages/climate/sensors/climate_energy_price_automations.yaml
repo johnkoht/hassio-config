@@ -1,0 +1,4 @@
+input_boolean:
+  climate_energy_price_automations:
+    name: Climate - Energy Price Automations
+    icon: mdi:lightning-bolt
