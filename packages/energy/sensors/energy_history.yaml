@@ -1,0 +1,397 @@
+###############################################################################
+# Hour-of-day baseline (weekday vs weekend) using hourly utility meter buckets
+#
+# Inputs required:
+#   - sensor.whole_home_energy_hourly_usage  (kWh for last completed hour)
+#   - sensor.whole_home_energy_daily_usage   (kWh used today so far)
+#
+# How it works:
+#   - Every hour at :00:10, we snapshot the *previous hour* kWh into an
+#     input_number bucket for that hour-of-day (00-23), split into weekday/weekend
+#   - Statistics sensors compute the rolling 30-day mean for each bucket
+#   - Templates sum those 24 means to compute expected-so-far and forecast
+###############################################################################
+
+input_number:
+  # Weekday bins
+  energy_weekday_h00: { name: "Energy Weekday H00", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h01: { name: "Energy Weekday H01", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h02: { name: "Energy Weekday H02", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h03: { name: "Energy Weekday H03", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h04: { name: "Energy Weekday H04", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h05: { name: "Energy Weekday H05", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h06: { name: "Energy Weekday H06", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h07: { name: "Energy Weekday H07", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h08: { name: "Energy Weekday H08", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h09: { name: "Energy Weekday H09", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h10: { name: "Energy Weekday H10", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h11: { name: "Energy Weekday H11", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h12: { name: "Energy Weekday H12", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h13: { name: "Energy Weekday H13", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h14: { name: "Energy Weekday H14", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h15: { name: "Energy Weekday H15", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h16: { name: "Energy Weekday H16", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h17: { name: "Energy Weekday H17", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h18: { name: "Energy Weekday H18", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h19: { name: "Energy Weekday H19", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h20: { name: "Energy Weekday H20", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h21: { name: "Energy Weekday H21", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h22: { name: "Energy Weekday H22", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekday_h23: { name: "Energy Weekday H23", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+
+  # Weekend bins
+  energy_weekend_h00: { name: "Energy Weekend H00", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h01: { name: "Energy Weekend H01", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h02: { name: "Energy Weekend H02", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h03: { name: "Energy Weekend H03", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h04: { name: "Energy Weekend H04", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h05: { name: "Energy Weekend H05", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h06: { name: "Energy Weekend H06", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h07: { name: "Energy Weekend H07", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h08: { name: "Energy Weekend H08", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h09: { name: "Energy Weekend H09", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h10: { name: "Energy Weekend H10", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h11: { name: "Energy Weekend H11", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h12: { name: "Energy Weekend H12", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h13: { name: "Energy Weekend H13", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h14: { name: "Energy Weekend H14", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h15: { name: "Energy Weekend H15", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h16: { name: "Energy Weekend H16", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h17: { name: "Energy Weekend H17", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h18: { name: "Energy Weekend H18", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h19: { name: "Energy Weekend H19", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h20: { name: "Energy Weekend H20", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h21: { name: "Energy Weekend H21", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h22: { name: "Energy Weekend H22", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+  energy_weekend_h23: { name: "Energy Weekend H23", min: 0, max: 50, step: 0.01, mode: box, unit_of_measurement: "kWh" }
+
+
+automation:
+  - alias: "Energy: snapshot previous hour into weekday/weekend bin"
+    mode: single
+    trigger:
+      - platform: time_pattern
+        minutes: "0"
+        seconds: "10"
+    variables:
+      # Previous hour end timestamp (this hour's boundary)
+      prev_ts: "{{ now() - timedelta(hours=1) }}"
+      prev_hour: "{{ prev_ts.hour }}"
+      is_weekend: "{{ prev_ts.weekday() in [5, 6] }}"
+      bin_prefix: "{{ 'energy_weekend_h' if is_weekend else 'energy_weekday_h' }}"
+      target_entity: "{{ 'input_number.' ~ bin_prefix ~ '%02d'|format(prev_hour) }}"
+      prev_val: "{{ states('sensor.whole_home_energy_hourly_usage') | float(0) }}"
+    action:
+      - service: input_number.set_value
+        target:
+          entity_id: "{{ target_entity }}"
+        data:
+          value: "{{ prev_val }}"
+
+
+sensor:
+  # Weekday baselines (30-day mean per hour)
+  - platform: statistics
+    name: baseline_weekday_h00
+    entity_id: input_number.energy_weekday_h00
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h01
+    entity_id: input_number.energy_weekday_h01
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h02
+    entity_id: input_number.energy_weekday_h02
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h03
+    entity_id: input_number.energy_weekday_h03
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h04
+    entity_id: input_number.energy_weekday_h04
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h05
+    entity_id: input_number.energy_weekday_h05
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h06
+    entity_id: input_number.energy_weekday_h06
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h07
+    entity_id: input_number.energy_weekday_h07
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h08
+    entity_id: input_number.energy_weekday_h08
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h09
+    entity_id: input_number.energy_weekday_h09
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h10
+    entity_id: input_number.energy_weekday_h10
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h11
+    entity_id: input_number.energy_weekday_h11
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h12
+    entity_id: input_number.energy_weekday_h12
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h13
+    entity_id: input_number.energy_weekday_h13
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h14
+    entity_id: input_number.energy_weekday_h14
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h15
+    entity_id: input_number.energy_weekday_h15
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h16
+    entity_id: input_number.energy_weekday_h16
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h17
+    entity_id: input_number.energy_weekday_h17
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h18
+    entity_id: input_number.energy_weekday_h18
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h19
+    entity_id: input_number.energy_weekday_h19
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h20
+    entity_id: input_number.energy_weekday_h20
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h21
+    entity_id: input_number.energy_weekday_h21
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h22
+    entity_id: input_number.energy_weekday_h22
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekday_h23
+    entity_id: input_number.energy_weekday_h23
+    state_characteristic: mean
+    max_age: { days: 30 }
+
+  # Weekend baselines (30-day mean per hour)
+  - platform: statistics
+    name: baseline_weekend_h00
+    entity_id: input_number.energy_weekend_h00
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h01
+    entity_id: input_number.energy_weekend_h01
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h02
+    entity_id: input_number.energy_weekend_h02
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h03
+    entity_id: input_number.energy_weekend_h03
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h04
+    entity_id: input_number.energy_weekend_h04
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h05
+    entity_id: input_number.energy_weekend_h05
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h06
+    entity_id: input_number.energy_weekend_h06
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h07
+    entity_id: input_number.energy_weekend_h07
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h08
+    entity_id: input_number.energy_weekend_h08
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h09
+    entity_id: input_number.energy_weekend_h09
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h10
+    entity_id: input_number.energy_weekend_h10
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h11
+    entity_id: input_number.energy_weekend_h11
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h12
+    entity_id: input_number.energy_weekend_h12
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h13
+    entity_id: input_number.energy_weekend_h13
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h14
+    entity_id: input_number.energy_weekend_h14
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h15
+    entity_id: input_number.energy_weekend_h15
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h16
+    entity_id: input_number.energy_weekend_h16
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h17
+    entity_id: input_number.energy_weekend_h17
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h18
+    entity_id: input_number.energy_weekend_h18
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h19
+    entity_id: input_number.energy_weekend_h19
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h20
+    entity_id: input_number.energy_weekend_h20
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h21
+    entity_id: input_number.energy_weekend_h21
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h22
+    entity_id: input_number.energy_weekend_h22
+    state_characteristic: mean
+    max_age: { days: 30 }
+  - platform: statistics
+    name: baseline_weekend_h23
+    entity_id: input_number.energy_weekend_h23
+    state_characteristic: mean
+    max_age: { days: 30 }
+
+
+template:
+  - sensor:
+      - name: "Energy Baseline Mode"
+        unique_id: energy_baseline_mode
+        state: >
+          {{ 'weekend' if now().weekday() in [5,6] else 'weekday' }}
+
+      - name: "Energy Expected So Far"
+        unique_id: energy_expected_so_far
+        unit_of_measurement: "kWh"
+        state: >
+          {% set h = now().hour %}
+          {% set is_weekend = now().weekday() in [5,6] %}
+          {% set prefix = 'sensor.baseline_weekend_h' if is_weekend else 'sensor.baseline_weekday_h' %}
+          {% set total = namespace(v=0) %}
+          {% for i in range(0, h+1) %}
+            {% set total.v = total.v + (states(prefix ~ '%02d'|format(i)) | float(0)) %}
+          {% endfor %}
+          {{ total.v | round(2) }}
+
+      - name: "Energy Expected Remaining"
+        unique_id: energy_expected_remaining
+        unit_of_measurement: "kWh"
+        state: >
+          {% set h = now().hour %}
+          {% set is_weekend = now().weekday() in [5,6] %}
+          {% set prefix = 'sensor.baseline_weekend_h' if is_weekend else 'sensor.baseline_weekday_h' %}
+          {% set total = namespace(v=0) %}
+          {% for i in range(h+1, 24) %}
+            {% set total.v = total.v + (states(prefix ~ '%02d'|format(i)) | float(0)) %}
+          {% endfor %}
+          {{ total.v | round(2) }}
+
+      - name: "Energy Forecast End Of Day"
+        unique_id: energy_forecast_end_of_day
+        unit_of_measurement: "kWh"
+        state: >
+          {% set actual = states('sensor.whole_home_energy_daily_usage') | float(0) %}
+          {% set remaining = states('sensor.energy_expected_remaining') | float(0) %}
+          {{ (actual + remaining) | round(2) }}
+
+      - name: "Energy Delta So Far"
+        unique_id: energy_delta_so_far
+        unit_of_measurement: "kWh"
+        state: >
+          {% set actual = states('sensor.whole_home_energy_daily_usage') | float(0) %}
+          {% set expected = states('sensor.energy_expected_so_far') | float(0) %}
+          {{ (actual - expected) | round(2) }}
+
+      - name: "Energy Trend Percent"
+        unique_id: energy_trend_percent
+        unit_of_measurement: "%"
+        state: >
+          {% set expected = states('sensor.energy_expected_so_far') | float(0) %}
+          {% set delta = states('sensor.energy_delta_so_far') | float(0) %}
+          {% if expected < 0.25 %}
+            0
+          {% else %}
+            {{ (delta / expected * 100) | round(1) }}
+          {% endif %}

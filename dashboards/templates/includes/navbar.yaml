@@ -73,15 +73,20 @@ routes:
         url: /dashboard-kohbo/school
         label: School
 
-      # Devices
-      - icon: kohbo:kohbo-devices
-        url: /dashboard-kohbo/devices
-        label: Devices
+      # Energy
+      - icon: mdi:lightning-bolt
+        url: /dashboard-kohbo/energy
+        label: Energy
 
-      # Media
-      - icon: kohbo:kohbo-media
-        url: /dashboard-kohbo/media
-        label: Media
+      # # Devices
+      # - icon: kohbo:kohbo-devices
+      #   url: /dashboard-kohbo/devices
+      #   label: Devices
+
+      # # Media
+      # - icon: kohbo:kohbo-media
+      #   url: /dashboard-kohbo/media
+      #   label: Media
 
       # Holidays
       - icon: mdi:holidays

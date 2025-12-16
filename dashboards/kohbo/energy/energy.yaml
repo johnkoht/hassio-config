@@ -296,14 +296,17 @@ cards:
             color: "#06D6A0"
           - value: 0.5
             color: "#FFD166"
-          - value: 1.0
-            color: "#E36001"
           - value: 1.5
-            color: "#ED4747"
+            color: "#E36001"
           - value: 2.0
             color: "#ED4747"
+          - value: 3.0
+            color: "#ED4747"
 
 
+  # 
+  # Energy Usage over the last 30 days
+  # 
   - type: custom:apexcharts-card
     experimental:
       color_threshold: true
@@ -311,7 +314,7 @@ cards:
     stacked: true
     header:
       show: true
-      title: Energy Usage (past month)
+      title: Energy Usage (30d)
     series:
       - entity: sensor.daily_energy_consumption
         type: column
@@ -323,13 +326,13 @@ cards:
         color_threshold:
           - value: 0
             color: "#06D6A0"
-          - value: 0.5
+          - value: 10.0
             color: "#FFD166"
-          - value: 1.0
+          - value: 15.0
             color: "#E36001"
-          - value: 1.5
+          - value: 20.0
             color: "#ED4747"
-          - value: 2.0
+          - value: 25.0
             color: "#ED4747"
   
 
@@ -383,6 +386,12 @@ cards:
             color: var(--warning-color)
           - from: 666
             color: var(--error-color)
+
+
+  - type: energy-devices-graph
+    title: Individual Devices
+    max_devices: 8
+    hide_compound_stats: true
 
 
   #
