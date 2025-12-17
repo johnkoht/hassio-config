@@ -30,7 +30,7 @@ automation:
         state: "off"
       # Energy price automations are enabled
       - condition: state
-        entity: input_boolean.climate_energy_price_automations
+        entity_id: input_boolean.climate_energy_price_automations
         state: "on"
       # Make sure the Nest isn't set to a preset already
       - condition: template

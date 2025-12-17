@@ -67,20 +67,33 @@ input_number:
 
 
 automation:
-  - alias: "Energy: snapshot previous hour into weekday/weekend bin"
+  - id: "energy_history_hourly_snapshot"
+    alias: "Energy History Hourly Snapshot"
     mode: single
     trigger:
       - platform: time_pattern
         minutes: "0"
         seconds: "10"
+
     variables:
-      # Previous hour end timestamp (this hour's boundary)
-      prev_ts: "{{ now() - timedelta(hours=1) }}"
-      prev_hour: "{{ prev_ts.hour }}"
-      is_weekend: "{{ prev_ts.weekday() in [5, 6] }}"
+      # At HH:00:10 we snapshot the hour that just ended.
+      prev_hour: "{{ (now().hour - 1) % 24 }}"
+
+      # If it's 00:00:10, the previous hour belongs to "yesterday"
+      prev_day_weekday: >
+        {% if now().hour == 0 %}
+          {{ (now() - timedelta(days=1)).weekday() }}
+        {% else %}
+          {{ now().weekday() }}
+        {% endif %}
+
+      is_weekend: "{{ prev_day_weekday in [5, 6] }}"
       bin_prefix: "{{ 'energy_weekend_h' if is_weekend else 'energy_weekday_h' }}"
       target_entity: "{{ 'input_number.' ~ bin_prefix ~ '%02d'|format(prev_hour) }}"
+
+      # kWh for the completed previous hour (your hourly utility meter)
       prev_val: "{{ states('sensor.whole_home_energy_hourly_usage') | float(0) }}"
+
     action:
       - service: input_number.set_value
         target:
