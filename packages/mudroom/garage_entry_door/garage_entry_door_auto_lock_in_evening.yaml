@@ -1,0 +1,52 @@
+# 
+# Garagae Entry Door - Auto Lock in Evening
+# 
+# This automation will lock the garage entry door
+# in the evening.
+# 
+automation:
+  - id: "garage_entry_door_lock_auto_lock_in_evening"
+    alias: "Garage Entry Door Lock - Auto Lock in Evening"
+    initial_state: on
+    triggers:
+      # At 7:30pm
+      - trigger: time
+        at: input_datetime.garage_entry_door_evening_lock_time
+      # Entertainment or guest mode turned off
+      - trigger: state
+        entity_id: 
+          - input_boolean.entertainment_mode
+          - input_boolean.guest_mode
+        to: "off"
+    conditions:
+      # Garage entry door is unlocked
+      - condition: state
+        entity_id: lock.garage_entry_door
+        state: "unlocked"
+      # Entertainment mode is OFF
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
+      # guest mode is OFF
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      # After the time
+      - condition: time
+        after: input_datetime.garage_entry_door_evening_lock_time
+    actions:
+      # Lock the door!
+      - action: lock.lock
+        entity_id: lock.garage_entry_door
+
+
+# 
+# Garage Entry Door Evening Lock Time
+# 
+input_datetime:
+  garage_entry_door_evening_lock_time:
+    name: Garage Entry Door Evening Lock Time
+    icon: mdi:lock
+    initial: "19:30:00"
+    has_date: false
+    has_time: true
