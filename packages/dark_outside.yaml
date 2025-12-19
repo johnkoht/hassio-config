@@ -70,8 +70,6 @@ automation:
       - platform: numeric_state
         entity_id: sensor.tempest_illuminance
         above: 15
-        for:
-          minutes: 2
       # Hassio reloads/starts
       - platform: event
         event_type: automation_reloaded
