@@ -65,7 +65,7 @@ input_boolean:
   main_level_vacuum_daily_clean_backup_enabled:
     name: Main Level Vacuum Daily Clean Backup Enabled
     icon: mdi:vacuum
-    initial: on
+    initial: off
 
   main_level_vacuum_daily_clean_backup_weekend_enabled:
     name: Main Level Vacuum Daily Clean Backup Weekend Enabled

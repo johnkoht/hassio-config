@@ -8,7 +8,6 @@
 automation:
   - id: "garage_entry_door_lock_if_open_too_long"
     alias: "Garage Entry Door - Lock If Open Too Long"
-    initial_state: on
     triggers:
       # If door has been unlocked for a while
       - trigger: state
