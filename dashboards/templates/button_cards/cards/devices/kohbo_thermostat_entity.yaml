@@ -18,9 +18,9 @@ kohbo_thermostat_entity:
       else if (entity.state == "heat_cool")
         return `Heat/Cool: ${entity.attributes.target_temp_low} - ${entity.attributes.target_temp_high}`
       else if (entity.state == "heat")
-        return `Heat – ${entity.attributes.temperature}`
+        return `Heat - ${entity.attributes.temperature}°`
       else if (entity.state == "cool")
-        return `Cool – ${entity.attributes.temperature}`
+        return `Cool - ${entity.attributes.temperature}°`
       else
         return "Off"
     ]]]

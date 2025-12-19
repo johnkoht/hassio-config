@@ -189,13 +189,13 @@ cards:
           [[[
             if (entity.state == "on")
               if (states['binary_sensor.office_door_left_status'].state == "on" && states['binary_sensor.office_door_right_status'].state == "on")
-                return "Open";
+                return `Open - ${variables.last_changed}`;
               else if (states['binary_sensor.office_door_left_status'].state == "on")
                 return "Left Door Open";
               else if (states['binary_sensor.office_door_right_status'].state == "on")
                 return "Right Door Open";
             else
-              return "Closed";
+              return `Closed - ${variables.last_changed}`;
           ]]]
         
 

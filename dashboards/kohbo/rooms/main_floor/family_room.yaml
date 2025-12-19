@@ -110,7 +110,7 @@ cards:
         name: North Wall Outlet
         template: kohbo_device_smart_plug_entity
         variables:
-          power_sensor: sensor.smart_plug_4_active_power
+          power_sensor: sensor.smart_plug_4_family_room_power
           confirmation: true
 
 

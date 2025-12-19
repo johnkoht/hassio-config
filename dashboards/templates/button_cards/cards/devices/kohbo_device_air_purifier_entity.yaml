@@ -10,7 +10,7 @@ kohbo_device_air_purifier_entity:
           if (entity.attributes.percentage != null)
             return `${entity.attributes.preset_mode} - ${entity.attributes.percentage}%`
           else
-            return `${entity.attributes.preset_mode}`
+            return `${entity.attributes.preset_mode} - ${variables.last_changed}`
       else
-        return "Off"
+        return `Off - ${variables.last_changed}`;
     ]]]

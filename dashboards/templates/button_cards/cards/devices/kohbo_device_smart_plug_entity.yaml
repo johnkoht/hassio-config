@@ -7,9 +7,9 @@ kohbo_device_smart_plug_entity:
         if (variables.power_sensor)
           return `On - ${states[variables.power_sensor].state} Watts`;
         else
-          return `On`;
+          return `On - ${variables.last_changed}`;
       else
-        return "Off";
+        return `Off - ${variables.last_changed}`;
     ]]]
   confirmation: >
     [[[
