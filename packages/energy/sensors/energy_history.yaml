@@ -72,7 +72,7 @@ automation:
     mode: single
     trigger:
       - platform: time_pattern
-        minutes: "0"
+        minutes: "1"
         seconds: "10"
 
     variables:
