@@ -47,7 +47,7 @@ cards:
       background: true
     cards:
       - type: custom:button-card
-        entity: sensor.whole_home_energy_daily_usage
+        entity: sensor.daily_energy_consumption
         name: Energy Consumption
         state_display: >
           [[[
@@ -89,7 +89,7 @@ cards:
       - type: gauge
         name: Daily Consumption
         unit: 'kWh'
-        entity: sensor.whole_home_energy_daily_usage
+        entity: sensor.daily_energy_consumption
         min: 0
         max: 30
         needle: true
