@@ -3,7 +3,7 @@ light:
     name: Emergency Light Group
     unique_id: emergency_light_group
     entities:
-      - light.kitchen_lights
+      - light.kitchen_ceiling_lights
       - light.family_room_main_lights
       - light.office_lights
       - light.dining_room_lights

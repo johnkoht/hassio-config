@@ -5,3 +5,12 @@ light:
     entities:
       - light.kitchen_main_light_switch
       - light.kitchen_table_light_switch
+      - light.kitchen_island_pendants
+
+
+  - platform: group
+    name: Kitchen Ceiling Lights
+    unique_id: kitchen_ceiling_lights
+    entities:
+      - light.kitchen_main_light_switch
+      - light.kitchen_table_light_switch

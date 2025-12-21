@@ -26,10 +26,6 @@ automation:
           - condition: state
             entity_id: input_select.kitchen
             state: "Dim"
-      # Lights are currently off
-      # - condition: state
-      #   entity_id: light.kitchen_lights
-      #   state: "off"
       - condition: or
         conditions:
           - condition: state
@@ -48,9 +44,6 @@ automation:
             entity_id: sensor.kitchen_motion_sensor_table_illuminance
             below: 150
     action:
-      # - service: light.turn_on
-      #   entity_id: light.kitchen_lights
-
       - choose:
           # Kitchen is in Auto mode
           - conditions:
@@ -59,7 +52,7 @@ automation:
                 state: "Auto"
             sequence:
               - service: light.turn_on
-                entity_id: light.kitchen_lights
+                entity_id: light.kitchen_ceiling_lights
                 data:
                   transition: 5
           # Kitchen is in Dim mode
@@ -69,7 +62,7 @@ automation:
                 state: "Dim"
             sequence:
               - service: light.turn_on
-                entity_id: light.kitchen_lights
+                entity_id: light.kitchen_island_pendants
                 data:
                   brightness_pct: 35
                   transition: 1

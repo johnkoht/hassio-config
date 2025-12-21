@@ -60,12 +60,12 @@ automation:
         below: 150
       # Lights are currently off
       - condition: state
-        entity_id: light.kitchen_lights
+        entity_id: light.kitchen_ceiling_lights
         state: "off"
     action:
       # Turn the lights on
       - service: light.turn_on
-        entity_id: light.kitchen_lights
+        entity_id: light.kitchen_ceiling_lights
         data:
           transition: 5
       # Toggle the boolean to flag it was auto

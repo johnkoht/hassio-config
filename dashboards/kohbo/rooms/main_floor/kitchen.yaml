@@ -71,13 +71,27 @@ cards:
   - type: tile
     entity: light.kitchen_table_light_switch
     name: Table Light
-    icon: mdi:desk-lamp
+    icon: mdi:ceiling-light-multiple
     show_entity_picture: false
     hide_state: false
     features:
       - type: light-brightness
     features_position: inline
     vertical: false
+
+  # Island Pendant Lights
+  - type: tile
+    entity: light.kitchen_island_pendants
+    name: Island Pendants
+    icon: mdi:globe-light
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  
 
 
   # 
