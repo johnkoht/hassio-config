@@ -326,6 +326,13 @@ script:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
+      #
+      # Music-aware logic for low/normal priority:
+      # - High/Critical priority: always include occupied rooms with speech notifications on
+      # - Low/Normal priority: only include if room is occupied, speech notifications on, AND no music playing
+      #
+      # TODO: Handle explicit media_players (not "auto"/"all") - should music-check apply?
+      #
       - action: script.announcement_queue_enqueue
         data:
           speech_message: "{{ speech_message }}"
@@ -337,23 +344,43 @@ script:
           expires_in: "{{ default_expires_in }}"
           media_players: >-
             {% if media_players == "all" or media_players == "auto" %}
-              {% set media_players = [] %}   
+              {% set media_players = [] %}
+              {% set is_high_priority = default_priority in ["high", "critical"] %}
               {# Check which rooms are occupied and if speech notifications are turned #}
-              {# on for them. If so, add them to an array of announceable rooms #}
+              {# on for them. For low/normal priority, also check if music is NOT playing #}
+              {# Office #}
               {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}
-                {% set media_players = media_players + ["media_player.sonos_office"] %}
-              {% endif %}{% if states.input_boolean.family_room_occupied.state == "on" and states.input_boolean.family_room_speech_notifications.state == "on" %}
-                {% set media_players = media_players + ["media_player.sonos_family_room"] %}
-              {% endif %}{% if states.input_boolean.kitchen_occupied.state == "on" and states.input_boolean.kitchen_speech_notifications.state == "on" %}
-                {% set media_players = media_players + ["media_player.sonos_kitchen"] %}
-              {% endif %}{% if states.input_boolean.playroom_occupied.state == "on" %}
-                {% set media_players = media_players + ["media_player.sonos_playroom"] %}
-              {% endif %}{% if states.input_boolean.main_bedroom_occupied.state == "on" and states.input_boolean.main_bedroom_speech_notifications.state == "on" %}
-                {% set media_players = media_players + ["media_player.sonos_main_bedroom"] %}
+                {% if is_high_priority or states('media_player.sonos_office') != 'playing' %}
+                  {% set media_players = media_players + ["media_player.sonos_office"] %}
+                {% endif %}
+              {% endif %}
+              {# Family Room #}
+              {% if states.input_boolean.family_room_occupied.state == "on" and states.input_boolean.family_room_speech_notifications.state == "on" %}
+                {% if is_high_priority or states('media_player.sonos_family_room') != 'playing' %}
+                  {% set media_players = media_players + ["media_player.sonos_family_room"] %}
+                {% endif %}
+              {% endif %}
+              {# Kitchen #}
+              {% if states.input_boolean.kitchen_occupied.state == "on" and states.input_boolean.kitchen_speech_notifications.state == "on" %}
+                {% if is_high_priority or states('media_player.sonos_kitchen') != 'playing' %}
+                  {% set media_players = media_players + ["media_player.sonos_kitchen"] %}
+                {% endif %}
+              {% endif %}
+              {# Playroom #}
+              {% if states.input_boolean.playroom_occupied.state == "on" %}
+                {% if is_high_priority or states('media_player.sonos_playroom') != 'playing' %}
+                  {% set media_players = media_players + ["media_player.sonos_playroom"] %}
+                {% endif %}
+              {% endif %}
+              {# Main Bedroom #}
+              {% if states.input_boolean.main_bedroom_occupied.state == "on" and states.input_boolean.main_bedroom_speech_notifications.state == "on" %}
+                {% if is_high_priority or states('media_player.sonos_main_bedroom') != 'playing' %}
+                  {% set media_players = media_players + ["media_player.sonos_main_bedroom"] %}
+                {% endif %}
               {% endif %}
             {% endif %}
 
-            {{ media_players}}
+            {{ media_players }}
 
       # In some cases, we don't need to log the message. If save_announcement
       # is set to false then we'll skip, otherwise, it defaults to true
