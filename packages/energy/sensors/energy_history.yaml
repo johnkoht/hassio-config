@@ -89,17 +89,24 @@ automation:
       target_entity: "{{ 'input_number.' ~ bin_prefix ~ '%02d'|format(prev_hour) }}"
 
     action:
-      # Wait up to 90s for the hourly meter to settle to a real number
+      # # Wait up to 90s for the hourly meter to settle to a real number
+      # - wait_template: >
+      #     {% set v = states('sensor.whole_home_energy_hourly_usage') %}
+      #     {{ v not in ['unknown','unavailable','none'] and (v | float(-1)) > 0 }}
+      #   timeout: "00:01:30"
+      #   continue_on_timeout: true
       - wait_template: >
-          {% set v = states('sensor.whole_home_energy_hourly_usage') %}
-          {{ v not in ['unknown','unavailable','none'] and (v | float(-1)) > 0 }}
-        timeout: "00:01:30"
+          {{ state_attr('sensor.whole_home_energy_hourly_usage','last_period') is not none }}
+        timeout: "00:02:00"
         continue_on_timeout: true
 
       - variables:
+          # prev_val: >
+          #   {% set v = states('sensor.whole_home_energy_hourly_usage') %}
+          #   {{ 0 if v in ['unknown','unavailable','none'] else (v | float(0)) }}
           prev_val: >
-            {% set v = states('sensor.whole_home_energy_hourly_usage') %}
-            {{ 0 if v in ['unknown','unavailable','none'] else (v | float(0)) }}
+            {% set v = state_attr('sensor.whole_home_energy_hourly_usage','last_period') %}
+            {{ 0 if v is none else (v | float(0)) }}
 
       - service: input_number.set_value
         target:
