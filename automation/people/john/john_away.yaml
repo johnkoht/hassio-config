@@ -31,9 +31,9 @@ trigger:
   - platform: homeassistant
     event: start
 condition:
-  # Not Just Arrived state
-  - condition: template
-    value_template: "{{ not is_state('input_select.john_status', 'Just Arrived') }}"
+  # # Not Just Arrived state
+  # - condition: template
+  #   value_template: "{{ not is_state('input_select.john_status', 'Just Arrived') }}"
   # John home boolean if ON
   - condition: state
     entity_id: input_boolean.john_home
