@@ -108,7 +108,7 @@ cards:
         name: South Wall
         template: kohbo_device_smart_plug_entity
         variables:
-          power_sensor: sensor.smart_plug_15_active_power
+          power_sensor: sensor.smart_plug_15_power
           confirmation: true
 
       - type: custom:button-card
@@ -116,7 +116,7 @@ cards:
         name: Bay Window
         template: kohbo_device_smart_plug_entity
         variables:
-          power_sensor: sensor.smart_plug_16_active_power
+          power_sensor: sensor.smart_plug_16_power
           confirmation: true
 
       - type: custom:button-card
@@ -124,7 +124,7 @@ cards:
         name: North Wall Left
         template: kohbo_device_smart_plug_entity
         variables:
-          power_sensor: sensor.smart_plug_16_active_power
+          power_sensor: sensor.smart_plug_16_power
           confirmation: true
 
       - type: custom:button-card
@@ -132,7 +132,7 @@ cards:
         name: North Wall Right
         template: kohbo_device_smart_plug_entity
         variables:
-          power_sensor: sensor.smart_plug_17_active_power
+          power_sensor: sensor.smart_plug_17_power
           confirmation: true
 
       # Alexa Dot
