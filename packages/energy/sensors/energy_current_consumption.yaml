@@ -6,38 +6,26 @@ template:
         device_class: power
         state_class: measurement
         state: >
-          {{ 
+          {{
             (
-              (states('sensor.home_energy_meter_1_electric_consumption_w') | float(0)
-              + states('sensor.home_energy_meter_1_electric_consumption_w_2') | float(0))
+              states('sensor.home_energy_meter_1_electric_consumption_w') | float(0)
               + states('sensor.home_energy_meter_2_electric_consumption_w') | float(0)
-              + states('sensor.home_energy_meter_2_electric_consumption_w_1') | float(0)
-            )
-            | round(0)
+            ) | round(0)
           }}
+        
 
 
   - sensor:
       - name: "Total Energy Meter Combined"
         unique_id: total_energy_meter_combined
-        # unit_of_measurement: "W"
-        device_class: energy
-        state_class: measurement
         unit_of_measurement: "kWh"
-        # device_class: energy
-        # state_class: total_increasing
+        device_class: energy
+        state_class: total_increasing
         state: >
-          {{ (states('sensor.home_energy_meter_1_electric_consumption_kwh') | float(0) + states('sensor.home_energy_meter_2_electric_consumption_kwh') | float(0)) | round(2) }}
-        # state: >
-        #   {% set m1 = states('sensor.home_energy_meter_1_electric_consumption_kwh') | float(0) %}
-        #   {% set m2 = states('sensor.home_energy_meter_2_electric_consumption_kwh') | float(0) %}
-        #   {% set current = (m1 + m2) | round(3) %}
-        #   {% set last = this.state | float(0) %}
-        #   {% if current >= last %}
-        #     {{ current }}
-        #   {% else %}
-        #     {{ last }}
-        #   {% endif %}
+          {{
+            (states('sensor.home_energy_meter_1_electric_consumption_kwh') | float(0))
+            + (states('sensor.home_energy_meter_2_electric_consumption_kwh') | float(0))
+          }}
 
 utility_meter:
   energy_combined_daily:

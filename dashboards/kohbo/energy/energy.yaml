@@ -282,7 +282,7 @@ cards:
     stacked: true
     header:
       show: true
-      title: Energy Usage (48h)
+      title: Energy Usage - Hourly
     series:
       - entity: sensor.daily_energy_consumption
         type: column
@@ -314,7 +314,7 @@ cards:
     stacked: true
     header:
       show: true
-      title: Energy Usage (30d)
+      title: Energy Usage - Daily
     series:
       - entity: sensor.daily_energy_consumption
         type: column
