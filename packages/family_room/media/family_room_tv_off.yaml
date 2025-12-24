@@ -1,0 +1,27 @@
+# Family Room TV Off
+#
+# Turn off the Family Room TV if the room is
+# not occupied or OFF
+#
+automation:
+  - id: "family_room_tv_off"
+    initial_state: on
+    alias: "Family Room TV Off"
+    triggers:
+      # Family Room is NOT occupied
+      - trigger: state
+        entity_id: input_boolean.family_room_occupied
+        to: "off"
+      # Family Room is OFF
+      - trigger: state
+        entity_id: input_select.family_room
+        to: "Off"
+    conditions:
+      # TV is ON
+      - condition: state
+        entity_id: media_player.sony_bravia_tv
+        state: "on"
+    actions:
+      # Turn the TV OFF
+      - action: media_player.turn_off
+        entity_id: media_player.sony_bravia_tv

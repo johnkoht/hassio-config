@@ -1,0 +1,48 @@
+# Kitchen Music Off
+#
+# Turn off the kitchen music 
+#
+automation:
+  - id: "kitchen_music_off"
+    initial_state: on
+    alias: "Kitchen Music Off"
+    triggers:
+      # Kitchen is NOT occupied
+      - trigger: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+      # Kitchen is OFF
+      - trigger: state
+        entity_id: input_select.kitchen
+        to: "Off"
+    conditions:
+      - condition: state
+        entity_id: media_player.sonos_kitchen
+        state: "playing"
+    actions:
+      # 
+      # If the kitchen speakers are in a group, then unjoin
+      # and then pause the music.
+      # 
+      - if:
+          - alias: "Speakers are grouped with another room"
+            condtiion: template
+            value_template: >
+              {{ states.media_player.sonos_kitchen.attributes.group_members | length > 1 }}
+        then:
+          # Unjoin
+          - action: media_player.unjoin
+            entity_id: media_player.sonos_kitchen
+
+          # Pause the music on the player
+          - service: media_player.media_pause
+            entity_id: media_player.sonos_kitchen
+
+        # 
+        # Otherwise, just pause
+        # 
+        else:
+          # Pause the music on the player
+          - service: media_player.media_pause
+            entity_id: media_player.sonos_kitchen
+          

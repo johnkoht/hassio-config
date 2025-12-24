@@ -62,14 +62,38 @@ automation:
         entity_id: media_player.sonos_office
         state: "playing"
     action:
-      # Unjoin if it's joined
-      - service: media_player.unjoin
-        entity_id: media_player.sonos_main_bedroom
+      # 
+      # If the office speakers are in a group, then unjoin
+      # and then pause the music.
+      # 
+      - if:
+          - alias: "Speakers are grouped with another room"
+            condtiion: template
+            value_template: >
+              {{ states.media_player.sonos_office.attributes.group_members | length > 1 }}
+        then:
+          # Unjoin
+          - action: media_player.unjoin
+            entity_id: media_player.sonos_office
 
-      # Turn off the Sonos music
-      - service: media_player.media_pause
-        entity_id: media_player.sonos_office
-      # Turn on the music playing boolean so we can
-      # restore next time the room is occupied
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.office_music_playing
+          # Pause the music on the player
+          - service: media_player.media_pause
+            entity_id: media_player.sonos_office
+
+          # Turn on the music playing boolean so we can
+          # restore next time the room is occupied
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.office_music_playing
+
+        # 
+        # Otherwise, just pause
+        # 
+        else:
+          # Pause the music on the player
+          - service: media_player.media_pause
+            entity_id: media_player.sonos_office
+
+          # Turn on the music playing boolean so we can
+          # restore next time the room is occupied
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.office_music_playing

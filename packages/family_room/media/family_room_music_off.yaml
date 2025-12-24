@@ -1,0 +1,48 @@
+# Family Room Music Off
+#
+# Turn off the Family Room music 
+#
+automation:
+  - id: "family_room_music_off"
+    initial_state: on
+    alias: "Family Room Music Off"
+    triggers:
+      # Family Room is NOT occupied
+      - trigger: state
+        entity_id: input_boolean.family_room_occupied
+        to: "off"
+      # Family Room is OFF
+      - trigger: state
+        entity_id: input_select.family_room
+        to: "Off"
+    conditions:
+      - condition: state
+        entity_id: media_player.sonos_family_room
+        state: "playing"
+    actions:
+      # 
+      # If the family room speakers are in a group, then unjoin
+      # and then pause the music.
+      # 
+      - if:
+          - alias: "Speakers are grouped with another room"
+            condtiion: template
+            value_template: >
+              {{ states.media_player.sonos_family_room.attributes.group_members | length > 1 }}
+        then:
+          # Unjoin
+          - action: media_player.unjoin
+            entity_id: media_player.sonos_family_room
+
+          # Pause the music on the player
+          - service: media_player.media_pause
+            entity_id: media_player.sonos_family_room
+
+        # 
+        # Otherwise, just pause
+        # 
+        else:
+          # Pause the music on the player
+          - service: media_player.media_pause
+            entity_id: media_player.sonos_family_room
+          
