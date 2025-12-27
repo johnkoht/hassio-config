@@ -24,6 +24,9 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # After 5am
+      - condition: time
+        after: "05:00:00"
     actions:
       # First floor has been occupied for more than 3 minutes
       - wait_template: >-
