@@ -2,20 +2,20 @@ automation:
   - id: "alarm_disarm_in_morning"
     alias: "Alarm - Disarm in Morning"
     mode: "single"
-    trigger:
+    triggers:
       # Bedtime mode disabled for 3 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "off"
       # House goes from Bedtime to Auto state
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         from: "Bedtime"
         to: "Auto"
       # # At 6:30am
-      # - platform: time
+      # - trigger: time
       #   at: "06:30:00"
-    condition:
+    conditions:
       # Alarm is currently armed_home
       - condition: state
         entity_id: alarm_control_panel.kohbo
@@ -24,7 +24,7 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
+    actions:
       # First floor has been occupied for more than 3 minutes
       - wait_template: >-
           {{
@@ -36,11 +36,11 @@ automation:
         continue_on_timeout: false
 
       # Disarm the alarm
-      - service: alarm_control_panel.alarm_disarm
+      - action: alarm_control_panel.alarm_disarm
         entity_id: alarm_control_panel.kohbo
 
       # Notification
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: Home is now disarmed!
           title: Security System
