@@ -1,4 +1,9 @@
 automation:
+  # 
+  # Automatically unlock the garage entry door lock
+  # when the door is opened. This is prevent somebody from
+  # being locked in the garage
+  # 
   - id: "garage_entry_door_auto_unlock"
     alias: "Garage Entry Door - Auto Unlock"
     initial_state: on
@@ -21,6 +26,47 @@ automation:
       # Unlock the door!
       - action: lock.unlock
         entity_id: lock.garage_entry_door
+
+
+  # 
+  # Auto Unlock the garage entry in the morning
+  # once we've been downstairs for a bit
+  # 
+  - id: "garage_entry_door_auto_unlock_in_morning"
+    alias: "Garage Entry Door - Auto Unlock in Morning"
+    initial_state: on
+    triggers:
+      # Bedtime mode is turned OFF
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+        for:
+          minutes: 3
+    conditions:
+      # Garage entry door is locked
+      - condition: state
+        entity_id: lock.garage_entry_door
+        state: "unlocked"
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      # Kitchen has been occupied for more than 10 minutes
+      - wait_template: >-
+          {{
+            states.binary_sensor.kitchen_motion_sensor_occupancy.state == "on" and
+            (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 600
+          }}
+
+        timeout: "01:00:00"
+        continue_on_timeout: false
+
+      # Unlock the door!
+      - action: lock.unlock
+        entity_id: lock.garage_entry_door
+
+
 
 
 
