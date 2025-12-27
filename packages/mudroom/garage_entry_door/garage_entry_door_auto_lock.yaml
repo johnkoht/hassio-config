@@ -10,22 +10,63 @@ automation:
     alias: "Garage Entry Door Lock - Auto Lock"
     initial_state: on
     triggers:
-      # House goes into bedtime mode
-      - trigger: state
-        entity_id: input_boolean.bedtime
-        to: "on"
       # House becomes unoccupied
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
-      # At the lock time
-      - trigger: time
-        at: input_datetime.garage_entry_door_lock_time
     conditions:
       # Garage entry door is unlocked
       - condition: state
         entity_id: lock.garage_entry_door
         state: "unlocked"
+    actions:
+      # Lock the door!
+      - action: lock.lock
+        entity_id: lock.garage_entry_door
+
+  # 
+  # Garage Entry Door - Auto Lock When Home
+  # An automation to handle autolocking when we're home to help
+  # work around some issues and race conditions.
+  # 
+  - id: "garage_entry_door_lock_auto_lock_when_home"
+    alias: "Garage Entry Door Lock - Auto Lock When Home"
+    initial_state: on
+    triggers:
+      # House goes into bedtime mode
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "on"
+      # At the lock time
+      - trigger: time
+        at: input_datetime.garage_entry_door_lock_time
+      # House is occupied for 15 minutes
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+        for:
+          minutes: 15
+    conditions:
+      # Garage entry door is unlocked
+      - condition: state
+        entity_id: lock.garage_entry_door
+        state: "unlocked"
+      - condition: or
+        conditions:
+          # It's after the time defined in input_datetime.garage_entry_door_lock_time
+          # if it's defined, otherwise proceed
+          - condition: template
+            value_template: >
+              {% set t = states('input_datetime.garage_entry_door_lock_time') %}
+              {% if t in ['unknown', 'unavailable', '', None] %}
+                true
+              {% else %}
+                {{ as_timestamp(now()) >= as_timestamp(today_at(t)) }}
+              {% endif %}
+          # OR bedtime mode is enabled
+          - condition: state 
+            entity_id: input_boolean.bedtime
+            state: "on"
     actions:
       # Lock the door!
       - action: lock.lock
