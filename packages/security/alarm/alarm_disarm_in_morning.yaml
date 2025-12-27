@@ -7,15 +7,11 @@ automation:
       - platform: state
         entity_id: input_boolean.bedtime
         to: "off"
-        for:
-          minutes: 3
       # House goes from Bedtime to Auto state
       - platform: state
         entity_id: input_select.house
         from: "Bedtime"
         to: "Auto"
-        for:
-          minutes: 3
       # # At 6:30am
       # - platform: time
       #   at: "06:30:00"
@@ -29,6 +25,16 @@ automation:
         entity_id: input_boolean.house_occupied
         state: "on"
     action:
+      # First floor has been occupied for more than 3 minutes
+      - wait_template: >-
+          {{
+            states.binary_sensor.first_floor_occupancy.state == "on" and
+            (as_timestamp(now()) - as_timestamp(states.binary_sensor.first_floor_occupancy.last_changed)) | int >= 180
+          }}
+
+        timeout: "01:00:00"
+        continue_on_timeout: false
+
       # Disarm the alarm
       - service: alarm_control_panel.alarm_disarm
         entity_id: alarm_control_panel.kohbo
