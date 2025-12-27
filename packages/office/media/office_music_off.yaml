@@ -68,7 +68,7 @@ automation:
       # 
       - if:
           - alias: "Speakers are grouped with another room"
-            condtiion: template
+            condition: template
             value_template: >
               {{ states.media_player.sonos_office.attributes.group_members | length > 1 }}
         then:
