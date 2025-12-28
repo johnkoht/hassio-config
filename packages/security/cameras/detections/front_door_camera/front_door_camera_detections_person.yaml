@@ -21,6 +21,10 @@ automation:
       # Automation wasn't run in the past 90 seconds
       - condition: template
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.front_door_camera_detections_person','last_triggered'), 0) ) | int > 60 }}"
+      # Front door camera notifications are ON
+      - condition: state
+        entity_id: input_boolean.front_door_camera_notifications
+        state: "on"
     action:
       #
       # Call the camera detection alert service to handle

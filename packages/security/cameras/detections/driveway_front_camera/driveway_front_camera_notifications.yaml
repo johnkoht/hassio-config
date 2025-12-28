@@ -58,6 +58,10 @@ automation:
         to: "paused"
         for:
           minutes: 5
+      # If Global camera notifications are turned on
+      - trigger: state
+        entity_id: input_boolean.camera_notifications
+        to: "on"
     conditions:
       # Only proceed if the notifications are turned off
       - condition: state

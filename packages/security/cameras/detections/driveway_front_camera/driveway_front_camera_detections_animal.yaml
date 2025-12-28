@@ -23,7 +23,7 @@ automation:
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.driveway_front_camera_detections_animal','last_triggered'), 0) ) | int > 60 }}"
       # Only alert about animals if camera notifications are enabled
       - condition: state
-        entity_id: input_boolean.camera_notifications
+        entity_id: input_boolean.driveway_front_camera_notifications
         state: "on"
     action:
       #
