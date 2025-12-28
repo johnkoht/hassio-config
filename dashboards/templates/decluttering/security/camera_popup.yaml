@@ -92,7 +92,14 @@ camera_popup:
 
       - type: custom:advanced-camera-card
         cameras:
-          - camera_entity: '[[camera_entity]]'
+          - name: '[[name]]'
+            live_provider: go2rtc
+            go2rtc:
+              url: http://10.0.10.207:1984
+              stream: '[[stream_id]]'
+              modes:
+                - webrtc
+                - mse
         live:
           controls:
             thumbnails:
@@ -104,7 +111,6 @@ camera_popup:
               show_favorite_control: false
               show_timeline_control: false
         
-
 
       - type: entities
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml

@@ -9,18 +9,61 @@ cards:
   # 
   - !include /config/dashboards/templates/includes/security/security_header.yaml
 
+  # - type: custom:advanced-camera-card
+  #   cameras:
+  #     - name: Front Door
+  #       live_provider: go2rtc
+  #       go2rtc:
+  #         url: http://10.0.10.207:1984
+  #         stream: front_door
+  #         modes:
+  #           - webrtc
+  #           - mse
+
+  #     # - name: Driveway Front
+  #     #   live_provider: go2rtc
+  #     #   go2rtc:
+  #     #     url: http://10.0.10.207:1984
+  #     #     stream: driveway_front
+  #     #     modes:
+  #     #       - webrtc
+  #     #       - mse
+
+  #     # - name: Garage Driveway
+  #     #   live_provider: go2rtc
+  #     #   go2rtc:
+  #     #     url: http://10.0.10.207:1984
+  #     #     stream: garage_driveway
+  #     #     modes:
+  #     #       - webrtc
+  #     #       - mse
+
 
 
   - type: custom:advanced-camera-card
     cameras:
-      - camera_entity: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
-        title: Front Door
+      - name: Front Door
+        live_provider: go2rtc
+        go2rtc:
+          url: http://10.0.10.207:1984
+          stream: front_door_low
+          modes: [webrtc, mse]
     view:
       actions:
-        entity: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
+        # entity: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
         tap_action:
           action: navigate
           navigation_path: '#front_door_camera'
+    live:
+      controls:
+        builtin: false
+        timeline:
+          mode: none
+      preload: false
+      lazy_load: true
+      lazy_unload:
+        - hidden
+        - unselected
       
 
   - type: grid
@@ -29,42 +72,122 @@ cards:
     cards:
       - type: custom:advanced-camera-card
         cameras:
-          - camera_entity: camera.camera_proxy_camera_driveway_front_camera_high
-            title: Driveway Front
-            go2rtc:
-              stream: driveway_front_low
-              modes:
-                - mse
-                - webrtc
-                - mp4
-              url: http://10.0.10.207:1984
+          - name: Driveway Front
             live_provider: go2rtc
+            go2rtc:
+              url: http://10.0.10.207:1984
+              stream: driveway_front_low
+              modes: [webrtc, mse]
         view:
           actions:
             tap_action:
               action: navigate
               navigation_path: '#driveway_front_camera'
+        live:
+          controls:
+            builtin: false
+            timeline:
+              mode: none
+          preload: false
+          lazy_load: true
+          lazy_unload:
+            - hidden
+            - unselected
 
       - type: custom:advanced-camera-card
         cameras:
-          - camera_entity: camera.camera_proxy_camera_garage_driveway_camera_high
+          - name: Garage Driveway
+            live_provider: go2rtc
+            go2rtc:
+              url: http://10.0.10.207:1984
+              stream: garage_driveway
+              modes: [webrtc, mse]
+        live:
+          controls:
+            builtin: false
+            timeline:
+              mode: none
+          preload: false
+          lazy_load: true
+          lazy_unload:
+            - hidden
+            - unselected
 
       - type: custom:advanced-camera-card
         cameras:
-          - camera_entity: camera.backyard_south_camera_high
+          - name: Backyard South
+            live_provider: go2rtc
+            go2rtc:
+              url: http://10.0.10.207:1984
+              stream: backyard_south
+              modes: [webrtc, mse]
+        live:
+          controls:
+            builtin: false
+            timeline:
+              mode: none
+          preload: false
+          lazy_load: true
+          lazy_unload:
+            - hidden
+            - unselected
 
       - type: custom:advanced-camera-card
         cameras:
-          - camera_entity: camera.g5_turret_ultra_high_resolution_channel
+          - name: Backyard Porch
+            live_provider: go2rtc
+            go2rtc:
+              url: http://10.0.10.207:1984
+              stream: backyard_porch
+              modes: [webrtc, mse]
+        live:
+          controls:
+            builtin: false
+            timeline:
+              mode: none
+          preload: false
+          lazy_load: true
+          lazy_unload:
+            - hidden
+            - unselected
 
       - type: custom:advanced-camera-card
         cameras:
-          - camera_entity: camera.g4_bullet_high_resolution_channel
+          - name: Backyard Pool
+            live_provider: go2rtc
+            go2rtc:
+              url: http://10.0.10.207:1984
+              stream: backyard_pool
+              modes: [webrtc, mse]
+        live:
+          controls:
+            builtin: false
+            timeline:
+              mode: none
+          preload: false
+          lazy_load: true
+          lazy_unload:
+            - hidden
+            - unselected
 
       - type: custom:advanced-camera-card
         cameras:
-          - camera_entity: camera.g4_bullet_high_resolution_channel_2
-            title: Backyard Northwest
+          - name: Backyard Northwest
+            live_provider: go2rtc
+            go2rtc:
+              url: http://10.0.10.207:1984
+              stream: backyard_northwest
+              modes: [webrtc, mse]
+        live:
+          controls:
+            builtin: false
+            timeline:
+              mode: none
+          preload: false
+          lazy_load: true
+          lazy_unload:
+            - hidden
+            - unselected
 
 
     
@@ -81,7 +204,7 @@ cards:
       - notifications_entity: input_boolean.front_door_camera_notifications
       - timer_entity: timer.front_door_camera_notifications_snooze_timer
       - countdown_sensor: sensor.front_door_timer_countdown
-      - camera_entity: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
+      - stream_id: front_door_low
       - motion_entity: binary_sensor.front_door_camera_motion
       - person_entity: binary_sensor.front_door_camera_person_detected
 
@@ -97,7 +220,7 @@ cards:
       - notifications_entity: input_boolean.driveway_front_camera_notifications
       - timer_entity: timer.driveway_front_camera_notifications_snooze_timer
       - countdown_sensor: sensor.driveway_front_timer_countdown
-      - camera_entity: camera.camera_proxy_camera_driveway_front_camera_high
+      - stream_id: driveway_front_low
       - motion_entity: binary_sensor.driveway_front_camera_motion
       - person_entity: binary_sensor.driveway_front_camera_person_detected
 
