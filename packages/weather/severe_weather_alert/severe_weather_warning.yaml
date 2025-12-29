@@ -340,13 +340,13 @@ automation:
         entity_id:
           - sensor.pirateweather_precip_intensity_0h
           - sensor.pirateweather_precip_intensity_1h
-        above: 0.5
-      # Precipitation accumulation > .05 inches
+        above: 0.7
+      # Precipitation accumulation > .5 inches
       - trigger: numeric_state
         entity_id:
           - sensor.pirateweather_precip_accumulation_0h
           - sensor.pirateweather_precip_accumulation_1h
-        above: 0.05
+        above: 0.5
     conditions:
       # House is occupied
       - condition: state
@@ -362,7 +362,8 @@ automation:
           message: "The forecast is showing a lot of rain in the next hour. Might be a good idea to put out the pumps."
           devices: "jk"
           priority: "time-sensitive"
-          tag: "daily-update"
+          tag: "severe-rain-warning"
+          url: "/dashboard-kohbo/climate#weather"
       #
       # Voice Announcement
       #

@@ -113,9 +113,16 @@ cards:
   # 
   - type: conditional
     conditions:
-      - condition: state
-        entity: binary_sensor.weather_currently_raining
-        state: "on"
+      - condition: or
+        conditions:
+          # currently raining
+          - condition: state
+            entity: sensor.pirateweather_precip
+            state: "rain"
+          # going to rain soon
+          - condition: state
+            entity: binary_sensor.weather_incoming_rain
+            state: "on"
     card:
       type: custom:stack-in-card
       card_mod:
@@ -147,23 +154,16 @@ cards:
               enabled: false
             chart:
               height: 150
-            grid:
-              yaxis:
-                lines:
-                  show: false
-            xaxis:
-              crosshairs:
-                show: false
-              tooltip:
-                enabled: false
             yaxis:
               - id: rain
                 opposite: false
+              - id: temp
+                opposite: true
           series:
             - entity: sensor.pirateweather_hourly_forecast
               name: Rain
               type: column
-              # yaxis_id: rain
+              yaxis_id: rain
               data_generator: |
                 return entity.attributes.forecast.map(f => {
                   let val = f.precipitation;
@@ -183,20 +183,20 @@ cards:
                     fillColor: color
                   };
                 });
-            # - entity: sensor.pirateweather_hourly_forecast
-            #   name: Temp
-            #   type: line
-            #   curve: smooth
-            #   yaxis_id: temp
-            #   stroke_width: 2
-            #   color: '#E53935'
-            #   data_generator: |
-            #     return entity.attributes.forecast.map(f => {
-            #       return {
-            #         x: new Date(f.datetime).getTime(),
-            #         y: f.temperature
-            #       };
-            #     });
+            - entity: sensor.pirateweather_hourly_forecast
+              name: Temp
+              type: line
+              curve: smooth
+              yaxis_id: temp
+              stroke_width: 2
+              color: '#E53935'
+              data_generator: |
+                return entity.attributes.forecast.map(f => {
+                  return {
+                    x: new Date(f.datetime).getTime(),
+                    y: f.temperature
+                  };
+                });
 
   # 
   # Weather Forecast

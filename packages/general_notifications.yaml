@@ -94,6 +94,9 @@ script:
         example: "Home Assistant"
         default: "Home Assistant"
         required: true
+        selector:
+          text:
+            type: text
       #
       # 
       # Message
@@ -104,6 +107,9 @@ script:
         example: "Hello, world!"
         default: "Hello, world!"
         required: true
+        selector:
+          text:
+            type: text
       #
       # 
       # Priority
@@ -129,6 +135,9 @@ script:
         description: The tag of the push notification
         example: "front_door_person_alert"
         default: "push_1234567890"
+        selector:
+          text:
+            type: text
       #
       # 
       # Image
@@ -138,6 +147,9 @@ script:
         description: An image to display in the push notification, typically used for camera alerts
         example: "https://example.com/image.png"
         default: "https://example.com/image.png"
+        selector:
+          text:
+            type: text
       #
       # 
       # Entity ID
@@ -147,6 +159,9 @@ script:
         description: Provide the entity ID of a camera that can be used to stream directly from the notification
         example: "camera.camera_proxy_camera_front_door_camera_high_resolution_channel"
         default: "camera.camera_proxy_camera_front_door_camera_high_resolution_channel"
+        selector:
+          text:
+            type: text
       #
       # 
       # Actions
@@ -156,6 +171,19 @@ script:
         description: Actions to display in the push notification
         example: "{{ actions }}"
         default: "{{ actions }}"
+      # 
+      # 
+      # URL
+      # 
+      url:
+        name: URL
+        description: If provided, the notification will route to this URL
+        example: /dashboard-kohbo/home
+        default: /dashboard-kohbo/home
+        selector:
+          text:
+            type: text
+      
     
     # 
     # Sequence
@@ -166,6 +194,7 @@ script:
           tag: "{{ tag | default('push_' ~ now().timestamp() | int) }}"
           image: "{{ image | default('') }}"
           entity_id: "{{ entity_id | default('') }}"
+          url: "{{ url | default('') }}"
           priority: >-
             {% if priority is defined and priority|length %}
               {{priority}}
@@ -217,6 +246,7 @@ script:
             push:
               interruption-level: "{{ priority }}"
             actions: "{{ actions }}"
+            url: "{{url}}"
      
 
 automation:

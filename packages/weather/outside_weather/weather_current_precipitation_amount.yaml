@@ -10,12 +10,12 @@ template:
 
 
 # 
-# Binary Sensor whether it's currently raining
+# Binary Sensor if rain probability is > 0
 # 
 binary_sensor:
   - platform: template
     sensors:
-      weather_currently_raining:
-        friendly_name: "Weather Currently Raining"
+      weather_incoming_rain:
+        friendly_name: "Weather Incoming Rain"
         value_template: >
-          {{ states.sensor.weather_current_precipitation_amount.state | float > 0.01 }}
+          {{ states.sensor.pirateweather_precip_probability.state | float(2) > 0 }}
