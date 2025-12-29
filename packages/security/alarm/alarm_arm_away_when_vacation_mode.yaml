@@ -25,3 +25,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "home-security"
+          url: /dashboard-kohbo/security

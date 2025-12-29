@@ -86,6 +86,7 @@ automation:
           actions:
             - action: "{{ action_snooze }}"
               title: "Snooze 30 Minutes"
+          url: /dashboard-kohbo/security-exterior-doors
 
       # 
       # Wait for us to respond to the actionable notification to 

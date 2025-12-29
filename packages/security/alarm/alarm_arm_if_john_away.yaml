@@ -28,6 +28,7 @@ automation:
           devices: "cfalb"
           priority: "time-sensitive"
           tag: "home-security"
+          url: /dashboard-kohbo/security
 
       # Broadcast to the house
       - action: script.voice_announcement

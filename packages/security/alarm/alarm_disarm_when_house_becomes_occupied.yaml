@@ -31,3 +31,4 @@ automation:
           devices: "jk"
           priority: "active"
           tag: "home-security"
+          url: /dashboard-kohbo/security

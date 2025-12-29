@@ -50,3 +50,4 @@ automation:
           devices: "all"
           priority: "active"
           tag: "home-security"
+          url: /dashboard-kohbo/security

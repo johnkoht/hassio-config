@@ -36,3 +36,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "garage-doors-closed-empty"
+          url: /dashboard-kohbo/security-garage-doors

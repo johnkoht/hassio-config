@@ -164,6 +164,7 @@ script:
                         name: default
                         critical: 1
                         volume: 1
+                    url: /dashboard-kohbo/security-cameras
 
       # if we're home & not bedtime mode
       # send a active push
@@ -189,6 +190,7 @@ script:
                     entity_id: "{{ proxy_camera }}"
                     push:
                       interruption-level: active
+                    url: /dashboard-kohbo/security-cameras
 
       # if we're not home
       # send a time sensitive push
@@ -210,6 +212,7 @@ script:
                     entity_id: "{{ proxy_camera }}"
                     push:
                       interruption-level: time-sensitive
+                    url: /dashboard-kohbo/security-cameras
 
       - choose:
           - conditions:

@@ -22,6 +22,7 @@ script:
           devices: "jk"
           priority: "active"
           tag: "home-security"
+          url: /dashboard-kohbo/security
 
       # 
       # If the house is occupied, turn on the automation that will

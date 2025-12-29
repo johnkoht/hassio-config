@@ -69,3 +69,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "vacuum-notifications"
+          url: /dashboard-kohbo/main-floor-vacuum

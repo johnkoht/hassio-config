@@ -26,6 +26,7 @@ automation:
           devices: "all"
           priority: "time-sensitive"
           tag: "doorbell-ring"
+          url: /dashboard-kohbo/security-cameras#front_door_camera
 
 script:
   # Activate Doorbell Chime

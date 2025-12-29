@@ -52,3 +52,4 @@ script:
             devices: "all"
             priority: "critical"
             tag: "home-security-alarm"
+            url: /dashboard-kohbo/security

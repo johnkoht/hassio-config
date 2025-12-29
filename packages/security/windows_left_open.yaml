@@ -26,3 +26,4 @@ automation:
           devices: "all"
           priority: "time-sensitive"
           tag: "window-open"
+          url: /dashboard-kohbo/security-windows
