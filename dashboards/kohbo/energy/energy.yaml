@@ -274,6 +274,60 @@ cards:
   #     - color: "#ED4747"
   #       value: 3000
 
+  - type: custom:apexcharts-card
+    experimental:
+      color_threshold: true
+    graph_span: 12h
+    header:
+      show: true
+      title: Current Power Usage (W)
+    series:
+      - entity: sensor.energy_current_consumption
+        name: Total Power
+        type: column
+        group_by:
+          duration: 5minute
+          func: avg
+        color_threshold:
+          - value: 0
+            color: "#06D6A0"
+          - value: 500
+            color: "#FFD166"
+          - value: 1500
+            color: "#E36001"
+          - value: 2000
+            color: "#ED4747"
+          - value: 3000
+            color: "#ED4747"
+  
+  - type: custom:apexcharts-card
+    experimental:
+      color_threshold: true
+    graph_span: 12h
+    stacked: true
+    header:
+      show: true
+      title: Current Power Usage (W)
+    series:
+      - entity: sensor.energy_current_consumption
+        name: Total Energy Usage
+        type: line
+        stroke_width: 2
+        group_by:
+          duration: 5minute
+          func: avg
+        color_threshold:
+          - value: 0
+            color: "#06D6A0"
+          - value: 0.5
+            color: "#FFD166"
+          - value: 1.5
+            color: "#E36001"
+          - value: 2.0
+            color: "#ED4747"
+          - value: 3.0
+            color: "#ED4747"
+
 
   - type: custom:apexcharts-card
     experimental:

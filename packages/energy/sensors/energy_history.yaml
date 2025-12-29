@@ -366,31 +366,53 @@ template:
       - name: "Energy Baseline Mode"
         unique_id: energy_baseline_mode
         state: >
-          {{ 'weekend' if now().weekday() in [5,6] else 'weekday' }}
+          {% set dow = (as_timestamp(now()) | timestamp_custom('%w', true) | int) %}
+          {{ 'weekend' if dow in [0,6] else 'weekday' }}
 
-      - name: "Energy Expected So Far"
-        unique_id: energy_expected_so_far
-        unit_of_measurement: "kWh"
+      - name: "Energy Baseline Coverage Hours"
+        unique_id: energy_baseline_coverage_hours
+        unit_of_measurement: "h"
         state: >
-          {% set h = now().hour %}
-          {% set is_weekend = now().weekday() in [5,6] %}
+          {% set is_weekend = (as_timestamp(now()) | timestamp_custom('%w', true) | int) in [0,6] %}
           {% set prefix = 'sensor.baseline_weekend_h' if is_weekend else 'sensor.baseline_weekday_h' %}
-          {% set total = namespace(v=0) %}
-          {% for i in range(0, h+1) %}
-            {% set total.v = total.v + (states(prefix ~ '%02d'|format(i)) | float(0)) %}
+          {% set n = namespace(c=0) %}
+          {% for i in range(0, 24) %}
+            {% set v = states(prefix ~ '%02d'|format(i)) | float(none) %}
+            {% if v is not none and v > 0 %}
+              {% set n.c = n.c + 1 %}
+            {% endif %}
           {% endfor %}
-          {{ total.v | round(2) }}
+          {{ n.c }}
 
       - name: "Energy Expected Remaining"
         unique_id: energy_expected_remaining
         unit_of_measurement: "kWh"
         state: >
           {% set h = now().hour %}
-          {% set is_weekend = now().weekday() in [5,6] %}
+          {% set is_weekend = (as_timestamp(now()) | timestamp_custom('%w', true) | int) in [0,6] %}
           {% set prefix = 'sensor.baseline_weekend_h' if is_weekend else 'sensor.baseline_weekday_h' %}
           {% set total = namespace(v=0) %}
           {% for i in range(h+1, 24) %}
-            {% set total.v = total.v + (states(prefix ~ '%02d'|format(i)) | float(0)) %}
+            {% set v = states(prefix ~ '%02d'|format(i)) | float(none) %}
+            {% if v is not none and v > 0 %}
+              {% set total.v = total.v + v %}
+            {% endif %}
+          {% endfor %}
+          {{ total.v | round(2) }}
+
+      - name: "Energy Expected So Far"
+        unique_id: energy_expected_so_far
+        unit_of_measurement: "kWh"
+        state: >
+          {% set h = now().hour %}
+          {% set is_weekend = (as_timestamp(now()) | timestamp_custom('%w', true) | int) in [0,6] %}
+          {% set prefix = 'sensor.baseline_weekend_h' if is_weekend else 'sensor.baseline_weekday_h' %}
+          {% set total = namespace(v=0) %}
+          {% for i in range(0, h+1) %}
+            {% set v = states(prefix ~ '%02d'|format(i)) | float(none) %}
+            {% if v is not none and v > 0 %}
+              {% set total.v = total.v + v %}
+            {% endif %}
           {% endfor %}
           {{ total.v | round(2) }}
 
@@ -416,7 +438,7 @@ template:
         state: >
           {% set expected = states('sensor.energy_expected_so_far') | float(0) %}
           {% set delta = states('sensor.energy_delta_so_far') | float(0) %}
-          {% if expected < 0.25 %}
+          {% if expected < 1 %}
             0
           {% else %}
             {{ (delta / expected * 100) | round(1) }}
