@@ -133,3 +133,8 @@ cards:
   # Navbar
   # 
   - !include /config/dashboards/templates/includes/navbar.yaml
+
+  # 
+  # Security Settings
+  # 
+  - !include /config/dashboards/kohbo/security/components/security_settings_popup.yaml

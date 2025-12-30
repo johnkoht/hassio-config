@@ -10,8 +10,8 @@ camera_popup:
         hash: '[[hash]]'
         close_by_clicking_outside: true
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 800px)
-        margin_top_desktop: calc(100vh - 800px)
+        margin_top_mobile: calc(100vh - 850px)
+        margin_top_desktop: calc(100vh - 850px)
 
       - type: custom:button-card
         template: kohbo_popup_page_title
