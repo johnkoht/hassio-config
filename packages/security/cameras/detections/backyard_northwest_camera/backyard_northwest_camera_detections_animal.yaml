@@ -1,0 +1,51 @@
+# Backyard Northwest Camera Detects an Animal
+#
+automation:
+  - id: "backyard_northwest_camera_detections_animal"
+    alias: "Backyard Northwest Camera Detections - Animal"
+    mode: "single"
+    trigger:
+      #
+      # Backyard Northwest Camera detects an Animal
+      - platform: state
+        entity_id: binary_sensor.backyard_northwest_animal_detected
+        to: "on"
+        variables:
+          camera_name: "Backyard Northwest Camera"
+          nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
+          event_id: "{{ trigger.to_state.attributes.event_id }}"
+          image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
+          proxy_camera: camera.camera_proxy_camera_backyard_northwest_high_resolution_channel
+    condition:
+      #
+      # Automation wasn't run in the past 90 seconds
+      - condition: template
+        value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.backyard_northwest_camera_detections_animal','last_triggered'), 0) ) | int > 60 }}"
+      # Only alert if camera notifications are enabled
+      - condition: state
+        entity_id: input_boolean.backyard_northwest_camera_notifications
+        state: "on"
+      - condition: or
+        conditions:
+          # House is NOT occupied - always alert when away (ignore door status)
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+          # House IS occupied - only alert if kitchen door wasn't opened recently
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.house_occupied
+                state: "on"
+              - condition: template
+                value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('binary_sensor.kitchen_door','last_changed'), 0) ) | int > 600 }}"
+    action:
+      #
+      # Call the camera detection alert service to handle
+      - action: script.camera_detection_alert
+        data:
+          detection_type: "animal"
+          camera_name: "{{ camera_name }}"
+          image_path: "{{ image_path }}"
+          proxy_camera: "{{ proxy_camera }}"
+

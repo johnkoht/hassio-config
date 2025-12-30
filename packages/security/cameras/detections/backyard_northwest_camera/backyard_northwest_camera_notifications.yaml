@@ -1,0 +1,92 @@
+# 
+# Backyard Northwest Camera Notifications
+#
+# This boolean is used to enable/disable
+# notifications for the Backyard Northwest camera
+#
+# 
+input_boolean:
+  backyard_northwest_camera_notifications:
+    name: Backyard Northwest Camera Notifications
+    icon: mdi:bell-ring
+    initial: on
+
+timer:
+  backyard_northwest_camera_notifications_snooze_timer:
+    name: Backyard Northwest Camera Notifications Snooze Timer
+    duration: "00:15:00"
+    restore: true
+    icon: mdi:rewind-15
+
+
+template:
+  - trigger:
+    - platform: time_pattern
+      seconds: '/1'
+    sensor:
+    - name: Backyard Northwest Timer Countdown
+      state: >
+        {% set end = state_attr('timer.backyard_northwest_camera_notifications_snooze_timer', 'finishes_at') %}
+        {% if end is not none %}
+          {{ end | as_datetime - now().replace(microsecond=0) }}
+        {% else %}
+          No Timer
+        {% endif %}
+
+
+automation:
+  # 
+  # When the timer is finished or cancelled, turn on the notifications
+  # 
+  - id: "backyard_northwest_camera_notifications_turn_on"
+    alias: "Backyard Northwest Camera Notifications - Turn On"
+    mode: "single"
+    triggers:
+      # Trigger when the timer is finished
+      - trigger: event
+        event_type: timer.finished
+        event_data: 
+          entity_id: timer.backyard_northwest_camera_notifications_snooze_timer
+      # Trigger when the timer is cancelled
+      - trigger: event
+        event_type: timer.cancelled
+        event_data: 
+          entity_id: timer.backyard_northwest_camera_notifications_snooze_timer
+      # Timer is paused for 5 minutes
+      - trigger: state
+        entity_id: timer.backyard_northwest_camera_notifications_snooze_timer
+        to: "paused"
+        for:
+          minutes: 5
+      # If camera notifications are turned on
+      - trigger: state
+        entity_id: input_boolean.camera_notifications
+        to: "on"
+    conditions:
+      # Only proceed if the notifications are turned off
+      - condition: state
+        entity_id: input_boolean.backyard_northwest_camera_notifications
+        state: "off"
+    actions:
+      # Turn on the notifications
+      - action: homeassistant.turn_on
+        data:
+          entity_id: input_boolean.backyard_northwest_camera_notifications
+
+  # 
+  # When the timer is started, turn off the notifications
+  # 
+  - id: "backyard_northwest_camera_notifications_turn_off"
+    alias: "Backyard Northwest Camera Notifications - Turn Off"
+    mode: "single"
+    triggers:
+      # Trigger when the timer is started
+      - trigger: event
+        event_type: timer.started
+        event_data: 
+          entity_id: timer.backyard_northwest_camera_notifications_snooze_timer
+    action:
+      # Turn off the notifications
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.backyard_northwest_camera_notifications
+
