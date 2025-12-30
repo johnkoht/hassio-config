@@ -54,7 +54,9 @@ cards:
                 - type: conditional
                   conditions:
                     - entity: vacuum.roborock_s7
-                      state: 'paused'
+                      state: 
+                        - 'paused'
+                        - 'idle'
                   chip:
                     type: template
                     card_mod: !include /config/dashboards/templates/includes/kohbo_chip_card_mod.yaml
