@@ -74,3 +74,61 @@
           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
           secondary_info: last-changed
           state_color: true
+
+        # Backyard Pool Settings
+        - entity: input_boolean.backyard_pool_camera_notifications
+          name: Backyard Pool
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Backyard Northwest Settings
+        - entity: input_boolean.backyard_northwest_camera_notifications
+          name: Backyard Northwest
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+
+    # 
+    # Security Automations
+    # 
+    - type: custom:button-card
+      template: section_title
+      name: Security Automations
+    - type: entities
+      entities:
+        # Alarm Trigger
+        - entity: automation.security_alarm_triggered
+          name: Alarm Triggered Alert
+          icon: mdi:alarm-light
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Fire Alarm Triggered
+        - entity: automation.fire_alarm_triggered
+          name: Fire Alarm Triggered Alert
+          icon: mdi:fire-extinguisher
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Panic Button
+        - entity: automation.security_panic_button
+          name: Panic Buttons
+          icon: mdi:alert
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Garage Floor Light
+        - entity: automation.security_lighting_garage_flood_motion_on
+          name: Garage Flood Light
+          icon: mdi:alert
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        
