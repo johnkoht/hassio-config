@@ -1,0 +1,82 @@
+# 
+# Camera Card
+# 
+camera_card:
+  card:
+    type: custom:advanced-camera-card
+    cameras:
+      - name: '[[name]]'
+        live_provider: go2rtc
+        go2rtc:
+          url: http://10.0.10.207:1984
+          stream: '[[stream_id]]'
+          modes: [webrtc, mse]
+    view:
+      actions:
+        tap_action:
+          action: navigate
+          navigation_path: '[[hash]]'
+    live:
+      controls:
+        builtin: false
+        timeline:
+          mode: none
+      preload: false
+      lazy_load: true
+      # lazy_unload:
+      #   - hidden
+      #   - unselected
+    status_bar:
+      style: none
+    elements:
+      - type: custom:button-card
+        name: '[[name]]'
+        entity: '[[motion_entity]]'
+        state_display: >
+          [[[
+            const last = new Date(entity.last_changed);
+            const now = new Date();
+            const diff = Math.floor((now - last) / 1000);
+            let latest_motion = '';
+
+            if (diff < 60) {
+              latest_motion = "Now";
+            } else if (diff < 3600) {
+              latest_motion =  `${Math.floor(diff / 60)} minutess ago`;
+            } else if (diff < 86400) {
+              latest_motion =  `${Math.floor(diff / 3600)} hours ago`;
+            } else {
+              latest_motion =  `${Math.floor(diff / 86400)} days ago`;
+            }
+
+            return `Motion: ${latest_motion}`;
+          ]]]
+        show_icon: false
+        show_state: true
+        styles:
+          card:
+            - background: linear-gradient(transparent, rgba(0,0,0,0.75))
+            - padding: 20px 15px 15px
+            - border-radius: 0
+            - box-shadow: none
+          grid:
+            - grid-template-areas: '"n s"'
+            - grid-template-columns: auto auto
+            - grid-template-rows: auto
+          name:
+            - color: --var(primary-text-color)
+            - font-size: 16px
+            - font-weight: 700
+            - text-shadow: 0 1px 3px rgba(0,0,0,0.8)
+            - justify-self: start
+          state:
+            - color: --var(primary-text-color)
+            - font-size: 12px
+            - font-weight: 600
+            - text-shadow: 0 1px 3px rgba(0,0,0,0.8)
+            - justify-self: end
+        style:
+          bottom: 0
+          right: 0
+          width: 100%
+          transform: none

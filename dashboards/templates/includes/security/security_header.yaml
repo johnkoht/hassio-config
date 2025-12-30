@@ -44,7 +44,10 @@ card:
           icon: mdi:moisture
           label: Leak Sensors
           badge:
-            show: "[[[ states.sensor.leak_sensors_unavailable.state ]]]"
+            show: |
+              [[[ 
+                return states['sensor.leak_sensors_unavailable'].state == "on";
+              ]]]
             color: "var(--warning-color)"
           
       haptic: true
