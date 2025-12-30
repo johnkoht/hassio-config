@@ -186,6 +186,12 @@ script:
 
             ---
 
+            {% if states.vacuum.roborock_s7.state == "error" %}
+              The downstairs robot vacuum is jammed and stuck somewhere. Please let us know so we can find and put back at the dock.
+            {% endif %}
+
+            ---
+
             Remember: output only one single paragraph with no line breaks or bullet points, combining all relevant sections naturally and conversationally.
         response_variable: chatgpt
       #
