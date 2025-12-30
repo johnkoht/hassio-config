@@ -23,6 +23,7 @@ cards:
   - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_water_shortage.yaml
   - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_filter_life.yaml
   - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_sensors_dirty.yaml
+  - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_error.yaml
 
   # Air Purifier Notifications
   - !include /config/dashboards/kohbo/shared/notifications/air_purifier_office_filter_change.yaml
