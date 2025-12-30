@@ -1,0 +1,76 @@
+
+  # 
+  # Security Settings Popup
+  # 
+  type: vertical-stack
+  cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#security_settings_popup'
+      close_by_clicking_outside: true
+      styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+      margin_top_mobile: calc(100vh - 825px)
+      margin_top_desktop: calc(100vh - 825px)
+      
+    # 
+    # Title
+    # 
+    - type: custom:button-card
+      template: kohbo_popup_page_title
+      name: Settings
+
+    # 
+    # Camera Notifications
+    # 
+    - type: custom:button-card
+      template: section_title
+      name: Camera Notifications
+    - type: entities
+      entities:
+        # Global Camera Settings
+        - entity: input_boolean.camera_notifications
+          name: Global Notifications
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        
+        # Front Doort
+        - entity: input_boolean.front_door_camera_notifications
+          name: Front Door
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Driveway front Settings
+        - entity: input_boolean.driveway_front_camera_notifications
+          name: Driveway Front
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Driveway Garage Settings
+        - entity: input_boolean.garage_driveway_camera_notifications
+          name: Driveway Garage
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Backyard Porch Settings
+        - entity: input_boolean.backyard_porch_camera_notifications
+          name: Backyard Porch
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+        # Backyard South Settings
+        - entity: input_boolean.backyard_south_camera_notifications
+          name: Backyard South
+          icon: mdi:bell
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true

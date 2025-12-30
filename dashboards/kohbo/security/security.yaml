@@ -1300,3 +1300,8 @@ cards:
   # 
   - !include /config/dashboards/kohbo/security/front_door_lock_popup.yaml
   - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml
+
+  # 
+  # Security Settings
+  # 
+  - !include /config/dashboards/kohbo/security/components/security_settings_popup.yaml

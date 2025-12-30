@@ -9,37 +9,9 @@ cards:
   # 
   - !include /config/dashboards/templates/includes/security/security_header.yaml
 
-  # - type: custom:advanced-camera-card
-  #   cameras:
-  #     - name: Front Door
-  #       live_provider: go2rtc
-  #       go2rtc:
-  #         url: http://10.0.10.207:1984
-  #         stream: front_door
-  #         modes:
-  #           - webrtc
-  #           - mse
-
-  #     # - name: Driveway Front
-  #     #   live_provider: go2rtc
-  #     #   go2rtc:
-  #     #     url: http://10.0.10.207:1984
-  #     #     stream: driveway_front
-  #     #     modes:
-  #     #       - webrtc
-  #     #       - mse
-
-  #     # - name: Garage Driveway
-  #     #   live_provider: go2rtc
-  #     #   go2rtc:
-  #     #     url: http://10.0.10.207:1984
-  #     #     stream: garage_driveway
-  #     #     modes:
-  #     #       - webrtc
-  #     #       - mse
-
-
-
+  # 
+  # Front Door Camera
+  # 
   - type: custom:advanced-camera-card
     cameras:
       - name: Front Door
@@ -50,7 +22,6 @@ cards:
           modes: [webrtc, mse]
     view:
       actions:
-        # entity: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
         tap_action:
           action: navigate
           navigation_path: '#front_door_camera'
@@ -66,6 +37,9 @@ cards:
         - unselected
       
 
+  # 
+  # Grid of all cameras
+  # 
   - type: grid
     columns: 2
     square: false

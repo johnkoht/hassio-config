@@ -23,17 +23,22 @@ automation:
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.backyard_porch_camera_detections_person','last_triggered'), 0) ) | int > 180 }}"
       # Only alert if camera notifications are enabled
       - condition: state
-        entity_id: input_boolean.camera_notifications
+        entity_id: input_boolean.backyard_porch_camera_notifications
         state: "on"
-      - condition: and
+      - condition: or
         conditions:
-          # Kitchen door wasn't opened in the last 5 minutes
-          - condition: template
-            value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('binary_sensor.kitchen_door','last_changed'), 0) ) | int > 600 }}"
-          # AND the house is occupied
+          # House is NOT occupied - always alert when away (ignore door status)
           - condition: state
             entity_id: input_boolean.house_occupied
-            state: "on"
+            state: "off"
+          # House IS occupied - only alert if kitchen door wasn't opened recently
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.house_occupied
+                state: "on"
+              - condition: template
+                value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('binary_sensor.kitchen_door','last_changed'), 0) ) | int > 600 }}"
     action:
       #
       # Call the camera detection alert service to handle

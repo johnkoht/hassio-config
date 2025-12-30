@@ -23,7 +23,7 @@ automation:
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.backyard_south_camera_detections_person','last_triggered'), 0) ) | int > 60 }}"
       # Only alert if camera notifications are enabled
       - condition: state
-        entity_id: input_boolean.camera_notifications
+        entity_id: input_boolean.backyard_south_camera_notifications
         state: "on"
     action:
       #

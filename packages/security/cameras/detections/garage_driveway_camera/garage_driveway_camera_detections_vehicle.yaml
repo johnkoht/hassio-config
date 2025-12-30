@@ -23,7 +23,7 @@ automation:
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.garage_driveway_camera_detections_vehicle','last_triggered'), 0) ) | int > 60 }}"
       # Only alert about vehicles if camera notifications are enabled
       - condition: state
-        entity_id: input_boolean.camera_notifications
+        entity_id: input_boolean.garage_driveway_camera_notifications
         state: "on"
     action:
       #
