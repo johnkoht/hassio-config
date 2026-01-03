@@ -33,7 +33,7 @@ template:
         device_class: energy
         state_class: total_increasing
         state: >
-          {{ (states('sensor.panel_1_energy_meter_monthly') | float(0) + states('sensor.panel_2_energy_meter_monthly') | float(0)) | round(2) }}r
+          {{ (states('sensor.panel_1_energy_meter_monthly') | float(0) + states('sensor.panel_2_energy_meter_monthly') | float(0)) | round(2) }}
 
 
   # 
