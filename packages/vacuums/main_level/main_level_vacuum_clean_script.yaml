@@ -58,7 +58,7 @@ script:
     sequence:
       # Only proceed if the vacuum is docked
       - condition: state
-        entity_id: vacuum.roborock_s7
+        entity_id: vacuum.main_floor_vacuum
         state: "docked"
 
       # Jr. Suite door is OPEN
@@ -81,7 +81,7 @@ script:
       # Start cleaning the selected rooms
       - service: vacuum.send_command
         target:
-          entity_id: vacuum.roborock_s7
+          entity_id: vacuum.main_floor_vacuum
         data:
           command: app_segment_clean
           params: "{{ selected_segments }}" 

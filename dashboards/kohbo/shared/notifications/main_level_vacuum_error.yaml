@@ -4,13 +4,13 @@
 type: conditional
 conditions:
   - condition: state
-    entity: vacuum.roborock_s7
+    entity: vacuum.main_floor_vacuum
     state: "error"
 card:
   type: custom:bubble-card
   card_type: button
   button_type: switch
-  entity: vacuum.roborock_s7
+  entity: vacuum.main_floor_vacuum
   icon: mdi:alert
   show_state: true
   button_action:

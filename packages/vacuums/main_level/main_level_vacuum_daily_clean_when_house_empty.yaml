@@ -40,7 +40,7 @@ automation:
     conditions:
       # Only if vacuum is docked
       - condition: state
-        entity_id: vacuum.roborock_s7
+        entity_id: vacuum.main_floor_vacuum
         state: "docked"
       # Don't run if a empty house cleaning is scheduled
       - condition: state
@@ -150,7 +150,7 @@ automation:
     conditions:
       # Only if vacuum is cleaning
       - condition: state
-        entity_id: vacuum.roborock_s7
+        entity_id: vacuum.main_floor_vacuum
         state: "cleaning"
       # And it's during our morning cleaning window
       - condition: or
@@ -182,4 +182,4 @@ automation:
       # Return to dock
       - action: vacuum.return_to_base
         target:
-          entity_id: vacuum.roborock_s7 
+          entity_id: vacuum.main_floor_vacuum 

@@ -17,13 +17,13 @@ automation:
         entity_id: input_boolean.house_occupied
         state: "on"
       - or:
-          # Low on water
-          - condition: state
-            entity_id: binary_sensor.roborock_s7_water_shortage
-            state: "on"
+          # # Low on water
+          # - condition: state
+          #   entity_id: binary_sensor.roborock_s7_water_shortage
+          #   state: "on"
           # Sensors need to be cleaned (less than 2 hours)
           - condition: numeric_state
-            entity_id: sensor.roborock_s7_sensor_dirty_left
+            entity_id: sensor.main_floor_vacuum_sensor_dirty_remaining
             below: 7200
     actions:
       # Wait for the kitchen to be occupied for 5 minutes
@@ -55,7 +55,7 @@ automation:
           speech_message: >-
             {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" %}
               "The robot vacuum is water tank is empty, please refill it as soon as possible."
-            {% elif trigger.entity_id == "sensor.roborock_s7_sensor_dirty_left" %}
+            {% elif trigger.entity_id == "sensor.main_floor_vacuum_sensor_dirty_remaining" %}
               "The robot vacuum sensors are dirty and need to be cleaned."
             {% else %}
               "The robot vacuum needs maintenance, please check the app for more details."
@@ -67,7 +67,7 @@ automation:
           message: >-
             {% if trigger.entity_id == "binary_sensor.roborock_s7_water_shortage" %}
               "The robot vacuum is water tank is empty, please refill it as soon as possible."
-            {% elif trigger.entity_id == "sensor.roborock_s7_sensor_dirty_left" %}
+            {% elif trigger.entity_id == "sensor.main_floor_vacuum_sensor_dirty_remaining" %}
               "The robot vacuum sensors are dirty and need to be cleaned."
             {% else %}
               "The robot vacuum needs maintenance, please check the app for more details."

@@ -1,19 +1,19 @@
-# 
-# Main Level Vacuum Maintenance - Water Shortage
-# 
-type: conditional
-conditions:
-  - condition: state
-    entity: binary_sensor.roborock_s7_water_shortage
-    state: "on"
-card:
-  type: custom:bubble-card
-  card_type: button
-  button_type: switch
-  entity: binary_sensor.roborock_s7_water_shortage
-  show_state: true
-  tap_action:
-    action: none
-  button_action:
-    tap_action:
-      action: none
+# # 
+# # Main Level Vacuum Maintenance - Water Shortage
+# # 
+# type: conditional
+# conditions:
+#   - condition: state
+#     entity: binary_sensor.roborock_s7_water_shortage
+#     state: "on"
+# card:
+#   type: custom:bubble-card
+#   card_type: button
+#   button_type: switch
+#   entity: binary_sensor.roborock_s7_water_shortage
+#   show_state: true
+#   tap_action:
+#     action: none
+#   button_action:
+#     tap_action:
+#       action: none

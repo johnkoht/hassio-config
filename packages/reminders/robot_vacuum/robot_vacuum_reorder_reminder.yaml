@@ -5,27 +5,27 @@ automation:
     trigger:
       # # Main brush life (less than 50 hours)
       # - platform: numeric_state
-      #   entity_id: sensor.roborock_s7_main_brush_left
+      #   entity_id: sensor.main_floor_vacuum_main_brush_remaining
       #   below: 180000
       # Main brush life (less than 20 hours)
       - platform: numeric_state
-        entity_id: sensor.roborock_s7_main_brush_left
+        entity_id: sensor.main_floor_vacuum_main_brush_remaining
         below: 72000
       # # Side brush life (less than 50 hours)
       # - platform: numeric_state
-      #   entity_id: sensor.roborock_s7_side_brush_left
+      #   entity_id: sensor.main_floor_vacuum_side_brush_remaining
       #   below: 180000
       # Side brush life (less than 20 hours)
       - platform: numeric_state
-        entity_id: sensor.roborock_s7_side_brush_left
+        entity_id: sensor.main_floor_vacuum_side_brush_remaining
         below: 72000
       # # Filter life (less than 50 hours)
       # - platform: numeric_state
-      #   entity_id: sensor.roborock_s7_filter_left
+      #   entity_id: sensor.main_floor_vacuum_filter_remaining
       #   below: 180000
       # Filter life (less than 20 hours)
       - platform: numeric_state
-        entity_id: sensor.roborock_s7_filter_left
+        entity_id: sensor.main_floor_vacuum_filter_remaining
         below: 72000
     action:
       # Wait until 6:30am

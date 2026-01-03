@@ -4,22 +4,22 @@
 type: conditional
 conditions:
   - condition: numeric_state
-    entity: sensor.roborock_s7_sensor_dirty_left
+    entity: sensor.sensor.main_floor_vacuum_sensor_dirty_remaining
     below: 7200
 card:
   type: custom:bubble-card
   card_type: button
   button_type: switch
-  entity: sensor.roborock_s7_sensor_dirty_left
+  entity: sensor.sensor.main_floor_vacuum_sensor_dirty_remaining
   button_action:
     tap_action:
       action: none
   tap_action:
     action: none
   sub_button:
-    - entity: button.roborock_s7_reset_sensor_dirty
+    - entity: button.main_floor_vacuum_reset_sensor_dirty
       tap_action:
         action: perform-action
         perform_action: button.press
         target:
-          entity_id: button.roborock_s7_reset_sensor_dirty
+          entity_id: button.main_floor_vacuum_reset_sensor_dirty

@@ -584,7 +584,7 @@ cards:
   #       # # 
   #       # - type: conditional
   #       #   conditions:
-  #       #     - entity: vacuum.roborock_s7
+  #       #     - entity: vacuum.main_floor_vacuum
   #       #       state: 'docked'
   #       #   card:
   #       #     type: custom:button-card
@@ -798,7 +798,7 @@ cards:
 
       # Main Floor Vacuum
       - type: custom:button-card
-        entity: vacuum.roborock_s7
+        entity: vacuum.main_floor_vacuum
         name: Main Floor Vacuum
         template: kohbo_device_entity
         icon: mdi:robot-vacuum
@@ -807,12 +807,12 @@ cards:
           # navigation_path: '#main_floor_vacuum'
           navigation_path: '/dashboard-kohbo/main-floor-vacuum'
 
-      # Upstairs Vacuum
-      - type: custom:button-card
-        entity: vacuum.upstairs_robot_vacuum
-        name: Upstairs Vacuum
-        template: kohbo_device_entity
-        icon: mdi:robot-vacuum
+      # # Upstairs Vacuum
+      # - type: custom:button-card
+      #   entity: vacuum.upstairs_robot_vacuum
+      #   name: Upstairs Vacuum
+      #   template: kohbo_device_entity
+      #   icon: mdi:robot-vacuum
 
 
   # 

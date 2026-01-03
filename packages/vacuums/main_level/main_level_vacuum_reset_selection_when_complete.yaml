@@ -6,7 +6,7 @@ automation:
     trigger:
       # Vacuum is returning to dock
       - platform: state
-        entity_id: vacuum.roborock_s7
+        entity_id: vacuum.main_floor_vacuum
         to: 'returning'
 
     # 

@@ -48,7 +48,7 @@ automation:
       # Vacuum the Kitchen, family room, and mudroom
       - action: vacuum.send_command
         target:
-          entity_id: vacuum.roborock_s7
+          entity_id: vacuum.main_floor_vacuum
         data:
           command: app_segment_clean
           params: [24, 25, 26]

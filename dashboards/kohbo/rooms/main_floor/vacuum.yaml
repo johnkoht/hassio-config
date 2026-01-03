@@ -37,7 +37,7 @@ cards:
                 # 
                 - type: conditional
                   conditions:
-                    - entity: vacuum.roborock_s7
+                    - entity: vacuum.main_floor_vacuum
                       state: 'cleaning'
                   chip:
                     type: template
@@ -47,13 +47,13 @@ cards:
                       action: perform-action
                       perform_action: vacuum.pause
                       data:
-                        entity_id: vacuum.roborock_s7
+                        entity_id: vacuum.main_floor_vacuum
                 # 
                 # Resume Cleaning (if paused)
                 # 
                 - type: conditional
                   conditions:
-                    - entity: vacuum.roborock_s7
+                    - entity: vacuum.main_floor_vacuum
                       state: 
                         - 'paused'
                         - 'idle'
@@ -65,13 +65,13 @@ cards:
                       action: perform-action
                       perform_action: vacuum.start
                       data:
-                        entity_id: vacuum.roborock_s7
+                        entity_id: vacuum.main_floor_vacuum
                 # 
                 # Return to Dock (if cleaning)
                 # 
                 - type: conditional
                   conditions:
-                    - entity: vacuum.roborock_s7
+                    - entity: vacuum.main_floor_vacuum
                       state: 
                         - 'cleaning'
                         - 'paused'
@@ -84,14 +84,14 @@ cards:
                       action: perform-action
                       perform_action: vacuum.return_to_base
                       data:
-                        entity_id: vacuum.roborock_s7
+                        entity_id: vacuum.main_floor_vacuum
                 
                 # 
                 # Quick Clean
                 # 
                 - type: conditional
                   conditions:
-                    - entity: vacuum.roborock_s7
+                    - entity: vacuum.main_floor_vacuum
                       state: 'docked'
                   chip:
                     type: template
@@ -106,7 +106,7 @@ cards:
                 # 
                 - type: conditional
                   conditions:
-                    - entity: vacuum.roborock_s7
+                    - entity: vacuum.main_floor_vacuum
                       state: 'docked'
                   chip:
                     type: template
@@ -125,7 +125,7 @@ cards:
                 # 
                 - type: conditional
                   conditions:
-                    - entity: vacuum.roborock_s7
+                    - entity: vacuum.main_floor_vacuum
                       state: 'docked'
                   chip:
                     type: template
@@ -144,7 +144,7 @@ cards:
                 # 
                 - type: conditional
                   conditions:
-                    - entity: vacuum.roborock_s7
+                    - entity: vacuum.main_floor_vacuum
                       state: 'docked'
                   chip:
                     type: template
@@ -168,7 +168,7 @@ cards:
         }
     cards:
       - type: custom:button-card
-        entity: vacuum.roborock_s7
+        entity: vacuum.main_floor_vacuum
         label: Vacuum Status
         icon: |
           [[[
@@ -226,7 +226,7 @@ cards:
         cards:
           # Battery level
           - type: custom:button-card
-            entity: vacuum.roborock_s7
+            entity: vacuum.main_floor_vacuum
             name: Battery Level
             template: kohbo_security_item
             icon: mdi:battery
@@ -243,14 +243,14 @@ cards:
                 color: var(--warning-color)
           # Cleaning Area
           - type: custom:button-card
-            entity: sensor.roborock_s7_current_clean_area
+            entity: sensor.main_floor_vacuum_current_clean_area
             name: Cleaning Area
             template: kohbo_security_item
             icon: mdi:map-marker-outline
             color: var(--light-grey-color)
           # Cleaning Time
           - type: custom:button-card
-            entity: sensor.roborock_s7_last_clean_duration
+            entity: sensor.main_floor_vacuum_last_clean_duration
             name: Cleaning Time
             template: kohbo_security_item
             icon: mdi:timer-outline
@@ -268,14 +268,14 @@ cards:
     entities:
       # Main Brush
       - type: custom:template-entity-row
-        entity: sensor.roborock_s7_main_brush_left
+        entity: sensor.main_floor_vacuum_main_brush_remaining
         icon: mdi:brush-variant
         name: Main Brush
         state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         color: >
           {% set main_brush_left = states[config.entity].state | int(0) %}
-          {% if main_brush_left > 100000 %}
+          {% if main_brush_left > 72000 %}
             var(--success-color)
           {% else %}
             var(--error-color)
@@ -283,35 +283,35 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # Side Brush
       - type: custom:template-entity-row
-        entity: sensor.roborock_s7_side_brush_left
+        entity: sensor.main_floor_vacuum_side_brush_remaining
         icon: mdi:brush-variant
         name: Side Brush
         state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
         color: >
           {% set main_brush_left = states[config.entity].state | int(0) %}
-          {% if main_brush_left > 100000 %}
+          {% if main_brush_left > 72000 %}
             var(--success-color)
           {% else %}
             var(--error-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # Water Level
-      - type: custom:template-entity-row
-        entity: binary_sensor.roborock_s7_water_shortage
-        name: Water Level
-        state: "{{ 'Okay' if states[config.entity].state == 'off' else 'Low' }}"
-        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-        color: >
-          {% if states[config.entity].state == "on" %}
-            var(--error-color)
-          {% else %}
-            var(--success-color)
-          {% endif %}
-        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+      # # Water Level
+      # - type: custom:template-entity-row
+      #   entity: binary_sensor.main_floor_vacuum_water_shortage
+      #   name: Water Level
+      #   state: "{{ 'Okay' if states[config.entity].state == 'off' else 'Low' }}"
+      #   secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+      #   color: >
+      #     {% if states[config.entity].state == "on" %}
+      #       var(--error-color)
+      #     {% else %}
+      #       var(--success-color)
+      #     {% endif %}
+      #   card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # Filter life
       - type: custom:template-entity-row
-        entity: sensor.roborock_s7_filter_left
+        entity: sensor.main_floor_vacuum_filter_remaining
         name: Filter Life
         state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
@@ -325,7 +325,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
       # Sensor Dirty
       - type: custom:template-entity-row
-        entity: sensor.roborock_s7_sensor_dirty_left
+        entity: sensor.main_floor_vacuum_sensor_dirty_remaining
         name: Sensor Dirty
         state: "{{ (states[config.entity].state | float(0) / 3600) | int }} h"
         secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
@@ -340,41 +340,41 @@ cards:
 
 
 
-  # 
-  # Vacuum Actions
-  # 
-  - type: custom:button-card
-    template: section_title
-    name: Maintenance
-  - type: entities
-    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
-    entities:
-      # Reset Filter
-      - type: button
-        entity: button.roborock_s7_reset_filter
-        action_name: Reset
-        name: Reset Filter
-        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
-      # Reset Main Brush
-      - type: button
-        entity: button.roborock_s7_reset_main_brush
-        action_name: Reset
-        name: Reset Main Brush
-        icon: mdi:brush-variant
-        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
-      # Reset Side Brush
-      - type: button
-        entity: button.roborock_s7_reset_side_brush
-        action_name: Reset
-        name: Reset Side Brush
-        icon: mdi:brush-variant
-        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
-      # Reset Sensor Dirty
-      - type: button
-        entity: button.roborock_s7_reset_sensor_dirty
-        action_name: Reset
-        name: Reset Sensors
-        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+  # # 
+  # # Vacuum Actions
+  # # 
+  # - type: custom:button-card
+  #   template: section_title
+  #   name: Maintenance
+  # - type: entities
+  #   card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+  #   entities:
+  #     # Reset Filter
+  #     - type: button
+  #       entity: button.main_floor_vacuum_reset_filter
+  #       action_name: Reset
+  #       name: Reset Filter
+  #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+  #     # Reset Main Brush
+  #     - type: button
+  #       entity: button.main_floor_vacuum_reset_main_brush
+  #       action_name: Reset
+  #       name: Reset Main Brush
+  #       icon: mdi:brush-variant
+  #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+  #     # Reset Side Brush
+  #     - type: button
+  #       entity: button.main_floor_vacuum_reset_side_brush
+  #       action_name: Reset
+  #       name: Reset Side Brush
+  #       icon: mdi:brush-variant
+  #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
+  #     # Reset Sensor Dirty
+  #     - type: button
+  #       entity: button.main_floor_vacuum_reset_sensor_dirty
+  #       action_name: Reset
+  #       name: Reset Sensors
+  #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
       
 
   # 
@@ -393,6 +393,28 @@ cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Vacuum Settings
+
+      # 
+      # Main Vacuum Nightly Cleaning
+      # 
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+        cards:
+          - type: entities
+            entities:
+              # Daily Clean When House Empty
+              - entity: automation.main_level_vacuum_nightly_cleaning
+                name: Nightly Cleaning
+                icon: mdi:robot
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                secondary_info: last-changed
+                state_color: true
 
       # 
       # Main Vacuum Daily Clean When House Empty

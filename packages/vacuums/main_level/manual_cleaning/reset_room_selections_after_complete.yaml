@@ -4,7 +4,7 @@ automation:
     description: "Turns off all room selection booleans when the vacuum completes cleaning"
     trigger:
       - platform: state
-        entity_id: vacuum.roborock_s7
+        entity_id: vacuum.main_floor_vacuum
         to: 'returning'
     condition:
       # Only run if at least one room was selected

@@ -20,7 +20,7 @@ cards:
   - !include /config/dashboards/kohbo/shared/notifications/garbage_day.yaml
 
   # Main Level Vacuum Notifications
-  - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_water_shortage.yaml
+  # - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_water_shortage.yaml
   - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_filter_life.yaml
   - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_sensors_dirty.yaml
   - !include /config/dashboards/kohbo/shared/notifications/main_level_vacuum_error.yaml
