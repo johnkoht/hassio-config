@@ -2,7 +2,6 @@ type: custom:vertical-layout
 title: Energy
 path: energy
 theme: kohbo
-# layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
   # 
@@ -29,9 +28,216 @@ cards:
             action: navigate
             navigation_path: '#energy_settings_popup'
 
-  # 
-  # Energy Consumption Overview
-  # 
+
+  #===========================================================================
+  # SECTION 1: NOW - Real-time Status
+  #===========================================================================
+
+  #---------------------------------------------------------------------------
+  # Energy Status Hero Card
+  #---------------------------------------------------------------------------
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        :host {
+          --keep-border_radius: 'true';
+          --keep-background: 'true';
+          --stack-card-gap: 0px !important;
+        }
+    keep:
+      border_radius: true
+      background: true
+    cards:
+      #
+      # Contextual Status Message (like Exterior Lighting's "It's daylight but gloomy")
+      #
+      - type: custom:button-card
+        entity: sensor.energy_status_message
+        show_icon: true
+        show_name: false
+        show_label: true
+        show_state: true
+        label: |
+          [[[
+            return entity.attributes.recommendation || '';
+          ]]]
+        icon: |
+          [[[
+            const priority = entity.attributes.priority;
+            if (priority === 'high') return 'mdi:alert-circle';
+            if (priority === 'good') return 'mdi:leaf';
+            return 'mdi:lightning-bolt';
+          ]]]
+        styles:
+          grid:
+            - grid-template-areas: '"i s" "i l"'
+            - grid-template-columns: 'auto 1fr'
+          card:
+            - padding: '16px 20px'
+            - background: 'transparent'
+          icon:
+            - color: |
+                [[[
+                  const priority = entity.attributes.priority;
+                  if (priority === 'high') return '#ED4747';
+                  if (priority === 'medium') return '#E36001';
+                  if (priority === 'good') return '#06D6A0';
+                  return '#FFD166';
+                ]]]
+            - width: '40px'
+            - height: '40px'
+            - margin-right: '16px'
+          state:
+            - justify-self: start
+            - font-size: '18px'
+            - font-weight: '500'
+            - color: 'var(--primary-text-color)'
+          label:
+            - justify-self: start
+            - font-size: '13px'
+            - color: 'var(--secondary-text-color)'
+            - margin-top: '2px'
+
+      #
+      # Stats Row - Power | Price | Today (using kohbo_security_item styling)
+      #
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: horizontal-stack
+            cards:
+              # Power
+              - type: custom:button-card
+                entity: sensor.energy_current_consumption
+                name: Power
+                template: kohbo_security_item
+                icon: mdi:flash
+                state_display: |
+                  [[[
+                    const val = parseFloat(entity.state);
+                    if (val >= 1000) {
+                      return `${(val/1000).toFixed(1)} kW`;
+                    }
+                    return `${Math.round(val)} W`;
+                  ]]]
+                styles:
+                  icon:
+                    - color: |
+                        [[[
+                          const tier = states['sensor.energy_power_tier']?.state;
+                          if (tier === 'low') return '#06D6A0';
+                          if (tier === 'normal') return '#06D6A0';
+                          if (tier === 'high') return '#FFD166';
+                          return '#ED4747';
+                        ]]]
+
+              # Price
+              - type: custom:button-card
+                entity: sensor.comed_current_hour_average_price
+                name: Price
+                template: kohbo_security_item
+                icon: |
+                  [[[
+                    const tier = states['sensor.energy_price_tier']?.state;
+                    if (tier === 'low') return 'mdi:leaf';
+                    if (tier === 'normal') return 'mdi:cash';
+                    if (tier === 'high') return 'mdi:cash-multiple';
+                    return 'mdi:fire';
+                  ]]]
+                state_display: |
+                  [[[
+                    const price = parseFloat(entity.state);
+                    const tier = states['sensor.energy_price_tier']?.state;
+                    const label = states['sensor.energy_price_tier']?.attributes?.label || '';
+                    return `${price.toFixed(1)}¢ · ${label}`;
+                  ]]]
+                styles:
+                  icon:
+                    - color: |
+                        [[[
+                          const tier = states['sensor.energy_price_tier']?.state;
+                          if (tier === 'low') return '#06D6A0';
+                          if (tier === 'normal') return '#FFD166';
+                          if (tier === 'high') return '#E36001';
+                          return '#ED4747';
+                        ]]]
+
+              # Today's Trend
+              - type: custom:button-card
+                entity: sensor.energy_trend_percent
+                name: Today
+                template: kohbo_security_item
+                icon: |
+                  [[[
+                    const pct = parseFloat(entity.state) || 0;
+                    if (pct > 10) return 'mdi:trending-up';
+                    if (pct < -10) return 'mdi:trending-down';
+                    return 'mdi:trending-neutral';
+                  ]]]
+                state_display: |
+                  [[[
+                    const pct = parseFloat(entity.state) || 0;
+                    const sign = pct >= 0 ? '+' : '';
+                    return `${sign}${pct.toFixed(0)}% vs expected`;
+                  ]]]
+                styles:
+                  icon:
+                    - color: |
+                        [[[
+                          const pct = parseFloat(entity.state) || 0;
+                          if (pct > 10) return '#ED4747';
+                          if (pct < -10) return '#06D6A0';
+                          return '#FFD166';
+                        ]]]
+
+      #
+      # 12h Power Usage Chart
+      #
+      - type: custom:apexcharts-card
+        card_mod:
+          style: |
+            ha-card {
+              background: var(--darker-primary-color);
+              border-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+            }
+        experimental:
+          color_threshold: true
+        graph_span: 12h
+        header:
+          show: false
+        series:
+          - entity: sensor.energy_current_consumption
+            name: Power
+            type: column
+            group_by:
+              duration: 5minute
+              func: avg
+            color_threshold:
+              - value: 0
+                color: "#06D6A0"
+              - value: 500
+                color: "#FFD166"
+              - value: 1500
+                color: "#E36001"
+              - value: 2000
+                color: "#ED4747"
+              - value: 3000
+                color: "#ED4747"
+
+
+  #===========================================================================
+  # SECTION 2: TODAY - Today's Performance & Forecast
+  #===========================================================================
+
+  #---------------------------------------------------------------------------
+  # Daily Gauge with Consumption Status
+  #---------------------------------------------------------------------------
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -83,9 +289,7 @@ cards:
             - font-weight: 400
             - color: var(--primary-text-color)
 
-      # 
       # Daily Energy Usage Gauge
-      # 
       - type: gauge
         name: Daily Consumption
         unit: 'kWh'
@@ -186,11 +390,9 @@ cards:
                 color: var(--secondary-text-color) !important;
                 font-size: 12px !important;
               }
-      
-  
-      # 
-      # Daily Energy Usage and Price
-      # 
+    
+
+      # Daily Energy Usage and Price Chart
       - type: custom:apexcharts-card
         card_mod:
           style: |
@@ -205,8 +407,6 @@ cards:
               box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
             }
         graph_span: 24h
-        # span:
-        #   start: day
         stacked: true
         header:
           show: false
@@ -220,7 +420,7 @@ cards:
               labels:
                 formatter: |
                   EVAL: (val) => `${val.toFixed(1)}`
-            - id: price  # Secondary Y-axis for price
+            - id: price
               opposite: true
               show: 
                 dataLabels: false
@@ -228,10 +428,9 @@ cards:
                 text: ""
               labels:
                 formatter: |
-                  EVAL: (val) => `$${val.toFixed(2)}`
+                  EVAL: (val) => `${(val * 100).toFixed(0)}¢`
 
         series:
-          # - entity: sensor.whole_home_energy_daily_usage
           - entity: sensor.daily_energy_consumption
             type: column
             name: Energy Usage
@@ -250,10 +449,8 @@ cards:
             yaxis_id: price
 
 
-
-
   #---------------------------------------------------------------------------
-  # Actual vs Forecast - Today's Energy Usage
+  # Today's Energy Trend - Actual vs Forecast
   #---------------------------------------------------------------------------
   - type: custom:stack-in-card
     card_mod:
@@ -267,9 +464,7 @@ cards:
       border_radius: true
       background: true
     cards:
-      # 
       # Trend Header with Stats
-      # 
       - type: custom:button-card
         entity: sensor.energy_trend_status
         name: Today's Energy Trend
@@ -333,9 +528,7 @@ cards:
               return `${sign}${pct.toFixed(1)}%`;
             ]]]
 
-      # 
       # Stats Row - Actual | Expected | Forecast
-      # 
       - type: grid
         columns: 3
         square: false
@@ -412,9 +605,7 @@ cards:
                 return `${parseFloat(entity.state).toFixed(1)} kWh`;
               ]]]
 
-      # 
       # Actual vs Forecast Chart
-      # 
       - type: custom:apexcharts-card
         card_mod:
           style: |
@@ -490,117 +681,14 @@ cards:
               }
               return data;
 
-  # - type: custom:mini-graph-card
-  #   entities:
-  #     - entity: sensor.energy_current_consumption
-  #   name: Energy Usage
-  #   show:
-  #     graph: bar
-  #   card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
-  #   points_per_hour: 2
-  #   line_width: 4
-  #   decimals: 0
-  #   smoothing: true
-  #   color_thresholds_transition: smooth
-  #   color_thresholds:
-  #     - color: "#59A5D8"
-  #       value: 400
-  #     - color: "#ADD2EB"
-  #       value: 600
-  #     - color: "#06D6A0"
-  #       value: 1000
-  #     - color: "#FFD166"
-  #       value: 2000
-  #     - color: "#ED4747"
-  #       value: 3000
 
-  - type: custom:apexcharts-card
-    experimental:
-      color_threshold: true
-    graph_span: 12h
-    header:
-      show: true
-      title: Current Power Usage (W)
-    series:
-      - entity: sensor.energy_current_consumption
-        name: Total Power
-        type: column
-        group_by:
-          duration: 5minute
-          func: avg
-        color_threshold:
-          - value: 0
-            color: "#06D6A0"
-          - value: 500
-            color: "#FFD166"
-          - value: 1500
-            color: "#E36001"
-          - value: 2000
-            color: "#ED4747"
-          - value: 3000
-            color: "#ED4747"
-  
-  - type: custom:apexcharts-card
-    experimental:
-      color_threshold: true
-    graph_span: 12h
-    stacked: true
-    header:
-      show: true
-      title: Current Power Usage (W)
-    series:
-      - entity: sensor.energy_current_consumption
-        name: Total Energy Usage
-        type: line
-        stroke_width: 2
-        group_by:
-          duration: 5minute
-          func: avg
-        color_threshold:
-          - value: 0
-            color: "#06D6A0"
-          - value: 0.5
-            color: "#FFD166"
-          - value: 1.5
-            color: "#E36001"
-          - value: 2.0
-            color: "#ED4747"
-          - value: 3.0
-            color: "#ED4747"
+  #===========================================================================
+  # SECTION 3: HISTORY - Longer-term Patterns
+  #===========================================================================
 
-
-  - type: custom:apexcharts-card
-    experimental:
-      color_threshold: true
-    graph_span: 48h
-    stacked: true
-    header:
-      show: true
-      title: Energy Usage - Hourly
-    series:
-      - entity: sensor.daily_energy_consumption
-        type: column
-        name: Total Energy Usage
-        statistics:
-          type: change
-          period: hour
-          align: start
-        color_threshold:
-          - value: 0
-            color: "#06D6A0"
-          - value: 0.5
-            color: "#FFD166"
-          - value: 1.5
-            color: "#E36001"
-          - value: 2.0
-            color: "#ED4747"
-          - value: 3.0
-            color: "#ED4747"
-
-
-  # 
-  # Energy Usage over the last 30 days
-  # 
+  #---------------------------------------------------------------------------
+  # Energy Usage - Daily (30 days)
+  #---------------------------------------------------------------------------
   - type: custom:apexcharts-card
     experimental:
       color_threshold: true
@@ -630,25 +718,13 @@ cards:
             color: "#ED4747"
   
 
+  #---------------------------------------------------------------------------
+  # Weekly & Monthly Gauges
+  #---------------------------------------------------------------------------
   - type: grid
     columns: 2
     square: false
     cards:
-      - type: gauge
-        name: Daily Energy Usage
-        unit: 'kWh'
-        entity: sensor.whole_home_energy_daily_usage
-        min: 0
-        max: 30
-        needle: true
-        segments:
-          - from: 0
-            color: var(--success-color)
-          - from: 10
-            color: var(--warning-color)
-          - from: 20
-            color: var(--error-color)
-
       # Weekly Energy Usage
       - type: gauge
         name: Weekly Energy Usage
@@ -682,21 +758,25 @@ cards:
             color: var(--error-color)
 
 
+  #===========================================================================
+  # SECTION 4: DEVICES - What's Consuming Power
+  #===========================================================================
+
   - type: energy-devices-graph
     title: Individual Devices
     max_devices: 8
     hide_compound_stats: true
 
 
-  #
+  #===========================================================================
   # Navbar
-  #
+  #===========================================================================
   - !include /config/dashboards/templates/includes/navbar.yaml
 
   
-  # 
+  #===========================================================================
   # Energy Settings Popup
-  # 
+  #===========================================================================
   - type: vertical-stack
     cards:
       - type: custom:bubble-card
@@ -707,16 +787,12 @@ cards:
         margin_top_mobile: calc(100vh - 425px)
         margin_top_desktop: calc(100vh - 425px)
         
-      # 
       # Title
-      # 
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
       # Automations
-      # 
       - type: custom:button-card
         template: section_title
         name: Automations

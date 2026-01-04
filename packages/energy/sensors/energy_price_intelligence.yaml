@@ -1,0 +1,134 @@
+# Energy Price & Power Intelligence
+#
+# Sensors for dashboard display of price/power status and recommendations.
+# Uses ComEd hourly pricing data and whole-home power monitoring.
+#
+template:
+  - sensor:
+      #-----------------------------------------------------------------------
+      # Current Price Tier - low, normal, high, very_high
+      # Thresholds based on typical ComEd hourly pricing ranges (in cents)
+      #-----------------------------------------------------------------------
+      - name: "Energy Price Tier"
+        unique_id: energy_price_tier
+        icon: >
+          {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
+          {% if price <= 3 %}
+            mdi:leaf
+          {% elif price <= 6 %}
+            mdi:cash
+          {% elif price <= 10 %}
+            mdi:cash-multiple
+          {% else %}
+            mdi:fire
+          {% endif %}
+        state: >
+          {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
+          {% if price <= 3 %}
+            low
+          {% elif price <= 6 %}
+            normal
+          {% elif price <= 10 %}
+            high
+          {% else %}
+            very_high
+          {% endif %}
+        attributes:
+          price_cents: "{{ states('sensor.comed_current_hour_average_price') | float(0) | round(2) }}"
+          label: >
+            {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
+            {% if price <= 3 %}
+              Cheap
+            {% elif price <= 6 %}
+              Normal
+            {% elif price <= 10 %}
+              High
+            {% else %}
+              Very High
+            {% endif %}
+
+      #-----------------------------------------------------------------------
+      # Current Power Tier - low, normal, high, very_high
+      # Thresholds for instantaneous power draw (in Watts)
+      #-----------------------------------------------------------------------
+      - name: "Energy Power Tier"
+        unique_id: energy_power_tier
+        icon: mdi:flash
+        state: >
+          {% set power = states('sensor.energy_current_consumption') | float(0) %}
+          {% if power < 500 %}
+            low
+          {% elif power < 1500 %}
+            normal
+          {% elif power < 2500 %}
+            high
+          {% else %}
+            very_high
+          {% endif %}
+        attributes:
+          label: >
+            {% set power = states('sensor.energy_current_consumption') | float(0) %}
+            {% if power < 500 %}
+              Low
+            {% elif power < 1500 %}
+              Normal
+            {% elif power < 2500 %}
+              High
+            {% else %}
+              Very High
+            {% endif %}
+
+      #-----------------------------------------------------------------------
+      # Energy Status Message - contextual headline for the dashboard
+      # Prioritizes: price spikes > high usage > cheap prices > normal
+      #-----------------------------------------------------------------------
+      - name: "Energy Status Message"
+        unique_id: energy_status_message
+        icon: mdi:lightning-bolt
+        state: >
+          {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
+          {% set power = states('sensor.energy_current_consumption') | float(0) %}
+          {% set trend_pct = states('sensor.energy_trend_percent') | float(0) %}
+          {% if price > 10 %}
+            Price spike! Reduce usage if possible
+          {% elif price > 6 and power > 2000 %}
+            High price & high usage — consider reducing
+          {% elif price > 6 %}
+            Energy prices are elevated
+          {% elif power > 2500 %}
+            High power draw right now
+          {% elif price <= 3 %}
+            Electricity is cheap right now!
+          {% elif trend_pct > 20 %}
+            Usage trending above normal today
+          {% elif trend_pct < -20 %}
+            Great job! Usage below normal today
+          {% else %}
+            Energy usage is normal
+          {% endif %}
+        attributes:
+          recommendation: >
+            {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
+            {% set power = states('sensor.energy_current_consumption') | float(0) %}
+            {% if price > 10 %}
+              Avoid running major appliances
+            {% elif price > 6 %}
+              Consider delaying non-essential usage
+            {% elif price <= 3 %}
+              Good time to run appliances
+            {% else %}
+              Use energy as needed
+            {% endif %}
+          priority: >
+            {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
+            {% set power = states('sensor.energy_current_consumption') | float(0) %}
+            {% if price > 10 or power > 2500 %}
+              high
+            {% elif price > 6 or power > 2000 %}
+              medium
+            {% elif price <= 3 %}
+              good
+            {% else %}
+              normal
+            {% endif %}
+
