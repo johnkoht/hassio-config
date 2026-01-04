@@ -12,7 +12,7 @@ script:
           select:
             multiple: true
             options:
-              - playroom
+              # - playroom
               - foyer
               - jr_suite
               - dining_room
@@ -28,16 +28,17 @@ script:
       # Map rooms to the segment ID
       # 
       room_map:
-        playroom: 18
+        # playroom: 18
         foyer: 20
-        jr_suite: 21
-        dining_room: 23
-        kitchen: 24
-        mudroom: 25
-        family_room: 26
-        laundry_room: 27
-        mudroom_bathroom: 30
-        office: 29
+        jr_suite: 17
+        dining_room: 18
+        kitchen: 19
+        mudroom: 26
+        family_room: 21
+        laundry_room: 22
+        mudroom_bathroom: 27
+        # office: 29
+        powder_room: 16
 
       # 
       # Get the selected segments for the vacuum
