@@ -186,7 +186,7 @@ script:
 
             ---
 
-            {% if states.vacuum.sensor.main_floor_vacuum.state == "error" %}
+            {% if states.vacuum.main_floor_vacuum.state == "error" %}
               The downstairs robot vacuum is jammed and stuck somewhere. Please let us know so we can find and put back at the dock.
             {% endif %}
 
