@@ -85,6 +85,10 @@ automation:
         event_type: timer.started
         event_data: 
           entity_id: timer.driveway_front_camera_notifications_snooze_timer
+      # Global camera notifications are turned off
+      - trigger: state
+        entity_id: input_boolean.camera_notifications
+        to: "off"
     action:
       # Turn off the notifications
       - action: input_boolean.turn_off

@@ -75,6 +75,7 @@ automation:
 
   # 
   # When the timer is started, turn off the notifications
+  # OR if global notifications are turned off
   # 
   - id: "backyard_northwest_camera_notifications_turn_off"
     alias: "Backyard Northwest Camera Notifications - Turn Off"
@@ -85,6 +86,10 @@ automation:
         event_type: timer.started
         event_data: 
           entity_id: timer.backyard_northwest_camera_notifications_snooze_timer
+      # Global camera notifications are turned off
+      - trigger: state
+        entity_id: input_boolean.camera_notifications
+        to: "off"
     action:
       # Turn off the notifications
       - action: input_boolean.turn_off
