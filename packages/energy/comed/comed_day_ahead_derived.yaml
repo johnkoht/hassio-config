@@ -1,0 +1,316 @@
+###############################################################################
+# ComEd Day-Ahead Derived Sensors
+#
+# Template sensors derived from the day-ahead pricing data.
+# Provides actionable intelligence for automations and dashboard display.
+#
+# Dependencies:
+#   - sensor.comed_day_ahead_prices (from comed_day_ahead_prices.yaml)
+###############################################################################
+
+template:
+  - sensor:
+      #-----------------------------------------------------------------------
+      # Peak Hours - List of hours where price exceeds high threshold (8¢)
+      # Returns hours sorted by price (most expensive first)
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Peak Hours"
+        unique_id: comed_day_ahead_peak_hours
+        icon: mdi:fire
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {% set threshold = 8 %}
+          {% set peaks = namespace(hours=[]) %}
+          {% for i in range(prices | length) %}
+            {% if prices[i] >= threshold %}
+              {% set peaks.hours = peaks.hours + [i] %}
+            {% endif %}
+          {% endfor %}
+          {{ peaks.hours | length }}
+        unit_of_measurement: "hours"
+        attributes:
+          hours: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set threshold = 8 %}
+            {% set peaks = namespace(data=[]) %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] >= threshold %}
+                {% set peaks.data = peaks.data + [{'hour': i, 'price': prices[i]}] %}
+              {% endif %}
+            {% endfor %}
+            {{ peaks.data | sort(attribute='price', reverse=true) | map(attribute='hour') | list }}
+          threshold_cents: 8
+
+      #-----------------------------------------------------------------------
+      # High Price Hours - List of hours where price is elevated (6-8¢)
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead High Hours"
+        unique_id: comed_day_ahead_high_hours
+        icon: mdi:cash-multiple
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {% set high = namespace(count=0) %}
+          {% for p in prices %}
+            {% if p >= 6 and p < 8 %}
+              {% set high.count = high.count + 1 %}
+            {% endif %}
+          {% endfor %}
+          {{ high.count }}
+        unit_of_measurement: "hours"
+        attributes:
+          hours: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set high = namespace(hours=[]) %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] >= 6 and prices[i] < 8 %}
+                {% set high.hours = high.hours + [i] %}
+              {% endif %}
+            {% endfor %}
+            {{ high.hours }}
+
+      #-----------------------------------------------------------------------
+      # Cheapest Hours - Top 6 cheapest hours (good for appliances)
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Cheapest Hours"
+        unique_id: comed_day_ahead_cheapest_hours
+        icon: mdi:leaf
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {% set cheapest = namespace(data=[]) %}
+          {% for i in range(prices | length) %}
+            {% if prices[i] > 0 %}
+              {% set cheapest.data = cheapest.data + [{'hour': i, 'price': prices[i]}] %}
+            {% endif %}
+          {% endfor %}
+          {% set sorted = cheapest.data | sort(attribute='price') %}
+          {{ (sorted[:6] | map(attribute='price') | sum / 6) | round(2) if sorted | length >= 6 else 0 }}
+        unit_of_measurement: "¢/kWh"
+        attributes:
+          hours: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set cheapest = namespace(data=[]) %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] > 0 %}
+                {% set cheapest.data = cheapest.data + [{'hour': i, 'price': prices[i]}] %}
+              {% endif %}
+            {% endfor %}
+            {{ cheapest.data | sort(attribute='price') | map(attribute='hour') | list | first(6) }}
+          count: 6
+
+      #-----------------------------------------------------------------------
+      # Most Expensive Hour - Single peak hour for the day
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Most Expensive Hour"
+        unique_id: comed_day_ahead_most_expensive_hour
+        icon: mdi:fire-alert
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {% set max_price = prices | max | default(0) %}
+          {% if max_price > 0 %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] == max_price %}
+                {{ i }}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            unknown
+          {% endif %}
+        attributes:
+          price: "{{ state_attr('sensor.comed_day_ahead_prices', 'daily_max') | default(0) }}"
+          formatted_time: >
+            {% set hour = states('sensor.comed_day_ahead_most_expensive_hour') | int(-1) %}
+            {% if hour >= 0 %}
+              {% set ampm = 'AM' if hour < 12 else 'PM' %}
+              {% set h12 = hour if hour <= 12 else hour - 12 %}
+              {% set h12 = 12 if h12 == 0 else h12 %}
+              {{ h12 }}:00 {{ ampm }}
+            {% else %}
+              unknown
+            {% endif %}
+
+      #-----------------------------------------------------------------------
+      # Cheapest Hour - Single lowest-price hour for the day
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Cheapest Hour"
+        unique_id: comed_day_ahead_cheapest_hour
+        icon: mdi:piggy-bank
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {% set valid = [] %}
+          {% for i in range(prices | length) %}
+            {% if prices[i] > 0 %}
+              {% set valid = valid + [{'hour': i, 'price': prices[i]}] %}
+            {% endif %}
+          {% endfor %}
+          {% if valid | length > 0 %}
+            {{ (valid | sort(attribute='price') | first).hour }}
+          {% else %}
+            unknown
+          {% endif %}
+        attributes:
+          price: "{{ state_attr('sensor.comed_day_ahead_prices', 'daily_min') | default(0) }}"
+          formatted_time: >
+            {% set hour = states('sensor.comed_day_ahead_cheapest_hour') | int(-1) %}
+            {% if hour >= 0 %}
+              {% set ampm = 'AM' if hour < 12 else 'PM' %}
+              {% set h12 = hour if hour <= 12 else hour - 12 %}
+              {% set h12 = 12 if h12 == 0 else h12 %}
+              {{ h12 }}:00 {{ ampm }}
+            {% else %}
+              unknown
+            {% endif %}
+
+      #-----------------------------------------------------------------------
+      # Current Hour Day-Ahead Price - Today's price for the current hour
+      # (Uses yesterday's day-ahead data if date matches today)
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Current Hour Price"
+        unique_id: comed_day_ahead_current_hour_price
+        icon: mdi:clock-outline
+        unit_of_measurement: "¢/kWh"
+        device_class: monetary
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {% set date_for = state_attr('sensor.comed_day_ahead_prices', 'date_for') | default('') %}
+          {% set today = now().strftime('%Y-%m-%d') %}
+          {% set hour = now().hour %}
+          {% if date_for == today and prices | length > hour %}
+            {{ prices[hour] | round(2) }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        attributes:
+          hour: "{{ now().hour }}"
+          is_current_day: >
+            {% set date_for = state_attr('sensor.comed_day_ahead_prices', 'date_for') | default('') %}
+            {{ date_for == now().strftime('%Y-%m-%d') }}
+
+      #-----------------------------------------------------------------------
+      # Price Tier for Each Hour - Categorized view of tomorrow's prices
+      # low (≤3¢), normal (3-6¢), high (6-8¢), very_high (>8¢)
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Price Tiers"
+        unique_id: comed_day_ahead_price_tiers
+        icon: mdi:format-list-numbered
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {% set tiers = namespace(low=0, normal=0, high=0, very_high=0) %}
+          {% for p in prices %}
+            {% if p <= 3 %}
+              {% set tiers.low = tiers.low + 1 %}
+            {% elif p <= 6 %}
+              {% set tiers.normal = tiers.normal + 1 %}
+            {% elif p <= 8 %}
+              {% set tiers.high = tiers.high + 1 %}
+            {% else %}
+              {% set tiers.very_high = tiers.very_high + 1 %}
+            {% endif %}
+          {% endfor %}
+          {{ tiers.low }}/{{ tiers.normal }}/{{ tiers.high }}/{{ tiers.very_high }}
+        attributes:
+          low_hours: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set hours = namespace(list=[]) %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] > 0 and prices[i] <= 3 %}
+                {% set hours.list = hours.list + [i] %}
+              {% endif %}
+            {% endfor %}
+            {{ hours.list }}
+          normal_hours: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set hours = namespace(list=[]) %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] > 3 and prices[i] <= 6 %}
+                {% set hours.list = hours.list + [i] %}
+              {% endif %}
+            {% endfor %}
+            {{ hours.list }}
+          high_hours: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set hours = namespace(list=[]) %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] > 6 and prices[i] <= 8 %}
+                {% set hours.list = hours.list + [i] %}
+              {% endif %}
+            {% endfor %}
+            {{ hours.list }}
+          very_high_hours: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set hours = namespace(list=[]) %}
+            {% for i in range(prices | length) %}
+              {% if prices[i] > 8 %}
+                {% set hours.list = hours.list + [i] %}
+              {% endif %}
+            {% endfor %}
+            {{ hours.list }}
+
+      #-----------------------------------------------------------------------
+      # Prices JSON for Charts - Formatted data for ApexCharts
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Prices JSON"
+        unique_id: comed_day_ahead_prices_json
+        icon: mdi:chart-bar
+        state: "OK"
+        attributes:
+          data: >
+            {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+            {% set result = namespace(arr=[]) %}
+            {% for i in range(prices | length) %}
+              {% set result.arr = result.arr + [{'hour': i, 'price': prices[i]}] %}
+            {% endfor %}
+            {{ result.arr }}
+
+
+  #---------------------------------------------------------------------------
+  # Binary Sensors for Quick Automation Triggers
+  #---------------------------------------------------------------------------
+  - binary_sensor:
+      #-----------------------------------------------------------------------
+      # Peak Pricing Tomorrow - True if any hour exceeds 8¢
+      #-----------------------------------------------------------------------
+      - name: "ComEd Peak Pricing Tomorrow"
+        unique_id: comed_peak_pricing_tomorrow
+        icon: mdi:alert
+        device_class: problem
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {{ prices | max | default(0) > 8 }}
+        attributes:
+          peak_count: "{{ states('sensor.comed_day_ahead_peak_hours') | int(0) }}"
+          max_price: "{{ state_attr('sensor.comed_day_ahead_prices', 'daily_max') | default(0) }}"
+
+      #-----------------------------------------------------------------------
+      # Very High Pricing Tomorrow - True if any hour exceeds 10¢
+      #-----------------------------------------------------------------------
+      - name: "ComEd Very High Pricing Tomorrow"
+        unique_id: comed_very_high_pricing_tomorrow
+        icon: mdi:fire-alert
+        device_class: problem
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {{ prices | max | default(0) > 10 }}
+
+      #-----------------------------------------------------------------------
+      # Negative Pricing Tomorrow - True if any hour has negative prices
+      #-----------------------------------------------------------------------
+      - name: "ComEd Negative Pricing Tomorrow"
+        unique_id: comed_negative_pricing_tomorrow
+        icon: mdi:cash-refund
+        state: >
+          {% set prices = state_attr('sensor.comed_day_ahead_prices', 'prices') | default([]) %}
+          {{ prices | min | default(0) < 0 }}
+
+      #-----------------------------------------------------------------------
+      # Day Ahead Data Fresh - True if we have data for tomorrow
+      #-----------------------------------------------------------------------
+      - name: "ComEd Day Ahead Data Fresh"
+        unique_id: comed_day_ahead_data_fresh
+        icon: mdi:check-circle
+        state: >
+          {% set date_for = state_attr('sensor.comed_day_ahead_prices', 'date_for') | default('') %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set today = now().strftime('%Y-%m-%d') %}
+          {{ date_for == tomorrow or date_for == today }}
+

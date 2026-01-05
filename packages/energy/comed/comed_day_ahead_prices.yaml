@@ -1,0 +1,172 @@
+###############################################################################
+# ComEd Day-Ahead Prices
+#
+# Fetches tomorrow's hourly electricity prices from ComEd's day-ahead market.
+# Data is published daily around 4:30 PM CT.
+#
+# Data source: https://hourlypricing.comed.com/live-prices/day-ahead-prices/
+# API endpoint: https://hourlypricing.comed.com/rrtp/ServletFeed?type=pricingtabledaynexttomorrow
+#
+# Response format (plain text):
+#   12:00 AM2.1¢1:00 AM2.0¢2:00 AM1.8¢...
+#
+# Sensors created:
+#   - sensor.comed_day_ahead_prices: Main sensor with all 24 hourly prices
+###############################################################################
+
+#-----------------------------------------------------------------------------
+# REST Command - Fetches day-ahead pricing data from ComEd
+#-----------------------------------------------------------------------------
+rest_command:
+  fetch_comed_day_ahead_prices:
+    url: "https://hourlypricing.comed.com/rrtp/ServletFeed?type=pricingtabledaynexttomorrow"
+    method: GET
+    content_type: "text/plain; charset=utf-8"
+
+
+#-----------------------------------------------------------------------------
+# Template Sensor - Fetches and parses day-ahead prices
+#
+# Triggers at 4:35 PM daily (after ComEd publishes at ~4:30 PM CT)
+# Also triggers at 5:05 PM as a retry, and on HA start.
+#
+# Parsing logic:
+#   1. Extract time-price pairs using regex from plain text response
+#   2. Convert 12-hour times to 24-hour indices (0-23)
+#   3. Build array of prices indexed by hour
+#-----------------------------------------------------------------------------
+template:
+  - trigger:
+      # Primary fetch at 4:35 PM CT
+      - platform: time
+        at: "16:35:00"
+      # Retry fetch at 5:05 PM CT
+      - platform: time
+        at: "17:05:00"
+      # Fetch on Home Assistant start
+      - platform: homeassistant
+        event: start
+    action:
+      - action: rest_command.fetch_comed_day_ahead_prices
+        response_variable: response
+    sensor:
+      - name: "ComEd Day Ahead Prices"
+        unique_id: comed_day_ahead_prices
+        icon: mdi:calendar-clock
+        state: >
+          {% set raw = response.content | default('') %}
+          {% if raw | length > 10 %}
+            OK
+          {% else %}
+            unavailable
+          {% endif %}
+        attributes:
+          #---------------------------------------------------------------------
+          # prices: Array of 24 hourly prices (cents) indexed 0-23
+          #---------------------------------------------------------------------
+          prices: >
+            {% set raw = response.content | default('') %}
+            {% set ns = namespace(prices=[0]*24) %}
+            {% if raw | length > 10 %}
+              {% set pattern = '(\d{1,2}):00\s*(AM|PM)([\d.]+)' %}
+              {% set matches = raw | regex_findall(pattern) %}
+              {% for match in matches %}
+                {% set hour_12 = match[0] | int %}
+                {% set ampm = match[1] %}
+                {% set price = match[2] | float(0) %}
+                {% if ampm == 'AM' %}
+                  {% set hour_24 = 0 if hour_12 == 12 else hour_12 %}
+                {% else %}
+                  {% set hour_24 = 12 if hour_12 == 12 else hour_12 + 12 %}
+                {% endif %}
+                {% set ns.prices = ns.prices[:hour_24] + [price] + ns.prices[hour_24+1:] %}
+              {% endfor %}
+            {% endif %}
+            {{ ns.prices }}
+          
+          #---------------------------------------------------------------------
+          # date_for: The date these prices apply to (tomorrow from fetch time)
+          #---------------------------------------------------------------------
+          date_for: >
+            {% set raw = response.content | default('') %}
+            {% if raw | length > 10 %}
+              {{ (now() + timedelta(days=1)).strftime('%Y-%m-%d') }}
+            {% else %}
+              unknown
+            {% endif %}
+          
+          #---------------------------------------------------------------------
+          # fetched_at: Timestamp when data was last successfully fetched
+          #---------------------------------------------------------------------
+          fetched_at: >
+            {% set raw = response.content | default('') %}
+            {% if raw | length > 10 %}
+              {{ now().isoformat() }}
+            {% else %}
+              {{ state_attr('sensor.comed_day_ahead_prices', 'fetched_at') | default('never') }}
+            {% endif %}
+          
+          #---------------------------------------------------------------------
+          # Statistics: min, max, average across all 24 hours
+          #---------------------------------------------------------------------
+          daily_min: >
+            {% set raw = response.content | default('') %}
+            {% set ns = namespace(prices=[0]*24) %}
+            {% if raw | length > 10 %}
+              {% set pattern = '(\d{1,2}):00\s*(AM|PM)([\d.]+)' %}
+              {% set matches = raw | regex_findall(pattern) %}
+              {% for match in matches %}
+                {% set hour_12 = match[0] | int %}
+                {% set ampm = match[1] %}
+                {% set price = match[2] | float(0) %}
+                {% if ampm == 'AM' %}
+                  {% set hour_24 = 0 if hour_12 == 12 else hour_12 %}
+                {% else %}
+                  {% set hour_24 = 12 if hour_12 == 12 else hour_12 + 12 %}
+                {% endif %}
+                {% set ns.prices = ns.prices[:hour_24] + [price] + ns.prices[hour_24+1:] %}
+              {% endfor %}
+            {% endif %}
+            {% set valid = ns.prices | select('>', 0) | list %}
+            {{ valid | min | default(0) | round(2) if valid else 0 }}
+          
+          daily_max: >
+            {% set raw = response.content | default('') %}
+            {% set ns = namespace(prices=[0]*24) %}
+            {% if raw | length > 10 %}
+              {% set pattern = '(\d{1,2}):00\s*(AM|PM)([\d.]+)' %}
+              {% set matches = raw | regex_findall(pattern) %}
+              {% for match in matches %}
+                {% set hour_12 = match[0] | int %}
+                {% set ampm = match[1] %}
+                {% set price = match[2] | float(0) %}
+                {% if ampm == 'AM' %}
+                  {% set hour_24 = 0 if hour_12 == 12 else hour_12 %}
+                {% else %}
+                  {% set hour_24 = 12 if hour_12 == 12 else hour_12 + 12 %}
+                {% endif %}
+                {% set ns.prices = ns.prices[:hour_24] + [price] + ns.prices[hour_24+1:] %}
+              {% endfor %}
+            {% endif %}
+            {{ ns.prices | max | default(0) | round(2) }}
+          
+          daily_avg: >
+            {% set raw = response.content | default('') %}
+            {% set ns = namespace(prices=[0]*24) %}
+            {% if raw | length > 10 %}
+              {% set pattern = '(\d{1,2}):00\s*(AM|PM)([\d.]+)' %}
+              {% set matches = raw | regex_findall(pattern) %}
+              {% for match in matches %}
+                {% set hour_12 = match[0] | int %}
+                {% set ampm = match[1] %}
+                {% set price = match[2] | float(0) %}
+                {% if ampm == 'AM' %}
+                  {% set hour_24 = 0 if hour_12 == 12 else hour_12 %}
+                {% else %}
+                  {% set hour_24 = 12 if hour_12 == 12 else hour_12 + 12 %}
+                {% endif %}
+                {% set ns.prices = ns.prices[:hour_24] + [price] + ns.prices[hour_24+1:] %}
+              {% endfor %}
+            {% endif %}
+            {% set valid = ns.prices | select('>', 0) | list %}
+            {{ (valid | sum / valid | length) | round(2) if valid else 0 }}

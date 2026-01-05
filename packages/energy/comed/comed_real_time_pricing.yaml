@@ -1,0 +1,33 @@
+###############################################################################
+# ComEd Real-Time Pricing
+#
+# Real-time and 5-minute pricing from ComEd Hourly Pricing program.
+# Uses the comed_hourly_pricing integration for live price feeds.
+#
+# Sensors provided:
+#   - sensor.comed_five_minute_price: Current 5-minute interval price
+#   - sensor.comed_current_hour_average_price: Rolling average for current hour
+#   - sensor.energy_price: Converted to $/kWh for calculations
+###############################################################################
+
+sensor:
+  - platform: comed_hourly_pricing
+    monitored_feeds:
+      - type: five_minute
+      - type: current_hour_average
+
+template:
+  - sensor:
+      #-----------------------------------------------------------------------
+      # Energy Price - converts cents to $/kWh for cost calculations
+      #-----------------------------------------------------------------------
+      - name: Energy Price
+        unique_id: comed_energy_price_dollars
+        unit_of_measurement: "$/kWh"
+        device_class: monetary
+        icon: mdi:currency-usd
+        state: "{{ states('sensor.comed_current_hour_average_price') | float(0) / 100 }}"
+        attributes:
+          price_cents: "{{ states('sensor.comed_current_hour_average_price') | float(0) }}"
+          source: "comed_hourly_pricing"
+
