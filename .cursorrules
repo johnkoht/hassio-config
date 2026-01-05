@@ -1,0 +1,561 @@
+# Home Assistant Configuration Rules
+
+This is a Home Assistant configuration repository. Follow these rules when generating or modifying automations, scripts, and templates.
+
+---
+
+## Modern Automation Syntax (REQUIRED)
+
+Home Assistant has updated its automation syntax. **Always use the modern syntax** described below. The old syntax is deprecated and should not be used.
+
+### Automation Structure
+
+```yaml
+automation:
+  - id: "unique_automation_id"
+    alias: "Descriptive Automation Name"
+    description: "Optional detailed description of what this automation does"
+    mode: single  # single | restart | queued | parallel
+    
+    triggers:
+      - trigger: <type>
+        # trigger configuration
+    
+    conditions:
+      - condition: <type>
+        # condition configuration
+    
+    actions:
+      - action: <domain.service>
+        # action configuration
+```
+
+---
+
+## Triggers
+
+### Modern Syntax (USE THIS)
+```yaml
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.motion
+    to: "on"
+  
+  - trigger: time
+    at: "07:00:00"
+  
+  - trigger: time_pattern
+    hours: /1
+  
+  - trigger: event
+    event_type: "custom_event"
+  
+  - trigger: numeric_state
+    entity_id: sensor.temperature
+    above: 25
+  
+  - trigger: sun
+    event: sunset
+    offset: "-00:30:00"
+  
+  - trigger: template
+    value_template: "{{ states('sensor.temp') | float > 30 }}"
+  
+  - trigger: mqtt
+    topic: "home/sensor/temperature"
+```
+
+### Old Syntax (DO NOT USE)
+```yaml
+# ❌ WRONG - Do not use
+trigger:
+  - platform: state
+    entity_id: binary_sensor.motion
+    to: "on"
+```
+
+### Key Differences
+| Old (Deprecated) | Modern (Required) |
+|-----------------|-------------------|
+| `trigger:` | `triggers:` |
+| `platform: state` | `trigger: state` |
+| `platform: time` | `trigger: time` |
+| `platform: event` | `trigger: event` |
+
+---
+
+## Conditions
+
+### Modern Syntax (USE THIS)
+```yaml
+conditions:
+  - condition: state
+    entity_id: input_boolean.enabled
+    state: "on"
+  
+  - condition: numeric_state
+    entity_id: sensor.temperature
+    below: 30
+  
+  - condition: time
+    after: "06:00:00"
+    before: "22:00:00"
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  
+  - condition: sun
+    after: sunset
+    before: sunrise
+  
+  - condition: template
+    value_template: "{{ states('sensor.temp') | float < 25 }}"
+  
+  - condition: zone
+    entity_id: person.john
+    zone: zone.home
+  
+  # Logical conditions
+  - condition: and
+    conditions:
+      - condition: state
+        entity_id: light.living_room
+        state: "on"
+      - condition: numeric_state
+        entity_id: sensor.brightness
+        below: 50
+  
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.party_mode
+        state: "on"
+  
+  # Trigger-based condition (for multi-trigger automations)
+  - condition: trigger
+    id: "morning_trigger"
+```
+
+### Old Syntax (DO NOT USE)
+```yaml
+# ❌ WRONG - Do not use
+condition:
+  - condition: state
+    entity_id: input_boolean.enabled
+    state: "on"
+```
+
+### Key Differences
+| Old (Deprecated) | Modern (Required) |
+|-----------------|-------------------|
+| `condition:` | `conditions:` |
+
+---
+
+## Actions
+
+### Modern Syntax (USE THIS)
+```yaml
+actions:
+  - action: light.turn_on
+    target:
+      entity_id: light.living_room
+    data:
+      brightness: 255
+      color_temp: 350
+  
+  - action: notify.mobile_app
+    data:
+      title: "Alert"
+      message: "Motion detected"
+  
+  - action: script.my_script
+  
+  # Variables
+  - variables:
+      brightness_level: "{{ states('input_number.brightness') | int }}"
+  
+  # Delays
+  - delay:
+      seconds: 5
+  
+  - delay: "00:01:00"
+  
+  # Wait templates
+  - wait_template: "{{ is_state('light.living_room', 'off') }}"
+    timeout: "00:05:00"
+    continue_on_timeout: true
+  
+  # Wait for trigger
+  - wait_for_trigger:
+      - trigger: state
+        entity_id: binary_sensor.door
+        to: "off"
+    timeout: "00:10:00"
+  
+  # Conditional actions (choose)
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: input_boolean.night_mode
+            state: "on"
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.bedroom
+            data:
+              brightness: 50
+    default:
+      - action: light.turn_on
+        target:
+          entity_id: light.bedroom
+        data:
+          brightness: 255
+  
+  # If/then/else
+  - if:
+      - condition: state
+        entity_id: sun.sun
+        state: "below_horizon"
+    then:
+      - action: light.turn_on
+        target:
+          entity_id: light.porch
+    else:
+      - action: light.turn_off
+        target:
+          entity_id: light.porch
+  
+  # Repeat loops
+  - repeat:
+      count: 5
+      sequence:
+        - action: light.toggle
+          target:
+            entity_id: light.alert
+        - delay:
+            milliseconds: 500
+  
+  # Stop execution
+  - stop: "Condition not met"
+    error: false
+  
+  # Parallel execution
+  - parallel:
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.speaker
+        data:
+          media_content_id: "http://example.com/sound.mp3"
+          media_content_type: "music"
+```
+
+### Old Syntax (DO NOT USE)
+```yaml
+# ❌ WRONG - Do not use
+action:
+  - service: light.turn_on
+    entity_id: light.living_room
+    data:
+      brightness: 255
+```
+
+### Key Differences
+| Old (Deprecated) | Modern (Required) |
+|-----------------|-------------------|
+| `action:` | `actions:` |
+| `service: light.turn_on` | `action: light.turn_on` |
+| `entity_id:` at root level | `target:` with `entity_id:` |
+
+---
+
+## Scripts
+
+Scripts use `sequence:` with the same modern action syntax:
+
+```yaml
+script:
+  morning_routine:
+    alias: "Morning Routine"
+    description: "Activates morning settings"
+    icon: mdi:weather-sunny
+    mode: single
+    
+    # Optional fields for script parameters
+    fields:
+      brightness:
+        description: "Light brightness level"
+        example: 100
+        default: 80
+        selector:
+          number:
+            min: 0
+            max: 100
+    
+    sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.bedroom
+        data:
+          brightness_pct: "{{ brightness }}"
+      
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.bedroom_speaker
+        data:
+          volume_level: 0.3
+      
+      - action: tts.speak
+        target:
+          entity_id: tts.google_en
+        data:
+          media_player_entity_id: media_player.bedroom_speaker
+          message: "Good morning!"
+```
+
+---
+
+## Template Triggers (Trigger-Based Template Sensors)
+
+```yaml
+template:
+  - trigger:
+      - trigger: time_pattern
+        hours: /1
+    action:
+      - action: weather.get_forecasts
+        data:
+          type: hourly
+        target:
+          entity_id: weather.home
+        response_variable: forecast
+    sensor:
+      - name: "Hourly Forecast"
+        unique_id: hourly_forecast
+        state: "{{ now().isoformat() }}"
+        attributes:
+          forecast: "{{ forecast }}"
+```
+
+---
+
+## Trigger IDs
+
+Use trigger IDs to identify which trigger fired in multi-trigger automations:
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.front_door
+    to: "on"
+    id: "front_door"
+  
+  - trigger: state
+    entity_id: binary_sensor.back_door
+    to: "on"
+    id: "back_door"
+  
+  - trigger: time
+    at: "22:00:00"
+    id: "nightly_check"
+
+conditions: []
+
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: "front_door"
+        sequence:
+          - action: notify.mobile_app
+            data:
+              message: "Front door opened"
+      
+      - conditions:
+          - condition: trigger
+            id: "back_door"
+        sequence:
+          - action: notify.mobile_app
+            data:
+              message: "Back door opened"
+      
+      - conditions:
+          - condition: trigger
+            id: "nightly_check"
+        sequence:
+          - action: script.check_all_doors
+```
+
+---
+
+## Target Syntax
+
+Always use `target:` to specify entities, devices, or areas:
+
+```yaml
+# ✅ CORRECT - Modern syntax
+- action: light.turn_on
+  target:
+    entity_id: light.living_room
+  data:
+    brightness: 255
+
+# ✅ CORRECT - Multiple entities
+- action: light.turn_off
+  target:
+    entity_id:
+      - light.living_room
+      - light.kitchen
+      - light.bedroom
+
+# ✅ CORRECT - Target by area
+- action: light.turn_on
+  target:
+    area_id: living_room
+
+# ✅ CORRECT - Target by device
+- action: light.turn_on
+  target:
+    device_id: abc123def456
+
+# ❌ WRONG - Old inline syntax
+- action: light.turn_on
+  entity_id: light.living_room
+  data:
+    brightness: 255
+```
+
+---
+
+## Complete Example
+
+```yaml
+automation:
+  - id: "motion_lights"
+    alias: "Motion-Activated Lights"
+    description: "Turn on lights when motion is detected, with brightness based on time of day"
+    mode: restart
+    
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.living_room_motion
+        to: "on"
+        id: "motion_detected"
+      
+      - trigger: state
+        entity_id: binary_sensor.living_room_motion
+        to: "off"
+        for:
+          minutes: 5
+        id: "motion_cleared"
+    
+    conditions:
+      - condition: state
+        entity_id: input_boolean.motion_lights_enabled
+        state: "on"
+    
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: "motion_detected"
+            sequence:
+              - if:
+                  - condition: sun
+                    after: sunset
+                    before: sunrise
+                then:
+                  - action: light.turn_on
+                    target:
+                      entity_id: light.living_room
+                    data:
+                      brightness_pct: 30
+                      color_temp: 500
+                else:
+                  - action: light.turn_on
+                    target:
+                      entity_id: light.living_room
+                    data:
+                      brightness_pct: 100
+                      color_temp: 350
+          
+          - conditions:
+              - condition: trigger
+                id: "motion_cleared"
+            sequence:
+              - action: light.turn_off
+                target:
+                  entity_id: light.living_room
+```
+
+---
+
+## Quick Reference Cheat Sheet
+
+| Component | Old Syntax | Modern Syntax |
+|-----------|-----------|---------------|
+| Triggers list | `trigger:` | `triggers:` |
+| Trigger type | `platform: state` | `trigger: state` |
+| Trigger type | `platform: time` | `trigger: time` |
+| Trigger type | `platform: event` | `trigger: event` |
+| Conditions list | `condition:` | `conditions:` |
+| Actions list | `action:` | `actions:` |
+| Service call | `service: light.turn_on` | `action: light.turn_on` |
+| Entity target | `entity_id: light.x` | `target:` → `entity_id: light.x` |
+
+---
+
+## Common Trigger Types
+
+- `state` - Entity state changes
+- `time` - Specific time of day
+- `time_pattern` - Recurring time patterns (e.g., every hour)
+- `event` - Home Assistant events
+- `numeric_state` - Numeric threshold crossings
+- `sun` - Sunrise/sunset events
+- `template` - Template evaluation changes
+- `mqtt` - MQTT messages
+- `webhook` - HTTP webhook calls
+- `zone` - Zone enter/leave
+- `device` - Device-specific triggers
+- `calendar` - Calendar events
+- `tag` - NFC/QR tag scans
+- `sentence` - Voice assistant sentences
+- `persistent_notification` - Notification events
+- `geolocation` - Geolocation events
+
+---
+
+## Common Condition Types
+
+- `state` - Check entity state
+- `numeric_state` - Check numeric value
+- `time` - Check time of day
+- `sun` - Check sun position
+- `zone` - Check if entity in zone
+- `template` - Evaluate template
+- `trigger` - Check which trigger fired (by ID)
+- `and` - All conditions must be true
+- `or` - Any condition must be true
+- `not` - Negate a condition
+
+---
+
+## Resources
+
+- [Automation Basics](https://www.home-assistant.io/docs/automation/basics/)
+- [Automation Triggers](https://www.home-assistant.io/docs/automation/trigger/)
+- [Automation Conditions](https://www.home-assistant.io/docs/automation/condition/)
+- [Automation Actions](https://www.home-assistant.io/docs/automation/action/)
+- [Script Syntax](https://www.home-assistant.io/docs/scripts/)
+- [Templating](https://www.home-assistant.io/docs/automation/templating/)
+
