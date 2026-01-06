@@ -58,11 +58,13 @@ automation:
           - condition: state
             entity_id: input_boolean.cristina_in_bed
             state: "on"
-          # Sleep state changes
+          # John sleep state changes
           - condition: state
-            entity_id:
-              - input_select.john_sleep_state
-              - input_select.cristina_sleep_state
+            entity_id: input_select.john_sleep_state
+            state: "Just Laid Down"
+          # Cristina leep state changes
+          - condition: state
+            entity_id: input_select.cristina_sleep_state
             state: "Just Laid Down"
     actions:
       - action: input_select.select_option
