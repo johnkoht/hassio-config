@@ -2,20 +2,20 @@ utility_meter:
   # Daily Meter
   water_daily:
     unique_id: water_daily_usage
-    source: sensor.watersmart_glenview_most_recent_hour_usage
+    source: sensor.watersmart_glenview_most_recent_full_day_usage
     cycle: daily
     always_available: true
 
   # Weekly Meter
   water_weekly:
     unique_id: water_weekly_usage
-    source: sensor.watersmart_glenview_most_recent_hour_usage
+    source: sensor.watersmart_glenview_most_recent_full_day_usage
     cycle: weekly
     always_available: true
   
   # Monthly Meter
   water_monthly:
     unique_id: water_monthly_usage
-    source: sensor.watersmart_glenview_most_recent_hour_usage
+    source: sensor.watersmart_glenview_most_recent_full_day_usage
     cycle: monthly
     always_available: true
