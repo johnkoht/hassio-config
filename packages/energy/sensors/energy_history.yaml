@@ -579,14 +579,50 @@ template:
           {% endif %}
 
       #-----------------------------------------------------------------------
-      # Hourly Baselines as JSON - for ApexCharts data_generator
-      # Returns array of 24 hourly baseline values for the current day type
+      # Hourly Forecast - DYNAMIC predictions adjusted for today's pace
+      # Uses baseline × adjustment_factor where factor = actual/expected so far
+      # For future hours: shows adjusted prediction
+      # For past hours: shows what actually happened (from baseline as reference)
       #-----------------------------------------------------------------------
-      - name: "Energy Hourly Baselines JSON"
-        unique_id: energy_hourly_baselines_json
-        icon: mdi:code-json
+      - name: "Energy Hourly Forecast JSON"
+        unique_id: energy_hourly_forecast_json
+        icon: mdi:chart-timeline-variant
         state: "OK"
         attributes:
+          # Current adjustment factor based on today's pace
+          adjustment_factor: >
+            {% set actual = states('sensor.whole_home_energy_daily_usage') | float(0) %}
+            {% set expected = states('sensor.energy_expected_so_far') | float(0) %}
+            {% if expected > 0 %}
+              {{ ((actual / expected) | float | round(2)) }}
+            {% else %}
+              1.0
+            {% endif %}
+          # Array of 24 hourly forecast values (adjusted baselines)
+          forecasts: >
+            {% set is_weekend = now().weekday() >= 5 %}
+            {% set stat_prefix = 'sensor.baseline_weekend_h' if is_weekend else 'sensor.baseline_weekday_h' %}
+            {% set input_prefix = 'input_number.energy_weekend_h' if is_weekend else 'input_number.energy_weekday_h' %}
+            {% set actual = states('sensor.whole_home_energy_daily_usage') | float(0) %}
+            {% set expected_so_far = states('sensor.energy_expected_so_far') | float(0) %}
+            {% set adj_factor = (actual / expected_so_far) if expected_so_far > 0 else 1.0 %}
+            {% set adj_factor = [adj_factor, 0.5] | max %}
+            {% set adj_factor = [adj_factor, 2.0] | min %}
+            {% set result = namespace(arr=[]) %}
+            {% for i in range(0, 24) %}
+              {% set stat_val = states(stat_prefix ~ '%02d'|format(i)) %}
+              {% set input_val = states(input_prefix ~ '%02d'|format(i)) %}
+              {% if stat_val not in ['unknown', 'unavailable'] and (stat_val | float(0)) > 0 %}
+                {% set baseline = stat_val | float(0) %}
+              {% elif input_val not in ['unknown', 'unavailable'] and (input_val | float(0)) > 0 %}
+                {% set baseline = input_val | float(0) %}
+              {% else %}
+                {% set baseline = 0 %}
+              {% endif %}
+              {% set result.arr = result.arr + [(baseline * adj_factor) | round(3)] %}
+            {% endfor %}
+            {{ result.arr }}
+          # Include raw baselines for reference
           baselines: >
             {% set is_weekend = now().weekday() >= 5 %}
             {% set stat_prefix = 'sensor.baseline_weekend_h' if is_weekend else 'sensor.baseline_weekday_h' %}
@@ -603,4 +639,4 @@ template:
                 {% set result.arr = result.arr + [0] %}
               {% endif %}
             {% endfor %}
-            {{ result.arr | to_json }}
+            {{ result.arr }}

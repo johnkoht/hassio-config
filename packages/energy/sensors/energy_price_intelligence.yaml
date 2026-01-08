@@ -46,6 +46,17 @@ template:
             {% else %}
               Very High
             {% endif %}
+          color: >
+            {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
+            {% if price <= 3 %}
+              var(--success-color)
+            {% elif price <= 6 %}
+              var(--accent-color)
+            {% elif price <= 10 %}
+              var(--orange-color)
+            {% else %}
+              var(--error-color)
+            {% endif %}
 
       #-----------------------------------------------------------------------
       # Current Power Tier - low, normal, high, very_high
@@ -76,6 +87,67 @@ template:
               High
             {% else %}
               Very High
+            {% endif %}
+
+      #-----------------------------------------------------------------------
+      # Energy Usage Trend Label - clean callout for dashboard hero
+      # Based purely on today's usage vs expected baseline
+      #-----------------------------------------------------------------------
+      - name: "Energy Usage Trend Label"
+        unique_id: energy_usage_trend_label
+        icon: >
+          {% set pct = states('sensor.energy_trend_percent') | float(0) %}
+          {% if pct > 20 %}
+            mdi:arrow-up-bold
+          {% elif pct > 10 %}
+            mdi:trending-up
+          {% elif pct < -20 %}
+            mdi:arrow-down-bold
+          {% elif pct < -10 %}
+            mdi:trending-down
+          {% else %}
+            mdi:check-circle
+          {% endif %}
+        state: >
+          {% set pct = states('sensor.energy_trend_percent') | float(0) %}
+          {% if pct > 20 %}
+            High Usage
+          {% elif pct > 10 %}
+            Above Trend
+          {% elif pct < -20 %}
+            Low Usage
+          {% elif pct < -10 %}
+            Below Trend
+          {% else %}
+            Normal Usage
+          {% endif %}
+        attributes:
+          trend_percent: "{{ states('sensor.energy_trend_percent') | float(0) | round(1) }}"
+          tier: >
+            {% set pct = states('sensor.energy_trend_percent') | float(0) %}
+            {% if pct > 20 %}
+              very_high
+            {% elif pct > 10 %}
+              high
+            {% elif pct < -20 %}
+              very_low
+            {% elif pct < -10 %}
+              low
+            {% else %}
+              normal
+            {% endif %}
+          color: >
+            {% set pct = states('sensor.energy_trend_percent') | float(0) %}
+            {% if pct > 20 %}
+              var(--error-color)
+            {% elif pct > 10 %}
+              var(--orange-color)
+            {% elif pct < -20 %}
+              var(--success-color)
+            {% elif pct < -10 %}
+              var(--success-color)
+            {% else %}
+              var(--accent-color)
             {% endif %}
 
       #-----------------------------------------------------------------------

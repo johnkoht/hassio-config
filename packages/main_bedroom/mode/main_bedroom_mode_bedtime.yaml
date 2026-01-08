@@ -71,11 +71,11 @@ automation:
         data:
           entity_id: input_select.main_bedroom
           option: "Bedtime"
-      # Turn on some bedtime automations
-      - action: automation.turn_on
-        entity_id:
-          - automation.main_bedroom_john_night_light_off
-          - automation.main_bedroom_night_light_for_john
+      # # Turn on some bedtime automations
+      # - action: automation.turn_on
+      #   entity_id:
+      #     - automation.main_bedroom_john_night_light_off
+      #     - automation.main_bedroom_night_light_for_john
       # Turn on adaptive lighting
       - action: switch.turn_on
         entity_id: 

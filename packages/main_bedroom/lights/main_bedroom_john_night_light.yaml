@@ -1,6 +1,5 @@
 automation:
   - id: "main_bedroom_john_night_light"
-    initial_state: on
     alias: "Main bedroom night light for John"
     triggers:
       # Motion is detected

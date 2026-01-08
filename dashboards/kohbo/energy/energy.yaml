@@ -30,656 +30,326 @@ cards:
 
 
   #===========================================================================
-  # SECTION 1: NOW - Real-time Status
+  # SECTION 1: TODAY'S ENERGY OVERVIEW
   #===========================================================================
 
   #---------------------------------------------------------------------------
-  # Energy Status Hero Card
+  # Energy Hero Card - Usage Trend + Price (Security Overview Style)
   #---------------------------------------------------------------------------
   - type: custom:stack-in-card
-    card_mod:
-      style: |
-        :host {
-          --keep-border_radius: 'true';
-          --keep-background: 'true';
-          --stack-card-gap: 0px !important;
-        }
-    keep:
-      border_radius: true
-      background: true
+    # card_mod:
+    #   style: |
+    #     :host {
+    #       --keep-border_radius: 'true';
+    #       --keep-background: 'true';
+    #       --stack-card-gap: 0px !important;
+    #     }
+    # keep:
+    #   border_radius: true
+    #   background: true
     cards:
       #
-      # Contextual Status Message (like Exterior Lighting's "It's daylight but gloomy")
+      # TOP ROW: Usage Status Header (Security Overview Style)
       #
       - type: custom:button-card
-        entity: sensor.energy_status_message
+        template: security_overview_header
+        entity: sensor.energy_usage_trend_label
         show_icon: true
         show_name: false
+        # show_state: true
         show_label: true
-        show_state: true
-        label: |
-          [[[
-            return entity.attributes.recommendation || '';
-          ]]]
+        label: Energy Overview
+        layout: icon_name_state
         icon: |
           [[[
-            const priority = entity.attributes.priority;
-            if (priority === 'high') return 'mdi:alert-circle';
-            if (priority === 'good') return 'mdi:leaf';
+            const tier = entity?.attributes?.tier || 'normal';
+            if (tier === 'very_high') return 'mdi:alert-circle';
+            if (tier === 'high') return 'mdi:trending-up';
+            if (tier === 'very_low' || tier === 'low') return 'mdi:leaf';
             return 'mdi:lightning-bolt';
           ]]]
         styles:
-          grid:
-            - grid-template-areas: '"i s" "i l"'
-            - grid-template-columns: 'auto 1fr'
-          card:
-            - padding: '16px 20px'
-            - background: 'transparent'
           icon:
             - color: |
                 [[[
-                  const priority = entity.attributes.priority;
-                  if (priority === 'high') return '#ED4747';
-                  if (priority === 'medium') return '#E36001';
-                  if (priority === 'good') return '#06D6A0';
-                  return '#FFD166';
+                  return entity?.attributes?.color || '#FFD166';
                 ]]]
-            - width: '40px'
-            - height: '40px'
-            - margin-right: '16px'
-          state:
-            - justify-self: start
-            - font-size: '18px'
-            - font-weight: '500'
-            - color: 'var(--primary-text-color)'
-          label:
-            - justify-self: start
-            - font-size: '13px'
-            - color: 'var(--secondary-text-color)'
-            - margin-top: '2px'
+        custom_fields:
+          score:
+            card:
+              type: custom:button-card
+              entity: sensor.comed_current_hour_average_price
+              show_icon: false
+              show_state: true
+              show_name: false
+              state_display: |
+                [[[
+                  const price = parseFloat(states['sensor.comed_current_hour_average_price']?.state || 0);
+                  return `${Math.round(price)}¢`;
+                ]]]
+              styles:
+                card:
+                  - background-color: 'var(--darker-primary-color)'
+                  - border-radius: '25px'
+                  - padding: '10px 3px'
+                  - width: '42px'
+                  - height: '42px'
+                  - align-items: 'center'
+                  - display: 'flex'
+                  - background: |
+                      [[[
+                        const price = parseFloat(states['sensor.comed_current_hour_average_price']?.state || 0);
+                        const pct = Math.min(100, (price / 12) * 100);
+                        const color = states['sensor.energy_price_tier']?.attributes?.color || 'var(--accent-color)';
+                        return `radial-gradient(var(--dark-primary-color) 60%, transparent calc(60% + 1px)), conic-gradient(${color} ${pct}% 0%, var(--divider-color) 0% 100%)`;
+                      ]]]
+                  - position: 'relative'
+                state:
+                  - font-size: '14px'
+                  - color: 'var(--primary-text-color)'
 
       #
-      # Stats Row - Power | Price | Today (using kohbo_security_item styling)
+      # BOTTOM SECTION: Stats + Chart (Dark Background)
       #
       - type: custom:stack-in-card
         mode: vertical
-        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
-        cards:
-          - type: horizontal-stack
-            cards:
-              # Power
-              - type: custom:button-card
-                entity: sensor.energy_current_consumption
-                name: Power
-                template: kohbo_security_item
-                icon: mdi:flash
-                state_display: |
-                  [[[
-                    const val = parseFloat(entity.state);
-                    if (val >= 1000) {
-                      return `${(val/1000).toFixed(1)} kW`;
-                    }
-                    return `${Math.round(val)} W`;
-                  ]]]
-                styles:
-                  icon:
-                    - color: |
-                        [[[
-                          const tier = states['sensor.energy_power_tier']?.state;
-                          if (tier === 'low') return '#06D6A0';
-                          if (tier === 'normal') return '#06D6A0';
-                          if (tier === 'high') return '#FFD166';
-                          return '#ED4747';
-                        ]]]
-
-              # Price
-              - type: custom:button-card
-                entity: sensor.comed_current_hour_average_price
-                name: Price
-                template: kohbo_security_item
-                icon: |
-                  [[[
-                    const tier = states['sensor.energy_price_tier']?.state;
-                    if (tier === 'low') return 'mdi:leaf';
-                    if (tier === 'normal') return 'mdi:cash';
-                    if (tier === 'high') return 'mdi:cash-multiple';
-                    return 'mdi:fire';
-                  ]]]
-                state_display: |
-                  [[[
-                    const price = parseFloat(entity.state);
-                    const tier = states['sensor.energy_price_tier']?.state;
-                    const label = states['sensor.energy_price_tier']?.attributes?.label || '';
-                    return `${price.toFixed(1)}¢ · ${label}`;
-                  ]]]
-                styles:
-                  icon:
-                    - color: |
-                        [[[
-                          const tier = states['sensor.energy_price_tier']?.state;
-                          if (tier === 'low') return '#06D6A0';
-                          if (tier === 'normal') return '#FFD166';
-                          if (tier === 'high') return '#E36001';
-                          return '#ED4747';
-                        ]]]
-
-              # Today's Trend
-              - type: custom:button-card
-                entity: sensor.energy_trend_percent
-                name: Today
-                template: kohbo_security_item
-                icon: |
-                  [[[
-                    const pct = parseFloat(entity.state) || 0;
-                    if (pct > 10) return 'mdi:trending-up';
-                    if (pct < -10) return 'mdi:trending-down';
-                    return 'mdi:trending-neutral';
-                  ]]]
-                state_display: |
-                  [[[
-                    const pct = parseFloat(entity.state) || 0;
-                    const sign = pct >= 0 ? '+' : '';
-                    return `${sign}${pct.toFixed(0)}% vs expected`;
-                  ]]]
-                styles:
-                  icon:
-                    - color: |
-                        [[[
-                          const pct = parseFloat(entity.state) || 0;
-                          if (pct > 10) return '#ED4747';
-                          if (pct < -10) return '#06D6A0';
-                          return '#FFD166';
-                        ]]]
-
-      #
-      # 12h Power Usage Chart
-      #
-      - type: custom:apexcharts-card
         card_mod:
           style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+            
             ha-card {
               background: var(--darker-primary-color);
               border-radius: 0;
-              backdrop-filter: none;
-              -webkit-backdrop-filter: none;
-              box-shadow: none;
-              border: none;
               box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
             }
-        experimental:
-          color_threshold: true
-        graph_span: 12h
-        header:
-          show: false
-        series:
-          - entity: sensor.energy_current_consumption
-            name: Power
-            type: column
-            group_by:
-              duration: 5minute
-              func: avg
-            color_threshold:
-              - value: 0
-                color: "#06D6A0"
-              - value: 500
-                color: "#FFD166"
-              - value: 1500
-                color: "#E36001"
-              - value: 2000
-                color: "#ED4747"
-              - value: 3000
-                color: "#ED4747"
-
-
-  #===========================================================================
-  # SECTION 2: TODAY - Today's Performance & Forecast
-  #===========================================================================
-
-  #---------------------------------------------------------------------------
-  # Daily Gauge with Consumption Status
-  #---------------------------------------------------------------------------
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        :host {
-          --keep-border_radius: 'true';
-          --keep-background: 'true';
-          --keep-border-radius: 'true';
-          --stack-card-gap: 10px !important;
-          --vertical-stack-card-gap: 10px !important;
-        }
-    keep:
-      border_radius: true
-      background: true
-    cards:
-      - type: custom:button-card
-        entity: sensor.daily_energy_consumption
-        name: Energy Consumption
-        state_display: >
-          [[[
-            if (entity.state > 25)
-              return "Very High";
-            else if (entity.state > 20)
-              return "High";
-            else if (entity.state > 10)
-              return "Normal";
-            else
-              return "Low";
-          ]]]
-        show_icon: false
-        show_state: true
-        styles:
-          grid:
-            - grid-template-areas: '"n n" "s s"'
-            - grid-template-columns: 1fr
-          card:
-            - justify-content: center
-            - padding-bottom: 0
-            - padding-top: 10px
-          name:
-            - justify-self: center
-            - font-size: 14px
-            - font-weight: 500
-            - color: var(--secondary-text-color)
-            - align-self: end
-            - margin-bottom: 2px
-          state:
-            - justify-self: center
-            - font-size: 28px
-            - font-weight: 400
-            - color: var(--primary-text-color)
-
-      # Daily Energy Usage Gauge
-      - type: gauge
-        name: Daily Consumption
-        unit: 'kWh'
-        entity: sensor.daily_energy_consumption
-        min: 0
-        max: 30
-        needle: true
-        segments:
-          - from: 0
-            color: '#06D6A0'
-          - from: 1
-            color: '#1ED59A'
-          - from: 2
-            color: '#37D594'
-          - from: 3
-            color: '#50D48E'
-          - from: 4
-            color: '#69D488'
-          - from: 5
-            color: '#82D383'
-          - from: 6
-            color: '#9BD37D'
-          - from: 7
-            color: '#B4D277'
-          - from: 8
-            color: '#CDD271'
-          - from: 9
-            color: '#E6D16B'
-          - from: 10
-            color: '#FFD166'
-          - from: 11
-            color: '#FCC55B'
-          - from: 12
-            color: '#F9BA51'
-          - from: 13
-            color: '#F6AF47'
-          - from: 14
-            color: '#F3A33D'
-          - from: 15
-            color: '#F19833'
-          - from: 16
-            color: '#EE8D29'
-          - from: 17
-            color: '#EB811F'
-          - from: 18
-            color: '#E87615'
-          - from: 19
-            color: '#E56B0B'
-          - from: 20
-            color: '#E36001'
-          - from: 21
-            color: '#E45D08'
-          - from: 22
-            color: '#E55B0F'
-          - from: 23
-            color: '#E65816'
-          - from: 24
-            color: '#E7561D'
-          - from: 25
-            color: '#E85324'
-          - from: 26
-            color: '#E9512B'
-          - from: 27
-            color: '#EA4E32'
-          - from: 28
-            color: '#EB4C39'
-          - from: 29
-            color: '#EC4940'
-          - from: 30
-            color: '#ED4747'
-        card_mod:
-          style:
-            ha-gauge $: |
-              path.dial,
-              path.value,
-              path.level {
-                stroke-width: 10px !important;
-              }
-
-              path.dial {
-                stroke: var(--darker-primary-color) !important;
-              }
-
-              .text {
-                bottom: 10px !important;
-              }
-
-              .value-text {
-                font-size: 35px !important;
-              }
-              
-            .: |
-              ha-card {
-                padding-top: 0 !important;
-              }
-              .name {
-                margin-top: -15px !important;
-                color: var(--secondary-text-color) !important;
-                font-size: 12px !important;
-              }
-    
-
-      # Daily Energy Usage and Price Chart
-      - type: custom:apexcharts-card
-        card_mod:
-          style: |
-            ha-card {
-              background: var(--darker-primary-color);
-              border-top-right-radius: 0;
-              border-top-left-radius: 0;
-              backdrop-filter: none;
-              -webkit-backdrop-filter: none;
-              box-shadow: none;
-              border: none;
-              box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
-            }
-        graph_span: 24h
-        stacked: true
-        header:
-          show: false
-        apex_config:
-          yaxis:
-            - id: usage
-              show: 
-                dataLabels: false
-              title: 
-                text: ""
-              labels:
-                formatter: |
-                  EVAL: (val) => `${val.toFixed(1)}`
-            - id: price
-              opposite: true
-              show: 
-                dataLabels: false
-              title:
-                text: ""
-              labels:
-                formatter: |
-                  EVAL: (val) => `${(val * 100).toFixed(0)}¢`
-
-        series:
-          - entity: sensor.daily_energy_consumption
-            type: column
-            name: Energy Usage
-            statistics:
-              type: change
-              period: hour
-              align: start
-            yaxis_id: usage
-          - entity: sensor.energy_price
-            type: line
-            name: Energy Price
-            stroke_width: 3
-            group_by:
-              func: avg
-              duration: 1h
-            yaxis_id: price
-
-
-  #---------------------------------------------------------------------------
-  # Today's Energy Trend - Actual vs Forecast
-  #---------------------------------------------------------------------------
-  - type: custom:stack-in-card
-    card_mod:
-      style: |
-        :host {
-          --keep-border_radius: 'true';
-          --keep-background: 'true';
-          --stack-card-gap: 0px !important;
-        }
-    keep:
-      border_radius: true
-      background: true
-    cards:
-      # Trend Header with Stats
-      - type: custom:button-card
-        entity: sensor.energy_trend_status
-        name: Today's Energy Trend
-        show_icon: true
-        show_state: false
-        icon: |
-          [[[
-            const status = entity.state;
-            if (status === 'above') return 'mdi:trending-up';
-            if (status === 'below') return 'mdi:trending-down';
-            return 'mdi:trending-neutral';
-          ]]]
-        styles:
-          grid:
-            - grid-template-areas: '"i n badge"'
-            - grid-template-columns: 'auto 1fr auto'
-          card:
-            - padding: '16px'
-            - padding-bottom: '8px'
-          icon:
-            - color: |
-                [[[
-                  const status = entity.state;
-                  if (status === 'above') return '#ED4747';
-                  if (status === 'below') return '#06D6A0';
-                  return '#FFD166';
-                ]]]
-            - width: '24px'
-            - height: '24px'
-          name:
-            - justify-self: start
-            - margin-left: '10px'
-            - font-size: '16px'
-            - font-weight: '500'
-          custom_fields:
-            badge:
-              - justify-self: end
-              - font-size: '14px'
-              - font-weight: '600'
-              - padding: '4px 10px'
-              - border-radius: '12px'
-              - background: |
-                  [[[
-                    const status = entity.state;
-                    if (status === 'above') return 'rgba(237, 71, 71, 0.2)';
-                    if (status === 'below') return 'rgba(6, 214, 160, 0.2)';
-                    return 'rgba(255, 209, 102, 0.2)';
-                  ]]]
-              - color: |
-                  [[[
-                    const status = entity.state;
-                    if (status === 'above') return '#ED4747';
-                    if (status === 'below') return '#06D6A0';
-                    return '#FFD166';
-                  ]]]
-        custom_fields:
-          badge: |
-            [[[
-              const pct = parseFloat(states['sensor.energy_trend_percent'].state) || 0;
-              const sign = pct >= 0 ? '+' : '';
-              return `${sign}${pct.toFixed(1)}%`;
-            ]]]
-
-      # Stats Row - Actual | Expected | Forecast
-      - type: grid
-        columns: 3
-        square: false
         cards:
-          - type: custom:button-card
-            entity: sensor.whole_home_energy_daily_usage
-            name: Actual
-            show_icon: false
-            show_state: true
-            show_name: true
-            styles:
-              card:
-                - padding: '8px'
-                - background: 'transparent'
-                - box-shadow: 'none'
-              name:
-                - font-size: '11px'
-                - color: 'var(--secondary-text-color)'
-                - text-transform: 'uppercase'
-                - letter-spacing: '0.5px'
-              state:
-                - font-size: '20px'
-                - font-weight: '600'
-            state_display: |
-              [[[
-                return `${parseFloat(entity.state).toFixed(1)} kWh`;
-              ]]]
-          - type: custom:button-card
-            entity: sensor.energy_expected_so_far
-            name: Expected
-            show_icon: false
-            show_state: true
-            show_name: true
-            styles:
-              card:
-                - padding: '8px'
-                - background: 'transparent'
-                - box-shadow: 'none'
-              name:
-                - font-size: '11px'
-                - color: 'var(--secondary-text-color)'
-                - text-transform: 'uppercase'
-                - letter-spacing: '0.5px'
-              state:
-                - font-size: '20px'
-                - font-weight: '600'
-                - color: 'var(--secondary-text-color)'
-            state_display: |
-              [[[
-                return `${parseFloat(entity.state).toFixed(1)} kWh`;
-              ]]]
-          - type: custom:button-card
-            entity: sensor.energy_forecast_end_of_day
-            name: EOD Forecast
-            show_icon: false
-            show_state: true
-            show_name: true
-            styles:
-              card:
-                - padding: '8px'
-                - background: 'transparent'
-                - box-shadow: 'none'
-              name:
-                - font-size: '11px'
-                - color: 'var(--secondary-text-color)'
-                - text-transform: 'uppercase'
-                - letter-spacing: '0.5px'
-              state:
-                - font-size: '20px'
-                - font-weight: '600'
-                - color: '#FFD166'
-            state_display: |
-              [[[
-                return `${parseFloat(entity.state).toFixed(1)} kWh`;
-              ]]]
+          #
+          # Stats Row: Actual | Expected | EOD Forecast
+          #
+          - type: custom:stack-in-card
+            mode: horizontal
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+            cards:
+              # Actual Usage
+              - type: custom:button-card
+                template: kohbo_energy_stat_item
+                entity: sensor.whole_home_energy_daily_usage
+                name: Actual
+                variables:
+                  state_color: var(--success-color)
+                  show_divider: true
+                icon: |
+                  [[[
+                    const actual = parseFloat(states['sensor.whole_home_energy_daily_usage']?.state || 0);
+                    const expected = parseFloat(states['sensor.energy_expected_so_far']?.state || 0);
+                    return actual > expected ? 'mdi:menu-up' : actual < expected ? 'mdi:menu-down' : 'mdi:minus';
+                  ]]]
+                styles:
+                  icon:
+                    - color: |
+                        [[[
+                          const actual = parseFloat(states['sensor.whole_home_energy_daily_usage']?.state || 0);
+                          const expected = parseFloat(states['sensor.energy_expected_so_far']?.state || 0);
+                          return actual > expected ? 'var(--error-color)' : actual < expected ? 'var(--success-color)' : 'var(--secondary-text-color)';
+                        ]]]
+              
+              # Expected (baseline for this time of day)
+              - type: custom:button-card
+                template: kohbo_energy_stat_item
+                entity: sensor.energy_expected_so_far
+                name: Expected
+                show_icon: false
+                variables:
+                  state_color: var(--secondary-text-color)
+                  show_divider: true
 
-      # Actual vs Forecast Chart
-      - type: custom:apexcharts-card
-        card_mod:
-          style: |
-            ha-card {
-              background: var(--darker-primary-color);
-              border-top-right-radius: 0;
-              border-top-left-radius: 0;
-              backdrop-filter: none;
-              -webkit-backdrop-filter: none;
-              box-shadow: none;
-              border: none;
-              box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
-            }
-        graph_span: 24h
-        span:
-          start: day
-        header:
-          show: false
-        apex_config:
-          chart:
-            height: 200
-          legend:
-            show: true
-            position: top
-            horizontalAlign: right
-          xaxis:
-            labels:
-              datetimeFormatter:
-                hour: 'HH'
-          yaxis:
-            - id: energy
-              min: 0
-              forceNiceScale: true
-              labels:
-                formatter: |
-                  EVAL: (val) => val ? `${val.toFixed(1)}` : '0'
-          tooltip:
-            x:
-              format: 'HH:mm'
-        series:
-          # Actual hourly usage (columns)
-          - entity: sensor.daily_energy_consumption
-            type: column
-            name: Actual
-            color: '#06D6A0'
-            statistics:
-              type: change
-              period: hour
-              align: start
-            yaxis_id: energy
-            show:
-              extremas: false
-          # Forecast line (generated from baselines)
-          - entity: sensor.energy_hourly_baselines_json
-            type: line
-            name: Forecast
-            color: '#FFD166'
-            stroke_width: 2
-            curve: smooth
-            yaxis_id: energy
-            extend_to: end
-            show:
-              extremas: false
-            data_generator: |
-              const baselines = entity.attributes.baselines || [];
-              const now = new Date();
-              const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-              const data = [];
-              for (let h = 0; h < 24; h++) {
-                const timestamp = new Date(startOfDay.getTime() + h * 3600000);
-                const value = baselines[h] || 0;
-                data.push([timestamp.getTime(), value]);
-              }
-              return data;
+              # EOD Forecast
+              - type: custom:button-card
+                template: kohbo_energy_stat_item
+                entity: sensor.energy_forecast_end_of_day
+                name: Forecast
+                variables:
+                  state_color: var(--secondary-text-color)
+                  show_divider: false
+                icon: |
+                  [[[
+                    const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
+                    const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
+                    return forecast > expected * 1.05 ? 'mdi:menu-up' : forecast < expected * 0.95 ? 'mdi:menu-down' : 'mdi:minus';
+                  ]]]
+                styles:
+                  icon:
+                    - color: |
+                        [[[
+                          const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
+                          const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
+                          return forecast > expected * 1.05 ? 'var(--error-color)' : forecast < expected * 0.95 ? 'var(--success-color)' : 'var(--secondary-text-color)';
+                        ]]]
+                  card:
+                    - border-right: none
+
+
+          #
+          # 24h CHART: Actual + Forecast + Price
+          #
+          - type: custom:apexcharts-card
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent;
+                  border-radius: 0;
+                  backdrop-filter: none;
+                  -webkit-backdrop-filter: none;
+                  box-shadow: none;
+                  border: none;
+                }
+                .apexcharts-legend {
+                  padding: 0 !important;
+                  margin: 0 !important;
+                  margin-top: 10px !important;
+                  display: flex !important;
+                  flex-direction: row !important;
+                  flex-wrap: wrap !important;
+                  justify-content: center !important;
+                }
+                .apexcharts-legend-group {
+                  display: contents !important;
+                }
+                .apexcharts-legend-series {
+                  display: inline-flex !important;
+                  margin: 0 8px !important;
+                }
+            graph_span: 24h
+            span:
+              start: day
+            header:
+              show: false
+            apex_config:
+              chart:
+                height: 200
+              grid:
+                borderColor: 'rgba(255,255,255,0.05)'
+              legend:
+                show: true
+                position: bottom
+                horizontalAlign: center
+                floating: false
+                fontSize: '11px'
+                markers:
+                  width: 8
+                  height: 8
+                itemMargin:
+                  horizontal: 16
+                  vertical: 0
+              xaxis:
+                labels:
+                  format: 'HH'
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              yaxis:
+                - id: energy
+                  seriesName: Actual
+                  min: 0
+                  forceNiceScale: true
+                  labels:
+                    style:
+                      fontSize: '10px'
+                    formatter: |
+                      EVAL: (val) => val ? `${val.toFixed(1)}` : '0'
+                - id: energy2
+                  seriesName: Forecast
+                  show: false
+                  min: 0
+                  forceNiceScale: true
+                - id: price
+                  seriesName: Price
+                  opposite: true
+                  min: 0
+                  max: 12
+                  tickAmount: 4
+                  labels:
+                    style:
+                      fontSize: '10px'
+                    formatter: |
+                      EVAL: (val) => `${Math.round(val)}¢`
+              tooltip:
+                x:
+                  format: 'HH:mm'
+            series:
+              # Actual hourly usage (bars)
+              # Using utility meter which handles daily cycles properly
+              - entity: sensor.whole_home_energy_daily_usage
+                type: column
+                name: Actual
+                color: var(--success-color)
+                unit: kWh
+                group_by:
+                  func: diff
+                  duration: 1h
+                yaxis_id: energy
+                show:
+                  extremas: false
+                  in_header: true
+                  legend_value: true
+              
+              # Hourly forecast (dynamic - adjusted for today's pace)
+              - entity: sensor.energy_hourly_forecast_json
+                type: line
+                name: Forecast
+                color: var(--accent-color)
+                unit: kWh
+                stroke_width: 2
+                curve: smooth
+                yaxis_id: energy2
+                extend_to: end
+                float_precision: 2
+                show:
+                  extremas: false
+                  in_header: true
+                  legend_value: true
+                data_generator: |
+                  let forecasts = entity.attributes.forecasts || [];
+                  // Parse JSON string if needed
+                  if (typeof forecasts === 'string') {
+                    try {
+                      forecasts = JSON.parse(forecasts);
+                    } catch (e) {
+                      forecasts = [];
+                    }
+                  }
+                  const now = new Date();
+                  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                  const data = [];
+                  for (let h = 0; h < 24; h++) {
+                    const timestamp = new Date(startOfDay.getTime() + h * 3600000);
+                    const value = parseFloat(forecasts[h]) || 0;
+                    data.push([timestamp.getTime(), value]);
+                  }
+                  return data;
+              
+              # Energy price (line on secondary axis)
+              - entity: sensor.comed_current_hour_average_price
+                type: line
+                name: Price
+                color: var(--light-primary-color)
+                unit: ¢
+                stroke_width: 2
+                curve: stepline
+                yaxis_id: price
+                group_by:
+                  func: avg
+                  duration: 1h
+                show:
+                  extremas: false
+                  in_header: true
+                  legend_value: true
+
+
 
 
   #===========================================================================
