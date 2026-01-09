@@ -20,6 +20,12 @@ automation:
           minutes: 2
 
     conditions:
+      # Confirm the UDM is online and connected
+      # (if UDM is down, power cycling the AP won't help)
+      - condition: state
+        entity_id: sensor.kohbo_udm_state
+        state: "connected"
+
       # Confirm the AP is still unavailable
       - condition: state
         entity_id: sensor.playroom_state
