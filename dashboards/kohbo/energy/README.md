@@ -73,9 +73,42 @@ hourly_forecast = baseline[hour] × adjustment_factor
 
 ---
 
-## Template
+## History Section
 
-The stat cards use `kohbo_energy_stat_bar` template with the `bar_mode` variable:
+Interactive history view with time range selector.
+
+### Time Ranges
+
+Controlled by `input_select.energy_history_timeframe`:
+
+| Option | Graph Span | Period | Color Thresholds (kWh) |
+|--------|------------|--------|------------------------|
+| **This Week** | 7 days | Daily | 0-10 🟢, 10-15 🟡, 15-20 🟠, 20+ 🔴 |
+| **Past 30 Days** | 30 days | Daily | 0-10 🟢, 10-15 🟡, 15-20 🟠, 20+ 🔴 |
+| **Weekly** | 12 weeks | Weekly | 0-70 🟢, 70-105 🟡, 105-140 🟠, 140+ 🔴 |
+| **Monthly** | 12 months | Monthly | 0-300 🟢, 300-450 🟡, 450-600 🟠, 600+ 🔴 |
+
+### Summary Stats
+
+| Stat | Sensor | Description |
+|------|--------|-------------|
+| **This Period** | `sensor.whole_home_energy_weekly_usage` or `monthly` | Total for selected period |
+| **Daily Avg** | `sensor.whole_home_daily_energy_stats` | 30-day rolling average |
+| **vs Expected** | `sensor.energy_trend_percent` | % difference from expected |
+
+### Progress Bars
+
+Week and Month totals with 10-segment progress bars:
+- Weekly target: ~100 kWh (14 kWh/day × 7)
+- Monthly target: ~450 kWh (15 kWh/day × 30)
+
+---
+
+## Templates
+
+### `kohbo_energy_stat_bar`
+
+Stat cards with progress bars. Uses `bar_mode` variable:
 - `realtime` - Power consumption thresholds
 - `today` - Actual vs expected comparison  
 - `forecast` - Forecast vs expected comparison

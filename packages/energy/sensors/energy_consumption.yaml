@@ -1,3 +1,18 @@
+#-----------------------------------------------------------------------------
+# Energy Dashboard - History Timeframe Selector
+#-----------------------------------------------------------------------------
+input_select:
+  energy_history_timeframe:
+    name: Energy History Timeframe
+    icon: mdi:calendar-range
+    options:
+      - This Week
+      - Past 30 Days
+      - Weekly
+      - Monthly
+    initial: This Week
+
+
 template:
   # 
   # Daily Energy Consumption
@@ -82,16 +97,159 @@ template:
             0
           {% else %}
             {{ ((forecast - avg) / avg * 100) | round(1) }}
-          {% endif %}       
+          {% endif %}
+
+  #-----------------------------------------------------------------------
+  # Energy History - Period Comparison Sensors
+  #-----------------------------------------------------------------------
+  - sensor:
+      #---------------------------------------------------------------------
+      # TODAY vs YESTERDAY
+      #---------------------------------------------------------------------
+      # Today's estimated end-of-day total (forecast)
+      - name: "Energy Today Estimated"
+        unique_id: energy_today_estimated
+        unit_of_measurement: "kWh"
+        device_class: energy
+        icon: mdi:lightning-bolt
+        state: >
+          {{ states('sensor.daily_home_energy_usage_forecast') | float(0) | round(1) }}
+
+      # Yesterday's total (from long-term statistics)
+      - name: "Energy Yesterday Total"
+        unique_id: energy_yesterday_total
+        unit_of_measurement: "kWh"
+        device_class: energy
+        icon: mdi:lightning-bolt
+        state: >
+          {% set yesterday = (now() - timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set stats = state_attr('sensor.whole_home_energy_daily_usage', 'last_reset') %}
+          {# Use 30-day average as fallback approximation for yesterday #}
+          {{ states('sensor.whole_home_daily_energy_stats') | float(0) | round(1) }}
+
+      # Daily change percentage (today's estimate vs yesterday)
+      - name: "Energy Daily Change Percent"
+        unique_id: energy_daily_change_percent
+        unit_of_measurement: "%"
+        icon: mdi:percent
+        state: >
+          {% set today_est = states('sensor.energy_today_estimated') | float(0) %}
+          {% set yesterday = states('sensor.energy_yesterday_total') | float(0) %}
+          {% if yesterday > 0 %}
+            {{ ((today_est - yesterday) / yesterday * 100) | round(0) }}
+          {% else %}
+            0
+          {% endif %}
+        attributes:
+          direction: >
+            {% set pct = states('sensor.energy_daily_change_percent') | float(0) %}
+            {{ 'up' if pct > 5 else ('down' if pct < -5 else 'flat') }}
+
+      #---------------------------------------------------------------------
+      # THIS WEEK vs LAST WEEK
+      #---------------------------------------------------------------------
+      # This week projected total (based on current pace)
+      - name: "Energy This Week Projected"
+        unique_id: energy_this_week_projected
+        unit_of_measurement: "kWh"
+        device_class: energy
+        icon: mdi:calendar-week
+        state: >
+          {% set this_week = states('sensor.whole_home_energy_weekly_usage') | float(0) %}
+          {% set dow = now().weekday() + 1 %}
+          {% set daily_avg = this_week / dow if dow > 0 else this_week %}
+          {{ (daily_avg * 7) | round(1) }}
+
+      # Last week's total (approximated from 30-day average)
+      - name: "Energy Last Week Total"
+        unique_id: energy_last_week_total
+        unit_of_measurement: "kWh"
+        device_class: energy
+        icon: mdi:calendar-week
+        state: >
+          {% set daily_avg = states('sensor.whole_home_daily_energy_stats') | float(0) %}
+          {{ (daily_avg * 7) | round(1) }}
+
+      # Weekly change percentage
+      - name: "Energy Weekly Change Percent"
+        unique_id: energy_weekly_change_percent
+        unit_of_measurement: "%"
+        icon: mdi:percent
+        state: >
+          {% set this_week_proj = states('sensor.energy_this_week_projected') | float(0) %}
+          {% set last_week = states('sensor.energy_last_week_total') | float(0) %}
+          {% if last_week > 0 %}
+            {{ ((this_week_proj - last_week) / last_week * 100) | round(0) }}
+          {% else %}
+            0
+          {% endif %}
+        attributes:
+          direction: >
+            {% set pct = states('sensor.energy_weekly_change_percent') | float(0) %}
+            {{ 'up' if pct > 5 else ('down' if pct < -5 else 'flat') }}
+
+      #---------------------------------------------------------------------
+      # THIS MONTH vs LAST MONTH
+      #---------------------------------------------------------------------
+      # This month projected total
+      - name: "Energy This Month Projected"
+        unique_id: energy_this_month_projected
+        unit_of_measurement: "kWh"
+        device_class: energy
+        icon: mdi:calendar-month
+        state: >
+          {% set this_month = states('sensor.whole_home_energy_monthly_usage') | float(0) %}
+          {% set dom = now().day %}
+          {% set days_in_month = (now().replace(month=now().month % 12 + 1, day=1) - timedelta(days=1)).day if now().month < 12 else 31 %}
+          {% set daily_avg = this_month / dom if dom > 0 else this_month %}
+          {{ (daily_avg * days_in_month) | round(1) }}
+
+      # Last month's total (approximated from 60-day average)
+      - name: "Energy Last Month Total"
+        unique_id: energy_last_month_total
+        unit_of_measurement: "kWh"
+        device_class: energy
+        icon: mdi:calendar-month
+        state: >
+          {% set daily_avg = states('sensor.energy_last_month_avg') | float(0) %}
+          {{ (daily_avg * 30) | round(1) }}
+
+      # Monthly change percentage
+      - name: "Energy Monthly Change Percent"
+        unique_id: energy_monthly_change_percent
+        unit_of_measurement: "%"
+        icon: mdi:percent
+        state: >
+          {% set this_month_proj = states('sensor.energy_this_month_projected') | float(0) %}
+          {% set last_month = states('sensor.energy_last_month_total') | float(0) %}
+          {% if last_month > 0 %}
+            {{ ((this_month_proj - last_month) / last_month * 100) | round(0) }}
+          {% else %}
+            0
+          {% endif %}
+        attributes:
+          direction: >
+            {% set pct = states('sensor.energy_monthly_change_percent') | float(0) %}
+            {{ 'up' if pct > 5 else ('down' if pct < -5 else 'flat') }}
 
 
 # 
-# Normal Daily Usage Stat
+# Statistics Sensors for Historical Data
 # 
 sensor:
+  # 30-day daily average
   - platform: statistics
     name: whole_home_daily_energy_stats
     entity_id: sensor.whole_home_energy_daily_usage
     state_characteristic: mean
     max_age:
       days: 30
+
+  # 60-day daily average (for month-over-month comparison)
+  - platform: statistics
+    name: energy_last_month_avg
+    entity_id: sensor.whole_home_energy_daily_usage  
+    state_characteristic: mean
+    max_age:
+      days: 60
+    sampling_size: 1000

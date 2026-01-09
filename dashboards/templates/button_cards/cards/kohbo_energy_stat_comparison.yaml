@@ -1,0 +1,66 @@
+#------------------------------------------------------------------------------
+# Energy Stat Comparison Card Template
+#
+# Extends: kohbo_energy_stat_card
+# Adds: Value display (v) + Percentage comparison (c)
+#
+# Additional Variables:
+#   - comparison_type: 'daily' | 'weekly' | 'monthly'
+#   - comparison_label: Text after percentage (default: "vs avg")
+#------------------------------------------------------------------------------
+kohbo_energy_stat_comparison:
+  template: kohbo_energy_stat_card
+  variables:
+    comparison_type: 'daily'
+    comparison_label: 'vs avg'
+  styles:
+    grid:
+      - grid-template-areas: '"n" "v" "c"'
+      - grid-template-rows: auto auto auto
+    custom_fields:
+      v:
+        - justify-self: start
+      c:
+        - justify-self: start
+        - margin-top: 2px
+  custom_fields:
+    v: |
+      [[[
+        const value = parseFloat(entity?.state || 0);
+        const unit = variables.unit_label || 'kWh';
+        return `<span style="font-size:26px;font-weight:600;color:var(--primary-text-color);">${value.toFixed(1)}</span><span style="font-size:12px;color:var(--secondary-text-color);margin-left:4px;">${unit}</span>`;
+      ]]]
+    c: |
+      [[[
+        const type = variables.comparison_type || 'daily';
+        const label = variables.comparison_label || 'vs avg';
+        let pct = 0;
+        
+        if (type === 'daily') {
+          const forecast = parseFloat(states['sensor.daily_home_energy_usage_forecast']?.state || 0);
+          const avg = parseFloat(states['sensor.whole_home_daily_energy_stats']?.state || 0);
+          if (avg > 0) pct = Math.round((forecast - avg) / avg * 100);
+        } else if (type === 'weekly') {
+          const thisWeek = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
+          const dow = new Date().getDay() || 7;
+          const dailyAvg = thisWeek / dow;
+          const projected = dailyAvg * 7;
+          const lastWeekAvg = parseFloat(states['sensor.whole_home_daily_energy_stats']?.state || 0);
+          const lastWeek = lastWeekAvg * 7;
+          if (lastWeek > 0) pct = Math.round((projected - lastWeek) / lastWeek * 100);
+        } else if (type === 'monthly') {
+          const thisMonth = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
+          const dom = new Date().getDate();
+          const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+          const dailyAvg = thisMonth / dom;
+          const projected = dailyAvg * daysInMonth;
+          const lastMonthAvg = parseFloat(states['sensor.energy_last_month_avg']?.state || states['sensor.whole_home_daily_energy_stats']?.state || 0);
+          const lastMonth = lastMonthAvg * 30;
+          if (lastMonth > 0) pct = Math.round((projected - lastMonth) / lastMonth * 100);
+        }
+        
+        const arrow = pct > 5 ? '↑' : pct < -5 ? '↓' : '→';
+        const color = pct > 10 ? 'var(--error-color)' : pct < -10 ? 'var(--success-color)' : 'var(--secondary-text-color)';
+        const sign = pct > 0 ? '+' : '';
+        return `<span style="font-size:11px;font-weight:500;color:${color};">${arrow} ${sign}${pct}% ${label}</span>`;
+      ]]]

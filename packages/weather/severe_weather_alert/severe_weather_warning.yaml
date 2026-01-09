@@ -346,7 +346,7 @@ automation:
         entity_id:
           - sensor.pirateweather_precip_accumulation_0h
           - sensor.pirateweather_precip_accumulation_1h
-        above: 0.5
+        above: 0.1
     conditions:
       # House is occupied
       - condition: state

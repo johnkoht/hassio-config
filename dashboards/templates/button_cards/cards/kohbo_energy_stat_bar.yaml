@@ -1,21 +1,17 @@
 #------------------------------------------------------------------------------
 # Energy Stat Bar Template
 #
-# Stat card with segmented bar indicator (uptime-bar style).
+# Extends: kohbo_energy_stat_card
+# Adds: Unit label (u) + Segmented bar indicator (b)
 #
-# Variables:
-#   - show_divider: Whether to show right border divider (default: true)
-#   - unit_label: Unit label below value (default: kWh)
+# Additional Variables:
 #   - bar_mode: 'realtime' | 'today' | 'forecast' (determines calculation logic)
 #------------------------------------------------------------------------------
 kohbo_energy_stat_bar:
-  show_icon: false
+  template: kohbo_energy_stat_card
   show_state: true
-  show_name: true
-  show_label: false
   variables:
     show_divider: true
-    unit_label: kWh
     bar_mode: 'today'
   styles:
     grid:
@@ -23,33 +19,12 @@ kohbo_energy_stat_bar:
       - grid-template-columns: auto 1fr
       - grid-template-rows: auto auto auto
     card:
-      - background: transparent
       - padding: 0 16px 2px
       - margin: 16px 0 14px
-      - box-shadow: none
-      - border-right: |
-          [[[
-            return variables.show_divider ? '1px solid rgba(255,255,255,0.08)' : 'none';
-          ]]]
-    name:
-      - font-size: 11px
-      - font-weight: 600
-      - text-transform: uppercase
-      - color: var(--semi-dark-grey-color)
-      - text-align: left
-      - justify-self: start
-      - width: 100%
-      - margin-bottom: 4px
-    state:
-      - font-size: 26px
-      - font-weight: 600
-      - color: var(--primary-text-color)
-      - text-align: left
-      - justify-self: start
     custom_fields:
       u:
         - font-size: 12px
-        - color: var(--semi-dark-grey-color)
+        - color: var(--secondary-text-color)
         - justify-self: start
         - align-self: end
         - padding-bottom: 3px
@@ -69,16 +44,13 @@ kohbo_energy_stat_bar:
         let color = 'var(--accent-color)';
         
         if (mode === 'realtime') {
-          // Real-time power consumption (3000W max)
-          // Color thresholds aligned with bar position
           const watts = parseFloat(states['sensor.energy_current_consumption']?.state || 0);
           pct = Math.min(Math.max((watts / 3000) * 100, 0), 100);
-          if (watts < 1000) color = 'var(--success-color)';       // 0-33%
-          else if (watts < 2000) color = 'var(--accent-color)';   // 33-66%
-          else if (watts < 2500) color = 'var(--orange-color)';   // 66-83%
-          else color = 'var(--error-color)';                      // 83-100%
+          if (watts < 1000) color = 'var(--success-color)';
+          else if (watts < 2000) color = 'var(--accent-color)';
+          else if (watts < 2500) color = 'var(--orange-color)';
+          else color = 'var(--error-color)';
         } else if (mode === 'today') {
-          // Today's usage vs expected
           const actual = parseFloat(states['sensor.whole_home_energy_daily_usage']?.state || 0);
           const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 1);
           const expectedSoFar = parseFloat(states['sensor.energy_expected_so_far']?.state || 1);
@@ -89,7 +61,6 @@ kohbo_energy_stat_bar:
           else if (ratio <= 1.3) color = 'var(--orange-color)';
           else color = 'var(--error-color)';
         } else if (mode === 'forecast') {
-          // EOD forecast vs expected
           const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
           const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 1);
           pct = Math.min((forecast / expected) * 100, 100);

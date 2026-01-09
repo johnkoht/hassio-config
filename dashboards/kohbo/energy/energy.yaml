@@ -356,79 +356,594 @@ cards:
 
 
   #===========================================================================
-  # SECTION 3: HISTORY - Longer-term Patterns
+  # SECTION 3: ENERGY HISTORY - Period Comparisons & Trends
   #===========================================================================
 
-  #---------------------------------------------------------------------------
-  # Energy Usage - Daily (30 days)
-  #---------------------------------------------------------------------------
-  - type: custom:apexcharts-card
-    experimental:
-      color_threshold: true
-    graph_span: 30d
-    stacked: true
-    header:
-      show: true
-      title: Energy Usage - Daily
-    series:
-      - entity: sensor.daily_energy_consumption
-        type: column
-        name: Total Energy Usage
-        statistics:
-          type: change
-          period: day
-          align: start
-        color_threshold:
-          - value: 0
-            color: "#06D6A0"
-          - value: 10.0
-            color: "#FFD166"
-          - value: 15.0
-            color: "#E36001"
-          - value: 20.0
-            color: "#ED4747"
-          - value: 25.0
-            color: "#ED4747"
-  
-
-  #---------------------------------------------------------------------------
-  # Weekly & Monthly Gauges
-  #---------------------------------------------------------------------------
-  - type: grid
-    columns: 2
-    square: false
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          background: var(--darker-primary-color);
+        }
     cards:
-      # Weekly Energy Usage
-      - type: gauge
-        name: Weekly Energy Usage
-        unit: 'kWh'
-        entity: sensor.whole_home_energy_weekly_usage
-        min: 0
-        max: 300
-        needle: true
-        segments:
-          - from: 0
-            color: var(--success-color)
-          - from: 100
-            color: var(--warning-color)
-          - from: 200
-            color: var(--error-color)
+      #-----------------------------------------------------------------------
+      # Section Header
+      #-----------------------------------------------------------------------
+      - type: custom:button-card
+        show_icon: false
+        show_state: false
+        show_name: true
+        name: Energy History
+        styles:
+          card:
+            - background: transparent
+            - box-shadow: none
+            - padding: 16px 16px 8px
+          name:
+            - font-size: 12px
+            - font-weight: 600
+            - color: var(--secondary-text-color)
+            - text-transform: uppercase
+            - letter-spacing: 0.5px
+            - justify-self: start
+        tap_action:
+          action: none
 
-      # Monthly Energy Usage
-      - type: gauge
-        name: Monthly Energy Usage
-        unit: 'kWh'
-        entity: sensor.whole_home_energy_monthly_usage
-        min: 0
-        max: 1000
-        needle: true
-        segments:
-          - from: 0
-            color: var(--success-color)
-          - from: 333
-            color: var(--warning-color)
-          - from: 666
-            color: var(--error-color)
+      #-----------------------------------------------------------------------
+      # Comparison Cards: Today | This Week | This Month
+      # Uses dividers like the top section
+      #-----------------------------------------------------------------------
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent;
+              box-shadow: none;
+              padding: 0 0 8px;
+            }
+        cards:
+          # TODAY Card
+          - type: custom:button-card
+            template: kohbo_energy_stat_comparison
+            entity: sensor.whole_home_energy_daily_usage
+            name: Today
+            variables:
+              comparison_type: daily
+              comparison_label: vs avg
+              show_divider: true
+
+          # THIS WEEK Card
+          - type: custom:button-card
+            template: kohbo_energy_stat_comparison
+            entity: sensor.whole_home_energy_weekly_usage
+            name: This Week
+            variables:
+              comparison_type: weekly
+              comparison_label: vs last
+              show_divider: true
+
+          # THIS MONTH Card
+          - type: custom:button-card
+            template: kohbo_energy_stat_comparison
+            entity: sensor.whole_home_energy_monthly_usage
+            name: This Month
+            variables:
+              comparison_type: monthly
+              comparison_label: vs last
+              show_divider: false
+
+      #-----------------------------------------------------------------------
+      # Timeframe Tabs
+      #-----------------------------------------------------------------------
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: |
+            ha-card {
+              background: rgba(0,0,0,0.2);
+              border-radius: 20px;
+              margin: 8px 16px;
+              padding: 3px;
+              box-shadow: none;
+            }
+        cards:
+          - type: custom:button-card
+            entity: input_select.energy_history_timeframe
+            name: Week
+            show_icon: false
+            show_state: false
+            styles:
+              card:
+                - background: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'This Week' ? 'var(--accent-color)' : 'transparent';
+                    ]]]
+                - border-radius: 16px
+                - padding: 6px 2px
+                - box-shadow: none
+              name:
+                - font-size: 12px
+                - font-weight: 500
+                - color: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'This Week' ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
+                    ]]]
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.energy_history_timeframe
+                option: This Week
+
+          - type: custom:button-card
+            entity: input_select.energy_history_timeframe
+            name: 30 Days
+            show_icon: false
+            show_state: false
+            styles:
+              card:
+                - background: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'Past 30 Days' ? 'var(--accent-color)' : 'transparent';
+                    ]]]
+                - border-radius: 16px
+                - padding: 6px 2px
+                - box-shadow: none
+              name:
+                - font-size: 12px
+                - font-weight: 500
+                - color: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'Past 30 Days' ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
+                    ]]]
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.energy_history_timeframe
+                option: Past 30 Days
+
+          - type: custom:button-card
+            entity: input_select.energy_history_timeframe
+            name: Weekly
+            show_icon: false
+            show_state: false
+            styles:
+              card:
+                - background: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'Weekly' ? 'var(--accent-color)' : 'transparent';
+                    ]]]
+                - border-radius: 16px
+                - padding: 6px 2px
+                - box-shadow: none
+              name:
+                - font-size: 12px
+                - font-weight: 500
+                - color: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'Weekly' ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
+                    ]]]
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.energy_history_timeframe
+                option: Weekly
+
+          - type: custom:button-card
+            entity: input_select.energy_history_timeframe
+            name: Monthly
+            show_icon: false
+            show_state: false
+            styles:
+              card:
+                - background: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'Monthly' ? 'var(--accent-color)' : 'transparent';
+                    ]]]
+                - border-radius: 16px
+                - padding: 6px 2px
+                - box-shadow: none
+              name:
+                - font-size: 12px
+                - font-weight: 500
+                - color: |
+                    [[[
+                      const state = states['input_select.energy_history_timeframe']?.state || 'This Week';
+                      return state === 'Monthly' ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
+                    ]]]
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.energy_history_timeframe
+                option: Monthly
+
+      #-----------------------------------------------------------------------
+      # Chart - Switches based on selected timeframe
+      #-----------------------------------------------------------------------
+      - type: custom:state-switch
+        entity: input_select.energy_history_timeframe
+        default: This Week
+        states:
+          #--- This Week (7 days, daily bars) ---
+          "This Week":
+            type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+            graph_span: 7d
+            span:
+              end: day
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent;
+                  box-shadow: none;
+                  border: none;
+                }
+            header:
+              show: false
+            apex_config:
+              chart:
+                height: 160
+              grid:
+                borderColor: 'rgba(255,255,255,0.05)'
+              xaxis:
+                labels:
+                  format: 'ddd'
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              yaxis:
+                - min: 0
+                  forceNiceScale: true
+                  labels:
+                    style:
+                      fontSize: '10px'
+                    formatter: |
+                      EVAL: (val) => val ? `${val.toFixed(0)}` : '0'
+              legend:
+                show: false
+              tooltip:
+                x:
+                  format: 'ddd MMM d'
+            series:
+              - entity: sensor.daily_energy_consumption
+                type: column
+                name: Daily Usage
+                statistics:
+                  type: change
+                  period: day
+                  align: start
+                color_threshold:
+                  - value: 0
+                    color: var(--success-color)
+                  - value: 10
+                    color: var(--accent-color)
+                  - value: 15
+                    color: var(--orange-color)
+                  - value: 20
+                    color: var(--error-color)
+
+          #--- Past 30 Days (daily bars) ---
+          "Past 30 Days":
+            type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+            graph_span: 30d
+            span:
+              end: day
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent;
+                  box-shadow: none;
+                  border: none;
+                }
+            header:
+              show: false
+            apex_config:
+              chart:
+                height: 160
+              grid:
+                borderColor: 'rgba(255,255,255,0.05)'
+              xaxis:
+                labels:
+                  format: 'MMM d'
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              yaxis:
+                - min: 0
+                  forceNiceScale: true
+                  labels:
+                    style:
+                      fontSize: '10px'
+                    formatter: |
+                      EVAL: (val) => val ? `${val.toFixed(0)}` : '0'
+              legend:
+                show: false
+              tooltip:
+                x:
+                  format: 'ddd MMM d'
+            series:
+              - entity: sensor.daily_energy_consumption
+                type: column
+                name: Daily Usage
+                statistics:
+                  type: change
+                  period: day
+                  align: start
+                color_threshold:
+                  - value: 0
+                    color: var(--success-color)
+                  - value: 10
+                    color: var(--accent-color)
+                  - value: 15
+                    color: var(--orange-color)
+                  - value: 20
+                    color: var(--error-color)
+
+          #--- Weekly (12 weeks, weekly aggregated bars) ---
+          "Weekly":
+            type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+            graph_span: 12w
+            span:
+              end: week
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent;
+                  box-shadow: none;
+                  border: none;
+                }
+            header:
+              show: false
+            apex_config:
+              chart:
+                height: 160
+              grid:
+                borderColor: 'rgba(255,255,255,0.05)'
+              xaxis:
+                labels:
+                  format: 'MMM d'
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              yaxis:
+                - min: 0
+                  forceNiceScale: true
+                  labels:
+                    style:
+                      fontSize: '10px'
+                    formatter: |
+                      EVAL: (val) => val ? `${val.toFixed(0)}` : '0'
+              legend:
+                show: false
+              tooltip:
+                x:
+                  format: "'Week of' MMM d"
+            series:
+              - entity: sensor.daily_energy_consumption
+                type: column
+                name: Weekly Usage
+                statistics:
+                  type: change
+                  period: week
+                  align: start
+                color_threshold:
+                  - value: 0
+                    color: var(--success-color)
+                  - value: 70
+                    color: var(--accent-color)
+                  - value: 105
+                    color: var(--orange-color)
+                  - value: 140
+                    color: var(--error-color)
+
+          #--- Monthly (12 months, monthly aggregated bars) ---
+          "Monthly":
+            type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+            graph_span: 12M
+            span:
+              end: month
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent;
+                  box-shadow: none;
+                  border: none;
+                }
+            header:
+              show: false
+            apex_config:
+              chart:
+                height: 160
+              grid:
+                borderColor: 'rgba(255,255,255,0.05)'
+              xaxis:
+                labels:
+                  format: 'MMM'
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              yaxis:
+                - min: 0
+                  forceNiceScale: true
+                  labels:
+                    style:
+                      fontSize: '10px'
+                    formatter: |
+                      EVAL: (val) => val ? `${val.toFixed(0)}` : '0'
+              legend:
+                show: false
+              tooltip:
+                x:
+                  format: 'MMMM yyyy'
+            series:
+              - entity: sensor.daily_energy_consumption
+                type: column
+                name: Monthly Usage
+                statistics:
+                  type: change
+                  period: month
+                  align: start
+                color_threshold:
+                  - value: 0
+                    color: var(--success-color)
+                  - value: 300
+                    color: var(--accent-color)
+                  - value: 450
+                    color: var(--orange-color)
+                  - value: 600
+                    color: var(--error-color)
+
+      #-----------------------------------------------------------------------
+      # Progress Bar Row: Week & Month at a glance
+      #-----------------------------------------------------------------------
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent;
+              padding: 8px 16px 16px;
+            }
+        cards:
+          # Weekly Progress
+          - type: custom:button-card
+            entity: sensor.whole_home_energy_weekly_usage
+            name: This Week
+            show_icon: false
+            show_state: true
+            show_name: true
+            state_display: |
+              [[[
+                return parseFloat(entity?.state || 0).toFixed(1) + ' kWh';
+              ]]]
+            styles:
+              grid:
+                - grid-template-areas: '"n s" "b b"'
+                - grid-template-columns: 1fr auto
+              card:
+                - background: transparent
+                - padding: 8px
+                - box-shadow: none
+              name:
+                - font-size: 11px
+                - font-weight: 600
+                - color: var(--secondary-text-color)
+                - text-align: left
+                - justify-self: start
+              state:
+                - font-size: 11px
+                - font-weight: 600
+                - color: var(--primary-text-color)
+                - text-align: right
+                - justify-self: end
+              custom_fields:
+                b:
+                  - margin-top: 6px
+                  - display: flex
+                  - gap: 2px
+                  - height: 5px
+                  - width: 100%
+            custom_fields:
+              b: |
+                [[[
+                  const weekly = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
+                  const target = 100;
+                  const pct = Math.min((weekly / target) * 100, 100);
+                  let color = 'var(--success-color)';
+                  if (weekly > 70) color = 'var(--accent-color)';
+                  if (weekly > 105) color = 'var(--orange-color)';
+                  if (weekly > 140) color = 'var(--error-color)';
+                  const empty = 'var(--divider-color)';
+                  let output = '<div style="display:flex;gap:2px;width:100%;height:5px;">';
+                  for (let i = 1; i <= 10; i++) {
+                    const filled = pct >= (i * 10);
+                    const bg = filled ? color : empty;
+                    output += `<div style="flex:1;height:100%;border-radius:2px;background:${bg};"></div>`;
+                  }
+                  output += '</div>';
+                  return output;
+                ]]]
+
+          # Monthly Progress
+          - type: custom:button-card
+            entity: sensor.whole_home_energy_monthly_usage
+            name: This Month
+            show_icon: false
+            show_state: true
+            show_name: true
+            state_display: |
+              [[[
+                return parseFloat(entity?.state || 0).toFixed(1) + ' kWh';
+              ]]]
+            styles:
+              grid:
+                - grid-template-areas: '"n s" "b b"'
+                - grid-template-columns: 1fr auto
+              card:
+                - background: transparent
+                - padding: 8px
+                - box-shadow: none
+              name:
+                - font-size: 11px
+                - font-weight: 600
+                - color: var(--secondary-text-color)
+                - text-align: left
+                - justify-self: start
+              state:
+                - font-size: 11px
+                - font-weight: 600
+                - color: var(--primary-text-color)
+                - text-align: right
+                - justify-self: end
+              custom_fields:
+                b:
+                  - margin-top: 6px
+                  - display: flex
+                  - gap: 2px
+                  - height: 5px
+                  - width: 100%
+            custom_fields:
+              b: |
+                [[[
+                  const monthly = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
+                  const target = 450;
+                  const pct = Math.min((monthly / target) * 100, 100);
+                  let color = 'var(--success-color)';
+                  if (monthly > 300) color = 'var(--accent-color)';
+                  if (monthly > 450) color = 'var(--orange-color)';
+                  if (monthly > 600) color = 'var(--error-color)';
+                  const empty = 'var(--divider-color)';
+                  let output = '<div style="display:flex;gap:2px;width:100%;height:5px;">';
+                  for (let i = 1; i <= 10; i++) {
+                    const filled = pct >= (i * 10);
+                    const bg = filled ? color : empty;
+                    output += `<div style="flex:1;height:100%;border-radius:2px;background:${bg};"></div>`;
+                  }
+                  output += '</div>';
+                  return output;
+                ]]]
 
 
   #===========================================================================

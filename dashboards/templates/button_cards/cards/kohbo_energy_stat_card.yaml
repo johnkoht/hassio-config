@@ -1,0 +1,49 @@
+#------------------------------------------------------------------------------
+# Energy Stat Card - Base Template
+#
+# Base template for energy stat cards with consistent styling.
+# Contains all common styles - children only override/add what's different.
+#
+# Variables:
+#   - show_divider: Whether to show right border divider (default: false)
+#   - unit_label: Unit label next to value (default: kWh)
+#------------------------------------------------------------------------------
+kohbo_energy_stat_card:
+  show_icon: false
+  show_state: false
+  show_name: true
+  show_label: false
+  variables:
+    show_divider: false
+    unit_label: kWh
+  styles:
+    grid:
+      - grid-template-areas: '"n" "s"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: auto auto
+      - row-gap: 4px
+    card:
+      - background: transparent
+      - padding: 0 16px
+      - margin: 12px 0
+      - box-shadow: none
+      - border-right: |
+          [[[
+            return variables.show_divider ? '1px solid rgba(255,255,255,0.08)' : 'none';
+          ]]]
+    name:
+      - font-size: 11px
+      - font-weight: 600
+      - text-transform: uppercase
+      - letter-spacing: 0.3px
+      - color: var(--secondary-text-color)
+      - text-align: left
+      - justify-self: start
+      - width: 100%
+      - margin-bottom: 4px
+    state:
+      - font-size: 26px
+      - font-weight: 600
+      - color: var(--primary-text-color)
+      - text-align: left
+      - justify-self: start
