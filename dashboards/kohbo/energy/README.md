@@ -4,15 +4,29 @@ Real-time energy monitoring with dynamic forecasting based on historical usage p
 
 ---
 
-## Top Cards
+## Stat Cards
 
-| Card | Sensor | Meaning |
-|------|--------|---------|
-| **Actual** | `sensor.whole_home_energy_daily_usage` | Energy used so far today |
-| **Expected** | `sensor.energy_expected_full_day` | Typical full-day usage (sum of 24 hourly baselines) |
-| **Forecast** | `sensor.energy_forecast_end_of_day` | Predicted end-of-day total (actual + adjusted remaining) |
+| Card | Sensor | Unit | Meaning |
+|------|--------|------|---------|
+| **Real Time** | `sensor.energy_current_consumption` | W / kW | Current power draw (switches to kW above 1000W) |
+| **Today** | `sensor.whole_home_energy_daily_usage` | kWh | Energy used so far today |
+| **Forecast** | `sensor.energy_forecast_end_of_day` | kWh | Predicted end-of-day total |
 
-**Trend arrows:** Compare current values to expected. Green ↓ = below expected, Red ↑ = above expected.
+### Progress Bars
+
+Each stat card has a 10-segment progress bar with color-coded status:
+
+| Card | Bar Fill Logic | Color Logic |
+|------|---------------|-------------|
+| **Real Time** | `watts / 3000 × 100` | Green <1000W (0-33%), Yellow <2000W (33-66%), Orange <2500W (66-83%), Red ≥2500W (83%+) |
+| **Today** | `actual / expected_full_day × 100` | Based on `actual / expected_so_far` ratio |
+| **Forecast** | `forecast / expected_full_day × 100` | Based on `forecast / expected_full_day` ratio |
+
+**Color thresholds for Today/Forecast:**
+- 🟢 Green: ratio < 0.9 (under budget)
+- 🟡 Yellow: ratio ≤ 1.1 (on track)
+- 🟠 Orange: ratio ≤ 1.3 (slightly over)
+- 🔴 Red: ratio > 1.3 (over budget)
 
 ---
 
@@ -46,6 +60,8 @@ hourly_forecast = baseline[hour] × adjustment_factor
 
 | Sensor | Purpose |
 |--------|---------|
+| `sensor.energy_current_consumption` | Real-time power draw (watts) |
+| `sensor.whole_home_energy_daily_usage` | Today's cumulative energy usage |
 | `sensor.energy_hourly_forecast_json` | Array of 24 adjusted hourly predictions |
 | `sensor.energy_expected_so_far` | Expected usage up to current hour |
 | `sensor.energy_expected_remaining` | Expected usage for remaining hours |
@@ -55,3 +71,11 @@ hourly_forecast = baseline[hour] × adjustment_factor
 | `sensor.baseline_weekday_h00` - `h23` | 30-day avg per hour (weekdays) |
 | `sensor.baseline_weekend_h00` - `h23` | 30-day avg per hour (weekends) |
 
+---
+
+## Template
+
+The stat cards use `kohbo_energy_stat_bar` template with the `bar_mode` variable:
+- `realtime` - Power consumption thresholds
+- `today` - Actual vs expected comparison  
+- `forecast` - Forecast vs expected comparison

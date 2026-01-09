@@ -88,6 +88,21 @@ template:
             {% else %}
               Very High
             {% endif %}
+          color: >
+            {% set power = states('sensor.energy_current_consumption') | float(0) %}
+            {% if power < 500 %}
+              var(--success-color)
+            {% elif power < 1500 %}
+              var(--accent-color)
+            {% elif power < 2500 %}
+              var(--orange-color)
+            {% else %}
+              var(--error-color)
+            {% endif %}
+          # Percentage for visual bar (0-100, capped at 3000W = 100%)
+          bar_percent: >
+            {% set power = states('sensor.energy_current_consumption') | float(0) %}
+            {{ [[(power / 3000) * 100, 100] | min, 5] | max | round(0) }}
 
       #-----------------------------------------------------------------------
       # Energy Usage Trend Label - clean callout for dashboard hero

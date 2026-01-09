@@ -124,78 +124,72 @@ cards:
               background: var(--darker-primary-color);
               border-radius: 0;
               box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+              padding-bottom: 20px !important;
             }
         cards:
           #
-          # Stats Row: Actual | Expected | EOD Forecast
+          # Stats Row: Real Time | Today | Forecast
           #
           - type: custom:stack-in-card
             mode: horizontal
             card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
             cards:
-              # Actual Usage
+              # Real Time Power
               - type: custom:button-card
-                template: kohbo_energy_stat_item
-                entity: sensor.whole_home_energy_daily_usage
-                name: Actual
-                variables:
-                  state_color: var(--success-color)
-                  show_divider: true
-                icon: |
+                template: kohbo_energy_stat_bar
+                entity: sensor.energy_current_consumption
+                name: Real Time
+                state_display: |
                   [[[
-                    const actual = parseFloat(states['sensor.whole_home_energy_daily_usage']?.state || 0);
-                    const expected = parseFloat(states['sensor.energy_expected_so_far']?.state || 0);
-                    return actual > expected ? 'mdi:menu-up' : actual < expected ? 'mdi:menu-down' : 'mdi:minus';
+                    const watts = parseFloat(entity?.state || 0);
+                    if (watts >= 1000) {
+                      return (watts / 1000).toFixed(1);
+                    }
+                    return Math.round(watts);
                   ]]]
-                styles:
-                  icon:
-                    - color: |
-                        [[[
-                          const actual = parseFloat(states['sensor.whole_home_energy_daily_usage']?.state || 0);
-                          const expected = parseFloat(states['sensor.energy_expected_so_far']?.state || 0);
-                          return actual > expected ? 'var(--error-color)' : actual < expected ? 'var(--success-color)' : 'var(--secondary-text-color)';
-                        ]]]
-              
-              # Expected (baseline for this time of day)
-              - type: custom:button-card
-                template: kohbo_energy_stat_item
-                entity: sensor.energy_expected_so_far
-                name: Expected
-                show_icon: false
                 variables:
-                  state_color: var(--secondary-text-color)
+                  unit_label: |
+                    [[[
+                      const watts = parseFloat(states['sensor.energy_current_consumption']?.state || 0);
+                      return watts >= 1000 ? 'kW' : 'W';
+                    ]]]
                   show_divider: true
-
-              # EOD Forecast
+                  bar_mode: realtime
+              
+              # Today (actual usage so far)
               - type: custom:button-card
-                template: kohbo_energy_stat_item
+                template: kohbo_energy_stat_bar
+                entity: sensor.whole_home_energy_daily_usage
+                name: Today
+                state_display: |
+                  [[[
+                    return parseFloat(entity?.state || 0).toFixed(1);
+                  ]]]
+                variables:
+                  unit_label: kWh
+                  show_divider: true
+                  bar_mode: today
+
+              # Forecast (EOD prediction)
+              - type: custom:button-card
+                template: kohbo_energy_stat_bar
                 entity: sensor.energy_forecast_end_of_day
                 name: Forecast
-                variables:
-                  state_color: var(--secondary-text-color)
-                  show_divider: false
-                icon: |
+                state_display: |
                   [[[
-                    const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
-                    const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
-                    return forecast > expected * 1.05 ? 'mdi:menu-up' : forecast < expected * 0.95 ? 'mdi:menu-down' : 'mdi:minus';
+                    return parseFloat(entity?.state || 0).toFixed(1);
                   ]]]
-                styles:
-                  icon:
-                    - color: |
-                        [[[
-                          const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
-                          const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
-                          return forecast > expected * 1.05 ? 'var(--error-color)' : forecast < expected * 0.95 ? 'var(--success-color)' : 'var(--secondary-text-color)';
-                        ]]]
-                  card:
-                    - border-right: none
-
+                variables:
+                  unit_label: kWh
+                  show_divider: false
+                  bar_mode: forecast
 
           #
           # 24h CHART: Actual + Forecast + Price
           #
           - type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
             card_mod:
               style: |
                 ha-card {
@@ -205,6 +199,7 @@ cards:
                   -webkit-backdrop-filter: none;
                   box-shadow: none;
                   border: none;
+                  padding-bottom: 16px;
                 }
                 .apexcharts-legend {
                   padding: 0 !important;
@@ -286,11 +281,19 @@ cards:
               - entity: sensor.whole_home_energy_daily_usage
                 type: column
                 name: Actual
-                color: var(--success-color)
                 unit: kWh
                 group_by:
                   func: diff
                   duration: 1h
+                color_threshold:
+                  - value: 0
+                    color: var(--success-color)
+                  - value: 0.5
+                    color: var(--accent-color)
+                  - value: 1.0
+                    color: var(--orange-color)
+                  - value: 1.5
+                    color: var(--error-color)
                 yaxis_id: energy
                 show:
                   extremas: false
