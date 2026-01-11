@@ -807,13 +807,7 @@ cards:
                   align: start
                 color_threshold:
                   - value: 0
-                    color: var(--success-color)
-                  - value: 300
-                    color: var(--accent-color)
-                  - value: 450
-                    color: var(--orange-color)
-                  - value: 600
-                    color: var(--error-color)
+                    color: var(--success-color)D
 
       #-----------------------------------------------------------------------
       # Progress Bar Row: Week & Month at a glance
@@ -950,10 +944,308 @@ cards:
   # SECTION 4: DEVICES - What's Consuming Power
   #===========================================================================
 
-  - type: energy-devices-graph
-    title: Individual Devices
-    max_devices: 8
-    hide_compound_stats: true
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          background: var(--card-background-color);
+        }
+    cards:
+      #-----------------------------------------------------------------------
+      # Section Header
+      #-----------------------------------------------------------------------
+      - type: custom:button-card
+        show_icon: false
+        show_state: false
+        show_name: true
+        name: Active Devices
+        styles:
+          card:
+            - background: transparent
+            - box-shadow: none
+            - padding: 16px 16px 8px
+          name:
+            - font-size: 12px
+            - font-weight: 600
+            - color: var(--secondary-text-color)
+            - text-transform: uppercase
+            - letter-spacing: 0.3px
+            - text-align: left
+            - justify-self: start
+
+      #-----------------------------------------------------------------------
+      # Devices Currently Using Power (sorted by consumption)
+      # Only shows devices actively drawing power (> 5W threshold)
+      #-----------------------------------------------------------------------
+      - type: custom:auto-entities
+        show_empty: false
+        unique: true
+        card:
+          type: vertical-stack
+        card_param: cards
+        filter:
+          include:
+            # Zigbee plugs - active power sensors (W) - must be drawing > 5W
+            - entity_id: "sensor.smart_plug_*_active_power"
+              state: "> 5"
+              options:
+                type: custom:button-card
+                entity: this.entity_id
+                show_icon: true
+                show_name: true
+                show_state: true
+                icon: mdi:power-plug
+                layout: icon_name_state2nd
+                state_display: |
+                  [[[
+                    const watts = parseFloat(entity.state) || 0;
+                    if (watts >= 1000) return (watts/1000).toFixed(1) + ' kW';
+                    return watts.toFixed(0) + ' W';
+                  ]]]
+                styles:
+                  grid:
+                    - grid-template-areas: '"i n s" "b b b"'
+                    - grid-template-columns: 32px 1fr auto
+                    - grid-template-rows: auto auto
+                  card:
+                    - background: transparent
+                    - padding: 10px 16px 12px
+                    - box-shadow: none
+                    - border-bottom: 1px solid rgba(255,255,255,0.05)
+                  icon:
+                    - color: var(--accent-color)
+                    - width: 20px
+                  name:
+                    - font-size: 13px
+                    - font-weight: 500
+                    - color: var(--primary-text-color)
+                    - text-align: left
+                    - justify-self: start
+                  state:
+                    - font-size: 13px
+                    - font-weight: 600
+                    - color: var(--accent-color)
+                    - text-align: right
+                  custom_fields:
+                    b:
+                      - margin-top: 6px
+                      - grid-column: span 3
+                custom_fields:
+                  b: |
+                    [[[
+                      const watts = parseFloat(entity.state) || 0;
+                      const maxWatts = 1500;
+                      const pct = Math.min((watts / maxWatts) * 100, 100);
+                      let color = 'var(--success-color)';
+                      if (watts > 100) color = 'var(--accent-color)';
+                      if (watts > 500) color = 'var(--orange-color)';
+                      if (watts > 1000) color = 'var(--error-color)';
+                      return `<div style="width:100%;height:4px;background:var(--divider-color);border-radius:2px;overflow:hidden;">
+                        <div style="width:${pct}%;height:100%;background:${color};border-radius:2px;transition:width 0.3s ease;"></div>
+                      </div>`;
+                    ]]]
+            # Z-Wave smart switches (washer/dryer) - Electric Consumption [W]
+            - entity_id: "sensor.*_electric_consumption_w"
+              state: "> 5"
+              options:
+                type: custom:button-card
+                entity: this.entity_id
+                show_icon: true
+                show_name: true
+                show_state: true
+                icon: mdi:washing-machine
+                layout: icon_name_state2nd
+                state_display: |
+                  [[[
+                    const watts = parseFloat(entity.state) || 0;
+                    if (watts >= 1000) return (watts/1000).toFixed(1) + ' kW';
+                    return watts.toFixed(0) + ' W';
+                  ]]]
+                styles:
+                  grid:
+                    - grid-template-areas: '"i n s" "b b b"'
+                    - grid-template-columns: 32px 1fr auto
+                    - grid-template-rows: auto auto
+                  card:
+                    - background: transparent
+                    - padding: 10px 16px 12px
+                    - box-shadow: none
+                    - border-bottom: 1px solid rgba(255,255,255,0.05)
+                  icon:
+                    - color: var(--accent-color)
+                    - width: 20px
+                  name:
+                    - font-size: 13px
+                    - font-weight: 500
+                    - color: var(--primary-text-color)
+                    - text-align: left
+                    - justify-self: start
+                  state:
+                    - font-size: 13px
+                    - font-weight: 600
+                    - color: var(--accent-color)
+                    - text-align: right
+                  custom_fields:
+                    b:
+                      - margin-top: 6px
+                      - grid-column: span 3
+                custom_fields:
+                  b: |
+                    [[[
+                      const watts = parseFloat(entity.state) || 0;
+                      const maxWatts = 3000;
+                      const pct = Math.min((watts / maxWatts) * 100, 100);
+                      let color = 'var(--success-color)';
+                      if (watts > 200) color = 'var(--accent-color)';
+                      if (watts > 1000) color = 'var(--orange-color)';
+                      if (watts > 2000) color = 'var(--error-color)';
+                      return `<div style="width:100%;height:4px;background:var(--divider-color);border-radius:2px;overflow:hidden;">
+                        <div style="width:${pct}%;height:100%;background:${color};border-radius:2px;transition:width 0.3s ease;"></div>
+                      </div>`;
+                    ]]]
+          exclude:
+            # Exclude Home Energy Meters (whole house, not individual devices)
+            - entity_id: "*home_energy_meter*"
+            # Exclude UPS
+            - entity_id: "*ups*"
+            - entity_id: "*UPS*"
+            # Exclude cumulative energy sensors (kWh) - we only want power (W)
+            - entity_id: "*_total_power"
+            - entity_id: "*_summation_delivered"
+            - entity_id: "*_energy"
+        sort:
+          method: state
+          numeric: true
+          reverse: true
+
+
+  #===========================================================================
+  # SECTION 5: TOP CONSUMERS TODAY
+  #===========================================================================
+
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          background: var(--card-background-color);
+        }
+    cards:
+      #-----------------------------------------------------------------------
+      # Section Header
+      #-----------------------------------------------------------------------
+      - type: custom:button-card
+        show_icon: false
+        show_state: false
+        show_name: true
+        name: Top Consumers Today
+        styles:
+          card:
+            - background: transparent
+            - box-shadow: none
+            - padding: 16px 16px 0
+          name:
+            - font-size: 12px
+            - font-weight: 600
+            - color: var(--secondary-text-color)
+            - text-transform: uppercase
+            - letter-spacing: 0.3px
+            - text-align: left
+            - justify-self: start
+
+      #-----------------------------------------------------------------------
+      # Energy by Device List (sorted by consumption)
+      # Uses daily utility meters that reset at midnight
+      #-----------------------------------------------------------------------
+      - type: custom:auto-entities
+        show_empty: false
+        unique: true
+        card:
+          type: vertical-stack
+        card_param: cards
+        filter:
+          include:
+            # Daily energy meters - only show if > 0.1 kWh today
+            - entity_id: "sensor.*_daily_energy"
+              state: "> 0.1"
+              options:
+                type: custom:button-card
+                entity: this.entity_id
+                show_icon: true
+                show_name: true
+                show_state: true
+                icon: mdi:lightning-bolt
+                layout: icon_name_state2nd
+                state_display: |
+                  [[[
+                    const kwh = parseFloat(entity.state) || 0;
+                    if (kwh >= 100) return kwh.toFixed(0) + ' kWh';
+                    if (kwh >= 10) return kwh.toFixed(1) + ' kWh';
+                    return kwh.toFixed(2) + ' kWh';
+                  ]]]
+                styles:
+                  grid:
+                    - grid-template-areas: '"i n s" "b b b"'
+                    - grid-template-columns: 32px 1fr auto
+                    - grid-template-rows: auto auto
+                  card:
+                    - background: transparent
+                    - padding: 10px 16px 12px
+                    - box-shadow: none
+                    - border-bottom: 1px solid rgba(255,255,255,0.05)
+                  icon:
+                    - color: |
+                        [[[
+                          const kwh = parseFloat(entity.state) || 0;
+                          if (kwh > 5) return 'var(--error-color)';
+                          if (kwh > 2) return 'var(--orange-color)';
+                          if (kwh > 0.5) return 'var(--accent-color)';
+                          return 'var(--success-color)';
+                        ]]]
+                    - width: 20px
+                  name:
+                    - font-size: 13px
+                    - font-weight: 500
+                    - color: var(--primary-text-color)
+                    - text-align: left
+                    - justify-self: start
+                  state:
+                    - font-size: 13px
+                    - font-weight: 600
+                    - color: |
+                        [[[
+                          const kwh = parseFloat(entity.state) || 0;
+                          if (kwh > 5) return 'var(--error-color)';
+                          if (kwh > 2) return 'var(--orange-color)';
+                          if (kwh > 0.5) return 'var(--accent-color)';
+                          return 'var(--success-color)';
+                        ]]]
+                    - text-align: right
+                  custom_fields:
+                    b:
+                      - margin-top: 6px
+                      - grid-column: span 3
+                custom_fields:
+                  b: |
+                    [[[
+                      const kwh = parseFloat(entity.state) || 0;
+                      const maxKwh = 10;
+                      const pct = Math.min((kwh / maxKwh) * 100, 100);
+                      let color = 'var(--success-color)';
+                      if (kwh > 0.5) color = 'var(--accent-color)';
+                      if (kwh > 2) color = 'var(--orange-color)';
+                      if (kwh > 5) color = 'var(--error-color)';
+                      return `<div style="width:100%;height:4px;background:var(--divider-color);border-radius:2px;overflow:hidden;">
+                        <div style="width:${pct}%;height:100%;background:${color};border-radius:2px;transition:width 0.3s ease;"></div>
+                      </div>`;
+                    ]]]
+          exclude:
+            - entity_id: "*home_energy_meter*"
+            - entity_id: "*ups*"
+            - entity_id: "*UPS*"
+        sort:
+          method: state
+          numeric: true
+          reverse: true
 
 
   #===========================================================================

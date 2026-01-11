@@ -1,0 +1,140 @@
+#-----------------------------------------------------------------------------
+# Device Daily Energy Meters
+# Utility meters that reset daily to track daily energy consumption per device
+#-----------------------------------------------------------------------------
+
+utility_meter:
+  #---------------------------------------------------------------------------
+  # Z-Wave Appliances (use _electric_consumption_kwh sensors)
+  #---------------------------------------------------------------------------
+  
+  # Upstairs Washer (Z-Wave)
+  # Note: Verify this sensor exists - might be sensor.upstairs_washing_machine_electric_consumption_kwh
+  upstairs_washer_daily_energy:
+    name: "Upstairs Washer Daily Energy"
+    source: sensor.upstairs_washing_machine_electric_consumption_kwh
+    cycle: daily
+    always_available: true
+
+  # Downstairs Washer (Z-Wave) - Main Level
+  downstairs_washer_daily_energy:
+    name: "Downstairs Washer Daily Energy"
+    source: sensor.main_level_washing_machine_electric_consumption_kwh
+    cycle: daily
+    always_available: true
+
+  # Downstairs Dryer (Z-Wave) - Main Level
+  downstairs_dryer_daily_energy:
+    name: "Downstairs Dryer Daily Energy"
+    source: sensor.main_level_drying_machine_electric_consumption_kwh
+    cycle: daily
+    always_available: true
+
+  #---------------------------------------------------------------------------
+  # Zigbee Smart Plugs (use _summation_delivered sensors)
+  #---------------------------------------------------------------------------
+
+  # Upstairs Dryer (Zigbee smart plug)
+  upstairs_dryer_daily_energy:
+    name: "Upstairs Dryer Daily Energy"
+    source: sensor.upstairs_drying_machine_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # John's Desk
+  johns_desk_daily_energy:
+    name: "John's Desk Daily Energy"
+    source: sensor.johns_desk_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Cristina's Desk
+  cristinas_desk_daily_energy:
+    name: "Cristina's Desk Daily Energy"
+    source: sensor.cristinas_desk_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 9 - Big Xmas Tree
+  smart_plug_9_daily_energy:
+    name: "Big Xmas Tree Daily Energy"
+    source: sensor.smart_plug_9_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 15 - Kids Playroom Xmas Light 1
+  smart_plug_15_daily_energy:
+    name: "Kids Playroom Xmas 1 Daily Energy"
+    source: sensor.smart_plug_15_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 16 - Kids Playroom Xmas Light 2
+  smart_plug_16_daily_energy:
+    name: "Kids Playroom Xmas 2 Daily Energy"
+    source: sensor.smart_plug_16_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 17 - Kids Playroom Xmas Light 3
+  smart_plug_17_daily_energy:
+    name: "Kids Playroom Xmas 3 Daily Energy"
+    source: sensor.smart_plug_17_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 18 - Kids Playroom Xmas Light 4
+  smart_plug_18_daily_energy:
+    name: "Kids Playroom Xmas 4 Daily Energy"
+    source: sensor.smart_plug_18_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 2 - Nino's Heater
+  smart_plug_2_daily_energy:
+    name: "Nino's Heater Daily Energy"
+    source: sensor.smart_plug_2_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 1 - Nino's Humidifier
+  smart_plug_1_daily_energy:
+    name: "Nino's Humidifier Daily Energy"
+    source: sensor.smart_plug_1_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 5 - Jumpy House
+  smart_plug_5_daily_energy:
+    name: "Jumpy House Daily Energy"
+    source: sensor.smart_plug_5_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 6 - Upstairs Guest Bedroom
+  smart_plug_6_daily_energy:
+    name: "Guest Bedroom Daily Energy"
+    source: sensor.smart_plug_6_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 12 - Garment Steamer
+  smart_plug_12_daily_energy:
+    name: "Garment Steamer Daily Energy"
+    source: sensor.smart_plug_12_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 13 - Hair Straightener
+  smart_plug_13_daily_energy:
+    name: "Hair Straightener Daily Energy"
+    source: sensor.smart_plug_13_summation_delivered
+    cycle: daily
+    always_available: true
+
+  # Smart Plug 14 - Family Room Xmas Tree
+  smart_plug_14_daily_energy:
+    name: "Family Room Xmas Tree Daily Energy"
+    source: sensor.smart_plug_14_summation_delivered
+    cycle: daily
+    always_available: true
