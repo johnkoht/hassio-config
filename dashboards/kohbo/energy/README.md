@@ -4,6 +4,32 @@ Real-time energy monitoring with dynamic forecasting based on historical usage p
 
 ---
 
+## File Structure
+
+```
+energy/
+├── energy.yaml              # Main dashboard page (includes partials)
+├── README.md                # This file
+└── partials/                # Reusable card sections
+    ├── todays_overview.yaml    # Hero card, stats, 24h chart
+    ├── energy_history.yaml     # Period comparisons, timeframe tabs, history charts
+    ├── active_devices.yaml     # Devices currently using power
+    ├── top_consumers.yaml      # Daily energy usage by device
+    └── settings_popup.yaml     # Settings and automation toggles
+```
+
+### Partials
+
+Partials are card collections that are `!include`d into the main page. They're organized by section:
+
+- **todays_overview.yaml** - Today's energy overview with real-time stats, forecast, and 24h chart
+- **energy_history.yaml** - Historical comparisons with timeframe selector (week/30 days/weekly/monthly)
+- **active_devices.yaml** - Live view of devices currently drawing power (>5W threshold)
+- **top_consumers.yaml** - Devices ranked by daily energy consumption
+- **settings_popup.yaml** - Energy-related automation toggles
+
+---
+
 ## Stat Cards
 
 | Card | Sensor | Unit | Meaning |

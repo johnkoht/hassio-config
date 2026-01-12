@@ -1,0 +1,538 @@
+---
+description: Rules for creating and maintaining Home Assistant dashboard components
+globs: dashboards/**/*
+---
+
+# Dashboard Development Rules
+
+> These rules apply to files in `/dashboards/` and guide the creation of Home Assistant dashboard components.
+
+---
+
+## Folder Structure
+
+```
+dashboards/
+├── kohbo/                    # Main dashboard views
+│   ├── kohbo.yaml           # Dashboard entry point (loads templates, defines views)
+│   ├── home/                # Home page and related popups
+│   ├── rooms/               # Room-specific views
+│   │   ├── main_floor/      # Main floor rooms
+│   │   ├── upper_floor/     # Upper floor rooms
+│   │   ├── laundry/         # Utility rooms
+│   │   └── partials/        # Reusable room card collections
+│   ├── security/            # Security views and camera pages
+│   ├── climate/             # Climate/thermostat views
+│   ├── energy/              # Energy monitoring
+│   ├── holidays/            # Holiday-specific dashboards
+│   ├── more/                # Additional pages (people, lights)
+│   └── shared/              # Shared popups and components
+│
+└── templates/               # Reusable templates
+    ├── button_cards/        # Custom button card templates
+    │   ├── base/            # Base templates (kohbo_default, kohbo_entity)
+    │   ├── cards/           # Component templates by category
+    │   │   ├── devices/     # Device entity templates
+    │   │   ├── aqi/         # Air quality indicator templates
+    │   │   ├── shared/      # Common card templates (chips, pills)
+    │   │   ├── rooms/       # Room-specific card templates
+    │   │   ├── security/    # Security card templates
+    │   │   └── laundry/     # Laundry-specific templates
+    │   └── people/          # Person/avatar templates
+    │
+    ├── decluttering/        # Decluttering card templates
+    │   ├── cards/           # Generic composed cards
+    │   ├── climate/         # Climate/thermostat popups
+    │   ├── layout/          # Page layout components (toolbars)
+    │   ├── lights/          # Light control templates
+    │   ├── room/            # Room card compositions
+    │   └── security/        # Camera/security popups
+    │
+    └── includes/            # CSS styles and reusable snippets
+        ├── card_mod/        # Card mod styles by category
+        │   ├── base/        # Base styles
+        │   ├── chips/       # Chip-specific styles
+        │   ├── climate_card/# Climate card styles
+        │   └── entities/    # Entity row styles
+        ├── layouts/         # Page layout configurations
+        ├── people/          # People-related styles
+        ├── rooms/           # Room-related styles
+        └── security/        # Security-related styles
+```
+
+---
+
+## Template Organization Guidelines
+
+### Naming: The `kohbo_` Prefix
+
+The `kohbo_` prefix is a **namespace identifier**, not a domain indicator. It marks templates as part of this dashboard system. When determining organization, **ignore the `kohbo_` prefix** and look at the next part of the name.
+
+Examples:
+- `kohbo_energy_stat_bar` → domain is `energy`
+- `kohbo_device_entity` → domain is `devices`
+- `kohbo_chip_card` → generic/shared (no domain after prefix)
+
+### When to Create a Folder
+
+**Default to folders for domain-specific work.** If you're creating a card for a specific domain (energy, security, climate, etc.), put it in a folder from the start.
+
+```
+✅ Creating energy cards? → button_cards/cards/energy/
+✅ Creating security cards? → button_cards/cards/security/
+✅ Creating a generic chip? → button_cards/cards/shared/
+```
+
+**Why?** It's easier to organize from the beginning than to migrate later. Folders also signal to future developers (and AI) that these cards are related.
+
+### What Goes Where
+
+| Location | Use For | Examples |
+|----------|---------|----------|
+| `cards/<domain>/` | Domain-specific components | `energy/`, `security/`, `aqi/` |
+| `cards/shared/` | Generic, reusable components used across multiple domains | `kohbo_chip_card`, `kohbo_header_chip_card` |
+| `cards/` (root) | Truly generic single-file components OR legacy cards pending migration | `section_title`, `empty_column` |
+| `base/` | Foundation templates that others extend | `kohbo_default`, `kohbo_entity` |
+
+### Decision Flow
+
+```
+Creating a new button card template?
+│
+├─► Is it for a specific domain (energy, security, laundry, etc.)?
+│   │
+│   └─► YES → Put in cards/<domain>/ (create folder if needed)
+│
+├─► Is it a generic component reusable across domains?
+│   │
+│   └─► YES → Put in cards/shared/
+│
+├─► Is it a base template that others will extend?
+│   │
+│   └─► YES → Put in base/
+│
+└─► Otherwise → Put in cards/ root (rare)
+```
+
+### Migration Rule
+
+If you notice 2+ related cards at the root level that share a domain prefix (after `kohbo_`), migrate them to a folder:
+
+```
+# Before (scattered at root)
+cards/kohbo_energy_stat_bar.yaml
+cards/kohbo_energy_stat_card.yaml
+cards/kohbo_energy_stat_comparison.yaml
+
+# After (organized)
+cards/energy/kohbo_energy_stat_bar.yaml
+cards/energy/kohbo_energy_stat_card.yaml
+cards/energy/kohbo_energy_stat_comparison.yaml
+```
+
+### Same Rules Apply to Decluttering Templates
+
+The `decluttering/` folder follows the same organization pattern:
+- `climate/` - Climate-related composed cards
+- `security/` - Security popups and cards
+- `room/` - Room-level compositions
+- `layout/` - Generic layout components (toolbars)
+- `cards/` - Generic composed cards
+
+---
+
+## Custom Cards Used
+
+Primary cards (use these):
+- **custom:button-card** - Primary UI component for everything
+- **custom:decluttering-card** - Template instantiation with variables
+- **custom:stack-in-card** - Composing cards without extra card styling
+- **custom:bubble-card** - Popups and slide-up panels
+- **custom:mod-card** - Applying card_mod styles to card groups
+- **custom:vertical-layout** - Page layout type
+
+Secondary cards:
+- **custom:mini-graph-card** - Temperature/sensor graphs
+- **custom:navbar-card** - Bottom navigation bar
+- **custom:template-entity-row** - Custom entity rows in entities cards
+- **custom:mushroom-chips-card** - Horizontal chip layouts
+- **custom:advanced-camera-card** - Camera feeds with go2rtc
+- **custom:apexcharts-card** - Data visualization charts
+
+---
+
+## Template Types and When to Use Each
+
+### Button Card Templates
+Location: `/dashboards/templates/button_cards/`
+
+**Use for:**
+- Single card UI components with dynamic styling
+- State-based logic using JavaScript (`[[[  ]]]` syntax)
+- Template inheritance (one template extending another)
+- Atomic components: chips, device cards, person avatars, section titles
+
+**Naming convention:** `kohbo_<component_name>.yaml`
+
+**Example button card template:**
+```yaml
+kohbo_chip_card:
+  size: 22px
+  show_state: true
+  layout: icon_state
+  styles:
+    card:
+      - padding: 0 14px
+      - height: 45px
+      - border-radius: 23px
+```
+
+**Example usage:**
+```yaml
+- type: custom:button-card
+  template: kohbo_chip_card
+  entity: sensor.temperature
+  icon: mdi:thermometer
+```
+
+### Decluttering Card Templates
+Location: `/dashboards/templates/decluttering/`
+
+**Use for:**
+- Composing multiple cards into reusable units
+- Variable substitution for entities and config (`[[variable]]` syntax)
+- Page-level components: toolbars, popups, room overviews
+- Cards that include conditionals or complex layouts
+
+**Naming convention:** `<component_name>.yaml` (template name matches filename without .yaml)
+
+**Example decluttering template:**
+```yaml
+room_page_top_toolbar:
+  card:
+    type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
+          tap_action:
+            action: navigate
+            navigation_path: '[[navigation_path]]'
+```
+
+**Example usage:**
+```yaml
+- type: custom:decluttering-card
+  template: room_page_top_toolbar
+  variables:
+    - name: Kitchen
+    - navigation_path: /dashboard-kohbo/rooms-main-floor
+    - settings_path: '#kitchen_settings_popup'
+```
+
+### Includes (Styles)
+Location: `/dashboards/templates/includes/`
+
+**Use for:**
+- Reusable CSS styles via card_mod
+- Layout configurations
+- Shared style snippets
+
+**Usage with !include:**
+```yaml
+card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+```
+
+---
+
+## Naming Conventions
+
+### Templates
+- `kohbo_` prefix for custom dashboard-specific templates
+- Generic templates (like `section_title`, `empty_column`) have no prefix
+- Descriptive names: `kohbo_device_entity`, `kohbo_thermostat_entity`
+
+### Views/Pages
+- Path format: `rooms-<room-name>` (e.g., `rooms-kitchen`)
+- Title matches room/page name
+- Use `subview: true` for pages not in main navigation
+
+### Entities in Templates
+- Use semantic variable names: `[[entity]]`, `[[temperature_sensor]]`, `[[navigation_path]]`
+- Group related variables: `[[room_name]]`, `[[room_devices]]`
+
+---
+
+## File Types in kohbo/
+
+The `kohbo/` folder contains different types of files. Understanding the distinction helps with organization:
+
+### Pages (Main Navigation)
+Top-level views that appear in the navbar.
+- Location: `kohbo/<section>/<section>.yaml`
+- Examples: `home/home.yaml`, `security/security.yaml`, `climate/climate.yaml`
+- Has `subview: false` (or omitted)
+
+### Subviews (Detail Pages)
+Pages navigated to from main pages, not directly in navbar.
+- Location: `kohbo/<section>/<page>.yaml` or `kohbo/rooms/<floor>/<room>.yaml`
+- Examples: `rooms/main_floor/kitchen.yaml`, `security/pages/house_locks.yaml`
+- Has `subview: true`
+- Typically has back navigation in toolbar
+
+### Popups (Hash-Based Overlays)
+Bubble-card popups triggered by `#hash` navigation. Can be embedded in any page.
+- Location: Within page files OR in `kohbo/shared/` for reusable popups
+- Examples: `#main_floor_thermostat`, `#kitchen_settings_popup`
+- Shared popups: `kohbo/shared/main_floor_vacuum_popup.yaml`
+
+### Partials (Reusable Card Collections)
+Card collections `!include`d into multiple pages. Not templates—they're specific card instances.
+- Location: `kohbo/<section>/partials/` or `kohbo/rooms/partials/`
+- Examples: `rooms/partials/main_floor_room_cards.yaml`
+- Use when same cards appear in multiple views
+
+### Decision Flow
+
+```
+Creating a new file in kohbo/?
+│
+├─► Is it a main nav item? → Put in <section>/<section>.yaml
+│
+├─► Is it a detail/room page? → Put in <section>/<page>.yaml with subview: true
+│
+├─► Is it a popup used by multiple pages? → Put in kohbo/shared/
+│
+├─► Is it a popup used by one page? → Define inline in that page
+│
+└─► Is it a card collection to reuse? → Put in <section>/partials/
+```
+
+---
+
+## Standard Page Structure
+
+Every room/page view follows this structure:
+
+```yaml
+type: custom:vertical-layout
+title: Room Name
+path: rooms-room-name
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 1. TOP TOOLBAR
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Room Name
+      - navigation_path: /dashboard-kohbo/parent-page
+      - settings_path: '#room_settings_popup'
+
+  # 2. ROOM OVERVIEW (if applicable)
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - occupancy: input_boolean.room_occupied
+      - mode: input_select.room
+      - ble_presence: sensor.room_people_list
+
+  # 3. CLIMATE SECTION (if applicable)
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.room_temperature
+      # ... other climate variables
+
+  # 4. CONTENT SECTIONS
+  # Each section: title + content
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+  # Light cards...
+
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Device cards...
+
+  # 5. QUICK SETTINGS
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      - entity: input_boolean.room_setting
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  # 6. POPUPS (at end, before navbar)
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#popup_name'
+        # ...
+
+  # 7. NAVBAR (always last)
+  - !include /config/dashboards/templates/includes/navbar.yaml
+```
+
+---
+
+## Popup Pattern
+
+Standard popup structure using bubble-card:
+
+```yaml
+- type: vertical-stack
+  cards:
+    # Bubble card configuration (always first)
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup_hash'
+      close_by_clicking_outside: true
+      styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+      margin_top_mobile: calc(100vh - 825px)
+      margin_top_desktop: calc(100vh - 825px)
+    
+    # Title
+    - type: custom:button-card
+      template: kohbo_popup_page_title
+      name: Popup Title
+    
+    # Content cards...
+```
+
+**Navigate to popup:**
+```yaml
+tap_action:
+  action: navigate
+  navigation_path: '#popup_hash'
+```
+
+---
+
+## Boolean Toggle Pattern
+
+iOS-style toggle switches use the `kohbo_boolean_entity_layout.yaml` include:
+
+```yaml
+- type: entities
+  entities:
+    - entity: input_boolean.setting_name
+      icon: kohbo:kohbo-icon-name
+      card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+      secondary_info: last-changed
+      state_color: true
+```
+
+---
+
+## Device Cards
+
+Use the appropriate device template for consistent styling:
+
+| Template | Use For |
+|----------|---------|
+| `kohbo_device_entity` | Generic devices |
+| `kohbo_device_air_purifier_entity` | Air purifiers |
+| `kohbo_device_smart_plug_entity` | Smart plugs |
+| `kohbo_device_door_entity` | Door sensors |
+| `kohbo_device_window_entity` | Window sensors |
+| `kohbo_device_leak_entity` | Leak sensors |
+| `kohbo_device_lock_entity` | Locks |
+| `kohbo_thermostat_entity` | Thermostats |
+
+**Example:**
+```yaml
+- type: grid
+  columns: 2
+  square: false
+  cards:
+    - type: custom:button-card
+      entity: binary_sensor.kitchen_door
+      name: Kitchen Door
+      template: kohbo_device_door_entity
+```
+
+---
+
+## Theme Colors Reference
+
+Use theme variables, not hardcoded colors:
+
+| Variable | Use For |
+|----------|---------|
+| `var(--primary-color)` | Active states, primary accent (#59A5D8) |
+| `var(--accent-color)` | Warnings, highlights (#FFD166) |
+| `var(--success-color)` | Success states (#06D6A0) |
+| `var(--error-color)` | Errors, alerts (#ED4747) |
+| `var(--light-grey-color)` | Inactive states (#ADB5BD) |
+| `var(--primary-text-color)` | Main text (#F8F9FA) |
+| `var(--secondary-text-color)` | Secondary text (#CED4DA) |
+| `var(--dark-primary-color)` | Card backgrounds (#343A40) |
+| `var(--darker-primary-color)` | Secondary backgrounds (#2D3339) |
+| `var(--divider-color)` | Borders, dividers (#495057) |
+
+---
+
+## Include Paths
+
+All `!include` statements use the Home Assistant container path `/config/`:
+
+```yaml
+# Correct
+!include /config/dashboards/templates/includes/navbar.yaml
+
+# Wrong
+!include /dashboards/templates/includes/navbar.yaml
+```
+
+---
+
+## Template Loading
+
+Templates are loaded in `kohbo.yaml`:
+
+```yaml
+button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
+decluttering_templates: !include_dir_merge_named /config/dashboards/templates/decluttering
+```
+
+This recursively loads all YAML files in those directories, using the first key in each file as the template name.
+
+---
+
+## Custom Icons
+
+This dashboard uses a custom `kohbo:kohbo-*` icon set. Common icons:
+- `kohbo:kohbo-dashboard` - Home/dashboard
+- `kohbo:kohbo-rooms` - Rooms
+- `kohbo:kohbo-security` - Security
+- `kohbo:kohbo-climate` - Climate
+- `kohbo:kohbo-light` / `kohbo:kohbo-light-2` - Lights
+- `kohbo:kohbo-door-open` / `kohbo:kohbo-door-closed` - Doors
+- `kohbo:kohbo-window-open` / `kohbo:kohbo-window-closed` - Windows
+- `kohbo:kohbo-notification` - Notifications
+- `kohbo:kohbo-announcement` - Announcements
+- `kohbo:kohbo-room-occupancy` - Occupancy
+
+---
+
+## Common Mistakes to Avoid
+
+1. **Don't hardcode colors** - Use theme variables
+2. **Don't forget `!include` paths** - Must start with `/config/`
+3. **Don't mix template syntaxes** - Use `[[[  ]]]` in button cards, `[[  ]]` in decluttering
+4. **Don't forget `template:` key** - Button card templates need this to extend base templates
+5. **Don't forget navbar** - Every page should include the navbar at the end
+6. **Don't forget popup hash** - Popups need unique `#hash` values

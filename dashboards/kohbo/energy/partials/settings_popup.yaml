@@ -1,0 +1,33 @@
+#===========================================================================
+# ENERGY SETTINGS POPUP
+# Settings and automation toggles for energy management
+#===========================================================================
+
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#energy_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 425px)
+    margin_top_desktop: calc(100vh - 425px)
+    
+  # Title
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Settings
+
+  # Automations
+  - type: custom:button-card
+    template: section_title
+    name: Automations
+  - type: entities
+    entities:
+      # High energy price automations
+      - entity: input_boolean.climate_energy_price_automations
+        name: High Energy Price Automations
+        icon: kohbo:kohbo-light-2
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
