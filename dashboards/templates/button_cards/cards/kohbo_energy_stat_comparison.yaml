@@ -28,7 +28,10 @@ kohbo_energy_stat_comparison:
       [[[
         const value = parseFloat(entity?.state || 0);
         const unit = variables.unit_label || 'kWh';
-        return `<span style="font-size:26px;font-weight:600;color:var(--primary-text-color);">${value.toFixed(1)}</span><span style="font-size:12px;color:var(--secondary-text-color);margin-left:4px;">${unit}</span>`;
+        const type = variables.comparison_type || 'daily';
+        // Round up for weekly/monthly (larger numbers), keep decimal for daily
+        const displayValue = (type === 'weekly' || type === 'monthly') ? Math.ceil(value) : value.toFixed(1);
+        return `<span style="font-size:26px;font-weight:600;color:var(--primary-text-color);">${displayValue}</span><span style="font-size:12px;color:var(--secondary-text-color);margin-left:4px;">${unit}</span>`;
       ]]]
     c: |
       [[[

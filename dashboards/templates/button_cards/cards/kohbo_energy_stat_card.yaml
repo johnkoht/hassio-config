@@ -25,7 +25,7 @@ kohbo_energy_stat_card:
     card:
       - background: transparent
       - padding: 0 16px
-      - margin: 12px 0
+      - margin: 16px 0
       - box-shadow: none
       - border-right: |
           [[[

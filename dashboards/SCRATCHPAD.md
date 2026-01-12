@@ -5,6 +5,30 @@
 
 ---
 
+## Current Working Items
+
+> 🚧 **Temporary section** - Items parked from the current working session.  
+> Clear this section when the feature/session is complete.
+
+*No items currently parked.*
+
+<!-- 
+Template for parked items:
+
+### Parked Tasks (from [context/date])
+
+1. **Task name**
+   - Description: What needs to be done
+   - Initial thoughts: Any context or ideas discussed
+   - Status: parked
+
+2. **Another task**
+   - Description: ...
+   - Status: parked
+-->
+
+---
+
 ## Decision Guide: When to Use What
 
 ### Button Card Templates vs Decluttering Cards
@@ -219,6 +243,8 @@ Available device entity templates (extend `kohbo_device_entity`):
 - [ ] Consider creating a `room_template` that combines common room patterns
 - [ ] Standardize popup heights across different popup types
 - [ ] Create a button card template for tile-style light controls
+- [ ] Refactor weather popup card headers to use `kohbo_card_header` template
+- [ ] **Revisit mini graphs for Today's Overview stats** - Explore better visualization options (sparklines, mini gauges, or improved deviation charts) for Real Time, Price, and Forecast stat cards
 
 ### Notes for AI Assistant
 - The `kohbo_` prefix indicates custom templates specific to this dashboard

@@ -5,7 +5,7 @@
 # Adds: Unit label (u) + Segmented bar indicator (b)
 #
 # Additional Variables:
-#   - bar_mode: 'realtime' | 'today' | 'forecast' (determines calculation logic)
+#   - bar_mode: 'realtime' | 'price' | 'forecast' | 'forecast_deviation' | 'today' (determines calculation logic)
 #------------------------------------------------------------------------------
 kohbo_energy_stat_bar:
   template: kohbo_energy_stat_card
@@ -69,15 +69,92 @@ kohbo_energy_stat_bar:
           else if (ratio <= 1.1) color = 'var(--accent-color)';
           else if (ratio <= 1.3) color = 'var(--orange-color)';
           else color = 'var(--error-color)';
+        } else if (mode === 'price') {
+          // Price mode: 0-12 cents scale, color based on tier
+          const price = parseFloat(states['sensor.comed_current_hour_average_price']?.state || 0);
+          pct = Math.min((price / 12) * 100, 100);
+          if (price < 3) color = 'var(--success-color)';
+          else if (price < 6) color = 'var(--accent-color)';
+          else if (price < 9) color = 'var(--orange-color)';
+          else color = 'var(--error-color)';
+        } else if (mode === 'forecast_deviation') {
+          // Deviation mode: center baseline, green left (under), red right (over)
+          // This mode uses a different rendering approach - handled below
         }
         
         const empty = 'var(--divider-color)';
-        let output = '<div style="display:flex;gap:3px;width:100%;height:8px;">';
-        for (let i = 1; i <= 10; i++) {
-          const filled = pct >= (i * 10);
-          const bg = filled ? color : empty;
-          output += `<div style="flex:1;height:100%;border-radius:2px;background:${bg};transition:background 0.3s ease;"></div>`;
+        let output = '';
+        
+        if (mode === 'forecast_deviation') {
+          // Deviation bar: center (segment 5) is baseline, left=green, right=red
+          const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
+          const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 1);
+          const deviation = (forecast - expected) / expected; // -1.0 to +1.0 (or more)
+          
+          // Map deviation to segments: -40% to +40% range, each segment = 8% deviation
+          // Segments 1-4: green (under budget)
+          // Segment 5: baseline (with visual indicator)
+          // Segments 6-10: red (over budget)
+          const maxDeviation = 0.4; // 40% max deviation for visual scale
+          const segmentsUnder = Math.max(0, Math.min(4, Math.round((Math.abs(Math.min(0, deviation)) / maxDeviation) * 4)));
+          const segmentsOver = Math.max(0, Math.min(5, Math.round((Math.max(0, deviation) / maxDeviation) * 5)));
+          
+          // Determine color intensity based on deviation magnitude
+          const absDeviation = Math.abs(deviation);
+          let greenColor = 'var(--success-color)';
+          let redColor = 'var(--error-color)';
+          
+          if (absDeviation > 0.3) {
+            // High deviation - use full intensity
+            greenColor = 'var(--success-color)';
+            redColor = 'var(--error-color)';
+          } else if (absDeviation > 0.15) {
+            // Medium deviation - use accent/orange
+            greenColor = 'var(--success-color)';
+            redColor = 'var(--orange-color)';
+          } else {
+            // Low deviation - use lighter colors
+            greenColor = 'var(--success-color)';
+            redColor = 'var(--accent-color)';
+          }
+          
+          // Build segments
+          let segmentsHtml = '';
+          for (let i = 1; i <= 10; i++) {
+            let bg = empty;
+            let borderStyle = '';
+            
+            if (i === 5) {
+              // Center segment - baseline with visual indicator
+              // Use a lighter grey with a border to make it stand out as the baseline
+              bg = 'var(--light-grey-color)';
+              borderStyle = 'border: 1px solid rgba(248, 249, 250, 0.6);'; // primary-text-color with opacity
+            } else if (i <= 4 && i > (4 - segmentsUnder)) {
+              // Left side - green (under budget)
+              bg = greenColor;
+            } else if (i >= 6 && i < (6 + segmentsOver)) {
+              // Right side - red (over budget)
+              bg = redColor;
+            }
+            
+            segmentsHtml += `<div style="flex:1;height:100%;border-radius:2px;background:${bg};${borderStyle}transition:background 0.3s ease;"></div>`;
+          }
+          
+          // Wrap in container with vertical baseline indicator
+          output = `<div style="position:relative;display:flex;gap:3px;width:100%;height:8px;">
+            ${segmentsHtml}
+            <div style="position:absolute;left:calc(50% - 1px);top:-1px;bottom:-1px;width:2px;background:var(--primary-text-color);opacity:0.5;pointer-events:none;border-radius:1px;z-index:1;"></div>
+          </div>`;
+        } else {
+          // Standard bar modes (realtime, price, forecast, today)
+          output = '<div style="display:flex;gap:3px;width:100%;height:8px;">';
+          for (let i = 1; i <= 10; i++) {
+            const filled = pct >= (i * 10);
+            const bg = filled ? color : empty;
+            output += `<div style="flex:1;height:100%;border-radius:2px;background:${bg};transition:background 0.3s ease;"></div>`;
+          }
+          output += '</div>';
         }
-        output += '</div>';
+        
         return output;
       ]]]

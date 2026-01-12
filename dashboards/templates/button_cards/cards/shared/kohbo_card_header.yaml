@@ -1,0 +1,29 @@
+#------------------------------------------------------------------------------
+# Card Header Template
+#
+# Use for card-level headers (e.g., "Energy History", "Allergies", "Horizon")
+# NOT for section titles within cards - use kohbo_card_section_title for those
+#
+# Usage:
+#   - type: custom:button-card
+#     template: kohbo_card_header
+#     name: Today's Overview
+#------------------------------------------------------------------------------
+kohbo_card_header:
+  show_icon: false
+  show_state: false
+  show_name: true
+  styles:
+    card:
+      - background: transparent
+      - box-shadow: none
+      - padding: 16px 16px 8px
+    name:
+      - font-size: 12px
+      - font-weight: 600
+      - color: var(--secondary-text-color)
+      - text-transform: uppercase
+      - letter-spacing: 0.5px
+      - justify-self: start
+  tap_action:
+    action: none

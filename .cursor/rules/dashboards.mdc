@@ -7,6 +7,11 @@ globs: dashboards/**/*
 
 > These rules apply to files in `/dashboards/` and guide the creation of Home Assistant dashboard components.
 
+**Working Document:** Use `dashboards/SCRATCHPAD.md` for:
+- Parking tasks from multi-item requests (in the "Current Working Items" section)
+- Capturing nuances and patterns during development
+- Notes and ideas for future consideration
+
 ---
 
 ## Folder Structure
