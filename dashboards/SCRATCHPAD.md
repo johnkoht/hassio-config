@@ -10,22 +10,50 @@
 > 🚧 **Temporary section** - Items parked from the current working session.  
 > Clear this section when the feature/session is complete.
 
-*No items currently parked.*
+### Parked Tasks (from Energy Dashboard Review - Jan 2026)
 
-<!-- 
-Template for parked items:
-
-### Parked Tasks (from [context/date])
-
-1. **Task name**
-   - Description: What needs to be done
-   - Initial thoughts: Any context or ideas discussed
+1. **Fix `sensor.whole_home_energy_trend` and `sensor.whole_home_energy_trend_percent`**
+   - Location: `packages/energy/sensors/energy_consumption.yaml` (lines 73-100)
+   - Problem: These sensors use `sensor.whole_home_daily_energy_stats` which is broken
+   - The statistics sensor averages intermediate utility meter values (0, 1, 2...17 kWh throughout the day) instead of final daily totals, resulting in ~50% of the actual average
+   - Fix: Update to use `sensor.energy_expected_full_day` (sum of hourly baselines) instead
    - Status: parked
 
-2. **Another task**
-   - Description: ...
+2. **Energy History comparison labels** ✅ DONE
+   - Location: `dashboards/kohbo/energy/partials/energy_history.yaml` (lines 47-68)
+   - Fixed: Changed weekly/monthly labels from "vs last" to "vs expected" to match calculation
+   - Status: completed
+
+3. **Future: Implement true "vs last" comparisons using utility meter `last_period` attribute**
+   - Utility meters store the previous period's final value in `last_period` attribute:
+     - `state_attr('sensor.whole_home_energy_daily_usage', 'last_period')` = yesterday's total
+     - `state_attr('sensor.whole_home_energy_weekly_usage', 'last_period')` = last week's total  
+     - `state_attr('sensor.whole_home_energy_monthly_usage', 'last_period')` = last month's total
+   - To implement: Update `kohbo_energy_stat_comparison` template to optionally use these attributes
+   - Could add a `comparison_mode` variable: 'expected' (current) vs 'last_period' (new)
+   - Status: parked (for future enhancement)
+
+4. **Orphaned energy sensors (keeping for now)**
+   - Location: `packages/energy/sensors/energy_consumption.yaml`
+   - These sensors are defined but not currently used in dashboards:
+     - `sensor.energy_today_estimated`
+     - `sensor.energy_yesterday_total`
+     - `sensor.energy_daily_change_percent`
+     - `sensor.energy_this_week_projected`
+     - `sensor.energy_last_week_total`
+     - `sensor.energy_weekly_change_percent`
+     - `sensor.energy_this_month_projected`
+     - `sensor.energy_last_month_total`
+     - `sensor.energy_monthly_change_percent`
+   - Note: These use the broken `whole_home_daily_energy_stats` sensor - if we want to use them, they need to be fixed first
+   - Decision: Keep for now, may be useful for automations or future dashboard features
    - Status: parked
--->
+
+5. **Broken statistics sensors (need fixing before use)**
+   - `sensor.whole_home_daily_energy_stats` - averages intermediate values instead of final daily totals
+   - `sensor.energy_last_month_avg` - same issue
+   - These could be fixed by using the utility meter `last_period` approach instead
+   - Status: parked
 
 ---
 
@@ -365,3 +393,33 @@ Less common but important:
 - **custom:advanced-camera-card** - Camera feeds
 - **custom:mushroom-chips-card** - Chip-style buttons
 - **custom:apexcharts-card** - Energy/data charts
+
+---
+
+## mini-graph-card CSS Variables Limitation
+
+**IMPORTANT:** `mini-graph-card` does **NOT** support CSS variables in `color_thresholds`.
+
+**Issue:** CSS variables (e.g., `var(--success-color)`) in `color_thresholds` render as black bars in mini-graph-card v0.13.0+.
+
+**GitHub Issue:** https://github.com/kalkih/mini-graph-card/issues/1259
+
+**Workaround:** Use hardcoded hex values instead of CSS variables in `color_thresholds`.
+
+**Pattern:**
+```yaml
+color_thresholds:
+  # Use hardcoded hex values (not CSS variables)
+  - color: "#06D6A0"  # var(--success-color)
+    value: 100
+  - color: "#FFD166"  # var(--accent-color)
+    value: 500
+  - color: "#E36001"  # var(--orange-color)
+    value: 1000
+  - color: "#ED4747"  # var(--error-color)
+    value: 2000
+```
+
+**Note:** Include comments indicating the CSS variable name for reference. When the bug is fixed, we can update to use CSS variables.
+
+**Reference theme values:** See `themes/kohbo/kohbo.yaml` for hex values that match CSS variables.

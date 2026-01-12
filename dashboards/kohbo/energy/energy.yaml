@@ -42,15 +42,159 @@ cards:
 
 
   #===========================================================================
-  # ACTIVE DEVICES
+  # DEVICE ENERGY GRID
   #===========================================================================
-  - !include /config/dashboards/kohbo/energy/partials/active_devices.yaml
+  - type: custom:button-card
+    template: section_title
+    name: Device Energy Usage
 
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Downstairs Washer (Z-Wave)
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Downstairs Washer
+          - entity: sensor.main_level_washing_machine_electric_consumption_w
+          - icon: mdi:washing-machine
+      
+      # Downstairs Dryer (Z-Wave)
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Downstairs Dryer
+          - entity: sensor.main_level_drying_machine_electric_consumption_w
+          - icon: mdi:tumble-dryer
 
-  #===========================================================================
-  # TOP CONSUMERS TODAY
-  #===========================================================================
-  - !include /config/dashboards/kohbo/energy/partials/top_consumers.yaml
+      # Upstairs Washer (Z-Wave)
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Upstairs Washer
+          - entity: sensor.washing_machine_electric_consumption_w
+          - icon: mdi:washing-machine
+
+      # Upstairs Dryer (Zigbee)
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Upstairs Dryer
+          - entity: sensor.upstairs_drying_machine_active_power
+          - icon: mdi:tumble-dryer
+
+      # John's Desk
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: John's Desk
+          - entity: sensor.smart_plug_11_active_power
+          - icon: mdi:laptop
+
+      # Cristina's Desk
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Cristina's Desk
+          - entity: sensor.smart_plug_22_power
+          - icon: mdi:laptop
+
+      # Nino's Heater
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Nino's Heater
+          - entity: sensor.smart_plug_2_active_power
+          - icon: mdi:radiator
+
+      # Nino's Humidifier
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Nino's Humidifier
+          - entity: sensor.smart_plug_1_active_power
+          - icon: mdi:air-humidifier
+
+      # Big Xmas Tree
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Big Xmas Tree
+          - entity: sensor.smart_plug_9_active_power
+          - icon: mdi:tree-outline
+
+      # # Family Room Xmas Tree
+      # - type: custom:decluttering-card
+      #   template: kohbo_device_energy_card
+      #   variables:
+      #     - name: Family Room Xmas Tree
+      #     - entity: sensor.smart_plug_14_active_power
+      #     - icon: mdi:tree-outline
+
+      # Kids Playroom Xmas Light 1
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Playroom Xmas 1
+          - entity: sensor.smart_plug_15_power
+          - icon: mdi:lightbulb-outline
+
+      # Kids Playroom Xmas Light 2
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Playroom Xmas 2
+          - entity: sensor.smart_plug_16_power
+          - icon: mdi:lightbulb-outline
+
+      # Kids Playroom Xmas Light 3
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Playroom Xmas 3
+          - entity: sensor.smart_plug_17_power
+          - icon: mdi:lightbulb-outline
+
+      # # Kids Playroom Xmas Light 4
+      # - type: custom:decluttering-card
+      #   template: kohbo_device_energy_card
+      #   variables:
+      #     - name: Playroom Xmas 4
+      #     - entity: sensor.smart_plug_18_active_power
+      #     - icon: mdi:lightbulb-outline
+
+      # Jumpy House
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Jumpy House
+          - entity: sensor.smart_plug_5_power
+          - icon: mdi:castle
+
+      # Guest Bedroom
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Guest Bedroom
+          - entity: sensor.smart_plug_6_active_power
+          - icon: mdi:bed
+
+      # Garment Steamer
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Garment Steamer
+          - entity: sensor.smart_plug_12_active_power
+          - icon: mdi:iron
+
+      # Hair Straightener
+      - type: custom:decluttering-card
+        template: kohbo_device_energy_card
+        variables:
+          - name: Hair Straightener
+          - entity: sensor.smart_plug_13_active_power
+          - icon: mdi:hair-dryer
 
 
   #===========================================================================

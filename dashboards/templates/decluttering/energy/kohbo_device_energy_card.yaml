@@ -1,0 +1,40 @@
+#-----------------------------------------------------------------------------
+# Device Energy Card Template
+# Mini-graph card showing real-time power consumption (W) for a device
+#-----------------------------------------------------------------------------
+
+kohbo_device_energy_card:
+  default:
+    - value_1: 50
+    - value_2: 250
+    - value_3: 500
+    - value_4: 800
+  card:
+    type: custom:mini-graph-card
+    name: '[[name]]'
+    decimals: 0
+    icon: '[[icon]]'
+    points_per_hour: 2
+    hours_to_show: 24
+    color_thresholds_transition: smooth
+    color_thresholds:
+      # Green - Low power (0-100W)
+      # Note: Using hardcoded hex values due to mini-graph-card bug with CSS variables
+      # See: https://github.com/kalkih/mini-graph-card/issues/1259
+      - color: "#06D6A0"  # var(--success-color)
+        value: '[[value_1]]'
+      # Yellow - Medium power (100-500W)
+      - color: "#FFD166"  # var(--accent-color)
+        value: '[[value_2]]'
+      # Orange - High power (500-1000W)
+      - color: "#E36001"  # var(--orange-color)
+        value: '[[value_3]]'
+      # Red - Very high power (1000W+)
+      - color: "#ED4747"  # var(--error-color)
+        value: '[[value_4]]'
+    entities:
+      - entity: '[[entity]]'
+    show:
+      graph: bar
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+    animate: true

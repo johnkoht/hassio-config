@@ -39,27 +39,36 @@ kohbo_energy_stat_comparison:
         const label = variables.comparison_label || 'vs avg';
         let pct = 0;
         
+        // Use energy_expected_full_day as the baseline - this sums hourly baselines
+        // and is consistent with what the chart shows. DO NOT use whole_home_daily_energy_stats
+        // as that incorrectly averages intermediate utility meter values throughout each day.
+        const dailyBaseline = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
+        
         if (type === 'daily') {
-          const forecast = parseFloat(states['sensor.daily_home_energy_usage_forecast']?.state || 0);
-          const avg = parseFloat(states['sensor.whole_home_daily_energy_stats']?.state || 0);
-          if (avg > 0) pct = Math.round((forecast - avg) / avg * 100);
+          // Compare today's forecast to the baseline expected for today
+          const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
+          if (dailyBaseline > 0) pct = Math.round((forecast - dailyBaseline) / dailyBaseline * 100);
         } else if (type === 'weekly') {
+          // Compare this week's usage to expected baseline for the same period
           const thisWeek = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
-          const dow = new Date().getDay() || 7;
-          const dailyAvg = thisWeek / dow;
-          const projected = dailyAvg * 7;
-          const lastWeekAvg = parseFloat(states['sensor.whole_home_daily_energy_stats']?.state || 0);
-          const lastWeek = lastWeekAvg * 7;
-          if (lastWeek > 0) pct = Math.round((projected - lastWeek) / lastWeek * 100);
+          const now = new Date();
+          // Note: Utility meters typically reset on Monday (weekday 1), not Sunday
+          // getDay(): 0=Sunday, 1=Monday, ..., 6=Saturday
+          // Days elapsed since Monday: Mon=1, Tue=2, ..., Sun=7
+          const dayOfWeek = now.getDay();
+          const daysElapsed = dayOfWeek === 0 ? 7 : dayOfWeek; // Sunday = end of week (7 days)
+          
+          // Calculate expected usage for the elapsed days
+          const expectedForPeriod = dailyBaseline * daysElapsed;
+          if (expectedForPeriod > 0) pct = Math.round((thisWeek - expectedForPeriod) / expectedForPeriod * 100);
         } else if (type === 'monthly') {
           const thisMonth = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
-          const dom = new Date().getDate();
-          const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-          const dailyAvg = thisMonth / dom;
-          const projected = dailyAvg * daysInMonth;
-          const lastMonthAvg = parseFloat(states['sensor.energy_last_month_avg']?.state || states['sensor.whole_home_daily_energy_stats']?.state || 0);
-          const lastMonth = lastMonthAvg * 30;
-          if (lastMonth > 0) pct = Math.round((projected - lastMonth) / lastMonth * 100);
+          const now = new Date();
+          const dayOfMonth = now.getDate();
+          
+          // Calculate expected usage for the elapsed days
+          const expectedForPeriod = dailyBaseline * dayOfMonth;
+          if (expectedForPeriod > 0) pct = Math.round((thisMonth - expectedForPeriod) / expectedForPeriod * 100);
         }
         
         const arrow = pct > 5 ? '↑' : pct < -5 ? '↓' : '→';

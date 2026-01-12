@@ -473,20 +473,58 @@ Use the appropriate device template for consistent styling:
 
 ## Theme Colors Reference
 
-Use theme variables, not hardcoded colors:
+**REQUIRED: Always use CSS variables from the theme, never hardcode hex colors.**
 
-| Variable | Use For |
-|----------|---------|
-| `var(--primary-color)` | Active states, primary accent (#59A5D8) |
-| `var(--accent-color)` | Warnings, highlights (#FFD166) |
-| `var(--success-color)` | Success states (#06D6A0) |
-| `var(--error-color)` | Errors, alerts (#ED4747) |
-| `var(--light-grey-color)` | Inactive states (#ADB5BD) |
-| `var(--primary-text-color)` | Main text (#F8F9FA) |
-| `var(--secondary-text-color)` | Secondary text (#CED4DA) |
-| `var(--dark-primary-color)` | Card backgrounds (#343A40) |
-| `var(--darker-primary-color)` | Secondary backgrounds (#2D3339) |
-| `var(--divider-color)` | Borders, dividers (#495057) |
+The theme file defines all colors: `themes/kohbo/kohbo.yaml`
+
+**Benefits:**
+- Consistency across all dashboards
+- Easy theme-wide color changes
+- Maintains design system integrity
+
+**Common theme variables:**
+
+| Variable | Use For | Theme Value |
+|----------|---------|-------------|
+| `var(--primary-color)` | Active states, primary accent | #59A5D8 |
+| `var(--accent-color)` | Warnings, highlights | #FFD166 |
+| `var(--success-color)` | Success states | #06D6A0 |
+| `var(--error-color)` | Errors, alerts | #ED4747 |
+| `var(--orange-color)` | High/caution states | #E36001 |
+| `var(--light-grey-color)` | Inactive states | #ADB5BD |
+| `var(--primary-text-color)` | Main text | #F8F9FA |
+| `var(--secondary-text-color)` | Secondary text | #CED4DA |
+| `var(--dark-primary-color)` | Card backgrounds | #343A40 |
+| `var(--darker-primary-color)` | Secondary backgrounds | #2D3339 |
+| `var(--divider-color)` | Borders, dividers | #495057 |
+
+**Examples:**
+
+```yaml
+# ✅ CORRECT - Use CSS variables
+color_thresholds:
+  - color: var(--success-color)
+    value: 100
+  - color: var(--accent-color)
+    value: 500
+  - color: var(--error-color)
+    value: 1000
+
+# ❌ WRONG - Hardcoded hex values
+color_thresholds:
+  - color: "#06D6A0"
+    value: 100
+  - color: "#FFD166"
+    value: 500
+  - color: "#ED4747"
+    value: 1000
+```
+
+**Works in:**
+- `mini-graph-card` color_thresholds
+- `button-card` styles (CSS properties)
+- `card_mod` styles
+- JavaScript templates returning color strings
 
 ---
 
@@ -535,7 +573,7 @@ This dashboard uses a custom `kohbo:kohbo-*` icon set. Common icons:
 
 ## Common Mistakes to Avoid
 
-1. **Don't hardcode colors** - Use theme variables
+1. **Don't hardcode colors** - **ALWAYS** use CSS variables from `themes/kohbo/kohbo.yaml` (e.g., `var(--success-color)`, not `"#06D6A0"`)
 2. **Don't forget `!include` paths** - Must start with `/config/`
 3. **Don't mix template syntaxes** - Use `[[[  ]]]` in button cards, `[[  ]]` in decluttering
 4. **Don't forget `template:` key** - Button card templates need this to extend base templates

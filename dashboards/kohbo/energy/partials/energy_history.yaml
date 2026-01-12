@@ -54,7 +54,7 @@ cards:
         name: This Week
         variables:
           comparison_type: weekly
-          comparison_label: vs last
+          comparison_label: vs expected
           show_divider: true
 
       # THIS MONTH Card
@@ -64,7 +64,7 @@ cards:
         name: This Month
         variables:
           comparison_type: monthly
-          comparison_label: vs last
+          comparison_label: vs expected
           show_divider: false
 
   #-----------------------------------------------------------------------
