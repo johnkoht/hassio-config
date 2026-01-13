@@ -65,3 +65,9 @@
         entity_id: "{{ media_player }}"
     speech:
       text: "Music resumed in {{ media_player }}"
+
+  FindCristinasPhone:
+    action:
+      service: "script.cristina_find_phone"
+    speech:
+      text: "Sending critical notifications to Cristina's phone. Listen for the sound!"

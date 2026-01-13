@@ -1,0 +1,52 @@
+# 
+# Find Cristina's Phone Script
+# 
+# This script sends critical notifications to Cristina's phone when asked 
+# "Where's my phone?" via Alexa. It sends TWO notifications to maximize
+# the chance of finding the phone.
+# 
+# Usage: Ask Alexa "find my phone" or "find Cristina's phone"
+# 
+
+script:
+  # 
+  # Find Cristina's Phone
+  # 
+  # Sends two critical push notifications to Cristina's phone.
+  # The critical notification will play a sound even if the phone 
+  # is on silent mode.
+  # 
+  cristina_find_phone:
+    alias: "Find Cristina's Phone"
+    description: "Send critical notifications to Cristina's phone to help locate it"
+    icon: mdi:cellphone-sound
+    mode: single
+    
+    sequence:
+      # 
+      # First Notification
+      # 
+      - action: script.general_notification
+        data:
+          title: "📱 Find My Phone"
+          message: "Cristina, your phone is ringing! Follow the sound to find it."
+          devices: "cfalb"
+          priority: "critical"
+          tag: "cristina-find-phone-1"
+      
+      # 
+      # Short delay between notifications
+      # 
+      - delay:
+          seconds: 3
+      
+      # 
+      # Second Notification
+      # 
+      - action: script.general_notification
+        data:
+          title: "📱 Find My Phone"
+          message: "Cristina, your phone is ringing! Follow the sound to find it."
+          devices: "cfalb"
+          priority: "critical"
+          tag: "cristina-find-phone-2"
