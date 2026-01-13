@@ -196,7 +196,7 @@ cards:
                     if (moonPhase === 'new_moon') return 'mdi:moon-new';
                     if (moonPhase === 'waxing_crescent') return 'mdi:moon-waxing-crescent';
                     if (moonPhase === 'first_quarter') return 'mdi:moon-first-quarter';
-                    if (moonPhase === 'waxing_gibbous') return 'mdi:moon-waxing-crescent';
+                    if (moonPhase === 'waxing_gibbous') return 'mdi:moon-waxing-gibbous';
                     if (moonPhase === 'full_moon') return 'mdi:moon-full';
                     if (moonPhase === 'waning_gibbous') return 'mdi:moon-waning-gibbous';
                     if (moonPhase === 'last_quarter') return 'mdi:moon-last-quarter';
