@@ -1,0 +1,47 @@
+# Playroom UniFi AP Disconnect Fix
+#
+# This automation monitors the Playroom UniFi AP and power cycles
+# the PoE port when it becomes unavailable to restore connectivity.
+#
+# AP Entity: sensor.playroom_state
+# PoE Switch Port: button.switch_enterprise_24_poe_port_14_power_cycle
+
+automation:
+  - id: "playroom_ap_unavailable"
+    alias: "Playroom AP Unavailable - Power Cycle PoE Port"
+    description: "Power cycles the PoE port when the Playroom AP becomes unavailable"
+    mode: single
+
+    triggers:
+      - trigger: state
+        entity_id: sensor.playroom_state
+        to: "unavailable"
+        for:
+          minutes: 2
+
+    conditions:
+      # Confirm the UDM is online and connected
+      # (if UDM is down, power cycling the AP won't help)
+      - condition: state
+        entity_id: sensor.kohbo_udm_state
+        state: "connected"
+
+      # Confirm the AP is still unavailable
+      - condition: state
+        entity_id: sensor.playroom_state
+        state: "unavailable"
+
+    actions:
+      # Power cycle the PoE port to restart the AP
+      - action: button.press
+        target:
+          entity_id: button.switch_enterprise_24_poe_port_14_power_cycle
+
+      # Send a time-sensitive notification to jk
+      - action: script.general_notification
+        data:
+          title: "UniFi AP Issue"
+          message: "The Playroom AP became unavailable. Automatically power cycling the PoE port to restore connectivity."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "playroom-ap-unavailable"
