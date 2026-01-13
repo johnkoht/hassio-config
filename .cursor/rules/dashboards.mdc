@@ -252,6 +252,131 @@ card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_la
 
 ---
 
+## Styling Approach: Native First, card_mod Last Resort
+
+**CRITICAL: Always prefer component-native styling over card_mod CSS overrides.**
+
+### The Mental Model
+
+When styling components, follow this hierarchy:
+
+1. **Component's native styling API** (first choice)
+2. **Template-level styles** (second choice)
+3. **card_mod CSS overrides** (last resort)
+
+### Why Native Styling is Preferred
+
+**Component-native styling** (e.g., button-card's `styles:` section) is the "right way" because:
+
+- ✅ **Uses the component's intended API** - The component was designed to accept these styles
+- ✅ **More reliable** - No CSS specificity battles or `!important` flags needed
+- ✅ **Better performance** - Styles are applied by the component itself, not external CSS injection
+- ✅ **Template inheritance works naturally** - Styles can be overridden cleanly in templates
+- ✅ **Easier to maintain** - Styles are co-located with the component configuration
+- ✅ **Type-safe** - Component validates the style properties
+
+**card_mod CSS overrides** are a workaround because:
+
+- ❌ **External CSS injection** - Requires targeting DOM elements with selectors
+- ❌ **Specificity battles** - Often requires `!important` flags to override component styles
+- ❌ **Fragile** - Breaks if component's internal DOM structure changes
+- ❌ **Harder to debug** - Styles are separated from component configuration
+- ❌ **Performance overhead** - Additional CSS processing and injection
+
+### Examples
+
+#### ✅ CORRECT - Using Native Styles
+
+```yaml
+- type: custom:button-card
+  template: kohbo_chip_card_room_mode
+  entity: input_select.office
+  size: 12px
+  styles:
+    card:
+      - background: var(--divider-color)
+      - height: 26px
+      - border-radius: 13px
+      - padding: 0 8px
+    state:
+      - font-size: 11px
+      - font-weight: 600
+    img_cell:
+      - width: 12px
+      - height: 12px
+```
+
+#### ❌ WRONG - Using card_mod for Component Styling
+
+```yaml
+- type: custom:mod-card
+  card_mod: !include /config/dashboards/templates/includes/card_mod/room/kohbo_room_button_chip_card_mod.yaml
+  card:
+    type: custom:button-card
+    template: kohbo_chip_card_room_mode
+    entity: input_select.office
+```
+
+### When to Use card_mod
+
+card_mod should only be used when:
+
+1. **Layout/spacing between cards** - Styling card containers that don't have native styling APIs:
+   - `horizontal-stack` - No native styling API, use card_mod for gap, alignment, etc.
+   - `vertical-stack` - No native styling API, use card_mod for spacing
+   - `grid` - Limited native styling, use card_mod for advanced layouts
+2. **Third-party components** - Components that don't have native styling APIs (entities cards, mini-graph-card, etc.)
+3. **Complex layout overrides** - When native styling can't achieve the desired layout
+4. **Global page-level styling** - Styling the page container, not individual components
+
+**Examples of appropriate card_mod usage:**
+
+```yaml
+# ✅ Layout/spacing between cards (horizontal-stack has no native styling API)
+- type: custom:mod-card
+  card_mod:
+    style:
+      hui-horizontal-stack-card$: |
+        #root {
+          gap: 5px !important;
+        }
+  card:
+    type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_chip_card_room_mode
+        entity: input_select.office
+      - type: custom:button-card
+        template: kohbo_chip_card_room_occupancy
+        entity: input_boolean.office_occupied
+
+# ✅ Third-party component (entities card has no native styling API)
+- type: entities
+  entities:
+    - entity: input_boolean.setting
+      card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+```
+
+### Decision Flow
+
+```
+Need to style a component?
+│
+├─► Does the component have a native styles: section?
+│   │
+│   └─► YES → Use native styles (button-card styles:, etc.)
+│
+├─► Can you override styles in the template?
+│   │
+│   └─► YES → Override in template or inline styles:
+│
+└─► Is it layout/spacing or a third-party component?
+    │
+    └─► YES → Use card_mod (last resort)
+```
+
+---
+
 ## Naming Conventions
 
 ### Templates
@@ -574,8 +699,9 @@ This dashboard uses a custom `kohbo:kohbo-*` icon set. Common icons:
 ## Common Mistakes to Avoid
 
 1. **Don't hardcode colors** - **ALWAYS** use CSS variables from `themes/kohbo/kohbo.yaml` (e.g., `var(--success-color)`, not `"#06D6A0"`)
-2. **Don't forget `!include` paths** - Must start with `/config/`
-3. **Don't mix template syntaxes** - Use `[[[  ]]]` in button cards, `[[  ]]` in decluttering
-4. **Don't forget `template:` key** - Button card templates need this to extend base templates
-5. **Don't forget navbar** - Every page should include the navbar at the end
-6. **Don't forget popup hash** - Popups need unique `#hash` values
+2. **Don't use card_mod for component styling** - **ALWAYS** use component-native `styles:` sections first (button-card, etc.). card_mod is only for layout/spacing and third-party components.
+3. **Don't forget `!include` paths** - Must start with `/config/`
+4. **Don't mix template syntaxes** - Use `[[[  ]]]` in button cards, `[[  ]]` in decluttering
+5. **Don't forget `template:` key** - Button card templates need this to extend base templates
+6. **Don't forget navbar** - Every page should include the navbar at the end
+7. **Don't forget popup hash** - Popups need unique `#hash` values

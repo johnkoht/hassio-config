@@ -283,6 +283,126 @@ Available device entity templates (extend `kohbo_device_entity`):
 
 ---
 
+## README Refactoring Plan
+
+**Goal:** Break down the dashboard README into clear, organized sections for better documentation and onboarding.
+
+### Proposed Structure
+
+#### 1. Overview
+- **Theme**: kohbo theme philosophy and design language
+- **Philosophy**: Design principles, UX approach, user experience goals
+- **Design Patterns**: Common patterns used throughout (e.g., popups, navigation, card composition)
+- **UX Guidelines**: User experience decisions and rationale
+
+**Content to include:**
+- Theme color palette and usage
+- Design system approach
+- Accessibility considerations
+- Mobile vs desktop patterns
+
+#### 2. Architecture (Folder Structure)
+- **Overview**: High-level folder organization
+- **Templates/Views**: How templates and views are organized
+- **File Naming Conventions**: `kohbo_` prefix, naming patterns
+- **Include Patterns**: How `!include` is used, partials vs templates
+- **Custom Cards**: Inventory of custom cards used and their purposes
+
+**Content to include:**
+- `dashboards/kohbo/` structure (pages, subviews, popups, partials)
+- `dashboards/templates/` organization (button_cards, decluttering)
+- `dashboards/templates/includes/` shared components
+- Relationship between templates, views, and partials
+
+#### 3. Primary Dashboards
+- **Screenshots**: Visual examples of each primary dashboard
+- **Overview**: Purpose and key features of each dashboard
+- **Navigation**: How users navigate to/from each dashboard
+
+**Dashboards to document:**
+- Home dashboard
+- Energy dashboard
+- Security dashboard
+- Climate dashboard
+- (Any other primary dashboards)
+
+**For each dashboard, include:**
+- Screenshot
+- Purpose/use case
+- Key components/sections
+- Navigation paths
+
+#### 4. Room Structure
+- **Anatomy of a Room**: Standard structure and components
+- **Room Page Template**: Standard room page layout
+- **Room Components**: Common components used in rooms
+- **Room Patterns**: Reusable patterns (overview, climate, lights, devices, settings)
+
+**Content to include:**
+- Standard room page structure (see "View/Page Structure" section above)
+- Room overview components (occupancy, BLE presence, mode)
+- Climate integration in rooms
+- Device organization in rooms
+- Room-specific popups (settings, media player, etc.)
+
+#### 5. Components
+- **Component Library**: Comprehensive list of reusable components
+- **Usage Examples**: Code examples for each component
+- **Component Categories**: Organized by type/function
+
+**Components to document:**
+
+**Basic UI Elements:**
+- Pill/Chip (`kohbo_chip_card`)
+- Section Title (`section_title`)
+
+**Climate Components:**
+- Climate Overview (`climate_overview`)
+- Climate Card (`kohbo_room_temperature_card`)
+- Thermostat (`kohbo_thermostat_entity`)
+
+**Device Components:**
+- Device Card (`kohbo_device_entity` and variants)
+- Device Card Variants (air purifier, smart plug, door, window, leak, lock)
+
+**Room Components:**
+- Room Card (room navigation cards)
+- Room Overview (`room_overview`)
+
+**Media Components:**
+- Media Player
+- Popup Player
+
+**Settings Components:**
+- Settings Popup
+- Boolean Toggle (`kohbo_boolean_entity_layout`)
+
+**Other Components:**
+- Person Entity (`kohbo_person_entity`)
+- Energy Components (stat cards, comparison cards, etc.)
+
+**For each component, include:**
+- Purpose/description
+- Template name/location
+- Usage example (YAML)
+- Configuration options
+- Visual example (screenshot if applicable)
+
+### Implementation Notes
+- Consider creating separate markdown files for each major section
+- Use screenshots liberally for visual documentation
+- Include code examples with proper syntax highlighting
+- Cross-reference related components and patterns
+- Keep examples up-to-date with current implementation
+
+### Questions to Resolve
+- Should this be one large README or multiple files?
+- Where should screenshots be stored?
+- How detailed should component documentation be?
+- Should we include migration guides for deprecated patterns?
+
+---
+
 ## Future Rules Considerations
 
 Things observed during initial review that may warrant rules/documentation later:

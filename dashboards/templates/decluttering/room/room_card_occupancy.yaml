@@ -17,27 +17,61 @@ room_card_occupancy:
         # 
         # Room State & Occupancy
         # 
-        - type: horizontal-stack
-          cards:            
-            - type: custom:mushroom-chips-card
-              chips:
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/card_mod/room/kohbo_room_chip_card_mod_occupancy.yaml
-                  icon: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon.yaml
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_state_icon_color.yaml
-                  content: "{{ states(entity) }}"
-                  entity: '[[mode]]'
-                  tap_action:
-                    action: more-info
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  gap: 5px !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              # Room Mode
+              - type: custom:button-card
+                template: kohbo_chip_card_room_mode
+                entity: '[[mode]]'
+                tap_action:
+                  action: more-info
+                size: 12px
+                styles:
+                  card:
+                    - background: var(--divider-color)
+                    - height: 26px
+                    - border-radius: 13px
+                    - font-size: 11px
+                    - font-weight: 600
+                    - padding: 0 8px
+                  state:
+                    - margin-left: 4px
+                    - font-size: 11px
+                    - font-weight: 600
+                  img_cell:
+                    - width: 12px
+                    - height: 12px
 
-                - type: template
-                  card_mod: !include /config/dashboards/templates/includes/card_mod/room/kohbo_room_chip_card_mod_occupancy.yaml
-                  icon: mdi:circle
-                  entity: '[[occupancy]]'
-                  content: "{{ 'Occupied' if states(entity) == 'on' else 'Empty' }}"
-                  icon_color: !include /config/dashboards/templates/includes/rooms/kohbo_room_occupancy_icon_color.yaml
-                  tap_action:
-                    action: more-info
+              # Room Occupancy              
+              - type: custom:button-card
+                template: kohbo_chip_card_room_occupancy
+                entity: '[[occupancy]]'
+                tap_action:
+                  action: more-info
+                size: 12px
+                styles:
+                  card:
+                    - background: var(--divider-color)
+                    - height: 26px
+                    - border-radius: 13px
+                    - font-size: 11px
+                    - font-weight: 600
+                    - padding: 0 8px
+                  state:
+                    - margin-left: 4px
+                    - font-size: 11px
+                    - font-weight: 600
+                  img_cell:
+                    - width: 12px
+                    - height: 12px
 
         # 
         # People in the room
