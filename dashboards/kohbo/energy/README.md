@@ -2,19 +2,19 @@
 
 Real-time energy monitoring with dynamic forecasting based on historical usage patterns.
 
+![Energy Dashboard](./../assets/energy-dashboard.jpg)
+
 ---
 
 ## File Structure
 
 ```
 energy/
-├── energy.yaml              # Main dashboard page (includes partials)
+├── energy.yaml              # Main dashboard page (includes partials + hardcoded sections)
 ├── README.md                # This file
 └── partials/                # Reusable card sections
     ├── todays_overview.yaml    # Hero card, stats, 24h chart
     ├── energy_history.yaml     # Period comparisons, timeframe tabs, history charts
-    ├── active_devices.yaml     # Devices currently using power
-    ├── top_consumers.yaml      # Daily energy usage by device
     └── settings_popup.yaml     # Settings and automation toggles
 ```
 
@@ -24,9 +24,13 @@ Partials are card collections that are `!include`d into the main page. They're o
 
 - **todays_overview.yaml** - Today's energy overview with real-time stats, forecast, and 24h chart
 - **energy_history.yaml** - Historical comparisons with timeframe selector (week/30 days/weekly/monthly)
-- **active_devices.yaml** - Live view of devices currently drawing power (>5W threshold)
-- **top_consumers.yaml** - Devices ranked by daily energy consumption
 - **settings_popup.yaml** - Energy-related automation toggles
+
+### Hardcoded Sections
+
+Some sections are defined directly in `energy.yaml` rather than as partials:
+
+- **Device Energy Usage** - Grid of individual device energy cards showing 24h power consumption graphs (uses `kohbo_device_energy_card` template)
 
 ---
 
@@ -35,7 +39,7 @@ Partials are card collections that are `!include`d into the main page. They're o
 | Card | Sensor | Unit | Meaning |
 |------|--------|------|---------|
 | **Real Time** | `sensor.energy_current_consumption` | W / kW | Current power draw (switches to kW above 1000W) |
-| **Today** | `sensor.whole_home_energy_daily_usage` | kWh | Energy used so far today |
+| **Price** | `sensor.comed_current_hour_average_price` | ¢/kWh | ComEd real-time electricity price |
 | **Forecast** | `sensor.energy_forecast_end_of_day` | kWh | Predicted end-of-day total |
 
 ### Progress Bars
@@ -45,10 +49,10 @@ Each stat card has a 10-segment progress bar with color-coded status:
 | Card | Bar Fill Logic | Color Logic |
 |------|---------------|-------------|
 | **Real Time** | `watts / 3000 × 100` | Green <1000W (0-33%), Yellow <2000W (33-66%), Orange <2500W (66-83%), Red ≥2500W (83%+) |
-| **Today** | `actual / expected_full_day × 100` | Based on `actual / expected_so_far` ratio |
+| **Price** | `price / 12 × 100` | Green <3¢ (0-25%), Yellow <6¢ (25-50%), Orange <9¢ (50-75%), Red ≥9¢ (75%+) |
 | **Forecast** | `forecast / expected_full_day × 100` | Based on `forecast / expected_full_day` ratio |
 
-**Color thresholds for Today/Forecast:**
+**Color thresholds for Forecast:**
 - 🟢 Green: ratio < 0.9 (under budget)
 - 🟡 Yellow: ratio ≤ 1.1 (on track)
 - 🟠 Orange: ratio ≤ 1.3 (slightly over)
@@ -87,6 +91,7 @@ hourly_forecast = baseline[hour] × adjustment_factor
 | Sensor | Purpose |
 |--------|---------|
 | `sensor.energy_current_consumption` | Real-time power draw (watts) |
+| `sensor.comed_current_hour_average_price` | ComEd real-time electricity price (¢/kWh) |
 | `sensor.whole_home_energy_daily_usage` | Today's cumulative energy usage |
 | `sensor.energy_hourly_forecast_json` | Array of 24 adjusted hourly predictions |
 | `sensor.energy_expected_so_far` | Expected usage up to current hour |
@@ -116,11 +121,20 @@ Controlled by `input_select.energy_history_timeframe`:
 
 ### Summary Stats
 
-| Stat | Sensor | Description |
-|------|--------|-------------|
-| **This Period** | `sensor.whole_home_energy_weekly_usage` or `monthly` | Total for selected period |
-| **Daily Avg** | `sensor.whole_home_daily_energy_stats` | 30-day rolling average |
-| **vs Expected** | `sensor.energy_trend_percent` | % difference from expected |
+Three comparison cards displayed above the history chart showing current usage with percentage differences:
+
+| Card | Sensor | Comparison Label | Description |
+|------|--------|------------------|-------------|
+| **Today** | `sensor.whole_home_energy_daily_usage` | "vs avg" | Today's usage (kWh) with percentage difference vs expected daily baseline |
+| **This Week** | `sensor.whole_home_energy_weekly_usage` | "vs expected" | This week's total (kWh) with percentage difference vs expected for elapsed days |
+| **This Month** | `sensor.whole_home_energy_monthly_usage` | "vs expected" | This month's total (kWh) with percentage difference vs expected for elapsed days |
+
+Each card displays:
+- **Value**: kWh (daily shows 1 decimal, weekly/monthly rounded to whole number)
+- **Comparison**: Percentage with arrow indicator (↑/↓/→) and color coding:
+  - 🟢 Green: >10% under expected
+  - ⚪ Grey: Within ±10% of expected
+  - 🔴 Red: >10% over expected
 
 ### Progress Bars
 
@@ -134,7 +148,21 @@ Week and Month totals with 10-segment progress bars:
 
 ### `kohbo_energy_stat_bar`
 
-Stat cards with progress bars. Uses `bar_mode` variable:
-- `realtime` - Power consumption thresholds
-- `today` - Actual vs expected comparison  
-- `forecast` - Forecast vs expected comparison
+Stat cards with progress bars. Used in the "Today's Overview" section. Uses `bar_mode` variable:
+- `realtime` - Power consumption thresholds (Real Time card)
+- `price` - Price display (Price card)
+- `forecast` - Forecast vs expected comparison (Forecast card)
+
+### `kohbo_energy_stat_comparison`
+
+Comparison cards showing value and percentage difference. Used in the "Energy History" section. Uses `comparison_type` variable:
+- `daily` - Today vs expected daily average
+- `weekly` - This week vs expected weekly usage
+- `monthly` - This month vs expected monthly usage
+
+### `kohbo_device_energy_card`
+
+Mini-graph cards for individual devices showing 24h power consumption. Used in the "Device Energy Usage" grid section. Displays:
+- Device name and icon
+- 24-hour bar graph of power consumption (W)
+- Color-coded thresholds (green/yellow/orange/red based on power level)
