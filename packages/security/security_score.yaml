@@ -19,164 +19,131 @@ template:
           {% set bad_weather = is_state('input_boolean.bad_weather', 'on') %}
 
           {# ------------------------------------------------------------------- #}
-          {# RISK LEVEL CALCULATION                                             #}
-          {# Higher risk = security matters more (both rewards and penalties)   #}
+          {# SECURITY MEASURES (0-100 points)                                   #}
+          {# These are things you CAN control - max out at 100 when all secure  #}
           {# ------------------------------------------------------------------- #}
 
-          {% set risk_factors = namespace(level=0) %}
-
-          {# Time-based risk #}
-          {% if dark_outside %}
-            {% set risk_factors.level = risk_factors.level + 2 %}
-          {% elif hour >= 22 or hour < 5 %}
-            {% set risk_factors.level = risk_factors.level + 2 %}
-          {% elif hour >= 18 or hour < 7 %}
-            {% set risk_factors.level = risk_factors.level + 1 %}
-          {% endif %}
-
-          {# Occupancy-based risk #}
-          {% if vacation %}
-            {% set risk_factors.level = risk_factors.level + 3 %}
-          {% elif not occupied %}
-            {% set risk_factors.level = risk_factors.level + 2 %}
-          {% endif %}
-
-          {# Weather risk #}
-          {% if bad_weather %}
-            {% set risk_factors.level = risk_factors.level + 1 %}
-          {% endif %}
-
-          {# Normalize risk level: low (0-1), medium (2-3), high (4+) #}
-          {% if risk_factors.level >= 4 %}
-            {% set risk_level = 'high' %}
-            {% set penalty_multiplier = 1.5 %}
-            {% set bonus_multiplier = 1.3 %}
-          {% elif risk_factors.level >= 2 %}
-            {% set risk_level = 'medium' %}
-            {% set penalty_multiplier = 1.25 %}
-            {% set bonus_multiplier = 1.15 %}
-          {% else %}
-            {% set risk_level = 'low' %}
-            {% set penalty_multiplier = 1.0 %}
-            {% set bonus_multiplier = 1.0 %}
-          {% endif %}
-
-          {# ------------------------------------------------------------------- #}
-          {# ALARM STATE (0-25 base points)                                     #}
-          {# Proper alarm state is the most important security factor           #}
-          {# ------------------------------------------------------------------- #}
-
+          {# Alarm state (0-30 points) #}
           {% if alarm_state == 'armed_away' %}
-            {% set score = score + (25 * bonus_multiplier) %}
+            {% set score = score + 30 %}
           {% elif alarm_state == 'armed_home' %}
-            {% set score = score + (20 * bonus_multiplier) %}
+            {% set score = score + 25 %}
           {% elif alarm_state == 'disarmed' %}
             {% if occupied %}
-              {% set score = score + 8 %}
-            {% elif vacation %}
-              {% set score = score - (30 * penalty_multiplier) %}
+              {% set score = score + 15 %}
             {% else %}
-              {% set score = score - (20 * penalty_multiplier) %}
+              {% set score = score - 20 %}
             {% endif %}
           {% elif alarm_state == 'triggered' %}
-            {% set score = score - (50 * penalty_multiplier) %}
+            {% set score = score - 40 %}
           {% endif %}
 
-          {# ------------------------------------------------------------------- #}
-          {# PHYSICAL BARRIERS (0-40 base points)                               #}
-          {# Locks, doors, windows, garage                                      #}
-          {# ------------------------------------------------------------------- #}
-
-          {# Front door lock (most important entry point) #}
+          {# Front door lock (0-18 points) #}
           {% if is_state('lock.front_door', 'locked') %}
-            {% set score = score + (12 * bonus_multiplier) %}
+            {% set score = score + 18 %}
           {% else %}
-            {% set score = score - (15 * penalty_multiplier) %}
+            {% set score = score - 15 %}
           {% endif %}
 
-          {# Garage entry door lock #}
+          {# Garage entry door lock (0-12 points) #}
           {% if is_state('lock.garage_entry_door', 'locked') %}
-            {% set score = score + (8 * bonus_multiplier) %}
+            {% set score = score + 12 %}
           {% else %}
-            {% set score = score - (10 * penalty_multiplier) %}
+            {% set score = score - 10 %}
           {% endif %}
 
-          {# Exterior doors closed #}
+          {# Exterior doors closed (0-12 points) #}
           {% if is_state('binary_sensor.exterior_doors', 'off') %}
-            {% set score = score + (8 * bonus_multiplier) %}
+            {% set score = score + 12 %}
           {% else %}
-            {% set score = score - (15 * penalty_multiplier) %}
+            {% set score = score - 12 %}
           {% endif %}
 
-          {# Garage doors #}
+          {# Garage doors (0-10 points) #}
           {% if is_state('cover.garage_doors', 'closed') %}
-            {% set score = score + (8 * bonus_multiplier) %}
+            {% set score = score + 10 %}
           {% else %}
-            {% set score = score - (18 * penalty_multiplier) %}
+            {% set score = score - 15 %}
           {% endif %}
 
-          {# Windows #}
+          {# Windows (0-6 points) #}
           {% if is_state('binary_sensor.windows', 'off') %}
-            {% set score = score + (4 * bonus_multiplier) %}
+            {% set score = score + 6 %}
           {% else %}
             {% if occupied and not dark_outside %}
               {% set score = score - 2 %}
             {% else %}
-              {% set score = score - (10 * penalty_multiplier) %}
+              {% set score = score - 8 %}
             {% endif %}
           {% endif %}
 
-          {# ------------------------------------------------------------------- #}
-          {# MONITORING & AWARENESS (0-12 base points)                          #}
-          {# Camera notifications and system status                             #}
-          {# ------------------------------------------------------------------- #}
-
-          {# Camera notifications #}
+          {# Camera notifications (0-8 points) #}
           {% if is_state('input_boolean.camera_notifications', 'on') %}
-            {% set score = score + (8 * bonus_multiplier) %}
+            {% set score = score + 8 %}
           {% else %}
-            {% if occupied %}
-              {% set score = score + 0 %}
-            {% else %}
-              {% set score = score - (12 * penalty_multiplier) %}
+            {% if not occupied %}
+              {% set score = score - 10 %}
             {% endif %}
           {% endif %}
 
-          {# UPS / Power status #}
+          {# UPS / Power status (0-4 points) #}
           {% if ups_status == 'OL' %}
-            {% set score = score + (4 * bonus_multiplier) %}
+            {% set score = score + 4 %}
           {% elif ups_status == 'OB' %}
-            {% set score = score - (12 * penalty_multiplier) %}
+            {% set score = score - 10 %}
           {% elif ups_status == 'LB' %}
-            {% set score = score - (25 * penalty_multiplier) %}
+            {% set score = score - 20 %}
           {% elif runtime < 600 %}
-            {% set score = score - (18 * penalty_multiplier) %}
+            {% set score = score - 15 %}
           {% endif %}
 
           {# ------------------------------------------------------------------- #}
-          {# CONTEXT BONUSES                                                    #}
-          {# Reward appropriate security posture for the situation              #}
+          {# INHERENT VULNERABILITY DEDUCTIONS                                  #}
+          {# These represent risk you CANNOT fully mitigate                     #}
+          {# Even with perfect security, these factors reduce your score        #}
           {# ------------------------------------------------------------------- #}
 
-          {# Bonus: Proper alarm state for occupancy context #}
-          {% if not occupied and alarm_state == 'armed_away' %}
-            {% set score = score + (5 * bonus_multiplier) %}
-          {% elif not occupied and alarm_state == 'armed_home' %}
-            {% set score = score + (3 * bonus_multiplier) %}
-          {% elif occupied and alarm_state in ['armed_home', 'disarmed'] %}
+          {% set vulnerability = 0 %}
+
+          {# Empty house is inherently more vulnerable #}
+          {% if vacation %}
+            {% set vulnerability = vulnerability + 8 %}
+          {% elif not occupied %}
+            {% set vulnerability = vulnerability + 5 %}
+          {% endif %}
+
+          {# Dark/nighttime increases vulnerability #}
+          {% if dark_outside %}
+            {% set vulnerability = vulnerability + 4 %}
+          {% elif hour >= 22 or hour < 5 %}
+            {% set vulnerability = vulnerability + 4 %}
+          {% elif hour >= 20 or hour < 6 %}
+            {% set vulnerability = vulnerability + 2 %}
+          {% endif %}
+
+          {# Bad weather can mask break-in attempts #}
+          {% if bad_weather %}
+            {% set vulnerability = vulnerability + 2 %}
+          {% endif %}
+
+          {# Apply vulnerability deduction #}
+          {% set score = score - vulnerability %}
+
+          {# ------------------------------------------------------------------- #}
+          {# MITIGATING FACTORS (partial recovery of vulnerability)             #}
+          {# Good practices that help offset inherent risk                      #}
+          {# ------------------------------------------------------------------- #}
+
+          {# Exterior lights at night reduce vulnerability slightly #}
+          {% if dark_outside and is_state('group.exterior_lights', 'on') %}
             {% set score = score + 2 %}
           {% endif %}
 
-          {# Bonus: Exterior lights on at night (deterrence) #}
-          {% if dark_outside and is_state('group.exterior_lights', 'on') %}
-            {% set score = score + (5 * bonus_multiplier) %}
-          {% endif %}
-
-          {# Penalty: Late night without appropriate alarm when empty #}
-          {% if (22 <= hour or hour < 5) and not occupied %}
-            {% if alarm_state not in ['armed_away', 'armed_home'] %}
-              {% set score = score - (20 * penalty_multiplier) %}
-            {% endif %}
+          {# Proper alarm mode for situation #}
+          {% if not occupied and alarm_state == 'armed_away' %}
+            {% set score = score + 3 %}
+          {% elif not occupied and alarm_state == 'armed_home' %}
+            {% set score = score + 1 %}
           {% endif %}
 
           {# ------------------------------------------------------------------- #}
@@ -204,31 +171,25 @@ template:
           front_door: "{{ states('lock.front_door') }}"
           garage_entry_door: "{{ states('lock.garage_entry_door') }}"
           camera_notifications: "{{ states('input_boolean.camera_notifications') }}"
-          risk_level: >
+          vulnerability: >
             {% set hour = now().hour %}
             {% set dark = is_state('input_boolean.dark_outside', 'on') %}
             {% set occupied = is_state('input_boolean.house_occupied', 'on') %}
             {% set vacation = is_state('input_boolean.vacation_mode', 'on') %}
             {% set bad_weather = is_state('input_boolean.bad_weather', 'on') %}
-            {% set level = 0 %}
-            {% if dark or hour >= 22 or hour < 5 %}
-              {% set level = level + 2 %}
-            {% elif hour >= 18 or hour < 7 %}
-              {% set level = level + 1 %}
-            {% endif %}
+            {% set v = 0 %}
             {% if vacation %}
-              {% set level = level + 3 %}
+              {% set v = v + 8 %}
             {% elif not occupied %}
-              {% set level = level + 2 %}
+              {% set v = v + 5 %}
+            {% endif %}
+            {% if dark or hour >= 22 or hour < 5 %}
+              {% set v = v + 4 %}
+            {% elif hour >= 20 or hour < 6 %}
+              {% set v = v + 2 %}
             {% endif %}
             {% if bad_weather %}
-              {% set level = level + 1 %}
+              {% set v = v + 2 %}
             {% endif %}
-            {% if level >= 4 %}
-              high
-            {% elif level >= 2 %}
-              medium
-            {% else %}
-              low
-            {% endif %}
+            {{ v }}
 
