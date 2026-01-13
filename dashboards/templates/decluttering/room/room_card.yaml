@@ -36,6 +36,7 @@ room_card:
         tap_action:
           action: navigate
           navigation_path: '[[navigation_path]]'
+          haptic: light
 
       # 
       # Room Devices

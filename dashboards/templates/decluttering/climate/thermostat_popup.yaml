@@ -2,6 +2,7 @@ thermostat_popup:
   card:
     type: vertical-stack
     cards:
+      # Popup Bubble Card
       - type: custom:bubble-card
         card_type: pop-up
         hash: '[[hash]]'
@@ -10,10 +11,12 @@ thermostat_popup:
         margin_top_mobile: calc(100vh - 860px)
         margin_top_desktop: calc(100vh - 860px)
 
+      # Popup Title
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: '[[name]]'
 
+      # Thermostat Card
       - type: thermostat
         entity: '[[entity]]'
         name: '[[name]]'
@@ -28,6 +31,9 @@ thermostat_popup:
               display: none !important;
             }
 
+      # 
+      # Indoor and outside temperature
+      # 
       - type: entities
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
         entities:
@@ -48,6 +54,9 @@ thermostat_popup:
 
           
 
+      # 
+      # Thermostat Actions
+      # 
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
@@ -74,6 +83,9 @@ thermostat_popup:
             }
 
         cards:
+          # 
+          # Heat
+          # 
           - type: custom:button-card
             entity: '[[entity]]'
             name: Heat
@@ -90,11 +102,15 @@ thermostat_popup:
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
+              haptic: heavy
               target:
                 entity_id: '[[entity]]'
               data:
                 hvac_mode: heat
 
+          # 
+          # Cool
+          # 
           - type: custom:button-card
             entity: '[[entity]]'
             name: Cool
@@ -110,11 +126,15 @@ thermostat_popup:
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
+              haptic: heavy
               target:
                 entity_id: '[[entity]]'
               data:
                 hvac_mode: cool
 
+          # 
+          # Heat/Cool
+          # 
           - type: custom:button-card
             entity: '[[entity]]'
             name: Heat/Cool
@@ -129,11 +149,15 @@ thermostat_popup:
             tap_action:
               action: call-service
               service: climate.set_hvac_mode
+              haptic: heavy
               target:
                 entity_id: '[[entity]]'
               data:
                 hvac_mode: heat_cool
 
+          # 
+          # Eco
+          # 
           - type: custom:button-card
             entity: '[[entity]]'
             name: Eco
@@ -148,6 +172,7 @@ thermostat_popup:
             tap_action:
               action: call-service
               service: climate.set_preset_mode
+              haptic: heavy
               target:
                 entity_id: '[[entity]]'
               data:

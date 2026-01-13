@@ -61,6 +61,7 @@ cards:
     tap_action:
       action: navigate
       navigation_path: '#office_ceiling_lights'
+      haptic: light
   
   # Desk Lamp
   - type: tile

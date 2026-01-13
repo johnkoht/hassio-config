@@ -6,6 +6,8 @@
 # 
 kohbo_header_chip_card:
   template: kohbo_chip_card
+  tap_action:
+    haptic: light
   styles:
     card:
       - display: flex

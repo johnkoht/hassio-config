@@ -29,11 +29,17 @@ room_overview:
               - type: custom:button-card
                 template: kohbo_chip_card_room_mode
                 entity: '[[mode]]'
+                tap_action:
+                  action: more-info
+                  haptic: light
 
               # Room Occupancy
               - type: custom:button-card
                 template: kohbo_chip_card_room_occupancy
                 entity: '[[occupancy]]'
+                tap_action:
+                  action: more-info
+                  haptic: light
 
 
         # 

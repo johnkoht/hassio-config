@@ -134,7 +134,7 @@ cards:
             }
           ]]]
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#john'
 
@@ -185,7 +185,7 @@ cards:
             }
           ]]]
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#cristina'
 
@@ -209,7 +209,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#nino'
 
@@ -226,7 +226,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#gianluca'
 
@@ -250,7 +250,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#nonna'
 
@@ -268,7 +268,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#joe'    
 
@@ -286,7 +286,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#tayta'  
 
@@ -304,7 +304,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#jido'  
 
@@ -322,7 +322,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#nonno'
 
@@ -365,7 +365,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
         color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
         tap_action:
-          haptic: heavy
+          haptic: light
           action: navigate
           navigation_path: '#sylvia'
 

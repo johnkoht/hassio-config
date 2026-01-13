@@ -131,12 +131,16 @@ cards:
   # 
   - type: vertical-stack
     cards:
+      # 
+      # Clean Now
+      # 
       - type: custom:button-card
         name: Clean Now
         show_icon: false
         tap_action:
           action: perform-action
           perform_action: script.main_level_quick_clean
+          haptic: heavy
         card_mod:
           style: |
             :host {
@@ -150,6 +154,10 @@ cards:
               font-weight: 500 !important;
               padding: 15px 10px !important;
             }
+
+      # 
+      # Clean When House Is Empty
+      # 
       - type: custom:button-card
         name: >
           [[[
@@ -158,6 +166,7 @@ cards:
         show_icon: false
         tap_action:
           action: perform-action
+          haptic: heavy
           perform_action: >
             [[[
               return states['input_boolean.main_level_vacuum_clean_when_house_empty'].state === 'on' ? 'script.main_level_vacuum_cancel_clean_when_house_is_empty' : 'script.main_level_vacuum_clean_when_house_is_empty';

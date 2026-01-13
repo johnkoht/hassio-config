@@ -16,6 +16,7 @@ camera_card:
         tap_action:
           action: navigate
           navigation_path: '[[hash]]'
+          haptic: light
     live:
       controls:
         builtin: false
@@ -32,6 +33,10 @@ camera_card:
       - type: custom:button-card
         name: '[[name]]'
         entity: '[[motion_entity]]'
+        tap_action:
+          action: navigate
+          navigation_path: '[[hash]]'
+          haptic: light
         state_display: >
           [[[
             const last = new Date(entity.last_changed);

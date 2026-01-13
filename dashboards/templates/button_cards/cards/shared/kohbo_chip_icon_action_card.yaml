@@ -7,3 +7,5 @@ kohbo_chip_icon_action_card:
     card:
       - background: var(--darker-primary-color)
       - justify-self: end
+  tap_action:
+    haptic: light

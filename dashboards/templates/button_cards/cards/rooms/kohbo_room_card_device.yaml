@@ -25,4 +25,6 @@ kohbo_room_card_device:
       - color: "#CED4DA"
       - font-size: 11px;
       # - margin-top: 2px;
+  tap_action:
+    haptic: light
     

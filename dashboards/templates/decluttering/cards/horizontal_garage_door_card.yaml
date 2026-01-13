@@ -23,6 +23,7 @@ horizontal_garage_door_card:
           tap_action:
             action: perform-action
             perform_action: cover.close_cover
+            haptic: success
             target:
               entity_id: "[[entity]]"
           styles:
@@ -38,6 +39,7 @@ horizontal_garage_door_card:
           tap_action:
             action: perform-action
             perform_action: cover.stop_cover
+            haptic: heavy
             target:
               entity_id: "[[entity]]"
               
@@ -49,6 +51,7 @@ horizontal_garage_door_card:
           tap_action:
             action: perform-action
             perform_action: cover.open_cover
+            haptic: heavy
             target:
               entity_id: "[[entity]]"
           styles:

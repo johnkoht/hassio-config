@@ -28,6 +28,7 @@ cards:
           tap_action:
             action: navigate
             navigation_path: '#climate_settings_popup'
+            haptic: light
 
   # 
   # Current Weather
@@ -41,7 +42,7 @@ cards:
     tap_action:
       action: navigate
       navigation_path: "#weather"
-
+      haptic: light
   # 
   # Main Floor Climate
   # 

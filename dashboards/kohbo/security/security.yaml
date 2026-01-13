@@ -1124,6 +1124,7 @@ cards:
           tap_action:
             action: perform-action
             perform_action: alarm_control_panel.alarm_arm_home
+            haptic: success
             target:
               entity_id: alarm_control_panel.kohbo
           visibility:
@@ -1151,6 +1152,8 @@ cards:
                 - armed_custom_bypass
                 - armed_night
                 - armed_vacation
+        
+        # Alarm panel details
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:chevron-right
@@ -1171,18 +1174,21 @@ cards:
       - tap_action: navigate
       - navigation_path: "/dashboard-kohbo/security-garage-doors"
       - action_cards:
+        # Close garage door
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
           icon: mdi:arrow-down
           tap_action:
             action: perform-action
             perform_action: cover.close_cover
+            haptic: success
             target:
               entity_id: cover.garage_doors
           visibility:
             - condition: state
               entity: cover.garage_doors
               state: 'open'
+
         # Open garage door details
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
@@ -1206,20 +1212,21 @@ cards:
       - navigation_path: "/dashboard-kohbo/security-house-locks"
       #  Action Cards
       - action_cards:
-        # Arm Home Button
+        # Lock All Button
         - type: custom:button-card
           template: kohbo_chip_button_card
-          # icon: kohbo:kohbo-alarm-armed-home
           name: Lock All
           tap_action:
             action: perform-action
             perform_action: lock.lock
+            haptic: success
             target:
               entity_id: lock.house_locks
           visibility:
             - condition: state
               entity: lock.house_locks
               state: 'unlocked'
+              
         # Lock details
         - type: custom:button-card
           template: kohbo_chip_icon_action_card

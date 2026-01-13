@@ -19,12 +19,13 @@ room_page_top_toolbar:
           tap_action:
             action: navigate
             navigation_path: '[[navigation_path]]'
+            haptic: light
         
         # Room Name
         - type: custom:button-card
           template: kohbo_header_page_title
           name: '[[name]]'
-
+          
         # Settings button
         - type: custom:button-card
           template: kohbo_header_chip_card
@@ -33,3 +34,4 @@ room_page_top_toolbar:
           tap_action:
             action: navigate
             navigation_path: '[[settings_path]]'
+            haptic: light

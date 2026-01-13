@@ -46,6 +46,7 @@ cards:
                     tap_action:
                       action: perform-action
                       perform_action: vacuum.pause
+                      haptic: medium
                       data:
                         entity_id: vacuum.main_floor_vacuum
                 # 
@@ -64,6 +65,7 @@ cards:
                     tap_action:
                       action: perform-action
                       perform_action: vacuum.start
+                      haptic: medium
                       data:
                         entity_id: vacuum.main_floor_vacuum
                 # 
@@ -83,6 +85,7 @@ cards:
                     tap_action:
                       action: perform-action
                       perform_action: vacuum.return_to_base
+                      haptic: medium
                       data:
                         entity_id: vacuum.main_floor_vacuum
                 
@@ -100,6 +103,7 @@ cards:
                     tap_action:
                       action: navigate
                       navigation_path: '#main_floor_quick_clean_popup'
+                      haptic: medium
 
                 # 
                 # Clean Kitchen & Family (if docked)
@@ -115,6 +119,7 @@ cards:
                     tap_action:
                       action: perform-action
                       perform_action: script.main_level_vacuum_clean_selected_rooms
+                      haptic: medium
                       data:
                         rooms: 
                           - kitchen
@@ -134,6 +139,7 @@ cards:
                     tap_action:
                       action: perform-action
                       perform_action: script.main_level_vacuum_clean_selected_rooms
+                      haptic: medium
                       data:
                         rooms: 
                           - dining_room
@@ -153,6 +159,7 @@ cards:
                     tap_action:
                       action: perform-action
                       perform_action: script.main_level_vacuum_clean_selected_rooms
+                      haptic: medium
                       data:
                         rooms: 
                           - office

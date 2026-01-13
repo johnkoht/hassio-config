@@ -15,6 +15,7 @@ cards:
     tap_action:
       action: navigate
       navigation_path: '/dashboard-kohbo/security'
+      haptic: light
     styles:
       icon:
         - color: >
@@ -54,6 +55,7 @@ cards:
           tap_action:
             action: navigate
             navigation_path: '/dashboard-kohbo/security'
+            haptic: light
 
   # 
   # Security Items
@@ -79,6 +81,7 @@ cards:
         tap_action:
           action: navigate
           navigation_path: '/dashboard-kohbo/security-alarm-panel'
+          haptic: light
 
       # 
       # Locks
@@ -102,7 +105,7 @@ cards:
         tap_action:
           action: navigate
           navigation_path: '/dashboard-kohbo/security-house-locks'
-
+          haptic: light
       # 
       # Garage Doors
       # 
@@ -126,4 +129,4 @@ cards:
         tap_action:
           action: navigate
           navigation_path: '/dashboard-kohbo/security-garage-doors'
-
+          haptic: light

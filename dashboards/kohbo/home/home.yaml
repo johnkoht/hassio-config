@@ -226,18 +226,20 @@ cards:
                 tap_action:
                   action: navigate
                   navigation_path: '#house_mode'
+                  haptic: light
 
               # 
               # Electricity Usage
               # 
               - type: custom:button-card
                 template: kohbo_chip_card
-                name: Electricity Usage
+                name: Energy Usage
                 icon: mdi:lightning-bolt
                 entity: sensor.energy_current_consumption
                 tap_action:
                   action: navigate
                   navigation_path: '/dashboard-kohbo/energy'
+                  haptic: light
                 show_state: true
                 styles:
                   state:
@@ -291,7 +293,7 @@ cards:
                     ]]]
                 tap_action:
                   action: navigate
-                  haptic: heavy
+                  haptic: light
                   navigation_path: '#john'
               - type: custom:button-card
                 entity: person.cristina_falbo
@@ -304,7 +306,7 @@ cards:
                       }
                     ]]]
                 tap_action:
-                  haptic: heavy
+                  haptic: light
                   action: navigate
                   navigation_path: '#cristina'
               - type: custom:button-card
@@ -316,6 +318,7 @@ cards:
                     state: "on"
                 tap_action:
                   action: navigate
+                  haptic: light
                   navigation_path: '#nonna'
               - type: custom:button-card
                 entity: person.katia
@@ -326,6 +329,7 @@ cards:
                     state: "on"
                 tap_action:
                   action: navigate
+                  haptic: light
                   navigation_path: '#katia'
 
 
@@ -713,6 +717,7 @@ cards:
           tap_action:
             action: navigate
             navigation_path: "/dashboard-kohbo/climate"
+            haptic: light
 
 
   # 
@@ -751,6 +756,7 @@ cards:
         tap_action:
           action: navigate
           navigation_path: '/dashboard-kohbo/exterior-lighting'
+          haptic: light
 
       # Main floor HVAC
       - type: custom:button-card
@@ -760,6 +766,7 @@ cards:
         tap_action:
           action: navigate
           navigation_path: '#main_floor_thermostat'
+          haptic: light
 
       # Upper floor HVAC
       - type: custom:button-card
@@ -769,6 +776,7 @@ cards:
         tap_action:
           action: navigate
           navigation_path: '#upper_floor_thermostat'
+          haptic: light
 
       # Exterior Doors
       - type: custom:button-card
@@ -782,6 +790,10 @@ cards:
             else
               return "kohbo:kohbo-door-closed"
           ]]]
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/security-exterior-doors'
+          haptic: light
 
       # Windows
       - type: custom:button-card
@@ -795,6 +807,10 @@ cards:
             else
               return "kohbo:kohbo-window-closed"
           ]]]
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/security-windows'
+          haptic: light
 
       # Main Floor Vacuum
       - type: custom:button-card
@@ -804,8 +820,8 @@ cards:
         icon: mdi:robot-vacuum
         tap_action:
           action: navigate
-          # navigation_path: '#main_floor_vacuum'
           navigation_path: '/dashboard-kohbo/main-floor-vacuum'
+          haptic: light
 
       # # Upstairs Vacuum
       # - type: custom:button-card
