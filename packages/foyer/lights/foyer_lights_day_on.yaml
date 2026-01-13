@@ -23,9 +23,9 @@ automation:
       #   below: 5
       #   for:
       #     minutes: 5
-      # At Sunrise
-      - platform: sun
-        event: sunrise
+      # # At Sunrise
+      # - platform: sun
+      #   event: sunrise
       # # Foyer turns to Auto
       # - platform: state
       #   entity_id: input_select.foyer
