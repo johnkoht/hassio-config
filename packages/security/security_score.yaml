@@ -6,195 +6,148 @@ template:
           {% set score = 0 %}
 
           {# ------------------------------------------------------------------- #}
-          {# RISK MULTIPLIER HEADER BLOCK                                       #}
+          {# CONTEXT VARIABLES                                                  #}
           {# ------------------------------------------------------------------- #}
 
           {% set hour = now().hour %}
           {% set dark_outside = is_state('input_boolean.dark_outside', 'on') %}
-          {% set sun_elevation = states('sensor.sun_elevation') | float(0) %}
-          {% if dark_outside or hour >= 22 or hour < 5 %}
-            {% set time_multiplier = 1.3 %}
-          {% elif sun_elevation < 5 %}
-            {% set time_multiplier = 1.1 %}
-          {% else %}
-            {% set time_multiplier = 0.8 %}
-          {% endif %}
-
-          {% if is_state('input_boolean.house_occupied', 'on') %}
-            {% set occupancy_multiplier = 0.7 %}
-          {% else %}
-            {% set occupancy_multiplier = 1.5 %}
-          {% endif %}
-
-          {% set house_mode = states('input_select.house') %}
-          {% if house_mode == 'away' %}
-            {% set mode_multiplier = 1.3 %}
-          {% elif house_mode == 'vacation' %}
-            {% set mode_multiplier = 1.5 %}
-          {% elif house_mode == 'bedtime' %}
-            {% set mode_multiplier = 1.2 %}
-          {% elif house_mode == 'quiet' %}
-            {% set mode_multiplier = 1.1 %}
-          {% elif house_mode == 'entertainment' %}
-            {% set mode_multiplier = 0.9 %}
-          {% else %}
-            {% set mode_multiplier = 1.0 %}
-          {% endif %}
-
-          {% set ups_status = states('sensor.apc_ups_status_data') %}
-          {% if ups_status == 'OB' %}
-            {% set power_multiplier = 1.3 %}
-          {% elif ups_status == 'LB' %}
-            {% set power_multiplier = 1.4 %}
-          {% else %}
-            {% set power_multiplier = 1.0 %}
-          {% endif %}
-
-          {% if is_state('input_boolean.bad_weather', 'on') %}
-            {% set weather_multiplier = 1.2 %}
-          {% else %}
-            {% set weather_multiplier = 1.0 %}
-          {% endif %}
-
-          {% if is_state('input_boolean.speech_notifications', 'off') %}
-            {% set speech_multiplier = 1.3 %}
-          {% else %}
-            {% set speech_multiplier = 1.0 %}
-          {% endif %}
-
-          {% set cam_unavailable = state_attr('binary_sensor.cameras_available', 'unavailable_count') | int(0) %}
-          {% set camera_multiplier = 1 + (0.05 * cam_unavailable) %}
-          {% if camera_multiplier > 1.3 %}
-            {% set camera_multiplier = 1.3 %}
-          {% endif %}
-
-          {% if is_state('input_boolean.vacation_mode', 'on') %}
-            {% set vacation_multiplier = 1.3 %}
-          {% else %}
-            {% set vacation_multiplier = 1.0 %}
-          {% endif %}
-
-          {% set risk_multiplier = (
-            time_multiplier *
-            occupancy_multiplier *
-            mode_multiplier *
-            power_multiplier *
-            weather_multiplier *
-            speech_multiplier *
-            camera_multiplier *
-            vacation_multiplier
-          ) | round(2) %}
-          {% if risk_multiplier < 0.7 %}
-            {% set risk_multiplier = 0.7 %}
-          {% elif risk_multiplier > 1.8 %}
-            {% set risk_multiplier = 1.8 %}
-          {% endif %}
-
-          {# ------------------------------------------------------------------- #}
-          {# MAIN SCORING LOGIC                                                 #}
-          {# ------------------------------------------------------------------- #}
-
-          {% set alarm_state = states('alarm_control_panel.kohbo') %}
-          {% set vacation = is_state('input_boolean.vacation_mode', 'on') %}
           {% set occupied = is_state('input_boolean.house_occupied', 'on') %}
+          {% set vacation = is_state('input_boolean.vacation_mode', 'on') %}
+          {% set alarm_state = states('alarm_control_panel.kohbo') %}
+          {% set ups_status = states('sensor.apc_ups_status_data') %}
+          {% set runtime = states('sensor.apc_ups_battery_runtime') | int(9999) %}
+          {% set bad_weather = is_state('input_boolean.bad_weather', 'on') %}
 
-          {# Alarm weighting tuned for vacation/away context #}
+          {# ------------------------------------------------------------------- #}
+          {# SECURITY MEASURES (0-100 points)                                   #}
+          {# These are things you CAN control - max out at 100 when all secure  #}
+          {# ------------------------------------------------------------------- #}
+
+          {# Alarm state (0-30 points) #}
           {% if alarm_state == 'armed_away' %}
-            {% if vacation %}
-              {% set score = score + (40 / risk_multiplier) %}
-            {% elif not occupied %}
-              {% set score = score + (30 / risk_multiplier) %}
-            {% else %}
-              {% set score = score + (25 / risk_multiplier) %}
-            {% endif %}
+            {% set score = score + 30 %}
           {% elif alarm_state == 'armed_home' %}
-            {% if occupied %}
-              {% set score = score + (25 / risk_multiplier) %}
-            {% else %}
-              {% set score = score + (15 / risk_multiplier) %}
-            {% endif %}
+            {% set score = score + 25 %}
           {% elif alarm_state == 'disarmed' %}
-            {% if vacation %}
-              {% set score = score - (40 * risk_multiplier) %}
-            {% elif not occupied %}
-              {% set score = score - (25 * risk_multiplier) %}
+            {% if occupied %}
+              {% set score = score + 15 %}
             {% else %}
-              {% set score = score - (5 * risk_multiplier) %}
+              {% set score = score - 20 %}
             {% endif %}
           {% elif alarm_state == 'triggered' %}
-            {% set score = score - (50 * risk_multiplier) %}
+            {% set score = score - 40 %}
           {% endif %}
 
-          {# Locks and openings #}
+          {# Front door lock (0-18 points) #}
           {% if is_state('lock.front_door', 'locked') %}
-            {% set score = score + (15 / risk_multiplier) %}
+            {% set score = score + 18 %}
           {% else %}
-            {% set score = score - (10 * risk_multiplier) %}
+            {% set score = score - 15 %}
           {% endif %}
 
+          {# Garage entry door lock (0-12 points) #}
           {% if is_state('lock.garage_entry_door', 'locked') %}
-            {% set score = score + (10 / risk_multiplier) %}
+            {% set score = score + 12 %}
           {% else %}
-            {% set score = score - (10 * risk_multiplier) %}
+            {% set score = score - 10 %}
           {% endif %}
 
+          {# Exterior doors closed (0-12 points) #}
           {% if is_state('binary_sensor.exterior_doors', 'off') %}
-            {% set score = score + (10 / risk_multiplier) %}
+            {% set score = score + 12 %}
           {% else %}
-            {% set score = score - (15 * risk_multiplier) %}
+            {% set score = score - 12 %}
           {% endif %}
 
+          {# Garage doors (0-10 points) #}
           {% if is_state('cover.garage_doors', 'closed') %}
-            {% set score = score + (10 / risk_multiplier) %}
+            {% set score = score + 10 %}
           {% else %}
-            {% set score = score - (20 * risk_multiplier) %}
+            {% set score = score - 15 %}
           {% endif %}
 
+          {# Windows (0-6 points) #}
           {% if is_state('binary_sensor.windows', 'off') %}
-            {% set score = score + (10 / risk_multiplier) %}
+            {% set score = score + 6 %}
           {% else %}
-            {% set score = score - (10 * risk_multiplier) %}
-          {% endif %}
-
-          {# Camera notifications and awareness #}
-          {% if is_state('input_boolean.camera_notifications', 'on') %}
-            {% set score = score + (10 / risk_multiplier) %}
-          {% else %}
-            {% if occupied %}
-              {% set score = score - (5 * risk_multiplier) %}
+            {% if occupied and not dark_outside %}
+              {% set score = score - 2 %}
             {% else %}
-              {% set score = score - (15 * risk_multiplier) %}
+              {% set score = score - 8 %}
             {% endif %}
           {% endif %}
 
-          {# UPS / Power #}
-          {% set runtime = states('sensor.apc_ups_battery_runtime') | int(9999) %}
-          {% if ups_status == 'OB' %}
-            {% set score = score - (15 * risk_multiplier) %}
+          {# Camera notifications (0-8 points) #}
+          {% if is_state('input_boolean.camera_notifications', 'on') %}
+            {% set score = score + 8 %}
+          {% else %}
+            {% if not occupied %}
+              {% set score = score - 10 %}
+            {% endif %}
+          {% endif %}
+
+          {# UPS / Power status (0-4 points) #}
+          {% if ups_status == 'OL' %}
+            {% set score = score + 4 %}
+          {% elif ups_status == 'OB' %}
+            {% set score = score - 10 %}
           {% elif ups_status == 'LB' %}
-            {% set score = score - (25 * risk_multiplier) %}
+            {% set score = score - 20 %}
           {% elif runtime < 600 %}
-            {% set score = score - (20 * risk_multiplier) %}
-          {% elif ups_status == 'OL' %}
-            {% set score = score + (5 / risk_multiplier) %}
-          {% endif %}
-
-          {# Lighting deterrence (night only) #}
-          {% if is_state('group.exterior_lights', 'on') and dark_outside %}
-            {% set score = score + (5 / risk_multiplier) %}
-          {% endif %}
-
-          {# Nighttime presence logic #}
-          {% if 22 <= hour or hour < 5 %}
-            {% if not occupied and alarm_state != 'armed_away' %}
-              {% set score = score - (20 * risk_multiplier) %}
-            {% elif occupied and alarm_state == 'disarmed' %}
-              {% set score = score - (5 * risk_multiplier) %}
-            {% endif %}
+            {% set score = score - 15 %}
           {% endif %}
 
           {# ------------------------------------------------------------------- #}
-          {# FINAL EVALUATION                                                   #}
+          {# INHERENT VULNERABILITY DEDUCTIONS                                  #}
+          {# These represent risk you CANNOT fully mitigate                     #}
+          {# Even with perfect security, these factors reduce your score        #}
+          {# ------------------------------------------------------------------- #}
+
+          {% set vulnerability = 0 %}
+
+          {# Empty house is inherently more vulnerable #}
+          {% if vacation %}
+            {% set vulnerability = vulnerability + 8 %}
+          {% elif not occupied %}
+            {% set vulnerability = vulnerability + 5 %}
+          {% endif %}
+
+          {# Dark/nighttime increases vulnerability #}
+          {% if dark_outside %}
+            {% set vulnerability = vulnerability + 4 %}
+          {% elif hour >= 22 or hour < 5 %}
+            {% set vulnerability = vulnerability + 4 %}
+          {% elif hour >= 20 or hour < 6 %}
+            {% set vulnerability = vulnerability + 2 %}
+          {% endif %}
+
+          {# Bad weather can mask break-in attempts #}
+          {% if bad_weather %}
+            {% set vulnerability = vulnerability + 2 %}
+          {% endif %}
+
+          {# Apply vulnerability deduction #}
+          {% set score = score - vulnerability %}
+
+          {# ------------------------------------------------------------------- #}
+          {# MITIGATING FACTORS (partial recovery of vulnerability)             #}
+          {# Good practices that help offset inherent risk                      #}
+          {# ------------------------------------------------------------------- #}
+
+          {# Exterior lights at night reduce vulnerability slightly #}
+          {% if dark_outside and is_state('group.exterior_lights', 'on') %}
+            {% set score = score + 2 %}
+          {% endif %}
+
+          {# Proper alarm mode for situation #}
+          {% if not occupied and alarm_state == 'armed_away' %}
+            {% set score = score + 3 %}
+          {% elif not occupied and alarm_state == 'armed_home' %}
+            {% set score = score + 1 %}
+          {% endif %}
+
+          {# ------------------------------------------------------------------- #}
+          {# FINAL SCORE (clamped 0-100)                                        #}
           {# ------------------------------------------------------------------- #}
           {% if score < 0 %}
             0
@@ -218,20 +171,25 @@ template:
           front_door: "{{ states('lock.front_door') }}"
           garage_entry_door: "{{ states('lock.garage_entry_door') }}"
           camera_notifications: "{{ states('input_boolean.camera_notifications') }}"
-          risk_multiplier: >
+          vulnerability: >
             {% set hour = now().hour %}
-            {% set dark_outside = is_state('input_boolean.dark_outside', 'on') %}
-            {% set occ = is_state('input_boolean.house_occupied', 'on') %}
-            {% set vac = is_state('input_boolean.vacation_mode', 'on') %}
-            {% set base = 1.0 %}
-            {% if dark_outside or hour >= 22 or hour < 5 %}
-              {% set base = base * 1.3 %}
+            {% set dark = is_state('input_boolean.dark_outside', 'on') %}
+            {% set occupied = is_state('input_boolean.house_occupied', 'on') %}
+            {% set vacation = is_state('input_boolean.vacation_mode', 'on') %}
+            {% set bad_weather = is_state('input_boolean.bad_weather', 'on') %}
+            {% set v = 0 %}
+            {% if vacation %}
+              {% set v = v + 8 %}
+            {% elif not occupied %}
+              {% set v = v + 5 %}
             {% endif %}
-            {% if not occ %}
-              {% set base = base * 1.5 %}
+            {% if dark or hour >= 22 or hour < 5 %}
+              {% set v = v + 4 %}
+            {% elif hour >= 20 or hour < 6 %}
+              {% set v = v + 2 %}
             {% endif %}
-            {% if vac %}
-              {% set base = base * 1.3 %}
+            {% if bad_weather %}
+              {% set v = v + 2 %}
             {% endif %}
-            {{ [0.7, base, 1.8] | sort | slice(1,1) | first | round(2) }}
+            {{ v }}
 
