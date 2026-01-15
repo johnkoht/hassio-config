@@ -1,0 +1,83 @@
+# 
+# Find Cristina's Phone Script
+# 
+# This script sends critical notifications to Cristina's phone when asked 
+# "Where's my phone?" via Alexa. It sends up to FIVE notifications with a 
+# 5-second delay between them to maximize the chance of finding the phone.
+# 
+# The notification includes an actionable "Phone Found" button that stops
+# the notification loop when pressed.
+# 
+# Usage: Ask Alexa "find my phone" or "find Cristina's phone"
+# 
+
+script:
+  # 
+  # Find Cristina's Phone
+  # 
+  # Sends up to five critical push notifications to Cristina's phone.
+  # The critical notification will play a sound even if the phone 
+  # is on silent mode. User can press "Phone Found" to stop the loop.
+  # 
+  cristina_find_phone:
+    alias: "Find Cristina's Phone"
+    description: "Send critical notifications to Cristina's phone to help locate it"
+    icon: mdi:cellphone-sound
+    mode: restart
+    
+    sequence:
+      # 
+      # Set the action variables for the actionable notification
+      # 
+      - variables:
+          action_phone_found: "{{ 'PHONE_FOUND_' ~ context.id }}"
+
+      # 
+      # Repeat notification loop - sends up to 5 notifications
+      # Stops early if user presses "Phone Found"
+      # 
+      - repeat:
+          count: 5
+          sequence:
+            # 
+            # Send critical notification with actionable button
+            # 
+            - action: script.general_notification
+              data:
+                title: "📱 Find My Phone"
+                message: "Cristina, your phone is ringing! Follow the sound to find it. ({{ repeat.index }}/5)"
+                devices: "cfalb"
+                priority: "critical"
+                tag: "cristina-find-phone"
+                actions:
+                  - action: "{{ action_phone_found }}"
+                    title: "Phone Found"
+            
+            # 
+            # Wait for "Phone Found" action or timeout after 5 seconds
+            # This allows user to stop the loop early
+            # 
+            - wait_for_trigger:
+                - trigger: event
+                  event_type: mobile_app_notification_action
+                  event_data:
+                    action: "{{ action_phone_found }}"
+              timeout:
+                seconds: 5
+            
+            # 
+            # If user pressed "Phone Found", stop the loop
+            # 
+            - if:
+                - condition: template
+                  value_template: "{{ wait.trigger is not none }}"
+              then:
+                - stop: "Phone found - stopping notifications"
+
+      # 
+      # Clear the notification after the loop completes
+      # 
+      - action: script.clear_notifications
+        data:
+          devices: "cfalb"
+          tag: "cristina-find-phone"

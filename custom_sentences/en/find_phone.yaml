@@ -1,0 +1,16 @@
+# 
+# Find Phone Custom Sentences
+# 
+# Custom sentences to trigger the Find My Phone feature via voice assistants.
+# 
+
+language: "en"
+intents:
+  FindCristinasPhone:
+    data:
+      - sentences:
+        - "find [my|cristina's|cristinas] phone"
+        - "where is [my|cristina's|cristinas] phone"
+        - "where's [my|cristina's|cristinas] phone"
+        - "call [my|cristina's|cristinas] phone"
+        - "ring [my|cristina's|cristinas] phone"
