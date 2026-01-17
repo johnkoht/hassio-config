@@ -1,0 +1,67 @@
+# 
+# Horizontal Action Card Fixed
+# 
+# Same as the Horizontal Action Card but fixed to
+# the bottom of the screen
+# 
+horizontal_action_card_fixed:
+  default:
+    - template: kohbo_horizontal_action_card_entity
+  card:
+    type: custom:stack-in-card
+    mode: horizontal
+    keep:
+      border_radius: true
+      background: true
+    card_mod:
+      style:
+        hui-horizontal-stack-card$: |
+          #root {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+
+          #root button-card {
+            flex: auto !important;
+          }
+
+        .: |
+          ha-card {
+            box-shadow: 0 -4px 6px 0px rgba(0, 0, 0, .2);
+            padding: 16px 20px 30px 20px !important;
+            position: fixed !important;
+            bottom: 89px !important;
+            z-index: 1 !important;
+            left: 0;
+            right: 0;
+            width: 100%;
+            # background-color: var(--darker-primary-color);
+            background-color: rgb(41 45 50 / 95%);
+            border-radius: 0;
+          }
+        
+    cards:
+      - type: custom:button-card
+        template: '[[template]]'
+        entity: '[[entity]]'
+        name: '[[name]]'
+        icon: '[[icon]]'
+        tap_action:
+          action: '[[tap_action]]'
+          navigation_path: '[[navigation_path]]'
+
+      - type: custom:mod-card
+        card_mod:
+          style: 
+            hui-horizontal-stack-card$: |
+              #root {
+                display: flex;
+                justify-content: end;
+                align-items: center;
+                gap: 5px !important;
+              }
+        card:
+          type: horizontal-stack
+          cards: '[[action_cards]]'
+            

@@ -12,6 +12,7 @@ kohbo_horizontal_action_card_entity:
       - grid-template-columns: 24px auto;
     card:
       - padding: 0px
+      - background: transparent
       - --button-card-ripple-pressed-opacity: 0
       - --button-card-ripple-hover-color: transparent
       - --button-card-ripple-hover-opacity: 0
