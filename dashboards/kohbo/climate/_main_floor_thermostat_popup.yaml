@@ -1,0 +1,12 @@
+# 
+# Main Floor Thermostat Popup
+# 
+type: custom:decluttering-card
+template: thermostat_popup
+variables:
+  - hash: "#main_floor_thermostat"
+  - entity: climate.nest_main_floor
+  - eco_mode: binary_sensor.main_floor_nest_in_eco
+  - name: Main Floor
+  - temperature_sensor: sensor.main_floor_temperature
+  - outside_temperature_sensor: sensor.tempest_temperature

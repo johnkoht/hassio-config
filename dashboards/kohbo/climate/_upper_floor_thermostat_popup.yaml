@@ -1,0 +1,12 @@
+# 
+# Upper Floor Thermostat Popup
+# 
+type: custom:decluttering-card
+template: thermostat_popup
+variables:
+  - hash: "#upper_floor_thermostat"
+  - entity: climate.nest_2nd_floor
+  - eco_mode: binary_sensor.second_floor_nest_in_eco
+  - name: Upper Floor
+  - temperature_sensor: sensor.second_floor_temperature
+  - outside_temperature_sensor: sensor.tempest_temperature
