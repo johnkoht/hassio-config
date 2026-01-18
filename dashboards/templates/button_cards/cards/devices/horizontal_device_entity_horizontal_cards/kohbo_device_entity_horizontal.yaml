@@ -9,6 +9,7 @@ kohbo_device_entity_horizontal:
       - grid-template-rows: 1fr
     card:
       - padding: 20px
+      - background-color: var(--dark-primary-color)
     label: 
       - justify-self: start
       - font-size: 12px
