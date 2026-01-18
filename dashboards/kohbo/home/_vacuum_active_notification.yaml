@@ -1,0 +1,74 @@
+#
+# Vacuum Running Notification
+#
+# 
+# Only display if the vacuum is cleaning
+# paused or idle
+# 
+type: conditional
+conditions:
+  - condition: state
+    entity: vacuum.main_floor_vacuum
+    state:
+      - cleaning
+      - paused
+      - idle
+card:
+  type: custom:decluttering-card
+  template: horizontal_action_card_fixed
+  variables:
+    - entity: vacuum.main_floor_vacuum
+    - name: Main Floor Vacuum
+    - template: kohbo_horizontal_action_card_entity
+    - icon: mdi:robot-vacuum
+    - tap_action: navigate
+    - navigation_path: '/dashboard-kohbo/main-floor-vacuum'
+    #  Action Cards
+    - action_cards:
+      # Pause Vacuum
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:pause
+        tap_action:
+          action: perform-action
+          perform_action: vacuum.pause
+          haptic: medium
+          data:
+            entity_id: vacuum.main_floor_vacuum
+        visibility:
+          - condition: state
+            entity: vacuum.main_floor_vacuum
+            state: "cleaning"
+      # Run Vacuum
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:play
+        tap_action:
+          action: perform-action
+          perform_action: vacuum.start
+          haptic: medium
+          data:
+            entity_id: vacuum.main_floor_vacuum
+        visibility:
+          - condition: state
+            entity: vacuum.main_floor_vacuum
+            state: 
+              - 'paused'
+              - 'idle'
+      # Dock Vacuum
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:robot-vacuum-off
+        tap_action:
+          action: perform-action
+          perform_action: vacuum.return_to_base
+          haptic: medium
+          data:
+            entity_id: vacuum.main_floor_vacuum
+        visibility:
+          - condition: state
+            entity: vacuum.main_floor_vacuum
+            state: 
+              - 'cleaning'
+              - 'paused'
+              - 'idle'

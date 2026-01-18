@@ -1,0 +1,39 @@
+# 
+# Front Door Camera Notification
+# 
+type: custom:button-card
+name: "Person detected at the front door"
+icon: mdi:alert-circle
+layout: icon_name
+show_icon: true
+size: 24px;
+tap_action:
+  action: navigate
+  navigation_path: '#front_door_camera'
+styles:
+  card:
+    - backdrop-filter: blur(10px)
+    - -webkit-backdrop-filter: blur(10px)
+    - padding: 10px
+  grid:
+    - grid-template-areas: '"i n"'
+    - grid-template-columns: 40px 1fr
+  name:
+    - justify-self: start
+    - font-weight: 600
+card_mod:
+  style: |
+    ha-card {
+      background: rgba(237, 71, 71, 0.8) !important;
+      position: fixed !important;
+      bottom: 110px !important;
+      z-index: 1 !important;
+      height: 50px !important;
+      left: 24px !important;
+      right: 24px !important;
+      width: calc(100% - 48px) !important;
+    }
+visibility:
+  - condition: state
+    entity: binary_sensor.front_door_person_occupancy
+    state: "on"
