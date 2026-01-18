@@ -1,0 +1,15 @@
+# 
+# Front Door Camera Popup
+# 
+type: custom:decluttering-card
+template: camera_popup
+variables:
+  - hash: '#front_door_camera'
+  - name: Front Door
+  - notifications_entity: input_boolean.front_door_camera_notifications
+  - timer_entity: timer.front_door_camera_notifications_snooze_timer
+  - countdown_sensor: sensor.front_door_timer_countdown
+  - stream_id: front_door_low
+  - camera_entity: camera.front_door
+  - motion_entity: binary_sensor.front_door_camera_motion
+  - person_entity: binary_sensor.front_door_camera_person_detected

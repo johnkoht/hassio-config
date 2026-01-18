@@ -1,0 +1,15 @@
+# 
+# Driveway Front Camera Popup
+# 
+type: custom:decluttering-card
+template: camera_popup
+variables:
+  - hash: '#driveway_front_camera'
+  - name: Driveway Front
+  - notifications_entity: input_boolean.driveway_front_camera_notifications
+  - timer_entity: timer.driveway_front_camera_notifications_snooze_timer
+  - countdown_sensor: sensor.driveway_front_timer_countdown
+  - stream_id: driveway_front_low
+  - camera_entity: camera.driveway_front
+  - motion_entity: binary_sensor.driveway_front_camera_motion
+  - person_entity: binary_sensor.driveway_front_camera_person_detected

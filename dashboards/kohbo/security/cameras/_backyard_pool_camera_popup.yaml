@@ -1,0 +1,15 @@
+# 
+# Backyard Pool Camera Popup
+# 
+type: custom:decluttering-card
+template: camera_popup
+variables:
+  - hash: '#backyard_pool_camera'
+  - name: Backyard Pool
+  - notifications_entity: input_boolean.backyard_pool_camera_notifications
+  - timer_entity: timer.backyard_pool_camera_notifications_snooze_timer
+  - countdown_sensor: sensor.backyard_pool_timer_countdown
+  - stream_id: backyard_pool
+  - camera_entity: camera.backyard_pool
+  - motion_entity: binary_sensor.backyard_pool_motion_2
+  - person_entity: binary_sensor.backyard_pool_person_detected
