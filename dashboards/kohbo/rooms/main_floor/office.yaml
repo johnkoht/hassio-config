@@ -427,6 +427,181 @@ cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Office Climate
+
+
+      - type: custom:mini-graph-card
+        entities:
+          - entity: sensor.office_awair_score
+          - entity: sensor.desplns_illinois_usa_air_quality_index
+        name: AQI Score
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+        hours_to_show: 12
+        points_per_hour: 4
+        line_width: 4
+        decimals: 0
+        smoothing: true
+        color_thresholds_transition: smooth
+        color_thresholds:
+          - color: "#6155F5"
+            value: 0
+          - color: "#ED4747"
+            value: 20
+          - color: "#E36001"
+            value: 40
+          - color: "#FFD166"
+            value: 60
+          - color: "#06D6A0"
+            value: 100
+
+
+
+      # 
+      # AQI
+      # 
+      - type: custom:apexcharts-card
+        experimental:
+          color_threshold: true
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent;
+              border-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              padding-bottom: 16px;
+            }
+            .apexcharts-legend {
+              padding: 0 !important;
+              margin: 0 !important;
+              margin-top: 10px !important;
+              display: flex !important;
+              flex-direction: row !important;
+              flex-wrap: wrap !important;
+              justify-content: center !important;
+            }
+            .apexcharts-legend-group {
+              display: contents !important;
+            }
+            .apexcharts-legend-series {
+              display: inline-flex !important;
+              margin: 0 8px !important;
+            }
+        graph_span: 24h
+        span:
+          start: day
+        header:
+          show: false
+        apex_config:
+          chart:
+            height: 200
+          grid:
+            borderColor: 'rgba(255,255,255,0.05)'
+          legend:
+            show: true
+            position: bottom
+            horizontalAlign: center
+            floating: false
+            fontSize: '11px'
+            markers:
+              width: 8
+              height: 8
+            itemMargin:
+              horizontal: 16
+              vertical: 0
+          xaxis:
+            labels:
+              format: 'HH'
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          yaxis:
+            - id: indoor
+              seriesName: Indoor AQI
+              min: 0
+              max: 100
+              tickAmount: 5
+              forceNiceScale: false
+              labels:
+                style:
+                  fontSize: '10px'
+                formatter: |
+                  EVAL: (val) => val ? `${Math.round(val)}` : '0'
+            - id: outdoor
+              seriesName: Outdoor AQI
+              opposite: true
+              min: 0
+              forceNiceScale: true
+              labels:
+                style:
+                  fontSize: '10px'
+                formatter: |
+                  EVAL: (val) => val ? `${Math.round(val)}` : '0'
+          tooltip:
+            x:
+              format: 'HH:mm'
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0.3
+              opacityFrom: 0.6
+              opacityTo: 0.1
+              stops:
+                - 0
+                - 90
+                - 100
+        series:
+          # Indoor AQI (office) - Area chart with color thresholds and gradient fill
+          # Awair score scale: 0-100
+          - entity: sensor.office_awair_score
+            type: area
+            name: Indoor AQI
+            unit: Score
+            color: var(--accent-color)
+            yaxis_id: indoor
+            color_threshold:
+              - value: 0
+                color: '#00E400'
+              - value: 30
+                color: '#FFFF00'
+              - value: 60
+                color: '#FF7E00'
+              - value: 80
+                color: '#FF0000'
+              - value: 95
+                color: '#8F3F97'
+            show:
+              extremas: false
+              in_header: true
+              legend_value: true
+          
+          # Outdoor AQI (reference line)
+          # EPA AQI scale: 0-500
+          - entity: sensor.desplns_illinois_usa_air_quality_index
+            type: line
+            name: Outdoor AQI
+            color: var(--light-primary-color)
+            unit: AQI
+            yaxis_id: outdoor
+            stroke_width: 3
+            curve: smooth
+            group_by:
+              func: avg
+              duration: 1h
+            show:
+              extremas: false
+              in_header: true
+              legend_value: true
+
+
+
+
+
+
+
       
       - type: custom:button-card
         template: kohbo_horizontal_info_card

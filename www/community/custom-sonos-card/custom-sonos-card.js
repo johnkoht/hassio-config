@@ -1,8 +1,3 @@
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 const t$3 = globalThis, e$5 = t$3.ShadowRoot && (void 0 === t$3.ShadyCSS || t$3.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$4 = Symbol(), o$6 = /* @__PURE__ */ new WeakMap();
 let n$7 = class n {
   constructor(t2, e2, o2) {
@@ -40,11 +35,6 @@ const r$7 = (t2) => new n$7("string" == typeof t2 ? t2 : t2 + "", void 0, s$4), 
   for (const s2 of t3.cssRules) e2 += s2.cssText;
   return r$7(e2);
 })(t2) : t2;
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 const { is: i$6, defineProperty: e$4, getOwnPropertyDescriptor: h$3, getOwnPropertyNames: r$6, getOwnPropertySymbols: o$5, getPrototypeOf: n$6 } = Object, a$1 = globalThis, c$3 = a$1.trustedTypes, l$1 = c$3 ? c$3.emptyScript : "", p$1 = a$1.reactiveElementPolyfillSupport, d$1 = (t2, s2) => t2, u$1 = { toAttribute(t2, s2) {
   switch (s2) {
     case Boolean:
@@ -255,11 +245,6 @@ let y$1 = class y extends HTMLElement {
   }
 };
 y$1.elementStyles = [], y$1.shadowRootOptions = { mode: "open" }, y$1[d$1("elementProperties")] = /* @__PURE__ */ new Map(), y$1[d$1("finalized")] = /* @__PURE__ */ new Map(), p$1?.({ ReactiveElement: y$1 }), (a$1.reactiveElementVersions ??= []).push("2.1.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 const t$2 = globalThis, i$5 = t$2.trustedTypes, s$3 = i$5 ? i$5.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, e$3 = "$lit$", h$2 = `lit$${Math.random().toFixed(9).slice(2)}$`, o$4 = "?" + h$2, n$5 = `<${o$4}>`, r$5 = document, l = () => r$5.createComment(""), c$2 = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, a = Array.isArray, u = (t2) => a(t2) || "function" == typeof t2?.[Symbol.iterator], d = "[ 	\n\f\r]", f$2 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, v = /-->/g, _ = />/g, m$1 = RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ 	
 \f\r"'\`<>=]|("|')|))|$)`, "g"), p = /'/g, g = /"/g, $ = /^(?:script|style|textarea|title)$/i, y2 = (t2) => (i5, ...s2) => ({ _$litType$: t2, strings: i5, values: s2 }), x = y2(1), T = Symbol.for("lit-noChange"), E = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), C = r$5.createTreeWalker(r$5, 129);
 function P(t2, i5) {
@@ -484,11 +469,6 @@ const B = (t2, i5, s2) => {
   }
   return h2._$AI(t2), h2;
 };
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 const s$2 = globalThis;
 let i$4 = class i extends y$1 {
   constructor() {
@@ -516,11 +496,6 @@ i$4._$litElement$ = true, i$4["finalized"] = true, s$2.litElementHydrateSupport?
 const o$3 = s$2.litElementPolyfillSupport;
 o$3?.({ LitElement: i$4 });
 (s$2.litElementVersions ??= []).push("4.2.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 const o$2 = { attribute: true, type: String, converter: u$1, reflect: false, hasChanged: f$3 }, r$4 = (t2 = o$2, e2, r2) => {
   const { kind: n3, metadata: i5 } = r2;
   let s2 = globalThis.litPropertyMetadata.get(i5);
@@ -548,25 +523,10 @@ function n$4(t2) {
     return e3.constructor.createProperty(o3, t3), r2 ? Object.getOwnPropertyDescriptor(e3, o3) : void 0;
   })(t2, e2, o2);
 }
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 function r$3(r2) {
   return n$4({ ...r2, state: true, attribute: false });
 }
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 const e$2 = (e2, t2, c2) => (c2.configurable = true, c2.enumerable = true, Reflect.decorate && "object" != typeof t2 && Object.defineProperty(e2, t2, c2), c2);
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 function e$1(e2, r2) {
   return (n3, s2, i5) => {
     const o2 = (t2) => t2.renderRoot?.querySelector(e2) ?? null;
@@ -604,166 +564,6 @@ var mdiVolumeHigh = "M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84
 var mdiVolumeMinus = "M3,9H7L12,4V20L7,15H3V9M14,11H22V13H14V11Z";
 var mdiVolumeMute = "M3,9H7L12,4V20L7,15H3V9M16.59,12L14,9.41L15.41,8L18,10.59L20.59,8L22,9.41L19.41,12L22,14.59L20.59,16L18,13.41L15.41,16L14,14.59L16.59,12Z";
 var mdiVolumePlus = "M3,9H7L12,4V20L7,15H3V9M14,11H17V8H19V11H22V13H19V16H17V13H14V11Z";
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const i$3 = (o2) => null === o2 || "object" != typeof o2 && "function" != typeof o2, f$1 = (o2) => void 0 === o2.strings;
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const t$1 = { ATTRIBUTE: 1, CHILD: 2 }, e = (t2) => (...e2) => ({ _$litDirective$: t2, values: e2 });
-let i$2 = class i2 {
-  constructor(t2) {
-  }
-  get _$AU() {
-    return this._$AM._$AU;
-  }
-  _$AT(t2, e2, i5) {
-    this._$Ct = t2, this._$AM = e2, this._$Ci = i5;
-  }
-  _$AS(t2, e2) {
-    return this.update(t2, e2);
-  }
-  update(t2, e2) {
-    return this.render(...e2);
-  }
-};
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const s$1 = (i5, t2) => {
-  const e2 = i5._$AN;
-  if (void 0 === e2) return false;
-  for (const i6 of e2) i6._$AO?.(t2, false), s$1(i6, t2);
-  return true;
-}, o$1 = (i5) => {
-  let t2, e2;
-  do {
-    if (void 0 === (t2 = i5._$AM)) break;
-    e2 = t2._$AN, e2.delete(i5), i5 = t2;
-  } while (0 === e2?.size);
-}, r$2 = (i5) => {
-  for (let t2; t2 = i5._$AM; i5 = t2) {
-    let e2 = t2._$AN;
-    if (void 0 === e2) t2._$AN = e2 = /* @__PURE__ */ new Set();
-    else if (e2.has(i5)) break;
-    e2.add(i5), c$1(t2);
-  }
-};
-function h$1(i5) {
-  void 0 !== this._$AN ? (o$1(this), this._$AM = i5, r$2(this)) : this._$AM = i5;
-}
-function n$3(i5, t2 = false, e2 = 0) {
-  const r2 = this._$AH, h2 = this._$AN;
-  if (void 0 !== h2 && 0 !== h2.size) if (t2) if (Array.isArray(r2)) for (let i6 = e2; i6 < r2.length; i6++) s$1(r2[i6], false), o$1(r2[i6]);
-  else null != r2 && (s$1(r2, false), o$1(r2));
-  else s$1(this, i5);
-}
-const c$1 = (i5) => {
-  i5.type == t$1.CHILD && (i5._$AP ??= n$3, i5._$AQ ??= h$1);
-};
-class f extends i$2 {
-  constructor() {
-    super(...arguments), this._$AN = void 0;
-  }
-  _$AT(i5, t2, e2) {
-    super._$AT(i5, t2, e2), r$2(this), this.isConnected = i5._$AU;
-  }
-  _$AO(i5, t2 = true) {
-    i5 !== this.isConnected && (this.isConnected = i5, i5 ? this.reconnected?.() : this.disconnected?.()), t2 && (s$1(this, i5), o$1(this));
-  }
-  setValue(t2) {
-    if (f$1(this._$Ct)) this._$Ct._$AI(t2, this);
-    else {
-      const i5 = [...this._$Ct._$AH];
-      i5[this._$Ci] = t2, this._$Ct._$AI(i5, this, 0);
-    }
-  }
-  disconnected() {
-  }
-  reconnected() {
-  }
-}
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-class s {
-  constructor(t2) {
-    this.G = t2;
-  }
-  disconnect() {
-    this.G = void 0;
-  }
-  reconnect(t2) {
-    this.G = t2;
-  }
-  deref() {
-    return this.G;
-  }
-}
-let i$1 = class i3 {
-  constructor() {
-    this.Y = void 0, this.Z = void 0;
-  }
-  get() {
-    return this.Y;
-  }
-  pause() {
-    this.Y ??= new Promise((t2) => this.Z = t2);
-  }
-  resume() {
-    this.Z?.(), this.Y = this.Z = void 0;
-  }
-};
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const n$2 = (t2) => !i$3(t2) && "function" == typeof t2.then, h = 1073741823;
-class c extends f {
-  constructor() {
-    super(...arguments), this._$Cwt = h, this._$Cbt = [], this._$CK = new s(this), this._$CX = new i$1();
-  }
-  render(...s2) {
-    return s2.find((t2) => !n$2(t2)) ?? T;
-  }
-  update(s2, i5) {
-    const e2 = this._$Cbt;
-    let r2 = e2.length;
-    this._$Cbt = i5;
-    const o2 = this._$CK, c2 = this._$CX;
-    this.isConnected || this.disconnected();
-    for (let t2 = 0; t2 < i5.length && !(t2 > this._$Cwt); t2++) {
-      const s3 = i5[t2];
-      if (!n$2(s3)) return this._$Cwt = t2, s3;
-      t2 < r2 && s3 === e2[t2] || (this._$Cwt = h, r2 = 0, Promise.resolve(s3).then(async (t3) => {
-        for (; c2.get(); ) await c2.get();
-        const i6 = o2.deref();
-        if (void 0 !== i6) {
-          const e3 = i6._$Cbt.indexOf(s3);
-          e3 > -1 && e3 < i6._$Cwt && (i6._$Cwt = e3, i6.setValue(t3));
-        }
-      }));
-    }
-    return T;
-  }
-  disconnected() {
-    this._$CK.disconnect(), this._$CX.pause();
-  }
-  reconnected() {
-    this._$CK.reconnect(this), this._$CX.resume();
-  }
-}
-const m = e(c);
 var Section = /* @__PURE__ */ ((Section2) => {
   Section2["MEDIA_BROWSER"] = "media browser";
   Section2["GROUPS"] = "groups";
@@ -938,14 +738,6 @@ function sortEntities(config, filtered) {
 function findPlayer(mediaPlayers, playerId) {
   return mediaPlayers.find((member) => member.id === playerId);
 }
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-function n$1(n3, r2, t2) {
-  return n3 ? r2(n3) : t2?.(n3);
-}
 var __defProp$t = Object.defineProperty;
 var __decorateClass$t = (decorators, target, key, kind) => {
   var result = void 0;
@@ -995,7 +787,7 @@ class PlayerControls extends i$4 {
     const playing = this.activePlayer.isPlaying();
     return x`
       <div class="main" id="mediaControls">
-        <div class="icons">
+        <div class="icons ${this.config.playerControlsLargeIcons ? "large-icons" : ""}">
           <div class="flex-1"></div>
           <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
           <sonos-shuffle hide=${noShuffle} .store=${this.store}></sonos-shuffle>
@@ -1009,9 +801,7 @@ class PlayerControls extends i$4 {
           <sonos-repeat hide=${noRepeat} .store=${this.store}></sonos-repeat>
 
           <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
-          <div class="audio-input-format">
-            ${n$1(this.config.showAudioInputFormat, () => m(this.getAudioInputFormat()))}
-          </div>
+          <div class="flex-1"></div>
           <ha-icon-button hide=${noBrowse} @click=${this.browseMedia} .path=${mdiPlayBoxMultiple}></ha-icon-button>
         </div>
         <sonos-volume .store=${this.store} .player=${this.volumePlayer}
@@ -1033,11 +823,6 @@ class PlayerControls extends i$4 {
     }
     return result ?? this.activePlayer;
   }
-  async getAudioInputFormat() {
-    const sensors = await this.store.hassService.getRelatedEntities(this.activePlayer, "sensor");
-    const audioInputFormat = sensors.find((sensor) => sensor.entity_id.includes("audio_input_format"));
-    return audioInputFormat && audioInputFormat.state && audioInputFormat.state !== "No audio" ? x`<div>${audioInputFormat.state}</div>` : "";
-  }
   static get styles() {
     return i$7`
       .main {
@@ -1055,22 +840,22 @@ class PlayerControls extends i$4 {
         --mdc-icon-button-size: 5rem;
         --mdc-icon-size: 5rem;
       }
-      .audio-input-format {
-        flex: 1 0 0;
-        margin-bottom: 10px;
-        text-align: center;
-        align-self: end;
+
+      .large-icons ha-icon-button {
+        --mdc-icon-size: 3rem;
+        --mdc-icon-button-size: 4rem;
       }
-      .audio-input-format > div {
-        color: var(--card-background-color);
-        background: var(--disabled-text-color);
-        white-space: nowrap;
-        font-size: smaller;
-        line-height: normal;
-        padding: 3px;
+
+      .large-icons .big-icon {
+        --mdc-icon-size: 5rem;
+        --mdc-icon-button-size: 5rem;
       }
       .flex-1 {
         flex: 1;
+      }
+
+      .large-icons {
+        margin-bottom: 2rem;
       }
     `;
   }
@@ -1079,6 +864,144 @@ __decorateClass$t([
   n$4({ attribute: false })
 ], PlayerControls.prototype, "store");
 customElements.define("sonos-player-controls", PlayerControls);
+const i$3 = (o2) => null === o2 || "object" != typeof o2 && "function" != typeof o2, f$1 = (o2) => void 0 === o2.strings;
+const t$1 = { ATTRIBUTE: 1, CHILD: 2 }, e = (t2) => (...e2) => ({ _$litDirective$: t2, values: e2 });
+let i$2 = class i2 {
+  constructor(t2) {
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  _$AT(t2, e2, i5) {
+    this._$Ct = t2, this._$AM = e2, this._$Ci = i5;
+  }
+  _$AS(t2, e2) {
+    return this.update(t2, e2);
+  }
+  update(t2, e2) {
+    return this.render(...e2);
+  }
+};
+const s$1 = (i5, t2) => {
+  const e2 = i5._$AN;
+  if (void 0 === e2) return false;
+  for (const i6 of e2) i6._$AO?.(t2, false), s$1(i6, t2);
+  return true;
+}, o$1 = (i5) => {
+  let t2, e2;
+  do {
+    if (void 0 === (t2 = i5._$AM)) break;
+    e2 = t2._$AN, e2.delete(i5), i5 = t2;
+  } while (0 === e2?.size);
+}, r$2 = (i5) => {
+  for (let t2; t2 = i5._$AM; i5 = t2) {
+    let e2 = t2._$AN;
+    if (void 0 === e2) t2._$AN = e2 = /* @__PURE__ */ new Set();
+    else if (e2.has(i5)) break;
+    e2.add(i5), c$1(t2);
+  }
+};
+function h$1(i5) {
+  void 0 !== this._$AN ? (o$1(this), this._$AM = i5, r$2(this)) : this._$AM = i5;
+}
+function n$3(i5, t2 = false, e2 = 0) {
+  const r2 = this._$AH, h2 = this._$AN;
+  if (void 0 !== h2 && 0 !== h2.size) if (t2) if (Array.isArray(r2)) for (let i6 = e2; i6 < r2.length; i6++) s$1(r2[i6], false), o$1(r2[i6]);
+  else null != r2 && (s$1(r2, false), o$1(r2));
+  else s$1(this, i5);
+}
+const c$1 = (i5) => {
+  i5.type == t$1.CHILD && (i5._$AP ??= n$3, i5._$AQ ??= h$1);
+};
+class f extends i$2 {
+  constructor() {
+    super(...arguments), this._$AN = void 0;
+  }
+  _$AT(i5, t2, e2) {
+    super._$AT(i5, t2, e2), r$2(this), this.isConnected = i5._$AU;
+  }
+  _$AO(i5, t2 = true) {
+    i5 !== this.isConnected && (this.isConnected = i5, i5 ? this.reconnected?.() : this.disconnected?.()), t2 && (s$1(this, i5), o$1(this));
+  }
+  setValue(t2) {
+    if (f$1(this._$Ct)) this._$Ct._$AI(t2, this);
+    else {
+      const i5 = [...this._$Ct._$AH];
+      i5[this._$Ci] = t2, this._$Ct._$AI(i5, this, 0);
+    }
+  }
+  disconnected() {
+  }
+  reconnected() {
+  }
+}
+class s {
+  constructor(t2) {
+    this.G = t2;
+  }
+  disconnect() {
+    this.G = void 0;
+  }
+  reconnect(t2) {
+    this.G = t2;
+  }
+  deref() {
+    return this.G;
+  }
+}
+let i$1 = class i3 {
+  constructor() {
+    this.Y = void 0, this.Z = void 0;
+  }
+  get() {
+    return this.Y;
+  }
+  pause() {
+    this.Y ??= new Promise((t2) => this.Z = t2);
+  }
+  resume() {
+    this.Z?.(), this.Y = this.Z = void 0;
+  }
+};
+const n$2 = (t2) => !i$3(t2) && "function" == typeof t2.then, h = 1073741823;
+class c extends f {
+  constructor() {
+    super(...arguments), this._$Cwt = h, this._$Cbt = [], this._$CK = new s(this), this._$CX = new i$1();
+  }
+  render(...s2) {
+    return s2.find((t2) => !n$2(t2)) ?? T;
+  }
+  update(s2, i5) {
+    const e2 = this._$Cbt;
+    let r2 = e2.length;
+    this._$Cbt = i5;
+    const o2 = this._$CK, c2 = this._$CX;
+    this.isConnected || this.disconnected();
+    for (let t2 = 0; t2 < i5.length && !(t2 > this._$Cwt); t2++) {
+      const s3 = i5[t2];
+      if (!n$2(s3)) return this._$Cwt = t2, s3;
+      t2 < r2 && s3 === e2[t2] || (this._$Cwt = h, r2 = 0, Promise.resolve(s3).then(async (t3) => {
+        for (; c2.get(); ) await c2.get();
+        const i6 = o2.deref();
+        if (void 0 !== i6) {
+          const e3 = i6._$Cbt.indexOf(s3);
+          e3 > -1 && e3 < i6._$Cwt && (i6._$Cwt = e3, i6.setValue(t3));
+        }
+      }));
+    }
+    return T;
+  }
+  disconnected() {
+    this._$CK.disconnect(), this._$CX.pause();
+  }
+  reconnected() {
+    this._$CK.reconnect(this), this._$CX.resume();
+  }
+}
+const m = e(c);
+function n$1(n3, r2, t2) {
+  return n3 ? r2(n3) : t2?.(n3);
+}
 var __defProp$s = Object.defineProperty;
 var __decorateClass$s = (decorators, target, key, kind) => {
   var result = void 0;
@@ -1095,7 +1018,9 @@ class PlayerHeader extends i$4 {
     return x` <div class="info">
       <div class="entity">${getSpeakerList(this.activePlayer, this.store.predefinedGroups)}</div>
       <div class="song">${this.getSong()}</div>
-      <div class="artist-album">${this.getAlbum()}</div>
+      <div class="artist-album">
+        ${this.getAlbum()} ${n$1(this.config.showAudioInputFormat, () => m(this.getAudioInputFormat()))}
+      </div>
       <sonos-progress .store=${this.store}></sonos-progress>
     </div>`;
   }
@@ -1115,6 +1040,11 @@ class PlayerHeader extends i$4 {
       album = `${this.activePlayer.attributes.media_playlist} - ${album}`;
     }
     return album;
+  }
+  async getAudioInputFormat() {
+    const sensors = await this.store.hassService.getRelatedEntities(this.activePlayer, "sensor");
+    const audioInputFormat = sensors.find((sensor) => sensor.entity_id.includes("audio_input_format"));
+    return audioInputFormat && audioInputFormat.state && audioInputFormat.state !== "No audio" ? x`<span class="audio-input-format">${audioInputFormat.state}</span>` : "";
   }
   static get styles() {
     return i$7`
@@ -1146,6 +1076,16 @@ class PlayerHeader extends i$4 {
         font-weight: 300;
         color: var(--secondary-text-color);
       }
+
+      .audio-input-format {
+        color: var(--card-background-color);
+        background: var(--disabled-text-color);
+        white-space: nowrap;
+        font-size: smaller;
+        line-height: normal;
+        padding: 3px;
+        margin-left: 8px;
+      }
     `;
   }
 }
@@ -1153,11 +1093,6 @@ __decorateClass$s([
   n$4({ attribute: false })
 ], PlayerHeader.prototype, "store");
 customElements.define("sonos-player-header", PlayerHeader);
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 const n2 = "important", i4 = " !" + n2, o = e(class extends i$2 {
   constructor(t2) {
     if (super(t2), t2.type !== t$1.ATTRIBUTE || "style" !== t2.name || t2.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
@@ -1461,15 +1396,23 @@ class Player extends i$4 {
   render() {
     this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
-    const artworkAsBackground = this.config.artworkAsBackground;
+    this.resolveTemplateImageUrlIfNeeded();
+    const blurAmount = this.config.artworkAsBackgroundBlur ?? 0;
+    const artworkAsBackground = this.config.artworkAsBackground || blurAmount > 0;
+    const backgroundOpacity = this.config.playerControlsAndHeaderBackgroundOpacity ?? 0.9;
+    const containerStyle = artworkAsBackground ? blurAmount > 0 ? `--blur-background-image: ${this.getBackgroundImageUrl()}; --blur-amount: ${blurAmount}px; --background-opacity: ${backgroundOpacity}` : `${this.getBackgroundImage()}; --background-opacity: ${backgroundOpacity}` : "";
     return x`
-      <div class="container" style=${artworkAsBackground && this.getBackgroundImage()}>
+      <div class="container ${blurAmount > 0 ? "blurred-background" : ""}" style=${containerStyle || E}>
         <sonos-player-header
           class="header"
           background=${artworkAsBackground || E}
           .store=${this.store}
         ></sonos-player-header>
-        <div class="artwork" hide=${artworkAsBackground || E} style=${this.artworkStyle()}></div>
+        <div
+          class="artwork"
+          hide=${artworkAsBackground && !blurAmount || this.config.hidePlayerArtwork || E}
+          style=${this.artworkStyle()}
+        ></div>
         <sonos-player-controls
           class="controls"
           background=${artworkAsBackground || E}
@@ -1482,6 +1425,16 @@ class Player extends i$4 {
     const minHeight = this.config.artworkMinHeight ?? 5;
     return `${this.getBackgroundImage()}; min-height: ${minHeight}rem`;
   }
+  getBackgroundImageUrl() {
+    const fallbackImage = this.config.fallbackArtwork ?? (this.activePlayer.attributes.media_title === "TV" ? TV_BASE64_IMAGE : MUSIC_NOTES_BASE64_IMAGE);
+    const fallbackBackgroundUrl = `url(${fallbackImage})`;
+    const image = this.getArtworkImage();
+    if (image?.entityImage) {
+      return `url(${image.entityImage}), ${fallbackBackgroundUrl}`;
+    } else {
+      return fallbackBackgroundUrl;
+    }
+  }
   getBackgroundImage() {
     const fallbackImage = this.config.fallbackArtwork ?? (this.activePlayer.attributes.media_title === "TV" ? TV_BASE64_IMAGE : MUSIC_NOTES_BASE64_IMAGE);
     const fallbackBackgroundUrl = `url(${fallbackImage})`;
@@ -1492,37 +1445,49 @@ class Player extends i$4 {
       return `background-image: ${fallbackBackgroundUrl}`;
     }
   }
+  getMatchingOverride(entityImage) {
+    const overrides = this.config.mediaArtworkOverrides;
+    if (!overrides) return void 0;
+    const { media_title, media_artist, media_album_name, media_content_id, media_channel } = this.activePlayer.attributes;
+    let override = overrides.find(
+      (value) => media_title && media_title === value.mediaTitleEquals || media_artist && media_artist === value.mediaArtistEquals || media_album_name && media_album_name === value.mediaAlbumNameEquals || media_channel && media_channel === value.mediaChannelEquals || media_content_id && media_content_id === value.mediaContentIdEquals
+    );
+    if (!override) {
+      override = overrides.find((value) => !entityImage && value.ifMissing);
+    }
+    return override;
+  }
   getArtworkImage() {
     const prefix = this.config.artworkHostname || "";
-    const {
-      media_title,
-      media_artist,
-      media_album_name,
-      media_content_id,
-      media_channel,
-      entity_picture,
-      entity_picture_local,
-      app_id
-    } = this.activePlayer.attributes;
+    const { entity_picture, entity_picture_local, app_id } = this.activePlayer.attributes;
     let entityImage = entity_picture ? prefix + entity_picture : entity_picture;
     if (app_id === "music_assistant") {
       entityImage = entity_picture_local ? prefix + entity_picture_local : entity_picture;
     }
     let sizePercentage = void 0;
-    const overrides = this.config.mediaArtworkOverrides;
-    if (overrides) {
-      let override = overrides.find(
-        (value) => media_title && media_title === value.mediaTitleEquals || media_artist && media_artist === value.mediaArtistEquals || media_album_name && media_album_name === value.mediaAlbumNameEquals || media_channel && media_channel === value.mediaChannelEquals || media_content_id && media_content_id === value.mediaContentIdEquals
-      );
-      if (!override) {
-        override = overrides.find((value) => !entityImage && value.ifMissing);
-      }
-      if (override?.imageUrl) {
+    const override = this.getMatchingOverride(entityImage);
+    if (override?.imageUrl) {
+      if (override.imageUrl.includes("{{")) {
+        entityImage = this.resolvedImageUrl ?? "";
+      } else {
         entityImage = override.imageUrl;
-        sizePercentage = override?.sizePercentage ?? sizePercentage;
       }
+      sizePercentage = override?.sizePercentage ?? sizePercentage;
     }
     return { entityImage, sizePercentage };
+  }
+  resolveTemplateImageUrlIfNeeded() {
+    const override = this.getMatchingOverride(this.activePlayer.attributes.entity_picture);
+    const templateUrl = override?.imageUrl?.includes("{{") ? override.imageUrl : void 0;
+    if (templateUrl && this.lastTemplateUrl !== templateUrl) {
+      this.lastTemplateUrl = templateUrl;
+      this.store.hassService.renderTemplate(templateUrl, "").then((result) => {
+        this.resolvedImageUrl = result;
+      });
+    } else if (!templateUrl) {
+      this.lastTemplateUrl = void 0;
+      this.resolvedImageUrl = void 0;
+    }
   }
   static get styles() {
     return i$7`
@@ -1536,6 +1501,7 @@ class Player extends i$4 {
       }
 
       .container {
+        position: relative;
         display: grid;
         grid-template-columns: 100%;
         grid-template-rows: min-content auto min-content;
@@ -1549,10 +1515,33 @@ class Player extends i$4 {
         background-size: cover;
       }
 
+      .container.blurred-background {
+        background: none;
+        isolation: isolate;
+        overflow: hidden;
+      }
+
+      .container.blurred-background::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: var(--blur-background-image);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        filter: blur(var(--blur-amount));
+        transform: scale(1.1);
+        z-index: -1;
+      }
+
       .header {
         grid-area: header;
-        margin: 0.75rem 3.25rem;
+        margin: 0.75rem 1.25rem;
         padding: 0.5rem;
+        position: relative;
       }
 
       .controls {
@@ -1560,6 +1549,7 @@ class Player extends i$4 {
         overflow-y: auto;
         margin: 0.25rem;
         padding: 0.5rem;
+        position: relative;
       }
 
       .artwork {
@@ -1573,6 +1563,7 @@ class Player extends i$4 {
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
+        position: relative;
       }
 
       *[hide] {
@@ -1580,7 +1571,7 @@ class Player extends i$4 {
       }
 
       *[background] {
-        background-color: rgba(var(--rgb-card-background-color), 0.9);
+        background-color: rgba(var(--rgb-card-background-color), var(--background-opacity, 0.9));
         border-radius: 10px;
       }
     `;
@@ -1589,11 +1580,9 @@ class Player extends i$4 {
 __decorateClass$p([
   n$4({ attribute: false })
 ], Player.prototype, "store");
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
+__decorateClass$p([
+  r$3()
+], Player.prototype, "resolvedImageUrl");
 const r$1 = (r2, o2, t2) => {
   for (const t3 of o2) if (t3[0] === r2) return (0, t3[1])();
   return t2?.();
@@ -1628,26 +1617,29 @@ class HassService {
     }
     return mediaPlayerItem;
   }
-  async getRelatedEntities(player, ...entityTypes) {
+  async renderTemplate(template, defaultValue) {
     return new Promise((resolve) => {
       const subscribeMessage = {
         type: "render_template",
-        template: `{{ device_entities(device_id('${player.id}')) }}`
+        template
       };
       try {
         this.hass.connection.subscribeMessage((response) => {
           try {
-            resolve(
-              response.result.filter((item) => entityTypes.some((type) => item.includes(type))).map((item) => this.hass.states[item])
-            );
+            resolve(response.result);
           } catch {
-            resolve([]);
+            resolve(defaultValue);
           }
-        }, subscribeMessage).then((unsub) => unsub);
+        }, subscribeMessage).then((unsub) => unsub());
       } catch {
-        resolve([]);
+        resolve(defaultValue);
       }
     });
+  }
+  async getRelatedEntities(player, ...entityTypes) {
+    const template = `{{ device_entities(device_id('${player.id}')) }}`;
+    const result = await this.renderTemplate(template, []);
+    return result.filter((item) => entityTypes.some((type) => item.includes(type))).map((item) => this.hass.states[item]);
   }
   async getQueue(mediaPlayer) {
     try {
@@ -1701,6 +1693,36 @@ class HassService {
     await this.hass.callService("sonos", "clear_sleep_timer", {
       entity_id: player.id
     });
+  }
+  async setSwitch(entityId, state) {
+    await this.hass.callService("switch", state ? "turn_on" : "turn_off", {
+      entity_id: entityId
+    });
+  }
+  async setNumber(entityId, value) {
+    await this.hass.callService("number", "set_value", {
+      entity_id: entityId,
+      value
+    });
+  }
+  async setRelatedEntityValue(player, name, value) {
+    if (value === void 0) {
+      return;
+    }
+    const type = typeof value === "number" ? "number" : "switch";
+    const entityId = await this.getRelatedEntityId(player, type, name);
+    if (!entityId) {
+      return;
+    }
+    if (typeof value === "number") {
+      await this.setNumber(entityId, value);
+    } else {
+      await this.setSwitch(entityId, value);
+    }
+  }
+  async getRelatedEntityId(player, entityType, namePart) {
+    const entities = await this.getRelatedEntities(player, entityType);
+    return entities.find((e2) => e2?.entity_id?.toLowerCase().includes(namePart.toLowerCase()))?.entity_id;
   }
 }
 const DEFAULT_MEDIA_THUMBNAIL = "data:image/png;base64,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";
@@ -1838,7 +1860,7 @@ class MediaControlService {
       entity_id: playerIds
     });
   }
-  async setVolumeAndMediaForPredefinedGroup(pg) {
+  async activatePredefinedGroup(pg) {
     for (const pgp of pg.entities) {
       const volume = pgp.volume ?? pg.volume;
       if (volume) {
@@ -1847,10 +1869,21 @@ class MediaControlService {
       if (pg.unmuteWhenGrouped) {
         await this.setVolumeMute(pgp.player, false, false);
       }
+      await this.applyPredefinedGroupSettings(pgp.player, pg);
     }
     if (pg.media) {
       await this.setSource(pg.entities[0].player, pg.media);
     }
+  }
+  async applyPredefinedGroupSettings(player, pg) {
+    await this.hassService.setRelatedEntityValue(player, "bass", pg.bass);
+    await this.hassService.setRelatedEntityValue(player, "treble", pg.treble);
+    await this.hassService.setRelatedEntityValue(player, "loudness", pg.loudness);
+    await this.hassService.setRelatedEntityValue(player, "night_sound", pg.nightSound);
+    await this.hassService.setRelatedEntityValue(player, "speech_enhancement", pg.speechEnhancement);
+    await this.hassService.setRelatedEntityValue(player, "crossfade", pg.crossfade);
+    await this.hassService.setRelatedEntityValue(player, "touch_controls", pg.touchControls);
+    await this.hassService.setRelatedEntityValue(player, "status_light", pg.statusLight);
   }
   async stop(mediaPlayer) {
     await this.hassService.callMediaService("media_stop", { entity_id: mediaPlayer.id });
@@ -2175,9 +2208,6 @@ class Store {
       const isGrouped = groupIds?.length > 1;
       const isMainInGroup = isGrouped && groupIds && groupIds[0] === hassEntity.entity_id;
       const available = this.hass.states[hassEntity.entity_id]?.state !== "unavailable";
-      if (!available) {
-        console.warn(`Player ${hassEntity.entity_id} is unavailable`);
-      }
       return (!isGrouped || isMainInGroup) && available;
     } catch (e2) {
       console.error("Failed to determine main player", JSON.stringify(hassEntity), e2);
@@ -2475,6 +2505,14 @@ const ADVANCED_SCHEMA = [
     selector: { boolean: {} }
   },
   {
+    name: "artworkAsBackgroundBlur",
+    selector: { number: { min: 0, max: 100, step: 1 } }
+  },
+  {
+    name: "playerControlsAndHeaderBackgroundOpacity",
+    selector: { number: { min: 0, max: 1, step: 0.1 } }
+  },
+  {
     name: "playerVolumeEntityId",
     selector: { entity: { multiple: false, filter: { domain: "media_player" } } }
   },
@@ -2560,6 +2598,30 @@ const ADVANCED_SCHEMA = [
   },
   {
     name: "changeVolumeOnSlide",
+    selector: { boolean: {} }
+  },
+  {
+    name: "hideMediaBrowserHeader",
+    selector: { boolean: {} }
+  },
+  {
+    name: "compactGroups",
+    selector: { boolean: {} }
+  },
+  {
+    name: "compactGrouping",
+    selector: { boolean: {} }
+  },
+  {
+    name: "groupingDisableMainSpeakers",
+    selector: { boolean: {} }
+  },
+  {
+    name: "hidePlayerArtwork",
+    selector: { boolean: {} }
+  },
+  {
+    name: "playerControlsLargeIcons",
     selector: { boolean: {} }
   }
 ];
@@ -3661,14 +3723,19 @@ class Grouping extends i$4 {
     }
     return x`
       <div class="wrapper">
-        <div class="predefined-groups">
+        <div class="predefined-groups" compact=${this.config.compactGrouping || E}>
           ${this.renderJoinAllButton()} ${this.renderUnJoinAllButton()}
           ${n$1(this.store.predefinedGroups, () => this.renderPredefinedGroups())}
         </div>
         <div class="list">
           ${this.groupingItems.map((item) => {
       return x`
-              <div class="item" modified=${item.isModified || E} disabled=${item.isDisabled || E}>
+              <div
+                class="item"
+                modified=${item.isModified || E}
+                disabled=${item.isDisabled || E}
+                compact=${this.config.compactGrouping || E}
+              >
                 <ha-icon
                   class="icon"
                   selected=${item.isSelected || E}
@@ -3721,11 +3788,21 @@ class Grouping extends i$4 {
           flex-shrink: 0;
         }
 
+        .predefined-groups[compact] {
+          margin: 0.3rem !important;
+        }
+
         .item {
           color: var(--secondary-text-color);
           padding: 0.5rem;
           display: flex;
           align-items: center;
+        }
+
+        .item[compact] {
+          padding-top: 0rem;
+          padding-bottom: 0;
+          border-bottom: 1px solid #333;
         }
 
         .icon {
@@ -3806,7 +3883,7 @@ class Grouping extends i$4 {
       await this.mediaControlService.unJoin(unJoin);
     }
     if (selectedPredefinedGroup) {
-      await this.mediaControlService.setVolumeAndMediaForPredefinedGroup(selectedPredefinedGroup);
+      await this.mediaControlService.activatePredefinedGroup(selectedPredefinedGroup);
     }
     if (newMainPlayer !== activePlayerId && !this.config.dontSwitchPlayerWhenGrouping) {
       dispatchActivePlayerId(newMainPlayer, this.config, this);
@@ -3825,6 +3902,14 @@ class Grouping extends i$4 {
     const selectedItems = groupingItems.filter((item) => item.isSelected);
     if (selectedItems.length === 1) {
       selectedItems[0].isDisabled = true;
+    }
+    if (this.config.groupingDisableMainSpeakers) {
+      const mainSpeakerIds = this.store.allGroups.filter((player) => player.members.length > 1).map((player) => player.id);
+      groupingItems.forEach((item) => {
+        if (mainSpeakerIds.includes(item.player.id)) {
+          item.isDisabled = true;
+        }
+      });
     }
     if (!this.config.groupingDontSortMembersOnTop) {
       groupingItems.sort((a2, b2) => {
@@ -3869,14 +3954,20 @@ class Grouping extends i$4 {
       `;
     });
   }
-  selectPredefinedGroup(predefinedGroup) {
-    this.groupingItems.forEach(async (item) => {
+  async selectPredefinedGroup(predefinedGroup) {
+    let hasGroupingChanges = false;
+    this.groupingItems.forEach((item) => {
       const inPG = predefinedGroup.entities.some((pgp) => pgp.player.id === item.player.id);
       if (inPG && !item.isSelected || !inPG && item.isSelected) {
         this.toggleItemWithoutDisabledCheck(item);
+        hasGroupingChanges = true;
       }
     });
     this.selectedPredefinedGroup = predefinedGroup;
+    if (!hasGroupingChanges && this.config.skipApplyButtonWhenGrouping) {
+      await this.mediaControlService.activatePredefinedGroup(predefinedGroup);
+      this.selectedPredefinedGroup = void 0;
+    }
   }
   selectAll() {
     this.groupingItems.forEach((item) => {
@@ -3929,6 +4020,7 @@ class Group extends i$4 {
     return x`
       <mwc-list-item
         hasMeta
+        class=${this.store.config.compactGroups ? "compact" : ""}
         ?selected=${this.selected}
         ?activated=${this.selected}
         @click=${() => this.handleGroupClicked()}
@@ -4006,6 +4098,10 @@ class Group extends i$4 {
         padding-left: 0;
       }
 
+      mwc-list-item.compact {
+        margin: 0.3rem;
+      }
+
       .row {
         display: flex;
         margin: 1rem 0;
@@ -4050,6 +4146,13 @@ class Group extends i$4 {
       ha-icon.small {
         --mdc-icon-size: 2rem;
         margin: 0;
+      }
+
+      .compact ha-icon {
+        --mdc-icon-size: 2rem;
+      }
+      .compact div {
+        margin: 0.1rem;
       }
 
       .bars {
@@ -4270,6 +4373,9 @@ var __decorateClass$5 = (decorators, target, key, kind) => {
 };
 class MediaBrowserHeader extends i$4 {
   render() {
+    if (this.store.config.hideMediaBrowserHeader) {
+      return E;
+    }
     return x`
       <div class="title">${this.store.config.mediaBrowserTitle ?? "All Favorites"}</div>
       <ha-icon-button

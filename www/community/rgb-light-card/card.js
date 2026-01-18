@@ -203,8 +203,8 @@ class RGBLightCard extends HTMLElement {
         if (color['color_name']) {
             return color['color_name'];
         }
-        if (color['color_temp'] || color['kelvin']) {
-            let mireds = parseInt(color['color_temp'], 10) || Math.round(1000000 / parseInt(color['kelvin'], 10));
+        if (color['color_temp_kelvin']) {
+            let mireds = Math.round(1000000 / parseInt(color['color_temp_kelvin'], 10));
             mireds = Math.max(154, Math.min(500, mireds));
             const center = (500 + 154) / 2;
             const cr = [[166, 209, 255], [255, 255, 255], [255, 160, 0]].slice(mireds < center ? 0 : 1); // prettier-ignore
@@ -348,7 +348,7 @@ window.customCardFeatures.push({
 });
 
 console.info(
-    '\n %c RGB Light Card %c v1.13.0 %c \n',
+    '\n %c RGB Light Card %c v1.14.0 %c \n',
     'background-color: #555;color: #fff;padding: 3px 2px 3px 3px;border-radius: 3px 0 0 3px;font-family: DejaVu Sans,Verdana,Geneva,sans-serif;text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3)',
     'background-color: #bc81e0;background-image: linear-gradient(90deg, #b65cff, #11cbfa);color: #fff;padding: 3px 3px 3px 2px;border-radius: 0 3px 3px 0;font-family: DejaVu Sans,Verdana,Geneva,sans-serif;text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3)',
     'background-color: transparent'
