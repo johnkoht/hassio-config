@@ -589,7 +589,7 @@ Use the appropriate device template for consistent styling:
   square: false
   cards:
     - type: custom:button-card
-      entity: binary_sensor.kitchen_door
+      entity: binary_sensor.kitchen_doors
       name: Kitchen Door
       template: kohbo_device_door_entity
 ```

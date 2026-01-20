@@ -120,47 +120,49 @@ cards:
     columns: 2
     square: false
     cards:
+      # Air Purifier
       - type: custom:button-card
         entity: fan.kitchen_air_purifier
         name: Air Purifier
         template: kohbo_device_air_purifier_entity
 
+      # South Wall Outlet
       - type: custom:button-card
         entity: switch.smart_plug_8_switch
         name: South Wall Outlet
         template: kohbo_device_smart_plug_entity
 
+      # Air Fryer
       - type: custom:button-card
         entity: switch.tradfri_smart_plug_2_switch
         name: Air Fryer
         template: kohbo_device_smart_plug_entity
 
+      # Toaster Oven
       - type: custom:button-card
         entity: switch.tradfri_smart_plug_4_switch
         name: Toaster Oven
         template: kohbo_device_smart_plug_entity
     
+      # Exterior Doors
       - type: custom:button-card
-        entity: binary_sensor.kitchen_door
+        entity: binary_sensor.kitchen_doors
         name: Exterior Doors
         template: kohbo_device_door_entity
 
+      # Windows
       - type: custom:button-card
-        entity: binary_sensor.kitchen_window_sensor
-        name: South Window
+        entity: binary_sensor.kitchen_windows
+        name: Windows
         template: kohbo_device_window_entity
 
-      - type: custom:button-card
-        entity: binary_sensor.kitchen_window_west_middle_sensor
-        name: West Window
-        template: kohbo_device_window_entity
-
+      # Sink Leak Sensor
       - type: custom:button-card
         entity: binary_sensor.kitchen_sink_leak_sensor
         name: Sink Leak Sensor
         template: kohbo_device_entity
 
-      # Alexa Dot
+      # Alexa Show
       - type: custom:button-card
         entity: media_player.john_s_echo_show
         name: Alexa Show

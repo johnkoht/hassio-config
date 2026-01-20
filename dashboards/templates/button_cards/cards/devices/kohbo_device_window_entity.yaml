@@ -7,3 +7,41 @@ kohbo_device_window_entity:
       else
         return "kohbo:kohbo-window-closed"
     ]]]
+  state_display: |
+    [[[
+      // Get the list of window entities from the group
+      const windowEntities = entity.attributes.entity_id || [];
+      const totalWindows = windowEntities.length;
+      
+      // Count how many windows are open
+      const openCount = windowEntities.filter(id => {
+        const windowState = states[id];
+        return windowState && windowState.state === 'on';
+      }).length;
+      
+      // Determine the display state
+      let stateText;
+      if (openCount === 0) {
+        stateText = "Closed";
+      } else if (openCount === totalWindows) {
+        stateText = "Open";
+      } else {
+        stateText = `${openCount} Open`;
+      }
+      
+      // Get the last changed time
+      const last = new Date(entity.last_changed);
+      const now = new Date();
+      const diff = Math.floor((now - last) / 1000);
+      
+      let timeAgo;
+      if (diff < 3600) {
+        timeAgo = `${Math.floor(diff / 60)}m`;
+      } else if (diff < 86400) {
+        timeAgo = `${Math.floor(diff / 3600)}h`;
+      } else {
+        timeAgo = `${Math.floor(diff / 86400)}d`;
+      }
+      
+      return `${stateText} - ${timeAgo}`;
+    ]]]

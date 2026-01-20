@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Kitchen Doors
+    unique_id: kitchen_doors
+    device_class: door
+    entities:
+      - binary_sensor.kitchen_patio_door
+      - binary_sensor.kitchen_sunroom_door

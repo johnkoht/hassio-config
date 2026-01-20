@@ -31,7 +31,7 @@ variables:
         navigation_path: '#kitchen_media_player'
     # Doors
     - type: custom:button-card
-      entity: binary_sensor.kitchen_door
+      entity: binary_sensor.kitchen_doors
       name: Doors
       template: kohbo_room_card_device
       icon: >

@@ -34,3 +34,16 @@ variables:
       tap_action:
         action: navigate
         navigation_path: '#family_room_media_player'
+
+    # Doors
+    - type: custom:button-card
+      entity: binary_sensor.family_room_doors
+      name: Doors
+      template: kohbo_room_card_device
+      icon: >
+        [[[
+          if (entity.state == "on")
+            return "kohbo:kohbo-door-open"
+          else
+            return "kohbo:kohbo-door-closed"
+        ]]]

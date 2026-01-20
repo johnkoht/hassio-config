@@ -32,6 +32,26 @@ cards:
     template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.interior_garage_door
     name: Interior Garage Door
+    
+  - type: custom:button-card
+    template: kohbo_device_door_entity_horizontal
+    entity: binary_sensor.kitchen_patio_door
+    name: Kitchen Patio Door
+
+  - type: custom:button-card
+    template: kohbo_device_door_entity_horizontal
+    entity: binary_sensor.kitchen_sunroom_door
+    name: Kitchen Sunroom Door
+
+  - type: custom:button-card
+    template: kohbo_device_door_entity_horizontal
+    entity: binary_sensor.family_room_left_door
+    name: Family Room Left Door
+
+  - type: custom:button-card
+    template: kohbo_device_door_entity_horizontal
+    entity: binary_sensor.family_room_right_door
+    name: Family Room Right Door
 
   - type: custom:button-card
     template: kohbo_device_door_entity_horizontal
@@ -42,12 +62,6 @@ cards:
     template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.upstairs_guest_bedroom_door
     name: Upstairs Guest Bedroom Door
-    
-  - type: custom:button-card
-    template: kohbo_device_door_entity_horizontal
-    entity: binary_sensor.kitchen_door
-    name: Kitchen Door
-
   
   # 
   # Exterior Doors Settings Popup

@@ -7,5 +7,9 @@ binary_sensor:
       - binary_sensor.basement_exterior_door
       - binary_sensor.upstairs_guest_bedroom_door
       - binary_sensor.interior_garage_door
-      - binary_sensor.kitchen_door
+      - binary_sensor.kitchen_patio_door
+      - binary_sensor.kitchen_sunroom_door
       - binary_sensor.front_door
+      - binary_sensor.family_room_right_door
+      - binary_sensor.family_room_left_door
+      - binary_sensor.playroom_exterior_door

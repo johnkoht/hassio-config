@@ -26,7 +26,7 @@ binary_sensor:
 
       # Kitchen door opened in the last 10 mins
       - platform: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_door.last_changed)) | int < 600 }}"
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_doors.last_changed)) | int < 600 }}"
         prob_given_true: 0.25
         prob_given_false: 0.09
 

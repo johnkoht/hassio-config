@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Family Room Doors
+    unique_id: family_room_doors
+    device_class: door
+    entities:
+      - binary_sensor.family_room_left_door
+      - binary_sensor.family_room_right_door

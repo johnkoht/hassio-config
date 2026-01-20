@@ -1,0 +1,8 @@
+binary_sensor:
+  - platform: group
+    name: Kitchen Windows
+    unique_id: kitchen_windows
+    device_class: window
+    entities:
+      - binary_sensor.kitchen_window_sensor
+      - binary_sensor.kitchen_window_west_middle_sensor

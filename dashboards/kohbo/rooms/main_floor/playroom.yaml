@@ -103,6 +103,12 @@ cards:
         name: West Window
         template: kohbo_device_window_entity
 
+      # Exterior Door
+      - type: custom:button-card
+        entity: binary_sensor.playroom_exterior_door
+        name: Exterior Door
+        template: kohbo_device_door_entity
+
       - type: custom:button-card
         entity: switch.smart_plug_15_switch
         name: South Wall

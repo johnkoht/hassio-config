@@ -38,7 +38,7 @@ automation:
                 entity_id: input_boolean.house_occupied
                 state: "on"
               - condition: template
-                value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('binary_sensor.kitchen_door','last_changed'), 0) ) | int > 600 }}"
+                value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('binary_sensor.kitchen_doors','last_changed'), 0) ) | int > 600 }}"
     action:
       #
       # Call the camera detection alert service to handle

@@ -7,4 +7,42 @@ kohbo_device_door_entity:
       else
         return "kohbo:kohbo-door-closed"
     ]]]
+  state_display: |
+    [[[
+      // Get the list of door entities from the group
+      const doorEntities = entity.attributes.entity_id || [];
+      const totalDoors = doorEntities.length;
+      
+      // Count how many doors are open
+      const openCount = doorEntities.filter(id => {
+        const doorState = states[id];
+        return doorState && doorState.state === 'on';
+      }).length;
+      
+      // Determine the display state
+      let stateText;
+      if (openCount === 0) {
+        stateText = "Closed";
+      } else if (openCount === totalDoors) {
+        stateText = "Open";
+      } else {
+        stateText = `${openCount} Open`;
+      }
+      
+      // Get the last changed time
+      const last = new Date(entity.last_changed);
+      const now = new Date();
+      const diff = Math.floor((now - last) / 1000);
+      
+      let timeAgo;
+      if (diff < 3600) {
+        timeAgo = `${Math.floor(diff / 60)}m`;
+      } else if (diff < 86400) {
+        timeAgo = `${Math.floor(diff / 3600)}h`;
+      } else {
+        timeAgo = `${Math.floor(diff / 86400)}d`;
+      }
+      
+      return `${stateText} - ${timeAgo}`;
+    ]]]
   

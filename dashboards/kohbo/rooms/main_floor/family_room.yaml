@@ -113,6 +113,12 @@ cards:
           power_sensor: sensor.smart_plug_4_family_room_power
           confirmation: true
 
+      # Exterior Doors
+      - type: custom:button-card
+        entity: binary_sensor.family_room_doors
+        name: Exterior Doors
+        template: kohbo_device_door_entity
+
 
   # 
   # Quick Settings
