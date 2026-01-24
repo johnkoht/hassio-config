@@ -1,0 +1,157 @@
+occupied_room_card:
+  size: 40px
+  # show_last_changed: true
+  show_label: true
+  # show_state: true
+  icon: "[[[ return entity.attributes.icon || 'mdi:room-service'; ]]]"
+  name: "[[[ return entity.attributes.friendly_name || entity.name || entity.entity_id.replace('sensor.', '').replace('_room', '').replace(/_/g, ' '); ]]]"
+  state_display: >
+    [[[
+      const mode = entity.attributes.mode || 'Auto';
+      const durationMinutes = entity.attributes.occupied_duration_minutes || 0;
+      
+      let duration = '';
+      if (durationMinutes < 1) {
+        duration = 'Just now';
+      } else if (durationMinutes < 60) {
+        duration = `${durationMinutes}m`;
+      } else {
+        duration = `${Math.floor(durationMinutes / 60)}h`;
+      }
+      
+      return `${mode} • ${duration}`;
+    ]]]
+  label: >
+    [[[
+      const durationMinutes = entity.attributes.occupied_duration_minutes || 0;
+      
+      let duration = '';
+      if (durationMinutes < 1) {
+        duration = 'Just now';
+      } else if (durationMinutes < 60) {
+        duration = `${durationMinutes} mins`;
+      } else {
+        duration = `${Math.floor(durationMinutes / 60)} hrs`;
+      }
+      
+      return `Occupied ${duration}`;
+    ]]]
+  custom_fields:
+    # mode: >
+    #   [[[
+    #     const mode = entity.attributes.mode || 'Auto';
+    #     return mode;
+    #   ]]]
+    # people: >
+    #   [[[
+    #     const people = entity.attributes.people || [];
+    #     if (people.length === 0) return '';
+        
+    #     // Convert person sensor entity IDs to friendly names
+    #     const peopleNames = people.map(personId => {
+    #       const personSensor = states[personId];
+    #       if (personSensor && personSensor.attributes && personSensor.attributes.friendly_name) {
+    #         // Extract name from friendly_name (e.g., "John Person" -> "John")
+    #         return personSensor.attributes.friendly_name.replace(' Person', '');
+    #       }
+    #       // Fallback: extract from entity_id
+    #       return personId
+    #         .replace('sensor.', '')
+    #         .replace('_person', '')
+    #         .split('_')
+    #         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    #         .join(' ');
+    #     });
+        
+    #     return peopleNames.join(', ');
+    #   ]]]
+    # temperature: >
+    #   [[[
+    #     const temp = entity.attributes.temperature;
+    #     if (temp !== null && temp !== undefined) {
+    #       return Math.round(temp) + '°';
+    #     }
+    #     return '';
+    #   ]]]
+    # humidity: >
+    #   [[[
+    #     const humidity = entity.attributes.humidity;
+    #     if (humidity !== null && humidity !== undefined) {
+    #       return Math.round(humidity) + '%';
+    #     }
+    #     return '';
+    #   ]]]
+    # aqi: >
+    #   [[[
+    #     const aqi = entity.attributes.aqi;
+    #     if (aqi && aqi !== 'null' && aqi !== 'unavailable') {
+    #       return aqi;
+    #     }
+    #     return '';
+    #   ]]]
+  state:
+    - value: 'on'
+      color: var(--success-color)
+    - value: 'off'
+      color: var(--light-grey-color)
+  styles:
+    grid:
+      # - grid-template-areas: '"n n" "i i" "s s" "p p" "t h a" "l l"'
+      # - grid-template-areas: '"mode people" "i i" "n n" "l l"'
+      - grid-template-areas: '"n n" "i i" "l l"'
+      # - grid-template-rows: 50px auto auto auto auto auto auto
+      - grid-template-rows: 50px auto 50px
+    card:
+      - flex: 0 0 120px !important
+      - padding: 20px
+      - background-color: var(--darker-primary-color);
+      - border-radius: 8px !important;
+      - padding: 10px 6px !important;
+      - height: 170px;
+      - width: 120px;
+      - align-items: center;
+      - align-content: space-between;
+      - justify-content: space-between;
+      - display: flex;
+      - flex-direction: column;
+    name:
+      - font-size: 14px !important;
+      - color: var(--primary-text-color)
+      - text-transform: capitalize
+      - font-weight: 700 !important
+      - text-wrap: auto
+    state:
+      - font-size: 11px !important;
+      - color: var(--secondary-text-color)
+      - font-weight: 400 !important
+      - margin-top: 4px
+    # custom_fields:
+    #   people:
+    #     - font-size: 11px !important;
+    #     - color: var(--secondary-text-color)
+    #     - font-weight: 400 !important;
+    #     - margin-top: 4px
+    #     - text-align: center
+    #   temperature:
+    #     - font-size: 10px !important;
+    #     - color: var(--secondary-text-color)
+    #     - font-weight: 400 !important;
+    #     - margin-top: 2px
+    #   humidity:
+    #     - font-size: 10px !important;
+    #     - color: var(--secondary-text-color)
+    #     - font-weight: 400 !important;
+    #     - margin-top: 2px
+    #   aqi:
+    #     - font-size: 10px !important;
+    #     - color: var(--secondary-text-color)
+    #     - font-weight: 400 !important;
+    #     - margin-top: 2px
+    label:
+      - font-size: 12px !important;
+      - color: var(--light-grey-color)
+      - font-weight: 400 !important
+  tap_action:
+    action: navigate
+    navigation_path: "[[[ return entity.attributes.permalink || '#'; ]]]"
+    haptic: light

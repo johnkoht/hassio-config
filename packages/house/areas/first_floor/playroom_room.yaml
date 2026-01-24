@@ -1,0 +1,40 @@
+# 
+# Playroom Room Sensor
+# 
+template:
+  - sensor:
+      - name: "Playroom"
+        unique_id: playroom_room
+        state: "{{ states('input_boolean.playroom_occupied') }}"
+        attributes:
+          mode: "{{ states('input_select.playroom') }}"
+          icon: "kohbo:kohbo-lego"
+          permalink: "/dashboard-kohbo/rooms-playroom"
+          temperature: >
+            {% if states('sensor.playroom_temperature') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.playroom_temperature') | float }}
+            {% else %}
+              ""
+            {% endif %}
+          humidity: ""
+          aqi: ""
+          last_changed: >
+            {% if states.input_boolean.playroom_occupied.last_changed %}
+              {{ states.input_boolean.playroom_occupied.last_changed.isoformat() }}
+            {% else %}
+              {{ now().isoformat() }}
+            {% endif %}
+          occupied_duration_seconds: >
+            {% if is_state('input_boolean.playroom_occupied', 'on') %}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_boolean.playroom_occupied.last_changed)) | int }}
+            {% else %}
+              0
+            {% endif %}
+          occupied_duration_minutes: >
+            {% if is_state('input_boolean.playroom_occupied', 'on') %}
+              {{ ((as_timestamp(now()) - as_timestamp(states.input_boolean.playroom_occupied.last_changed)) / 60) | int }}
+            {% else %}
+              0
+            {% endif %}
+          people: "{{ state_attr('sensor.playroom_people_list', 'people') | default([]) }}"
+          people_count: "{{ states('sensor.playroom_people_list') | int | default(0) }}"

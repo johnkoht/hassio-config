@@ -1,0 +1,50 @@
+# 
+# Main Bedroom Sensor
+# 
+template:
+  - sensor:
+      - name: "Main Bedroom"
+        unique_id: main_bedroom
+        state: "{{ states('input_boolean.main_bedroom_occupied') }}"
+        attributes:
+          mode: "{{ states('input_select.main_bedroom') }}"
+          icon: "kohbo:kohbo-bed-king"
+          permalink: "/dashboard-kohbo/rooms-main-bedroom"
+          temperature: >
+            {% if states('sensor.main_bedroom_awair_temperature') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.main_bedroom_awair_temperature') | float }}
+            {% else %}
+              ""
+            {% endif %}
+          humidity: >
+            {% if states('sensor.main_bedroom_awair_humidity') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.main_bedroom_awair_humidity') | float }}
+            {% else %}
+              ""
+            {% endif %}
+          aqi: >
+            {% if states('sensor.main_bedroom_air_quality') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.main_bedroom_air_quality') }}
+            {% else %}
+              ""
+            {% endif %}
+          last_changed: >
+            {% if states.input_boolean.main_bedroom_occupied.last_changed %}
+              {{ states.input_boolean.main_bedroom_occupied.last_changed.isoformat() }}
+            {% else %}
+              {{ now().isoformat() }}
+            {% endif %}
+          occupied_duration_seconds: >
+            {% if is_state('input_boolean.main_bedroom_occupied', 'on') %}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_boolean.main_bedroom_occupied.last_changed)) | int }}
+            {% else %}
+              0
+            {% endif %}
+          occupied_duration_minutes: >
+            {% if is_state('input_boolean.main_bedroom_occupied', 'on') %}
+              {{ ((as_timestamp(now()) - as_timestamp(states.input_boolean.main_bedroom_occupied.last_changed)) / 60) | int }}
+            {% else %}
+              0
+            {% endif %}
+          people: "{{ state_attr('sensor.main_bedroom_people_list', 'people') | default([]) }}"
+          people_count: "{{ states('sensor.main_bedroom_people_list') | int | default(0) }}"

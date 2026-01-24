@@ -1,8 +1,8 @@
 # 
-# First Floor Sensor
+# House Sensor
 # 
-# This is a sensor that's acts like an object with various 
-# attributes based on the first floor areas.
+# This sensor provides a unified object representation of the House
+# with occupancy state and various attributes based on room sensors.
 # 
 template:
   - sensor:
@@ -11,17 +11,20 @@ template:
         state: "{{ states.input_boolean.house_occupied.state }}"
         attributes:
           mode: "{{ states.input_select.house.state }}"
-          areas: >
+          
+          # Room sensor entity IDs
+          rooms: >
             {{ 
-              expand('group.house_areas')
+              expand('group.room_sensors')
               | map(attribute='entity_id')
               | list
               | join(', ')
             }}
 
+          # Occupied room sensor entity IDs
           occupied_rooms: >
             {{ 
-              expand('group.house_areas')
+              expand('group.room_sensors')
               | selectattr('state', 'eq', 'on')
               | map(attribute='entity_id')
               | list
@@ -30,16 +33,17 @@ template:
 
           occupied_rooms_count: >
             {{ 
-              expand('group.house_areas')
+              expand('group.room_sensors')
               | selectattr('state', 'eq', 'on')
               | map(attribute='entity_id')
               | list
               | length
             }}
 
+          # Unoccupied room sensor entity IDs
           unoccupied_rooms: >
             {{ 
-              expand('group.house_areas')
+              expand('group.room_sensors')
               | selectattr('state', 'eq', 'off')
               | map(attribute='entity_id')
               | list
@@ -48,18 +52,19 @@ template:
 
           unoccupied_rooms_count: >
             {{ 
-              expand('group.house_areas')
+              expand('group.room_sensors')
               | selectattr('state', 'eq', 'off')
               | map(attribute='entity_id')
               | list
               | length
             }}
 
-
-
-
 # 
-# House Areas Group
+# House Areas Group (Legacy - kept for backward compatibility)
+# 
+# This group is maintained for backward compatibility with existing
+# automations and sensors that reference input_boolean entities directly.
+# New code should use group.room_sensors instead.
 # 
 group:
   house_areas:

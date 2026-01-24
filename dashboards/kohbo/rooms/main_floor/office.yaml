@@ -431,12 +431,12 @@ cards:
 
       - type: custom:mini-graph-card
         entities:
-          - entity: sensor.office_awair_score
-          - entity: sensor.desplns_illinois_usa_air_quality_index
-        name: AQI Score
+          - entity: sensor.office_awair_temperature
+          - entity: sensor.tempest_temperature
+        name: Temperature
         card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
-        hours_to_show: 12
-        points_per_hour: 4
+        hours_to_show: 24
+        points_per_hour: 2
         line_width: 4
         decimals: 0
         smoothing: true
@@ -458,143 +458,226 @@ cards:
       # 
       # AQI
       # 
-      - type: custom:apexcharts-card
-        experimental:
-          color_threshold: true
-        card_mod:
-          style: |
-            ha-card {
-              background: transparent;
-              border-radius: 0;
-              backdrop-filter: none;
-              -webkit-backdrop-filter: none;
-              box-shadow: none;
-              border: none;
-              padding-bottom: 16px;
-            }
-            .apexcharts-legend {
-              padding: 0 !important;
-              margin: 0 !important;
-              margin-top: 10px !important;
-              display: flex !important;
-              flex-direction: row !important;
-              flex-wrap: wrap !important;
-              justify-content: center !important;
-            }
-            .apexcharts-legend-group {
-              display: contents !important;
-            }
-            .apexcharts-legend-series {
-              display: inline-flex !important;
-              margin: 0 8px !important;
-            }
-        graph_span: 24h
-        span:
-          start: day
-        header:
-          show: false
-        apex_config:
-          chart:
-            height: 200
-          grid:
-            borderColor: 'rgba(255,255,255,0.05)'
-          legend:
-            show: true
-            position: bottom
-            horizontalAlign: center
-            floating: false
-            fontSize: '11px'
-            markers:
-              width: 8
-              height: 8
-            itemMargin:
-              horizontal: 16
-              vertical: 0
-          xaxis:
-            labels:
-              format: 'HH'
-            axisBorder:
+      - type: custom:stack-in-card
+        cards:
+          - type: custom:button-card
+            template: security_overview_header
+            entity: sensor.office_awair_temperature
+            label: Office Temperature
+            icon: "[[[ return entity.attributes.icon ]]]"
+            show_icon: true
+            show_name: false
+            show_label: true
+            layout: icon_name_state
+            state_display: >
+              [[[
+                const indoor = parseFloat(entity.state);
+                const outdoor = states['sensor.tempest_temperature']
+                  ? parseFloat(states['sensor.tempest_temperature'].state)
+                  : indoor;
+                
+                // Indoor thresholds
+                const indoorVeryCold = indoor < 60;
+                const indoorCold = indoor >= 60 && indoor < 67;
+                const indoorComfortable = indoor >= 67 && indoor <= 77;
+                const indoorWarm = indoor > 77 && indoor <= 85;
+                const indoorHot = indoor > 85 && indoor <= 90;
+                const indoorSauna = indoor > 90;
+                
+                // Outdoor thresholds
+                const outdoorVeryCold = outdoor < 40;
+                const outdoorCold = outdoor >= 40 && outdoor < 55;
+                const outdoorCool = outdoor >= 55 && outdoor < 65;
+                const outdoorMild = outdoor >= 65 && outdoor < 75;
+                const outdoorWarm = outdoor >= 75 && outdoor < 85;
+                const outdoorHot = outdoor >= 85 && outdoor < 95;
+                const outdoorScorching = outdoor >= 95;
+                
+                // Contextual messages based on indoor/outdoor comparison
+                
+                // Sauna mode (very hot inside)
+                if (indoorSauna) return "Sauna Mode 🥵";
+                
+                // Perfect chill zone
+                if (indoorComfortable) return "Chill Mode 😎";
+                
+                // Too warm inside scenarios
+                if (indoorWarm) {
+                  if (outdoorVeryCold || outdoorCold) return "A bit too cozy 🧦";
+                  if (outdoorCool || outdoorMild) return "Getting toasty 🥵";
+                  if (outdoorWarm || outdoorHot || outdoorScorching) return "Comfy despite the heat 🏖️";
+                  return "A bit warm 🥵";
+                }
+                
+                // Hot inside scenarios
+                if (indoorHot) {
+                  if (outdoorVeryCold || outdoorCold) return "Definitely too warm 🔥";
+                  if (outdoorWarm || outdoorHot || outdoorScorching) return "Surviving the heat 🏝️";
+                  return "Pretty hot 🔥";
+                }
+                
+                // Cold inside scenarios
+                if (indoorCold) {
+                  if (outdoorWarm || outdoorHot || outdoorScorching) return "Bit chilly for this weather 🥶";
+                  if (outdoorCool || outdoorMild) return "A bit cool 🧊";
+                  if (outdoorCold || outdoorVeryCold) return "Cold inside and out ❄️";
+                  return "A bit chilly 🥶";
+                }
+                
+                // Very cold inside
+                if (indoorVeryCold) {
+                  if (outdoorWarm || outdoorHot || outdoorScorching) return "Freezing when it's warm outside 🧊";
+                  return "Freezing ❄️";
+                }
+                
+                // Fallback
+                return indoor + "°";
+              ]]]
+            styles:
+              icon:
+                - color: >
+                    [[[
+                      return entity.attributes.color;
+                    ]]]
+                
+          - type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+            card_mod:
+              style: |
+                ha-card {
+                  padding-bottom: 16px;
+                  background: var(--darker-primary-color) !important;
+                  border-top-right-radius: 0 !important;
+                  border-top-left-radius: 0 !important;
+                  backdrop-filter: none !important;
+                  -webkit-backdrop-filter: none !important;
+                  box-shadow: none !important;
+                  border: none !important;
+                  box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05) !important;
+                }
+                .apexcharts-legend {
+                  padding: 0 !important;
+                  margin: 0 !important;
+                  margin-top: 10px !important;
+                  display: flex !important;
+                  flex-direction: row !important;
+                  flex-wrap: wrap !important;
+                  justify-content: center !important;
+                }
+                .apexcharts-legend-group {
+                  display: contents !important;
+                }
+                .apexcharts-legend-series {
+                  display: inline-flex !important;
+                  margin: 0 8px !important;
+                }
+            graph_span: 24h
+            span:
+              start: day
+            header:
               show: false
-            axisTicks:
-              show: false
-          yaxis:
-            - id: indoor
-              seriesName: Indoor AQI
-              min: 0
-              max: 100
-              tickAmount: 5
-              forceNiceScale: false
-              labels:
-                style:
-                  fontSize: '10px'
-                formatter: |
-                  EVAL: (val) => val ? `${Math.round(val)}` : '0'
-            - id: outdoor
-              seriesName: Outdoor AQI
-              opposite: true
-              min: 0
-              forceNiceScale: true
-              labels:
-                style:
-                  fontSize: '10px'
-                formatter: |
-                  EVAL: (val) => val ? `${Math.round(val)}` : '0'
-          tooltip:
-            x:
-              format: 'HH:mm'
-          fill:
-            type: gradient
-            gradient:
-              type: vertical
-              shadeIntensity: 0.3
-              opacityFrom: 0.6
-              opacityTo: 0.1
-              stops:
-                - 0
-                - 90
-                - 100
-        series:
-          # Indoor AQI (office) - Area chart with color thresholds and gradient fill
-          # Awair score scale: 0-100
-          - entity: sensor.office_awair_score
-            type: area
-            name: Indoor AQI
-            unit: Score
-            color: var(--accent-color)
-            yaxis_id: indoor
-            color_threshold:
-              - value: 0
-                color: '#00E400'
-              - value: 30
-                color: '#FFFF00'
-              - value: 60
-                color: '#FF7E00'
-              - value: 80
-                color: '#FF0000'
-              - value: 95
-                color: '#8F3F97'
-            show:
-              extremas: false
-              in_header: true
-              legend_value: true
-          
-          # Outdoor AQI (reference line)
-          # EPA AQI scale: 0-500
-          - entity: sensor.desplns_illinois_usa_air_quality_index
-            type: line
-            name: Outdoor AQI
-            color: var(--light-primary-color)
-            unit: AQI
-            yaxis_id: outdoor
-            stroke_width: 3
-            curve: smooth
-            group_by:
-              func: avg
-              duration: 1h
-            show:
-              extremas: false
-              in_header: true
-              legend_value: true
+            apex_config:
+              chart:
+                height: 200
+              grid:
+                borderColor: 'rgba(255,255,255,0.05)'
+              legend:
+                show: true
+                position: bottom
+                horizontalAlign: center
+                floating: false
+                fontSize: '11px'
+                markers:
+                  width: 8
+                  height: 8
+                itemMargin:
+                  horizontal: 16
+                  vertical: 0
+              xaxis:
+                labels:
+                  format: 'HH'
+                axisBorder:
+                  show: false
+                axisTicks:
+                  show: false
+              yaxis:
+                - id: indoor
+                  seriesName: Temperature
+                  min: 0
+                  max: 100
+                  tickAmount: 5
+                  forceNiceScale: false
+                  labels:
+                    style:
+                      fontSize: '10px'
+                    formatter: |
+                      EVAL: (val) => val ? `${Math.round(val)}` : '0'
+              tooltip:
+                x:
+                  format: 'HH:mm'
+              # fill:
+              #   type: gradient
+              #   gradient:
+              #     type: vertical
+              #     shadeIntensity: 0.3
+              #     opacityFrom: 0.6
+              #     opacityTo: 0.1
+              #     stops:
+              #       - 0
+              #       - 90
+              #       - 100
+            series:
+              # Indoor AQI (office) - Area chart with color thresholds and gradient fill
+              # Awair score scale: 0-100
+              - entity: sensor.office_awair_temperature
+                type: area
+                name: Indoor
+                unit: °
+                color: var(--primary-color)
+                yaxis_id: indoor
+                stroke_width: 2
+                # color_threshold:
+                #   - value: 0
+                #     color: '#00E400'
+                #   - value: 30
+                #     color: '#FFFF00'
+                #   - value: 60
+                #     color: '#FF7E00'
+                #   - value: 80
+                #     color: '#FF0000'
+                #   - value: 95
+                #     color: '#8F3F97'
+                show:
+                  extremas: false
+                  in_header: true
+                  legend_value: true
+              
+              # Outdoor AQI (reference line)
+              # EPA AQI scale: 0-500
+              - entity: sensor.tempest_temperature
+                type: line
+                name: Outdoor
+                color: var(--accent-color)
+                unit: °
+                # yaxis_id: outdoor
+                yaxis_id: indoor
+                stroke_width: 1
+                # color_threshold:
+                #   - value: 0
+                #     color: '#00E400'
+                #   - value: 30
+                #     color: '#FFFF00'
+                #   - value: 60
+                #     color: '#FF7E00'
+                #   - value: 80
+                #     color: '#FF0000'
+                #   - value: 95
+                #     color: '#8F3F97'
+                show:
+                  extremas: false
+                  in_header: true
+                  legend_value: true
 
 
 

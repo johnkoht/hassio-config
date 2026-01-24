@@ -1,0 +1,35 @@
+# 
+# Foyer Room Sensor
+# 
+template:
+  - sensor:
+      - name: "Foyer"
+        unique_id: foyer_room
+        state: "{{ states('input_boolean.foyer_occupied') }}"
+        attributes:
+          mode: "{{ states('input_select.foyer') | default('Auto') }}"
+          icon: "mdi:door"
+          permalink: "/dashboard-kohbo/rooms-foyer"
+          temperature: ""
+          humidity: ""
+          aqi: ""
+          last_changed: >
+            {% if states.input_boolean.foyer_occupied.last_changed %}
+              {{ states.input_boolean.foyer_occupied.last_changed.isoformat() }}
+            {% else %}
+              {{ now().isoformat() }}
+            {% endif %}
+          occupied_duration_seconds: >
+            {% if is_state('input_boolean.foyer_occupied', 'on') %}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_boolean.foyer_occupied.last_changed)) | int }}
+            {% else %}
+              0
+            {% endif %}
+          occupied_duration_minutes: >
+            {% if is_state('input_boolean.foyer_occupied', 'on') %}
+              {{ ((as_timestamp(now()) - as_timestamp(states.input_boolean.foyer_occupied.last_changed)) / 60) | int }}
+            {% else %}
+              0
+            {% endif %}
+          people: "{{ [] }}"
+          people_count: "0"

@@ -1,0 +1,27 @@
+# 
+# Room Sensors Group
+# 
+# Groups all room sensors together for easy reference
+# 
+group:
+  room_sensors:
+    name: Room Sensors
+    entities:
+      # First Floor
+      - sensor.office_room
+      - sensor.kitchen_room
+      - sensor.family_room
+      - sensor.playroom_room
+      - sensor.dining_room
+      - sensor.mudroom_room
+      - sensor.foyer_room
+      - sensor.jr_suite_room
+      - sensor.laundry_room
+      # Upper Floor
+      - sensor.main_bedroom
+      - sensor.main_bathroom
+      - sensor.gianlucas_bedroom
+      - sensor.ninos_bedroom
+      - sensor.upstairs_hallway
+      # Lower Floor
+      # - sensor.basement_main

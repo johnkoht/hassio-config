@@ -1,0 +1,35 @@
+# 
+# Main Bathroom Sensor
+# 
+template:
+  - sensor:
+      - name: "Main Bathroom"
+        unique_id: main_bathroom
+        state: "{{ states('input_boolean.main_bathroom_occupied') }}"
+        attributes:
+          mode: "{{ states('input_select.main_bathroom') | default('Auto') }}"
+          icon: "mdi:shower"
+          permalink: "/dashboard-kohbo/rooms-main-bathroom"
+          temperature: ""
+          humidity: ""
+          aqi: ""
+          last_changed: >
+            {% if states.input_boolean.main_bathroom_occupied.last_changed %}
+              {{ states.input_boolean.main_bathroom_occupied.last_changed.isoformat() }}
+            {% else %}
+              {{ now().isoformat() }}
+            {% endif %}
+          occupied_duration_seconds: >
+            {% if is_state('input_boolean.main_bathroom_occupied', 'on') %}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_boolean.main_bathroom_occupied.last_changed)) | int }}
+            {% else %}
+              0
+            {% endif %}
+          occupied_duration_minutes: >
+            {% if is_state('input_boolean.main_bathroom_occupied', 'on') %}
+              {{ ((as_timestamp(now()) - as_timestamp(states.input_boolean.main_bathroom_occupied.last_changed)) / 60) | int }}
+            {% else %}
+              0
+            {% endif %}
+          people: "{{ state_attr('sensor.main_bathroom_people_list', 'people') | default([]) }}"
+          people_count: "{{ states('sensor.main_bathroom_people_list') | int | default(0) }}"

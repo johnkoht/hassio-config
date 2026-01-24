@@ -1,0 +1,35 @@
+# 
+# Laundry Room Sensor
+# 
+template:
+  - sensor:
+      - name: "Laundry Room"
+        unique_id: laundry_room
+        state: "{{ states('input_boolean.laundry_room_occupied') }}"
+        attributes:
+          mode: "{{ states('input_select.laundry') | default('Auto') }}"
+          icon: "mdi:washing-machine"
+          permalink: "/dashboard-kohbo/rooms-laundry"
+          temperature: ""
+          humidity: ""
+          aqi: ""
+          last_changed: >
+            {% if states.input_boolean.laundry_room_occupied.last_changed %}
+              {{ states.input_boolean.laundry_room_occupied.last_changed.isoformat() }}
+            {% else %}
+              {{ now().isoformat() }}
+            {% endif %}
+          occupied_duration_seconds: >
+            {% if is_state('input_boolean.laundry_room_occupied', 'on') %}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_boolean.laundry_room_occupied.last_changed)) | int }}
+            {% else %}
+              0
+            {% endif %}
+          occupied_duration_minutes: >
+            {% if is_state('input_boolean.laundry_room_occupied', 'on') %}
+              {{ ((as_timestamp(now()) - as_timestamp(states.input_boolean.laundry_room_occupied.last_changed)) / 60) | int }}
+            {% else %}
+              0
+            {% endif %}
+          people: "{{ [] }}"
+          people_count: "0"

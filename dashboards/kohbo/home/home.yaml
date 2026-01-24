@@ -719,6 +719,73 @@ cards:
             navigation_path: "/dashboard-kohbo/climate"
             haptic: light
 
+  # 
+  # Occupied Rooms
+  # 
+  - type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_small_header
+        name: >
+          [[[
+            const occupiedRoomsCount = states['sensor.house'].attributes.occupied_rooms_count;
+            return `${occupiedRoomsCount} Rooms Occupied `;
+          ]]]
+
+      - type: custom:mod-card
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                padding: 10px 0 20px 16px !important;
+              }
+
+            hui-horizontal-stack-card$: |
+              #root {
+                overflow-x: auto;
+                width: 100% !important;
+                gap: 5px !important;
+
+                button-card {
+                  flex: 0 0 100px !important;
+                }
+              }
+        card:
+          type: custom:auto-entities
+          card:
+            type: entities
+            card_mod:
+              style: |
+                ha-card #states {
+                  display: flex !important;
+                  padding: 0 !important;
+                  gap: 5px !important;
+                  overflow-x: auto !important;
+                  flex-direction: initial !important;
+
+                  &::-webkit-scrollbar {
+                    display: none !important;
+                  }
+
+                  > div {
+                    margin: 0 !important;
+                  }
+                }
+          filter:
+            include:
+              - group: group.room_sensors
+                state: "on"
+                options:
+                  secondary_info: last-changed
+                  type: custom:button-card
+                  template: occupied_room_card
+          sort:
+            method: last_changed
+            reverse: true
+            ignore_case: true
+            numeric: false
+
 
   # 
   # Overview section
@@ -829,6 +896,7 @@ cards:
       #   name: Upstairs Vacuum
       #   template: kohbo_device_entity
       #   icon: mdi:robot-vacuum
+
 
 
   # 

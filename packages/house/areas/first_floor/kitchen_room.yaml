@@ -1,0 +1,65 @@
+# 
+# Kitchen Room Sensor
+# 
+# This sensor provides a unified object representation of the Kitchen
+# with occupancy state and various attributes for use in dashboards,
+# automations, and scripts.
+# 
+template:
+  - sensor:
+      - name: "Kitchen"
+        unique_id: kitchen_room
+        state: "{{ states('input_boolean.kitchen_occupied') }}"
+        attributes:
+          # Room mode (Auto, Off, DND, etc.)
+          mode: "{{ states('input_select.kitchen') }}"
+          
+          # Icon (hardcoded for now)
+          icon: "kohbo:kohbo-fridge"
+          
+          # Navigation
+          permalink: "/dashboard-kohbo/rooms-kitchen"
+          
+          # Climate sensors (conditional - only if sensor exists and is available)
+          temperature: >
+            {% if states('sensor.kitchen_awair_temperature') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.kitchen_awair_temperature') | float }}
+            {% else %}
+              ""
+            {% endif %}
+          humidity: >
+            {% if states('sensor.kitchen_awair_humidity') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.kitchen_awair_humidity') | float }}
+            {% else %}
+              ""
+            {% endif %}
+          aqi: >
+            {% if states('sensor.kitchen_air_quality') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.kitchen_air_quality') }}
+            {% else %}
+              ""
+            {% endif %}
+          
+          # Occupancy tracking
+          last_changed: >
+            {% if states.input_boolean.kitchen_occupied.last_changed %}
+              {{ states.input_boolean.kitchen_occupied.last_changed.isoformat() }}
+            {% else %}
+              {{ now().isoformat() }}
+            {% endif %}
+          occupied_duration_seconds: >
+            {% if is_state('input_boolean.kitchen_occupied', 'on') %}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_boolean.kitchen_occupied.last_changed)) | int }}
+            {% else %}
+              0
+            {% endif %}
+          occupied_duration_minutes: >
+            {% if is_state('input_boolean.kitchen_occupied', 'on') %}
+              {{ ((as_timestamp(now()) - as_timestamp(states.input_boolean.kitchen_occupied.last_changed)) / 60) | int }}
+            {% else %}
+              0
+            {% endif %}
+          
+          # People in room (from existing people list sensor)
+          people: "{{ state_attr('sensor.kitchen_people_list', 'people') | default([]) }}"
+          people_count: "{{ states('sensor.kitchen_people_list') | int | default(0) }}"
