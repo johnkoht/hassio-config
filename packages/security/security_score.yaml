@@ -13,7 +13,7 @@ template:
           {% set dark_outside = is_state('input_boolean.dark_outside', 'on') %}
           {% set occupied = is_state('input_boolean.house_occupied', 'on') %}
           {% set vacation = is_state('input_boolean.vacation_mode', 'on') %}
-          {% set alarm_state = states('alarm_control_panel.kohbo') %}
+          {% set alarm_state = states('alarm_control_panel.alarmo') %}
           {% set ups_status = states('sensor.apc_ups_status_data') %}
           {% set runtime = states('sensor.apc_ups_battery_runtime') | int(9999) %}
           {% set bad_weather = is_state('input_boolean.bad_weather', 'on') %}
@@ -160,7 +160,7 @@ template:
         attributes:
           friendly_name: "House Security Score"
           last_updated: "{{ now().isoformat() }}"
-          alarm_state: "{{ states('alarm_control_panel.kohbo') }}"
+          alarm_state: "{{ states('alarm_control_panel.alarmo') }}"
           occupancy: "{{ states('input_boolean.house_occupied') }}"
           ups_status: "{{ states('sensor.apc_ups_status_data') }}"
           ups_runtime: "{{ states('sensor.apc_ups_battery_runtime') }}"

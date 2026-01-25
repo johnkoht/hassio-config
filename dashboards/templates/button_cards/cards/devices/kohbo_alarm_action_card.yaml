@@ -1,6 +1,6 @@
 kohbo_alarm_action_card:
   template: kohbo_horizontal_action_card_entity
-  entity: alarm_control_panel.kohbo
+  entity: alarm_control_panel.alarmo
   spinner: true
   styles:
     card:

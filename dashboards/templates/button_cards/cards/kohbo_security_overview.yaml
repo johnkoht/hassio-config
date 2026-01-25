@@ -68,7 +68,7 @@ cards:
       # Alarm
       # 
       - type: custom:button-card
-        entity: alarm_control_panel.kohbo
+        entity: alarm_control_panel.alarmo
         name: Alarm
         template: kohbo_security_item
         state:

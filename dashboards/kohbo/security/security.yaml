@@ -315,7 +315,7 @@ cards:
               # Alarm
               # 
               - type: custom:button-card
-                entity: alarm_control_panel.kohbo
+                entity: alarm_control_panel.alarmo
                 name: Alarm
                 template: kohbo_security_item
                 state:
@@ -1110,7 +1110,7 @@ cards:
   - type: custom:decluttering-card
     template: horizontal_action_card
     variables:
-      - entity: alarm_control_panel.kohbo
+      - entity: alarm_control_panel.alarmo
       - name: Alarm System
       - template: kohbo_horizontal_action_card_alarm_entity
       - tap_action: navigate
@@ -1123,13 +1123,17 @@ cards:
           name: Arm Home
           tap_action:
             action: perform-action
-            perform_action: alarm_control_panel.alarm_arm_home
+            perform_action: alarmo.arm
             haptic: success
             target:
-              entity_id: alarm_control_panel.kohbo
+              entity_id: alarm_control_panel.alarmo
+            data:
+              mode: home
+              skip_delay: true
+              force: true
           visibility:
             - condition: state
-              entity: alarm_control_panel.kohbo
+              entity: alarm_control_panel.alarmo
               state: 'disarmed'
 
         # Disarm Button
@@ -1139,12 +1143,16 @@ cards:
           name: Disarm
           tap_action:
             action: perform-action
-            perform_action: alarm_control_panel.alarm_disarm
+            perform_action: alarmo.disarm
             target:
-              entity_id: alarm_control_panel.kohbo
+              entity_id: alarm_control_panel.alarmo
+            data:
+              mode: home
+              skip_delay: true
+              force: true
           visibility:
             - condition: state
-              entity: alarm_control_panel.kohbo
+              entity: alarm_control_panel.alarmo
               state: 
                 - armed_home
                 - armed_away

@@ -10,7 +10,7 @@ automation:
     conditions:
       # Alarm is current disarmed
       - condition: state
-        entity_id: alarm_control_panel.kohbo
+        entity_id: alarm_control_panel.alarmo
         state: "disarmed"
       # Between 8pm and 5am
       - condition: time

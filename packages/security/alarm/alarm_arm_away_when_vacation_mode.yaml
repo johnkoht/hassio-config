@@ -14,8 +14,15 @@ automation:
         state: "off"
     actions:
       # Arm Away
-      - action: alarm_control_panel.alarm_arm_away
-        entity_id: alarm_control_panel.kohbo
+      # - action: alarm_control_panel.alarm_arm_away
+      #   entity_id: alarm_control_panel.kohbo
+      - action: alarmo.arm
+        entity_id: alarm_control_panel.alarmo
+        data:
+          mode: away
+          skip_delay: true
+          force: true
+          code: !secret alarmo_code
 
       # Send a notification
       - action: script.general_notification

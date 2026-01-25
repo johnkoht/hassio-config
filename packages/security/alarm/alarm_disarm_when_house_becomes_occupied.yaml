@@ -11,7 +11,7 @@ automation:
     conditions:
       # Alarm is currently armed
       - condition: state
-        entity_id: alarm_control_panel.kohbo
+        entity_id: alarm_control_panel.alarmo
         state:
           - "armed_home"
           - "armed_away"
@@ -21,8 +21,12 @@ automation:
         state: "on"
     actions:
       # Disarm the alarm
-      - action: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.kohbo
+      # - action: alarm_control_panel.alarm_disarm
+      #   entity_id: alarm_control_panel.kohbo
+      - action: alarmo.disarm
+        entity_id: alarm_control_panel.alarmo
+        data:
+          code: !secret alarmo_code
 
       - action: script.general_notification
         data:

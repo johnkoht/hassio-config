@@ -16,7 +16,7 @@ cards:
       - settings_path: '#alarm_panel_settings_popup'
   
   - type: custom:more-info-card
-    entity: alarm_control_panel.kohbo
+    entity: alarm_control_panel.alarmo
     title: Alarm Panel
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
 
@@ -24,7 +24,7 @@ cards:
   - type: logbook
     target:
       entity_id:
-        - alarm_control_panel.kohbo
+        - alarm_control_panel.alarmo
     hours_to_show: 48
     card_mod: !include /config/dashboards/templates/includes/card_mod/logbook_card_mod.yaml
 
@@ -33,7 +33,7 @@ cards:
   # # 
   # - type: custom:button-card
   #   template: kohbo_alarm_action_card
-  #   entity: alarm_control_panel.kohbo
+  #   entity: alarm_control_panel.alarmo
   #   name: >
   #     [[[
   #       return entity.state === 'disarmed' ? 'Disarmed' : 'Disarm';
@@ -47,14 +47,14 @@ cards:
   #     action: perform-action
   #     perform_action: alarm_control_panel.alarm_disarm
   #     target:
-  #       entity_id: alarm_control_panel.kohbo
+  #       entity_id: alarm_control_panel.alarmo
 
   # # 
   # # Arm Home Button
   # # 
   # - type: custom:button-card
   #   template: kohbo_alarm_action_card
-  #   entity: alarm_control_panel.kohbo
+  #   entity: alarm_control_panel.alarmo
   #   name: >
   #     [[[
   #       return entity.state === 'armed_home' ? 'Armed Home' : 'Arm Home';
@@ -68,14 +68,14 @@ cards:
   #     action: perform-action
   #     perform_action: alarm_control_panel.alarm_arm_home
   #     target:
-  #       entity_id: alarm_control_panel.kohbo
+  #       entity_id: alarm_control_panel.alarmo
 
   # # 
   # # Arm Away Button
   # # 
   # - type: custom:button-card
   #   template: kohbo_alarm_action_card
-  #   entity: alarm_control_panel.kohbo
+  #   entity: alarm_control_panel.alarmo
   #   name: >
   #     [[[
   #       return entity.state === 'armed_away' ? 'Armed Away' : 'Arm Away';
@@ -89,7 +89,7 @@ cards:
   #     action: perform-action
   #     perform_action: alarm_control_panel.alarm_arm_away
   #     target:
-  #       entity_id: alarm_control_panel.kohbo
+  #       entity_id: alarm_control_panel.alarmo
 
 
   # 

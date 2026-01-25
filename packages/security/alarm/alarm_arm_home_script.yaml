@@ -11,8 +11,15 @@ script:
     icon: mdi:security-home
     sequence:
       # Arm Home
-      - action: alarm_control_panel.alarm_arm_home
-        entity_id: alarm_control_panel.kohbo
+      # - action: alarm_control_panel.alarm_arm_home
+      #   entity_id: alarm_control_panel.kohbo
+      - action: alarmo.arm
+        entity_id: alarm_control_panel.alarmo
+        data:
+          mode: home
+          skip_delay: true
+          force: true
+          code: !secret alarmo_code
 
       # Notify John
       - action: script.general_notification

@@ -25,7 +25,7 @@ automation:
     conditions:
       # Alarm is currently armed
       - condition: state
-        entity_id: alarm_control_panel.kohbo
+        entity_id: alarm_control_panel.alarmo
         state: "armed_home"
       # House is occupied
       - condition: state
@@ -39,5 +39,9 @@ automation:
           {{ state_attr(trigger.entity_id, 'unlock_privilege') == "on" }}
     actions:
       # Disarm the alarm
-      - service: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.kohbo
+      # - service: alarm_control_panel.alarm_disarm
+      #   entity_id: alarm_control_panel.kohbo
+      - action: alarmo.disarm
+        entity_id: alarm_control_panel.alarmo
+        data:
+          code: !secret alarmo_code
