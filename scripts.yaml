@@ -233,3 +233,8 @@ voice_weather_forecasts_full_llm_script_2:
     more full days. In case the weather for the weekend is requested, this means Saturday
     and Sunday
   icon: mdi:white-balance-sunny
+inovelli_notification_led_zha:
+  alias: Inovelli Notification LED (ZHA)
+  use_blueprint:
+    path: nwithan8/inovelli_notification_led_zha.yaml
+  description: ''

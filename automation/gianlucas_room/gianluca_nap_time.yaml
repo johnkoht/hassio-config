@@ -10,7 +10,7 @@ trigger:
       minutes: 3
   # Gianluca's lights are turned off
   - platform: state
-    entity_id: light.gianluca_bedroom_lights
+    entity_id: light.gianluca_ceiling_lights
     to: "off"
   # Door is closed
   - platform: state

@@ -1,4 +1,7 @@
 automation:
+  # 
+  # Security Alarm Triggered
+  # 
   - id: "security_alarm_trigger"
     alias: "Security Alarm - Triggered"
     mode: "single"
@@ -10,6 +13,24 @@ automation:
     actions:
       - action: script.security_alarm_alert
         data: {}
+
+  # 
+  # Security Alarm Disabled
+  # 
+  - id: "security_alarm_disabled"
+    alias: "Security Alarm - Disabled"
+    mode: "single"
+    triggers:
+      # Security alarm is disabled
+      - trigger: state
+        entity_id: alarm_control_panel.alarmo
+        from: "triggered"
+        to: "disarmed"
+    actions:
+      - action: script.security_alarm_disabled
+        data: {}
+
+
 
 script:
   security_alarm_alert:
@@ -24,6 +45,13 @@ script:
       # and move on to the next.
       # see https://www.home-assistant.io/integrations/script/#waiting-for-script-to-complete
       # 
+
+      # Sound the sirens!
+      - action: switch.turn_on
+        target:
+          entity_id: 
+            - switch.alarm_siren_1
+            - switch.alarm_siren_2
 
       # Trigger a critical announcement
       - action: script.turn_on
@@ -53,3 +81,31 @@ script:
             priority: "critical"
             tag: "home-security-alarm"
             url: /dashboard-kohbo/security
+
+
+  security_alarm_disabled:
+    alias: "Security Alarm - Disabled"
+    mode: "single"
+    icon: mdi:security-home
+    sequence:
+      # Turn off the sirens!
+      - action: switch.turn_off
+        target:
+          entity_id: 
+            - switch.alarm_siren_1
+            - switch.alarm_siren_2
+
+      # Turn off the flash lights
+      - action: script.turn_off
+        target:
+          entity_id: script.alarm_flash_lights
+      
+      # Notify us
+      - action: script.general_notification
+        data:
+          message: The security alarm has been disabled.
+          title: Security Alarm
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "home-security-alarm"
+          url: /dashboard-kohbo/security

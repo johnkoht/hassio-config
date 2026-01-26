@@ -97,7 +97,7 @@ cards:
       - icon: kohbo:kohbo-bed-single
       - room_devices:
         - type: custom:button-card
-          entity: light.gianluca_bedroom_lights
+          entity: light.gianluca_ceiling_lights
           name: Lights
           template: kohbo_room_card_device                
           icon: kohbo:kohbo-device-lights

@@ -1,0 +1,254 @@
+blueprint:
+  name: Inovelli Notification LED (ZHA)
+  description: A script that sets the notification LED bar of an Inovelli light switch.
+  source_url: https://raw.githubusercontent.com/nwithan8/configs/main/home_assistant/blueprints/scripts/inovelli_notification_led_zha.yaml
+  domain: script
+  input: {}
+fields:
+  switch:
+    name: Inovelli Switch
+    description: Which light switch to program
+    required: true
+    selector:
+      device:
+        filter:
+        - integration: zha
+          manufacturer: Inovelli
+          model: VZM31-SN
+        - integration: zha
+          manufacturer: Inovelli
+          model: VZM35-SN
+  led:
+    name: LED
+    description: Which LED to program (LED 1 is the bottom-most LED)
+    required: false
+    selector:
+      select:
+        options:
+        - All
+        - LED 1
+        - LED 2
+        - LED 3
+        - LED 4
+        - LED 5
+        - LED 6
+        - LED 7
+    default: All
+  effect:
+    name: Effect
+    description: 'Effect to use. Some effects cannot be used on a single LED; if an
+      invalid match is provided, the effect will be overridden to "Solid"
+
+      '
+    required: true
+    selector:
+      select:
+        options:
+        - 'Off'
+        - Clear
+        - Solid
+        - Slow Blink
+        - Medium Blink
+        - Fast Blink
+        - Pulse
+        - Aurora
+        - Slow Falling
+        - Medium Falling
+        - Fast Falling
+        - Slow Rising
+        - Medium Rising
+        - Fast Rising
+        - Slow Siren
+        - Fast Siren
+        - Chase
+        - Slow Chase
+        - Medium Chase
+        - Fast Chase
+        - Open-Close
+        - Small-Big
+    default: Solid
+  duration:
+    name: Duration
+    description: How long the effect should last, in seconds (1-254, 255 for indefinite)
+    required: true
+    selector:
+      number:
+        min: 1
+        max: 255
+  level:
+    name: Intensity
+    description: How intense the light should be, percentage (0-100)
+    required: true
+    selector:
+      number:
+        min: 0
+        max: 100
+  color:
+    name: Color
+    description: The color the light should be, (0-254, 255 for white)
+    required: false
+    selector:
+      number:
+        min: 0
+        max: 255
+  color_preset:
+    name: Color Preset
+    description: Special color preset to use (overrides color setting and LED selection)
+    required: false
+    selector:
+      select:
+        options:
+        - Warm
+        - Cool
+        - Rainbow
+        - Police
+variables:
+  all_led_mode_value: -1
+  led_values:
+    all: '{{ all_led_mode_value }}
+
+      '
+    led 1: 0
+    led 2: 1
+    led 3: 2
+    led 4: 3
+    led 5: 4
+    led 6: 5
+    led 7: 6
+  led: '{{ led|default("all") }}'
+  led_value: '{{ led_values[led | lower] | int }}'
+  effect_values:
+    'off': 0
+    clear: 255
+    solid: 1
+    slow blink: 3
+    medium blink: 15
+    fast blink: 2
+    pulse: 4
+    aurora: 8
+    slow falling: 9
+    medium falling: 10
+    fast falling: 11
+    slow rising: 12
+    medium rising: 13
+    fast rising: 14
+    chase: 5
+    slow chase: 16
+    medium chase: 5
+    fast chase: 17
+    fast siren: 18
+    slow siren: 19
+    open-close: 6
+    small-big: 7
+  single_led_compatible_effect_values:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 255
+  effect: '{{ effect|default("solid") }}'
+  effect_value: "{% set val = effect_values[effect | lower] | int %} {% if led_value
+    != all_led_mode_value and val not in single_led_compatible_effect_values %}\n
+    \ {% set val = effect_values[\"solid\"] | int %}\n{% endif %} {{ val }}\n"
+  color: '{{ color|default(255) }}'
+  special_color_preset: '{{ color_preset|default("none") }}'
+  use_special_color_preset: '{{ special_color_preset != "none" }}
+
+    '
+  special_colors_orders:
+    none: []
+    warm:
+    - 45
+    - 38
+    - 31
+    - 23
+    - 17
+    - 10
+    - 0
+    cool:
+    - 56
+    - 73
+    - 98
+    - 119
+    - 151
+    - 175
+    - 187
+    rainbow:
+    - 222
+    - 189
+    - 166
+    - 94
+    - 53
+    - 25
+    - 0
+    police:
+    - 165
+    - 165
+    - 255
+    - 255
+    - 255
+    - 0
+    - 0
+  special_color_order: '{{ special_colors_orders[special_color_preset | lower] }}
+
+    '
+sequence:
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ not use_special_color_preset }}
+
+        '
+    sequence:
+    - service: zha.issue_zigbee_cluster_command
+      data:
+        ieee: '{{ (device_attr(switch, "identifiers")|list).0.1 }}
+
+          '
+        endpoint_id: 1
+        cluster_id: 64561
+        cluster_type: in
+        command: '{{ iif(led_value == -1, 1, 3) }}
+
+          '
+        command_type: server
+        params: "{% if led_value == -1 %}\n  {% set payload_data = {\n    \"led_effect\":
+          effect_value,\n    \"led_color\": color,\n    \"led_level\": level,\n    \"led_duration\":
+          duration,\n    } %}\n{% else %}\n  {% set payload_data = {\n    \"led_number\":
+          led_value,\n    \"led_effect\": effect_value,\n    \"led_color\": color,\n
+          \   \"led_level\": level,\n    \"led_duration\": duration,\n  } %}\n{% endif
+          %} {{ payload_data }}\n"
+        manufacturer: 4655
+  - conditions:
+    - condition: template
+      value_template: '{{ use_special_color_preset }}
+
+        '
+    sequence:
+    - repeat:
+        count: '{{ special_color_order | count }}'
+        sequence:
+        - service: zha.issue_zigbee_cluster_command
+          data:
+            ieee: '{{ (device_attr(switch, "identifiers")|list).0.1 }}
+
+              '
+            endpoint_id: 1
+            cluster_id: 64561
+            cluster_type: in
+            command: 3
+            command_type: server
+            params:
+              led_number: '{{ repeat.index - 1}}'
+              led_effect: '{{ effect_value }}'
+              led_color: '{{ special_color_order[repeat.index - 1] | int }}'
+              led_level: '{{ level }}'
+              led_duration: '{{ duration }}'
+            manufacturer: 4655
+mode: single
+max_exceeded: silent
