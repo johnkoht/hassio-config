@@ -116,7 +116,7 @@ Use distributed READMEs because:
   - 🌡️ [Climate](./kohbo/climate/README.md)
   - 🔒 [Security](./kohbo/security/README.md)
   - ⚡ [Energy](./kohbo/energy/README.md)
-  - 👥 [People](./kohbo/more/README.md)
+  - 👥 [People](./kohbo/more/PEOPLE_README.md)
   - 🎉 [Holidays](./kohbo/holidays/README.md)
   
 - **Components**
@@ -219,16 +219,18 @@ Use distributed READMEs because:
 
 ---
 
-### 5. Security Dashboard (`kohbo/security/README.md`)
+### 5. Security Dashboard (`kohbo/security/README.md`) ✅ COMPLETE
 
 **Sections:**
 - **Overview**
   - Purpose: Security monitoring and control
-  - Screenshots (main page)
+  - Screenshots (main page, sub-pages, cameras)
   
 - **Main Security Page**
   - Overview cards
-  - Quick status
+  - Security score gauge (with link to sensor definition)
+  - Quick status items
+  - Motion detections
   
 - **Sub-Pages**
   - [House Locks](./pages/house_locks.yaml)
@@ -253,24 +255,29 @@ Use distributed READMEs because:
 
 ---
 
-### 6. People Dashboard (`kohbo/more/README.md`)
+### 6. People Dashboard (`kohbo/more/PEOPLE_README.md`) ✅ COMPLETE
 
 **Sections:**
 - **Overview**
   - Purpose: People tracking and presence
-  - Screenshots
+  - Screenshots (popup screenshot placeholder)
   
 - **Features**
-  - Person cards
+  - Person cards (family section)
+  - Person entity rows (extended family, guests)
   - Presence indicators
   - Location tracking
+  - Person popups structure
   
 - **Components Used**
   - Person button card templates
   - People-specific components
+  - Person popup structure
   
 - **Example YAML**
-  - Link to `people.yaml`
+  - Person card example
+  - Entity row example
+  - Overview chip example
 
 ---
 
@@ -371,12 +378,12 @@ dashboards/
    - Quick start
 
 2. **Phase 2: Section READMEs** (in order of complexity/importance)
-   - Energy (already done, use as template)
-   - Rooms (most complex, most used)
-   - Home (entry point)
-   - Security (many sub-pages)
-   - Climate
-   - People
+   - ✅ Energy (already done, use as template)
+   - ✅ Rooms (most complex, most used)
+   - ✅ Home (entry point)
+   - ✅ Security (many sub-pages)
+   - ✅ Climate
+   - ✅ People
 
 3. **Phase 3: Components Documentation**
    - Button card templates
@@ -397,8 +404,19 @@ dashboards/
 ## Next Steps
 
 1. ✅ Review this plan
-2. Decide on structure (Option 1 recommended)
-3. Create main README outline
-4. Start with one section README as template (Rooms or Home)
-5. Iterate and refine format
-6. Roll out to other sections
+2. ✅ Decide on structure (Option 1 - Distributed READMEs)
+3. ✅ Create section READMEs:
+   - ✅ Home Dashboard
+   - ✅ Rooms Dashboard
+   - ✅ Climate Dashboard
+   - ✅ Security Dashboard
+   - ✅ People Dashboard
+4. ⏳ **Next: Main README** - Create main overview and navigation hub
+   - Overview and philosophy
+   - Quick start guide
+   - Links to all section READMEs
+   - Screenshots and theme overview
+5. ⏳ Components Documentation - Document all templates and components
+   - Button card templates
+   - Decluttering templates
+   - Usage examples
