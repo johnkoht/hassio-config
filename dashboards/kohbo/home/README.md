@@ -8,11 +8,11 @@ The main landing page providing quick access to key controls, house status, and 
 
 ## Overview
 
-The Home dashboard serves as the central hub for your smart home, offering:
+The Home dashboard serves as the central hub for my smart home, offering:
 
 - **Quick Status Overview** - House mode, energy usage, and who's currently home
-- **Security Overview** - Current state of home security and custom security score
-- **Climate Monitoring** - Whole home climate and AQI overview
+- **Security Overview** - Current state of house security and custom security score
+- **Climate Monitoring** - Whole house climate and AQI overview
 - **Room Status** - See which rooms are currently occupied
 - **Quick Actions** - Fast access to lights, HVAC, doors, windows, and other devices
 - **Navigation** - Easy access to all major dashboard sections

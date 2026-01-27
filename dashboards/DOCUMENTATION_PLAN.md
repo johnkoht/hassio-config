@@ -108,7 +108,7 @@ Use distributed READMEs because:
 - **Quick Start**
   - Prerequisites (custom cards, theme)
   - Basic setup
-  - Adding your first room
+  - Adding a room
   
 - **Dashboard Sections** (with links)
   - 🏠 [Home](./kohbo/home/README.md)
@@ -131,7 +131,7 @@ Use distributed READMEs because:
 
 ---
 
-### 2. Home Dashboard (`kohbo/home/README.md`)
+### 2. Home Dashboard (`kohbo/home/README.md`) ✅ COMPLETE
 
 **Sections:**
 - **Overview**
@@ -157,7 +157,7 @@ Use distributed READMEs because:
 
 ---
 
-### 3. Rooms Dashboard (`kohbo/rooms/README.md`)
+### 3. Rooms Dashboard (`kohbo/rooms/README.md`) ✅ COMPLETE
 
 **Sections:**
 - **Overview**
@@ -196,7 +196,7 @@ Use distributed READMEs because:
 
 ---
 
-### 4. Climate Dashboard (`kohbo/climate/README.md`)
+### 4. Climate Dashboard (`kohbo/climate/README.md`) ✅ COMPLETE
 
 **Sections:**
 - **Overview**

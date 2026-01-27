@@ -266,6 +266,7 @@ Available device entity templates (extend `kohbo_device_entity`):
 - [ ] Move `kohbo_energy_stat_bar.yaml`, `kohbo_energy_stat_card.yaml`, `kohbo_energy_stat_comparison.yaml` from `cards/` root to `cards/energy/`
 - [ ] Consider renaming `cards/shared/` to `cards/components/` for clarity
 - [ ] Audit other root-level cards for potential folder organization
+- [ ] **Reorganize Security Dashboard file structure** - See "Security Dashboard File Structure" section below
 
 ### Future Improvements
 - [ ] Consider creating a `room_template` that combines common room patterns
@@ -273,6 +274,138 @@ Available device entity templates (extend `kohbo_device_entity`):
 - [ ] Create a button card template for tile-style light controls
 - [ ] Refactor weather popup card headers to use `kohbo_card_header` template
 - [ ] **Revisit mini graphs for Today's Overview stats** - Explore better visualization options (sparklines, mini gauges, or improved deviation charts) for Real Time, Price, and Forecast stat cards
+
+---
+
+## Security Dashboard File Structure
+
+**Status:** 🚧 Needs reorganization
+
+**Location:** `dashboards/kohbo/security/`
+
+### Current Issues
+
+The security dashboard file structure has several organizational inconsistencies:
+
+1. **Inconsistent popup organization:**
+   - Lock popups in root: `front_door_lock_popup.yaml`, `garage_entry_lock_popup.yaml`, `house_locks_popup.yaml`
+   - Settings popup in `components/`: `security_settings_popup.yaml`
+   - Camera popups in `cameras/` with underscore prefix: `_front_door_camera_popup.yaml`, etc.
+
+2. **Naming inconsistency:**
+   - Camera popups use underscore prefix (`_front_door_camera_popup.yaml`)
+   - Lock popups don't use prefix (`front_door_lock_popup.yaml`)
+   - No clear naming convention
+
+3. **Components folder mixing concerns:**
+   - Contains actual reusable components (`front_door_lock_component.yaml`, `garage_entry_door_lock_component.yaml`)
+   - Also contains a popup (`security_settings_popup.yaml`) which doesn't belong with components
+
+4. **Root level clutter:**
+   - Main page (`security.yaml`) is fine
+   - But 3 popup files in root should be organized
+
+### Proposed Structure
+
+```
+security/
+├── README.md                                    # Documentation
+├── security.yaml                                # Main security dashboard page
+├── components/                                  # Reusable components (not popups)
+│   ├── front_door_lock_component.yaml
+│   └── garage_entry_door_lock_component.yaml
+├── popups/                                      # All popups organized by category
+│   ├── locks/                                  # Lock-related popups
+│   │   ├── front_door_lock_popup.yaml
+│   │   ├── garage_entry_lock_popup.yaml
+│   │   └── house_locks_popup.yaml
+│   ├── settings/                               # Settings popups
+│   │   └── security_settings_popup.yaml
+│   └── cameras/                                 # Camera popups (move from cameras/)
+│       ├── front_door_camera_popup.yaml
+│       ├── driveway_front_camera_popup.yaml
+│       ├── garage_driveway_camera_popup.yaml
+│       ├── backyard_south_camera_popup.yaml
+│       ├── backyard_porch_camera_popup.yaml
+│       ├── backyard_pool_camera_popup.yaml
+│       └── backyard_northwest_camera_popup.yaml
+├── pages/                                       # Detail pages (keep as-is)
+│   ├── house_locks.yaml
+│   ├── garage_doors.yaml
+│   ├── alarm_panel.yaml
+│   ├── exterior_doors.yaml
+│   ├── windows.yaml
+│   └── leak_sensors.yaml
+└── cameras/                                     # Camera overview page (keep)
+    └── cameras.yaml                             # Main cameras page
+```
+
+### Alternative Structure (Simpler)
+
+If subcategorizing popups feels too complex, a simpler approach:
+
+```
+security/
+├── README.md
+├── security.yaml
+├── components/                                  # Reusable components only
+│   ├── front_door_lock_component.yaml
+│   └── garage_entry_door_lock_component.yaml
+├── popups/                                      # All popups in one folder
+│   ├── front_door_lock_popup.yaml
+│   ├── garage_entry_lock_popup.yaml
+│   ├── house_locks_popup.yaml
+│   ├── security_settings_popup.yaml
+│   ├── front_door_camera_popup.yaml
+│   ├── driveway_front_camera_popup.yaml
+│   ├── garage_driveway_camera_popup.yaml
+│   ├── backyard_south_camera_popup.yaml
+│   ├── backyard_porch_camera_popup.yaml
+│   ├── backyard_pool_camera_popup.yaml
+│   └── backyard_northwest_camera_popup.yaml
+├── pages/                                       # Detail pages
+│   └── [same as current]
+└── cameras/                                     # Camera overview page
+    └── cameras.yaml
+```
+
+### Benefits of Reorganization
+
+1. **Clear separation of concerns:**
+   - Components = reusable card collections
+   - Popups = hash-based overlays
+   - Pages = full detail views
+   - Cameras = camera-specific content
+
+2. **Consistent naming:**
+   - Remove underscore prefix from camera popups (or apply consistently)
+   - All popups in one location
+
+3. **Easier maintenance:**
+   - Find popups quickly
+   - Clear where new files should go
+   - Matches patterns from other dashboards
+
+4. **Better scalability:**
+   - Easy to add new popups without cluttering root
+   - Clear organization as security features grow
+
+### Migration Steps
+
+1. Create `popups/` directory
+2. Move lock popups from root to `popups/locks/` (or `popups/`)
+3. Move `security_settings_popup.yaml` from `components/` to `popups/settings/` (or `popups/`)
+4. Move camera popups from `cameras/` to `popups/cameras/` (or `popups/`)
+5. Remove underscore prefix from camera popup filenames
+6. Update all `!include` references to new paths
+7. Update hash references if filenames changed
+8. Update README.md file structure documentation
+
+### Questions to Resolve
+
+- Should popups be subcategorized (locks/settings/cameras) or flat?
+- Should camera popups keep underscore prefix or remove it?
+- Should `cameras/cameras.yaml` stay in `cameras/` or move to `pages/`?
 
 ### Notes for AI Assistant
 - The `kohbo_` prefix indicates custom templates specific to this dashboard

@@ -1,6 +1,6 @@
 # Rooms Dashboard
 
-Room-by-room control and monitoring for your entire home. Navigate by floor or see only occupied rooms for quick access to room controls, climate, devices, and automations.
+Room-by-room control and monitoring for the entire house. Navigate by floor or see only occupied rooms for quick access to room controls, climate, devices, and automations.
 
 ![Rooms Dashboard](./../assets/rooms-dashboard.jpg)
 
