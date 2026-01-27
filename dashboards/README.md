@@ -6,6 +6,19 @@ A custom Home Assistant dashboard system built with reusable templates and consi
 
 ---
 
+## Dashboard Sections
+
+Quick links to detailed documentation for each dashboard section:
+
+- 🏠 [Home Dashboard](./kohbo/home/README.md) - Main landing page with quick access to key controls
+- 🏡 [Rooms Dashboard](./kohbo/rooms/README.md) - Room-by-room control and monitoring
+- 🌡️ [Climate Dashboard](./kohbo/climate/README.md) - Climate control and monitoring
+- 🔒 [Security Dashboard](./kohbo/security/README.md) - Security monitoring and control
+- ⚡ [Energy Dashboard](./kohbo/energy/README.md) - Energy monitoring
+- 👥 [People Dashboard](./kohbo/more/PEOPLE_README.md) - People tracking and presence
+
+---
+
 ## Overview
 
 This dashboard system is built around a dark theme (kohbo) with modular, reusable components. The primary building blocks are:
