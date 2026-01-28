@@ -1,9 +1,0 @@
-thermostat_popup_temperature_item:
-  card:
-    type: custom:template-entity-row
-    icon: mdi:thermometer
-    name: '[[name]]'
-    entity: '[[temperature_sensor]]'
-    secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
-    card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-    state: "{{ (states(config.entity) | float) | round(0) }}°"

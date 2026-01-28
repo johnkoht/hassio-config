@@ -199,7 +199,6 @@ Layout:
 Room components:
 - `room_card` - Room card with occupancy
 - `room_overview` - Room header with mode/occupancy
-- `room_header` - Simple room header
 
 Climate:
 - `climate_overview` - Temperature graph + AQI indicators

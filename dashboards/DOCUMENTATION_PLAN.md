@@ -322,7 +322,6 @@ Use distributed READMEs because:
   - Room Templates
     - `room_card` (composition of button cards)
     - `room_overview` (composition)
-    - `room_header`
   - Climate Templates
     - `climate_overview` (composition)
     - `thermostat_popup` (composition)
