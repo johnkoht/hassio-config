@@ -60,40 +60,11 @@
 ## Unused Components Audit
 
 > 🔍 **Component Usage Analysis** - Tracking unused components for periodic review.
-> Last audit: **January 2026**
 
-### Cleanup Completed (Jan 2026)
+### Audit History
 
-The following unused components were **deleted**:
-
-#### Deleted Button Card Templates (9)
-- `kohbo_aqi_ozone_item` - Ozone displayed via different template
-- `kohbo_aqi_index_item` - Individual AQI items used instead
-- `kohbo_pill` - Replaced by `kohbo_chip_card`
-- `kohbo_device_door_entity_wide` - Standard variant used instead
-- `kohbo_room_card_header` - `kohbo_room_card_overview` used instead
-- `kohbo_popup_title` - `kohbo_popup_page_title` used instead
-- `kohbo_settings_row` - Unused
-- `kohbo_page_back_button` - Navigation handled differently
-- `kohbo_nested_page_title` - `kohbo_header_page_title` used instead
-
-#### Deleted Decluttering Templates (1)
-- `room_header` - Was entirely commented out
-
-#### Deleted Include Files (6)
-- `header_chip_card_mod.yaml` - No usage found
-- `kohbo_room_chip_card_mod_occupancy.yaml` - No usage found
-- `kohbo_entity_row_occupancy_state_display.yaml` - No usage found
-- `kohbo_entity_layout.yaml` - No usage found
-- `kohbo_header_layout.yaml` - No usage found
-- `kohbo_person_battery_icon_color.yaml` - No usage found
-
-#### Deleted .DISABLED Files (5)
-- `kohbo_climate_overview.yaml.DISABLED`
-- `thermostat_popup_temperature_item.yaml.DISABLED`
-- `office_all_lights_scenes_button.yaml.DISABLED`
-- `office_ceiling_lights_scenes_button.yaml.DISABLED`
-- `kohbo_scene_button_card.yaml.DISABLED`
+- **Jan 27, 2026** - Cleanup of 21 unused templates/includes completed (9 button cards, 1 decluttering, 6 includes, 5 .DISABLED files)
+  - Git commit: *(pending - commit this change to capture hash)*
 
 ---
 
