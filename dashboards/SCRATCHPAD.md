@@ -57,6 +57,176 @@
 
 ---
 
+## Unused Components Audit
+
+> 🔍 **Component Usage Analysis** - Components that exist but are not actively used in dashboards.
+> Review these periodically to determine if they should be removed or if they're needed for future features.
+>
+> **Search Methodology:** This audit searched across ALL dashboard files including:
+> - Main dashboard pages (`kohbo/*.yaml`)
+> - Sub-pages and detail pages (`kohbo/*/pages/*.yaml`, `kohbo/rooms/*/*.yaml`)
+> - Popups (`*_popup.yaml`, `*_notification.yaml`)
+> - Partials (`partials/*.yaml`, `components/*.yaml`)
+> - Shared components (`shared/*.yaml`)
+> - Template files themselves (to check for template inheritance)
+> - All subdirectories recursively
+
+### Completely Unused Components
+
+These components are defined but never referenced in any active dashboard code:
+
+#### Button Card Templates
+
+1. **`kohbo_aqi_ozone_item`**
+   - Location: `templates/button_cards/cards/aqi/kohbo_aqi_ozone_item.yaml`
+   - Status: Defined but never used
+   - Note: Other AQI items (humidity, CO2, TVOCs, PM25) are used in `climate_overview` template. Ozone is displayed in `weather_popup.yaml` but uses `kohbo_room_temperature_card` template instead.
+
+2. **`kohbo_pill`**
+   - Location: `templates/button_cards/cards/kohbo_pill.yaml`
+   - Status: Defined but never used
+   - Note: Generic pill component, possibly replaced by `kohbo_chip_card`
+
+3. **`kohbo_device_door_entity_wide`**
+   - Location: `templates/button_cards/cards/devices/kohbo_device_door_entity_wide.yaml`
+   - Status: Defined but never used
+   - Note: Wide variant of door entity card, standard `kohbo_device_door_entity` is used instead
+
+4. **`kohbo_room_card_header`**
+   - Location: `templates/button_cards/cards/rooms/kohbo_room_card_header.yaml`
+   - Status: Defined but never used
+   - Note: Room card header component, `kohbo_room_card_overview` is used instead
+
+5. **`kohbo_popup_title`**
+   - Location: `templates/button_cards/cards/kohbo_popup_title.yaml`
+   - Status: Defined but never used
+   - Note: `kohbo_popup_page_title` is used instead (which extends `kohbo_page_title`)
+
+6. **`kohbo_settings_row`**
+   - Location: `templates/button_cards/cards/shared/kohbo_settings_row.yaml`
+   - Status: Defined but never used
+   - Note: Settings row component, possibly replaced by other patterns
+
+7. **`kohbo_page_back_button`**
+   - Location: `templates/button_cards/cards/shared/kohbo_page_back_button.yaml`
+   - Status: Defined but never used
+   - Note: Back button component, navigation handled differently
+
+8. **`kohbo_nested_page_title`**
+   - Location: `templates/button_cards/cards/shared/kohbo_nested_page_title.yaml`
+   - Status: Defined but never used
+   - Note: Nested page title component, `kohbo_header_page_title` is used instead
+
+9. **`kohbo_aqi_index_item`**
+    - Location: `templates/button_cards/cards/aqi/kohbo_aqi_index_item.yaml`
+    - Status: Defined but never used
+    - Note: AQI index display component, individual AQI items are used instead
+
+#### Decluttering Templates
+
+10. **`room_header`**
+    - Location: `templates/decluttering/room/room_header.yaml`
+    - Status: Entirely commented out, never used
+    - Note: All code in this file is commented out. Consider removing if not needed for future features
+
+### Components Only Used in Commented Code
+
+These components are referenced but only in commented-out sections:
+
+1. **`kohbo_card_wide`**
+   - Location: `templates/button_cards/cards/shared/kohbo_card_wide.yaml`
+   - Usage: Only in commented code in `kohbo/security/security.yaml` (line 949)
+   - Status: Defined but not actively used
+
+2. **`kohbo_alarm_action_card`**
+   - Location: `templates/button_cards/cards/devices/kohbo_alarm_action_card.yaml`
+   - Usage: Only in commented code in `kohbo/security/pages/alarm_panel.yaml` (lines 35, 56, 77)
+   - Status: Defined but not actively used
+   - Note: This template extends `kohbo_horizontal_action_card_entity` which is used
+
+3. **`security_overview_item`**
+   - Location: `templates/button_cards/cards/security/security_overview_item.yaml`
+   - Usage: Only in commented code in `kohbo/security/security.yaml` (lines 855, 874, 887, 903, 918, 933)
+   - Status: Defined but not actively used
+
+4. **`security_alarm_action_button`**
+   - Location: `templates/button_cards/cards/security/security_alarm_action_button.yaml`
+   - Usage: Only in commented code in `kohbo/security/security.yaml` (lines 1067, 1083, 1097)
+   - Status: Defined but not actively used
+
+5. **`office_all_lights_scenes_button`**
+   - Location: `templates/decluttering/lights/office_all_lights_scenes_button.yaml.DISABLED`
+   - Usage: Only in commented code in `kohbo/rooms/main_floor/office.yaml` (line 101)
+   - Status: File is already marked `.DISABLED`, should be removed
+
+6. **`office_ceiling_lights_scenes_button`**
+   - Location: `templates/decluttering/lights/office_ceiling_lights_scenes_button.yaml.DISABLED`
+   - Usage: Only in commented code in `kohbo/rooms/main_floor/office.yaml` (line 107)
+   - Status: File is already marked `.DISABLED`, should be removed
+
+7. **`kohbo_stacked_card_top`**
+   - Location: `templates/button_cards/cards/kohbo_stacked_card_top.yaml`
+   - Usage: Used in active code (security_overview_header, house_mode_popup) but also in commented code
+   - Status: Partially used, but has commented references in:
+     - `kohbo/security/security.yaml` (line 1011)
+     - `kohbo/more/exterior_lighting.yaml` (line 65)
+
+8. **`kohbo_page_title`**
+   - Location: `templates/button_cards/cards/kohbo_page_title.yaml`
+   - Usage: Used in active code but also has commented references
+   - Status: Partially used, but has commented references in:
+     - `kohbo/rooms/active_rooms.yaml` (line 13)
+     - `kohbo/rooms/main_floor/main_floor_index.yaml` (line 13)
+     - `templates/decluttering/room/room_header.yaml` (line 76)
+
+### Component Inventory Summary
+
+**Total Components Analyzed:**
+- Button Card Templates: ~80+ templates
+- Decluttering Templates: ~25 templates
+- Includes/Partials: ~50+ files
+
+**Unused Count:**
+- Completely unused: 10 components
+- Only in commented code: 8 components
+- Total candidates for removal: 18 components
+
+### Recommendations
+
+1. **Safe to Remove (High Confidence):**
+   - `.DISABLED` files (already marked for removal)
+   - `room_header` (entirely commented out)
+   - `kohbo_aqi_ozone_item` (no usage found - ozone displayed via different template)
+   - `kohbo_pill` (likely replaced by chip_card)
+   - `kohbo_popup_title` (replaced by popup_page_title)
+
+2. **Review Before Removing (Medium Confidence):**
+   - `kohbo_device_door_entity_wide` (may be needed for specific layouts)
+   - `kohbo_room_card_header` (may be needed for future room card variants)
+   - `kohbo_settings_row` (may be needed for settings pages)
+   - `kohbo_page_back_button` (may be needed for navigation patterns)
+   - `kohbo_nested_page_title` (may be needed for nested pages)
+   - `kohbo_aqi_index_item` (may be needed for AQI index displays)
+
+3. **Keep for Now (Low Confidence - May Be Used Soon):**
+   - Components only in commented code that might be re-enabled
+   - Components that extend other templates (like `kohbo_alarm_action_card`)
+
+### Next Steps
+
+1. Review commented code sections to determine if they should be:
+   - Re-enabled (if features are being worked on)
+   - Removed (if features are abandoned)
+   - Documented (if they're experimental/planned)
+
+2. Remove `.DISABLED` files after confirming they're not needed
+
+3. Consider creating a "deprecated" or "experimental" folder for components that might be used in the future
+
+4. Update documentation to reflect which components are actively maintained vs. experimental
+
+---
+
 ## Decision Guide: When to Use What
 
 ### Button Card Templates vs Decluttering Cards
