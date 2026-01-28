@@ -537,3 +537,11 @@ The Rooms dashboard integrates with:
 - **Room Detail Pages** - Full room control pages
 
 Bottom navigation bar provides access to all major dashboard sections.
+
+---
+
+## Dashboard Navigation
+
+[🏠 Home](../home/README.md) | [🏡 Rooms](../rooms/README.md) | [🌡️ Climate](../climate/README.md) | [🔒 Security](../security/README.md) | [⚡ Energy](../energy/README.md) | [👥 People](../more/PEOPLE_README.md)
+
+📖 [Main Dashboard README](../../README.md)

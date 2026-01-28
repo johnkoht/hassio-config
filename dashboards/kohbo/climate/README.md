@@ -406,3 +406,11 @@ The Climate dashboard integrates with various automations:
 - **Geofence** - Activate climate when approaching home
 
 All automations can be toggled on/off via the Settings popup.
+
+---
+
+## Dashboard Navigation
+
+[🏠 Home](../home/README.md) | [🏡 Rooms](../rooms/README.md) | [🌡️ Climate](../climate/README.md) | [🔒 Security](../security/README.md) | [⚡ Energy](../energy/README.md) | [👥 People](../more/PEOPLE_README.md)
+
+📖 [Main Dashboard README](../../README.md)

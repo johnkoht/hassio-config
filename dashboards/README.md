@@ -1,329 +1,154 @@
-# Kohbo Dashboard System
+# Kohbo Dashboard
 
-> ⚠️ **Note:** This documentation was AI-generated as a first pass and will be updated in the near future to be more comprehensive and useful.
+![Dashboard Overview](./kohbo/assets/dashboard-overview.jpg)
 
 A custom Home Assistant dashboard system built with reusable templates and consistent design patterns.
 
----
-
-## Dashboard Sections
-
-Quick links to detailed documentation for each dashboard section:
-
-- 🏠 [Home Dashboard](./kohbo/home/README.md) - Main landing page with quick access to key controls
-- 🏡 [Rooms Dashboard](./kohbo/rooms/README.md) - Room-by-room control and monitoring
-- 🌡️ [Climate Dashboard](./kohbo/climate/README.md) - Climate control and monitoring
-- 🔒 [Security Dashboard](./kohbo/security/README.md) - Security monitoring and control
-- ⚡ [Energy Dashboard](./kohbo/energy/README.md) - Energy monitoring
-- 👥 [People Dashboard](./kohbo/more/PEOPLE_README.md) - People tracking and presence
-
----
+> **Note:** This dashboard was designed for my specific home and needs. It's not intended to be a general-purpose theme or drop-in solution—but feel free to use it as inspiration or adapt components for your own setup.
 
 ## Overview
 
-This dashboard system is built around a dark theme (kohbo) with modular, reusable components. The primary building blocks are:
+### Philosophy
 
-- **Button Card Templates** - Atomic UI components with state-based logic
-- **Decluttering Cards** - Composed components with variable substitution
-- **Includes** - Shared CSS styles and configuration snippets
+I wanted a mobile dashboard that was intuitive, well-thought out, and didn't feel like a cluster of sensors and buttons. The focus was simplicity and usability. Rather than stack everything possible within the viewport, create a natural user flow to go from high-level to more detailed information, sensors, and actions. I wanted to build something that my wife and kids can without requiring consistent tech support. I'm still in the early alpha phase and WAF/SAF is unknown, so you've been warned.
 
-## Quick Start
+The Kohbo dashboard prioritizes:
 
-### Adding a New Room Page
+- **Consistency** — Every screen follows the same visual language and interaction patterns
+- **Modularity** — Components are built as reusable templates that can be composed together
+- **Information density** — Show relevant information at a glance without overwhelming
+- **Dark-first design** — Optimized for wall-mounted tablets and low-light viewing
 
-1. Create a new file in `kohbo/rooms/<floor>/<room_name>.yaml`
-2. Use this template:
+### Design Principles
 
-```yaml
-type: custom:vertical-layout
-title: Room Name
-path: rooms-room-name
-theme: kohbo
-subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
-cards:
-  # Toolbar
-  - type: custom:decluttering-card
-    template: room_page_top_toolbar
-    variables:
-      - name: Room Name
-      - navigation_path: /dashboard-kohbo/rooms-main-floor
-      - settings_path: '#room_settings_popup'
+1. **Template everything** — If you use it twice, make it a template
+2. **Compose, don't duplicate** — Build complex UIs from simple, tested components
+3. **State-driven styling** — Visual feedback should reflect device/entity state
+4. **Mobile-friendly** — Works on phones, tablets, and desktop browsers
 
-  # Climate Overview (optional)
-  - type: custom:decluttering-card
-    template: climate_overview
-    variables:
-      - temperature_sensor: sensor.room_temperature
-      - humidity_sensor: sensor.room_humidity
-      - carbon_dioxide_sensor: sensor.room_co2
-      - vocs_sensor: sensor.room_vocs
-      - pm25_sensor: sensor.room_pm25
-      - room_name: Room Name
-      - aqi_score_sensor: sensor.room_aqi_score
-      - action_cards:
-        - type: custom:button-card
-          template: empty_column
+## Architecture
 
-  # Section: Lights
-  - type: custom:button-card
-    template: section_title
-    name: Lights
-  
-  # Add your light cards here...
+The dashboard uses a layered template system:
 
-  # Section: Devices
-  - type: custom:button-card
-    template: section_title
-    name: Devices
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      - type: custom:button-card
-        entity: binary_sensor.room_door
-        name: Door
-        template: kohbo_device_door_entity
-
-  # Navbar
-  - !include /config/dashboards/templates/includes/navbar.yaml
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Dashboard Views                      │
+│              (home.yaml, climate.yaml, etc.)            │
+├─────────────────────────────────────────────────────────┤
+│                  Decluttering Templates                  │
+│         Composed components with variable substitution   │
+│            (room_card, climate_overview, etc.)          │
+├─────────────────────────────────────────────────────────┤
+│                  Button Card Templates                   │
+│         Atomic UI components with state-based logic      │
+│       (kohbo_device_entity, kohbo_chip_card, etc.)      │
+├─────────────────────────────────────────────────────────┤
+│                    Includes (Styles)                     │
+│              Shared CSS and layout snippets              │
+└─────────────────────────────────────────────────────────┘
 ```
 
-3. Add the view to `kohbo/kohbo.yaml`:
-```yaml
-- !include /config/dashboards/kohbo/rooms/<floor>/<room_name>.yaml
-```
-
-### Adding a Boolean Toggle
-
-```yaml
-- type: entities
-  entities:
-    - entity: input_boolean.my_toggle
-      icon: mdi:bell
-      card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-      secondary_info: last-changed
-      state_color: true
-```
-
-### Creating a Popup
-
-```yaml
-# At the end of your cards (before navbar)
-- type: vertical-stack
-  cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#my_popup'
-      close_by_clicking_outside: true
-      styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-      margin_top_mobile: calc(100vh - 825px)
-      margin_top_desktop: calc(100vh - 825px)
-    
-    - type: custom:button-card
-      template: kohbo_popup_page_title
-      name: My Popup
-
-    # Add popup content here...
-```
-
-Navigate to it:
-```yaml
-tap_action:
-  action: navigate
-  navigation_path: '#my_popup'
-```
-
----
-
-## Folder Structure
+### Folder Structure
 
 ```
 dashboards/
-├── kohbo/                    # Main dashboard views
-│   ├── kohbo.yaml           # Entry point
-│   ├── home/                # Home page
-│   ├── rooms/               # Room views
-│   ├── security/            # Security views
-│   ├── climate/             # Climate views
+├── kohbo/                    # Dashboard views
+│   ├── kohbo.yaml           # Entry point (loads templates)
+│   ├── home/                # Home dashboard
+│   ├── rooms/               # Room views by floor
+│   ├── climate/             # Climate controls
+│   ├── security/            # Security & cameras
 │   ├── energy/              # Energy monitoring
-│   └── shared/              # Shared popups
+│   └── more/                # People, settings
 │
-└── templates/               # Reusable templates
-    ├── button_cards/        # Button card templates
-    │   ├── base/            # Base templates
-    │   ├── cards/           # Component templates
-    │   └── people/          # Person templates
-    ├── decluttering/        # Decluttering templates
-    └── includes/            # CSS styles
+└── templates/               # Reusable components
+    ├── button_cards/        # Atomic UI templates
+    ├── decluttering/        # Composed templates
+    └── includes/            # Styles & snippets
 ```
 
----
+## Dashboard Sections
 
-## Template Reference
+| Section | Description | Documentation |
+|---------|-------------|---------------|
+| 🏠 **Home** | Main landing page with quick access to key controls, room status, and notifications | [README](./kohbo/home/README.md) |
+| 🏡 **Rooms** | Room-by-room control organized by floor, with detail pages for each room | [README](./kohbo/rooms/README.md) |
+| 🌡️ **Climate** | Thermostat controls, temperature graphs, and air quality monitoring | [README](./kohbo/climate/README.md) |
+| 🔒 **Security** | Cameras, locks, doors, windows, leak sensors, and alarm controls | [README](./kohbo/security/README.md) |
+| ⚡ **Energy** | Real-time energy monitoring and usage statistics | [README](./kohbo/energy/README.md) |
+| 👥 **People** | Presence tracking and location for household members | [README](./kohbo/more/PEOPLE_README.md) |
+
+## Third-Party Components
+
+These custom cards are required (install via [HACS](https://hacs.xyz/)):
+
+| Component | Purpose |
+|-----------|---------|
+| [apexcharts-card](https://github.com/RomRider/apexcharts-card) | Data visualization charts |
+| [advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card) | Camera feeds (optional) |
+| [browser-mod](https://github.com/thomasloven/hass-browser_mod) | Browser control and popups |
+| [bubble-card](https://github.com/Clooos/Bubble-Card) | Popups and slide-up panels |
+| [button-card](https://github.com/custom-cards/button-card) | Primary UI component for all custom cards |
+| [card-mod](https://github.com/thomasloven/lovelace-card-mod) | CSS styling for cards |
+| [decluttering-card](https://github.com/custom-cards/decluttering-card) | Template instantiation with variables |
+| [horizon-card](https://github.com/rejuvenate/lovelace-horizon-card) | Sun position visualization |
+| [lovelace-layout-card](https://github.com/thomasloven/lovelace-layout-card) | Custom page layouts |
+| [mediocre-media-player](https://github.com/antontanderup/mediocre-hass-media-player-cards) | Media player cards |
+| [mini-graph-card](https://github.com/kalkih/mini-graph-card) | Temperature and sensor graphs |
+| [mushroom](https://github.com/piitaya/lovelace-mushroom) | Chip layouts and utilities |
+| [navbar-card](https://github.com/nicufarmache/lovelace-navbar-card) | Bottom navigation bar |
+| [scene-presets](https://github.com/hypfer/hass-scene_presets) | Hue-like scene presets for lights |
+| [stack-in-card](https://github.com/custom-cards/stack-in-card) | Compose cards without extra styling |
+| [swipe-card](https://github.com/bramkragten/swipe-card) | Swipeable card carousels |
+| [template-entity-row](https://github.com/thomasloven/lovelace-template-entity-row) | Custom entity rows with templates |
+
+
+## Custom Components
+
+The dashboard is built on two types of custom templates:
 
 ### Button Card Templates
 
-Base templates (extend these):
-- `kohbo_default` - Base styles for all cards
-- `kohbo_entity` - Base entity card with name/state display
+Atomic UI components with JavaScript-based state logic. These handle styling, state display, and interactions for individual elements.
 
-Device templates:
-- `kohbo_device_entity` - Generic device card
-- `kohbo_device_door_entity` - Door sensors
-- `kohbo_device_window_entity` - Window sensors
-- `kohbo_device_lock_entity` - Locks
-- `kohbo_device_leak_entity` - Leak sensors
-- `kohbo_device_smart_plug_entity` - Smart plugs
-- `kohbo_device_air_purifier_entity` - Air purifiers
-- `kohbo_thermostat_entity` - Climate/thermostats
-
-UI components:
-- `kohbo_chip_card` - Pill-shaped chip buttons
-- `kohbo_header_chip_card` - Header action buttons
-- `kohbo_header_page_title` - Page title in header
-- `kohbo_popup_page_title` - Popup title
-- `section_title` - Section headers
-- `empty_column` - Spacer
-
-People:
-- `kohbo_person_entity` - Person avatar with status
+**Examples:** `kohbo_device_entity`, `kohbo_chip_card`, `kohbo_thermostat_entity`
 
 ### Decluttering Templates
 
-Layout:
-- `top_toolbar` - Base toolbar template
-- `room_page_top_toolbar` - Room page toolbar with back/settings
-- `room_page_top_toolbar_no_settings` - Toolbar without settings
+Composed components that combine multiple cards with variable substitution. These create reusable page-level elements.
 
-Room components:
-- `room_card` - Room card with occupancy
-- `room_overview` - Room header with mode/occupancy
+**Examples:** `room_card`, `climate_overview`, `thermostat_popup`
 
-Climate:
-- `climate_overview` - Temperature graph + AQI indicators
-- `thermostat_popup` - Thermostat control popup
-- `thermostat_radiant_floor_popup` - Radiant floor controls
-
-Media:
-- `media_player` - Media player card
-- `media_player_pop_up` - Media player popup
-
-Security:
-- `camera_card` - Camera feed card
-- `camera_popup` - Camera popup with controls
-
----
-
-## Custom Cards Required
-
-Install these via HACS:
-
-- [button-card](https://github.com/custom-cards/button-card)
-- [stack-in-card](https://github.com/custom-cards/stack-in-card)
-- [decluttering-card](https://github.com/custom-cards/decluttering-card)
-- [lovelace-layout-card](https://github.com/thomasloven/lovelace-layout-card)
-- [bubble-card](https://github.com/Clooos/Bubble-Card)
-- [card-mod](https://github.com/thomasloven/lovelace-card-mod)
-- [mini-graph-card](https://github.com/kalkih/mini-graph-card)
-- [navbar-card](https://github.com/nicufarmache/lovelace-navbar-card)
-- [mushroom](https://github.com/piitaya/lovelace-mushroom)
-- [apexcharts-card](https://github.com/RomRider/apexcharts-card)
-- [advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card) (if using cameras)
-
----
+📖 **Full component documentation:** [templates/README.md](./templates/README.md) *(coming soon)*
 
 ## Theme
 
-The kohbo theme (`themes/kohbo/kohbo.yaml`) defines the color palette:
+The dashboard uses a custom dark theme (`kohbo`) with a consistent color palette:
 
-### Primary Colors
-| Variable | Hex | Preview |
-|----------|-----|---------|
-| `--primary-color` | `#59A5D8` | Blue - active states |
-| `--accent-color` | `#FFD166` | Yellow - warnings |
-| `--success-color` | `#06D6A0` | Green - success |
-| `--error-color` | `#ED4747` | Red - errors |
+| Color | Variable | Usage |
+|-------|----------|-------|
+| 🔵 Blue | `--primary-color` | Active states, primary accent |
+| 🟡 Yellow | `--accent-color` | Warnings, highlights |
+| 🟢 Green | `--success-color` | Success states |
+| 🔴 Red | `--error-color` | Errors, alerts |
 
-### Background Colors
-| Variable | Hex | Preview |
-|----------|-----|---------|
-| `--primary-background-color` | `#212529` | Page background |
-| `--dark-primary-color` | `#343A40` | Card background |
-| `--darker-primary-color` | `#2D3339` | Secondary background |
+**Background:** Dark grays (`#212529` → `#343A40`)  
+**Text:** Light grays (`#F8F9FA` primary, `#CED4DA` secondary)
 
-### Text Colors
-| Variable | Hex | Preview |
-|----------|-----|---------|
-| `--primary-text-color` | `#F8F9FA` | Main text |
-| `--secondary-text-color` | `#CED4DA` | Secondary text |
-| `--light-grey-color` | `#ADB5BD` | Inactive/muted |
-
----
+Full theme definition: [`themes/kohbo/kohbo.yaml`](/config/themes/kohbo/kohbo.yaml)
 
 ## Custom Icons
 
-The dashboard uses a custom `kohbo` icon set. Icons are referenced as `kohbo:kohbo-<name>`.
+The dashboard uses a custom `kohbo` icon set, referenced as `kohbo:kohbo-<name>`.
 
-Common icons:
-- `kohbo:kohbo-dashboard` - Home
-- `kohbo:kohbo-rooms` - Rooms
-- `kohbo:kohbo-security` - Security
-- `kohbo:kohbo-climate` - Climate
-- `kohbo:kohbo-light` - Lights
-- `kohbo:kohbo-door-open` / `kohbo:kohbo-door-closed`
-- `kohbo:kohbo-window-open` / `kohbo:kohbo-window-closed`
-- `kohbo:kohbo-notification` - Notifications
-- `kohbo:kohbo-room-occupancy` - Occupancy
+Common icons include: `dashboard`, `rooms`, `security`, `climate`, `light`, `door-open`, `door-closed`, `window-open`, `window-closed`, `notification`, `room-occupancy`
 
-> **TODO:** Document where custom icons are stored and how to add new ones.
+## Resources
 
----
-
-## Development Guidelines
-
-### Template Syntax
-
-**Button Card (JavaScript):**
-```yaml
-state_display: |
-  [[[
-    if (entity.state === 'on') return 'Active';
-    return 'Inactive';
-  ]]]
-```
-
-**Decluttering Card (Variables):**
-```yaml
-template: my_template
-variables:
-  - entity: sensor.temperature
-  - name: Temperature
-```
-
-In template file:
-```yaml
-entity: '[[entity]]'
-name: '[[name]]'
-```
-
-### Path Format
-
-All `!include` paths use Home Assistant's container path:
-```yaml
-!include /config/dashboards/templates/includes/navbar.yaml
-```
-
-### Template Loading
-
-Templates are loaded in `kohbo.yaml`:
-```yaml
-button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
-decluttering_templates: !include_dir_merge_named /config/dashboards/templates/decluttering
-```
-
----
+- 🗺️ [SITEMAP.md](./SITEMAP.md) — Full navigation map of all views and popups
+- 📝 [SCRATCHPAD.md](./SCRATCHPAD.md) — Development notes and TODOs
+- 📋 [DOCUMENTATION_PLAN.md](./DOCUMENTATION_PLAN.md) — Documentation roadmap
 
 ## Contributing
 
-See [SCRATCHPAD.md](./SCRATCHPAD.md) for development notes, TODOs, and decision guides.
+This is a personal project, but if you find it useful or have questions, feel free to open an issue or reach out.

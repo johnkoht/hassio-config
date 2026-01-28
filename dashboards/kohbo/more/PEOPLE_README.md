@@ -343,8 +343,10 @@ The people dashboard uses the following navigation paths:
 - `#people_settings_popup` - People settings popup
 - `#person_name` - Individual person popups (hash-based navigation)
 
-## Related Documentation
+---
 
-- [Home Dashboard](../home/README.md) - People avatars on home page
-- [Components Documentation](../../templates/README.md) - Component templates reference
-- [Sitemap](../../SITEMAP.md) - Complete navigation structure
+## Dashboard Navigation
+
+[🏠 Home](../home/README.md) | [🏡 Rooms](../rooms/README.md) | [🌡️ Climate](../climate/README.md) | [🔒 Security](../security/README.md) | [⚡ Energy](../energy/README.md) | [👥 People](../more/PEOPLE_README.md)
+
+📖 [Main Dashboard README](../../README.md) | 🗺️ [Sitemap](../../SITEMAP.md)

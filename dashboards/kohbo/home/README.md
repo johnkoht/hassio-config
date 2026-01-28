@@ -268,3 +268,11 @@ See [`home.yaml`](./home.yaml) for the complete dashboard configuration.
     - temperature_sensor: sensor.average_indoor_temperature
     - humidity_sensor: sensor.average_indoor_humidity
 ```
+
+---
+
+## Dashboard Navigation
+
+[🏠 Home](../home/README.md) | [🏡 Rooms](../rooms/README.md) | [🌡️ Climate](../climate/README.md) | [🔒 Security](../security/README.md) | [⚡ Energy](../energy/README.md) | [👥 People](../more/PEOPLE_README.md)
+
+📖 [Main Dashboard README](../../README.md)

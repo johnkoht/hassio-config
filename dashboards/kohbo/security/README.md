@@ -501,8 +501,10 @@ Popup hashes:
 - `#driveway_front_camera` - Driveway front camera popup
 - (and other camera popups)
 
-## Related Documentation
+---
 
-- [Home Dashboard](../home/README.md) - Security overview on home page
-- [Components Documentation](../../templates/README.md) - Component templates reference
-- [Sitemap](../../SITEMAP.md) - Complete navigation structure
+## Dashboard Navigation
+
+[🏠 Home](../home/README.md) | [🏡 Rooms](../rooms/README.md) | [🌡️ Climate](../climate/README.md) | [🔒 Security](../security/README.md) | [⚡ Energy](../energy/README.md) | [👥 People](../more/PEOPLE_README.md)
+
+📖 [Main Dashboard README](../../README.md) | 🗺️ [Sitemap](../../SITEMAP.md)

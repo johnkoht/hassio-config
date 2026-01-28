@@ -166,3 +166,11 @@ Mini-graph cards for individual devices showing 24h power consumption. Used in t
 - Device name and icon
 - 24-hour bar graph of power consumption (W)
 - Color-coded thresholds (green/yellow/orange/red based on power level)
+
+---
+
+## Dashboard Navigation
+
+[🏠 Home](../home/README.md) | [🏡 Rooms](../rooms/README.md) | [🌡️ Climate](../climate/README.md) | [🔒 Security](../security/README.md) | [⚡ Energy](../energy/README.md) | [👥 People](../more/PEOPLE_README.md)
+
+📖 [Main Dashboard README](../../README.md)
