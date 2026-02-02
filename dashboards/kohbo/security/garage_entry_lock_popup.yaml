@@ -185,14 +185,14 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         icon: mdi:battery
-      - entity: binary_sensor.garage_entry_door_lock_jammed
-        name: Lock Jammed
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        icon: kohbo:kohbo-lock-locked
-      - entity: sensor.node_37_node_status
+      - entity: sensor.garage_entry_door_node_status
         name: Node Status
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         icon: mdi:heart-pulse
+      - entity: sensor.garage_entry_door_signal_strength
+        name: Signal Strength
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        icon: mdi:signal
 
