@@ -96,7 +96,7 @@ These custom cards are required (install via [HACS](https://hacs.xyz/)):
 | [mediocre-media-player](https://github.com/antontanderup/mediocre-hass-media-player-cards) | Media player cards |
 | [mini-graph-card](https://github.com/kalkih/mini-graph-card) | Temperature and sensor graphs |
 | [mushroom](https://github.com/piitaya/lovelace-mushroom) | Chip layouts and utilities |
-| [navbar-card](https://github.com/nicufarmache/lovelace-navbar-card) | Bottom navigation bar |
+| [navbar-card](https://github.com/joseluis9595/lovelace-navbar-card) | Bottom navigation bar |
 | [scene-presets](https://github.com/hypfer/hass-scene_presets) | Hue-like scene presets for lights |
 | [stack-in-card](https://github.com/custom-cards/stack-in-card) | Compose cards without extra styling |
 | [swipe-card](https://github.com/bramkragten/swipe-card) | Swipeable card carousels |
