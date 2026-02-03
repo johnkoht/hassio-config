@@ -46,6 +46,11 @@ script:
       # see https://www.home-assistant.io/integrations/script/#waiting-for-script-to-complete
       # 
 
+      # Notify Noonlight
+      - action: switch.turn_on
+        target:
+          entity_id: switch.noonlight_alarm
+
       # Sound the sirens!
       - action: switch.turn_on
         target:
@@ -88,6 +93,11 @@ script:
     mode: "single"
     icon: mdi:security-home
     sequence:
+      # Turn off Noonlight
+      - action: switch.turn_off
+        target:
+          entity_id: switch.noonlight_alarm
+
       # Turn off the sirens!
       - action: switch.turn_off
         target:
