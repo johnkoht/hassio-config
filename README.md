@@ -24,6 +24,7 @@ Home Assistant OS is deployed on a [Home Assistant Yellow](https://www.home-assi
 | [People](docs/PEOPLE.md) | Person sensors, presence states, sleep tracking |
 | [Presence Detection](docs/PRESENCE.md) | Home, room, and zone presence detection setup |
 | [Automations](docs/AUTOMATIONS.md) | Speech notifications and favorite automations |
+| [Voice Announcements](docs/ANNOUNCEMENTS.md) | TTS engine, queue system, and sound library |
 | [Devices](docs/DEVICES.md) | Complete hardware inventory with links and notes |
 | [Dashboard](dashboards/README.md) | Custom Lovelace dashboard system (Kohbo) |
 
