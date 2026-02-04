@@ -1,0 +1,40 @@
+---
+description: Prompt to update DEVICES.md when hardware integrations change
+globs: packages/**/integrations/**/*.yaml, packages/**/*_sensor*.yaml, packages/**/*_lock*.yaml, packages/**/*_camera*.yaml, packages/**/vacuum/**/*.yaml
+alwaysApply: false
+---
+
+# Devices Documentation
+
+When adding or modifying hardware device integrations, the documentation at `docs/DEVICES.md` may need updates.
+
+## Before Completing Changes
+
+Review if your changes involve:
+
+| Category | Examples |
+|----------|----------|
+| **Hubs** | Z-Wave, Zigbee, Lutron, Hue hub changes |
+| **Lighting** | New bulbs, switches, dimmers |
+| **Climate** | Thermostats, temperature sensors, air quality |
+| **Sensors** | Motion, door/window, water leak, presence |
+| **Cameras** | New cameras, NVR changes |
+| **Locks** | Smart lock additions or changes |
+| **Vacuum** | Robot vacuum integration changes |
+| **Network** | UniFi devices, access points |
+
+## When to Update
+
+Update `docs/DEVICES.md` when:
+- Adding a new physical device to the system
+- Changing how a device connects (e.g., Z-Wave to Zigbee)
+- Updating integration method for existing devices
+- Adding/removing device quantities
+
+## Action Required
+
+After making hardware-related changes, ask the user:
+
+> "I've modified device/hardware integrations. Should I review and update `docs/DEVICES.md` to reflect these changes?"
+
+If the user agrees, read the current documentation and update the relevant device tables.

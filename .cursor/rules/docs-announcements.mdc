@@ -1,0 +1,31 @@
+---
+description: Prompt to update ANNOUNCEMENTS.md when voice announcement system is modified
+globs: packages/announcements/**/*.yaml
+alwaysApply: false
+---
+
+# Voice Announcements Documentation
+
+When modifying files in `packages/announcements/`, the documentation at `docs/ANNOUNCEMENTS.md` may need updates.
+
+## Before Completing Changes
+
+Review if your changes affect any of these documented areas:
+
+| Area | What to Check |
+|------|---------------|
+| **Architecture** | New scripts, queue changes, flow modifications |
+| **Services** | Script parameters, new scripts, renamed scripts |
+| **Parameters** | New/changed parameters for `voice_announcement` or `critical_announcement` |
+| **Smart Behaviors** | Time restrictions, mode interactions, volume logic |
+| **Queue System** | MQTT topics, priority handling, expiration logic |
+| **Sound Library** | New sounds, sound categories, person intros |
+| **File Structure** | New files, renamed files, reorganized folders |
+
+## Action Required
+
+After making changes, ask the user:
+
+> "I've modified the voice announcement system. Should I review and update `docs/ANNOUNCEMENTS.md` to reflect these changes?"
+
+If the user agrees, read the current documentation and update any sections affected by the changes.

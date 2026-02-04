@@ -1,0 +1,39 @@
+---
+description: Prompt to update ROOMS.md when room modes or occupancy logic is modified
+globs: packages/**/modes/**/*.yaml, packages/**/*_occupied*.yaml, packages/**/*_occupancy*.yaml, packages/**/*_state*.yaml
+alwaysApply: false
+---
+
+# Rooms Documentation
+
+When modifying room mode or occupancy files, the documentation at `docs/ROOMS.md` may need updates.
+
+## Before Completing Changes
+
+Review if your changes affect any of these documented areas:
+
+| Area | What to Check |
+|------|---------------|
+| **Room Modes** | New modes, mode behavior changes, mode transitions |
+| **Occupancy Triggers** | New sensors, trigger conditions, detection methods |
+| **Occupied/Unoccupied Actions** | Light behavior, media control, TTS routing |
+| **Room-Specific Patterns** | DnD mode, Bedtime mode, Wake mode variations |
+| **Linking to House State** | How rooms respond to house-level changes |
+
+## Mode Files Pattern
+
+Room modes follow this naming pattern:
+- `{room}_mode_auto.yaml` - Auto mode behaviors
+- `{room}_mode_off.yaml` - Off mode behaviors
+- `{room}_mode_dnd.yaml` - Do Not Disturb mode
+- `{room}_mode_bedtime.yaml` - Bedtime mode
+- `{room}_occupied.yaml` - Occupancy on trigger
+- `{room}_not_occupied.yaml` - Occupancy off trigger
+
+## Action Required
+
+After making changes, ask the user:
+
+> "I've modified room mode/occupancy logic. Should I review and update `docs/ROOMS.md` to reflect these changes?"
+
+If the user agrees, read the current documentation and update any sections affected by the changes.

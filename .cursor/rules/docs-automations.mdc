@@ -1,0 +1,39 @@
+---
+description: Prompt to update AUTOMATIONS.md when notable automations change
+globs: packages/**/*_automation*.yaml, packages/**/*_reminder*.yaml, packages/**/*_alert*.yaml, packages/**/automations/**/*.yaml
+alwaysApply: false
+---
+
+# Automations Documentation
+
+When modifying notable automations, the documentation at `docs/AUTOMATIONS.md` may need updates.
+
+## Before Completing Changes
+
+Review if your changes affect documented automation categories:
+
+| Category | Examples |
+|----------|----------|
+| **Speech/TTS** | New announcement triggers, TTS message changes |
+| **Climate** | Energy-aware HVAC, temperature automations |
+| **Lighting** | Outdoor lighting, adaptive lighting |
+| **Garage & Security** | Door automations, alarm panel, lock logic |
+| **House Modes** | Entertainment mode, Bedtime mode triggers |
+| **Safety** | Outlet safety, water leak response |
+| **Notifications** | Grocery store, calendar reminders, morning update |
+
+## When to Update
+
+Update `docs/AUTOMATIONS.md` when:
+- Adding a new "favorite" or notable automation
+- Significantly changing behavior of documented automations
+- Adding new TTS announcement triggers
+- Changing house mode logic
+
+## Action Required
+
+After making automation changes, ask the user:
+
+> "I've modified automations. Should I review and update `docs/AUTOMATIONS.md` if this is a notable change worth documenting?"
+
+If the user agrees and the change is significant, read the current documentation and update relevant sections.

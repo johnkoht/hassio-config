@@ -1,0 +1,37 @@
+---
+description: Prompt to update PEOPLE.md when person sensors or tracking is modified
+globs: packages/people/**/*.yaml
+alwaysApply: false
+---
+
+# People Documentation
+
+When modifying files in `packages/people/`, the documentation at `docs/PEOPLE.md` may need updates.
+
+## Before Completing Changes
+
+Review if your changes affect any of these documented areas:
+
+| Area | What to Check |
+|------|---------------|
+| **Person Sensor** | Template attributes, state derivation, new attributes |
+| **Key States** | Home status options, sleep status options, transition logic |
+| **State Transitions** | Arrival/departure flow, sleep cycle, DnD handling |
+| **House-Level Sensors** | `anybody_sleeping`, `everybody_sleeping`, `house_occupied` |
+| **File Structure** | New folders, renamed files, reorganized automations |
+
+## Specific Files to Watch
+
+- `**/presence/*_person.yaml` - Person sensor templates
+- `**/presence/*_status.yaml` - Status input_selects
+- `**/sleep/*.yaml` - Sleep state automations
+- `**/commute/*.yaml` - Arrival/departure automations
+- `**/do_not_disturb/*.yaml` - DnD handling
+
+## Action Required
+
+After making changes, ask the user:
+
+> "I've modified person tracking/sensors. Should I review and update `docs/PEOPLE.md` to reflect these changes?"
+
+If the user agrees, read the current documentation and update any sections affected by the changes.

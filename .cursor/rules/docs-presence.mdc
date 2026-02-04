@@ -1,0 +1,34 @@
+---
+description: Prompt to update PRESENCE.md when presence detection is modified
+globs: packages/**/presence/**/*.yaml, packages/**/*_presence*.yaml, packages/**/room_presence*.yaml
+alwaysApply: false
+---
+
+# Presence Detection Documentation
+
+When modifying presence detection files, the documentation at `docs/PRESENCE.md` may need updates.
+
+## Before Completing Changes
+
+Review if your changes affect any of these documented areas:
+
+| Area | What to Check |
+|------|---------------|
+| **Home Presence** | Device trackers, Person integration config, Bayesian sensors |
+| **Room Presence** | ESPresense config, BLE base stations, room detection logic |
+| **Zone Presence** | Zone definitions, zone-based automations |
+| **Transition States** | Just Arrived, Just Left logic, timing thresholds |
+
+## Key Patterns
+
+- `*_presence.yaml` - Presence sensor definitions
+- `*_room_presence.yaml` - Room-level BLE presence
+- `*_person.yaml` - Person entity templates (may include presence attributes)
+
+## Action Required
+
+After making changes, ask the user:
+
+> "I've modified presence detection. Should I review and update `docs/PRESENCE.md` to reflect these changes?"
+
+If the user agrees, read the current documentation and update any sections affected by the changes.
