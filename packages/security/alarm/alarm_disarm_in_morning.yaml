@@ -12,6 +12,8 @@ automation:
         entity_id: input_select.house
         from: "Bedtime"
         to: "Auto"
+        for: 
+          seconds: 15
       # # At 6:30am
       # - trigger: time
       #   at: "06:30:00"
