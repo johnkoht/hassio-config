@@ -113,6 +113,6 @@ thermostat_radiant_floor_popup:
               target:
                 entity_id: '[[entity]]'
               data:
-                hvac_mode: off
+                hvac_mode: "off"
 
           

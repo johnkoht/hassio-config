@@ -53,15 +53,17 @@ routes:
     tap_action:
       action: open-popup
     popup:
-      # Reload Page
+      # # Reload Page
       - icon: mdi:refresh
-        name: Reload Page
+        name: Reload Dashboard
         tap_action:
-          action: call-service
-          service: browser_mod.javascript
-          data:
-            code: lovelace_reload()
-            browser_id: ff9aa457-0f3695c9
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.javascript
+            data:
+              browser_id: THIS
+              code: |
+                lovelace_reload();
 
       # People
       - icon: mdi:account-circle

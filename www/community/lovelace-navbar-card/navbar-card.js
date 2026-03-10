@@ -898,6 +898,16 @@ var mapStringToEnum = (enumType, value) => {
   return hash.toString();
 };
 
+// src/utils/docs-links.ts
+var DOCS_LINKS;
+var init_docs_links = __esm(() => {
+  DOCS_LINKS = {
+    jsTemplate: "https://joseluis9595.github.io/lovelace-navbar-card/docs/types/js-template",
+    styles: "https://joseluis9595.github.io/lovelace-navbar-card/docs/configuration/styles",
+    template: "https://joseluis9595.github.io/lovelace-navbar-card/docs/configuration/template"
+  };
+});
+
 // src/utils/dom.ts
 function fireDOMEvent(node, type, data, EventConstructor) {
   const { options, detailOverride } = data ?? {};
@@ -1076,6 +1086,8 @@ var DASHBOARD_PADDING_STYLE_ID = "navbar-card-forced-padding-styles", DEFAULT_ST
   return x`<div class="loader-container">
     <span class="loader"></span>
   </div>`;
+}, supportsHAComponent = (component) => {
+  return customElements?.get(component) != null;
 };
 var init_dom = __esm(() => {
   init_lit();
@@ -1177,22 +1189,46 @@ var init_template = __esm(() => {
 
 // src/utils/index.ts
 var init_utils = __esm(() => {
+  init_docs_links();
   init_dom();
   init_haptic();
   init_template();
 });
 
 // src/lib/action-handler.ts
-var ACTIONS_WITH_CUSTOM_ENTITY, chooseKeyForQuickbar = (action) => {
-  switch (action.mode) {
-    case "devices":
-      return "d";
-    case "entities":
-      return "e";
-    case "commands":
-    default:
-      return "c";
+var ACTIONS_WITH_CUSTOM_ENTITY, openQuickbar = (action) => {
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  let key;
+  if (action.mode) {
+    switch (action.mode) {
+      case "devices":
+        key = "d";
+        break;
+      case "entities":
+        key = "e";
+        break;
+      case "commands":
+      default:
+        key = "c";
+        break;
+    }
+  } else {
+    key = "k";
   }
+  const eventInit = {
+    bubbles: true,
+    cancelable: true,
+    key
+  };
+  if (!action.mode) {
+    if (isMac) {
+      eventInit.metaKey = true;
+    } else {
+      eventInit.ctrlKey = true;
+    }
+  }
+  const event = new KeyboardEvent("keydown", eventInit);
+  document.dispatchEvent(event);
 }, executeAction = (params) => {
   const { context, target, action, actionType, data } = params;
   const { route, popupItem } = data;
@@ -1228,13 +1264,7 @@ var ACTIONS_WITH_CUSTOM_ENTITY, chooseKeyForQuickbar = (action) => {
       break;
     case "quickbar" /* quickbar */:
       triggerHaptic(context, actionType);
-      fireDOMEvent(context, "keydown", {
-        options: {
-          bubbles: true,
-          composed: true,
-          key: chooseKeyForQuickbar(action)
-        }
-      }, KeyboardEvent);
+      openQuickbar(action);
       break;
     case "show-notifications" /* showNotifications */:
       triggerHaptic(context, actionType);
@@ -1293,8 +1323,381 @@ var init_action_handler = __esm(() => {
   ACTIONS_WITH_CUSTOM_ENTITY = ["more-info", "toggle"];
 });
 
-// src/styles.ts
-var HOST_STYLES, NAVBAR_CONTAINER_STYLES, MEDIA_PLAYER_STYLES, ROUTE_STYLES, POPUP_STYLES, EDITOR_STYLES, ROUTES_EDITOR_DND_STYLES, COMPONENTS_STYLES, getDefaultStyles = () => {
+// src/styles/editor.ts
+var EDITOR_STYLES, ROUTES_EDITOR_DND_STYLES;
+var init_editor = __esm(() => {
+  init_lit();
+  EDITOR_STYLES = i`
+  .navbar-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .navbar-editor ha-textfield {
+    width: 100%;
+  }
+
+  .navbar-editor ha-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .navbar-editor .navbar-template-toggle-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0px !important;
+    border-radius: 99px;
+    font-size: 0.85em;
+    font-weight: 600;
+    border: 0px;
+    padding: 4px 8px !important;
+    cursor: pointer;
+  }
+
+  .editor-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 12px;
+  }
+
+  .editor-row {
+    gap: 6px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .editor-row-item {
+    flex: 1;
+  }
+
+  .editor-row-item ha-textfield {
+    width: 100%;
+  }
+
+  @media (max-width: 600px) {
+    .editor-row {
+      flex-direction: column !important;
+      gap: 0.5em;
+    }
+    .route-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .editor-row-item {
+      width: 100%;
+    }
+  }
+
+  .editor-label {
+    font-weight: 500;
+  }
+
+  .routes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+  }
+
+  ha-expansion-panel h4[slot='header'],
+  ha-expansion-panel h5[slot='header'],
+  ha-expansion-panel h6[slot='header'] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.2em 0.5em 0.2em 0;
+    height: 40px;
+    margin: 0px !important;
+    margin-left: 1em;
+  }
+
+  ha-expansion-panel h4[slot='header'] .expansion-panel-title,
+  ha-expansion-panel h5[slot='header'] .expansion-panel-title,
+  ha-expansion-panel h6[slot='header'] .expansion-panel-title {
+    flex: 1;
+  }
+
+  .route-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.2em 0.5em 0.2em 0;
+  }
+
+  .route-header-title {
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+
+  .route-header-summary {
+    flex: 1;
+    opacity: 0.7;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+  }
+
+  .route-header-image {
+    height: 1.2em;
+    vertical-align: middle;
+  }
+
+  .route-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    background: var(--primary-background-color);
+    border-radius: 8px;
+    padding: 1em 1.2em 1.2em 1.2em;
+    margin: 1em 0em;
+  }
+
+  .popup-controls {
+    display: flex;
+    gap: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  .route-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+  }
+
+  .route-divider {
+    margin: 1.5em 0 1em 0;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    height: 1px;
+    background: none;
+  }
+
+  .add-popup-btn {
+    margin-top: 1em;
+  }
+
+  .template-editor-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    margin-bottom: 0.7em;
+  }
+
+  .template-editor-helper {
+    font-size: 0.93em;
+    color: var(--secondary-text-color, #888);
+  }
+
+  .quickbar-mode-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .templatable-field-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .templatable-field-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .templatable-field-header-label {
+    flex: 1;
+  }
+
+  /* Custom Editor inputs */
+
+  .editor-select-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .editor-select {
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 10px 12px;
+    padding-right: 32px;
+    border-radius: var(--ha-border-radius-sm, 4px); /* TODO JLAQ: review this variable */
+    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.14));
+    background: var(--input-fill-color, var(--card-background-color, #fff));
+    color: var(--primary-text-color, #000);
+    outline: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+
+    /* Remove default dropdown arrow */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* Add our own dropdown icon */
+    background-image: linear-gradient(
+      135deg,
+      transparent 50%,
+      var(--secondary-text-color, #666) 50%
+    );
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 8px 6px;
+  }
+
+  .editor-select:hover:not(:disabled) {
+    border-color: color-mix(
+      in srgb,
+      var(--primary-color, #03a9f4) 40%,
+      var(--divider-color, rgba(0, 0, 0, 0.14))
+    );
+    background-color: color-mix(
+      in srgb,
+      var(--primary-color, #03a9f4) 4%,
+      var(--input-fill-color, var(--card-background-color, #fff))
+    );
+  }
+
+  .editor-select:focus {
+    border-color: var(--primary-color, #03a9f4);
+    box-shadow: 0 0 0 1px
+      color-mix(in srgb, var(--primary-color, #03a9f4) 30%, transparent);
+  }
+
+  .editor-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .editor-select-helper {
+    font-size: 0.9em;
+    color: var(--secondary-text-color, #666);
+  }
+
+  /* Custom Tabs Styles */
+
+  .editor-tab-nav {
+    margin-bottom: 0.25em;
+    display: flex;
+    background: var(--card-background-color, #fff);
+    border-radius: 8px;
+    border: 1px solid var(--divider-color, #e0e0e0);
+  }
+
+  .editor-tab-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--secondary-text-color, #666);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .editor-tab-button:hover {
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #03a9f4) 10%,
+      transparent
+    );
+  }
+
+  .editor-tab-button.active {
+    background: var(--primary-color, #03a9f4);
+    color: white;
+  }
+
+  .editor-tab-button ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+  }
+
+  .loader {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 2px solid transparent;
+    border-top: 4px solid var(--primary-color, #03a9f4);
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+  ROUTES_EDITOR_DND_STYLES = i`
+  .draggable-route {
+    border: 1.5px dashed transparent;
+    border-radius: 8px;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+    background: none;
+    position: relative;
+  }
+
+  .draggable-route.drag-over {
+    border-color: var(--primary-color, #03a9f4);
+    background: rgba(3, 169, 244, 0.08);
+  }
+
+  .draggable-route.dragging {
+    opacity: 0.6;
+    background: #eee;
+    z-index: 2;
+  }
+
+  .drag-handle {
+    cursor: grab;
+    margin-right: 8px;
+    color: var(--primary-color, #03a9f4);
+    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .delete-btn ha-icon {
+    color: var(--error-color, #db4437) !important;
+  }
+`;
+});
+
+// src/styles/index.ts
+var HOST_STYLES, NAVBAR_CONTAINER_STYLES, MEDIA_PLAYER_STYLES, ROUTE_STYLES, POPUP_STYLES, COMPONENTS_STYLES, getDefaultStyles = () => {
   return i`
     ${HOST_STYLES}
     ${NAVBAR_CONTAINER_STYLES}
@@ -1311,6 +1714,7 @@ var HOST_STYLES, NAVBAR_CONTAINER_STYLES, MEDIA_PLAYER_STYLES, ROUTE_STYLES, POP
 };
 var init_styles = __esm(() => {
   init_lit();
+  init_editor();
   HOST_STYLES = i`
   :host {
     --navbar-border-radius: var(--ha-card-border-radius, 12px);
@@ -1912,274 +2316,6 @@ var init_styles = __esm(() => {
     background: color-mix(in srgb, var(--navbar-primary-color) 30%, white);
   }
 `;
-  EDITOR_STYLES = i`
-  .navbar-editor {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .navbar-editor ha-textfield {
-    width: 100%;
-  }
-
-  .navbar-editor ha-button {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .navbar-editor .navbar-template-toggle-button {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0px !important;
-    border-radius: 99px;
-    font-size: 0.85em;
-    font-weight: 600;
-    border: 0px;
-    padding: 4px 8px !important;
-    cursor: pointer;
-  }
-
-  .editor-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    padding: 12px;
-  }
-  .editor-row {
-    gap: 6px;
-    display: flex;
-    flex-direction: row;
-  }
-  .editor-row-item {
-    flex: 1;
-  }
-  .editor-row-item ha-textfield {
-    width: 100%;
-  }
-  @media (max-width: 600px) {
-    .editor-row {
-      flex-direction: column !important;
-      gap: 0.5em;
-    }
-    .route-grid {
-      grid-template-columns: 1fr !important;
-    }
-    .editor-row-item {
-      width: 100%;
-    }
-  }
-  .editor-label {
-    font-weight: 500;
-  }
-  .routes-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-  }
-  ha-expansion-panel h4[slot='header'],
-  ha-expansion-panel h5[slot='header'],
-  ha-expansion-panel h6[slot='header'] {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.7em;
-    padding: 0.2em 0.5em 0.2em 0;
-    height: 40px;
-    margin: 0px !important;
-    margin-left: 1em;
-  }
-
-  ha-expansion-panel h4[slot='header'] .expansion-panel-title,
-  ha-expansion-panel h5[slot='header'] .expansion-panel-title,
-  ha-expansion-panel h6[slot='header'] .expansion-panel-title {
-    flex: 1;
-  }
-  .route-header {
-    display: flex;
-    align-items: center;
-    gap: 0.7em;
-    padding: 0.2em 0.5em 0.2em 0;
-  }
-  .route-header-title {
-    font-weight: bold;
-    color: var(--primary-color);
-  }
-  .route-header-summary {
-    flex: 1;
-    opacity: 0.7;
-    font-size: 0.95em;
-    display: flex;
-    align-items: center;
-    gap: 0.3em;
-  }
-  .route-header-image {
-    height: 1.2em;
-    vertical-align: middle;
-  }
-  .route-editor {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    background: var(--primary-background-color);
-    border-radius: 8px;
-    padding: 1em 1.2em 1.2em 1.2em;
-    margin: 1em 0em;
-  }
-  .popup-controls {
-    display: flex;
-    gap: 0.5em;
-    margin-bottom: 1em;
-  }
-  .route-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1em;
-  }
-  .route-divider {
-    margin: 1.5em 0 1em 0;
-    border: none;
-    border-top: 1px solid #e0e0e0;
-    height: 1px;
-    background: none;
-  }
-  .add-popup-btn {
-    margin-top: 1em;
-  }
-  .template-editor-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3em;
-    margin-bottom: 0.7em;
-  }
-  .template-editor-helper {
-    font-size: 0.93em;
-    color: var(--secondary-text-color, #888);
-  }
-  .quickbar-mode-container {
-    display: flex;
-    flex-direction: column;
-  }
-  .templatable-field-container {
-    display: flex;
-    flex-direction: row;
-  }
-  .templatable-field-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5em;
-  }
-  .templatable-field-header-label {
-    flex: 1;
-  }
-
-  /* Custom Tabs Styles */
-
-  .editor-tab-nav {
-    margin-bottom: 0.25em;
-    display: flex;
-    background: var(--card-background-color, #fff);
-    border-radius: 8px;
-    border: 1px solid var(--divider-color, #e0e0e0);
-  }
-
-  .editor-tab-button {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 6px 8px;
-    border: none;
-    background: transparent;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--secondary-text-color, #666);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .editor-tab-button:hover {
-    background: color-mix(
-      in srgb,
-      var(--primary-color, #03a9f4) 10%,
-      transparent
-    );
-  }
-
-  .editor-tab-button.active {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-  }
-
-  .editor-tab-button ha-icon {
-    --mdc-icon-size: 18px;
-  }
-  .loader-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 60px;
-  }
-  .loader {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: inline-block;
-    border: 2px solid transparent;
-    border-top: 4px solid var(--primary-color, #03a9f4);
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-  }
-
-  @keyframes rotation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
-  ROUTES_EDITOR_DND_STYLES = i`
-  .draggable-route {
-    border: 1.5px dashed transparent;
-    border-radius: 8px;
-    transition:
-      border-color 0.2s,
-      background 0.2s;
-    background: none;
-    position: relative;
-  }
-  .draggable-route.drag-over {
-    border-color: var(--primary-color, #03a9f4);
-    background: rgba(3, 169, 244, 0.08);
-  }
-  .draggable-route.dragging {
-    opacity: 0.6;
-    background: #eee;
-    z-index: 2;
-  }
-  .drag-handle {
-    cursor: grab;
-    margin-right: 8px;
-    color: var(--primary-color, #03a9f4);
-    vertical-align: middle;
-    display: inline-flex;
-    align-items: center;
-  }
-  .delete-btn ha-icon {
-    color: var(--error-color, #db4437) !important;
-  }
-`;
   COMPONENTS_STYLES = i`
   .navbar-icon-button {
     position: relative;
@@ -2202,16 +2338,6 @@ var init_styles = __esm(() => {
     color: var(--text-primary-color, #fff);
   }
 `;
-});
-
-// src/utils/docs-links.ts
-var DOCS_LINKS;
-var init_docs_links = __esm(() => {
-  DOCS_LINKS = {
-    jsTemplate: "https://joseluis9595.github.io/lovelace-navbar-card/docs/types/js-template",
-    styles: "https://joseluis9595.github.io/lovelace-navbar-card/docs/configuration/styles",
-    template: "https://joseluis9595.github.io/lovelace-navbar-card/docs/configuration/template"
-  };
 });
 
 // node_modules/@kipk/load-ha-components/dist/load-ha-components.js
@@ -2314,6 +2440,65 @@ var init_dist = __esm(() => {
   init_load_ha_components();
 });
 
+// src/editor/ui/renderDropdown.ts
+var renderHAComboBox = (value, onChange, options) => {
+  return x`
+      <ha-combo-box
+        helper=${options.helper}
+        helperPersistent=${options.helperPersistent}
+        label=${options.label}
+        .items=${options.items}
+        .value=${value ?? options.defaultValue ?? null}
+        .disabled=${options.disabled}
+        .hideClearIcon=${!options.allowEmptyValue}
+        @value-changed="${(e7) => {
+    onChange(e7.detail.value ?? null);
+  }}" />
+    `;
+}, renderHTMLSelect = (value, onChange, options) => {
+  const currentValue = value ?? options.defaultValue ?? null;
+  const currentValueStr = currentValue !== null && currentValue !== undefined ? String(currentValue) : "";
+  return x`
+      <div class="editor-select-field">
+        <label class="editor-label">${options.label}</label>
+        <select
+          class="editor-select"
+          .value=${currentValueStr}
+          ?disabled=${options.disabled}
+          @change=${(e7) => {
+    const value2 = e7.target.value;
+    if (value2 === "") {
+      onChange(null);
+      return;
+    }
+    const selectedItem = options.items.find((item) => String(item.value) === value2);
+    onChange(selectedItem?.value ?? null);
+  }}>
+          ${options.allowEmptyValue ? x`<option value="">
+            &ndash;
+            </option>` : x``}
+          ${options.items.map((item) => x`<option
+              value=${String(item.value)}
+              ?selected=${String(item.value) === currentValueStr}>
+              ${item.label}
+            </option>`)}
+        </select>
+        ${options.helper ? x`<div class="editor-select-helper">
+                ${options.helper}
+              </div>` : x``}
+      </div>
+    `;
+}, renderDropdown = (value, onChange, options) => {
+  if (supportsHAComponent("ha-combo-box")) {
+    return renderHAComboBox(value, onChange, options);
+  }
+  return renderHTMLSelect(value, onChange, options);
+};
+var init_renderDropdown = __esm(() => {
+  init_lit();
+  init_utils();
+});
+
 // src/navbar-card-editor.ts
 var exports_navbar_card_editor = {};
 __export(exports_navbar_card_editor, {
@@ -2324,6 +2509,7 @@ var init_navbar_card_editor = __esm(() => {
   init_dist();
   init_lit();
   init_decorators();
+  init_renderDropdown();
   init_action_handler();
   init_types();
   init_utils();
@@ -2409,19 +2595,9 @@ var init_navbar_card_editor = __esm(() => {
     </ha-tooltip>`;
     }
     makeComboBox(options) {
-      return x`
-      <ha-combo-box
-        helper=${options.helper}
-        helperPersistent=${options.helperPersistent}
-        label=${options.label}
-        .items=${options.items}
-        .value=${genericGetProperty(this._config, options.configKey) ?? options.defaultValue}
-        .disabled=${options.disabled}
-        .hideClearIcon=${options.hideClearIcon}
-        @value-changed="${(e7) => {
-        this.updateConfigByKey(options.configKey, e7.detail.value);
-      }}" />
-    `;
+      return renderDropdown(genericGetProperty(this._config, options.configKey) ?? options.defaultValue ?? null, (value) => {
+        this.updateConfigByKey(options.configKey, value);
+      }, options);
     }
     makeNavigationPicker(options) {
       return x`
@@ -2868,6 +3044,7 @@ var init_navbar_card_editor = __esm(() => {
         </h4>
         <div class="editor-section">
           ${this.makeComboBox({
+        allowEmptyValue: true,
         configKey: "template",
         helper: x`Reusable template name used for this card.
               <a
@@ -3023,6 +3200,7 @@ var init_navbar_card_editor = __esm(() => {
       })}
           ${this.makeComboBox({
         configKey: "media_player.desktop_position",
+        defaultValue: DEFAULT_NAVBAR_CONFIG.media_player?.desktop_position,
         items: [
           { label: "Top left", value: "top-left" /* topLeft */ },
           { label: "Top center", value: "top-center" /* topCenter */ },
@@ -3037,6 +3215,24 @@ var init_navbar_card_editor = __esm(() => {
         configKey: "media_player.show",
         helper: BOOLEAN_JS_TEMPLATE_HELPER,
         label: "Show media player"
+      })}
+          ${this.makeTemplatable({
+        configKey: "media_player.icon",
+        inputType: "icon",
+        label: "Icon",
+        templateHelper: STRING_JS_TEMPLATE_HELPER
+      })}
+          ${this.makeTemplatable({
+        configKey: "media_player.title",
+        inputType: "string",
+        label: "Title",
+        templateHelper: STRING_JS_TEMPLATE_HELPER
+      })}
+          ${this.makeTemplatable({
+        configKey: "media_player.subtitle",
+        inputType: "string",
+        label: "Subtitle",
+        templateHelper: STRING_JS_TEMPLATE_HELPER
       })}
           ${Object.values(HAActions).map((type) => {
         const key = `media_player.${type}`;
@@ -3077,7 +3273,6 @@ var init_navbar_card_editor = __esm(() => {
           ${this.makeComboBox({
         configKey: "desktop.mode",
         defaultValue: DEFAULT_NAVBAR_CONFIG.desktop?.mode,
-        hideClearIcon: true,
         items: [
           { label: "Floating", value: "floating" },
           { label: "Docked", value: "docked" }
@@ -3088,6 +3283,7 @@ var init_navbar_card_editor = __esm(() => {
             <div class="editor-row-item">
               ${this.makeComboBox({
         configKey: "desktop.position",
+        defaultValue: DEFAULT_NAVBAR_CONFIG.desktop?.position,
         items: [
           { label: "Top", value: "top" /* top */ },
           { label: "Bottom", value: "bottom" /* bottom */ },
@@ -3109,6 +3305,7 @@ var init_navbar_card_editor = __esm(() => {
           </div>
           ${this.makeComboBox({
         configKey: "desktop.show_labels",
+        defaultValue: DEFAULT_NAVBAR_CONFIG.desktop?.show_labels,
         items: [
           { label: "Always", value: true },
           { label: "Never", value: false },
@@ -3144,7 +3341,6 @@ var init_navbar_card_editor = __esm(() => {
           ${this.makeComboBox({
         configKey: "mobile.mode",
         defaultValue: DEFAULT_NAVBAR_CONFIG.mobile?.mode,
-        hideClearIcon: true,
         items: [
           { label: "Floating", value: "floating" },
           { label: "Docked", value: "docked" }
@@ -3153,6 +3349,7 @@ var init_navbar_card_editor = __esm(() => {
       })}
           ${this.makeComboBox({
         configKey: "mobile.show_labels",
+        defaultValue: DEFAULT_NAVBAR_CONFIG.mobile?.show_labels,
         items: [
           { label: "Always", value: true },
           { label: "Never", value: false },
@@ -3273,13 +3470,16 @@ var init_navbar_card_editor = __esm(() => {
           </ha-icon-button>
         </h5>
         <div class="editor-section">
-          <ha-combo-box
-            label=${this._chooseLabelForAction(options.actionType)}
-            .items=${ACTIONS}
-            .value=${selected}
-            .disabled=${options.disabled}
-            @value-changed=${(e7) => {
-        const newSel = e7.detail.value;
+          <div class="editor-select-field">
+            <label class="editor-label">
+              ${this._chooseLabelForAction(options.actionType)}
+            </label>
+            <select
+              class="editor-select"
+              .value=${selected}
+              ?disabled=${options.disabled}
+              @change=${(e7) => {
+        const newSel = e7.target.value;
         if (newSel === "hass_action") {
           this.updateConfigByKey(options.configKey, {
             action: "none"
@@ -3289,7 +3489,14 @@ var init_navbar_card_editor = __esm(() => {
             action: newSel
           });
         }
-      }}></ha-combo-box>
+      }}>
+              ${ACTIONS.map((action) => x`<option
+                  value=${action.value}
+                  ?selected=${action.value === selected}>
+                  ${action.label}
+                </option>`)}
+            </select>
+          </div>
 
           ${selected === "quickbar" /* quickbar */ ? x`
                 <div class="quickbar-mode-container">
@@ -3647,6 +3854,15 @@ class MediaPlayer {
   _getEntity() {
     return processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.entity);
   }
+  _getIcon() {
+    return this._navbarCard.config?.media_player?.icon ? processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.icon) : null;
+  }
+  _getTitle(mediaPlayerState) {
+    return this._navbarCard.config?.media_player?.title ? processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.title) : mediaPlayerState.attributes.media_title;
+  }
+  _getSubtitle(mediaPlayerState) {
+    return this._navbarCard.config?.media_player?.subtitle ? processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.subtitle) : mediaPlayerState.attributes.media_artist;
+  }
   _handleMediaPlayerSkipNextClick = (e7) => {
     e7.preventDefault();
     e7.stopPropagation();
@@ -3684,6 +3900,9 @@ class MediaPlayer {
     const mediaPlayerState = this._navbarCard._hass.states[entity];
     const mediaPlayerImage = mediaPlayerState.attributes.entity_picture;
     const progress = mediaPlayerState.attributes.media_position != null ? mediaPlayerState.attributes.media_position / mediaPlayerState.attributes.media_duration : null;
+    const icon = this._getIcon();
+    const title = this._getTitle(mediaPlayerState);
+    const subtitle = this._getSubtitle(mediaPlayerState);
     const deviceClass = this._navbarCard.isDesktop ? "desktop" : "mobile";
     return x`
       <ha-card
@@ -3710,19 +3929,15 @@ class MediaPlayer {
                 class="media-player-progress-bar-fill"
                 style="width: ${progress * 100}%"></div>
             </div>` : x``}
-        ${mediaPlayerImage ? x`<img
-              class="media-player-image"
-              src=${mediaPlayerImage}
-              alt=${mediaPlayerState.attributes.media_title} />` : x`<ha-icon
-              class="media-player-image media-player-icon-fallback"
-              icon="mdi:music"></ha-icon>`}
+        ${mediaPlayerImage && !icon ? x`<img
+                class="media-player-image"
+                src=${mediaPlayerImage}
+                alt=${title || ""} />` : x`<ha-icon
+                class="media-player-image media-player-icon-fallback"
+                icon=${icon ?? "mdi:music"}></ha-icon>`}
         <div class="media-player-info">
-          <span class="media-player-title"
-            >${mediaPlayerState.attributes.media_title}</span
-          >
-          <span class="media-player-artist"
-            >${mediaPlayerState.attributes.media_artist}</span
-          >
+          <span class="media-player-title">${title || ""}</span>
+          <span class="media-player-artist">${subtitle || ""}</span>
         </div>
         <button
           class="navbar-icon-button media-player-button media-player-button-play-pause primary"
@@ -4116,7 +4331,18 @@ class BaseRoute {
     return processTemplate(this._navbarCard._hass, this._navbarCard, this.data.hidden);
   }
   get selected() {
-    return this.data.selected != null ? processTemplate(this._navbarCard._hass, this._navbarCard, this.data.selected) : window.location.pathname === this.url;
+    return this.data.selected != null ? processTemplate(this._navbarCard._hass, this._navbarCard, this.data.selected) : this._browserMatchesURL(this.url);
+  }
+  _browserMatchesURL(url) {
+    const pathname = window.location.pathname;
+    if (!url)
+      return false;
+    if (url.startsWith("/")) {
+      return pathname === url;
+    }
+    const normalizedPathname = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+    const normalizedUrl = url.endsWith("/") ? url.slice(0, -1) : url;
+    return normalizedPathname.endsWith(`/${normalizedUrl}`);
   }
   get tap_action() {
     return this.data.tap_action;
@@ -4455,7 +4681,7 @@ init_types();
 init_utils();
 init_docs_links();
 // package.json
-var version = "1.3.0";
+var version = "1.4.0";
 
 // src/navbar-card.ts
 window.customCards = window.customCards || [];
