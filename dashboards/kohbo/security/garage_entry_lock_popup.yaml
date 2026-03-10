@@ -144,7 +144,7 @@ cards:
 
 
   # 
-  # Autolock Settings
+  # Auto Unlock Settings
   #         
   - type: custom:stack-in-card
     mode: vertical
@@ -165,14 +165,20 @@ cards:
             secondary_info: last-triggered
             state_color: true
 
+          # Auto Unlock in the morning
+          - entity: automation.garage_entry_door_auto_unlock_in_morning
+            name: Auto Unlock in the Morning
+            icon: kohbo:kohbo-lock-locked
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-triggered
+            state_color: true
+
   - type: custom:button-card
-    name: If enabled, the garage entry door will automatically unlock when someone with unlock privilege arrives at the house.
+    name: If enabled, the garage entry door will automatically unlock when someone with unlock privilege arrives at the house or in the morning when the house goes from bedtime to auto mode.
     template: kohbo_card_section_description
     styles:
       card:
         - margin-bottom: 20px
-
-  
 
 
   # 

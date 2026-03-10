@@ -34,7 +34,6 @@ automation:
   # 
   - id: "garage_entry_door_auto_unlock_in_morning"
     alias: "Garage Entry Door - Auto Unlock in Morning"
-    initial_state: on
     triggers:
       # Bedtime mode is turned OFF
       - trigger: state
