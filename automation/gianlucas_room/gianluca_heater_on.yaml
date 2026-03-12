@@ -10,15 +10,13 @@ trigger:
   - platform: state
     entity_id: light.gianluca_ceiling_lights
     to: "off"
-  # Temperature is below 71 degrees
+  # Temperature is below 68 degrees
   - platform: numeric_state
     entity_id: sensor.gianluca_bedroom_awair_temperature
-    below: 69
-  # - platform: template
-  #   value_template: "{{ (states.sensor.gianluca_bedroom_awair_temperature.state | float) < 71.0 }}"
-  # Door sensor temp is less than 73
+    below: 68
+  # Door sensor temp is less than 69
   - platform: template
-    value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) < 69.5 }}"
+    value_template: "{{ (states.sensor.gianlucas_door_sensor_temperature.state | float) < 69 }}"
 condition:
   # The house is occupied
   - condition: state
