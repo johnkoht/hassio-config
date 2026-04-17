@@ -449,3 +449,50 @@
     path: music-assistant/mass_assist_blueprint_en.yaml
     input:
       default_player_entity_id_input: media_player.office_3
+- id: '1775872697085'
+  alias: New automation - test
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.foyer_motion
+    to: 'on'
+  - trigger: state
+    entity_id:
+    - binary_sensor.motion_basement_east
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - action: script.general_notification
+    data:
+      message: Test Motion
+      title: Security System
+      devices: jk
+      priority: critical
+  mode: single
+- id: '1776216231855'
+  alias: Kids Escaping
+  description: ''
+  triggers:
+  - type: opened
+    device_id: 19e83d743913bb01f6f5230addfa696d
+    entity_id: 84d74e2740370cf1bd33fb3b6c5681df
+    domain: binary_sensor
+    trigger: device
+  - type: opened
+    device_id: b68b546103678f1b18954634f33f230b
+    entity_id: a8fa9ce16da5e527bcad2c7a1e692670
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - action: script.general_notification
+    metadata: {}
+    data:
+      devices: all
+      priority: critical
+      tag: push_1234567890
+      title: Alert! Kids escaping and railings aren’t there
+      message: 'Kids are escaping but the railing and posts are missing. '
+  mode: single

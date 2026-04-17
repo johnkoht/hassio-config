@@ -35,7 +35,7 @@ automation:
       - wait_template: >-
           {{
             states.binary_sensor.first_floor_occupancy.state == "on" and
-            (as_timestamp(now()) - as_timestamp(states.binary_sensor.first_floor_occupancy.last_changed)) | int >= 180
+            (as_timestamp(now()) - as_timestamp(states.binary_sensor.first_floor_occupancy.last_changed)) | int >= 30
           }}
 
         timeout: "01:00:00"
