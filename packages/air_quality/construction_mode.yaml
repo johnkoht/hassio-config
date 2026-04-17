@@ -1,0 +1,88 @@
+# Construction Mode
+#
+# When enabled, locks all air purifiers at 100% manual speed.
+# All automations that would otherwise change purifier speed
+# or turn them off are blocked while this mode is active.
+#
+
+input_boolean:
+  construction_mode:
+    name: Construction Mode
+    icon: mdi:hard-hat
+
+automation:
+  #
+  # Construction Mode - On
+  # Set all purifiers to 100% manual immediately.
+  #
+  - id: "construction_mode_on"
+    alias: "Construction Mode - On"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.construction_mode
+        to: "on"
+    actions:
+      - action: fan.turn_on
+        target:
+          entity_id: fan.air_purifiers
+      - action: fan.set_preset_mode
+        target:
+          entity_id: fan.air_purifiers
+        data:
+          preset_mode: Manual
+      - action: fan.set_percentage
+        target:
+          entity_id: fan.air_purifiers
+        data:
+          percentage: 100
+
+  #
+  # Construction Mode - Off
+  # Re-evaluate each room's current AQI and mode, then restore
+  # each purifier to whatever speed the normal logic would set.
+  #
+  - id: "construction_mode_off"
+    alias: "Construction Mode - Off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.construction_mode
+        to: "off"
+    actions:
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.kitchen_air_purifier
+          aqi_state: "{{ states('sensor.kitchen_air_quality') }}"
+          room_state: "{{ states('input_select.kitchen') }}"
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.office_air_purifier
+          aqi_state: "{{ states('sensor.office_air_quality') }}"
+          room_state: "{{ states('input_select.office') }}"
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.jr_suite_air_purifier
+          aqi_state: "{{ states('sensor.jr_suite_air_quality') }}"
+          room_state: "{{ states('input_select.jr_suite') }}"
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.main_bedroom_air_purifier
+          aqi_state: "{{ states('sensor.main_bedroom_air_quality') }}"
+          room_state: "{{ states('input_select.main_bedroom') }}"
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.gianlucas_bedroom_air_purifier
+          aqi_state: "{{ states('sensor.gianluca_bedroom_air_quality') }}"
+          room_state: "{{ states('input_select.gianlucas_bedroom') }}"
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.ninos_bedroom_air_purifier
+          aqi_state: "{{ states('sensor.nino_bedroom_air_quality') }}"
+          room_state: "{{ states('input_select.ninos_bedroom') }}"
+      # Basement is not wired into the AQI automation system yet — set to Auto
+      - action: fan.set_preset_mode
+        target:
+          entity_id: fan.winix_basement
+        data:
+          preset_mode: Auto

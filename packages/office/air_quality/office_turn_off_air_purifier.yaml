@@ -13,6 +13,10 @@ automation:
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
     actions:
       # Turn OFF the air purifer
       - action: fan.turn_off

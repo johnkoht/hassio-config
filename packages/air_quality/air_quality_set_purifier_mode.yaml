@@ -21,6 +21,7 @@ script:
               - fan.main_bedroom_air_purifier
               - fan.jr_suite_air_purifier
               - fan.kitchen_air_purifier
+              - fan.winix_basement
 
       #
       # AQI state to review
@@ -112,6 +113,9 @@ script:
     # Set the air purifier
     #
     sequence:
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
       - choose:
           #
           # Turn OFF the air purifier

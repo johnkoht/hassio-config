@@ -17,8 +17,12 @@ automation:
       - trigger: state
         entity_id: input_select.jr_suite
         to: "Off"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
     actions:
       # Turn OFF the air purifer
       - action: fan.turn_off
         target:
-          entity_id: fan.jr_suite_air_purifier 
+          entity_id: fan.jr_suite_air_purifier

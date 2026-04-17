@@ -23,8 +23,12 @@ automation:
         to: "off"
         for:
           minutes: 30
+    conditions:
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
     actions:
       # Turn OFF the air purifer
       - action: fan.turn_off
         target:
-          entity_id: fan.main_bedroom_air_purifier 
+          entity_id: fan.main_bedroom_air_purifier

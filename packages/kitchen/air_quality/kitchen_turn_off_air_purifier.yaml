@@ -17,6 +17,10 @@ automation:
       - trigger: state
         entity_id: input_select.kitchen
         to: "Off"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
     actions:
       # Turn OFF the air purifer
       - action: fan.turn_off

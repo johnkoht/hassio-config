@@ -214,9 +214,12 @@ script:
               - "50"
               - "75"
               - "100"
-    # 
+    #
     # Purifier to set
     sequence:
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
       - action: fan.turn_on
         data:
           entity_id: fan.air_purifiers
@@ -236,6 +239,9 @@ script:
     alias: "Air Quality Alert - Set Air Purifier to Auto"
     mode: queued
     sequence:
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
       - action: fan.set_preset_mode
         data:
           entity_id: fan.air_purifiers
