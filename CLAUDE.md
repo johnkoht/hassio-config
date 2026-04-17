@@ -204,3 +204,27 @@ Use `!secret` for all sensitive values:
 data:
   code: !secret alarmo_code
 ```
+
+---
+
+## Quality Standards
+
+- **Follow existing patterns first** — before writing any automation, find a similar one in the same package and use it as the template. Don't invent structure that isn't already in the codebase.
+- **Modern syntax, no exceptions** — if you catch yourself writing `trigger:`, `service:`, or `entity_id:` at the action root, stop and correct it.
+- **Check the condition ladder** — every automation that affects lights, sound, or security must check the relevant house-wide booleans (`house_occupied`, `lighting_automations`, `speech_notifications`) before acting.
+- **One automation, one job** — if an automation is doing two distinct things, split it into two files.
+- **No fabrication** — don't invent entity names, sensor IDs, or room names. If you don't know the exact entity ID, say so and ask, or look it up in the relevant package directory.
+- **Validate before presenting** — run `ha core check` mentally: does this YAML parse? Are all required fields present? Is the `target:` block used correctly?
+
+---
+
+## Subagent Strategy
+
+Be liberal with subagents for this repo — the package tree is large and context is expensive.
+
+- **Explore before writing** — when working on a room or feature you haven't seen, spawn an Explore subagent to read the existing package files before drafting anything. Pattern-matching against real files beats guessing.
+- **One task per subagent** — research, file parsing, and parallel analysis each get their own subagent. Don't bundle unrelated lookups.
+- **Parallel for independent work** — if you need to understand both `packages/security/` and `packages/announcements/` to answer a question, spawn both at the same time.
+- **Reviewer subagent for non-trivial automations** — before presenting a new automation or package, spawn a subagent to verify it against: (1) correct modern syntax, (2) proper condition ordering, (3) consistency with how similar automations in that room/package are written.
+- **Keep main context clean** — offload directory traversal, multi-file reads, and pattern searches to subagents. Return only the summary you need.
+- **When in doubt, throw more compute** — a complex room refactor or new package is worth 2–3 parallel subagents investigating different aspects (existing automations, entity names, dashboard impact) before touching a file.
