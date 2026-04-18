@@ -1,0 +1,283 @@
+#
+# Climate — Air Quality Tab
+#
+# Indoor and outdoor air quality, plus air purifier management.
+#   - Outdoor AQI (Des Plaines) + construction mode
+#   - Main floor and upper floor AQI summaries
+#   - Per-room AQI (6 Awair rooms) — tap-through to room drilldown (phase 2)
+#   - Air purifier controls (7 units) + construction mode lock
+#
+type: custom:vertical-layout
+title: Air Quality
+path: climate-air-quality
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/climate/climate_header.yaml
+
+  #
+  # Outdoor Air Quality
+  #
+  - type: custom:button-card
+    name: Outdoor
+    template: section_title
+
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      - entity: sensor.desplns_illinois_usa_air_quality_index
+        name: AQI (Des Plaines)
+        icon: mdi:weather-hazy
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+        secondary_info: last-changed
+      - entity: sensor.desplns_illinois_usa_pm2_5
+        name: PM2.5
+        icon: mdi:blur
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+      - entity: sensor.desplns_illinois_usa_ozone
+        name: Ozone
+        icon: mdi:weather-sunny-alert
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+  #
+  # Construction Mode (house-wide air purifier override)
+  #
+  - type: custom:button-card
+    name: House
+    template: section_title
+
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      - entity: input_boolean.construction_mode
+        name: Construction Mode
+        icon: mdi:hammer-wrench
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  - type: custom:button-card
+    name: When on, all air purifiers are locked at 100% (Manual). Disable to resume AQI-driven automation.
+    template: kohbo_card_section_description
+
+  #
+  # Main Floor Air Quality
+  #
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - room_name: Main Floor
+      - navigation_path: /dashboard-kohbo/climate-air-quality
+      - temperature_sensor: sensor.main_floor_temperature
+      - humidity_sensor: sensor.main_floor_humidity
+      - pm25_sensor: sensor.main_floor_air_quality_pm2_5
+      - carbon_dioxide_sensor: sensor.main_floor_air_quality_co2
+      - vocs_sensor: sensor.main_floor_air_quality_tvoc
+      - aqi_score_sensor: sensor.main_floor_air_quality_score
+      - action_cards:
+        - type: custom:button-card
+          template: empty_column
+
+  #
+  # Upper Floor Air Quality
+  #
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - room_name: Upper Floor
+      - navigation_path: /dashboard-kohbo/climate-air-quality
+      - temperature_sensor: sensor.second_floor_temperature
+      - humidity_sensor: sensor.second_floor_humidity
+      - pm25_sensor: sensor.upper_floor_air_quality_pm2_5
+      - carbon_dioxide_sensor: sensor.upper_floor_air_quality_co2
+      - vocs_sensor: sensor.upper_floor_air_quality_tvoc
+      - aqi_score_sensor: sensor.upper_floor_air_quality_score
+      - action_cards:
+        - type: custom:button-card
+          template: empty_column
+
+  #
+  # AQI Score Trend — Last 24h (all rooms)
+  #
+  - type: custom:button-card
+    name: AQI Score — Last 24h
+    template: section_title
+
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card {
+          background: transparent;
+          box-shadow: none;
+          border: none;
+        }
+        .apexcharts-legend {
+          padding: 0 !important;
+          display: flex !important;
+          justify-content: center !important;
+          flex-wrap: wrap !important;
+        }
+    graph_span: 24h
+    span:
+      end: hour
+    header:
+      show: false
+    apex_config:
+      chart:
+        height: 240
+      grid:
+        borderColor: 'rgba(255,255,255,0.05)'
+      legend:
+        show: true
+        position: bottom
+        horizontalAlign: center
+        fontSize: '11px'
+        markers:
+          width: 8
+          height: 8
+      stroke:
+        curve: smooth
+        width: 2
+      xaxis:
+        labels:
+          format: 'HH'
+        axisBorder:
+          show: false
+        axisTicks:
+          show: false
+      yaxis:
+        - min: 0
+          max: 100
+          forceNiceScale: true
+          decimalsInFloat: 0
+    series:
+      - entity: sensor.kitchen_awair_score
+        name: Kitchen
+        type: line
+      - entity: sensor.jr_suite_awair_score
+        name: Jr Suite
+        type: line
+      - entity: sensor.office_awair_score
+        name: Office
+        type: line
+      - entity: sensor.main_bedroom_awair_score
+        name: Main Bedroom
+        type: line
+      - entity: sensor.gianluca_bedroom_awair_score
+        name: Gianluca
+        type: line
+      - entity: sensor.nino_bedroom_awair_score
+        name: Nino
+        type: line
+
+  #
+  # Per-Room AQI Score
+  #
+  - type: custom:button-card
+    name: Rooms
+    template: section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Kitchen
+          - entity: sensor.kitchen_awair_score
+          - icon: mdi:fridge
+
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Jr. Suite
+          - entity: sensor.jr_suite_awair_score
+          - icon: kohbo:kohbo-bed
+
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Office
+          - entity: sensor.office_awair_score
+          - icon: kohbo:kohbo-laptop
+
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Main Bedroom
+          - entity: sensor.main_bedroom_awair_score
+          - icon: kohbo:kohbo-bed-king
+
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Gianluca's Bedroom
+          - entity: sensor.gianluca_bedroom_awair_score
+          - icon: kohbo:kohbo-bed-single
+
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Nino's Bedroom
+          - entity: sensor.nino_bedroom_awair_score
+          - icon: kohbo:kohbo-bed-single
+
+  #
+  # Air Purifier Controls
+  #
+  - type: custom:button-card
+    name: Air Purifiers
+    template: section_title
+
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      - type: custom:button-card
+        entity: fan.kitchen_air_purifier
+        name: Kitchen
+        template: kohbo_device_air_purifier_entity
+
+      - type: custom:button-card
+        entity: fan.office_air_purifier
+        name: Office
+        template: kohbo_device_air_purifier_entity
+
+      - type: custom:button-card
+        entity: fan.jr_suite_air_purifier
+        name: Jr Suite
+        template: kohbo_device_air_purifier_entity
+
+      - type: custom:button-card
+        entity: fan.main_bedroom_air_purifier
+        name: Main Bedroom
+        template: kohbo_device_air_purifier_entity
+
+      - type: custom:button-card
+        entity: fan.gianlucas_bedroom_air_purifier
+        name: Gianluca's Bedroom
+        template: kohbo_device_air_purifier_entity
+
+      - type: custom:button-card
+        entity: fan.ninos_bedroom_air_purifier
+        name: Nino's Bedroom
+        template: kohbo_device_air_purifier_entity
+
+      - type: custom:button-card
+        entity: fan.winix_basement
+        name: Basement
+        template: kohbo_device_air_purifier_entity
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml
+
+  #
+  # Climate Settings Popup (accessible from header chip)
+  #
+  - !include /config/dashboards/kohbo/climate/_climate_settings_popup.yaml

@@ -1,38 +1,26 @@
+#
+# Climate — Overview Tab
+#
+# Landing view for the climate dashboard. Glanceable summary of:
+#   - current weather (tap-through to full weather popup)
+#   - main + upper floor climate/AQI
+#   - 24h temperature trend (indoor vs outdoor)
+#
 type: custom:vertical-layout
 title: Climate
 path: climate
 theme: kohbo
 subview: true
-layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
-  # 
-  # Page Header
-  # 
-  - type: custom:decluttering-card
-    template: top_toolbar
-    variables:
-      - cards:
-        - type: custom:button-card
-          template: empty_column
-            
-        # Room Name
-        - type: custom:button-card
-          template: kohbo_header_page_title
-          name: Climate
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/climate/climate_header.yaml
 
-        # Settings button
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:dots-horizontal
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#climate_settings_popup'
-            haptic: light
-
-  # 
+  #
   # Current Weather
-  # 
+  #
   - type: weather-forecast
     show_current: true
     show_forecast: false
@@ -43,9 +31,10 @@ cards:
       action: navigate
       navigation_path: "#weather"
       haptic: light
-  # 
-  # Main Floor Climate
-  # 
+
+  #
+  # Main Floor Climate Summary
+  #
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -61,10 +50,9 @@ cards:
         - type: custom:button-card
           template: empty_column
 
-
-  # 
-  # Upper Floor Climate
-  # 
+  #
+  # Upper Floor Climate Summary
+  #
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -80,568 +68,118 @@ cards:
         - type: custom:button-card
           template: empty_column
 
-  # 
-  # HVAC Controls
-  # 
-  - type: grid
-    columns: 2
-    square: false
+  #
+  # 24h Temperature Trend — Indoor vs Outdoor
+  #
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
     cards:
-      # Main floor HVAC
       - type: custom:button-card
-        entity: climate.nest_main_floor
-        name: Main Floor
-        template: kohbo_thermostat_entity
-        tap_action:
-          action: navigate
-          navigation_path: '#main_floor_thermostat'
+        template: kohbo_card_header
+        name: Temperature — Last 24h
 
-      # Upper floor HVAC
-      - type: custom:button-card
-        entity: climate.nest_2nd_floor
-        name: Upper Floor
-        template: kohbo_thermostat_entity
-        tap_action:
-          action: navigate
-          navigation_path: '#upper_floor_thermostat'
+      - type: custom:apexcharts-card
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent;
+              border-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              padding-bottom: 16px;
+            }
+            .apexcharts-legend {
+              padding: 0 !important;
+              margin: 0 !important;
+              margin-top: 10px !important;
+              display: flex !important;
+              flex-direction: row !important;
+              flex-wrap: wrap !important;
+              justify-content: center !important;
+            }
+            .apexcharts-legend-series {
+              display: inline-flex !important;
+              margin: 0 8px !important;
+            }
+        graph_span: 24h
+        span:
+          end: hour
+        header:
+          show: false
+        apex_config:
+          chart:
+            height: 200
+          grid:
+            borderColor: 'rgba(255,255,255,0.05)'
+          legend:
+            show: true
+            position: bottom
+            horizontalAlign: center
+            floating: false
+            fontSize: '11px'
+            markers:
+              width: 8
+              height: 8
+            itemMargin:
+              horizontal: 16
+              vertical: 0
+          stroke:
+            curve: smooth
+            width: 2
+          xaxis:
+            labels:
+              format: 'HH'
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          yaxis:
+            - forceNiceScale: true
+              decimalsInFloat: 0
+              labels:
+                style:
+                  fontSize: '10px'
+                formatter: |
+                  EVAL: (val) => val ? `${val.toFixed(0)}°` : '0°'
+          tooltip:
+            x:
+              format: 'HH:mm'
+        series:
+          - entity: sensor.main_floor_temperature
+            name: Main Floor
+            type: line
+            color: var(--primary-color)
+            stroke_width: 2
+          - entity: sensor.second_floor_temperature
+            name: Upper Floor
+            type: line
+            color: var(--accent-color)
+            stroke_width: 2
+          - entity: sensor.tempest_temperature
+            name: Outdoor
+            type: line
+            color: var(--secondary-text-color)
+            stroke_width: 2
 
-  
-  # 
-  # Radiant Floor Heating
-  # 
-  - type: conditional
-    conditions:
-      - condition: state
-        entity: group.radiant_floor_heating_group
-        state: 'off'
-    card:
-      type: entities
-      card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
-      entities:
-        - entity: group.radiant_floor_heating_group
-          icon: mdi:radiator
-          name: Radiant Floor Heating
-          secondary_info: last-changed
-          state_color: true
-          card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-          tap_action:
-            action: navigate
-            navigation_path: '#radiant_floor_heating'
-
-
-  # 
-  # Radiant Floor Heating Thermostats
-  # 
-  - type: conditional
-    conditions:
-      - condition: state
-        entity: group.radiant_floor_heating_group
-        state: 'on'
-    card:
-      type: grid
-      columns: 2
-      square: false
-      cards:
-        # Jr Suite Thermostat
-        - type: custom:button-card
-          entity: climate.jr_suite
-          name: Jr Suite
-          template: kohbo_thermostat_entity
-          tap_action:
-            action: navigate
-            navigation_path: '#jr_suite_thermostat'
-
-        # Main Bedroom Thermostat
-        - type: custom:button-card
-          entity: climate.main_bedroom
-          name: Main Bedroom
-          template: kohbo_thermostat_entity
-          tap_action:
-            action: navigate
-            navigation_path: '#main_bedroom_thermostat'
-
-        # Main Bedroom Thermostat
-        - type: custom:button-card
-          entity: climate.ninos_bedroom
-          name: "Nino's Bedroom"
-          template: kohbo_thermostat_entity
-          tap_action:
-            action: navigate
-            navigation_path: '#ninos_bedroom_thermostat'
-
-        # Basement Thermostat
-        - type: custom:button-card
-          entity: climate.basement
-          name: Basement
-          template: kohbo_thermostat_entity
-          tap_action:
-            action: navigate
-            navigation_path: '#basement_thermostat'
-
-
-  # 
-  # Main Floor Room Climate
-  # 
-  - type: custom:button-card
-    name: Main Floor
-    template: section_title
-
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      # Kitchen
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Kitchen
-          - entity: sensor.kitchen_awair_temperature
-          - icon: mdi:fridge
-      
-      # Family Room
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Family Room
-          - entity: sensor.kitchen_awair_temperature
-          - icon: mdi:sofa
-
-      # Playroom
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Playroom
-          - entity: sensor.playroom_temperature
-          - icon: kohbo:kohbo-lego
-
-      # Jr. Suite
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Jr. Suite
-          - entity: sensor.jr_suite_awair_temperature
-          - icon: kohbo:kohbo-bed
-
-      # Office
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Office
-          - entity: sensor.office_awair_temperature
-          - icon: kohbo:kohbo-laptop
-
-      # Mudroom
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Mudroom
-          - entity: sensor.mudroom_motion_sensor_air_temperature
-          - icon: kohbo:kohbo-foot-print
-
-
-  # 
-  # Upper Floor Room Climate
-  # 
-  - type: custom:button-card
-    name: Upper Floor
-    template: section_title
-
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      # Main Bedroom
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Main Bedroom
-          - entity: sensor.main_bedroom_mean_temperature
-          - icon: kohbo:kohbo-bed-king
-
-      # Main Bathroom
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Main Bathroom
-          - entity: sensor.main_bathroom_temperature
-          - icon: mdi:shower
-
-      # Gianluca's Bedroom
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Gianluca's Bedroom
-          - entity: sensor.gianluca_room_mean_temperature
-          - icon: kohbo:kohbo-bed-single
-
-      # Nino's Bedroom
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Nino's Bedroom
-          - entity: sensor.nino_room_mean_temperature
-          - icon: kohbo:kohbo-bed-single
-
-      # # Guest Bedroom
-      # - type: custom:decluttering-card
-      #   template: kohbo_room_temperature_card
-      #   variables:
-      #     - name: Guest Bedroom
-      #     - entity: sensor.guest_bedroom_temperature
-      #     - icon: kohbo:kohbo-bed
-
-  # 
-  # Misc. Climate
-  # 
-  - type: custom:button-card
-    name: Misc.
-    template: section_title
-
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      # Attic
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Attic
-          - entity: sensor.attic_climate_temperature
-          - icon: mdi:home-floor-a
-
-      # # Basement
-      # - type: custom:decluttering-card
-      #   template: kohbo_room_temperature_card
-      #   variables:
-      #     - name: Basement
-      #     - entity: sensor.basement_temperature
-      #     - icon: mdi:home-floor-b
-
-      # Basement
-      - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
-        variables:
-          - name: Datacenter
-          - entity: sensor.basement_datacenter_climate_temperature
-          - icon: mdi:server
-      
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
-  # 
-  # Main Floor Thermostat Popup
-  # 
-  - !include /config/dashboards/kohbo/climate/_main_floor_thermostat_popup.yaml
-
-  
-  # 
-  # Upper Floor Thermostat Popup
-  # 
-  - !include /config/dashboards/kohbo/climate/_upper_floor_thermostat_popup.yaml
-
-  # 
-  # Jr Suite Thermostat Popup
-  # 
-  - type: custom:decluttering-card
-    template: thermostat_radiant_floor_popup
-    variables:
-      - hash: "#jr_suite_thermostat"
-      - entity: climate.jr_suite
-      - name: Jr Suite
-      - temperature_sensor: sensor.jr_suite_awair_temperature
-      - outside_temperature_sensor: sensor.tempest_temperature
-
-  # 
-  # Main Bedroom Thermostat Popup
-  # 
-  - type: custom:decluttering-card
-    template: thermostat_radiant_floor_popup
-    variables:
-      - hash: "#main_bedroom_thermostat"
-      - entity: climate.main_bedroom
-      - name: Main Bedroom
-      - temperature_sensor: sensor.main_bedroom_mean_temperature
-      - outside_temperature_sensor: sensor.tempest_temperature
-
-  # 
-  # Ninos Bedroom Thermostat Popup
-  # 
-  - type: custom:decluttering-card
-    template: thermostat_radiant_floor_popup
-    variables:
-      - hash: "#ninos_bedroom_thermostat"
-      - entity: climate.ninos_bedroom
-      - name: "Nino's Bedroom"
-      - temperature_sensor: sensor.nino_room_mean_temperature
-      - outside_temperature_sensor: sensor.tempest_temperature
-
-  # 
-  # Basement Thermostat Popup
-  # 
-  - type: custom:decluttering-card
-    template: thermostat_radiant_floor_popup
-    variables:
-      - hash: "#basement_thermostat"
-      - entity: climate.basement
-      - name: Basement
-      - temperature_sensor: sensor.sensor.basement_temperature
-      - outside_temperature_sensor: sensor.tempest_temperature
-
-
-  # 
-  # Radiant Floor Heating Popup
-  # 
-  - type: vertical-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '#radiant_floor_heating'
-        close_by_clicking_outside: false
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 500px)
-        margin_top_desktop: calc(100vh - 500px)
-
-      - type: custom:button-card
-        template: kohbo_popup_page_title
-        name: Floor Heating
-
-      - type: custom:bubble-card
-        card_type: climate
-        entity: climate.main_bedroom
-        sub_button:
-          - name: HVAC modes menu
-            select_attribute: hvac_modes
-            state_background: false
-            show_arrow: false
-            entity: climate.main_bedroom
-            icon: ""
-        name: Main Bedroom
-        icon: mdi:heat-wave
-        show_state: true
-        show_last_changed: true
-        show_last_updated: false
-        show_attribute: false
-        force_icon: false
-        hide_temperature: false
-        state_color: false
-
-      - type: custom:bubble-card
-        card_type: climate
-        entity: climate.ninos_bedroom
-        sub_button:
-          - name: HVAC modes menu
-            select_attribute: hvac_modes
-            state_background: false
-            show_arrow: false
-            entity: climate.ninos_bedroom
-            icon: ""
-        name: "Nino's Bedroom"
-        icon: mdi:heat-wave
-        show_state: true
-        show_last_changed: true
-        show_last_updated: false
-        show_attribute: false
-        force_icon: false
-        hide_temperature: false
-        state_color: false
-      
-      - type: custom:bubble-card
-        card_type: climate
-        entity: climate.jr_suite
-        sub_button:
-          - name: HVAC modes menu
-            select_attribute: hvac_modes
-            state_background: false
-            show_arrow: false
-            entity: climate.jr_suite
-            icon: ""
-        name: Jr Suite
-        icon: mdi:heat-wave
-        show_state: true
-        show_last_changed: true
-        show_last_updated: false
-        show_attribute: false
-        force_icon: false
-        hide_temperature: false
-        state_color: false
-
-      - type: custom:bubble-card
-        card_type: climate
-        entity: climate.basement
-        sub_button:
-          - name: HVAC modes menu
-            select_attribute: hvac_modes
-            state_background: false
-            show_arrow: false
-            entity: climate.basement
-            icon: ""
-        name: Basement
-        icon: mdi:heat-wave
-        show_state: true
-        show_last_changed: true
-        show_last_updated: false
-        show_attribute: false
-        force_icon: false
-        hide_temperature: false
-        state_color: false
-
-
-  # 
+  #
   # Weather Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/climate/weather_popup.yaml
 
-      
-  # 
+  #
   # Climate Settings Popup
-  # 
-  - type: vertical-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '#climate_settings_popup'
-        close_by_clicking_outside: true
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        # margin_top_mobile: calc(100vh - 550px)
-        # margin_top_desktop: calc(100vh - 550px)
-        
-      # 
-      # Title
-      # 
-      - type: custom:button-card
-        template: kohbo_popup_page_title
-        name: Settings
-
-      # 
-      # General Automations
-      # 
-      - type: custom:button-card
-        template: section_title
-        name: General Automations
-      - type: entities
-        entities:
-          # Pre-heat/cool house
-          - entity: automation.main_floor_climate_morning_start
-            name: Pre-Heat/Cool in Morning
-            icon: mdi:weather-lightning-rainy
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-          # Activate climate when nearly home
-          - entity: automation.main_floor_climate_resume_when_nearly_home
-            name: Activate Climate When Nearly Home
-            icon: mdi:weather-lightning-rainy
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          
-          # High energy price automations
-          - entity: input_boolean.climate_energy_price_automations
-            name: High Energy Price Automations
-            icon: kohbo:kohbo-light-2
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-      # 
-      # Auto Resume Climate Automations
-      # 
-      - type: custom:button-card
-        template: section_title
-        name: Automatically Resume Climate
-      - type: entities
-        entities:
-          # Automatically reactivate main floor climate
-          - entity: automation.main_floor_climate_resume
-            name: Main Floor Climate Resume Automation
-            icon: mdi:weather-lightning-rainy
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-          # Automatically reactivate main floor climate
-          - entity: automation.second_floor_climate_resume
-            name: Second Floor Climate Resume Automation
-            icon: mdi:weather-lightning-rainy
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-      - type: custom:button-card
-        name: Automatically resume thermostats when the house is occupied. The upper floor will resume if any room is occupied during the day.
-        template: kohbo_card_section_description
-
-      # 
-      # Auto-Eco Climate Automations
-      # 
-      - type: custom:button-card
-        template: section_title
-        name: Eco-Mode Automations
-      - type: entities
-        entities:
-          # Auto eco for main floor
-          - entity: automation.main_floor_climate_to_eco
-            name: Main Floor Auto Eco Mode
-            icon: mdi:weather-lightning-rainy
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-          # Auto eco for upper floor
-          - entity: automation.second_floor_climate_off
-            name: Second Floor Auto Eco Mode
-            icon: mdi:weather-lightning-rainy
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-      - type: custom:button-card
-        name: Automatically enable eco mode for the thermostats if the house is unoccupied. The main floor will turn to eco if the house enters bedtime mode (and there are not guests).
-        template: kohbo_card_section_description
-
-
-      # 
-      # Weather Automations
-      # 
-      - type: custom:button-card
-        template: section_title
-        name: Severe Weather
-      - type: entities
-        entities:
-          # Severe Weather Warning
-          - entity: automation.severe_weather_warning
-            name: Severe Weather Warning
-            icon: mdi:weather-lightning-rainy
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-          # Severe Rain Incoming
-          - entity: automation.severe_rain_incoming
-            name: Severe Rain Incoming
-            icon: mdi:weather-pouring
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-          # Tempest Rain Alert
-          - entity: automation.tempest_rain_alert
-            name: Tempest Rain Alert
-            icon: mdi:weather-pouring
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-
-          # High UV Alert
-          - entity: automation.tempest_high_uv_alert
-            name: High UV Alert
-            icon: mdi:sun-wireless
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          
-
-            
+  #
+  - !include /config/dashboards/kohbo/climate/_climate_settings_popup.yaml

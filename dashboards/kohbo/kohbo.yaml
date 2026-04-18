@@ -19,6 +19,9 @@ views:
     - !include /config/dashboards/kohbo/home/home.yaml
     # - !include /config/dashboards/kohbo/rooms/rooms.yaml
     - !include /config/dashboards/kohbo/climate/climate.yaml
+    - !include /config/dashboards/kohbo/climate/hvac.yaml
+    - !include /config/dashboards/kohbo/climate/air_quality.yaml
+    - !include /config/dashboards/kohbo/climate/legacy.yaml
     # - !include /config/dashboards/kohbo/media/media.yaml
     # - !include /config/dashboards/kohbo/devices/devices.yaml
     # - !include /config/dashboards/kohbo/security/front_door_lock.yaml
