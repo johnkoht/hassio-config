@@ -6,27 +6,31 @@ automation:
   - id: "main_bathroom_occupied"
     initial_state: on
     alias: "Main bathroom occupied"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bathroom_motion_sensor_status
         to: "on"
       # Main bathroom sensor detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bathroom_motion_sensor_occupancy
         to: "on"
+      # Presence sensor detects occupancy
+      - trigger: state
+        entity_id: binary_sensor.main_bathroom_presence_sensor_radar_target
+        to: "on"
       # If anybody is detected via Bluetooth
-      # - platform: template
+      # - trigger: template
       #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'main_bathroom')|map(attribute='name')|list | length > 0 }}"
       # The door state changes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bathroom_door_sensor_status
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -44,6 +48,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.main_bathroom_motion_sensor_occupancy
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.main_bathroom_occupied
