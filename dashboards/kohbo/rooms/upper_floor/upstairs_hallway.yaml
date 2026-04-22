@@ -45,6 +45,18 @@ cards:
     features_position: inline
     vertical: false
   
+  # Picture Lights
+  - type: tile
+    entity: light.upstairs_hallway_picture_lights
+    name: Picture Lights
+    icon: mdi:wall-sconce
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
   # Stairs
   - type: tile
     entity: light.stairs_light
@@ -56,7 +68,8 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-
+  
+  # Nightlight
   - type: tile
     entity: light.upstairs_hallway_nightlight_light
     name: Nightlight

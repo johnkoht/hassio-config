@@ -8,6 +8,8 @@ light:
     entities:
       - light.upstairs_hallway
       - light.stairs_light
+      - light.stairs_sconces
+      - light.upstairs_hallway_picture_lights
       - light.gianluca_ceiling_lights
       - light.gianluca_lamp
       - light.ninos_bedroom_main_lights

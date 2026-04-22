@@ -89,6 +89,17 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
+  # Stairs Sconces
+  - type: tile
+    entity: light.stairs_sconces
+    name: Stairs Sconces
+    icon: mdi:wall-sconce
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
 
 
   # 
