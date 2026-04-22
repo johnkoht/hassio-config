@@ -499,12 +499,12 @@ cards:
           b: |
             [[[
               const weekly = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
-              const target = 100;
+              const target = 420;
               const pct = Math.min((weekly / target) * 100, 100);
               let color = 'var(--success-color)';
-              if (weekly > 70) color = 'var(--accent-color)';
-              if (weekly > 105) color = 'var(--orange-color)';
-              if (weekly > 140) color = 'var(--error-color)';
+              if (weekly > 300) color = 'var(--accent-color)';
+              if (weekly > 440) color = 'var(--orange-color)';
+              if (weekly > 560) color = 'var(--error-color)';
               const empty = 'var(--divider-color)';
               let output = '<div style="display:flex;gap:2px;width:100%;height:5px;">';
               for (let i = 1; i <= 10; i++) {
@@ -558,12 +558,12 @@ cards:
           b: |
             [[[
               const monthly = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
-              const target = 450;
+              const target = 1800;
               const pct = Math.min((monthly / target) * 100, 100);
               let color = 'var(--success-color)';
-              if (monthly > 300) color = 'var(--accent-color)';
-              if (monthly > 450) color = 'var(--orange-color)';
-              if (monthly > 600) color = 'var(--error-color)';
+              if (monthly > 1300) color = 'var(--accent-color)';
+              if (monthly > 1900) color = 'var(--orange-color)';
+              if (monthly > 2500) color = 'var(--error-color)';
               const empty = 'var(--divider-color)';
               let output = '<div style="display:flex;gap:2px;width:100%;height:5px;">';
               for (let i = 1; i <= 10; i++) {

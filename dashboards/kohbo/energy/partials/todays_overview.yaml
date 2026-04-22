@@ -181,11 +181,11 @@ cards:
         color_threshold:
           - value: 0
             color: var(--success-color)
-          - value: 0.5
+          - value: 2.0
             color: var(--accent-color)
-          - value: 1.0
+          - value: 3.5
             color: var(--orange-color)
-          - value: 1.5
+          - value: 5.0
             color: var(--error-color)
         yaxis_id: energy
         show:

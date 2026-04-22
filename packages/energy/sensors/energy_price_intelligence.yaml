@@ -67,11 +67,11 @@ template:
         icon: mdi:flash
         state: >
           {% set power = states('sensor.energy_current_consumption') | float(0) %}
-          {% if power < 500 %}
+          {% if power < 1500 %}
             low
-          {% elif power < 1500 %}
+          {% elif power < 3000 %}
             normal
-          {% elif power < 2500 %}
+          {% elif power < 5000 %}
             high
           {% else %}
             very_high
@@ -79,30 +79,30 @@ template:
         attributes:
           label: >
             {% set power = states('sensor.energy_current_consumption') | float(0) %}
-            {% if power < 500 %}
+            {% if power < 1500 %}
               Low
-            {% elif power < 1500 %}
+            {% elif power < 3000 %}
               Normal
-            {% elif power < 2500 %}
+            {% elif power < 5000 %}
               High
             {% else %}
               Very High
             {% endif %}
           color: >
             {% set power = states('sensor.energy_current_consumption') | float(0) %}
-            {% if power < 500 %}
+            {% if power < 1500 %}
               var(--success-color)
-            {% elif power < 1500 %}
+            {% elif power < 3000 %}
               var(--accent-color)
-            {% elif power < 2500 %}
+            {% elif power < 5000 %}
               var(--orange-color)
             {% else %}
               var(--error-color)
             {% endif %}
-          # Percentage for visual bar (0-100, capped at 3000W = 100%)
+          # Percentage for visual bar (0-100, capped at 6000W = 100%)
           bar_percent: >
             {% set power = states('sensor.energy_current_consumption') | float(0) %}
-            {{ [[(power / 3000) * 100, 100] | min, 5] | max | round(0) }}
+            {{ [[(power / 6000) * 100, 100] | min, 5] | max | round(0) }}
 
       #-----------------------------------------------------------------------
       # Energy Usage Trend Label - clean callout for dashboard hero
@@ -178,11 +178,11 @@ template:
           {% set trend_pct = states('sensor.energy_trend_percent') | float(0) %}
           {% if price > 10 %}
             Price spike! Reduce usage if possible
-          {% elif price > 6 and power > 2000 %}
+          {% elif price > 6 and power > 4000 %}
             High price & high usage — consider reducing
           {% elif price > 6 %}
             Energy prices are elevated
-          {% elif power > 2500 %}
+          {% elif power > 5000 %}
             High power draw right now
           {% elif price <= 3 %}
             Electricity is cheap right now!
@@ -209,9 +209,9 @@ template:
           priority: >
             {% set price = states('sensor.comed_current_hour_average_price') | float(0) %}
             {% set power = states('sensor.energy_current_consumption') | float(0) %}
-            {% if price > 10 or power > 2500 %}
+            {% if price > 10 or power > 5000 %}
               high
-            {% elif price > 6 or power > 2000 %}
+            {% elif price > 6 or power > 4000 %}
               medium
             {% elif price <= 3 %}
               good
