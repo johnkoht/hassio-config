@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git -C /homeassistant log --oneline)",
+      "Bash(find /homeassistant/packages/weather -name \"*.yaml\" -type f -exec basename {} \\\\;)",
+      "Bash(grep -E \"\\(family_room|office\\)\\\\.yaml$\")",
+      "Bash(ha core *)",
+      "Bash(echo \"---EXIT---$?\")",
+      "Bash(xargs cat *)",
+      "Bash(sqlite3 /homeassistant/home-assistant_v2.db \".tables\")",
+      "Bash(sqlite3 /homeassistant/home-assistant_v2.db \"SELECT id, statistic_id, unit_of_measurement FROM statistics_meta WHERE statistic_id LIKE '%whole_home_energy%' OR statistic_id LIKE '%energy_current_consumption%' OR statistic_id LIKE '%home_energy_meter%' OR statistic_id LIKE '%daily_energy%' OR statistic_id LIKE '%panel_%_energy%';\")",
+      "Bash(sqlite3 /homeassistant/home-assistant_v2.db \".schema statistics\")",
+      "Bash(sqlite3 /homeassistant/home-assistant_v2.db)"
+    ]
+  }
+}

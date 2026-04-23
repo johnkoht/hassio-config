@@ -1,11 +1,15 @@
 var __defProp = Object.defineProperty;
+var __returnValue = (v) => v;
+function __exportSetter(name, newValue) {
+  this[name] = __returnValue.bind(null, newValue);
+}
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, {
       get: all[name],
       enumerable: true,
       configurable: true,
-      set: (newValue) => all[name] = () => newValue
+      set: __exportSetter.bind(all, name)
     });
 };
 var __legacyDecorateClassTS = function(decorators, target, key, desc) {
@@ -715,21 +719,58 @@ var init_decorators = __esm(() => {
 });
 
 // node_modules/custom-card-helpers/dist/index.m.js
-var t5, r6, $2, ne = function(e7, t6, r7, n5) {
-  n5 = n5 || {}, r7 = r7 == null ? {} : r7;
-  var i6 = new Event(t6, { bubbles: n5.bubbles === undefined || n5.bubbles, cancelable: Boolean(n5.cancelable), composed: n5.composed === undefined || n5.composed });
-  return i6.detail = r7, e7.dispatchEvent(i6), i6;
-}, ie, de = function(e7, t6, r7) {
-  r7 === undefined && (r7 = false), r7 ? history.replaceState(null, "", t6) : history.pushState(null, "", t6), ne(window, "location-changed", { replace: r7 });
+var NumberFormat, TimeFormat, DOMAINS_TOGGLE, fireEvent = (node, type, detail, options) => {
+  options = options || {};
+  detail = detail === null || detail === undefined ? {} : detail;
+  const event = new Event(type, {
+    bubbles: options.bubbles === undefined ? true : options.bubbles,
+    cancelable: Boolean(options.cancelable),
+    composed: options.composed === undefined ? true : options.composed
+  });
+  event.detail = detail;
+  node.dispatchEvent(event);
+  return event;
+}, SPECIAL_TYPES, navigate = (_node, path, replace = false) => {
+  if (replace) {
+    history.replaceState(null, "", path);
+  } else {
+    history.pushState(null, "", path);
+  }
+  fireEvent(window, "location-changed", {
+    replace
+  });
 };
 var init_index_m = __esm(() => {
-  (function(e7) {
-    e7.language = "language", e7.system = "system", e7.comma_decimal = "comma_decimal", e7.decimal_comma = "decimal_comma", e7.space_comma = "space_comma", e7.none = "none";
-  })(t5 || (t5 = {})), function(e7) {
-    e7.language = "language", e7.system = "system", e7.am_pm = "12", e7.twenty_four = "24";
-  }(r6 || (r6 = {}));
-  $2 = new Set(["fan", "input_boolean", "light", "switch", "group", "automation"]);
-  ie = new Set(["call-service", "divider", "section", "weblink", "cast", "select"]);
+  (function(NumberFormat2) {
+    NumberFormat2["language"] = "language";
+    NumberFormat2["system"] = "system";
+    NumberFormat2["comma_decimal"] = "comma_decimal";
+    NumberFormat2["decimal_comma"] = "decimal_comma";
+    NumberFormat2["space_comma"] = "space_comma";
+    NumberFormat2["none"] = "none";
+  })(NumberFormat || (NumberFormat = {}));
+  (function(TimeFormat2) {
+    TimeFormat2["language"] = "language";
+    TimeFormat2["system"] = "system";
+    TimeFormat2["am_pm"] = "12";
+    TimeFormat2["twenty_four"] = "24";
+  })(TimeFormat || (TimeFormat = {}));
+  DOMAINS_TOGGLE = new Set([
+    "fan",
+    "input_boolean",
+    "light",
+    "switch",
+    "group",
+    "automation"
+  ]);
+  SPECIAL_TYPES = new Set([
+    "call-service",
+    "divider",
+    "section",
+    "weblink",
+    "cast",
+    "select"
+  ]);
 });
 
 // src/types/config.ts
@@ -1311,7 +1352,7 @@ var ACTIONS_WITH_CUSTOM_ENTITY, openQuickbar = (action) => {
         }, 10);
       } else if (actionType === "tap" && (route?.url || popupItem?.url)) {
         triggerHaptic(context, actionType, true);
-        de(context, route?.url ?? popupItem?.url ?? "");
+        navigate(context, route?.url ?? popupItem?.url ?? "");
       }
       break;
   }
@@ -1324,7 +1365,7 @@ var init_action_handler = __esm(() => {
 });
 
 // src/styles/editor.ts
-var EDITOR_STYLES, ROUTES_EDITOR_DND_STYLES;
+var EDITOR_STYLES, DRAGGABLE_ITEM_STYLES;
 var init_editor = __esm(() => {
   init_lit();
   EDITOR_STYLES = i`
@@ -1384,7 +1425,7 @@ var init_editor = __esm(() => {
       flex-direction: column !important;
       gap: 0.5em;
     }
-    .route-grid {
+    .editor-grid {
       grid-template-columns: 1fr !important;
     }
     .editor-row-item {
@@ -1421,19 +1462,19 @@ var init_editor = __esm(() => {
     flex: 1;
   }
 
-  .route-header {
+  .draggable-item-header {
     display: flex;
     align-items: center;
     gap: 0.7em;
     padding: 0.2em 0.5em 0.2em 0;
   }
 
-  .route-header-title {
+  .draggable-item-header-title {
     font-weight: bold;
     color: var(--primary-color);
   }
 
-  .route-header-summary {
+  .draggable-item-header-summary {
     flex: 1;
     opacity: 0.7;
     font-size: 0.95em;
@@ -1442,12 +1483,12 @@ var init_editor = __esm(() => {
     gap: 0.3em;
   }
 
-  .route-header-image {
+  .draggable-item-header-image {
     height: 1.2em;
     vertical-align: middle;
   }
 
-  .route-editor {
+  .draggable-item-editor {
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -1463,13 +1504,13 @@ var init_editor = __esm(() => {
     margin-bottom: 1em;
   }
 
-  .route-grid {
+  .editor-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1em;
   }
 
-  .route-divider {
+  .editor-divider {
     margin: 1.5em 0 1em 0;
     border: none;
     border-top: 1px solid #e0e0e0;
@@ -1659,8 +1700,8 @@ var init_editor = __esm(() => {
     }
   }
 `;
-  ROUTES_EDITOR_DND_STYLES = i`
-  .draggable-route {
+  DRAGGABLE_ITEM_STYLES = i`
+  .draggable-item {
     border: 1.5px dashed transparent;
     border-radius: 8px;
     transition:
@@ -1670,12 +1711,12 @@ var init_editor = __esm(() => {
     position: relative;
   }
 
-  .draggable-route.drag-over {
+  .draggable-item.drag-over {
     border-color: var(--primary-color, #03a9f4);
     background: rgba(3, 169, 244, 0.08);
   }
 
-  .draggable-route.dragging {
+  .draggable-item.dragging {
     opacity: 0.6;
     background: #eee;
     z-index: 2;
@@ -1709,7 +1750,7 @@ var HOST_STYLES, NAVBAR_CONTAINER_STYLES, MEDIA_PLAYER_STYLES, ROUTE_STYLES, POP
 }, getEditorStyles = () => {
   return i`
     ${EDITOR_STYLES}
-    ${ROUTES_EDITOR_DND_STYLES}
+    ${DRAGGABLE_ITEM_STYLES}
   `;
 };
 var init_styles = __esm(() => {
@@ -1941,8 +1982,9 @@ var init_styles = __esm(() => {
     flex-direction: row;
   }
 
-  .media-player.mobile {
+  :is(.media-player, .media-player-carousel).mobile {
     border: none;
+    align-self: center;
   }
 
   .media-player.desktop {
@@ -1950,35 +1992,40 @@ var init_styles = __esm(() => {
     max-width: 400px;
   }
 
-  .media-player.desktop.position-absolute {
+  /* Center media player when inside navbar (wider than max-width) */
+  :is(.media-player, .media-player-carousel).desktop:not(.position-absolute) {
+    align-self: center;
+  }
+
+  :is(.media-player, .media-player-carousel).desktop.position-absolute {
     position: fixed;
     width: 400px;
     z-index: var(--navbar-media-player-z-index);
   }
 
-  .media-player.desktop.position-absolute.top-left {
+  :is(.media-player, .media-player-carousel).desktop.position-absolute.top-left {
     left: var(--navbar-lateral-margin);
     top: calc(var(--header-height) + var(--navbar-lateral-margin));
   }
-  .media-player.desktop.position-absolute.top-center {
+  :is(.media-player, .media-player-carousel).desktop.position-absolute.top-center {
     left: 50%;
     top: calc(var(--header-height) + var(--navbar-lateral-margin));
     transform: translateX(-50%);
   }
-  .media-player.desktop.position-absolute.top-right {
+  :is(.media-player, .media-player-carousel).desktop.position-absolute.top-right {
     right: var(--navbar-lateral-margin);
     top: calc(var(--header-height) + var(--navbar-lateral-margin));
   }
-  .media-player.desktop.position-absolute.bottom-left {
-    left: var(--navbar-lateral-margin);
+  :is(.media-player, .media-player-carousel).desktop.position-absolute.bottom-left {
+    left: calc(var(--mdc-drawer-width, 0px) + var(--navbar-lateral-margin));
     bottom: var(--navbar-lateral-margin);
   }
-  .media-player.desktop.position-absolute.bottom-center {
+  :is(.media-player, .media-player-carousel).desktop.position-absolute.bottom-center {
     left: 50%;
     bottom: var(--navbar-lateral-margin);
     transform: translateX(-50%);
   }
-  .media-player.desktop.position-absolute.bottom-right {
+  :is(.media-player, .media-player-carousel).desktop.position-absolute.bottom-right {
     right: var(--navbar-lateral-margin);
     bottom: var(--navbar-lateral-margin);
   }
@@ -2046,6 +2093,61 @@ var init_styles = __esm(() => {
   .media-player .media-player-progress-bar-fill {
     background-color: var(--navbar-primary-color);
     height: 100%;
+  }
+
+  /* Media player carousel */
+
+  .media-player-carousel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    border: none;
+  }
+
+  .media-player-carousel.desktop {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .media-player-viewport {
+    width: 100%;
+    overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  .media-player-track {
+    display: flex;
+    gap: 12px;
+    will-change: transform;
+  }
+
+  .media-player-carousel .media-player {
+    flex: 0 0 100%;
+    min-width: 0;
+    width: 100%;
+    border: none;
+  }
+
+  .media-player-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 6px;
+  }
+
+  .media-player-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--disabled-color);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .media-player-dot.active {
+    background: var(--navbar-primary-color);
+    transform: scale(1.1);
   }
 `;
   ROUTE_STYLES = i`
@@ -2762,143 +2864,142 @@ var init_navbar_card_editor = __esm(() => {
       <span>${options.text}</span>
     </ha-button>`;
     }
-    makeDraggableRouteEditor(item, routeIndex, popupIndex) {
-      const isPopup = popupIndex != null;
-      const usesTemplate = !isPopup && isTemplate(item.popup);
-      const baseConfigKey = isPopup ? `routes.${routeIndex}.popup.${popupIndex}` : `routes.${routeIndex}`;
-      const onDragStart = (e7, routeIndex2, popupIndex2) => {
-        const dragData = {
-          popupIndex: popupIndex2,
-          routeIndex: routeIndex2
-        };
-        e7.dataTransfer?.setData("application/json", JSON.stringify(dragData));
-        e7.dataTransfer.effectAllowed = "move";
-        e7.currentTarget.classList.add("dragging");
-      };
-      const onDragEnd = (e7) => {
-        e7.currentTarget.classList.remove("dragging");
-      };
-      const onDragOver = (e7) => {
-        e7.preventDefault();
-        e7.dataTransfer.dropEffect = "move";
-        e7.currentTarget.classList.add("drag-over");
-      };
-      const onDragLeave = (e7) => {
-        e7.currentTarget.classList.remove("drag-over");
-      };
-      const onDrop = (e7, routeIndex2, popupIndex2) => {
-        e7.preventDefault();
-        e7.currentTarget.classList.remove("drag-over");
-        const dragData = JSON.parse(e7.dataTransfer?.getData("application/json") || "{}");
-        if (dragData.popupIndex != null !== (popupIndex2 != null))
-          return;
-        if (popupIndex2 == null) {
-          if (dragData.routeIndex === routeIndex2)
-            return;
-          const routes = [...this._config.routes];
-          const [moved] = routes.splice(dragData.routeIndex, 1);
-          routes.splice(routeIndex2, 0, moved);
-          this.updateConfig({ routes });
-        } else if (typeof popupIndex2 === "number" && typeof dragData.popupIndex === "number" && dragData.routeIndex === routeIndex2) {
-          if (dragData.popupIndex === popupIndex2)
-            return;
-          const routes = [...this._config.routes];
-          const popups = [...routes[routeIndex2].popup || []];
-          const [moved] = popups.splice(dragData.popupIndex, 1);
-          popups.splice(popupIndex2, 0, moved);
-          routes[routeIndex2] = { ...routes[routeIndex2], popup: popups };
-          this.updateConfig({ routes });
+    _createListDragHandlers(dragData) {
+      return {
+        onDragEnd: (e7) => {
+          e7.currentTarget.classList.remove("dragging");
+        },
+        onDragLeave: (e7) => {
+          e7.currentTarget.classList.remove("drag-over");
+        },
+        onDragOver: (e7) => {
+          e7.preventDefault();
+          e7.dataTransfer.dropEffect = "move";
+          e7.currentTarget.classList.add("drag-over");
+        },
+        onDragStart: (e7) => {
+          e7.dataTransfer?.setData("application/json", JSON.stringify(dragData));
+          e7.dataTransfer.effectAllowed = "move";
+          e7.currentTarget.classList.add("dragging");
         }
       };
+    }
+    _renderDraggableItem(options) {
+      const handlers = this._createListDragHandlers(options.dragData);
       return x`
       <div
-        class="draggable-route"
-        @dragover=${onDragOver}
-        @dragleave=${onDragLeave}
-        @drop=${(e7) => onDrop(e7, routeIndex, popupIndex)}>
+        class="draggable-item"
+        @dragover=${handlers.onDragOver}
+        @dragleave=${handlers.onDragLeave}
+        @drop=${options.onDrop}>
         <ha-expansion-panel outlined>
           <div
             slot="header"
-            class="route-header"
+            class="draggable-item-header"
             draggable="true"
-            @dragstart=${(e7) => onDragStart(e7, routeIndex, popupIndex)}
-            @dragend=${onDragEnd}>
+            @dragstart=${handlers.onDragStart}
+            @dragend=${handlers.onDragEnd}>
             <span class="drag-handle" title="Drag to reorder">
               <ha-icon icon="mdi:drag"></ha-icon>
             </span>
-
-            <div class="route-header-title">
-              ${isPopup ? "Popup item" : "Route"}
-            </div>
-
-            <span class="route-header-summary">
-              ${item.image != null ? x`<img src="${item.image}" class="route-header-image" />` : x`<ha-icon icon="${item.icon}"></ha-icon>`}
-              ${item.label ? processTemplate(this.hass, undefined, item.label) : ""}
-            </span>
-
+            <div class="draggable-item-header-title">${options.headerTitle}</div>
+            <span class="draggable-item-header-summary">${options.headerSummary}</span>
             <ha-icon-button
               @click=${(e7) => {
         e7.preventDefault();
         e7.stopPropagation();
-        this.removeRouteOrPopup(routeIndex, popupIndex);
+        options.onDelete();
       }}
               class="delete-btn"
-              label=${isPopup ? "Delete popup" : "Delete route"}>
-              <ha-icon icon="mdi:delete"></ha-icon
-            ></ha-icon-button>
+              label=${options.deleteLabel}>
+              <ha-icon icon="mdi:delete"></ha-icon>
+            </ha-icon-button>
           </div>
-
-          <div class="route-editor route-editor-bg">
+          <div class="draggable-item-editor">${options.body}</div>
+        </ha-expansion-panel>
+      </div>
+    `;
+    }
+    makeDraggableRouteEditor(item, routeIndex, popupIndex) {
+      const isPopup = popupIndex != null;
+      const usesTemplate = !isPopup && isTemplate(item.popup);
+      const baseConfigKey = isPopup ? `routes.${routeIndex}.popup.${popupIndex}` : `routes.${routeIndex}`;
+      const onDrop = (e7) => {
+        e7.preventDefault();
+        e7.currentTarget.classList.remove("drag-over");
+        const dragData = JSON.parse(e7.dataTransfer?.getData("application/json") || "{}");
+        if (dragData.popupIndex != null !== (popupIndex != null))
+          return;
+        if (popupIndex == null) {
+          if (dragData.routeIndex === routeIndex)
+            return;
+          const routes = [...this._config.routes];
+          const [moved] = routes.splice(dragData.routeIndex, 1);
+          routes.splice(routeIndex, 0, moved);
+          this.updateConfig({ routes });
+        } else if (typeof popupIndex === "number" && typeof dragData.popupIndex === "number" && dragData.routeIndex === routeIndex) {
+          if (dragData.popupIndex === popupIndex)
+            return;
+          const routes = [...this._config.routes];
+          const popups = [...routes[routeIndex].popup || []];
+          const [moved] = popups.splice(dragData.popupIndex, 1);
+          popups.splice(popupIndex, 0, moved);
+          routes[routeIndex] = { ...routes[routeIndex], popup: popups };
+          this.updateConfig({ routes });
+        }
+      };
+      return this._renderDraggableItem({
+        body: x`
             <div class="editor-row">
               <div class="editor-row-item">
                 ${this.makeNavigationPicker({
-        configKey: `${baseConfigKey}.url`,
-        label: "URL"
-      })}
+          configKey: `${baseConfigKey}.url`,
+          label: "URL"
+        })}
               </div>
             </div>
 
             ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.label`,
-        inputType: "string",
-        label: "Label",
-        templateHelper: STRING_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.label`,
+          inputType: "string",
+          label: "Label",
+          templateHelper: STRING_JS_TEMPLATE_HELPER
+        })}
             ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.selected_color`,
-        inputType: "string",
-        label: "Selected color",
-        templateHelper: STRING_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.selected_color`,
+          inputType: "string",
+          label: "Selected color",
+          templateHelper: STRING_JS_TEMPLATE_HELPER
+        })}
             ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.icon`,
-        inputType: "icon",
-        label: "Icon"
-      })}
+          configKey: `${baseConfigKey}.icon`,
+          inputType: "icon",
+          label: "Icon"
+        })}
             ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.icon_selected`,
-        inputType: "icon",
-        label: "Icon selected"
-      })}
+          configKey: `${baseConfigKey}.icon_selected`,
+          inputType: "icon",
+          label: "Icon selected"
+        })}
             ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.icon_color`,
-        inputType: "color",
-        label: "Icon color"
-      })}
+          configKey: `${baseConfigKey}.icon_color`,
+          inputType: "color",
+          label: "Icon color"
+        })}
             ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.image`,
-        inputType: "string",
-        label: "Image",
-        placeholder: "URL of the image"
-      })}
+          configKey: `${baseConfigKey}.image`,
+          inputType: "string",
+          label: "Image",
+          placeholder: "URL of the image"
+        })}
             ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.image_selected`,
-        inputType: "string",
-        label: "Image selected",
-        placeholder: "URL of the image"
-      })}
+          configKey: `${baseConfigKey}.image_selected`,
+          inputType: "string",
+          label: "Image selected",
+          placeholder: "URL of the image"
+        })}
 
-            <div class="route-divider"></div>
+            <div class="editor-divider"></div>
 
             <ha-expansion-panel outlined>
               <h5 slot="header">
@@ -2907,30 +3008,30 @@ var init_navbar_card_editor = __esm(() => {
               </h5>
               <div class="editor-section">
                 ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.badge.color`,
-        inputType: "string",
-        label: "Color",
-        templateHelper: STRING_JS_TEMPLATE_HELPER,
-        textHelper: "Color of the badge in any CSS valid format (red, #ff0000, rgba(255,0,0,1)...)"
-      })}
+          configKey: `${baseConfigKey}.badge.color`,
+          inputType: "string",
+          label: "Color",
+          templateHelper: STRING_JS_TEMPLATE_HELPER,
+          textHelper: "Color of the badge in any CSS valid format (red, #ff0000, rgba(255,0,0,1)...)"
+        })}
                 ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.badge.show`,
-        inputType: "switch",
-        label: "Show",
-        templateHelper: BOOLEAN_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.badge.show`,
+          inputType: "switch",
+          label: "Show",
+          templateHelper: BOOLEAN_JS_TEMPLATE_HELPER
+        })}
                 ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.badge.count`,
-        inputType: "string",
-        label: "Count",
-        templateHelper: STRING_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.badge.count`,
+          inputType: "string",
+          label: "Count",
+          templateHelper: STRING_JS_TEMPLATE_HELPER
+        })}
                 ${this.makeTemplatable({
-        configKey: `${baseConfigKey}.badge.text_color`,
-        inputType: "string",
-        label: "Text color",
-        templateHelper: STRING_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.badge.text_color`,
+          inputType: "string",
+          label: "Text color",
+          templateHelper: STRING_JS_TEMPLATE_HELPER
+        })}
               </div>
             </ha-expansion-panel>
 
@@ -2945,45 +3046,45 @@ var init_navbar_card_editor = __esm(() => {
                         <button
                           class="editor-tab-button ${!usesTemplate ? "active" : ""}"
                           @click=${() => {
-        if (!usesTemplate)
-          return;
-        let parsedPopup = [];
-        try {
-          parsedPopup = JSON.parse(cleanTemplate(item.popup?.toString()) ?? "[]");
-        } catch (_e) {
-          parsedPopup = [];
-        }
-        this.updateConfigByKey(`${baseConfigKey}.popup`, parsedPopup);
-      }}>
+          if (!usesTemplate)
+            return;
+          let parsedPopup = [];
+          try {
+            parsedPopup = JSON.parse(cleanTemplate(item.popup?.toString()) ?? "[]");
+          } catch (_e) {
+            parsedPopup = [];
+          }
+          this.updateConfigByKey(`${baseConfigKey}.popup`, parsedPopup);
+        }}>
                           <ha-icon icon="mdi:palette"></ha-icon>
                           UI editor
                         </button>
                         <button
                           class="editor-tab-button ${usesTemplate ? "active" : ""}"
                           @click=${() => {
-        if (usesTemplate)
-          return;
-        this.updateConfigByKey(`${baseConfigKey}.popup`, wrapTemplate(JSON.stringify(item.popup ?? [], null, 2)));
-      }}>
+          if (usesTemplate)
+            return;
+          this.updateConfigByKey(`${baseConfigKey}.popup`, wrapTemplate(JSON.stringify(item.popup ?? [], null, 2)));
+        }}>
                           <ha-icon icon="mdi:code-tags"></ha-icon>
                           Use template
                         </button>
                       </div>
 
                       ${usesTemplate ? this.makeTemplateEditor({
-        configKey: `${baseConfigKey}.popup`,
-        helper: GENERIC_JS_TEMPLATE_HELPER,
-        label: "Popup"
-      }) : x`<div class="routes-container">
+          configKey: `${baseConfigKey}.popup`,
+          helper: GENERIC_JS_TEMPLATE_HELPER,
+          label: "Popup"
+        }) : x`<div class="routes-container">
                               ${(item.popup ?? []).map((popupItem, index) => {
-        return this.makeDraggableRouteEditor(popupItem, routeIndex, index);
-      })}
+          return this.makeDraggableRouteEditor(popupItem, routeIndex, index);
+        })}
                             </div>
                             ${this.makeButton({
-        icon: "mdi:plus",
-        onClick: () => this.addRouteOrPopup(routeIndex),
-        text: "Add Popup item"
-      })}`}
+          icon: "mdi:plus",
+          onClick: () => this.addRouteOrPopup(routeIndex),
+          text: "Add Popup item"
+        })}`}
                     </div>
                   </ha-expansion-panel>
                 ` : x``}
@@ -2995,31 +3096,31 @@ var init_navbar_card_editor = __esm(() => {
               </h5>
               <div class="editor-section">
                 ${this.makeTemplateEditor({
-        configKey: `${baseConfigKey}.hidden`,
-        helper: BOOLEAN_JS_TEMPLATE_HELPER,
-        label: "Hidden"
-      })}
+          configKey: `${baseConfigKey}.hidden`,
+          helper: BOOLEAN_JS_TEMPLATE_HELPER,
+          label: "Hidden"
+        })}
                 ${!isPopup ? this.makeTemplateEditor({
-        configKey: `${baseConfigKey}.selected`,
-        helper: BOOLEAN_JS_TEMPLATE_HELPER,
-        label: "Selected"
-      }) : x``}
+          configKey: `${baseConfigKey}.selected`,
+          helper: BOOLEAN_JS_TEMPLATE_HELPER,
+          label: "Selected"
+        }) : x``}
               </div>
             </ha-expansion-panel>
 
             ${Object.values(HAActions).map((type) => {
-        const key = `${baseConfigKey}.${type}`;
-        const actionValue = genericGetProperty(this._config, key);
-        const label = this._chooseLabelForAction(type);
-        return x`
+          const key = `${baseConfigKey}.${type}`;
+          const actionValue = genericGetProperty(this._config, key);
+          const label = this._chooseLabelForAction(type);
+          return x`
                 ${actionValue != null ? this.makeActionSelector({
-          actionType: type,
-          configKey: key
-        }) : x`
+            actionType: type,
+            configKey: key
+          }) : x`
                       <ha-button
                       @click=${() => this.updateConfigByKey(key, {
-          action: "none"
-        })}
+            action: "none"
+          })}
                         style="margin-bottom: 1em;"
                         outlined
                         hasTrailingIcon>
@@ -3028,11 +3129,18 @@ var init_navbar_card_editor = __esm(() => {
                       </ha-button>
                     `}
               `;
-      })}
-          </div>
-        </ha-expansion-panel>
-      </div>
-    `;
+        })}
+      `,
+        deleteLabel: isPopup ? "Delete popup" : "Delete route",
+        dragData: { popupIndex, routeIndex },
+        headerSummary: x`
+        ${item.image != null ? x`<img src="${item.image}" class="draggable-item-header-image" />` : x`<ha-icon icon="${item.icon}"></ha-icon>`}
+        ${item.label ? processTemplate(this.hass, undefined, item.label) : ""}
+      `,
+        headerTitle: isPopup ? "Popup item" : "Route",
+        onDelete: () => this.removeRouteOrPopup(routeIndex, popupIndex),
+        onDrop
+      });
     }
     renderTemplateEditor() {
       const availableTemplates = getNavbarTemplates();
@@ -3180,6 +3288,7 @@ var init_navbar_card_editor = __esm(() => {
     `;
     }
     renderMediaPlayerEditor() {
+      const players = this._config.media_player?.players ?? [];
       return x`
       <ha-expansion-panel outlined>
         <h4 slot="header">
@@ -3187,12 +3296,6 @@ var init_navbar_card_editor = __esm(() => {
           Media player
         </h4>
         <div class="editor-section">
-          ${this.makeTemplatable({
-        configKey: "media_player.entity",
-        includeDomains: ["media_player"],
-        inputType: "entity",
-        label: "Media player entity"
-      })}
           ${this.makeSwitch({
         configKey: "media_player.album_cover_background",
         defaultValue: DEFAULT_NAVBAR_CONFIG.media_player?.album_cover_background,
@@ -3214,40 +3317,86 @@ var init_navbar_card_editor = __esm(() => {
           ${this.makeTemplateEditor({
         configKey: "media_player.show",
         helper: BOOLEAN_JS_TEMPLATE_HELPER,
-        label: "Show media player"
+        label: "Show media player widget"
       })}
+        </div>
+        <div class="editor-section">
+          <label class="editor-label">Players</label>
+          <div class="routes-container">
+            ${players.map((player, i7) => this.makeDraggablePlayerEditor(player, i7))}
+          </div>
+          ${this.makeButton({
+        icon: "mdi:plus",
+        onClick: () => this.addMediaPlayer(),
+        text: "Add player"
+      })}
+        </div>
+      </ha-expansion-panel>
+    `;
+    }
+    makeDraggablePlayerEditor(player, playerIndex) {
+      const baseConfigKey = `media_player.players.${playerIndex}`;
+      const onDrop = (e7) => {
+        e7.preventDefault();
+        e7.currentTarget.classList.remove("drag-over");
+        const dragData = JSON.parse(e7.dataTransfer?.getData("application/json") || "{}");
+        const fromIndex = dragData.playerIndex;
+        if (typeof fromIndex !== "number" || fromIndex === playerIndex)
+          return;
+        const players = [...this._config.media_player?.players ?? []];
+        const [moved] = players.splice(fromIndex, 1);
+        players.splice(playerIndex, 0, moved);
+        this.updateConfig({
+          media_player: {
+            ...this._config.media_player,
+            players
+          }
+        });
+      };
+      return this._renderDraggableItem({
+        body: x`
           ${this.makeTemplatable({
-        configKey: "media_player.icon",
-        inputType: "icon",
-        label: "Icon",
-        templateHelper: STRING_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.entity`,
+          includeDomains: ["media_player"],
+          inputType: "entity",
+          label: "Media player entity"
+        })}
+          ${this.makeTemplateEditor({
+          configKey: `${baseConfigKey}.show`,
+          helper: BOOLEAN_JS_TEMPLATE_HELPER,
+          label: "Show"
+        })}
           ${this.makeTemplatable({
-        configKey: "media_player.title",
-        inputType: "string",
-        label: "Title",
-        templateHelper: STRING_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.icon`,
+          inputType: "icon",
+          label: "Icon",
+          templateHelper: STRING_JS_TEMPLATE_HELPER
+        })}
           ${this.makeTemplatable({
-        configKey: "media_player.subtitle",
-        inputType: "string",
-        label: "Subtitle",
-        templateHelper: STRING_JS_TEMPLATE_HELPER
-      })}
+          configKey: `${baseConfigKey}.title`,
+          inputType: "string",
+          label: "Title",
+          templateHelper: STRING_JS_TEMPLATE_HELPER
+        })}
+          ${this.makeTemplatable({
+          configKey: `${baseConfigKey}.subtitle`,
+          inputType: "string",
+          label: "Subtitle",
+          templateHelper: STRING_JS_TEMPLATE_HELPER
+        })}
           ${Object.values(HAActions).map((type) => {
-        const key = `media_player.${type}`;
-        const actionValue = genericGetProperty(this._config, key);
-        const label = this._chooseLabelForAction(type);
-        return x`
+          const key = `${baseConfigKey}.${type}`;
+          const actionValue = genericGetProperty(this._config, key);
+          const label = this._chooseLabelForAction(type);
+          return x`
               ${actionValue != null ? this.makeActionSelector({
-          actionType: type,
-          configKey: key,
-          disabledActions: ["open-popup" /* openPopup */]
-        }) : x`
+            actionType: type,
+            configKey: key
+          }) : x`
                     <ha-button
                       @click=${() => this.updateConfigByKey(key, {
-          action: "none"
-        })}
+            action: "none"
+          })}
                       style="margin-bottom: 1em;"
                       outlined
                       hasTrailingIcon>
@@ -3256,11 +3405,38 @@ var init_navbar_card_editor = __esm(() => {
                     </ha-button>
                   `}
             `;
-      })}
-        </div>
-      </ha-expansion-panel>
-    `;
+        })}
+      `,
+        deleteLabel: "Delete player",
+        dragData: { playerIndex },
+        headerSummary: x`
+        ${processTemplate(this.hass, undefined, player.entity) || "No entity"}
+      `,
+        headerTitle: `Player`,
+        onDelete: () => this.removeMediaPlayer(playerIndex),
+        onDrop
+      });
     }
+    addMediaPlayer = () => {
+      const players = this._config.media_player?.players ?? [];
+      const newPlayer = { entity: "" };
+      this.updateConfig({
+        media_player: {
+          ...this._config.media_player,
+          players: [...players, newPlayer]
+        }
+      });
+    };
+    removeMediaPlayer = (playerIndex) => {
+      const players = [...this._config.media_player?.players ?? []];
+      players.splice(playerIndex, 1);
+      this.updateConfig({
+        media_player: {
+          ...this._config.media_player,
+          players: players.length === 0 ? undefined : players
+        }
+      });
+    };
     renderDesktopEditor() {
       const labelVisibility = genericGetProperty(this._config, "desktop.show_labels") ?? DEFAULT_NAVBAR_CONFIG.desktop?.show_labels;
       return x`
@@ -3817,68 +3993,78 @@ var eventDetection = e5(EventDetectionDirective);
 // src/components/media-player.ts
 init_types();
 init_utils();
+var CAROUSEL_GAP = 12;
 
 class MediaPlayer {
   _navbarCard;
+  _activeIndex = 0;
+  _trackPointerId = null;
+  _dragStartX = 0;
+  _dragOffset = 0;
+  _isDragging = false;
   constructor(_navbarCard) {
     this._navbarCard = _navbarCard;
-  }
-  get tap_action() {
-    return this._navbarCard.config?.media_player?.tap_action;
-  }
-  get hold_action() {
-    return this._navbarCard.config?.media_player?.hold_action;
-  }
-  get double_tap_action() {
-    return this._navbarCard.config?.media_player?.double_tap_action;
   }
   get desktop_position() {
     return this._navbarCard.config?.media_player?.desktop_position ?? DEFAULT_NAVBAR_CONFIG.media_player.desktop_position;
   }
   isVisible = () => {
     const config2 = this._navbarCard.config?.media_player;
-    if (!config2?.entity)
+    const players = config2?.players ?? [];
+    if (players.length === 0)
       return { visible: false };
-    const entity = this._getEntity();
+    if (config2?.show != null) {
+      const widgetVisible = processTemplate(this._navbarCard._hass, this._navbarCard, config2.show);
+      if (!widgetVisible)
+        return { visible: false };
+    }
+    for (const player of players) {
+      const result = this._isPlayerVisible(player);
+      if (result.visible || result.error)
+        return result;
+    }
+    return { visible: false };
+  };
+  render = (options) => {
+    const { visible } = this.isVisible();
+    if (!visible)
+      return x``;
+    const allPlayers = this._navbarCard.config?.media_player?.players ?? [];
+    const visiblePlayers = allPlayers.filter((p3) => this._isPlayerVisible(p3).visible);
+    this._activeIndex = Math.max(0, Math.min(this._activeIndex, visiblePlayers.length - 1));
+    if (visiblePlayers.length <= 1) {
+      return this._renderSingle(visiblePlayers[0], options);
+    }
+    return this._renderCarousel(visiblePlayers, options);
+  };
+  _isPlayerVisible(player) {
+    const entity = this._resolveEntity(player);
     const state2 = this._navbarCard._hass.states[entity ?? ""];
     if (!(state2 && entity)) {
       return { error: `Entity not found "${entity}"`, visible: true };
     }
-    if (config2.show != null) {
+    if (player.show != null) {
       return {
-        visible: processTemplate(this._navbarCard._hass, this._navbarCard, config2.show)
+        visible: processTemplate(this._navbarCard._hass, this._navbarCard, player.show)
       };
     }
     return { visible: ["playing", "paused"].includes(state2.state) };
-  };
-  _getEntity() {
-    return processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.entity);
   }
-  _getIcon() {
-    return this._navbarCard.config?.media_player?.icon ? processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.icon) : null;
+  _resolveEntity(player) {
+    return processTemplate(this._navbarCard._hass, this._navbarCard, player.entity);
   }
-  _getTitle(mediaPlayerState) {
-    return this._navbarCard.config?.media_player?.title ? processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.title) : mediaPlayerState.attributes.media_title;
+  _resolveIcon(player) {
+    return player.icon ? processTemplate(this._navbarCard._hass, this._navbarCard, player.icon) : null;
   }
-  _getSubtitle(mediaPlayerState) {
-    return this._navbarCard.config?.media_player?.subtitle ? processTemplate(this._navbarCard._hass, this._navbarCard, this._navbarCard.config?.media_player?.subtitle) : mediaPlayerState.attributes.media_artist;
+  _resolveTitle(player, state2) {
+    return player.title ? processTemplate(this._navbarCard._hass, this._navbarCard, player.title) : state2.attributes.media_title ?? "";
   }
-  _handleMediaPlayerSkipNextClick = (e7) => {
+  _resolveSubtitle(player, state2) {
+    return player.subtitle ? processTemplate(this._navbarCard._hass, this._navbarCard, player.subtitle) : state2.attributes.media_artist ?? "";
+  }
+  _handlePlayPause = (e7, entity) => {
     e7.preventDefault();
     e7.stopPropagation();
-    const entity = this._getEntity();
-    if (entity) {
-      this._navbarCard._hass.callService("media_player", "media_next_track", {
-        entity_id: entity
-      });
-    }
-  };
-  _handleMediaPlayerPlayPauseClick = (e7) => {
-    e7.preventDefault();
-    e7.stopPropagation();
-    const entity = this._getEntity();
-    if (!entity)
-      return;
     const state2 = this._navbarCard._hass.states[entity];
     if (!state2)
       return;
@@ -3887,22 +4073,72 @@ class MediaPlayer {
       entity_id: entity
     });
   };
-  render = (options) => {
-    const { visible, error } = this.isVisible();
-    if (!visible)
-      return x``;
-    if (error) {
+  _handleSkipNext = (e7, entity) => {
+    e7.preventDefault();
+    e7.stopPropagation();
+    this._navbarCard._hass.callService("media_player", "media_next_track", {
+      entity_id: entity
+    });
+  };
+  _onPointerDown = (e7) => {
+    if (e7.button !== 0)
+      return;
+    this._trackPointerId = e7.pointerId;
+    this._dragStartX = e7.clientX;
+    this._dragOffset = 0;
+    this._isDragging = false;
+  };
+  _onPointerMove = (e7) => {
+    if (e7.pointerId !== this._trackPointerId)
+      return;
+    const dx = e7.clientX - this._dragStartX;
+    if (!this._isDragging) {
+      if (Math.abs(dx) < 10)
+        return;
+      this._isDragging = true;
+      e7.currentTarget.setPointerCapture(e7.pointerId);
+    }
+    e7.preventDefault();
+    const count = this._navbarCard.config?.media_player?.players?.length ?? 0;
+    const atEdge = this._activeIndex === 0 && dx > 0 || this._activeIndex === count - 1 && dx < 0;
+    this._dragOffset = atEdge ? dx * 0.2 : dx;
+    this._navbarCard.requestUpdate();
+  };
+  _onPointerUp = (e7) => {
+    if (e7.pointerId !== this._trackPointerId)
+      return;
+    this._trackPointerId = null;
+    if (!this._isDragging)
+      return;
+    const el = e7.currentTarget;
+    el.releasePointerCapture(e7.pointerId);
+    const threshold = el.offsetWidth * 0.3;
+    const count = this._navbarCard.config?.media_player?.players?.length ?? 0;
+    if (this._dragOffset < -threshold && this._activeIndex < count - 1) {
+      this._activeIndex++;
+    } else if (this._dragOffset > threshold && this._activeIndex > 0) {
+      this._activeIndex--;
+    }
+    this._dragOffset = 0;
+    this._isDragging = false;
+    this._navbarCard.requestUpdate();
+  };
+  _onPointerCancel = (e7) => {
+    if (e7.pointerId !== this._trackPointerId)
+      return;
+    this._trackPointerId = null;
+    this._isDragging = false;
+    this._dragOffset = 0;
+    this._navbarCard.requestUpdate();
+  };
+  _renderSingle(player, options) {
+    const entity = this._resolveEntity(player);
+    const state2 = this._navbarCard._hass.states[entity ?? ""];
+    if (!(state2 && entity)) {
       return x`<ha-card class="media-player error">
-        <ha-alert alert-type="error"> ${error} </ha-alert>
+        <ha-alert alert-type="error">Entity not found "${entity}"</ha-alert>
       </ha-card>`;
     }
-    const entity = this._getEntity();
-    const mediaPlayerState = this._navbarCard._hass.states[entity];
-    const mediaPlayerImage = mediaPlayerState.attributes.entity_picture;
-    const progress = mediaPlayerState.attributes.media_position != null ? mediaPlayerState.attributes.media_position / mediaPlayerState.attributes.media_duration : null;
-    const icon = this._getIcon();
-    const title = this._getTitle(mediaPlayerState);
-    const subtitle = this._getSubtitle(mediaPlayerState);
     const deviceClass = this._navbarCard.isDesktop ? "desktop" : "mobile";
     return x`
       <ha-card
@@ -3914,53 +4150,120 @@ class MediaPlayer {
     })}"
         ${eventDetection({
       context: this._navbarCard,
-      doubleTap: this.double_tap_action,
-      hold: this.hold_action,
-      tap: this.tap_action ?? {
-        action: "more-info",
-        entity
-      }
+      doubleTap: player.double_tap_action,
+      hold: player.hold_action,
+      tap: player.tap_action ?? { action: "more-info", entity }
     })}>
+        ${this._renderCardContent(player, entity, state2)}
+      </ha-card>
+    `;
+  }
+  _renderCarousel(players, options) {
+    const deviceClass = this._navbarCard.isDesktop ? "desktop" : "mobile";
+    const pct = -(this._activeIndex * 100);
+    const gapPx = -(this._activeIndex * CAROUSEL_GAP) + this._dragOffset;
+    const transition = this._isDragging ? "none" : "transform 0.3s ease-out";
+    const transform = `translateX(calc(${pct}% + ${gapPx}px))`;
+    return x`
+      <div
+        class="${e6({
+      "media-player-carousel": true,
+      "position-absolute": !options.isInsideNavbar,
+      [(this.desktop_position ?? DEFAULT_NAVBAR_CONFIG.media_player.desktop_position).toString()]: true,
+      [deviceClass]: true
+    })}">
         <div
-          class="media-player-bg"
-          style=${this._navbarCard.config?.media_player?.album_cover_background ? `background-image: url(${mediaPlayerState.attributes.entity_picture});` : ""}></div>
-        ${progress != null ? x` <div class="media-player-progress-bar">
+          class="media-player-viewport"
+          @pointerdown=${this._onPointerDown}
+          @pointermove=${this._onPointerMove}
+          @pointerup=${this._onPointerUp}
+          @pointercancel=${this._onPointerCancel}>
+          <div
+            class="media-player-track"
+            style="transform: ${transform}; transition: ${transition}">
+            ${players.map((p3) => this._renderSlide(p3))}
+          </div>
+        </div>
+        <div class="media-player-dots">
+          ${players.map((_2, i6) => x`<span
+                class="${e6({
+      active: i6 === this._activeIndex,
+      "media-player-dot": true
+    })}"></span>`)}
+        </div>
+      </div>
+    `;
+  }
+  _renderSlide(player) {
+    const entity = this._resolveEntity(player);
+    const state2 = this._navbarCard._hass.states[entity ?? ""];
+    if (!(state2 && entity)) {
+      return x`<ha-card class="media-player error">
+        <ha-alert alert-type="error">Entity not found "${entity}"</ha-alert>
+      </ha-card>`;
+    }
+    return x`
+      <ha-card
+        class="media-player"
+        ${eventDetection({
+      context: this._navbarCard,
+      doubleTap: player.double_tap_action,
+      hold: player.hold_action,
+      tap: player.tap_action ?? { action: "more-info", entity }
+    })}>
+        ${this._renderCardContent(player, entity, state2)}
+      </ha-card>
+    `;
+  }
+  _renderCardContent(player, entity, state2) {
+    const image = state2.attributes.entity_picture;
+    const pos = state2.attributes.media_position;
+    const dur = state2.attributes.media_duration;
+    const progress = pos != null && dur != null && dur > 0 ? pos / dur : null;
+    const icon = this._resolveIcon(player);
+    const title = this._resolveTitle(player, state2);
+    const subtitle = this._resolveSubtitle(player, state2);
+    const albumBg = this._navbarCard.config?.media_player?.album_cover_background ?? DEFAULT_NAVBAR_CONFIG.media_player.album_cover_background;
+    return x`
+      <div
+        class="media-player-bg"
+        style=${albumBg ? `background-image: url(${state2.attributes.entity_picture});` : ""}></div>
+      ${progress != null ? x`<div class="media-player-progress-bar">
               <div
                 class="media-player-progress-bar-fill"
                 style="width: ${progress * 100}%"></div>
             </div>` : x``}
-        ${mediaPlayerImage && !icon ? x`<img
-                class="media-player-image"
-                src=${mediaPlayerImage}
-                alt=${title || ""} />` : x`<ha-icon
-                class="media-player-image media-player-icon-fallback"
-                icon=${icon ?? "mdi:music"}></ha-icon>`}
-        <div class="media-player-info">
-          <span class="media-player-title">${title || ""}</span>
-          <span class="media-player-artist">${subtitle || ""}</span>
-        </div>
-        <button
-          class="navbar-icon-button media-player-button media-player-button-play-pause primary"
-          appearance="accent"
-          variant="brand"
-          @click=${this._handleMediaPlayerPlayPauseClick}
-          @pointerdown=${preventEventDefault}
-          @pointerup=${preventEventDefault}>
-          <ha-icon
-            icon=${mediaPlayerState.state === "playing" ? "mdi:pause" : "mdi:play"}></ha-icon>
-        </button>
-        <button
-          class="navbar-icon-button media-player-button media-player-button-skip"
-          appearance="plain"
-          variant="neutral"
-          @click=${this._handleMediaPlayerSkipNextClick}
-          @pointerdown=${preventEventDefault}
-          @pointerup=${preventEventDefault}>
-          <ha-icon icon="mdi:skip-next"></ha-icon>
-        </button>
-      </ha-card>
+      ${image && !icon ? x`<img
+              class="media-player-image"
+              src=${image}
+              alt=${title || ""} />` : x`<ha-icon
+              class="media-player-image media-player-icon-fallback"
+              icon=${icon ?? "mdi:music"}></ha-icon>`}
+      <div class="media-player-info">
+        <span class="media-player-title">${title || ""}</span>
+        <span class="media-player-artist">${subtitle || ""}</span>
+      </div>
+      <button
+        class="navbar-icon-button media-player-button media-player-button-play-pause primary"
+        appearance="accent"
+        variant="brand"
+        @click=${(e7) => this._handlePlayPause(e7, entity)}
+        @pointerdown=${preventEventDefault}
+        @pointerup=${preventEventDefault}>
+        <ha-icon
+          icon=${state2.state === "playing" ? "mdi:pause" : "mdi:play"}></ha-icon>
+      </button>
+      <button
+        class="navbar-icon-button media-player-button media-player-button-skip"
+        appearance="plain"
+        variant="neutral"
+        @click=${(e7) => this._handleSkipNext(e7, entity)}
+        @pointerdown=${preventEventDefault}
+        @pointerup=${preventEventDefault}>
+        <ha-icon icon="mdi:skip-next"></ha-icon>
+      </button>
     `;
-  };
+  }
 }
 
 // src/components/navbar/badge/badge.ts
@@ -3979,8 +4282,8 @@ var isValidInt = (value) => {
   }
   return true;
 };
-var hue2rgb = (p3, q, t6) => {
-  let adjustedT = t6;
+var hue2rgb = (p3, q, t5) => {
+  let adjustedT = t5;
   if (adjustedT < 0)
     adjustedT += 1;
   if (adjustedT > 1)
@@ -3993,11 +4296,11 @@ var hue2rgb = (p3, q, t6) => {
     return p3 + (q - p3) * (2 / 3 - adjustedT) * 6;
   return p3;
 };
-var complementaryRGBColor = (r7, g2, b3) => {
-  if (Math.max(r7, g2, b3) === Math.min(r7, g2, b3)) {
-    return { b: 255 - b3, g: 255 - g2, r: 255 - r7 };
+var complementaryRGBColor = (r6, g2, b3) => {
+  if (Math.max(r6, g2, b3) === Math.min(r6, g2, b3)) {
+    return { b: 255 - b3, g: 255 - g2, r: 255 - r6 };
   }
-  let rNorm = r7 / 255;
+  let rNorm = r6 / 255;
   let gNorm = g2 / 255;
   let bNorm = b3 / 255;
   const max = Math.max(rNorm, gNorm, bNorm);
@@ -4141,8 +4444,8 @@ Supported formats: [r,g,b] | [r,g,b,a]`);
     return this;
   }
   complementary() {
-    const { r: r7, g: g2, b: b3 } = complementaryRGBColor(this.r, this.g, this.b);
-    return new Color([r7, g2, b3, this.a]);
+    const { r: r6, g: g2, b: b3 } = complementaryRGBColor(this.r, this.g, this.b);
+    return new Color([r6, g2, b3, this.a]);
   }
   shade(percent) {
     let R2 = this.r * (100 + percent) / 100;
@@ -4513,28 +4816,28 @@ init_lit_html();
 var n5 = "important";
 var i6 = " !" + n5;
 var o6 = e5(class extends i5 {
-  constructor(t6) {
-    if (super(t6), t6.type !== t4.ATTRIBUTE || t6.name !== "style" || t6.strings?.length > 2)
+  constructor(t5) {
+    if (super(t5), t5.type !== t4.ATTRIBUTE || t5.name !== "style" || t5.strings?.length > 2)
       throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
   }
-  render(t6) {
-    return Object.keys(t6).reduce((e7, r7) => {
-      const s4 = t6[r7];
-      return s4 == null ? e7 : e7 + `${r7 = r7.includes("-") ? r7 : r7.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${s4};`;
+  render(t5) {
+    return Object.keys(t5).reduce((e7, r6) => {
+      const s4 = t5[r6];
+      return s4 == null ? e7 : e7 + `${r6 = r6.includes("-") ? r6 : r6.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${s4};`;
     }, "");
   }
-  update(e7, [r7]) {
+  update(e7, [r6]) {
     const { style: s4 } = e7.element;
     if (this.ft === undefined)
-      return this.ft = new Set(Object.keys(r7)), this.render(r7);
-    for (const t6 of this.ft)
-      r7[t6] == null && (this.ft.delete(t6), t6.includes("-") ? s4.removeProperty(t6) : s4[t6] = null);
-    for (const t6 in r7) {
-      const e8 = r7[t6];
+      return this.ft = new Set(Object.keys(r6)), this.render(r6);
+    for (const t5 of this.ft)
+      r6[t5] == null && (this.ft.delete(t5), t5.includes("-") ? s4.removeProperty(t5) : s4[t5] = null);
+    for (const t5 in r6) {
+      const e8 = r6[t5];
       if (e8 != null) {
-        this.ft.add(t6);
-        const r8 = typeof e8 == "string" && e8.endsWith(i6);
-        t6.includes("-") || r8 ? s4.setProperty(t6, r8 ? e8.slice(0, -11) : e8, r8 ? n5 : "") : s4[t6] = e8;
+        this.ft.add(t5);
+        const r7 = typeof e8 == "string" && e8.endsWith(i6);
+        t5.includes("-") || r7 ? s4.setProperty(t5, r7 ? e8.slice(0, -11) : e8, r7 ? n5 : "") : s4[t5] = e8;
       }
     }
     return T;
@@ -4681,7 +4984,7 @@ init_types();
 init_utils();
 init_docs_links();
 // package.json
-var version = "1.4.0";
+var version = "1.5.0";
 
 // src/navbar-card.ts
 window.customCards = window.customCards || [];
@@ -4703,10 +5006,20 @@ class NavbarCard extends i4 {
   set hass(hass) {
     this._hass = hass;
     const { visible } = this._mediaPlayer.isVisible();
+    const prevMediaPlayerPosition = this.widgetVisibility.media_player ?? null;
+    const nextMediaPlayerPosition = visible ? this._mediaPlayer.desktop_position : null;
     if (visible) {
-      this.widgetVisibility.media_player = this._mediaPlayer.desktop_position;
+      this.widgetVisibility.media_player = nextMediaPlayerPosition;
     } else {
       this.widgetVisibility.media_player = null;
+    }
+    if (prevMediaPlayerPosition !== nextMediaPlayerPosition) {
+      forceDashboardPadding({
+        autoPadding: this.config?.layout?.auto_padding,
+        desktop: this.config?.desktop ?? DEFAULT_NAVBAR_CONFIG.desktop,
+        mobile: this.config?.mobile ?? DEFAULT_NAVBAR_CONFIG.mobile,
+        widgetPositions: this.widgetVisibility
+      });
     }
   }
   get isInEditMode() {
@@ -4769,14 +5082,6 @@ ${DOCS_LINKS.template}
   }
   updated(_changedProperties) {
     super.updated(_changedProperties);
-    if (_changedProperties.has("_showMediaPlayer")) {
-      forceDashboardPadding({
-        autoPadding: this.config?.layout?.auto_padding,
-        desktop: this.config?.desktop ?? DEFAULT_NAVBAR_CONFIG.desktop,
-        mobile: this.config?.mobile ?? DEFAULT_NAVBAR_CONFIG.mobile,
-        widgetPositions: this.widgetVisibility
-      });
-    }
   }
   render() {
     if (!this.config || this._shouldHide())
