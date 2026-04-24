@@ -12,7 +12,31 @@
       "Bash(sqlite3 /homeassistant/home-assistant_v2.db \".tables\")",
       "Bash(sqlite3 /homeassistant/home-assistant_v2.db \"SELECT id, statistic_id, unit_of_measurement FROM statistics_meta WHERE statistic_id LIKE '%whole_home_energy%' OR statistic_id LIKE '%energy_current_consumption%' OR statistic_id LIKE '%home_energy_meter%' OR statistic_id LIKE '%daily_energy%' OR statistic_id LIKE '%panel_%_energy%';\")",
       "Bash(sqlite3 /homeassistant/home-assistant_v2.db \".schema statistics\")",
-      "Bash(sqlite3 /homeassistant/home-assistant_v2.db)"
+      "Bash(sqlite3 /homeassistant/home-assistant_v2.db)",
+      "Bash(curl -s \"https://www.home-assistant.io/blog/2026/02/05/release-20262/\")",
+      "Bash(curl -s \"https://www.home-assistant.io/blog/2026/03/05/release-20263/\")",
+      "Bash(curl -s \"https://www.home-assistant.io/blog/2026/04/02/release-20264/\")",
+      "Bash(curl -s \"https://www.home-assistant.io/blog/2026/\")",
+      "Bash(curl -s \"https://www.home-assistant.io/sitemap.xml\")",
+      "Bash(curl -s \"https://www.home-assistant.io/blog/2026/03/04/release-20263/\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s \"https://www.home-assistant.io/blog/2026/04/01/release-20264/\")",
+      "Read(//root/.claude/**)",
+      "WebFetch(domain:www.home-assistant.io)",
+      "Bash(pip show *)",
+      "Bash(npm list *)",
+      "Bash(uvx mcp-proxy *)",
+      "Bash(pip install *)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1OGEwNGYzODk5MmQ0NjJmYjQ1MDdiZTIxMDM1YjE1YSIsImlhdCI6MTc3Njk3MDEyNiwiZXhwIjoyMDkyMzMwMTI2fQ.dwESbaGybf722oD7PT6FoZ48SoSSVTJ17zc7t_Mpccw\" http://192.168.1.36:8123/api/)",
+      "Bash(curl -s -w \"\\\\nHTTP: %{http_code}\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1OGEwNGYzODk5MmQ0NjJmYjQ1MDdiZTIxMDM1YjE1YSIsImlhdCI6MTc3Njk3MDEyNiwiZXhwIjoyMDkyMzMwMTI2fQ.dwESbaGybf722oD7PT6FoZ48SoSSVTJ17zc7t_Mpccw\" -H \"Content-Type: application/json\" http://192.168.1.36:8123/api/mcp)",
+      "Bash(API_ACCESS_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1OGEwNGYzODk5MmQ0NjJmYjQ1MDdiZTIxMDM1YjE1YSIsImlhdCI6MTc3Njk3MDEyNiwiZXhwIjoyMDkyMzMwMTI2fQ.dwESbaGybf722oD7PT6FoZ48SoSSVTJ17zc7t_Mpccw\" mcp-proxy http://192.168.1.36:8123/api/mcp)",
+      "Bash(API_ACCESS_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1OGEwNGYzODk5MmQ0NjJmYjQ1MDdiZTIxMDM1YjE1YSIsImlhdCI6MTc3Njk3MDEyNiwiZXhwIjoyMDkyMzMwMTI2fQ.dwESbaGybf722oD7PT6FoZ48SoSSVTJ17zc7t_Mpccw\" mcp-proxy --transport streamablehttp http://192.168.1.36:8123/api/mcp)",
+      "mcp__homeassistant__assist__GetLiveContext",
+      "mcp__homeassistant__assist__GetOutdoorTemperature",
+      "mcp__homeassistant__assist__GetWeather"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true
 }
