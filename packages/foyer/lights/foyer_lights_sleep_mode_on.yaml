@@ -8,14 +8,20 @@ automation:
   - id: "foyer_lights_sleep_mode_on"
     initial_state: off
     alias: "Foyer Lights Sleep Mode On"
-    trigger:
+    triggers:
       # House goes into bedtime mode:
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # At 11pm
-      - platform: time
+      - trigger: time
         at: "23:00:00"
+      # Somebody is in bed
+      - trigger: state
+        entity_id: binary_sensor.somebody_in_bed
+        to: "on"
+        for:
+          minutes: 3
     condition:
       # Lighting automations must be enabled
       - condition: state
@@ -28,9 +34,9 @@ automation:
       - condition: state
         entity_id: input_boolean.dark_outside
         state: "on"
-      # After 8pm
+      # After 7pm
       - condition: time
-        after: "20:00:00"
+        after: "19:00:00"
     action:
       - service: switch.turn_on
         entity_id: switch.adaptive_lighting_sleep_mode_foyer
