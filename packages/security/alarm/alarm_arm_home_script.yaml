@@ -38,6 +38,7 @@ script:
         effect_type: Pulse
         color: 0
         level: 10
+        duration: 255
 
       # 
       # If the house is occupied, turn on the automation that will

@@ -30,3 +30,4 @@ automation:
         effect_type: Solid
         color: 170
         level: 10
+        duration: 255

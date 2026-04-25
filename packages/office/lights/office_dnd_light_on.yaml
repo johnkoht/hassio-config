@@ -41,4 +41,5 @@ automation:
         effect_type: Solid
         color: 0
         level: 10
+        duration: 255
 
