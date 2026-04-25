@@ -73,7 +73,7 @@ cards:
         template: kohbo_device_energy_card
         variables:
           - name: Upstairs Washer
-          - entity: sensor.washing_machine_electric_consumption_w
+          - entity: sensor.upstairs_washer_electric_consumption_w
           - icon: mdi:washing-machine
 
       # Upstairs Dryer (Zigbee)

@@ -1,0 +1,16 @@
+automation:
+  - id: office_lights_scene_toggle
+    mode: single
+    alias: Office Lights Scene Toggle
+    triggers:
+      - device_id: 0526b246502b6d36f56506a277cbab48
+        domain: zha
+        type: press
+        subtype: Config
+        trigger: device
+    conditions: []
+    actions:
+      - action: script.lights_scene_toggle
+        data:
+          lights: light.office_lights
+          scene_select: input_select.office_scene

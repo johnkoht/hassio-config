@@ -60,7 +60,7 @@ automation:
     action:
       # Turn off the lights
       - service: light.turn_off
-        entity_id: light.office_lights
+        entity_id: light.office_light_switch
 
       # Toggle off the lighting automatically turned on boolean
       - service: input_boolean.turn_off

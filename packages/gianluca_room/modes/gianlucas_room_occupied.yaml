@@ -9,7 +9,7 @@ automation:
         to: "off"
       # Lights turned on
       - trigger: state
-        entity_id: light.gianluca_ceiling_lights
+        entity_id: light.gianluca_ceiling_light_switch
         to: "on"
       # Bed is occupied
       - trigger: state
@@ -28,7 +28,7 @@ automation:
             state: "off"
           # Gianluca's lights are ON
           - condition: state
-            entity_id: light.gianluca_ceiling_lights
+            entity_id: light.gianluca_ceiling_light_switch
             state: "on"
           # OR his bed is occupied
           - condition: state

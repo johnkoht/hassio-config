@@ -10,7 +10,7 @@ light:
       - light.stairs_light
       - light.stairs_sconces
       - light.upstairs_hallway_picture_lights
-      - light.gianluca_ceiling_lights
+      - light.gianluca_ceiling_light_switchs
       - light.gianluca_lamp
       - light.ninos_bedroom_main_lights
       - light.nino_bedroom_lamp

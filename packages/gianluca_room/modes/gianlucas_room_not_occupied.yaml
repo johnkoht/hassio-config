@@ -11,7 +11,7 @@ automation:
           minutes: 5
       # Lights turned OFF for 3 mins
       - trigger: state
-        entity_id: light.gianluca_ceiling_lights
+        entity_id: light.gianluca_ceiling_light_switch
         to: "off"
         for:
           minutes: 3
@@ -35,7 +35,7 @@ automation:
             state: "on"
           # Lights are OFF
           - condition: state
-            entity_id: light.gianluca_ceiling_lights
+            entity_id: light.gianluca_ceiling_light_switch
             state: "off"
           # Bed is NOT occupied
           - condition: state

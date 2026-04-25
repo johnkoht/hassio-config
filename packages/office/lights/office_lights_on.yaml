@@ -41,11 +41,11 @@ automation:
         below: 150
       # Lights are currently off
       - condition: state
-        entity_id: light.office_lights
+        entity_id: light.office_light_switch
         state: "off"
     action:
       - service: light.turn_on
-        entity_id: light.office_lights
+        entity_id: light.office_light_switch
       
       # Toggle the boolean to flag it was auto
       - service: input_boolean.turn_on

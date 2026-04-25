@@ -496,3 +496,69 @@
       title: Alert! Kids escaping and railings aren’t there
       message: 'Kids are escaping but the railing and posts are missing. '
   mode: single
+- id: '1777089434174'
+  alias: Office Lights Scene Toggle
+  description: ''
+  triggers:
+  - device_id: 0526b246502b6d36f56506a277cbab48
+    domain: zha
+    type: press
+    subtype: Config
+    trigger: device
+  conditions: []
+  actions:
+  - action: input_select.select_next
+    target:
+      entity_id: input_select.office_scene
+  - variables:
+      scene: '{{ states(''input_select.office_scene'') }}'
+  - choose:
+    - alias: Bright — cool white, full brightness
+      conditions:
+      - condition: template
+        value_template: '{{ scene == ''Bright'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.office_lights
+        data:
+          brightness_pct: 100
+          color_temp_kelvin: 5000
+          transition: 1
+    - alias: Warm — warm white, 70%
+      conditions:
+      - condition: template
+        value_template: '{{ scene == ''Warm'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.office_lights
+        data:
+          brightness_pct: 70
+          color_temp_kelvin: 3000
+          transition: 1
+    - alias: Dim — very warm, low brightness
+      conditions:
+      - condition: template
+        value_template: '{{ scene == ''Dim'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.office_lights
+        data:
+          brightness_pct: 20
+          color_temp_kelvin: 2700
+          transition: 1
+    - alias: Focus — neutral daylight, 80%
+      conditions:
+      - condition: template
+        value_template: '{{ scene == ''Focus'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.office_lights
+        data:
+          brightness_pct: 80
+          color_temp_kelvin: 4000
+          transition: 1
+  mode: single

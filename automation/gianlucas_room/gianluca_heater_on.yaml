@@ -8,7 +8,7 @@ trigger:
     to: "on"
   # Gianluca's lights are turned off
   - platform: state
-    entity_id: light.gianluca_ceiling_lights
+    entity_id: light.gianluca_ceiling_light_switch
     to: "off"
   # Temperature is below 68 degrees
   - platform: numeric_state

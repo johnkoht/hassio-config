@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "homeassistant": {
+      "command": "mcp-proxy",
+      "args": ["--transport", "streamablehttp", "http://192.168.1.36:8123/api/mcp"],
+      "env": {
+        "API_ACCESS_TOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1OGEwNGYzODk5MmQ0NjJmYjQ1MDdiZTIxMDM1YjE1YSIsImlhdCI6MTc3Njk3MDEyNiwiZXhwIjoyMDkyMzMwMTI2fQ.dwESbaGybf722oD7PT6FoZ48SoSSVTJ17zc7t_Mpccw"
+      }
+    }
+  }
+}

@@ -25,12 +25,12 @@ automation:
         state: "off"
       # Lights are currently on
       - condition: state
-        entity_id: light.office_lights
+        entity_id: light.office_light_switch
         state: "on"
     action:
       # Turn off the lights
       - service: light.turn_off
-        entity_id: light.office_lights
+        entity_id: light.office_light_switch
 
       # Turn off this automation
       - service: automation.turn_off

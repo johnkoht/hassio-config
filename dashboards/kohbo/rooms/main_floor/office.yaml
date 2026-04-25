@@ -49,7 +49,7 @@ cards:
 
   # Ceiling Lights
   - type: tile
-    entity: light.office_lights
+    entity: light.office_light_switch
     name: Ceiling Lights
     icon: mdi:ceiling-light-multiple
     show_entity_picture: false
@@ -266,14 +266,15 @@ cards:
   - type: custom:decluttering-card
     template: light_popup
     variables:
-      - light_entity: light.office_lights
+      - light_entity: light.office_light_switch
       - popup_hash: '#office_ceiling_lights'
       - popup_title: 'Ceiling Lights'
-      - entity_id: 
-        - light.office_1
-        - light.office_2
-        - light.office_3
-        - light.office_4
+      - entity_id: light.office_lights
+      # - entity_id: 
+      #   - light.office_1
+      #   - light.office_2
+      #   - light.office_3
+      #   - light.office_4
           
 
   # 

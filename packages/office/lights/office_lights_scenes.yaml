@@ -1,0 +1,10 @@
+input_select:
+  # Tracks which scene the config button last applied.
+  # Cycles via input_select.select_next on each config press.
+  office_scene:
+    name: Office Scene
+    options:
+      - "Bright"
+      - "Warm"
+      - "Dim"
+      - "Focus"

@@ -7,7 +7,7 @@ automation:
     trigger:
       # Lights turned off
       - platform: state
-        entity_id: light.office_lights
+        entity_id: light.office_light_switch
         to: "off"
     condition:
       - condition: state

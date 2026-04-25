@@ -3,7 +3,7 @@ alias: "Upstairs washer to finished"
 initial_state: "on"
 trigger:
   - platform: numeric_state
-    entity_id: sensor.washing_machine_electric_consumption_w
+    entity_id: sensor.upstairs_washer_electric_consumption_w
     below: 3
 condition:
   - condition: state

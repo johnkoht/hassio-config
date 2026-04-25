@@ -35,7 +35,19 @@
       "Bash(API_ACCESS_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1OGEwNGYzODk5MmQ0NjJmYjQ1MDdiZTIxMDM1YjE1YSIsImlhdCI6MTc3Njk3MDEyNiwiZXhwIjoyMDkyMzMwMTI2fQ.dwESbaGybf722oD7PT6FoZ48SoSSVTJ17zc7t_Mpccw\" mcp-proxy --transport streamablehttp http://192.168.1.36:8123/api/mcp)",
       "mcp__homeassistant__assist__GetLiveContext",
       "mcp__homeassistant__assist__GetOutdoorTemperature",
-      "mcp__homeassistant__assist__GetWeather"
+      "mcp__homeassistant__assist__GetWeather",
+      "Bash(python3 -c \" import json with open\\('/homeassistant/.storage/zha.storage.json'\\) as f: data = json.load\\(f\\) devices = data.get\\('data', {}\\).get\\('devices', []\\) for d in devices: name = d.get\\('name', ''\\) or d.get\\('user_given_name', ''\\) ieee = d.get\\('ieee', ''\\) model = d.get\\('model', ''\\) if 'office' in name.lower\\(\\) or 'VZM31' in model or 'inovelli' in name.lower\\(\\): print\\(f'Name: {name}'\\) print\\(f'IEEE: {ieee}'\\) print\\(f'Model: {model}'\\) print\\(f'Manufacturer: {d.get\\(\\\\\"manufacturer\\\\\", \\\\\"\\\\\"\\)}'\\) print\\('---'\\) \")",
+      "Bash(gh api *)",
+      "Bash(curl -s https://raw.githubusercontent.com/Ratoka/home-assistant-hue-inovelli-blueprints/main/blueprints/automations/inovelli/hue_dimmer_zha.yaml)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(sed -n '120,135p' /homeassistant/packages/office/office_presence.yaml)",
+      "Bash(sed -n '25,35p' /homeassistant/packages/office/modes/office_occupied.yaml)",
+      "Bash(sed -n '25,45p' /homeassistant/packages/office/lights/office_lights_motion_off.yaml)",
+      "Bash(sed -n '5,15p' /homeassistant/packages/security/fire_alarm/alarm_flash_lights.yaml)",
+      "Bash(sed -n '8,15p' /homeassistant/packages/lights/main_floor_lights.yaml)",
+      "Bash(sed -n '15,25p' /homeassistant/dashboards/kohbo/rooms/main_floor/partials/office_card.yaml)",
+      "Bash(sed -n '55,60p' /homeassistant/dashboards/kohbo/rooms/partials/main_floor_room_cards.yaml)",
+      "Bash(sed -n '48,60p' /homeassistant/dashboards/kohbo/rooms/main_floor/office.yaml)"
     ]
   },
   "enableAllProjectMcpServers": true

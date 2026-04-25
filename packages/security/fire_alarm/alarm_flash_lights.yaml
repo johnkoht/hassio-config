@@ -5,7 +5,7 @@ light:
     entities:
       - light.kitchen_ceiling_lights
       - light.family_room_main_lights
-      - light.office_lights
+      - light.office_light_switch
       - light.dining_room_lights
       - light.playroom_lights
       - light.main_bedroom_lights

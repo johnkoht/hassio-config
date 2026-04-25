@@ -50,7 +50,7 @@ cards:
 
   # Ceiling Lights
   - type: tile
-    entity: light.gianluca_ceiling_lights
+    entity: light.gianluca_ceiling_light_switch
     name: Ceiling Lights
     icon: mdi:ceiling-light-multiple
     show_entity_picture: false
@@ -148,11 +148,7 @@ cards:
       - light_entity: light.gianluca_bedroom_lights
       - popup_hash: '#gianluca_bedroom_ceiling_lights'
       - popup_title: 'Ceiling Lights'
-      - entity_id: 
-        - light.gianluca_ceiling_light_1
-        - light.gianluca_ceiling_light_2
-        - light.gianluca_ceiling_light_3
-        - light.gianluca_ceiling_light_4
+      - entity_id: light.gianluca_ceiling_lights
 
 
   # 

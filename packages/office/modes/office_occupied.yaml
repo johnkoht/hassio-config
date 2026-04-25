@@ -28,7 +28,7 @@ automation:
         to: "on"
       # Lights turned on
       - platform: state
-        entity_id: light.office_lights
+        entity_id: light.office_light_switch
         to: "on"
       # Office guest mode on
       - platform: state

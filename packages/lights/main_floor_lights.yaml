@@ -8,7 +8,7 @@ light:
     entities:
       - light.foyer_lights
       - light.playroom_lights
-      - light.office_lights
+      - light.office_light_switch
       - light.kitchen_lights
       - light.dining_room_lights
       - light.garage_lights

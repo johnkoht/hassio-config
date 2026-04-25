@@ -8,7 +8,7 @@ trigger:
     to: "off"
   # Gianluca's lights are turned on
   - platform: state
-    entity_id: light.gianluca_ceiling_lights
+    entity_id: light.gianluca_ceiling_light_switch
     to: "on"
 condition:
   # The house is occupied

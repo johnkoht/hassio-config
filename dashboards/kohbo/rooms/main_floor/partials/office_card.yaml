@@ -16,7 +16,7 @@ variables:
   - room_devices:
     # Lights
     - type: custom:button-card
-      entity: light.office_lights
+      entity: light.office_light_switch
       name: Lights
       template: kohbo_room_card_device                
       icon: kohbo:kohbo-device-lights

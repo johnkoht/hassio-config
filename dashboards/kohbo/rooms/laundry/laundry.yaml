@@ -138,7 +138,7 @@ cards:
         cards:
           - type: custom:button-card
             template: kohbo_device_entity_horizontal
-            entity: sensor.washing_machine_electric_consumption_w
+            entity: sensor.upstairs_washer_electric_consumption_w
             name: Power Consumption
             icon: mdi:flash
             show_icon: true
@@ -166,7 +166,7 @@ cards:
             
           - type: entities
             entities:
-              - entity: switch.washing_machine
+              - entity: switch.upstairs_washer
                 name: Power
                 icon: mdi:power
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
