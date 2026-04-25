@@ -31,6 +31,14 @@ script:
           tag: "home-security"
           url: /dashboard-kohbo/security
 
+      # Turn the Inovelli light bar to red by front door
+      - type: issue_all_led_effect
+        domain: zha
+        device_id: 0526b246502b6d36f56506a277cbab48
+        effect_type: Pulse
+        color: 0
+        level: 10
+
       # 
       # If the house is occupied, turn on the automation that will
       # disarm the alarm when somebody arrives and the house is occupied

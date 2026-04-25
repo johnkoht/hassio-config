@@ -22,3 +22,11 @@ automation:
     action:
       - service: light.turn_off
         entity_id: light.hue_play_1
+
+      # Reset the inovelli light switch led bar
+      - type: issue_all_led_effect
+        domain: zha
+        device_id: 0526b246502b6d36f56506a277cbab48
+        effect_type: Solid
+        color: 170
+        level: 10
