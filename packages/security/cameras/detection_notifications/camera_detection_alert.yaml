@@ -1,152 +1,87 @@
 script:
   camera_detection_alert:
     alias: "Camera Detection Alert"
-    mode: "single"
+    mode: "parallel"
     icon: mdi:alert
 
     fields:
-      #
-      #
-      #
-      # camera_entity_id:
-      #   name: Camera Entity ID
-      #   description: The camera entity ID for the camera that triggered the detection
-      #   example: "binary_sensor.backyard_south_person_detected"
       detection_type:
         name: Detection Type
         description: The type of detection the camera alerted about
         example: "person"
-      #
-      #
-      #
       camera_name:
         name: Camera Name
         description: The name of the Camera
         example: "Backyard South"
-      #
-      #
-      #
       camera:
         name: Camera
         description: The Camera device that triggered the detection
         example: "camera.backyard_south_camera_high"
-      #
-      #
-      #
       image_path:
         name: Image Path
         description: A URL to the image that we can send with the notification
         example: "/api/unifiprotect/thumbnail/de6377033b8c80f45813234a37a9389f/66bd12d000810303e401b870"
-      #
-      #
-      #
       video_path:
         name: Video Path
         description: A URL to the video that we can send with the notification
         example: "/api/unifiprotect/video/de6377033b8c80f45813234a37a9389f/635c4f66018d72038704f79c/2024-08-22T03:15:43+00:00/2024-08-22T03:16:06+00:00"
-
-      #
-      #
-      #
       proxy_camera:
         name: Proxy Camera
         description: A camera proxy to the Unifi Protect device
         example: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
+      snooze_timer:
+        name: Snooze Timer
+        description: The snooze timer entity for this camera
+        example: "timer.front_door_camera_notifications_snooze_timer"
+      notifications_boolean:
+        name: Notifications Boolean
+        description: The per-camera notifications input_boolean
+        example: "input_boolean.front_door_camera_notifications"
 
     variables:
-      #
-      # # Identify the detection type
-      # detection_type: >-
-      #   {% if "person" in camera_entity_id %}
-      #     person
-      #   {% elif "animal" in camera_entity_id %}
-      #     animal
-      #   {% elif "vehicle" in camera_entity_id %}
-      #     vehicle
-      #   {% else %}
-      #     object
-      #   {% endif %}
-      #
-      # For the TVs, we can't send the unifi protect proxy
-      # image (maybe human error), so we download and send
-      # a local link
       local_image_name: >-
         "{{ camera_name | lower | replace(" ", "_") }}_alert"
-      #
-      # Notification Title
       title: >-
         {{ detection_type | title }} Detected
-      # Notification Message
       message: >-
         A {{ detection_type }} has been detected in {{ camera_name }}
 
     sequence:
-      # # Camera Notifications are enabled
-      # - condition: state
-      #   entity_id: input_boolean.camera_notifications
-      #   state: "on"
-      #
-      # Skip the notification if sombody just arrived
       - condition: state
         entity_id: binary_sensor.somebody_just_arrived
         state: "off"
-      #
-      # condition? camera notifications enabled?
-      #
-      #
-      # house is occupied and TVs on
-      # display on TVs that are ON
 
-      # house occupied and if it's bedtime mode
-      # send critical push
-      # tts message on alex or bedroom?
-
-      # if we're home & not bedtime mode
-      # send a passive push
-
-      # if we're not home
-      # send a time sensitive push
-
-      #
-      # If the house is occupied AND a TV is ON
-      # then send a notification to the TV with an image
+      # If the house is occupied AND a TV is ON, display on TV with snapshot
       - choose:
           - conditions:
-              # House is occupied
               - condition: state
                 entity_id: input_boolean.house_occupied
                 state: "on"
-              # One of the TVs is ON
               - condition: or
                 conditions:
-                  # Family Room TV is on
                   - condition: state
                     entity_id: media_player.sony_bravia_tv
                     state: "on"
-                  # Basement TV is on
                   - condition: state
                     entity_id: media_player.basement_tv
                     state: "on"
             sequence:
-              # Take a snapshot from the camera
               - action: camera.snapshot
                 data:
                   filename: "/config/www/images/{{ local_image_name }}.jpg"
                   entity_id: "{{ proxy_camera }}"
-              # Send a notification to the TVs
               - action: script.security_detection_display_notification_on_screens
                 data:
                   title: "{{title}}"
                   message: "{{message}}"
                   image_path: "/config/www/images/{{ local_image_name }}.jpg"
 
+      # House occupied + bedtime: send critical push
       - choose:
           - conditions:
-              # House is occupied
               - condition: state
                 entity_id: input_boolean.house_occupied
                 state: "on"
-              # Bedtime mode is active
               - condition: state
                 entity_id: input_boolean.bedtime
                 state: "on"
@@ -165,20 +100,23 @@ script:
                         critical: 1
                         volume: 1
                     url: /dashboard-kohbo/security-cameras
+                    actions:
+                      - action: "SNOOZE_{{ snooze_timer }}"
+                        title: "Snooze 15 min"
+                      - action: "PAUSE_{{ notifications_boolean }}"
+                        title: "Pause notifications"
+                      - action: "PAUSE_ALL_CAMERA_NOTIFICATIONS"
+                        title: "Pause ALL camera notifications"
 
-      # if we're home & not bedtime mode
-      # send a active push
+      # House occupied + not bedtime: send active push
       - choose:
           - conditions:
-              # House is occupied
               - condition: state
                 entity_id: input_boolean.house_occupied
                 state: "on"
-              # Bedtime mode is NOT active
               - condition: state
                 entity_id: input_boolean.bedtime
                 state: "off"
-            # Send a active push notification
             sequence:
               - action: notify.ios_family
                 metadata: {}
@@ -191,16 +129,20 @@ script:
                     push:
                       interruption-level: active
                     url: /dashboard-kohbo/security-cameras
+                    actions:
+                      - action: "SNOOZE_{{ snooze_timer }}"
+                        title: "Snooze 15 min"
+                      - action: "PAUSE_{{ notifications_boolean }}"
+                        title: "Pause notifications"
+                      - action: "PAUSE_ALL_CAMERA_NOTIFICATIONS"
+                        title: "Pause ALL camera notifications"
 
-      # if we're not home
-      # send a time sensitive push
+      # Family away: send time-sensitive push
       - choose:
           - conditions:
-              # House is occupied
               - condition: state
                 entity_id: group.family
                 state: "not_home"
-            # Send a time sensitive push notification
             sequence:
               - action: notify.ios_family
                 metadata: {}
@@ -213,18 +155,23 @@ script:
                     push:
                       interruption-level: time-sensitive
                     url: /dashboard-kohbo/security-cameras
+                    actions:
+                      - action: "SNOOZE_{{ snooze_timer }}"
+                        title: "Snooze 15 min"
+                      - action: "PAUSE_{{ notifications_boolean }}"
+                        title: "Pause notifications"
+                      - action: "PAUSE_ALL_CAMERA_NOTIFICATIONS"
+                        title: "Pause ALL camera notifications"
 
+      # Dark outside + no guest + door closed >5 min: voice announcement
       - choose:
           - conditions:
-              # Guest mode is OFF
               - condition: state
                 entity_id: input_boolean.guest_mode
                 state: "off"
-              # It's dark outside
               - condition: state
                 entity_id: input_boolean.dark_outside
                 state: "on"
-              # A door hasn't been opened the last 5 minutes
               - condition: template
                 value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.exterior_doors.last_changed)) | int > 300 }}"
             sequence:

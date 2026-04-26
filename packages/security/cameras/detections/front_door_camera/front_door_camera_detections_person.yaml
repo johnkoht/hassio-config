@@ -4,10 +4,8 @@ automation:
   - id: "front_door_camera_detections_person"
     alias: "Front Door Camera Detections - Person"
     mode: "single"
-    trigger:
-      #
-      # Front door camera detects a person
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.front_door_camera_person_detected
         to: "on"
         variables:
@@ -16,21 +14,20 @@ automation:
           event_id: "{{ trigger.to_state.attributes.event_id }}"
           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
           proxy_camera: camera.camera_proxy_camera_front_door_camera_high_resolution_channel
-    condition:
-      #
-      # Automation wasn't run in the past 90 seconds
+          snooze_timer: timer.front_door_camera_notifications_snooze_timer
+          notifications_boolean: input_boolean.front_door_camera_notifications
+    conditions:
       - condition: template
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.front_door_camera_detections_person','last_triggered'), 0) ) | int > 60 }}"
-      # Front door camera notifications are ON
       - condition: state
         entity_id: input_boolean.front_door_camera_notifications
         state: "on"
-    action:
-      #
-      # Call the camera detection alert service to handle
+    actions:
       - action: script.camera_detection_alert
         data:
           detection_type: "person"
           camera_name: "{{ camera_name }}"
           image_path: "{{ image_path }}"
           proxy_camera: "{{ proxy_camera }}"
+          snooze_timer: "{{ snooze_timer }}"
+          notifications_boolean: "{{ notifications_boolean }}"

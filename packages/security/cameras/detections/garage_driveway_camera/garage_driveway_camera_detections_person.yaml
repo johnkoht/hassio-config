@@ -16,42 +16,34 @@ automation:
           event_id: "{{ trigger.to_state.attributes.event_id }}"
           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
           proxy_camera: camera.camera_proxy_camera_garage_driveway_camera_high
+          snooze_timer: timer.garage_driveway_camera_notifications_snooze_timer
+          notifications_boolean: input_boolean.garage_driveway_camera_notifications
     conditions:
-      #
-      # Automation wasn't run in the past 90 seconds
       - condition: template
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.garage_driveway_camera_detections_person','last_triggered'), 0) ) | int > 60 }}"
-      # Only alert if camera notifications are enabled
       - condition: state
         entity_id: input_boolean.garage_driveway_camera_notifications
         state: "on"
-      # If somebody is in the garage or doing something on the driveway
-      # like taking out the trash, etc. we don't want to trigger the notifications
+      # Don't alert if residents are actively using the driveway/garage
       - condition: or
         conditions:
-          # Garage is NOT occupied
-          # We only want to trigger when the garage is not occupied
           - condition: state
             entity_id: input_boolean.garage_occupied
             state: "off"
-          # OR garage is closed
-          # we only want to trigger if the garage doors are closed
           - condition: state
             entity_id: cover.garage_doors
             state: "closed"
-          # OR nobody is in the garage
-          # We only want to trigger when nobody is detected through BLE
           - condition: state
             entity_id: binary_sensor.garage_ble_occupancy
             state: "off"
             for:
               minutes: 2
     actions:
-      #
-      # Call the camera detection alert service to handle
       - action: script.camera_detection_alert
         data:
           detection_type: "person"
           camera_name: "{{ camera_name }}"
           image_path: "{{ image_path }}"
           proxy_camera: "{{ proxy_camera }}"
+          snooze_timer: "{{ snooze_timer }}"
+          notifications_boolean: "{{ notifications_boolean }}"

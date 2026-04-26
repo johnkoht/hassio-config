@@ -4,10 +4,8 @@ automation:
   - id: "backyard_pool_camera_detections_person"
     alias: "Backyard Pool Camera Detections - Person"
     mode: "single"
-    trigger:
-      #
-      # Backyard Pool Camera detects a person
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.backyard_pool_person_detected
         to: "on"
         variables:
@@ -16,22 +14,20 @@ automation:
           event_id: "{{ trigger.to_state.attributes.event_id }}"
           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
           proxy_camera: camera.camera_proxy_camera_backyard_pool_high_resolution_channel
-    condition:
-      #
-      # Automation wasn't run in the past 180 seconds
+          snooze_timer: timer.backyard_pool_camera_notifications_snooze_timer
+          notifications_boolean: input_boolean.backyard_pool_camera_notifications
+    conditions:
       - condition: template
         value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('automation.backyard_pool_camera_detections_person','last_triggered'), 0) ) | int > 180 }}"
-      # Only alert if camera notifications are enabled
       - condition: state
         entity_id: input_boolean.backyard_pool_camera_notifications
         state: "on"
+      # Always alert when away; when home only alert if kitchen door wasn't opened recently
       - condition: or
         conditions:
-          # House is NOT occupied - always alert when away (ignore door status)
           - condition: state
             entity_id: input_boolean.house_occupied
             state: "off"
-          # House IS occupied - only alert if kitchen door wasn't opened recently
           - condition: and
             conditions:
               - condition: state
@@ -39,13 +35,13 @@ automation:
                 state: "on"
               - condition: template
                 value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('binary_sensor.kitchen_doors','last_changed'), 0) ) | int > 600 }}"
-    action:
-      #
-      # Call the camera detection alert service to handle
+    actions:
       - action: script.camera_detection_alert
         data:
           detection_type: "person"
           camera_name: "{{ camera_name }}"
           image_path: "{{ image_path }}"
           proxy_camera: "{{ proxy_camera }}"
+          snooze_timer: "{{ snooze_timer }}"
+          notifications_boolean: "{{ notifications_boolean }}"
 

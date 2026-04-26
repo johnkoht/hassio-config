@@ -1,0 +1,45 @@
+# Camera Notification - Action Handler
+#
+# Handles the three actionable buttons on every camera detection notification:
+# Snooze 15 min, Pause notifications (per-camera), Pause ALL camera notifications.
+#
+# Action ID encoding:
+#   SNOOZE_<timer_entity>  → starts that camera's snooze timer
+#   PAUSE_<boolean_entity> → turns off that camera's notifications boolean
+#   PAUSE_ALL_CAMERA_NOTIFICATIONS → turns off global input_boolean.camera_notifications
+#
+
+automation:
+  - id: "camera_notification_action_handler"
+    alias: "Camera Notification - Action Handler"
+    mode: parallel
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+    conditions:
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.action.startswith('SNOOZE_') or
+             trigger.event.data.action.startswith('PAUSE_') }}
+    actions:
+      - if:
+          - alias: "Snooze this camera for 15 minutes"
+            condition: template
+            value_template: "{{ trigger.event.data.action.startswith('SNOOZE_') }}"
+        then:
+          - action: timer.start
+            target:
+              entity_id: "{{ trigger.event.data.action[7:] }}"
+        else:
+          - if:
+              - alias: "Pause ALL camera notifications"
+                condition: template
+                value_template: "{{ trigger.event.data.action == 'PAUSE_ALL_CAMERA_NOTIFICATIONS' }}"
+            then:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.camera_notifications
+            else:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: "{{ trigger.event.data.action[6:] }}"
