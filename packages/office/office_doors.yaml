@@ -1,6 +1,7 @@
 binary_sensor:
   - platform: group
     name: "Office Doors"
+    unique_id: office_doors
     device_class: opening
     entities:
       - binary_sensor.office_door_left_status
