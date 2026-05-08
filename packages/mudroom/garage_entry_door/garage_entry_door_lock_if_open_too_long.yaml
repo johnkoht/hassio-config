@@ -15,11 +15,26 @@ automation:
         to: "unlocked"
         for:
           minutes: "{{ states.input_number.garage_entry_door_auto_lock_timeout.state | int }}"
+      # If door has been closed for a while
+      # When we are in/out we don't want to just rely on how long the
+      # lock has been unlocked. We'll also use the door status as a trigger
+      - trigger: state
+        entity_id: binary_sensor.interior_garage_door
+        to: "off"
+        for: 
+          minutes: "{{ states.input_number.garage_entry_door_auto_lock_timeout.state | int }}"
     conditions:
-      # Garage entry door is unlocked
-      - condition: state
-        entity_id: lock.garage_entry_door
-        state: "unlocked"
+      - or:
+          # Garage entry door is unlocked
+          - condition: state
+            entity_id: lock.garage_entry_door
+            state: "unlocked"
+          # Garage entry door has been closed for a while
+          - condition: state
+            entity_id: binary_sensor.interior_garage_door
+            state: "off"
+            for: 
+              minutes: "{{ states.input_number.garage_entry_door_auto_lock_timeout.state | int }}"
       # House is NOT in entertainment mode
       - not:
           - condition: state

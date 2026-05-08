@@ -35,10 +35,19 @@ automation:
           group_name: Office Signal
           scene_name: John DnD
   
+      # - type: issue_all_led_effect
+      #   domain: zha
+      #   device_id: 0526b246502b6d36f56506a277cbab48
+      #   effect_type: Solid
+      #   color: 0
+      #   level: 10
+      #   duration: 255
+      
+      # Turn the Inovelli light bar to red by front door
       - type: issue_all_led_effect
         domain: zha
         device_id: 0526b246502b6d36f56506a277cbab48
-        effect_type: Solid
+        effect_type: Pulse
         color: 0
         level: 10
         duration: 255
