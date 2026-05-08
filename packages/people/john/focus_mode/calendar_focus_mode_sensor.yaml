@@ -17,7 +17,7 @@ sensor:
   - platform: template
     sensors:
       john_calendar_focus_mode:
-        friendly_name: "John Calendar Focus Mode"s
+        friendly_name: "John Calendar Focus Mode"
         value_template: >
           {% set work_calendar = states('calendar.john_koht_reserv_com') %}
           {% set work_message = state_attr('calendar.john_koht_reserv_com', 'message') | lower if work_calendar != 'unknown' else '' %}
