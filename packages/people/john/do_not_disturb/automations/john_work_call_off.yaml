@@ -7,7 +7,7 @@ automation:
       # Work Calendar ended
       - platform: calendar
         event: end
-        entity_id: calendar.john_launchpadlab_com
+        entity_id: calendar.john_koht_reserv_com
         offset: "00:00:10"
       # Sometimes the work call doesn't turn off
       # so let's just turn it off when work hours are OFF

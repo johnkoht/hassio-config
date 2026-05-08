@@ -5,8 +5,8 @@ binary_sensor:
         friendly_name: John Calendar Personal Time
         value_template: >-
           {# Check if the calendar is ON #}
-          {% if states.calendar.john_launchpadlab_com.state == "on" %}
-            {% set message = states.calendar.john_launchpadlab_com.attributes.message %}
+          {% if states.calendar.john_koht_reserv_com.state == "on" %}
+            {% set message = states.calendar.john_koht_reserv_com.attributes.message %}
             
             {{
               message.startswith('Block') or

@@ -149,3 +149,15 @@
   - device_id: holidays_in_united_states
     ignore_availability: true
     name: Holidays in United States
+
+- cal_id: john.koht@reserv.com
+  entities:
+  - device_id: john_koht_reserv_com
+    ignore_availability: true
+    name: john.koht@reserv.com
+
+- cal_id: c_ea40739642534343b33cb2e65ba8fe90c10d8e335218a688666a52778e639f0a@group.calendar.google.com
+  entities:
+  - device_id: tech_ooo
+    ignore_availability: true
+    name: Tech OOO

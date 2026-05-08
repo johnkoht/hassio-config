@@ -17,11 +17,11 @@ sensor:
   - platform: template
     sensors:
       john_calendar_focus_mode:
-        friendly_name: "John Calendar Focus Mode"
+        friendly_name: "John Calendar Focus Mode"s
         value_template: >
-          {% set work_calendar = states('calendar.john_launchpadlab_com') %}
-          {% set work_message = state_attr('calendar.john_launchpadlab_com', 'message') | lower if work_calendar != 'unknown' else '' %}
-          {% set next_event_start = state_attr('calendar.john_launchpadlab_com', 'start_time') if work_calendar != 'unknown' else none %}
+          {% set work_calendar = states('calendar.john_koht_reserv_com') %}
+          {% set work_message = state_attr('calendar.john_koht_reserv_com', 'message') | lower if work_calendar != 'unknown' else '' %}
+          {% set next_event_start = state_attr('calendar.john_koht_reserv_com', 'start_time') if work_calendar != 'unknown' else none %}
           {% set current_hour = now().hour %}
           {% set is_workday = is_state('binary_sensor.workday_sensor', 'on') %}
           
