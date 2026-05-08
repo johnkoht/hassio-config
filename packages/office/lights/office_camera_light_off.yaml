@@ -18,7 +18,7 @@ automation:
         to: "off"
       # Laptop is turned off
       - platform: state
-        entity_id: binary_sensor.johns_macbook_pro_active
+        entity_id: input_boolean.john_computer_active
         to: "off"
     condition:
       # Laptop camera is off

@@ -23,7 +23,7 @@ automation:
         state: "DnD"
       # Computer is ON
       - condition: state
-        entity_id: binary_sensor.johns_macbook_pro_active
+        entity_id: input_boolean.john_computer_active
         state: "on"
     action:
       - service: switch.turn_on

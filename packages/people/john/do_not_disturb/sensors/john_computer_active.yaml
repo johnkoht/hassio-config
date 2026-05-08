@@ -1,0 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      john_computer_active:
+        friendly_name: John Computer Active
+        value_template: >-
+          {{
+            states.binary_sensor.johns_mbp_2026_active.state == "on"
+            or
+            states.input_boolean.john_work_laptop_active.state == "on"
+          }}

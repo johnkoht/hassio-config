@@ -1,0 +1,4 @@
+input_boolean:
+  john_work_laptop_active:
+    name: John Work Laptop Active
+    icon: mdi:laptop
