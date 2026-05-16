@@ -25,13 +25,13 @@ binary_sensor:
       #
       # Computer active
       - platform: state
-        entity_id: input_boolean.john_computer_active
-        prob_given_true: 0.75
-        prob_given_false: 0.15
+        entity_id: binary_sensor.john_computer_active
+        prob_given_true: 0.80
+        prob_given_false: 0.10
         to_state: "on"
       # # Computer NOT active
       # - platform: state
-      #   entity_id: input_boolean.john_computer_active
+      #   entity_id: binary_sensor.john_computer_active
       #   prob_given_true: 0.15
       #   prob_given_false: 0.86
       #   to_state: "off"

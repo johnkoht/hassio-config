@@ -266,7 +266,8 @@ cards:
   - type: custom:decluttering-card
     template: light_popup
     variables:
-      - light_entity: light.office_light_switch
+      # - light_entity: light.office_light_switch
+      - light_entity: light.office_lights
       - popup_hash: '#office_ceiling_lights'
       - popup_title: 'Ceiling Lights'
       - entity_id: light.office_lights

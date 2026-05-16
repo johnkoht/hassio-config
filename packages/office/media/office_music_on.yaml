@@ -35,7 +35,7 @@ automation:
         value_template: "{{ not is_state('input_select.office','DnD') }}"
       # Computer is active
       - condition: state
-        entity_id: input_boolean.john_computer_actives
+        entity_id: binary_sensor.john_computer_actives
         state: "on"
     action:
       # Resume the music
