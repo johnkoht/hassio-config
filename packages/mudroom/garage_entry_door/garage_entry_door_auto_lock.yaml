@@ -19,6 +19,10 @@ automation:
       - condition: state
         entity_id: lock.garage_entry_door
         state: "unlocked"
+      # Nobody just arrived
+      - condition: state
+        entity_id: binary_sensor.somebody_just_arrived
+        state: "off"
     actions:
       # Lock the door!
       - action: lock.lock
@@ -46,11 +50,21 @@ automation:
         to: "on"
         for:
           minutes: 15
+      # Re-evaluate after somebody just arrived clears
+      - trigger: state
+        entity_id: binary_sensor.somebody_just_arrived
+        to: "off"
+        for:
+          minutes: 10
     conditions:
       # Garage entry door is unlocked
       - condition: state
         entity_id: lock.garage_entry_door
         state: "unlocked"
+      # Nobody just arrived
+      - condition: state
+        entity_id: binary_sensor.somebody_just_arrived
+        state: "off"
       - condition: or
         conditions:
           # It's after the time defined in input_datetime.garage_entry_door_lock_time

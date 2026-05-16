@@ -1,9 +1,10 @@
-# 
+#
 # Garagae Entry Door - Auto Lock in Evening
-# 
+#
 # This automation will lock the garage entry door
-# in the evening.
-# 
+# in the evening. Skips locking if somebody just arrived
+# to avoid locking them out.
+#
 automation:
   - id: "garage_entry_door_lock_auto_lock_in_evening"
     alias: "Garage Entry Door Lock - Auto Lock in Evening"
@@ -14,15 +15,25 @@ automation:
         at: input_datetime.garage_entry_door_evening_lock_time
       # Entertainment or guest mode turned off
       - trigger: state
-        entity_id: 
+        entity_id:
           - input_boolean.entertainment_mode
           - input_boolean.guest_mode
         to: "off"
+      # Re-evaluate after somebody just arrived clears
+      - trigger: state
+        entity_id: binary_sensor.somebody_just_arrived
+        to: "off"
+        for:
+          minutes: 10
     conditions:
       # Garage entry door is unlocked
       - condition: state
         entity_id: lock.garage_entry_door
         state: "unlocked"
+      # Nobody just arrived
+      - condition: state
+        entity_id: binary_sensor.somebody_just_arrived
+        state: "off"
       # Entertainment mode is OFF
       - condition: state
         entity_id: input_boolean.entertainment_mode

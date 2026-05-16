@@ -40,6 +40,10 @@ automation:
           - condition: state
             entity_id: input_boolean.entertainment_mode
             state: "on"
+      # Nobody just arrived
+      - condition: state
+        entity_id: binary_sensor.somebody_just_arrived
+        state: "off"
     actions:
       # Lock the door!
       - action: lock.lock
