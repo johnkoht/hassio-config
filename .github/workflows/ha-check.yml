@@ -1,0 +1,34 @@
+---
+name: Home Assistant CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  yamllint:
+    name: YAML Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ibiqlik/action-yamllint@v3
+        with:
+          config_file: .yamllint
+
+  ha-check:
+    name: Home Assistant Config Check
+    runs-on: ubuntu-latest
+    needs: yamllint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create fake secrets
+        run: cp secrets.fake.yaml secrets.yaml
+
+      - uses: frenck/action-home-assistant@v2
+        with:
+          path: "."
+          secrets: "secrets.yaml"
+          version: stable

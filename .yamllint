@@ -1,0 +1,36 @@
+---
+extends: default
+
+rules:
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+  colons:
+    max-spaces-after: -1
+  commas:
+    max-spaces-after: -1
+  comments: disable
+  comments-indentation: disable
+  document-start: disable
+  empty-lines:
+    max: 3
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+  key-duplicates: enable
+  line-length: disable
+  new-line-at-end-of-file: enable
+  octal-values: disable
+  quoted-strings: disable
+  trailing-spaces: enable
+  truthy: disable
+
+ignore: |
+  custom_components/
+  themes/
+  www/
+  esphome/.esphome/
+  node_modules/
