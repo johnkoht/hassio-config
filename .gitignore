@@ -55,6 +55,10 @@ production_auth.json
 # ESPresense script
 /espresense-update.sh
 
+# HA runtime
+.ha_run.lock
+.cache/
+
 # General stuff
 /www/images
 /tts
