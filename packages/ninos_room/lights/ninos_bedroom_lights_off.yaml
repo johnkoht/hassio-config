@@ -35,4 +35,3 @@ automation:
       - service: light.turn_off
         entity_id:
           - light.ninos_bedroom_main_lights
-          - light.nino_bedroom_lamp
