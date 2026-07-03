@@ -76,7 +76,7 @@ cards:
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-      - entity: sensor.cfalb2_steps
+      - entity: sensor.cfalb_iphone_17_steps
         icon: kohbo:kohbo-steps
         name: Steps
         secondary_info: last-changed
@@ -173,7 +173,7 @@ cards:
       # 
       # Phone Battery Level
       # 
-      - entity: sensor.cfalb2_battery_level
+      - entity: sensor.cfalb_iphone_17_battery_level
         # icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
         name: Battery
         secondary_info: last-changed
@@ -182,7 +182,7 @@ cards:
       # 
       # Network Details
       # 
-      - entity: sensor.cfalb2_ssid
+      - entity: sensor.cfalb_iphone_17ss_ssid
         icon: kohbo:kohbo-wifi
         name: Wifi Network
         secondary_info: last-changed

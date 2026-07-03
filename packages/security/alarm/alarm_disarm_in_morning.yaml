@@ -14,9 +14,6 @@ automation:
         to: "Auto"
         for: 
           seconds: 15
-      # At 6:0s0am
-      - trigger: time
-        at: "06:00:00"
     conditions:
       # Alarm is currently armed_home
       - condition: state
@@ -38,7 +35,7 @@ automation:
             (as_timestamp(now()) - as_timestamp(states.binary_sensor.first_floor_occupancy.last_changed)) | int >= 30
           }}
 
-        timeout: "01:30:00"
+        timeout: "02:30:00"
         continue_on_timeout: false
 
       # Disarm the alarm
