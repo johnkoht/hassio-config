@@ -1,0 +1,4 @@
+input_boolean:
+  dashboard_lockdown:
+    name: Dashboard Lockdown
+    icon: mdi:lock-check
