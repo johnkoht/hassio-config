@@ -1,0 +1,19 @@
+substitutions:
+  name: bluetooth-proxy-nino-bedroom
+  friendly_name: Bluetooth Proxy - Nino's Bedroom
+
+packages:
+  esphome.bluetooth-proxy: "github://esphome/bluetooth-proxies/esp32-generic/esp32-generic.yaml@main"
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+
+api:
+  encryption:
+    key: "v6hzA4IpY428wRsoU0dotkhgg0YHh/BJMIMAgK7aHL4="
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
