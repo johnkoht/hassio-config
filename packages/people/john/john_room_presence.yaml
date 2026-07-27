@@ -1,26 +1,22 @@
-sensor:
-  - platform: mqtt_room
-    unique_id: "john_room_presence_raw"
-    # device_id: "apple:1007:11-7"
-    device_id: "jk_iphone"
-    name: "John Room Presence RAW"
-    state_topic: "espresense/devices/jk_iphone"
-    timeout: 10
-    away_timeout: 120
-
-  - platform: template
-    sensors:
-      john_room_presence:
-        friendly_name: John Room Presence
+# John Room Presence
+#
+# Bermuda-sourced BLE room presence for John.
+# State is the HA area_id of the room he's in (e.g. "office"), or "not_home".
+# Sourced from Bermuda's per-device area sensor and converted to area_id via area_id().
+# (Replaces the old ESPresense mqtt_room + normalization; entity_id unchanged so every
+# downstream consumer + group.room_presence_devices keeps working.)
+#
+template:
+  - sensor:
+      - name: "John Room Presence"
         unique_id: john_room_presence
-        value_template: >-
-          {% set rp = states.sensor.john_room_presence_raw.state %}
-          {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
-            main_bedroom
-          {% elif rp == "family_room" or rp == "family_room_two" %}
-            family_room
-          {% elif rp == "kitchen" or rp == "kitchen_two" %}
-            kitchen
-          {% else %}
-            {{rp}}
-          {% endif %}
+        state: >-
+          {% set devices = ['sensor.john_s_iphone_area'] %}
+          {% set ns = namespace(area='not_home') %}
+          {% for d in devices %}
+            {% set a = states(d) %}
+            {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
+              {% set ns.area = area_id(a) or ns.area %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.area }}
