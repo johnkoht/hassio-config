@@ -26,7 +26,7 @@ automation:
       - condition: or
         conditions:
           - condition: template
-            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'basement')|map(attribute='name')|list | length > 0 }}"
+            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['basement_main', 'basement_hub'])|map(attribute='name')|list | length > 0 }}"
           - condition: state
             entity_id: binary_sensor.basement_occupancy_sensor
             state: "on"

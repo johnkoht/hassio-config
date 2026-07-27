@@ -10,7 +10,7 @@ automation:
     condition:
       # Nobody is in his room
       - condition: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['nino_bedroom'])|map(attribute='name')|list | length == 0 }}"
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['nino_room'])|map(attribute='name')|list | length == 0 }}"
 
       # It's bedtime mode
       - condition: or

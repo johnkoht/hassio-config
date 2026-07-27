@@ -4,4 +4,4 @@
       friendly_name: "Gianluca's Bedroom Presence"
       unique_id: "gianlucas_bedroom_presence"
       value_template: >-
-        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gianluca_bedroom')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}
+        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gianlucas_room')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}
