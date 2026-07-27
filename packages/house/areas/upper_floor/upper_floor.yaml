@@ -31,7 +31,7 @@ binary_sensor:
         value_template: >-
           {{ 
             expand('group.room_presence_devices') |
-            selectattr('state', 'in', ['main_bedroom', 'main_bathroom', 'gianluca_bedroom', 'ninos_bedroom', 'upstairs_guest_bedroom']) |
+            selectattr('state', 'in', ['main_bedroom', 'main_bathroom', 'gianlucas_room', 'nino_room', 'upstairs_guest_bedroom']) |
             map(attribute='name') |
             list |
             length > 0

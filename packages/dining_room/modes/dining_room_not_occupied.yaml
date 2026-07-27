@@ -10,7 +10,7 @@ automation:
     trigger:
       # No BLE for 2 minutes
       - platform: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'living_room')|map(attribute='name')|list | length == 0 }}"
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'dining_room')|map(attribute='name')|list | length == 0 }}"
         for:
           minutes: 2
       # No motion detected for 5 minutes
@@ -67,7 +67,7 @@ automation:
                   minutes: 5
       # No BLE devices detected
       - condition: template
-        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'living_room')|map(attribute='name')|list | length == 0 }}"
+        value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'dining_room')|map(attribute='name')|list | length == 0 }}"
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.dining_room_occupied

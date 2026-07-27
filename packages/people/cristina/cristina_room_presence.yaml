@@ -1,24 +1,20 @@
-sensor:
-  - platform: mqtt_room
-    device_id: "cfalb_iphone"
-    name: "Cristina Room Presence RAW"
-    state_topic: "espresense/devices/cfalb_iphone"
-    timeout: 10
-    away_timeout: 120
-
-  - platform: template
-    sensors:
-      cristina_room_presence:
-        friendly_name: Cristina Room Presence
+# Cristina Room Presence
+#
+# Bermuda-sourced BLE room presence for Cristina.
+# State is the HA area_id of the room she's in (e.g. "office"), or "not_home".
+# (Replaces ESPresense mqtt_room + normalization; entity_id unchanged.)
+#
+template:
+  - sensor:
+      - name: "Cristina Room Presence"
         unique_id: cristina_room_presence
-        value_template: >-
-          {% set rp = states.sensor.cristina_room_presence_raw.state %}
-          {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
-            main_bedroom
-          {% elif rp == "family_room" or rp == "family_room_two" %}
-            family_room
-          {% elif rp == "kitchen" or rp == "kitchen_two" %}
-            kitchen
-          {% else %}
-            {{rp}}
-          {% endif %}
+        state: >-
+          {% set devices = ['sensor.cristina_s_iphone_area'] %}
+          {% set ns = namespace(area='not_home') %}
+          {% for d in devices %}
+            {% set a = states(d) %}
+            {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
+              {% set ns.area = area_id(a) or ns.area %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.area }}

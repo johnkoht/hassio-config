@@ -30,7 +30,7 @@ automation:
       - condition: or
         conditions:
           - condition: template
-            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'living_room')|map(attribute='name')|list | length > 0 }}"
+            value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'dining_room')|map(attribute='name')|list | length > 0 }}"
           - condition: state
             entity_id: binary_sensor.dining_room_north_motion_sensor_occupancy
             state: "on"

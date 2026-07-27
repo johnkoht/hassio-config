@@ -8,6 +8,6 @@ sensor:
         friendly_name: "Main Bedroom Presence"
         unique_id: "main_bedroom_presence"
         value_template: >-
-          {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom', 'main_bedroom_bedstand'])|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}
+          {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom'])|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}
         # value_template: >-
         #   {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'main_bedroom')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

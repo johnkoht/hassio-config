@@ -11,4 +11,4 @@ binary_sensor:
         unique_id: "kitchen_ble_occupancy"
         device_class: occupancy
         value_template: >-
-          {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['kitchen', 'kitchen_two'])|map(attribute='name')|list | length > 0 }}
+          {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['kitchen'])|map(attribute='name')|list | length > 0 }}
