@@ -1,0 +1,24 @@
+# {{FRIENDLY}} Room Presence
+#
+# Bermuda-sourced BLE room presence for {{FRIENDLY}}.
+# State is the HA area_id of the room they're in (e.g. "office"), or "not_home".
+# Sourced from Bermuda per-device area sensor(s); converted to area_id via area_id().
+# Handles multiple devices (e.g. phone + watch) — last device resolving a real area wins.
+#
+# Requires: each device IRK-enrolled in the Private BLE Device integration so Bermuda
+# creates sensor.<device>_area. See the add-presence-person skill for enrollment steps.
+
+template:
+  - sensor:
+      - name: "{{FRIENDLY}} Room Presence"
+        unique_id: {{SLUG}}_room_presence
+        state: >-
+          {% set devices = [{{AREA_SENSORS}}] %}
+          {% set ns = namespace(area='not_home') %}
+          {% for d in devices %}
+            {% set a = states(d) %}
+            {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
+              {% set ns.area = area_id(a) or ns.area %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.area }}
