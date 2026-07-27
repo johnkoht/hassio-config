@@ -2,7 +2,7 @@
   platform: group
   services:
     - service: mobile_app_jk_2
-    - service: mobile_app_cfalb2
+    - service: mobile_app_cfalb
 
 - name: Family Room TV
   platform: nfandroidtv

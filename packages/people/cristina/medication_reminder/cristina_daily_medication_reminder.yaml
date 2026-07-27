@@ -94,7 +94,7 @@ automation:
       # 
       # Send the notification
       # 
-      - action: notify.mobile_app_cfalb2
+      - action: notify.mobile_app_cfalb
         data:
           message: "Cristina, it's time to take your morning medication."
           title: "Medication Reminder"

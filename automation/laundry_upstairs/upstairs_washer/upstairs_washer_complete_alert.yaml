@@ -53,7 +53,7 @@ action:
       {% elif is_state("input_boolean.john_home", "on") %}
         notify.mobile_app_jk_2
       {% elif (is_state("input_boolean.cristina_home", "on")) %}
-        notify.mobile_app_cfalb2
+        notify.mobile_app_cfalb
       {% endif %}
     data:
       message: "The upstairs washer is finished and ready to be emptied."
