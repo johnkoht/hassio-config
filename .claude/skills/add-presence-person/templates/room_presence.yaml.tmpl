@@ -1,12 +1,16 @@
 # {{FRIENDLY}} Room Presence
 #
 # Bermuda-sourced BLE room presence for {{FRIENDLY}}.
-# State is the HA area_id of the room they're in (e.g. "office"), or "not_home".
-# Sourced from Bermuda per-device area sensor(s); converted to area_id via area_id().
-# Handles multiple devices (e.g. phone + watch) — last device resolving a real area wins.
+# State is the HA area_id of the room they're in (e.g. "office"), "unknown" when home
+# but not resolved to a proxied room, or "not_home" when away.
+#
+# Gated on the Bermuda device_tracker so "not_home" means truly away (not merely
+# "home but between rooms / in a non-proxied room" — that reads "unknown", which still
+# counts as home for the presence bayesians but matches no room's occupancy).
 #
 # Requires: each device IRK-enrolled in the Private BLE Device integration so Bermuda
-# creates sensor.<device>_area. See the add-presence-person skill for enrollment steps.
+# creates sensor.<device>_area + device_tracker.<device>_bermuda_tracker. See the
+# add-presence-person skill for enrollment steps.
 
 template:
   - sensor:
@@ -14,11 +18,19 @@ template:
         unique_id: {{SLUG}}_room_presence
         state: >-
           {% set devices = [{{AREA_SENSORS}}] %}
-          {% set ns = namespace(area='not_home') %}
-          {% for d in devices %}
-            {% set a = states(d) %}
-            {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
-              {% set ns.area = area_id(a) or ns.area %}
-            {% endif %}
+          {% set trackers = [{{TRACKERS}}] %}
+          {% set ns = namespace(home=false, area='unknown') %}
+          {% for t in trackers %}
+            {% if is_state(t, 'home') %}{% set ns.home = true %}{% endif %}
           {% endfor %}
-          {{ ns.area }}
+          {% if not ns.home %}
+            not_home
+          {% else %}
+            {% for d in devices %}
+              {% set a = states(d) %}
+              {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
+                {% set ns.area = area_id(a) or ns.area %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.area }}
+          {% endif %}

@@ -1,20 +1,33 @@
 # Cristina Room Presence
 #
 # Bermuda-sourced BLE room presence for Cristina.
-# State is the HA area_id of the room she's in (e.g. "office"), or "not_home".
-# (Replaces ESPresense mqtt_room + normalization; entity_id unchanged.)
+# State: HA area_id (e.g. "kitchen"), "unknown" (home but not in a proxied room), or "not_home".
+# Gated on the Bermuda device_tracker so "not_home" means truly away.
+#
+# NOTE: Cristina has a duplicate Bermuda device registration — the original
+# (sensor.cristina_s_iphone_area / _bermuda_tracker) went `unavailable`, and a
+# re-enrollment created the `_2` set (the live one). Both are listed here for
+# robustness; clean up the stale `_2`-less device in the HA/Bermuda registry later.
 #
 template:
   - sensor:
       - name: "Cristina Room Presence"
         unique_id: cristina_room_presence
         state: >-
-          {% set devices = ['sensor.cristina_s_iphone_area'] %}
-          {% set ns = namespace(area='not_home') %}
-          {% for d in devices %}
-            {% set a = states(d) %}
-            {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
-              {% set ns.area = area_id(a) or ns.area %}
-            {% endif %}
+          {% set devices = ['sensor.cristina_s_iphone_area', 'sensor.cristina_s_iphone_area_2'] %}
+          {% set trackers = ['device_tracker.cristina_s_iphone_bermuda_tracker', 'device_tracker.cristina_s_iphone_bermuda_tracker_2'] %}
+          {% set ns = namespace(home=false, area='unknown') %}
+          {% for t in trackers %}
+            {% if is_state(t, 'home') %}{% set ns.home = true %}{% endif %}
           {% endfor %}
-          {{ ns.area }}
+          {% if not ns.home %}
+            not_home
+          {% else %}
+            {% for d in devices %}
+              {% set a = states(d) %}
+              {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
+                {% set ns.area = area_id(a) or ns.area %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.area }}
+          {% endif %}
