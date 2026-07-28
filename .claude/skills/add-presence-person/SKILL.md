@@ -44,6 +44,10 @@ If these entities don't exist yet, STOP and finish enrollment — do not scaffol
 - **area_sensors** — one or more Bermuda area sensors for this person's device(s), e.g.
   `sensor.katia_s_iphone_area` (add a watch/tablet if they have one). Get exact entity_ids
   from Developer Tools → States (filter `_area`).
+- **trackers** — the matching Bermuda device_tracker(s), e.g.
+  `device_tracker.katia_s_iphone_bermuda_tracker`. The wrapper gates home-vs-away on these.
+  If a device has a duplicate (`_2`) registration, include BOTH the original and the `_2`
+  entities (area sensors + trackers) for robustness, and flag the stale one for cleanup.
 
 To confirm the live area sensor entity_ids and current states, you can query HA (a token +
 REST access is documented in `~/code/kohbo-dashboard/CLAUDE.md`); filter `/api/states` for
@@ -57,6 +61,8 @@ Copy `templates/room_presence.yaml.tmpl` to
 - `{{SLUG}}` → slug
 - `{{AREA_SENSORS}}` → comma-separated quoted list, e.g. `'sensor.katia_s_iphone_area'`
   (or `'sensor.john_s_iphone_area', 'sensor.john_s_watch_area'` for multi-device)
+- `{{TRACKERS}}` → comma-separated quoted list of the matching Bermuda device_trackers,
+  e.g. `'device_tracker.katia_s_iphone_bermuda_tracker'`
 
 If an old ESPresense `<slug>_room_presence.yaml` exists (mqtt_room + normalization),
 replace its contents entirely with the wrapper — keep the SAME `unique_id`

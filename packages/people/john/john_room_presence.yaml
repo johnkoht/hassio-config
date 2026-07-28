@@ -1,10 +1,8 @@
 # John Room Presence
 #
 # Bermuda-sourced BLE room presence for John.
-# State is the HA area_id of the room he's in (e.g. "office"), or "not_home".
-# Sourced from Bermuda's per-device area sensor and converted to area_id via area_id().
-# (Replaces the old ESPresense mqtt_room + normalization; entity_id unchanged so every
-# downstream consumer + group.room_presence_devices keeps working.)
+# State: HA area_id (e.g. "office"), "unknown" (home but not in a proxied room), or "not_home".
+# Gated on the Bermuda device_tracker so "not_home" means truly away (not just between rooms).
 #
 template:
   - sensor:
@@ -12,11 +10,19 @@ template:
         unique_id: john_room_presence
         state: >-
           {% set devices = ['sensor.john_s_iphone_area'] %}
-          {% set ns = namespace(area='not_home') %}
-          {% for d in devices %}
-            {% set a = states(d) %}
-            {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
-              {% set ns.area = area_id(a) or ns.area %}
-            {% endif %}
+          {% set trackers = ['device_tracker.john_s_iphone_bermuda_tracker'] %}
+          {% set ns = namespace(home=false, area='unknown') %}
+          {% for t in trackers %}
+            {% if is_state(t, 'home') %}{% set ns.home = true %}{% endif %}
           {% endfor %}
-          {{ ns.area }}
+          {% if not ns.home %}
+            not_home
+          {% else %}
+            {% for d in devices %}
+              {% set a = states(d) %}
+              {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
+                {% set ns.area = area_id(a) or ns.area %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.area }}
+          {% endif %}

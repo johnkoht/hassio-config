@@ -319,11 +319,16 @@ All resolved — see **Decisions (locked — updated 2026-07-27)** at top.
 
 ## 9. Execution Spec (Option B sweep) — audited, definitive
 
-Verified by full audit 2026-07-27: **zero** bayesian `to_state:` observations and **zero**
-`is_state('sensor.*_room_presence', ...)` checks reference any changing room. Every live
-consumer uses the `group.room_presence_devices | selectattr('state', ...)` or
-`group.people_sensors | selectattr('attributes.room_presence', ...)` pattern. So the sweep
-is fully bounded: **3 wholesale rewrites + 19 one-line edits across 15 files + 1 cleanup.**
+Audit (corrected 2026-07-27): direct consumers via bayesian `to_state:` and
+`is_state('sensor.*_room_presence', …)` DO exist (`john_sleeping`, `cristina_sleeping`,
+`john_in_bed_bayesian`, `john_do_not_distrub_bayesian`, `main_bedroom_john_night_light`,
+`office_dnd`) — but every one references an **unchanged** room (`main_bedroom`, `office`),
+so the sweep needs no edits there. The **changing** rooms are consumed only via the
+`group.room_presence_devices | selectattr('state', …)` and
+`group.people_sensors | selectattr('attributes.room_presence', …)` patterns.
+⚠️ Future rename sweeps MUST also audit `to_state:`/`to:`/`is_state` consumers, not just
+`selectattr`. Scope: **2 wrapper rewrites (John, Cristina; Nino deferred)** + 19 one-line
+edits / 15 files + 1 cleanup.
 
 ### A. Wholesale rewrites (3) — replace mqtt_room+normalization with the area_id wrapper
 - `packages/people/john/john_room_presence.yaml` — devices: `sensor.john_s_iphone_area` (+ watch when enrolled)
