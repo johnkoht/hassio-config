@@ -1,24 +1,29 @@
-sensor:
-  - platform: mqtt_room
-    device_id: !secret mary_irk
-    name: "Mary Room Presence RAW"
-    state_topic: !secret mary_state_topic
-    timeout: 10
-    away_timeout: 120
-
-  - platform: template
-    sensors:
-      mary_room_presence:
-        friendly_name: Mary Room Presence
+# Mary (Nonna) Room Presence
+#
+# Bermuda-sourced BLE room presence for Mary/Nonna.
+# State: HA area_id (e.g. "kitchen"), "unknown" (home but not in a proxied room), or "not_home".
+# Gated on the Bermuda device_tracker so "not_home" means truly away.
+# Entity_id (sensor.mary_room_presence) unchanged — she's already in both presence groups.
+#
+template:
+  - sensor:
+      - name: "Mary Room Presence"
         unique_id: mary_room_presence
-        value_template: >-
-          {% set rp = states.sensor.mary_room_presence_raw.state %}
-          {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
-            main_bedroom
-          {% elif rp == "family_room" or rp == "family_room_two" %}
-            family_room
-          {% elif rp == "kitchen" or rp == "kitchen_two" %}
-            kitchen
+        state: >-
+          {% set devices = ['sensor.nonna_s_iphone_area'] %}
+          {% set trackers = ['device_tracker.nonna_s_iphone_bermuda_tracker'] %}
+          {% set ns = namespace(home=false, area='unknown') %}
+          {% for t in trackers %}
+            {% if is_state(t, 'home') %}{% set ns.home = true %}{% endif %}
+          {% endfor %}
+          {% if not ns.home %}
+            not_home
           {% else %}
-            {{rp}}
+            {% for d in devices %}
+              {% set a = states(d) %}
+              {% if a not in ['unknown', 'unavailable', 'not_home', 'none', none] %}
+                {% set ns.area = area_id(a) or ns.area %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.area }}
           {% endif %}
