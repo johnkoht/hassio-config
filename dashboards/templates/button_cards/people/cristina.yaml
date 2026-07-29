@@ -182,7 +182,7 @@ cards:
       # 
       # Network Details
       # 
-      - entity: sensor.cfalb_iphone_17ss_ssid
+      - entity: sensor.cfalb_iphone_17_ssid
         icon: kohbo:kohbo-wifi
         name: Wifi Network
         secondary_info: last-changed
