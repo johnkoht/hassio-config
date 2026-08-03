@@ -6,12 +6,12 @@ sensor:
     timeout: 10
     away_timeout: 120
 
-  - platform: template
-    sensors:
-      joe_room_presence:
-        friendly_name: Joe Room Presence
+template:
+  - sensor:
+      - name: Joe Room Presence
         unique_id: joe_room_presence
-        value_template: >-
+        default_entity_id: sensor.joe_room_presence
+        state: >-
           {% set rp = states.sensor.joe_room_presence_raw.state %}
           {% if rp == "main_bedroom" or rp == "main_bedroom_bedstand" %}
             main_bedroom

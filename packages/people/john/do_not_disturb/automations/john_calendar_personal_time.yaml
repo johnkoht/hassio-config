@@ -1,13 +1,13 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      john_calendar_personal_time:
-        friendly_name: John Calendar Personal Time
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: John Calendar Personal Time
+        unique_id: john_calendar_personal_time
+        default_entity_id: binary_sensor.john_calendar_personal_time
+        state: >-
           {# Check if the calendar is ON #}
           {% if states.calendar.john_koht_reserv_com.state == "on" %}
             {% set message = states.calendar.john_koht_reserv_com.attributes.message %}
-            
+
             {{
               message.startswith('Block') or
               message.startswith('GSD') or

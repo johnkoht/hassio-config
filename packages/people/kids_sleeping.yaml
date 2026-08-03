@@ -1,11 +1,26 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      kids_sleeping:
-        friendly_name: "Kids Sleeping"
-        value_template: >-
-          {{ 
-            states.input_boolean.ninos_bedroom_occupied.state == "on" 
+# Kids Sleeping
+#
+# Both kids' rooms are occupied (a proxy for "the kids are in bed").
+# Exposed as both a binary_sensor and a sensor with identical logic — the
+# sensor.kids_sleeping form is legacy but kept intentionally (referenced from a
+# few commented-out blocks that may come back). Consolidated here from the old
+# sensors/kids_sleeping.yml during the 2026.6 template-syntax migration.
+#
+
+template:
+  - binary_sensor:
+      - name: "Kids Sleeping"
+        unique_id: kids_sleeping
+        default_entity_id: binary_sensor.kids_sleeping
+        state: >-
+          {{
+            states.input_boolean.ninos_bedroom_occupied.state == "on"
             and
             states.input_boolean.gianlucas_room_occupied.state == "on"
           }}
+  - sensor:
+      - name: "Kids Sleeping"
+        unique_id: kids_sleeping
+        default_entity_id: sensor.kids_sleeping
+        state: >-
+          {{ states.input_boolean.ninos_bedroom_occupied.state == "on" and states.input_boolean.gianlucas_room_occupied.state == "on" }}

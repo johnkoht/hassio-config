@@ -1,14 +1,14 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      tomorrow_is_garbage_day:
-        friendly_name: Tomorrow is Garbage Day
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: "Tomorrow is Garbage Day"
+        unique_id: tomorrow_is_garbage_day
+        default_entity_id: binary_sensor.tomorrow_is_garbage_day
+        state: >-
           {% set event = strptime(state_attr('calendar.garbage_day', 'start_time'), '%Y-%m-%d %H:%M:%S') %}
           {{
             (
               event.year == now().year
-              and 
+              and
               event.month == now().month
               and
               event.day == now().day + 1
