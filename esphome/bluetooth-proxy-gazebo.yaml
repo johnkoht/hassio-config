@@ -1,0 +1,19 @@
+substitutions:
+  name: bluetooth-proxy-gazebo
+  friendly_name: Bluetooth Proxy - Gazebo
+
+packages:
+  esphome.bluetooth-proxy: "github://esphome/bluetooth-proxies/esp32-generic/esp32-generic.yaml@main"
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+
+api:
+  encryption:
+    key: "3FT2wtNtCa17+/5tWXYvujRHBMmJ7FcQRl8tQ6KIvIU="
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
