@@ -1,10 +1,9 @@
-type: vertical-stack
-cards:
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: '#tayta'
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+type: custom:bubble-card
+card_type: pop-up
+hash: '#tayta'
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     
+cards:
   # 
   # Profile Picture
   # 

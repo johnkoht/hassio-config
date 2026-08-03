@@ -1,14 +1,13 @@
 # 
 # Weather Popup
 # 
-type: vertical-stack
-cards:
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: '#weather'
-    close_by_clicking_outside: false
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+type: custom:bubble-card
+card_type: pop-up
+hash: '#weather'
+close_by_clicking_outside: false
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     
+cards:
   # Popup Title
   - type: custom:button-card
     template: kohbo_popup_page_title

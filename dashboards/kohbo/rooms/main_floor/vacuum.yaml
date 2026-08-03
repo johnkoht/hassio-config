@@ -387,13 +387,12 @@ cards:
   # 
   # Vacuum Settings Popup
   # 
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#main_floor_vacuum_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '#main_floor_vacuum_settings_popup'
-        close_by_clicking_outside: true
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
       # 
       # Title
       # 
