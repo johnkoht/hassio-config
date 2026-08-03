@@ -6,13 +6,12 @@
 # to broadcast the message.
 #
 #
-binary_sensor:
-  - platform: template
-    sensors:
-      announceable_rooms_occupied:
-        friendly_name: Announceable Rooms Occupied
+template:
+  - binary_sensor:
+      - name: "Announceable Rooms Occupied"
         unique_id: announceable_rooms_occupied
-        value_template: >-
+        default_entity_id: binary_sensor.announceable_rooms_occupied
+        state: >-
           {{
             states.input_boolean.kitchen_occupied.state == "on"
             or states.input_boolean.family_room_occupied.state == "on"

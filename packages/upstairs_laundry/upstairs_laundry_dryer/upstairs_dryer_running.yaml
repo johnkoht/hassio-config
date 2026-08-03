@@ -1,11 +1,10 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      upstairs_dryer_running:
-        friendly_name: Upstairs Dryer Running
+template:
+  - binary_sensor:
+      - name: "Upstairs Dryer Running"
         unique_id: upstairs_dryer_running
-        value_template: >-
-          {{ 
-            states.upstairs_dryer_status.state == "Running" or 
+        default_entity_id: binary_sensor.upstairs_dryer_running
+        state: >-
+          {{
+            states.upstairs_dryer_status.state == "Running" or
             states.upstairs_dryer_status.state == "Finishing"
           }}

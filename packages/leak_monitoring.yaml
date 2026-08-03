@@ -55,6 +55,22 @@ template:
               | join(', ')
             }}
 
+  # Binary sensors to track if there is a leak while we're homem or away
+  - binary_sensor:
+      # Leak while detected while we're away!
+      - name: "Leak detected while we are away"
+        unique_id: "leak_while_away"
+        default_entity_id: binary_sensor.leak_while_away
+        state: >-
+          {{ is_state('input_boolean.house_occupied','off') and is_state('binary_sensor.leak_sensors','on') }}
+
+      # Leak detected while we're home
+      - name: "Leak detected while we are home"
+        unique_id: "leak_while_home"
+        default_entity_id: binary_sensor.leak_while_home
+        state: >-
+          {{ is_state('input_boolean.house_occupied','on') and is_state('binary_sensor.leak_sensors','on') }}
+
 # 
 # Leak Sensors Binary Sensor
 # 
@@ -77,23 +93,6 @@ binary_sensor:
       - binary_sensor.main_bathroom_leak_sensor_moisture
       - binary_sensor.nino_s_bathroom_leak_sensor_moisture
       - binary_sensor.upstairs_hallway_bathroom_leak_sensor_moisture
-
-  # Binary sensors to track if there is a leak while we're homem or away
-  - platform: template
-    sensors:
-      # Leak while detected while we're away!
-      leak_while_away:
-        friendly_name: "Leak detected while we are away"
-        unique_id: "leak_while_away"
-        value_template: >-
-          {{ is_state('input_boolean.house_occupied','off') and is_state('binary_sensor.leak_sensors','on') }}
-
-      # Leak detected while we're home
-      leak_while_home:
-        friendly_name: "Leak detected while we are home"
-        unique_id: "leak_while_home"
-        value_template: >-
-          {{ is_state('input_boolean.house_occupied','on') and is_state('binary_sensor.leak_sensors','on') }}
 
 # Alerts
 #

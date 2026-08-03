@@ -1,11 +1,11 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      nws_alerts_are_active:
-        friendly_name: NWS Alerts Are Active
-        value_template: >
+template:
+  - binary_sensor:
+      - name: "NWS Alerts Are Active"
+        unique_id: nws_alerts_are_active
+        default_entity_id: binary_sensor.nws_alerts_are_active
+        state: >
           {{ states('sensor.nws_alerts_sensor') | int(0) > 0 }}
-        icon_template: >-
+        icon: >-
           {% if states('sensor.nws_alerts_sensor') | int(0) > 0 %}
             mdi:weather-lightning
           {% else %}
