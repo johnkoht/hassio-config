@@ -7,9 +7,10 @@ entities to modern `template:` syntax (see plans/2026-07-ha-upgrade-report.md).
 Two layers:
 
 1. TestNoLegacyTemplateSyntax (static, runs anywhere)
-   Fails if any legacy `- platform: template` entity definition reappears.
-   On HA 2026.6+ that syntax silently creates ZERO entities, so this is a
-   hard regression guard, not a style nit.
+   Fails if any legacy `- platform: template` entity definition reappears in a
+   LOADED file. On HA 2026.6+ that syntax silently creates ZERO entities, so
+   this is a hard regression guard, not a style nit. Only scans `.yaml` — HA's
+   include dirs ignore `.yml`, which this repo uses to park disabled files.
 
 2. TestMigratedEntityIdsPreserved (live, needs the HA entity registry)
    Every migrated entity pins its id with `default_entity_id`. This checks
@@ -40,13 +41,15 @@ _PLATFORM_DOMAINS = (
 
 
 def _iter_config_yaml() -> List[Path]:
+    # HA's !include_dir_* directives only glob `*.yaml` — `.yml` files are never
+    # loaded (this repo uses `.yml` as a "parked/disabled" marker), so legacy
+    # syntax inside a `.yml` is harmless and must NOT be flagged. Scan `.yaml`.
     paths: List[Path] = []
     for d in _SCAN_DIRS:
         root = CONFIG_ROOT / d
         if not root.exists():
             continue
-        for pattern in ("**/*.yaml", "**/*.yml"):
-            paths.extend(root.glob(pattern))
+        paths.extend(root.glob("**/*.yaml"))
     return sorted(p for p in paths if "archive" not in str(p).lower())
 
 
