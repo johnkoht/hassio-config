@@ -1,17 +1,16 @@
 # Focus Mode Playlists
-# 
+#
 # This sensor will return the playlist based on the focus mode. It's
 # still early and I'lll most likely either:
 # 1) add more playlists/albums
 # 2) use a single playlist for each mode and modify them manually
-# 
-sensor:
-  - platform: template
-    sensors:
-      john_focus_mode_playlist:
-        friendly_name: John Focus Mode Playlist
+#
+template:
+  - sensor:
+      - name: "John Focus Mode Playlist"
         unique_id: john_focus_mode_playlist
-        value_template: >-
+        default_entity_id: sensor.john_focus_mode_playlist
+        state: >-
           {% set mode = states('input_select.john_focus_mode') %}
 
           {% if mode == 'Deep Work' %}

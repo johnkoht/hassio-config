@@ -1,10 +1,10 @@
-sensor:
-  - platform: template
-    sensors:
-      second_floor_feels_like_temperature:
-        friendly_name: "Second Floor Feels Like Temperature"
+template:
+  - sensor:
+      - name: "Second Floor Feels Like Temperature"
+        unique_id: second_floor_feels_like_temperature
+        default_entity_id: sensor.second_floor_feels_like_temperature
         unit_of_measurement: "°F"
-        value_template: >
+        state: >
           {% set T = states('sensor.second_floor_temperature') | float %}
           {% set R = states('sensor.second_floor_humidity') | float %}
           {% set c = [ -42.379, 2.04901523, 10.14333127, -0.22475541, -6.83783e-3, -5.481717e-2, 1.22874e-3, 8.5282e-4, -1.99e-6 ] %}

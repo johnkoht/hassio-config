@@ -1,0 +1,6 @@
+- binary_sensor:
+    - name: "Family Room Probably Occupied"
+      unique_id: family_room_probably_occupied
+      default_entity_id: binary_sensor.family_room_probably_occupied
+      state: >-
+        {{ state_attr("binary_sensor.family_room_presence", "probability") > 0.5 }}

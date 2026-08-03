@@ -1,10 +1,10 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      somebody_just_arrived:
-        friendly_name: "Somebody Just Arrived"
-        value_template: >-
-          {{ 
+template:
+  - binary_sensor:
+      - name: "Somebody Just Arrived"
+        unique_id: somebody_just_arrived
+        default_entity_id: binary_sensor.somebody_just_arrived
+        state: >-
+          {{
             'Just Arrived' in [
               states('input_select.cristina_status_dropdown'),
               states('input_select.john_status'),

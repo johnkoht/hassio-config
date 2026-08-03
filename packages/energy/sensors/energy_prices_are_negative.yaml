@@ -2,12 +2,12 @@
 # 
 # binary sensor to check if energy prices are negative
 # 
-binary_sensor:
-  - platform: template
-    sensors:
-      energy_prices_are_negative:
-        friendly_name: Energy Prices Are Negative
-        value_template: "{{ states.sensor.energy_price.state | float < 0 }}"
+template:
+  - binary_sensor:
+      - name: "Energy Prices Are Negative"
+        unique_id: energy_prices_are_negative
+        default_entity_id: binary_sensor.energy_prices_are_negative
+        state: "{{ states.sensor.energy_price.state | float < 0 }}"
 
 # 
 # Energy Prices Are Negative

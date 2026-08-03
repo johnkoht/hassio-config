@@ -1,0 +1,6 @@
+- binary_sensor:
+    - name: "John Probably Sleeping"
+      unique_id: john_probably_sleeping
+      default_entity_id: binary_sensor.john_probably_sleeping
+      state: >-
+        {{ state_attr("binary_sensor.john_sleeping", "probability") > 0.65 }}

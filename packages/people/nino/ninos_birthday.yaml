@@ -1,7 +1,6 @@
-sensor:
-  - platform: template
-    sensors:
-      ninos_birthday:
-        friendly_name: Nino's Birthday
+template:
+  - sensor:
+      - name: "Nino's Birthday"
         unique_id: ninos_birthday
-        value_template: !secret ninos_birthday
+        default_entity_id: sensor.ninos_birthday
+        state: !secret ninos_birthday

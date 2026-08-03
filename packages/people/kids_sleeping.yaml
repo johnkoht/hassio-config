@@ -1,11 +1,11 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      kids_sleeping:
-        friendly_name: "Kids Sleeping"
-        value_template: >-
-          {{ 
-            states.input_boolean.ninos_bedroom_occupied.state == "on" 
+template:
+  - binary_sensor:
+      - name: "Kids Sleeping"
+        unique_id: kids_sleeping
+        default_entity_id: binary_sensor.kids_sleeping
+        state: >-
+          {{
+            states.input_boolean.ninos_bedroom_occupied.state == "on"
             and
             states.input_boolean.gianlucas_room_occupied.state == "on"
           }}

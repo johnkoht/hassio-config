@@ -1,0 +1,6 @@
+- sensor:
+    - name: "Nino's Bedroom Presence"
+      unique_id: ninos_bedroom_presence
+      default_entity_id: sensor.ninos_bedroom_presence
+      state: >-
+        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'nino_room')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

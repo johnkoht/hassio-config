@@ -1,9 +1,9 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      pool_should_doorbell_chime:
-        friendly_name: Pool - Should Doorbell Chime
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: "Pool - Should Doorbell Chime"
+        unique_id: pool_should_doorbell_chime
+        default_entity_id: binary_sensor.pool_should_doorbell_chime
+        state: >-
           {{
             states.input_boolean.pool_occupied.state == "on" and
             states.media_player.sonos_pool.state == "playing"
