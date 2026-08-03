@@ -38,40 +38,45 @@ style:
       $:
         ha-switch:
           $: |
-            .mdc-switch__track  {
-              height: 32px !important;
+            /* HA 2025+ frontend replaced the Material switch with a Web Awesome
+               component. Old .mdc-switch__* classes no longer exist. New DOM:
+               label[part=base].checked > input.input
+                 + span[part=control].switch > span[part=thumb].thumb */
+
+            [part="control"] {
               width: 50px !important;
+              height: 32px !important;
               border-radius: 16px !important;
               background: #484C51 !important;
-              opacity: 1 !important;
               border: none !important;
+              opacity: 1 !important;
+              padding: 0 !important;
+              box-sizing: border-box !important;
+              position: relative !important;
             }
-            .mdc-switch__thumb-underlay {
-              height: 32px !important;
-              width: 50px !important;
-              top: 0px !important;
-              left: -7px !important;
-            }
-            .mdc-switch__thumb {
+
+            [part="thumb"] {
+              position: absolute !important;
+              top: 50% !important;
+              left: 2px !important;
               height: 28px !important;
               width: 28px !important;
               border-radius: 14px !important;
               background: #FFFFFF !important;
-              box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 3px 8px rgba(0, 0, 0, 0.15), 0px 3px 1px rgba(0, 0, 0, 0.06);
               border: none !important;
+              box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.04),
+                          0px 3px 8px rgba(0, 0, 0, 0.15),
+                          0px 3px 1px rgba(0, 0, 0, 0.06) !important;
+              transform: translateY(-50%) !important;
+              transition: left 0.15s ease, background 0.15s ease !important;
             }
 
-            .mdc-switch__native-control {
-              width: 58px !important;
-              height: 32px !important;
-            }
-
-            .mdc-switch--checked .mdc-switch__thumb-underlay {
-              left: -8px !important;
-            }
-
-            .mdc-switch--checked .mdc-switch__track {
+            .checked [part="control"] {
               background: var(--primary-color) !important;
+            }
+
+            .checked [part="thumb"] {
+              left: 20px !important;
             }
           
 

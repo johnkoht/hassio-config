@@ -149,13 +149,7 @@ template:
           {# ------------------------------------------------------------------- #}
           {# FINAL SCORE (clamped 0-100)                                        #}
           {# ------------------------------------------------------------------- #}
-          {% if score < 0 %}
-            0
-          {% elif score > 100 %}
-            100
-          {% else %}
-            {{ score | round(0) }}
-          {% endif %}
+          {{ [[score | round(0) | int, 0] | max, 100] | min }}
 
         attributes:
           friendly_name: "House Security Score"
