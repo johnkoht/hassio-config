@@ -1,14 +1,13 @@
-type: vertical-stack
-cards:
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: '#office_media_player'
-    close_by_clicking_outside: false
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    close_action:
-      action: navigate
-      navigation_path: '#office'
+type: custom:bubble-card
+card_type: pop-up
+hash: '#office_media_player'
+close_by_clicking_outside: false
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+close_action:
+  action: navigate
+  navigation_path: '#office'
   
+cards:
   - type: custom:button-card
     template: kohbo_popup_page_title
     name: MEDIA PLAYER

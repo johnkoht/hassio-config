@@ -4,14 +4,13 @@
 # Shared popup used by the Climate header chip across all climate tabs
 # (Overview, HVAC, Air Quality).
 #
-type: vertical-stack
-cards:
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: '#climate_settings_popup'
-    close_by_clicking_outside: true
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+type: custom:bubble-card
+card_type: pop-up
+hash: '#climate_settings_popup'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
 
+cards:
   #
   # Title
   #

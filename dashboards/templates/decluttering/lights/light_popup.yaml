@@ -1,13 +1,12 @@
 light_popup:
   card:
-    type: vertical-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '[[popup_hash]]'
-        close_by_clicking_outside: false
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
+    type: custom:bubble-card
+    card_type: pop-up
+    hash: '[[popup_hash]]'
+    close_by_clicking_outside: false
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
 
+    cards:
       # 
       # Light Popup Title
       # 
