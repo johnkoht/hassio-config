@@ -878,7 +878,7 @@ var init_config = __esm(() => {
 function genericGetProperty(obj, key) {
   return key.split(".").reduce((o6, k2) => o6?.[k2], obj);
 }
-function genericSetProperty(obj, key, value) {
+function genericSetProperty(obj, key, value, options = { allowDeletion: false }) {
   const paths = key.split(".");
   const finalKey = paths.pop();
   const copy = Array.isArray(obj) ? [...obj] : { ...obj };
@@ -896,7 +896,11 @@ function genericSetProperty(obj, key, value) {
     currentObj = currentObj[p3];
     originalObj = originalObj[p3] ?? {};
   }
-  currentObj[finalKey] = value;
+  if ((value === null || value === undefined) && options.allowDeletion) {
+    delete currentObj[finalKey];
+  } else {
+    currentObj[finalKey] = value;
+  }
   return copy;
 }
 
@@ -1120,6 +1124,22 @@ var DASHBOARD_PADDING_STYLE_ID = "navbar-card-forced-padding-styles", DEFAULT_ST
 }, preventEventDefault = (e7) => {
   e7.preventDefault();
   e7.stopPropagation();
+}, scrollToTop = () => {
+  window.scrollTo({
+    behavior: "smooth",
+    left: 0,
+    top: 0
+  });
+}, matchesCurrentNavigationPath = (url) => {
+  const pathname = window.location.pathname;
+  if (!url)
+    return false;
+  if (url.startsWith("/")) {
+    return pathname === url;
+  }
+  const normalizedPathname = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  const normalizedUrl = url.endsWith("/") ? url.slice(0, -1) : url;
+  return normalizedPathname.endsWith(`/${normalizedUrl}`);
 }, conditionallyRender = (condition, renderContent) => {
   if (condition) {
     return renderContent();
@@ -1337,6 +1357,10 @@ var ACTIONS_WITH_CUSTOM_ENTITY, openQuickbar = (action) => {
     default:
       if (action != null) {
         triggerHaptic(context, actionType);
+        if (action.action === "navigate" && matchesCurrentNavigationPath(action.navigation_path)) {
+          scrollToTop();
+          return;
+        }
         const extractedEntity = ACTIONS_WITH_CUSTOM_ENTITY.includes(action.action) ? action.entity ?? action.entity_id : undefined;
         setTimeout(() => {
           fireDOMEvent(context, "hass-action", {
@@ -1352,7 +1376,12 @@ var ACTIONS_WITH_CUSTOM_ENTITY, openQuickbar = (action) => {
         }, 10);
       } else if (actionType === "tap" && (route?.url || popupItem?.url)) {
         triggerHaptic(context, actionType, true);
-        navigate(context, route?.url ?? popupItem?.url ?? "");
+        const destinationUrl = route?.url ?? popupItem?.url ?? "";
+        if (matchesCurrentNavigationPath(destinationUrl)) {
+          scrollToTop();
+          return;
+        }
+        navigate(context, destinationUrl);
       }
       break;
   }
@@ -1397,6 +1426,10 @@ var init_editor = __esm(() => {
     border: 0px;
     padding: 4px 8px !important;
     cursor: pointer;
+  }
+
+  .reset-overrides-button {
+    white-space: nowrap;
   }
 
   .editor-section {
@@ -1758,18 +1791,27 @@ var init_styles = __esm(() => {
   init_editor();
   HOST_STYLES = i`
   :host {
+    /* Sizes */
     --navbar-border-radius: var(--ha-card-border-radius, 12px);
-    --navbar-background-color: var(--card-background-color);
     --navbar-route-icon-size: 24px;
     --navbar-route-image-size: 32px;
+
+    /* Colors */
+    --navbar-background-color: var(--card-background-color);
     --navbar-primary-color: var(--primary-color);
+
+    /* Box shadow configuration */
     --navbar-box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.14);
     --navbar-box-shadow-desktop: var(--material-shadow-elevation-2dp);
     --navbar-box-shadow-mobile-floating: var(--material-shadow-elevation-2dp);
+    
+    /* Controls the left margin of the navbar when in desktop mode (the width of HA sidebar) */
+    --navbar-left-margin: var(--ha-sidebar-width, var(--mdc-drawer-width, 0px));
+    
+    /* Controls the edge inset of the navbar when in desktop mode (the width of HA sidebar) */
+    --navbar-edge-inset: 16px;
 
-    /* TODO rename this CSS variable */
-    --navbar-lateral-margin: 16px;
-
+    /* Z index configuration */
     --navbar-z-index: 3;
     --navbar-media-player-z-index: 4;
     --navbar-popup-backdrop-z-index: 900;
@@ -1853,8 +1895,8 @@ var init_styles = __esm(() => {
     flex-direction: column;
     top: unset;
     right: unset;
-    bottom: var(--navbar-lateral-margin);
-    left: calc(50% + var(--mdc-drawer-width, 0px) / 2);
+    bottom: var(--navbar-edge-inset);
+    left: calc(50% + var(--navbar-left-margin, 0px) / 2);
     transform: translate(-50%, 0);
   }
 
@@ -1866,8 +1908,8 @@ var init_styles = __esm(() => {
     flex-direction: column;
     bottom: unset;
     right: unset;
-    top: var(--navbar-lateral-margin);
-    left: calc(50% + var(--mdc-drawer-width, 0px) / 2);
+    top: var(--navbar-edge-inset);
+    left: calc(50% + var(--navbar-left-margin, 0px) / 2);
     transform: translate(-50%, 0);
   }
 
@@ -1877,7 +1919,7 @@ var init_styles = __esm(() => {
 
   .navbar.desktop.left {
     flex-direction: row-reverse;
-    left: calc(var(--mdc-drawer-width, 0px) + var(--navbar-lateral-margin));
+    left: calc(var(--navbar-left-margin, 0px) + var(--navbar-edge-inset));
     right: unset;
     bottom: unset;
     top: 50%;
@@ -1891,7 +1933,7 @@ var init_styles = __esm(() => {
 
   .navbar.desktop.right {
     flex-direction: row;
-    right: var(--navbar-lateral-margin);
+    right: var(--navbar-edge-inset);
     left: unset;
     bottom: unset;
     top: 50%;
@@ -1910,7 +1952,7 @@ var init_styles = __esm(() => {
 
   .navbar.desktop.docked.bottom {
     bottom: 0px;
-    left: var(--mdc-drawer-width, 0px);
+    left: var(--navbar-left-margin, 0px);
     right: 0px;
     width: auto;
     transform: none;
@@ -1923,7 +1965,7 @@ var init_styles = __esm(() => {
 
   .navbar.desktop.docked.top {
     top: 0px;
-    left: var(--mdc-drawer-width, 0px);
+    left: var(--navbar-left-margin, 0px);
     right: 0px;
     width: auto;
     transform: none;
@@ -1935,7 +1977,7 @@ var init_styles = __esm(() => {
   }
 
   .navbar.desktop.docked.left {
-    left: var(--mdc-drawer-width, 0px);
+    left: var(--navbar-left-margin, 0px);
     top: 0px;
     bottom: 0px;
     height: 100%;
@@ -2004,30 +2046,30 @@ var init_styles = __esm(() => {
   }
 
   :is(.media-player, .media-player-carousel).desktop.position-absolute.top-left {
-    left: var(--navbar-lateral-margin);
-    top: calc(var(--header-height) + var(--navbar-lateral-margin));
+    left: var(--navbar-edge-inset);
+    top: calc(var(--header-height) + var(--navbar-edge-inset));
   }
   :is(.media-player, .media-player-carousel).desktop.position-absolute.top-center {
     left: 50%;
-    top: calc(var(--header-height) + var(--navbar-lateral-margin));
+    top: calc(var(--header-height) + var(--navbar-edge-inset));
     transform: translateX(-50%);
   }
   :is(.media-player, .media-player-carousel).desktop.position-absolute.top-right {
-    right: var(--navbar-lateral-margin);
-    top: calc(var(--header-height) + var(--navbar-lateral-margin));
+    right: var(--navbar-edge-inset);
+    top: calc(var(--header-height) + var(--navbar-edge-inset));
   }
   :is(.media-player, .media-player-carousel).desktop.position-absolute.bottom-left {
-    left: calc(var(--mdc-drawer-width, 0px) + var(--navbar-lateral-margin));
-    bottom: var(--navbar-lateral-margin);
+    left: calc(var(--navbar-left-margin, 0px) + var(--navbar-edge-inset));
+    bottom: var(--navbar-edge-inset);
   }
   :is(.media-player, .media-player-carousel).desktop.position-absolute.bottom-center {
     left: 50%;
-    bottom: var(--navbar-lateral-margin);
+    bottom: var(--navbar-edge-inset);
     transform: translateX(-50%);
   }
   :is(.media-player, .media-player-carousel).desktop.position-absolute.bottom-right {
-    right: var(--navbar-lateral-margin);
-    bottom: var(--navbar-lateral-margin);
+    right: var(--navbar-edge-inset);
+    bottom: var(--navbar-edge-inset);
   }
 
   .media-player .media-player-bg {
@@ -2365,7 +2407,7 @@ var init_styles = __esm(() => {
   .navbar-popup.visible .popup-item {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: calc(var(--index) * 0.05s);
+    transition-delay: calc(var(--index) * var(--popup-item-stagger-step, 0.05s));
   }
 
   .popup-item.label-bottom {
@@ -2640,12 +2682,14 @@ var init_navbar_card_editor = __esm(() => {
       super(...arguments);
       this._config = { routes: [] };
       this._loadingComponents = false;
+      this._templateModeByField = {};
       this._lazyLoadedSections = {
         ["routes" /* routes */]: false
       };
     }
     firstUpdated(_changedProperties) {
       super.firstUpdated(_changedProperties);
+      this._templateModeByField = {};
       this._loadingComponents = true;
       loadHaComponents([
         "ha-form",
@@ -2676,20 +2720,102 @@ var init_navbar_card_editor = __esm(() => {
         this.requestUpdate();
       }, 200);
     }
+    _dispatchConfigChangedEvent() {
+      this.dispatchEvent(new CustomEvent("config-changed", {
+        detail: {
+          config: this._config
+        }
+      }));
+    }
     setConfig(config2) {
       this._config = config2;
     }
     updateConfig(newConfig) {
       this._config = deepMergeKeepArrays(this._config, newConfig);
-      this.dispatchEvent(new CustomEvent("config-changed", {
-        detail: { config: this._config }
-      }));
+      this._dispatchConfigChangedEvent();
     }
     updateConfigByKey(key, value) {
-      this._config = genericSetProperty(this._config, key, value);
-      this.dispatchEvent(new CustomEvent("config-changed", {
-        detail: { config: this._config }
-      }));
+      this._config = genericSetProperty(this._config, key, value, {
+        allowDeletion: true
+      });
+      this._dispatchConfigChangedEvent();
+    }
+    addMediaPlayer = () => {
+      const players = this._config.media_player?.players ?? [];
+      const newPlayer = { entity: "" };
+      this.updateConfig({
+        media_player: {
+          ...this._config.media_player,
+          players: [...players, newPlayer]
+        }
+      });
+    };
+    removeMediaPlayer = (playerIndex) => {
+      const players = [...this._config.media_player?.players ?? []];
+      players.splice(playerIndex, 1);
+      this.updateConfig({
+        media_player: {
+          ...this._config.media_player,
+          players: players.length === 0 ? undefined : players
+        }
+      });
+    };
+    addRouteOrPopup = (routeIndex) => {
+      let routes = [...this._config.routes ?? []];
+      const newItemData = {
+        icon: "mdi:alert-circle-outline",
+        label: "",
+        url: ""
+      };
+      if (routeIndex == null) {
+        routes = [...routes, newItemData];
+      } else {
+        const popup2 = [...routes[routeIndex].popup || [], newItemData];
+        routes[routeIndex] = { ...routes[routeIndex], popup: popup2 };
+      }
+      this.updateConfig({ routes });
+    };
+    removeRouteOrPopup = (routeIndex, popupIndex) => {
+      if (!this._config.routes || this._config.routes.length == 0)
+        return;
+      const routes = [...this._config.routes];
+      if (popupIndex == null) {
+        routes.splice(routeIndex, 1);
+      } else {
+        const popup2 = [...routes[routeIndex].popup || []];
+        popup2.splice(popupIndex, 1);
+        routes[routeIndex] = {
+          ...routes[routeIndex],
+          popup: popup2.length === 0 ? undefined : popup2
+        };
+      }
+      this.updateConfig({ routes: routes.length === 0 ? undefined : routes });
+    };
+    _hasTemplateOverrides() {
+      const { template: _template, routes, ...rest } = this._config;
+      const hasExtraFields = Object.keys(rest).some((k2) => k2 !== "type" && rest[k2] != null);
+      const hasRoutes = Array.isArray(routes) && routes.length > 0;
+      return hasExtraFields || hasRoutes;
+    }
+    _resetToTemplateOnly = () => {
+      const type = this._config.type;
+      this._config = {
+        ...type != null ? { type } : {},
+        template: this._config.template
+      };
+      this._dispatchConfigChangedEvent();
+    };
+    _isTemplateMode(configKey) {
+      const modeByField = this._templateModeByField[String(configKey)];
+      if (modeByField !== undefined)
+        return modeByField;
+      return isTemplate(genericGetProperty(this._config, configKey));
+    }
+    _setTemplateMode(configKey, isTemplate2) {
+      this._templateModeByField = {
+        ...this._templateModeByField,
+        [String(configKey)]: isTemplate2
+      };
     }
     makeHelpTooltipIcon(options) {
       return x`<ha-tooltip .placement="right" .content=${options.tooltip}>
@@ -2766,15 +2892,17 @@ var init_navbar_card_editor = __esm(() => {
     makeTemplatable(options) {
       const { label, inputType, ...rest } = options;
       const value = genericGetProperty(this._config, options.configKey);
-      const isTemplate2 = typeof value === "string" && value.trim().startsWith("[[[") && value.trim().endsWith("]]]");
+      const isTemplate2 = this._isTemplateMode(options.configKey);
       const toggleMode = () => {
-        let newValue = value ? value.toString() : "";
         if (isTemplate2) {
-          newValue = cleanTemplate(newValue);
+          this._setTemplateMode(options.configKey, false);
+          const uiValue = typeof value === "string" ? (cleanTemplate(value) ?? "").trim() : "";
+          this.updateConfigByKey(options.configKey, uiValue === "" ? null : uiValue);
         } else {
-          newValue = wrapTemplate(newValue);
+          this._setTemplateMode(options.configKey, true);
+          const templateSource = typeof value === "string" ? (cleanTemplate(value) ?? "").trim() : "";
+          this.updateConfigByKey(options.configKey, templateSource === "" ? null : wrapTemplate(templateSource));
         }
-        this.updateConfigByKey(options.configKey, newValue);
       };
       const buttonLabel = isTemplate2 ? "Switch to UI input" : "Switch to template";
       const buttonIcon = isTemplate2 ? "mdi:format-text" : "mdi:code-braces";
@@ -2795,7 +2923,7 @@ var init_navbar_card_editor = __esm(() => {
           </ha-button>
         </div>
         ${isTemplate2 ? this.makeTemplateEditor({
-        allowNull: false,
+        allowNull: true,
         configKey: options.configKey,
         helper: options.templateHelper,
         label: "",
@@ -2836,7 +2964,8 @@ var init_navbar_card_editor = __esm(() => {
           .hass=${this.hass}
           .value=${cleanTemplate(genericGetProperty(this._config, options.configKey) ?? "")}
           @value-changed=${(e7) => {
-        const templateValue = e7.target.value?.trim() == "" ? options.allowNull ? null : "[[[]]]" : wrapTemplate(e7.target.value);
+        this._setTemplateMode(options.configKey, true);
+        const templateValue = e7.target.value?.trim() == "" ? null : wrapTemplate(e7.target.value);
         this.updateConfigByKey(options.configKey, templateValue);
       }}></ha-code-editor>
         ${options.helper ? x`<div class="template-editor-helper">${options.helper}</div>` : x``}
@@ -3095,15 +3224,17 @@ var init_navbar_card_editor = __esm(() => {
                 Advanced features
               </h5>
               <div class="editor-section">
-                ${this.makeTemplateEditor({
+                ${this.makeTemplatable({
           configKey: `${baseConfigKey}.hidden`,
-          helper: BOOLEAN_JS_TEMPLATE_HELPER,
-          label: "Hidden"
+          inputType: "switch",
+          label: "Hidden",
+          templateHelper: BOOLEAN_JS_TEMPLATE_HELPER
         })}
-                ${!isPopup ? this.makeTemplateEditor({
+                ${!isPopup ? this.makeTemplatable({
           configKey: `${baseConfigKey}.selected`,
-          helper: BOOLEAN_JS_TEMPLATE_HELPER,
-          label: "Selected"
+          inputType: "switch",
+          label: "Selected",
+          templateHelper: BOOLEAN_JS_TEMPLATE_HELPER
         }) : x``}
               </div>
             </ha-expansion-panel>
@@ -3141,6 +3272,34 @@ var init_navbar_card_editor = __esm(() => {
         onDelete: () => this.removeRouteOrPopup(routeIndex, popupIndex),
         onDrop
       });
+    }
+    _chooseIconForAction(actionType) {
+      switch (actionType) {
+        case "hold_action" /* hold_action */:
+          return "mdi:gesture-tap-hold";
+        case "double_tap_action" /* double_tap_action */:
+          return "mdi:gesture-double-tap";
+        case "tap_action" /* tap_action */:
+        default:
+          return "mdi:gesture-tap";
+      }
+    }
+    _chooseLabelForAction(actionType) {
+      switch (actionType) {
+        case "tap_action" /* tap_action */:
+          return "Tap action";
+        case "hold_action" /* hold_action */:
+          return "Hold action";
+        case "double_tap_action" /* double_tap_action */:
+          return "Double tap action";
+        default:
+          return "";
+      }
+    }
+    isCustomAction(value) {
+      if (value === "none")
+        return false;
+      return Object.values(NavbarCustomActions).includes(value);
     }
     renderTemplateEditor() {
       const availableTemplates = getNavbarTemplates();
@@ -3314,10 +3473,11 @@ var init_navbar_card_editor = __esm(() => {
         ],
         label: "Desktop position"
       })}
-          ${this.makeTemplateEditor({
+          ${this.makeTemplatable({
         configKey: "media_player.show",
-        helper: BOOLEAN_JS_TEMPLATE_HELPER,
-        label: "Show media player widget"
+        inputType: "switch",
+        label: "Show media player widget",
+        templateHelper: BOOLEAN_JS_TEMPLATE_HELPER
       })}
         </div>
         <div class="editor-section">
@@ -3417,26 +3577,6 @@ var init_navbar_card_editor = __esm(() => {
         onDrop
       });
     }
-    addMediaPlayer = () => {
-      const players = this._config.media_player?.players ?? [];
-      const newPlayer = { entity: "" };
-      this.updateConfig({
-        media_player: {
-          ...this._config.media_player,
-          players: [...players, newPlayer]
-        }
-      });
-    };
-    removeMediaPlayer = (playerIndex) => {
-      const players = [...this._config.media_player?.players ?? []];
-      players.splice(playerIndex, 1);
-      this.updateConfig({
-        media_player: {
-          ...this._config.media_player,
-          players: players.length === 0 ? undefined : players
-        }
-      });
-    };
     renderDesktopEditor() {
       const labelVisibility = genericGetProperty(this._config, "desktop.show_labels") ?? DEFAULT_NAVBAR_CONFIG.desktop?.show_labels;
       return x`
@@ -3578,34 +3718,6 @@ var init_navbar_card_editor = __esm(() => {
         </div>
       </ha-expansion-panel>
     `;
-    }
-    _chooseIconForAction(actionType) {
-      switch (actionType) {
-        case "hold_action" /* hold_action */:
-          return "mdi:gesture-tap-hold";
-        case "double_tap_action" /* double_tap_action */:
-          return "mdi:gesture-double-tap";
-        case "tap_action" /* tap_action */:
-        default:
-          return "mdi:gesture-tap";
-      }
-    }
-    _chooseLabelForAction(actionType) {
-      switch (actionType) {
-        case "tap_action" /* tap_action */:
-          return "Tap action";
-        case "hold_action" /* hold_action */:
-          return "Hold action";
-        case "double_tap_action" /* double_tap_action */:
-          return "Double tap action";
-        default:
-          return "";
-      }
-    }
-    isCustomAction(value) {
-      if (value === "none")
-        return false;
-      return Object.values(NavbarCustomActions).includes(value);
     }
     makeActionSelector(options) {
       const ACTIONS = [
@@ -3757,20 +3869,29 @@ var init_navbar_card_editor = __esm(() => {
       return x`
     ${conditionallyRender(!this._loadingComponents, () => x`
       <div class="navbar-editor">
-        ${this._config.template != null && this._config.template?.trim() != "" ? x`<ha-alert alert-type="warning"
-              >You have the <code>template</code> field configured for
-              navbar-card. Using the editor will override the props for
-              <strong>this card only</strong>, but will not update the template
-              defined in your dashboard.
-              <br />
-              <a
-                href="${DOCS_LINKS.template}"
-                target="_blank"
-                rel="noopener"
-                >Check the documentation</a
-              >
-              to know how to configure your navbar-card templates.</ha-alert
-            >` : x``}
+        ${this._config.template != null && this._config.template?.trim() != "" ? x`
+              <ha-alert alert-type="warning">
+                You have the <code>template</code> field configured for
+                navbar-card. Using the editor will override the props for
+                <strong>this card only</strong>, but will not update the
+                template defined in your dashboard.
+                <br />
+                <a
+                  href="${DOCS_LINKS.template}"
+                  target="_blank"
+                  rel="noopener"
+                  >Check the documentation</a
+                >
+                to know how to configure your navbar-card templates.
+                <ha-button
+                  class="reset-overrides-button"
+                  slot="action"
+                  .disabled=${!this._hasTemplateOverrides()}
+                  @click=${this._resetToTemplateOnly}>
+                  Reset overrides
+                </ha-button>
+              </ha-alert>
+            ` : x``}
         ${this.renderTemplateEditor()} ${this.renderRoutesEditor()}
         ${this.renderDesktopEditor()} ${this.renderMobileEditor()}
         ${this.renderLayoutEditor()} ${this.renderMediaPlayerEditor()}
@@ -3779,37 +3900,6 @@ var init_navbar_card_editor = __esm(() => {
     `)}`;
     }
     static styles = getEditorStyles();
-    addRouteOrPopup = (routeIndex) => {
-      let routes = [...this._config.routes ?? []];
-      const newItemData = {
-        icon: "mdi:alert-circle-outline",
-        label: "",
-        url: ""
-      };
-      if (routeIndex == null) {
-        routes = [...routes, newItemData];
-      } else {
-        const popup2 = [...routes[routeIndex].popup || [], newItemData];
-        routes[routeIndex] = { ...routes[routeIndex], popup: popup2 };
-      }
-      this.updateConfig({ routes });
-    };
-    removeRouteOrPopup = (routeIndex, popupIndex) => {
-      if (!this._config.routes || this._config.routes.length == 0)
-        return;
-      const routes = [...this._config.routes];
-      if (popupIndex == null) {
-        routes.splice(routeIndex, 1);
-      } else {
-        const popup2 = [...routes[routeIndex].popup || []];
-        popup2.splice(popupIndex, 1);
-        routes[routeIndex] = {
-          ...routes[routeIndex],
-          popup: popup2.length === 0 ? undefined : popup2
-        };
-      }
-      this.updateConfig({ routes: routes.length === 0 ? undefined : routes });
-    };
   };
   __legacyDecorateClassTS([
     n4({ attribute: false })
@@ -3820,6 +3910,9 @@ var init_navbar_card_editor = __esm(() => {
   __legacyDecorateClassTS([
     r5()
   ], NavbarCardEditor.prototype, "_loadingComponents", undefined);
+  __legacyDecorateClassTS([
+    r5()
+  ], NavbarCardEditor.prototype, "_templateModeByField", undefined);
   __legacyDecorateClassTS([
     r5()
   ], NavbarCardEditor.prototype, "_lazyLoadedSections", undefined);
@@ -4216,7 +4309,7 @@ class MediaPlayer {
     `;
   }
   _renderCardContent(player, entity, state2) {
-    const image = state2.attributes.entity_picture;
+    const image = state2.attributes.entity_picture_local ?? state2.attributes.entity_picture;
     const pos = state2.attributes.media_position;
     const dur = state2.attributes.media_duration;
     const progress = pos != null && dur != null && dur > 0 ? pos / dur : null;
@@ -4227,7 +4320,7 @@ class MediaPlayer {
     return x`
       <div
         class="media-player-bg"
-        style=${albumBg ? `background-image: url(${state2.attributes.entity_picture});` : ""}></div>
+        style=${albumBg ? `background-image: url(${image});` : ""}></div>
       ${progress != null ? x`<div class="media-player-progress-bar">
               <div
                 class="media-player-progress-bar-fill"
@@ -4634,18 +4727,7 @@ class BaseRoute {
     return processTemplate(this._navbarCard._hass, this._navbarCard, this.data.hidden);
   }
   get selected() {
-    return this.data.selected != null ? processTemplate(this._navbarCard._hass, this._navbarCard, this.data.selected) : this._browserMatchesURL(this.url);
-  }
-  _browserMatchesURL(url) {
-    const pathname = window.location.pathname;
-    if (!url)
-      return false;
-    if (url.startsWith("/")) {
-      return pathname === url;
-    }
-    const normalizedPathname = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
-    const normalizedUrl = url.endsWith("/") ? url.slice(0, -1) : url;
-    return normalizedPathname.endsWith(`/${normalizedUrl}`);
+    return this.data.selected != null ? processTemplate(this._navbarCard._hass, this._navbarCard, this.data.selected) : matchesCurrentNavigationPath(this.url);
   }
   get tap_action() {
     return this.data.tap_action;
@@ -4690,6 +4772,7 @@ class Popup {
   open(target) {
     const anchorRect = target.getBoundingClientRect();
     const { style, labelPositionClassName, popupDirectionClassName } = this._getPopupStyles(anchorRect, !this._navbarCard.isDesktop ? "mobile" : this._navbarCard.config?.desktop?.position ?? "bottom" /* bottom */);
+    const popupStaggerStep = this._getPopupStaggerStepSeconds(this.items.length);
     this._navbarCard.focusedPopup = x`
       <div class="navbar-popup-backdrop"></div>
       <div
@@ -4701,7 +4784,7 @@ class Popup {
       mobile: !this._navbarCard.isDesktop,
       popuplabelbackground: this._shouldShowLabelBackground()
     })}
-        style="${style}">
+        style="${style}; --popup-item-stagger-step: ${popupStaggerStep}s;">
         ${this.items.map((popupItem) => popupItem.render(popupDirectionClassName, labelPositionClassName)).filter((x2) => x2 != null)}
       </div>
     `;
@@ -4746,6 +4829,14 @@ class Popup {
     const enabled = this._navbarCard.isDesktop ? this._navbarCard.config?.desktop?.show_popup_label_backgrounds : this._navbarCard.config?.mobile?.show_popup_label_backgrounds;
     return !!enabled;
   };
+  _getPopupStaggerStepSeconds(itemsCount) {
+    const maxTotalStaggerDelaySeconds = 0.25;
+    const minStepSeconds = 0.01;
+    const maxStepSeconds = 0.05;
+    const staggeredTransitions = Math.max(itemsCount - 1, 1);
+    const dynamicStep = maxTotalStaggerDelaySeconds / staggeredTransitions;
+    return Math.max(minStepSeconds, Math.min(maxStepSeconds, dynamicStep));
+  }
   _getPopupStyles(anchorRect, position) {
     const { top, left, x: x2, width, height } = anchorRect;
     const windowWidth = window.innerWidth;
@@ -4984,7 +5075,7 @@ init_types();
 init_utils();
 init_docs_links();
 // package.json
-var version = "1.5.0";
+var version = "1.6.1";
 
 // src/navbar-card.ts
 window.customCards = window.customCards || [];
