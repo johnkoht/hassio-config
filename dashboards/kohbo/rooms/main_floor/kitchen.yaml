@@ -214,16 +214,15 @@ cards:
   # 
   # Kitchen Settings Popup
   # 
-  - type: vertical-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '#kitchen_settings_popup'
-        close_by_clicking_outside: true
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 825px)
-        margin_top_desktop: calc(100vh - 825px)
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#kitchen_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 825px)
+    margin_top_desktop: calc(100vh - 825px)
         
+    cards:
       # 
       # Title
       # 

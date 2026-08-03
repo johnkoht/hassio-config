@@ -155,16 +155,15 @@ cards:
   # 
   # Dining Room Settings Popup
   # 
-  - type: vertical-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '#dining_room_settings_popup'
-        close_by_clicking_outside: true
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 525px)
-        margin_top_desktop: calc(100vh - 525px)
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#dining_room_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 525px)
+    margin_top_desktop: calc(100vh - 525px)
         
+    cards:
       # 
       # Title
       # 
