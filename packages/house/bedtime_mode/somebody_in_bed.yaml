@@ -2,13 +2,12 @@
 #
 # This automation detects if anybody is inbed
 #
-binary_sensor:
-  - platform: template
-    sensors:
-      somebody_in_bed:
-        friendly_name: Bedtime Mode - Somebody in Bed
+template:
+  - binary_sensor:
+      - name: Bedtime Mode - Somebody in Bed
         unique_id: somebody_in_bed
-        value_template: >-
+        default_entity_id: binary_sensor.somebody_in_bed
+        state: >-
           {{
             states.input_boolean.gianluca_in_bed.state == "on" or
             states.input_boolean.nino_in_bed.state == "on" or

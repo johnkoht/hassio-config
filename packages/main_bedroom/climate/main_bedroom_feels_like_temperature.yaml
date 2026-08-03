@@ -1,10 +1,10 @@
-sensor:
-  - platform: template
-    sensors:
-      main_bedroom_feels_like_temperature:
-        friendly_name: "Main Bedroom Feels Like Temperature"
+template:
+  - sensor:
+      - name: "Main Bedroom Feels Like Temperature"
+        unique_id: main_bedroom_feels_like_temperature
+        default_entity_id: sensor.main_bedroom_feels_like_temperature
         unit_of_measurement: '°F'
-        value_template: >
+        state: >
           {% set T = states('sensor.main_bedroom_mean_temperature') | float %}
           {% set R = states('sensor.main_bedroom_awair_humidity') | float %}
           {% set c = [ -42.379, 2.04901523, 10.14333127, -0.22475541, -6.83783e-3, -5.481717e-2, 1.22874e-3, 8.5282e-4, -1.99e-6 ] %}

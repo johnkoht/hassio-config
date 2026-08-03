@@ -6,12 +6,12 @@ sensor:
     timeout: 10
     away_timeout: 60
 
-  - platform: template
-    sensors:
-      audi_location:
-        friendly_name: Audi Location
+template:
+  - sensor:
+      - name: "Audi Location"
         unique_id: audi_location
-        value_template: >-
+        default_entity_id: sensor.audi_location
+        state: >-
           {% set state = states.sensor.audi_presence.state %}
 
           {% if state == "not_home" %}

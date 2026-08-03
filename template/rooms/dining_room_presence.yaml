@@ -1,7 +1,6 @@
-- platform: template
-  sensors:
-    dining_room_presence:
-      friendly_name: "Dining Room Presence"
-      unique_id: "dining_room_presence"
-      value_template: >-
+- sensor:
+    - name: "Dining Room Presence"
+      unique_id: dining_room_presence
+      default_entity_id: sensor.dining_room_presence
+      state: >-
         {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'dining_room')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

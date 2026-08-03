@@ -9,13 +9,12 @@ template:
         device_class: precipitation
 
 
-# 
-# Binary Sensor if rain probability is > 0
-# 
-binary_sensor:
-  - platform: template
-    sensors:
-      weather_incoming_rain:
-        friendly_name: "Weather Incoming Rain"
-        value_template: >
+  #
+  # Binary Sensor if rain probability is > 0
+  #
+  - binary_sensor:
+      - name: "Weather Incoming Rain"
+        unique_id: weather_incoming_rain
+        default_entity_id: binary_sensor.weather_incoming_rain
+        state: >
           {{ states.sensor.pirateweather_precip_probability.state | float(2) > 0 }}

@@ -6,12 +6,12 @@ sensor:
     timeout: 10
     away_timeout: 60
 
-  - platform: template
-    sensors:
-      bmw_location:
-        friendly_name: BMW Location
+template:
+  - sensor:
+      - name: "BMW Location"
         unique_id: bmw_location
-        value_template: >-
+        default_entity_id: sensor.bmw_location
+        state: >-
           {% set state = states.sensor.bmw_presence.state %}
 
           {% if state == "not_home" %}

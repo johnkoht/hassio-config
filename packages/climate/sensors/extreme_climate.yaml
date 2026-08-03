@@ -1,8 +1,8 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      extreme_climate:
-        friendly_name: Extreme Climate
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: "Extreme Climate"
+        unique_id: extreme_climate
+        default_entity_id: binary_sensor.extreme_climate
+        state: >-
           {% set temp = states.sensor.tempest_temperature.state | float %}
           {{ temp > 90 or temp < 20 }}
