@@ -1,6 +1,0 @@
-- sensor:
-    - name: "Kitchen Presence"
-      unique_id: kitchen_presence
-      default_entity_id: sensor.kitchen_presence
-      state: >-
-        {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

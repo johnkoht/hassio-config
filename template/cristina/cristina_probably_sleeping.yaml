@@ -1,9 +1,0 @@
-- binary_sensor:
-    - name: "Cristina Probably Sleeping"
-      unique_id: cristina_probably_sleeping
-      default_entity_id: binary_sensor.cristina_probably_sleeping
-      state: >-
-        {{
-          states.binary_sensor.cristina_bed_occupied.state == "on" and
-          state_attr("binary_sensor.cristina_sleeping", "probability") > 0.6
-        }}
