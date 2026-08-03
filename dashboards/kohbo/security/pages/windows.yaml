@@ -52,16 +52,15 @@ cards:
   # 
   # Windows Settings Popup
   # 
-  - type: vertical-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '#windows_settings_popup'
-        close_by_clicking_outside: true
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-        margin_top_mobile: calc(100vh - 425px)
-        margin_top_desktop: calc(100vh - 425px)
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#windows_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 425px)
+    margin_top_desktop: calc(100vh - 425px)
 
+    cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Windows Settings

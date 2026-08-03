@@ -95,14 +95,13 @@ cards:
   # 
   # Alarm Panel Settings Popup
   # 
-  - type: vertical-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: pop-up
-        hash: '#alarm_panel_settings_popup'
-        close_by_clicking_outside: true
-        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#alarm_panel_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
 
+    cards:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Alarm Panel Settings
