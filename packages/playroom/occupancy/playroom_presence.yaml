@@ -1,0 +1,13 @@
+# Playroom Presence
+#
+# Names of the people currently detected in the playroom area,
+# derived from BLE room presence (group.room_presence_devices).
+#
+
+template:
+  - sensor:
+      - name: "Playroom Presence"
+        unique_id: playroom_presence
+        default_entity_id: sensor.playroom_presence
+        state: >-
+          {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

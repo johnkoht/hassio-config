@@ -1,0 +1,12 @@
+# John Probably Sleeping
+#
+# True when John's sleep-probability (bayesian) sensor is above 0.65.
+#
+
+template:
+  - binary_sensor:
+      - name: "John Probably Sleeping"
+        unique_id: john_probably_sleeping
+        default_entity_id: binary_sensor.john_probably_sleeping
+        state: >-
+          {{ state_attr("binary_sensor.john_sleeping", "probability") > 0.65 }}

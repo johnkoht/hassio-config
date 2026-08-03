@@ -1,0 +1,20 @@
+# Sun Elevation
+#
+# Current solar elevation angle (degrees) from sun.sun, with a
+# day/night icon. Used by outdoor lighting and room-mode automations.
+#
+
+template:
+  - sensor:
+      - name: "Sun Elevation"
+        unique_id: sun_elevation
+        default_entity_id: sensor.sun_elevation
+        state: "{{ state_attr('sun.sun', 'elevation') }}"
+        unit_of_measurement: "degrees"
+        icon: >
+          {% set elevation = state_attr('sun.sun', 'elevation')|default(0) %}
+          {% if elevation > 0 %}
+            mdi:weather-sunny
+          {% else %}
+            mdi:weather-night
+          {% endif %}
