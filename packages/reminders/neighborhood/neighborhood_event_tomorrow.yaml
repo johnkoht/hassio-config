@@ -1,9 +1,9 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      neighborhood_event_tomorrow:
-        friendly_name: Neighborhood Event Tomorrow
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: "Neighborhood Event Tomorrow"
+        unique_id: neighborhood_event_tomorrow
+        default_entity_id: binary_sensor.neighborhood_event_tomorrow
+        state: >-
           {% set t = now() %}
           {% set midnight = today_at() %}
           {% set event = state_attr("calendar.golf_acres", "start_time") | as_datetime | as_local %}

@@ -20,42 +20,7 @@ binary_sensor:
       - binary_sensor.main_bedroom_motion_sensor_occupancy
       - binary_sensor.main_bathroom_motion_sensor_occupancy
 
-  # Upper Floor Room Presence
-  #
-  # Binary sensor to reeturn if anybody is detected
-  # via BLE presence.
-  - platform: template
-    sensors:
-      upper_floor_any_room_presence:
-        friendly_name: Upper Floor Any Room Presence
-        value_template: >-
-          {{ 
-            expand('group.room_presence_devices') |
-            selectattr('state', 'in', ['main_bedroom', 'main_bathroom', 'gianlucas_room', 'nino_room', 'upstairs_guest_bedroom']) |
-            map(attribute='name') |
-            list |
-            length > 0
-          }}
-
-  # 
-  # Upper Floor Occupied
-  # 
-  - platform: template
-    sensors:
-      upper_floor_occupied:
-        friendly_name: Upper Floor Occupied
-        unique_id: upper_floor_occupied
-        value_template: >-
-          {{
-            states.input_boolean.main_bedroom_occupied.state == "on"
-            or states.input_boolean.main_bathroom_occupied.state == "on"
-            or states.input_boolean.gianlucas_room_occupied.state == "on"
-            or states.input_boolean.ninos_bedroom_occupied.state == "on"
-            or states.input_boolean.upstairs_hallway_occupied.state == "on"
-          }}
-
-
-# 
+#
 # Upper Floor Areas Group
 # 
 group:
@@ -75,6 +40,37 @@ group:
 # attributes based on the upper floor areas.
 # 
 template:
+  # Upper Floor Room Presence
+  #
+  # Binary sensor to reeturn if anybody is detected
+  # via BLE presence.
+  - binary_sensor:
+      - name: "Upper Floor Any Room Presence"
+        unique_id: upper_floor_any_room_presence
+        default_entity_id: binary_sensor.upper_floor_any_room_presence
+        state: >-
+          {{
+            expand('group.room_presence_devices') |
+            selectattr('state', 'in', ['main_bedroom', 'main_bathroom', 'gianlucas_room', 'nino_room', 'upstairs_guest_bedroom']) |
+            map(attribute='name') |
+            list |
+            length > 0
+          }}
+
+      # Upper Floor Occupied
+      #
+      - name: "Upper Floor Occupied"
+        unique_id: upper_floor_occupied
+        default_entity_id: binary_sensor.upper_floor_occupied
+        state: >-
+          {{
+            states.input_boolean.main_bedroom_occupied.state == "on"
+            or states.input_boolean.main_bathroom_occupied.state == "on"
+            or states.input_boolean.gianlucas_room_occupied.state == "on"
+            or states.input_boolean.ninos_bedroom_occupied.state == "on"
+            or states.input_boolean.upstairs_hallway_occupied.state == "on"
+          }}
+
   - sensor:
       - name: "Upper Floor"
         unique_id: upper_floor

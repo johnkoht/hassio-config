@@ -3,12 +3,12 @@
 # Simple binary sensor to check if the audio is
 # NOT in the "Inactive" state, which means it's
 # probably being used by zoom, etc
-binary_sensor:
-  - platform: template
-    sensors:
-      john_laptop_audio_active:
-        friendly_name: John laptop audio active
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: John laptop audio active
+        unique_id: john_laptop_audio_active
+        default_entity_id: binary_sensor.john_laptop_audio_active
+        state: >-
           {{
             "airpod" in (states.sensor.johns_macbook_pro_active_audio_input.state | lower)
             or

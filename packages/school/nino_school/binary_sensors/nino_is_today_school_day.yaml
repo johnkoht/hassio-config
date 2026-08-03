@@ -1,14 +1,14 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      nino_is_today_school_day:
-        friendly_name: Nino Is Today School Day
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: "Nino Is Today School Day"
+        unique_id: nino_is_today_school_day
+        default_entity_id: binary_sensor.nino_is_today_school_day
+        state: >-
           {% set event = strptime(state_attr('calendar.ninos_school', 'start_time'), '%Y-%m-%d %H:%M:%S') %}
           {{
             (
               event.year == now().year
-              and 
+              and
               event.month == now().month
               and
               event.day == now().day

@@ -1,0 +1,13 @@
+# Gianluca's Bedroom Presence
+#
+# Names of the people currently detected in Gianluca's bedroom area,
+# derived from BLE room presence (group.room_presence_devices).
+#
+
+template:
+  - sensor:
+      - name: "Gianluca's Bedroom Presence"
+        unique_id: gianlucas_bedroom_presence
+        default_entity_id: sensor.gianlucas_bedroom_presence
+        state: >-
+          {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gianlucas_room')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

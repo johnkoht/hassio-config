@@ -1,6 +1,6 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      energy_prices_are_high:
-        friendly_name: Energy Prices Are High
-        value_template: "{{ states.sensor.energy_price.state | float > 0.06 }}"
+template:
+  - binary_sensor:
+      - name: "Energy Prices Are High"
+        unique_id: energy_prices_are_high
+        default_entity_id: binary_sensor.energy_prices_are_high
+        state: "{{ states.sensor.energy_price.state | float > 0.06 }}"

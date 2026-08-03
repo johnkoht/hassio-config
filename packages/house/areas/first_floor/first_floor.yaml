@@ -24,42 +24,7 @@ binary_sensor:
       - binary_sensor.playroom_occupancy
       - binary_sensor.office_aqara_occupancy
 
-
-  # First Floor Room Presence
-  #
-  # Binary sensor to reeturn if anybody is detected
-  # via BLE presence.
-  - platform: template
-    sensors:
-      first_floor_any_room_presence:
-        friendly_name: First Floor Any Room Presence
-        value_template: >-
-          {{ 
-            expand('group.room_presence_devices') |
-            selectattr('state', 'in', ['playroom', 'kitchen', 'family_room', 'office']) |
-            map(attribute='name') |
-            list |
-            length > 0
-          }}
-
-  - platform: template
-    sensors:
-      first_floor_occupied:
-        friendly_name: First Floor Occupied
-        unique_id: first_floor_occupied
-        value_template: >-
-          {{
-            states.input_boolean.kitchen_occupied.state == "on"
-            or states.input_boolean.family_room_occupied.state == "on"
-            or states.input_boolean.playroom_occupied.state == "on"
-            or states.input_boolean.office_occupied.state == "on"
-            or states.input_boolean.dining_room_occupied.state == "on"
-            or states.input_boolean.mudroom_occupied.state == "on"
-            or states.input_boolean.foyer_occupied.state == "on"
-            or states.input_boolean.jr_suite_occupied.state == "on"
-          }}
-
-# 
+#
 # First Floor Areas Group
 # 
 group:
@@ -83,6 +48,38 @@ group:
 # attributes based on the first floor areas.
 # 
 template:
+  # First Floor Room Presence
+  #
+  # Binary sensor to reeturn if anybody is detected
+  # via BLE presence.
+  - binary_sensor:
+      - name: "First Floor Any Room Presence"
+        unique_id: first_floor_any_room_presence
+        default_entity_id: binary_sensor.first_floor_any_room_presence
+        state: >-
+          {{
+            expand('group.room_presence_devices') |
+            selectattr('state', 'in', ['playroom', 'kitchen', 'family_room', 'office']) |
+            map(attribute='name') |
+            list |
+            length > 0
+          }}
+
+      - name: "First Floor Occupied"
+        unique_id: first_floor_occupied
+        default_entity_id: binary_sensor.first_floor_occupied
+        state: >-
+          {{
+            states.input_boolean.kitchen_occupied.state == "on"
+            or states.input_boolean.family_room_occupied.state == "on"
+            or states.input_boolean.playroom_occupied.state == "on"
+            or states.input_boolean.office_occupied.state == "on"
+            or states.input_boolean.dining_room_occupied.state == "on"
+            or states.input_boolean.mudroom_occupied.state == "on"
+            or states.input_boolean.foyer_occupied.state == "on"
+            or states.input_boolean.jr_suite_occupied.state == "on"
+          }}
+
   - sensor:
       - name: "First Floor"
         unique_id: first_floor
