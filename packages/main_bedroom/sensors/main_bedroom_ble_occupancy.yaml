@@ -3,12 +3,11 @@
 # The main bedroom has two BLE base stations. This sensor
 # combines them into one to check if anybody is present.
 #
-binary_sensor:
-  - platform: template
-    sensors:
-      main_bedroom_ble_occupancy:
-        friendly_name: "Main Bedroom BLE occupancy"
+template:
+  - binary_sensor:
+      - name: "Main Bedroom BLE occupancy"
         unique_id: "main_bedroom_ble_occupancy"
+        default_entity_id: binary_sensor.main_bedroom_ble_occupancy
         device_class: occupancy
-        value_template: >-
+        state: >-
           {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['main_bedroom'])|map(attribute='name')|list | length > 0 }}

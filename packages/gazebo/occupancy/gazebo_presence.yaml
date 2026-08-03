@@ -1,0 +1,14 @@
+# Gazebo Presence
+#
+# Names of the people currently detected in the gazebo area,
+# derived from BLE room presence (group.room_presence_devices).
+# Feeds the pool occupancy automation.
+#
+
+template:
+  - sensor:
+      - name: "Gazebo Presence"
+        unique_id: gazebo_presence
+        default_entity_id: sensor.gazebo_presence
+        state: >-
+          {{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gazebo')|map(attribute='name')|list | join(', ') | regex_replace('Room Presence','') }}

@@ -3,12 +3,11 @@
 # The Kitchen has two BLE base stations. This sensor
 # combines them into one to check if anybody is present.
 #
-binary_sensor:
-  - platform: template
-    sensors:
-      kitchen_ble_occupancy:
-        friendly_name: "Kitchen BLE occupancy"
+template:
+  - binary_sensor:
+      - name: "Kitchen BLE occupancy"
         unique_id: "kitchen_ble_occupancy"
+        default_entity_id: binary_sensor.kitchen_ble_occupancy
         device_class: occupancy
-        value_template: >-
+        state: >-
           {{ expand('group.room_presence_devices')|selectattr('state', 'in', ['kitchen'])|map(attribute='name')|list | length > 0 }}

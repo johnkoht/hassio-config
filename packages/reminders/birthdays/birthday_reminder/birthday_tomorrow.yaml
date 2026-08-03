@@ -1,9 +1,9 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      birthday_tomorrow:
-        friendly_name: Birthday Tomorrow
-        value_template: >-
+template:
+  - binary_sensor:
+      - name: "Birthday Tomorrow"
+        unique_id: birthday_tomorrow
+        default_entity_id: binary_sensor.birthday_tomorrow
+        state: >-
           {% set t = now() %}
           {% set midnight = today_at() %}
           {% set event = state_attr("calendar.birthdays_2", "start_time") | as_datetime | as_local %}

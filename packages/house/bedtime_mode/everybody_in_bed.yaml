@@ -3,13 +3,12 @@
 # This automation checks that the kids are in bed
 # and that all adults that are home are in bed
 #
-binary_sensor:
-  - platform: template
-    sensors:
-      everybody_in_bed:
-        friendly_name: Bedtime Mode - Everybody in Bed
+template:
+  - binary_sensor:
+      - name: Bedtime Mode - Everybody in Bed
         unique_id: everybody_in_bed
-        value_template: >-
+        default_entity_id: binary_sensor.everybody_in_bed
+        state: >-
           {% set kids = [
             is_state('input_boolean.gianluca_in_bed', 'on'),
             is_state('input_boolean.nino_in_bed', 'on')
