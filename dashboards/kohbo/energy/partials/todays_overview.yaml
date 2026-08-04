@@ -179,14 +179,15 @@ cards:
           func: diff
           duration: 1h
         color_threshold:
+          # Hourly kWh: recent daily ~100 kWh ⇒ ~4 kWh/hr avg, peaks ~9
           - value: 0
-            color: var(--success-color)
-          - value: 2.0
-            color: var(--accent-color)
-          - value: 3.5
-            color: var(--orange-color)
-          - value: 5.0
-            color: var(--error-color)
+            color: var(--success-color)   # below average
+          - value: 3
+            color: var(--accent-color)    # average
+          - value: 5
+            color: var(--orange-color)    # above average
+          - value: 7
+            color: var(--error-color)     # extreme
         yaxis_id: energy
         show:
           extremas: false

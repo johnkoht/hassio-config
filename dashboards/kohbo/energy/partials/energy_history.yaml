@@ -225,12 +225,15 @@ cards:
               background: transparent;
               box-shadow: none;
               border: none;
+              min-height: 190px;
             }
         header:
           show: false
         apex_config:
           chart:
-            height: 160
+            height: 180
+            redrawOnParentResize: true
+            redrawOnWindowResize: true
           grid:
             borderColor: 'rgba(255,255,255,0.05)'
           xaxis:
@@ -262,14 +265,15 @@ cards:
               period: day
               align: start
             color_threshold:
+              # Real whole-home daily usage: median ~81, recent avg ~100, p90 ~147, max ~208 kWh/day
               - value: 0
-                color: var(--success-color)
-              - value: 10
-                color: var(--accent-color)
-              - value: 15
-                color: var(--orange-color)
-              - value: 20
-                color: var(--error-color)
+                color: var(--success-color)   # below average
+              - value: 80
+                color: var(--accent-color)    # average
+              - value: 120
+                color: var(--orange-color)    # above average
+              - value: 160
+                color: var(--error-color)     # extreme
 
       #--- Past 30 Days (daily bars) ---
       "Past 30 Days":
@@ -285,12 +289,15 @@ cards:
               background: transparent;
               box-shadow: none;
               border: none;
+              min-height: 190px;
             }
         header:
           show: false
         apex_config:
           chart:
-            height: 160
+            height: 180
+            redrawOnParentResize: true
+            redrawOnWindowResize: true
           grid:
             borderColor: 'rgba(255,255,255,0.05)'
           xaxis:
@@ -322,14 +329,15 @@ cards:
               period: day
               align: start
             color_threshold:
+              # Real whole-home daily usage: median ~81, recent avg ~100, p90 ~147, max ~208 kWh/day
               - value: 0
-                color: var(--success-color)
-              - value: 10
-                color: var(--accent-color)
-              - value: 15
-                color: var(--orange-color)
-              - value: 20
-                color: var(--error-color)
+                color: var(--success-color)   # below average
+              - value: 80
+                color: var(--accent-color)    # average
+              - value: 120
+                color: var(--orange-color)    # above average
+              - value: 160
+                color: var(--error-color)     # extreme
 
       #--- Weekly (12 weeks, weekly aggregated bars) ---
       "Weekly":
@@ -345,12 +353,15 @@ cards:
               background: transparent;
               box-shadow: none;
               border: none;
+              min-height: 190px;
             }
         header:
           show: false
         apex_config:
           chart:
-            height: 160
+            height: 180
+            redrawOnParentResize: true
+            redrawOnWindowResize: true
           grid:
             borderColor: 'rgba(255,255,255,0.05)'
           xaxis:
@@ -382,14 +393,15 @@ cards:
               period: week
               align: start
             color_threshold:
+              # Weekly ≈ 7 × daily (~630 avg, high ~1000+ kWh/week)
               - value: 0
-                color: var(--success-color)
-              - value: 70
-                color: var(--accent-color)
-              - value: 105
-                color: var(--orange-color)
-              - value: 140
-                color: var(--error-color)
+                color: var(--success-color)   # below average
+              - value: 560
+                color: var(--accent-color)    # average
+              - value: 840
+                color: var(--orange-color)    # above average
+              - value: 1120
+                color: var(--error-color)     # extreme
 
       #--- Monthly (12 months, monthly aggregated bars) ---
       "Monthly":
@@ -405,12 +417,15 @@ cards:
               background: transparent;
               box-shadow: none;
               border: none;
+              min-height: 190px;
             }
         header:
           show: false
         apex_config:
           chart:
-            height: 160
+            height: 180
+            redrawOnParentResize: true
+            redrawOnWindowResize: true
           grid:
             borderColor: 'rgba(255,255,255,0.05)'
           xaxis:
@@ -442,8 +457,15 @@ cards:
               period: month
               align: start
             color_threshold:
+              # Monthly ≈ 30 × daily. Normal recent months ~2500-3800 kWh (Jun 2502, Jul 3809)
               - value: 0
-                color: var(--success-color)D
+                color: var(--success-color)   # below average
+              - value: 2400
+                color: var(--accent-color)    # average
+              - value: 3600
+                color: var(--orange-color)    # above average
+              - value: 4800
+                color: var(--error-color)     # extreme
 
   #-----------------------------------------------------------------------
   # Progress Bar Row: Week & Month at a glance
@@ -499,12 +521,14 @@ cards:
           b: |
             [[[
               const weekly = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
-              const target = 420;
+              // Adaptive weekly budget = daily baseline × 7 (self-calibrates to real usage)
+              const daily = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
+              const target = daily > 0 ? daily * 7 : 700;
               const pct = Math.min((weekly / target) * 100, 100);
               let color = 'var(--success-color)';
-              if (weekly > 300) color = 'var(--accent-color)';
-              if (weekly > 440) color = 'var(--orange-color)';
-              if (weekly > 560) color = 'var(--error-color)';
+              if (weekly > target * 0.85) color = 'var(--accent-color)';
+              if (weekly > target * 1.15) color = 'var(--orange-color)';
+              if (weekly > target * 1.45) color = 'var(--error-color)';
               const empty = 'var(--divider-color)';
               let output = '<div style="display:flex;gap:2px;width:100%;height:5px;">';
               for (let i = 1; i <= 10; i++) {
@@ -558,12 +582,16 @@ cards:
           b: |
             [[[
               const monthly = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
-              const target = 1800;
+              // Adaptive monthly budget = daily baseline × days in current month
+              const daily = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
+              const nowM = new Date();
+              const daysInMonth = new Date(nowM.getFullYear(), nowM.getMonth() + 1, 0).getDate();
+              const target = daily > 0 ? daily * daysInMonth : 3000;
               const pct = Math.min((monthly / target) * 100, 100);
               let color = 'var(--success-color)';
-              if (monthly > 1300) color = 'var(--accent-color)';
-              if (monthly > 1900) color = 'var(--orange-color)';
-              if (monthly > 2500) color = 'var(--error-color)';
+              if (monthly > target * 0.85) color = 'var(--accent-color)';
+              if (monthly > target * 1.15) color = 'var(--orange-color)';
+              if (monthly > target * 1.45) color = 'var(--error-color)';
               const empty = 'var(--divider-color)';
               let output = '<div style="display:flex;gap:2px;width:100%;height:5px;">';
               for (let i = 1; i <= 10; i++) {
