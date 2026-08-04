@@ -21,10 +21,21 @@ template:
         unit_of_measurement: "kWh"
         device_class: energy
         state_class: total_increasing
+        # Only publish when BOTH meters report a real value. The previous
+        # `| float(0)` turned an `unavailable` meter into 0, so this total
+        # plunged (e.g. 11154 -> 2602) and snapped back — and the downstream
+        # total_increasing utility meters (whole_home_energy_*) counted the
+        # recovery as a false ~10k kWh reset. Going `unavailable` instead means
+        # utility_meter skips the gap and never sees a phantom reset.
+        availability: >
+          {{ has_value('sensor.home_energy_meter_1_electric_consumption_kwh')
+             and has_value('sensor.home_energy_meter_2_electric_consumption_kwh') }}
         state: >
           {{
-            (states('sensor.home_energy_meter_1_electric_consumption_kwh') | float(0))
-            + (states('sensor.home_energy_meter_2_electric_consumption_kwh') | float(0))
+            (
+              states('sensor.home_energy_meter_1_electric_consumption_kwh') | float
+              + states('sensor.home_energy_meter_2_electric_consumption_kwh') | float
+            ) | round(3)
           }}
 
 utility_meter:
