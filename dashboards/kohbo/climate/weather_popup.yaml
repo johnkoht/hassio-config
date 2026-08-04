@@ -331,7 +331,7 @@ cards:
       # Daily Weather
       # 
       - type: custom:clock-weather-card
-        entity: weather.pirateweather
+        entity: weather.kpwk
         forecast_rows: 7
         animated_icon: true
         date_pattern: ccc, d.MM.yy
