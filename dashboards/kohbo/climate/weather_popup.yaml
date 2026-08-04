@@ -331,7 +331,7 @@ cards:
       # Daily Weather
       # 
       - type: custom:clock-weather-card
-        entity: weather.kpwk
+        entity: weather.tempest_weather_station
         forecast_rows: 7
         animated_icon: true
         date_pattern: ccc, d.MM.yy
