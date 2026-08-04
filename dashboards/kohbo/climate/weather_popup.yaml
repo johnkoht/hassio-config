@@ -327,9 +327,16 @@ cards:
       - type: custom:button-card
         template: kohbo_card_small_header
         name: Daily Forecast
-      # 
+      # --- TEMP DIAGNOSTIC: built-in weather card to bisect entity vs clock-weather-card. Remove after. ---
+      - type: weather-forecast
+        entity: weather.tempest_weather_station
+        forecast_type: daily
+        show_current: false
+        show_forecast: true
+      # --- end diagnostic ---
+      #
       # Daily Weather
-      # 
+      #
       - type: custom:clock-weather-card
         entity: weather.tempest_weather_station
         forecast_rows: 7
