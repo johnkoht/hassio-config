@@ -87,6 +87,14 @@ cards:
         name: Week
         show_icon: false
         show_state: false
+        # Server-side Jinja renders the active pill on first paint (button-card's
+        # JS styles below only evaluate one tick after mount, so the highlight was
+        # missing on load). "Week" is the default when state isn't another option.
+        card_mod:
+          style: |
+            ha-card {
+              background: {{ 'var(--accent-color)' if states('input_select.energy_history_timeframe') not in ['Past 30 Days','Weekly','Monthly'] else 'transparent' }} !important;
+            }
         styles:
           card:
             - background: |
@@ -119,6 +127,11 @@ cards:
         name: 30 Days
         show_icon: false
         show_state: false
+        card_mod:
+          style: |
+            ha-card {
+              background: {{ 'var(--accent-color)' if is_state('input_select.energy_history_timeframe','Past 30 Days') else 'transparent' }} !important;
+            }
         styles:
           card:
             - background: |
@@ -149,6 +162,11 @@ cards:
         name: Weekly
         show_icon: false
         show_state: false
+        card_mod:
+          style: |
+            ha-card {
+              background: {{ 'var(--accent-color)' if is_state('input_select.energy_history_timeframe','Weekly') else 'transparent' }} !important;
+            }
         styles:
           card:
             - background: |
@@ -179,6 +197,11 @@ cards:
         name: Monthly
         show_icon: false
         show_state: false
+        card_mod:
+          style: |
+            ha-card {
+              background: {{ 'var(--accent-color)' if is_state('input_select.energy_history_timeframe','Monthly') else 'transparent' }} !important;
+            }
         styles:
           card:
             - background: |
@@ -408,7 +431,9 @@ cards:
         type: custom:apexcharts-card
         experimental:
           color_threshold: true
-        graph_span: 12M
+        # 365d (not "12M") — apexcharts-card's duration parser is unreliable with
+        # month units, which collapsed the chart to only the current month.
+        graph_span: 365d
         span:
           end: month
         card_mod:
