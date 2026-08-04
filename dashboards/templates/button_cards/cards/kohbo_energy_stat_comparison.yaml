@@ -29,50 +29,57 @@ kohbo_energy_stat_comparison:
         const value = parseFloat(entity?.state || 0);
         const unit = variables.unit_label || 'kWh';
         const type = variables.comparison_type || 'daily';
-        // Round up for weekly/monthly (larger numbers), keep decimal for daily
-        const displayValue = (type === 'weekly' || type === 'monthly') ? Math.ceil(value) : value.toFixed(1);
+        // Compact large numbers: 22198 -> 22.2k, 3000 -> 3,000, keep decimal for daily
+        const fmt = (n) => {
+          if (n >= 10000) return (n / 1000).toFixed(1) + 'k';
+          if (n >= 1000) return Math.round(n).toLocaleString();
+          return Math.ceil(n).toString();
+        };
+        const displayValue = (type === 'weekly' || type === 'monthly') ? fmt(value) : value.toFixed(1);
         return `<span style="font-size:26px;font-weight:600;color:var(--primary-text-color);">${displayValue}</span><span style="font-size:12px;color:var(--secondary-text-color);margin-left:4px;">${unit}</span>`;
       ]]]
     c: |
       [[[
         const type = variables.comparison_type || 'daily';
         const label = variables.comparison_label || 'vs avg';
-        let pct = 0;
-        
+
         // Use energy_expected_full_day as the baseline - this sums hourly baselines
         // and is consistent with what the chart shows. DO NOT use whole_home_daily_energy_stats
         // as that incorrectly averages intermediate utility meter values throughout each day.
         const dailyBaseline = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
-        
+
+        let actual = 0;
+        let expected = 0;
         if (type === 'daily') {
           // Compare today's forecast to the baseline expected for today
-          const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
-          if (dailyBaseline > 0) pct = Math.round((forecast - dailyBaseline) / dailyBaseline * 100);
+          actual = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
+          expected = dailyBaseline;
         } else if (type === 'weekly') {
-          // Compare this week's usage to expected baseline for the same period
-          const thisWeek = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
-          const now = new Date();
-          // Note: Utility meters typically reset on Monday (weekday 1), not Sunday
-          // getDay(): 0=Sunday, 1=Monday, ..., 6=Saturday
-          // Days elapsed since Monday: Mon=1, Tue=2, ..., Sun=7
-          const dayOfWeek = now.getDay();
-          const daysElapsed = dayOfWeek === 0 ? 7 : dayOfWeek; // Sunday = end of week (7 days)
-          
-          // Calculate expected usage for the elapsed days
-          const expectedForPeriod = dailyBaseline * daysElapsed;
-          if (expectedForPeriod > 0) pct = Math.round((thisWeek - expectedForPeriod) / expectedForPeriod * 100);
+          // Compare this week's usage to expected baseline for the same period.
+          // getDay(): 0=Sun..6=Sat; days elapsed since Monday reset: Mon=1..Sun=7
+          actual = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
+          const dow = new Date().getDay();
+          expected = dailyBaseline * (dow === 0 ? 7 : dow);
         } else if (type === 'monthly') {
-          const thisMonth = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
-          const now = new Date();
-          const dayOfMonth = now.getDate();
-          
-          // Calculate expected usage for the elapsed days
-          const expectedForPeriod = dailyBaseline * dayOfMonth;
-          if (expectedForPeriod > 0) pct = Math.round((thisMonth - expectedForPeriod) / expectedForPeriod * 100);
+          actual = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
+          expected = dailyBaseline * new Date().getDate();
         }
-        
+
+        const pct = expected > 0 ? Math.round((actual - expected) / expected * 100) : 0;
+        const delta = actual - expected;
         const arrow = pct > 5 ? '↑' : pct < -5 ? '↓' : '→';
         const color = pct > 10 ? 'var(--error-color)' : pct < -10 ? 'var(--success-color)' : 'var(--secondary-text-color)';
-        const sign = pct > 0 ? '+' : '';
-        return `<span style="font-size:11px;font-weight:500;color:${color};">${arrow} ${sign}${pct}% ${label}</span>`;
+        const sign = delta > 0 ? '+' : (delta < 0 ? '-' : '');
+
+        // When the % is extreme (e.g. a mis-reading meter), an absolute kWh delta reads
+        // far better than "+7036%". Otherwise show the percentage.
+        let magnitude;
+        if (Math.abs(pct) >= 200) {
+          const ad = Math.abs(delta);
+          const d = ad >= 10000 ? (ad / 1000).toFixed(1) + 'k' : (ad >= 1000 ? Math.round(ad).toLocaleString() : Math.round(ad));
+          magnitude = `${sign}${d} kWh`;
+        } else {
+          magnitude = `${sign}${Math.abs(pct)}%`;
+        }
+        return `<span style="font-size:11px;font-weight:500;color:${color};">${arrow} ${magnitude} ${label}</span>`;
       ]]]
