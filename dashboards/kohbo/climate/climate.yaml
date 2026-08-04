@@ -26,7 +26,7 @@ cards:
     show_forecast: false
     forecast_type: hourly
     name: Current Weather
-    entity: weather.kpwk
+    entity: weather.pirateweather
     tap_action:
       action: navigate
       navigation_path: "#weather"
