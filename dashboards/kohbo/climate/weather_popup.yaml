@@ -331,7 +331,7 @@ cards:
       # Daily Weather
       # 
       - type: custom:clock-weather-card
-        entity: weather.kpwk
+        entity: weather.pirateweather
         forecast_rows: 7
         animated_icon: true
         date_pattern: ccc, d.MM.yy
@@ -481,33 +481,21 @@ cards:
             # Weeds Pollen
             - type: custom:button-card
               template: kohbo_allergy_card
-              entity: sensor.kleenex_pollen_radar_home_weeds_level
+              entity: sensor.exterior_kleenex_pollen_radar_home_weeds_level
               name: Weeds
               icon: mdi:flower-pollen
             # Grass Pollen
             - type: custom:button-card
               template: kohbo_allergy_card
-              entity: sensor.kleenex_pollen_radar_home_grass_level
+              entity: sensor.exterior_kleenex_pollen_radar_home_grass_level
               name: Grass
               icon: mdi:grass
             # Tree Pollen
             - type: custom:button-card
               template: kohbo_allergy_card
-              entity: sensor.kleenex_pollen_radar_home_trees_level
+              entity: sensor.exterior_kleenex_pollen_radar_home_trees_level
               name: Trees
               icon: mdi:tree
-            # Poaceae Pollen
-            - type: custom:button-card
-              template: kohbo_allergy_card
-              entity: sensor.kleenex_pollen_radar_home_poaceae_level
-              name: Poaceae
-              icon: mdi:flower-pollen
-            # Ragweed Pollen
-            - type: custom:button-card
-              template: kohbo_allergy_card
-              entity: sensor.kleenex_pollen_radar_home_ragweed_level
-              name: Ragweed
-              icon: mdi:grass
 
 
 

@@ -4,15 +4,16 @@ kohbo_allergy_card:
   variables:
     level_color: >
       [[[
-        const level = entity.state;
+        const level = (entity.state || '').toLowerCase();
         const color = {'low':'green','moderate':'orange','high':'red','very-high':'maroon'};
         const level_color = color[level] || 'gray';
         return level_color;
       ]]]
     percentage: >
       [[[
+        const level = (entity.state || '').toLowerCase();
         const circle = {'low':'25','moderate':'50','high':'75','very-high':'100'};
-        const percentage = circle[entity.state] || '25';
+        const percentage = circle[level] || '25';
         return percentage;
       ]]]
   styles:
