@@ -228,3 +228,22 @@ Be liberal with subagents for this repo — the package tree is large and contex
 - **Reviewer subagent for non-trivial automations** — before presenting a new automation or package, spawn a subagent to verify it against: (1) correct modern syntax, (2) proper condition ordering, (3) consistency with how similar automations in that room/package are written.
 - **Keep main context clean** — offload directory traversal, multi-file reads, and pattern searches to subagents. Return only the summary you need.
 - **When in doubt, throw more compute** — a complex room refactor or new package is worth 2–3 parallel subagents investigating different aspects (existing automations, entity names, dashboard impact) before touching a file.
+
+---
+
+## Infrastructure Access — the `homelab` agent
+
+This repo configures Home Assistant, but HA and its radios don't run here — they live on fleet hosts this repo has no knowledge of. When a task needs to reach that infrastructure, delegate to the user-level **`homelab`** agent (`Agent(subagent_type: "homelab")`). It carries the fleet topology, SSH table, and operational context, and it acts as read-mostly hands + eyes on the fleet.
+
+**Relevant hosts for this repo:**
+- **epicurus** (`10.0.10.85`) — Home Assistant itself (Docker). Query the recorder/history/API, read HA logs, check the container.
+- **hermes** (`10.0.10.80`) — Z2M + MQTT + zwave-js. Z-wave/Zigbee device state, pairing, radio logs, energy-reporting nodes.
+- ESPHome devices — flashed from `esphome/` here, but they run on the network and report through HA on epicurus.
+
+**Delegate to `homelab` when you need to:**
+- Pull real entity history / energy numbers from the recorder (not estimate them)
+- Read HA, Z2M, or zwave-js logs to diagnose why a device isn't reporting
+- Check whether a Z-wave/Zigbee node is alive, its config, or its reporting interval
+- Verify a service is running or restart-worthy on epicurus/hermes
+
+**What it will and won't do:** it diagnoses and pulls live data autonomously (read-only), but it does **not** mutate infrastructure — remote restarts or config changes come back as exact commands for you to approve. File edits in *this* repo remain your job; it can't touch them. Brief it like a colleague: what's wrong, which host/service, what you already tried.
