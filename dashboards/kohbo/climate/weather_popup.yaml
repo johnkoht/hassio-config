@@ -329,7 +329,7 @@ cards:
         name: Daily Forecast
       # --- TEMP DIAGNOSTIC: built-in weather card to bisect entity vs clock-weather-card. Remove after. ---
       - type: weather-forecast
-        entity: weather.tempest_weather_station
+        entity: weather.pirateweather
         forecast_type: daily
         show_current: false
         show_forecast: true
@@ -338,7 +338,7 @@ cards:
       # Daily Weather
       #
       - type: custom:clock-weather-card
-        entity: weather.tempest_weather_station
+        entity: weather.pirateweather
         forecast_rows: 7
         animated_icon: true
         date_pattern: ccc, d.MM.yy
