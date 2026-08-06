@@ -299,7 +299,6 @@ Uses `kohbo_room_temperature_card` decluttering template.
 |--------|---------|
 | `weather.kpwk` | Primary weather source |
 | `weather.pirateweather` | Detailed weather forecasts |
-| `weather.tempest_weather_station` | Tempest weather station data |
 
 ## Example YAML
 
