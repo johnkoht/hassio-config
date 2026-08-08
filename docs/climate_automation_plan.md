@@ -82,7 +82,7 @@ These exist and can be used directly:
 | UV Index | `sensor.tempest_uv` |
 | Precipitation | `sensor.tempest_precipitation` |
 | Rain Rate | `sensor.tempest_rain_rate` |
-| Weather entity | `weather.tempest_weather_station` |
+| Weather entity | `weather.pirateweather` |
 
 ---
 
