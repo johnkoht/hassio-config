@@ -33,7 +33,7 @@ cards:
         }
     cards:
       - type: custom:simple-weather-card
-        entity: weather.tempest_weather_station
+        entity: weather.pirateweather
         name: " "
         card_mod:
           style: |
