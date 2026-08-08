@@ -228,6 +228,38 @@ cards:
             option: Monthly
 
   #-----------------------------------------------------------------------
+  # Chart redraw nudger (hidden)
+  #
+  # state-switch builds all four apexcharts-cards up front and swaps them via a
+  # CSS-grid `.visible` class — it never fires a resize. apexcharts-card has no
+  # visibility listener, so a chart built while its tab isn't active measures a
+  # collapsed size once and never re-measures when revealed (the thin-strip bug).
+  # This hidden card watches the timeframe selector and dispatches a window
+  # resize on change; every chart has redrawOnWindowResize:true, so the revealed
+  # chart snaps back to full height. The window guard fires only on real change,
+  # not on every hass update; two timers cover state-switch's DOM-flip latency.
+  #-----------------------------------------------------------------------
+  - type: custom:button-card
+    entity: input_select.energy_history_timeframe
+    show_name: false
+    show_icon: false
+    show_state: false
+    show_label: true
+    styles:
+      card:
+        - display: none
+    label: |
+      [[[
+        const s = states['input_select.energy_history_timeframe']?.state;
+        if (window.__kohboEnergyTimeframe !== s) {
+          window.__kohboEnergyTimeframe = s;
+          setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+          setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+        }
+        return '';
+      ]]]
+
+  #-----------------------------------------------------------------------
   # Chart - Switches based on selected timeframe
   #-----------------------------------------------------------------------
   - type: custom:state-switch
