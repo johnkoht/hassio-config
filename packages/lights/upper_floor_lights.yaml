@@ -1,6 +1,6 @@
-# 
+#
 # Upper floor lights
-# 
+#
 light:
   - platform: group
     name: Upper Floor Lights
@@ -10,7 +10,7 @@ light:
       - light.stairs_light
       - light.stairs_sconces
       - light.upstairs_hallway_picture_lights
-      - light.gianluca_ceiling_light_switchs
+      - light.gianluca_ceiling_light_switch
       - light.gianluca_lamp
       - light.ninos_bedroom_main_lights
       - light.nino_bedroom_lamp
@@ -18,10 +18,9 @@ light:
       - light.main_bathroom_lights
       - light.unfinished_area_main_lights
 
-
-# 
+#
 # Upper Floor Lights On Count
-# 
+#
 template:
   - sensor:
       - name: Upper Floor Lights On
