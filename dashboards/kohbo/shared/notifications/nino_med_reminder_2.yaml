@@ -1,20 +1,14 @@
 #
 # Nino Medication Reminder — Dose 2
 #
-# Shown only while dose 2 is in play (untaken AND its scheduled time
-# has passed today or its snooze timer is active), so this card
-# doesn't sit in the notifications popup before the dose is even due.
-#
-# The Lovelace conditional card only supports state, numeric_state,
-# screen, user, location, time, and/or/not — no free-form Jinja
-# templating — so this keys off the per-dose due binary sensor
-# instead, which already encodes the untaken check.
+# Shown in the notifications popup whenever dose 2 is untaken.
+# Cleared as soon as it's marked taken.
 #
 type: conditional
 conditions:
   - condition: state
-    entity: binary_sensor.nino_medication_2_due
-    state: "on"
+    entity: input_boolean.nino_medication_2_taken
+    state: "off"
 card:
   type: custom:bubble-card
   card_type: button

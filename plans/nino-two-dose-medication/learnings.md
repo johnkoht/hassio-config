@@ -72,3 +72,20 @@ The pre-mortem also caught the Task 12/13 ordering inversion — cleanup would h
 - **Deferred refinement**: the resolver returns `"none"` when *either* `input_datetime` is unavailable, even when the ambiguous dose is already taken and its time is therefore irrelevant. Fail-safe but more conservative than necessary.
 - **Cristina's medication package** carries the same `automation.turn_off` self-disable, the same legacy syntax, and the same notification-mute exposure. Separate change.
 - **`deploy.sh` may no-op** against the diverged host — Task 11 requires proving the deploy landed rather than trusting exit code 0.
+
+---
+
+## Scope correction (2026-08-19, post-build, pre-merge)
+
+John pushed back that the solution was more complex than the ask warranted. He was substantially right, and the correction is worth recording because the *pattern* will recur.
+
+The original ask was "two doses, both times configurable." Measured against that, ~78 lines of real YAML and 4 of the 8 helper entities were additions I introduced, not things he asked for:
+
+- **Card time-gating** (`_due` binary sensors, 23 lines, 2 entities) — I decided dose 2's card shouldn't sit in the notifications popup from 3am. Never a reported problem. It was also the *sole* reason the `condition: template` merge-blocker existed: the only thing that needed a template condition was a feature nobody requested. **Removed.**
+- **Escalation backstop** (55 lines, 2 entities) — kept, after making the case explicitly rather than filing it under "safety." Every notification in this house dies silently when `input_select.notification_level` is `None`; that hole predates this change and nothing else notices it.
+
+**The lesson isn't "don't add things."** The bug fixes I folded in unprompted — timer-before-wait, the `| string` coercion, deleting the self-disable — were near-zero complexity and each prevented a silent missed dose. Those were right to include.
+
+The lesson is that **polish and protection are different categories, and only one of them earns its complexity.** The card gating was polish; it cost a merge-blocking bug and 23 lines to solve a problem that didn't exist. The escalation is protection against a failure with no other detector. I bundled both under "improvements I recommend" and should have separated them when asking.
+
+Second-order: a chunk of the process cost traced back to the unrequested feature too. The holistic review's one merge blocker, one rework round, and one fabricated-citation correction were all downstream of the card gating. Cutting scope earlier would have cut review burden more than proportionally.

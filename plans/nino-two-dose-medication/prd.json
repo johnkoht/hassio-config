@@ -97,8 +97,8 @@
         "Old nino_med_reminder.yaml is deleted",
         "kohbo_notification_popup.yaml includes both new files and no longer references the old one",
         "Each card's mark-taken sub-button passes an explicit dose to script.nino_medication_taken",
-        "Each card's condition requires both dose-untaken and scheduled-time-has-passed",
-        "YAML parses for all three files"
+        "YAML parses for all three files",
+        "Each card's condition is a simple condition: state on its own dose's taken boolean (Lovelace conditional cards do not support condition: template)"
       ],
       "status": "complete",
       "passes": true,
