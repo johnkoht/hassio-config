@@ -17,7 +17,7 @@ date: 2026-08-19
 | Commits on branch | 14 |
 | Diff | +640 / −279 across 9 files |
 | Pre-mortem risks | 11 identified (2 CRITICAL), 0 materialized |
-| Post-merge criteria | 20 → 24 |
+| Post-merge criteria | 20 → 22 |
 
 ## Pre-mortem effectiveness
 
@@ -68,7 +68,7 @@ The pre-mortem also caught the Task 12/13 ordering inversion — cleanup would h
 
 ## Follow-ups
 
-- **Two mechanisms remain unverified** and can only be tested on the Yellow: `trigger: template` inside `wait_for_trigger` (criterion 7) and the new `_due` binary sensors driving card visibility (criteria 21, 23, 24).
+- **One mechanism remains unverified** and can only be tested on the Yellow: `trigger: template` inside `wait_for_trigger` (criterion 7). The `_due` binary sensors were removed in the scope correction below, taking criteria 23/24 with them.
 - **Deferred refinement**: the resolver returns `"none"` when *either* `input_datetime` is unavailable, even when the ambiguous dose is already taken and its time is therefore irrelevant. Fail-safe but more conservative than necessary.
 - **Cristina's medication package** carries the same `automation.turn_off` self-disable, the same legacy syntax, and the same notification-mute exposure. Separate change.
 - **`deploy.sh` may no-op** against the diverged host — Task 11 requires proving the deploy landed rather than trusting exit code 0.
