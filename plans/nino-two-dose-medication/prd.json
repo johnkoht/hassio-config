@@ -100,9 +100,10 @@
         "Each card's condition requires both dose-untaken and scheduled-time-has-passed",
         "YAML parses for all three files"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "282a6d6"
     }
   ],
   "postMergeRunbook": {
@@ -131,7 +132,7 @@
   "metadata": {
     "createdAt": "2026-08-18T23:30:00-05:00",
     "totalTasks": 5,
-    "completedTasks": 4,
+    "completedTasks": 5,
     "failedTasks": 0
   }
 }
