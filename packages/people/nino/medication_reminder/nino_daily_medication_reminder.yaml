@@ -1,37 +1,113 @@
-# 
-# Daily Morning Medication Reminder
-# 
-# This automation is used to remind us to give Nino his morning medication.
-# It will send a notification to his phone at 7:30am.
-# He can snooze it for 15 minutes if needed.
-# 
-# 
-# 
-# Daily Morning Medication Bolean
-# Tracks if Nino has taken his morning medication
-# 
+#
+# Nino Two-Dose Medication Reminder
+#
+# This package reminds us to give Nino his medication, twice a day.
+# Each dose (1 and 2) has its own scheduled time, taken/escalated
+# booleans, and 15-minute snooze timer, so the two doses track and
+# reset completely independently.
+#
+# NOTE: this file still contains the pre-migration single-dose
+# automations/script referencing nino_daily_medication_* entities.
+# They are rewritten to be dose-aware in a follow-up task; until then
+# they intentionally point at helpers that no longer exist below.
+#
+#
+# Per-Dose Taken Booleans
+# Tracks whether each dose has been given today.
+#
 input_boolean:
-  nino_daily_medication_taken:
-    name: Nino Daily Medication Taken
+  nino_medication_1_taken:
+    name: Nino Medication 1 Taken
+    icon: mdi:pill
+  nino_medication_2_taken:
+    name: Nino Medication 2 Taken
     icon: mdi:pill
 
-# 
-# Daily Morning Medication Timer
-# This timer is used to snooze the medication reminder for 15 minutes.
-# 
+  #
+  # Per-Dose Escalation Booleans
+  # Once-per-day guard for the late-dose escalation backstop.
+  #
+  nino_medication_1_escalated:
+    name: Nino Medication 1 Escalated
+    icon: mdi:alert
+  nino_medication_2_escalated:
+    name: Nino Medication 2 Escalated
+    icon: mdi:alert
+
+#
+# Per-Dose Snooze Timers
+# Each timer snoozes its dose's reminder for 15 minutes. `restore: true`
+# makes the timer survive an HA restart so a dose in flight isn't lost.
+#
 timer:
-  nino_daily_medication_timer:
-    name: Nino Daily Medication Timer
+  nino_medication_1_timer:
+    name: Nino Medication 1 Timer
+    duration: "00:15:00"
+    restore: true
+    icon: mdi:rewind-15
+  nino_medication_2_timer:
+    name: Nino Medication 2 Timer
     duration: "00:15:00"
     restore: true
     icon: mdi:rewind-15
 
+#
+# Per-Dose Scheduled Times
+#
 input_datetime:
-  nino_daily_medication_time:
-    name: Nino Daily Medication Time
-    icon: mdi:clock
+  nino_medication_1_time:
+    name: Nino Medication 1 Time
+    icon: mdi:clock-time-seven
     has_date: false
     has_time: true
+    initial: "07:00:00"
+  nino_medication_2_time:
+    name: Nino Medication 2 Time
+    icon: mdi:clock-time-seven
+    has_date: false
+    has_time: true
+    initial: "19:00:00"
+
+#
+# Pending Dose Resolver
+#
+# Single source of truth for "which dose is outstanding right now?".
+# A dose is in play if it is untaken AND (its scheduled time has
+# passed today OR its snooze timer is active). Among in-play doses,
+# the one with the latest scheduled time wins; a tie goes to the
+# higher dose number. If either scheduled time is unavailable
+# (e.g. during HA startup) or no dose is in play, this returns the
+# literal string "none" — it must never go unknown/unavailable.
+#
+template:
+  - sensor:
+      - name: "Nino Medication Pending Dose"
+        unique_id: nino_medication_pending_dose
+        icon: mdi:pill-multiple
+        state: |-
+          {% set dose_1_time = states('input_datetime.nino_medication_1_time') %}
+          {% set dose_2_time = states('input_datetime.nino_medication_2_time') %}
+          {% set dose_1_ok = dose_1_time not in ['unknown', 'unavailable', '', None] %}
+          {% set dose_2_ok = dose_2_time not in ['unknown', 'unavailable', '', None] %}
+          {% set dose_1_untaken = not is_state('input_boolean.nino_medication_1_taken', 'on') %}
+          {% set dose_2_untaken = not is_state('input_boolean.nino_medication_2_taken', 'on') %}
+          {% set dose_1_due = dose_1_ok and now() >= today_at(dose_1_time) %}
+          {% set dose_2_due = dose_2_ok and now() >= today_at(dose_2_time) %}
+          {% set dose_1_snoozing = is_state('timer.nino_medication_1_timer', 'active') %}
+          {% set dose_2_snoozing = is_state('timer.nino_medication_2_timer', 'active') %}
+          {% set dose_1_in_play = dose_1_ok and dose_1_untaken and (dose_1_due or dose_1_snoozing) %}
+          {% set dose_2_in_play = dose_2_ok and dose_2_untaken and (dose_2_due or dose_2_snoozing) %}
+          {% if not dose_1_ok or not dose_2_ok %}
+          none
+          {% elif dose_1_in_play and dose_2_in_play %}
+          {{ 2 if today_at(dose_2_time) >= today_at(dose_1_time) else 1 }}
+          {% elif dose_2_in_play %}
+          2
+          {% elif dose_1_in_play %}
+          1
+          {% else %}
+          none
+          {% endif %}
 
 # 
 # Automations
