@@ -104,6 +104,39 @@ template:
           none
           {% endif %}
 
+  #
+  # Per-Dose Due Binary Sensors
+  #
+  # Drive the notification popup cards (one per dose). Each is "on"
+  # when that dose is in play: untaken AND (its scheduled time has
+  # passed today OR its snooze timer is active). The timer clause
+  # matters — without it, a card would go invisible for a dose that's
+  # genuinely mid-snooze if its scheduled time were edited forward.
+  # Same `today_at()` unavailable-input guard as the resolver sensor
+  # above.
+  #
+  - binary_sensor:
+      - name: "Nino Medication 1 Due"
+        unique_id: nino_medication_1_due
+        icon: mdi:pill
+        state: |-
+          {% set dose_1_time = states('input_datetime.nino_medication_1_time') %}
+          {% set dose_1_ok = dose_1_time not in ['unknown', 'unavailable', '', None] %}
+          {% set dose_1_untaken = not is_state('input_boolean.nino_medication_1_taken', 'on') %}
+          {% set dose_1_due = dose_1_ok and now() >= today_at(dose_1_time) %}
+          {% set dose_1_snoozing = is_state('timer.nino_medication_1_timer', 'active') %}
+          {{ dose_1_ok and dose_1_untaken and (dose_1_due or dose_1_snoozing) }}
+      - name: "Nino Medication 2 Due"
+        unique_id: nino_medication_2_due
+        icon: mdi:pill
+        state: |-
+          {% set dose_2_time = states('input_datetime.nino_medication_2_time') %}
+          {% set dose_2_ok = dose_2_time not in ['unknown', 'unavailable', '', None] %}
+          {% set dose_2_untaken = not is_state('input_boolean.nino_medication_2_taken', 'on') %}
+          {% set dose_2_due = dose_2_ok and now() >= today_at(dose_2_time) %}
+          {% set dose_2_snoozing = is_state('timer.nino_medication_2_timer', 'active') %}
+          {{ dose_2_ok and dose_2_untaken and (dose_2_due or dose_2_snoozing) }}
+
 #
 # Automations
 #
@@ -375,7 +408,7 @@ automation:
 script:
   nino_medication_taken:
     alias: "Nino Medication Taken"
-    mode: "single"
+    mode: queued
     fields:
       dose:
         name: Dose
