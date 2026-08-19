@@ -167,7 +167,7 @@ automation:
       # The resolved dose must be a real dose (guards "none" from the
       # resolver, e.g. nothing outstanding when he wakes up)
       - condition: template
-        value_template: "{{ dose in ['1', '2'] }}"
+        value_template: "{{ dose | string in ['1', '2'] }}"
       # Only run if this dose has not already been taken
       - condition: template
         value_template: "{{ is_state(taken_boolean, 'off') }}"
@@ -182,19 +182,28 @@ automation:
       #
       # Voice Announcement (dose-neutral wording)
       #
-      - action: script.voice_announcement
-        data:
-          media_players: auto
-          sound: chirp
-          priority: high
-          speech_message: >-
-            {{
-              [
-                "It's time for Nino to take his medication.",
-                "Nino, it's time to take your medication.",
-                "Don't forget to give Nino his medication.",
-              ] | random
-            }}
+      # Guarded on the taken boolean: if it flipped on between the
+      # conditions block passing and this action running, skip the
+      # announcement for a dose that's already been given.
+      #
+      - alias: "Announce only if this dose is still untaken"
+        if:
+          - condition: template
+            value_template: "{{ is_state(taken_boolean, 'off') }}"
+        then:
+          - action: script.voice_announcement
+            data:
+              media_players: auto
+              sound: chirp
+              priority: high
+              speech_message: >-
+                {{
+                  [
+                    "It's time for Nino to take his medication.",
+                    "Nino, it's time to take your medication.",
+                    "Don't forget to give Nino his medication.",
+                  ] | random
+                }}
 
       #
       # Start the snooze timer BEFORE the wait, not after.
@@ -225,18 +234,27 @@ automation:
       #
       # Send the notification
       #
-      - action: script.general_notification
-        data:
-          title: "Nino's Medication Reminder"
-          message: "It's time for Nino to take his medication."
-          devices: "all"
-          priority: "time-sensitive"
-          tag: "{{ tag }}"
-          actions:
-            - action: "{{ action_taken }}"
-              title: "Medication Taken"
-            - action: "{{ action_snooze }}"
-              title: "Snooze 15 Minutes"
+      # Same taken-boolean guard as the announcement above: don't push
+      # a "time to take it" prompt for a dose that was just marked
+      # taken.
+      #
+      - alias: "Notify only if this dose is still untaken"
+        if:
+          - condition: template
+            value_template: "{{ is_state(taken_boolean, 'off') }}"
+        then:
+          - action: script.general_notification
+            data:
+              title: "Nino's Medication Reminder"
+              message: "It's time for Nino to take his medication."
+              devices: "all"
+              priority: "time-sensitive"
+              tag: "{{ tag }}"
+              actions:
+                - action: "{{ action_taken }}"
+                  title: "Medication Taken"
+                - action: "{{ action_snooze }}"
+                  title: "Snooze 15 Minutes"
 
       #
       # Wait for a response: the taken boolean flipping on (covers
@@ -382,7 +400,7 @@ script:
     sequence:
       - if:
           - condition: template
-            value_template: "{{ resolved_dose in ['1', '2'] }}"
+            value_template: "{{ resolved_dose | string in ['1', '2'] }}"
         then:
           #
           # Mark that he took the medication
