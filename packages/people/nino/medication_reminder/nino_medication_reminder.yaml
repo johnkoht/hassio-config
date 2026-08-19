@@ -6,11 +6,6 @@
 # booleans, and 15-minute snooze timer, so the two doses track and
 # reset completely independently.
 #
-# NOTE: this file still contains the pre-migration single-dose
-# automations/script referencing nino_daily_medication_* entities.
-# They are rewritten to be dose-aware in a follow-up task; until then
-# they intentionally point at helpers that no longer exist below.
-#
 #
 # Per-Dose Taken Booleans
 # Tracks whether each dose has been given today.
@@ -109,55 +104,84 @@ template:
           none
           {% endif %}
 
-# 
+#
 # Automations
-# 
+#
 automation:
-  # 
-  # Nino Daily Medication Reminder
-  # 
-  # Send him an actionable notification at 6:45pm. He
-  # can snooze it for 15 minutes if needed. If he doesn't respond
-  # then it will automatically snooze.
-  # 
-  - id: "nino_daily_medication_reminder"
-    alias: "Nino Daily Medication Reminder"
-    trigger:
-      # Trigger at 7:30am
+  #
+  # Nino Medication Reminder
+  #
+  # Dose-aware reminder. Fires on either dose's scheduled time, on
+  # either dose's snooze timer finishing, or on Nino waking up (in
+  # case a dose was due while he was asleep). `variables:` resolves
+  # which dose the current trigger is about, then every condition
+  # and action below operates generically on that dose.
+  #
+  - id: "nino_medication_reminder"
+    alias: "Nino Medication Reminder"
+    mode: parallel
+    max: 4
+    triggers:
+      # Dose 1 scheduled time
       - trigger: time
-        at: input_datetime.nino_daily_medication_time
-      # Trigger when the timer is finished
+        at: input_datetime.nino_medication_1_time
+        id: "1"
+      # Dose 2 scheduled time
+      - trigger: time
+        at: input_datetime.nino_medication_2_time
+        id: "2"
+      # Dose 1 snooze timer finished — re-prompt
       - trigger: event
         event_type: timer.finished
-        event_data: 
-          entity_id: timer.nino_daily_medication_timer
-      # # Nino is awake for 1 hour
-      # - trigger: state
-      #   entity_id: input_select.nino_sleep_state
-      #   to: "Awake"
-      #   for:
-      #     hours: 1
+        event_data:
+          entity_id: timer.nino_medication_1_timer
+        id: "1"
+      # Dose 2 snooze timer finished — re-prompt
+      - trigger: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.nino_medication_2_timer
+        id: "2"
+      # Nino woke up — catch up on whichever dose is outstanding
+      - trigger: state
+        entity_id: input_select.nino_sleep_state
+        to: "Awake"
+        for:
+          minutes: 5
+        id: "awake"
+    variables:
+      # Resolve which dose this run is about. The "1"/"2" triggers
+      # already know their dose from their id; the wake-up trigger
+      # asks the resolver sensor instead.
+      dose: >-
+        {% if trigger.id in ['1', '2'] %}
+          {{ trigger.id }}
+        {% else %}
+          {{ states('sensor.nino_medication_pending_dose') }}
+        {% endif %}
+      taken_boolean: "input_boolean.nino_medication_{{ dose }}_taken"
+      snooze_timer: "timer.nino_medication_{{ dose }}_timer"
+      dose_time: "input_datetime.nino_medication_{{ dose }}_time"
+      tag: "nino-medication-dose-{{ dose }}"
     conditions:
-      # Only run if Nino has not taken his morning medication
-      - condition: state
-        entity_id: input_boolean.nino_daily_medication_taken
-        state: "off"
-      # Only run if the timer is idle
-      - condition: state
-        entity_id: timer.nino_daily_medication_timer
-        state: "idle"
+      # The resolved dose must be a real dose (guards "none" from the
+      # resolver, e.g. nothing outstanding when he wakes up)
+      - condition: template
+        value_template: "{{ dose in ['1', '2'] }}"
+      # Only run if this dose has not already been taken
+      - condition: template
+        value_template: "{{ is_state(taken_boolean, 'off') }}"
+      # Only run if this dose's snooze timer is not already running
+      - condition: template
+        value_template: "{{ is_state(snooze_timer, 'idle') }}"
       # Nino is awake
       - condition: state
         entity_id: input_select.nino_sleep_state
         state: "Awake"
-      # # After 7:30am and before 10:30am
-      # - condition: time
-      #   after: "07:00:00"
-      #   before: "10:30:00"
     actions:
-      #  
-      #  Voice Announcement
-      # 
+      #
+      # Voice Announcement (dose-neutral wording)
+      #
       - action: script.voice_announcement
         data:
           media_players: auto
@@ -171,120 +195,148 @@ automation:
                 "Don't forget to give Nino his medication.",
               ] | random
             }}
-      # 
+
+      #
+      # Start the snooze timer BEFORE the wait, not after.
+      #
+      # This is the fix for the restart-durability bug: timers are
+      # `restore: true`, so once this timer is running, an HA restart
+      # or reload during the 15-minute wait below no longer loses the
+      # dose silently — the timer survives and still fires
+      # `timer.finished` to re-prompt. Guarded on the taken boolean
+      # in case it flipped between the conditions above and here.
+      #
+      - alias: "Start this dose's snooze timer (restart-durability fix)"
+        if:
+          - condition: template
+            value_template: "{{ is_state(taken_boolean, 'off') }}"
+        then:
+          - action: timer.start
+            target:
+              entity_id: "{{ snooze_timer }}"
+
+      #
       # Set the action variables
-      # 
+      #
       - variables:
           action_taken: "{{ 'TAKEN_' ~ context.id }}"
           action_snooze: "{{ 'SNOOZE_' ~ context.id }}"
 
-      # 
+      #
       # Send the notification
-      # 
+      #
       - action: script.general_notification
         data:
-          title: Nino's Daily Medication Reminder
-          message: "It's time for Nino to take his morning medication."
+          title: "Nino's Medication Reminder"
+          message: "It's time for Nino to take his medication."
           devices: "all"
           priority: "time-sensitive"
-          tag: "nino-morning-medication"
+          tag: "{{ tag }}"
           actions:
             - action: "{{ action_taken }}"
               title: "Medication Taken"
             - action: "{{ action_snooze }}"
-              title: "Snooze 15 Minutes"            
-      # 
-      # Wait for somebody to respond to the actionable notification, either
-      # by marking that he's taken the meds or by snoozing.
-      # 
+              title: "Snooze 15 Minutes"
+
+      #
+      # Wait for a response: the taken boolean flipping on (covers
+      # the ZHA shortcut button and any other path that marks the
+      # dose taken), the push notification's Taken action, or the
+      # push notification's Snooze action.
+      #
+      # The taken-trigger MUST be a template trigger, not a state
+      # trigger — a state trigger's entity_id cannot be templated
+      # (cv.entity_ids_or_uuids rejects it at config load).
+      #
       - wait_for_trigger:
+          - trigger: template
+            id: "taken"
+            value_template: "{{ is_state(taken_boolean, 'on') }}"
           - trigger: event
-            id: "push_action"
+            id: "taken_push"
             event_type: mobile_app_notification_action
             event_data:
               action: "{{ action_taken }}"
           - trigger: event
-            id: "push_action"
+            id: "snooze"
             event_type: mobile_app_notification_action
             event_data:
               action: "{{ action_snooze }}"
-          # Or if button pressed!
-          - trigger: device
-            id: "button_action"
-            device_id: d98b081e7991a6e9ce1672128dad93ae
-            domain: zha
-            type: remote_button_short_press     
-            subtype: turn_on
         timeout:
           minutes: 15
 
-      # 
-      # Main Actions
-      # 
-      # IF we DO NOT RESPOND, then automatically snooze the timer
-      # IF we DO RESPOND, then mark that he took the medication and
-      # cancel the timer.
-      # 
-      - if:
-          - "{{ not wait.completed }}"
-        then:
-          # We didn't response so automatically snooze
-          - action: timer.start
-            entity_id: timer.nino_daily_medication_timer
-        else:
-          - choose:
-              # 
-              # IF the physical button was pressed to 
-              # mark meds were taken
-              # 
-              - conditions:
+      #
+      # Branch on wait.trigger.id (NOT trigger.id — trigger still
+      # refers to this automation's original trigger, not the wait's).
+      #
+      - choose:
+          # Marked taken (boolean flipped, or the push Taken action)
+          - conditions:
+              - condition: template
+                value_template: "{{ wait.trigger is not none and wait.trigger.id in ['taken', 'taken_push'] }}"
+            sequence:
+              - action: script.nino_medication_taken
+                data:
+                  dose: "{{ dose }}"
+          # Snoozed via the push action — restart the full 15 minutes
+          - conditions:
+              - condition: template
+                value_template: "{{ wait.trigger is not none and wait.trigger.id == 'snooze' }}"
+            sequence:
+              - alias: "Restart the full 15-minute snooze timer"
+                if:
                   - condition: template
-                    value_template: "{{ trigger.id == 'button_action' }}"
-                sequence:
-                  - action: script.nino_medication_taken
-              # 
-              # ElSE IF a push action was taken and it was
-              # marked as taken
-              # 
-              - conditions:
-                  - condition: template
-                    value_template: "{{ wait.trigger.event.data.action == action_taken }}"
-                sequence:
-                  - action: script.nino_medication_taken
-            #
-            # ELSE if they snoozed, then start the timer
-            # 
-            default:
-              - action: timer.start
-                entity_id: timer.nino_daily_medication_timer
+                    value_template: "{{ is_state(taken_boolean, 'off') }}"
+                then:
+                  - action: timer.start
+                    target:
+                      entity_id: "{{ snooze_timer }}"
+        # Timed out with no response (not wait.completed). No action
+        # needed: the timer started before the wait is already
+        # running and owns re-prompting via its own timer.finished
+        # trigger, so this run's job is done.
+        default: []
 
-  # 
+  #
   # Nino Medication Reminder Reset
-  # 
-  # Reset the medication reminder at 3:00am
-  # 
+  #
+  # Reset both doses at 3:00am — taken booleans, escalation booleans,
+  # and timers, so the next day starts clean for both doses
+  # independently.
+  #
   - id: "nino_medication_reminder_reset"
     alias: "Nino Medication Reminder Reset"
-    trigger:
+    triggers:
       - trigger: time
         at: "03:00:01"
     actions:
-      # Turn off the input boolean
+      # Clear both taken booleans
       - action: input_boolean.turn_off
-        entity_id: input_boolean.nino_daily_medication_taken
-      # Cancel the timer
+        target:
+          entity_id:
+            - input_boolean.nino_medication_1_taken
+            - input_boolean.nino_medication_2_taken
+      # Clear both escalation booleans
+      - action: input_boolean.turn_off
+        target:
+          entity_id:
+            - input_boolean.nino_medication_1_escalated
+            - input_boolean.nino_medication_2_escalated
+      # Cancel both snooze timers
       - action: timer.cancel
-        entity_id: timer.nino_daily_medication_timer
-      # Turn on the automation
-      - action: automation.turn_on
-        entity_id: automation.nino_daily_medication_reminder
+        target:
+          entity_id:
+            - timer.nino_medication_1_timer
+            - timer.nino_medication_2_timer
 
-  # 
+  #
   # Nino Medication Reminder Shortcut Button
-  # 
-  # A physical button that we can press to mark that Nino has taken his
-  # morning medication.
-  # 
+  #
+  # A physical button that we can press to mark whichever dose is
+  # currently outstanding as taken. Relies on the pending-dose
+  # resolver sensor (via the script's fallback) rather than tracking
+  # a dose itself.
+  #
   - id: "nino_medication_reminder_shortcut_button"
     alias: "Nino Medication Reminder Shortcut Button"
     initial_state: on
@@ -292,33 +344,55 @@ automation:
       - trigger: device
         device_id: d98b081e7991a6e9ce1672128dad93ae
         domain: zha
-        type: remote_button_short_press     
+        type: remote_button_short_press
         subtype: turn_on
     conditions:
-      # Only run if he has not taken his morning medication
-      - condition: state
-        entity_id: input_boolean.nino_daily_medication_taken
-        state: "off"
+      # Only run if some dose is actually outstanding
+      - condition: template
+        value_template: "{{ states('sensor.nino_medication_pending_dose') != 'none' }}"
     actions:
-      # Trigger the script to mark that he's taken his medication
+      # Trigger the script to mark the pending dose as taken
       - action: script.nino_medication_taken
-
-
 
 script:
   nino_medication_taken:
     alias: "Nino Medication Taken"
     mode: "single"
+    fields:
+      dose:
+        name: Dose
+        description: >-
+          The dose number to mark as taken. Optional — when omitted,
+          falls back to the pending-dose resolver sensor.
+        example: "1"
+        selector:
+          select:
+            options:
+              - "1"
+              - "2"
+    variables:
+      # Resolve the dose: use what was passed in if it's valid,
+      # otherwise fall back to the pending-dose resolver. If neither
+      # resolves to a real dose, this ends up "none" and the script
+      # below no-ops rather than guessing.
+      resolved_dose: >-
+        {% set requested = dose | default('', true) | string %}
+        {% set fallback = states('sensor.nino_medication_pending_dose') %}
+        {{ requested if requested in ['1', '2'] else fallback }}
     sequence:
-      # 
-      # Mark that he took the medication
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.nino_daily_medication_taken
-      # 
-      # Cancel the timer
-      - action: timer.cancel
-        entity_id: timer.nino_daily_medication_timer
-      # 
-      # Turn off the automation
-      - action: automation.turn_off
-        entity_id: automation.nino_daily_medication_reminder
+      - if:
+          - condition: template
+            value_template: "{{ resolved_dose in ['1', '2'] }}"
+        then:
+          #
+          # Mark that he took the medication
+          #
+          - action: input_boolean.turn_on
+            target:
+              entity_id: "input_boolean.nino_medication_{{ resolved_dose }}_taken"
+          #
+          # Cancel that dose's timer
+          #
+          - action: timer.cancel
+            target:
+              entity_id: "timer.nino_medication_{{ resolved_dose }}_timer"
