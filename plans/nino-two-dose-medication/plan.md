@@ -1,7 +1,7 @@
 ---
 title: Nino Two-Dose Medication Reminder
 slug: nino-two-dose-medication
-status: in-progress
+status: shipped
 created: 2026-08-18
 has_pre_mortem: true
 has_review: true
@@ -156,10 +156,12 @@ Confirmed against the HA Yellow at `192.168.1.36` (`ssh hassio`) before build. F
     | 14 | Sleep → Sleep, dose time set to now−5min, sleep → Awake: reminder fires 5–6 min later, **and not before** |
     | 15 | `script.nino_medication_taken` with no `dose` while nothing is pending does nothing — no error, no dose marked |
     | 16 | Triggering the 3am reset manually clears both taken booleans, both escalated booleans, both timers |
-    | 17 | Dose 2's notification card is absent before its scheduled time, present after |
+    | 17 | Each dose's notification card appears while that dose is untaken and disappears when marked taken |
     | 18 | Restart HA → `sensor.nino_medication_pending_dose` reads `none`, never `unavailable` |
     | 19 | Escalation fires: leave a dose untaken past its window → `critical` push arrives, `_escalated` sets, no repeat |
     | 20 | **Escalation survives muting**: set `input_select.notification_level` to `None`, leave a dose untaken → the critical push **still arrives**. *This is CRITICAL 1.* |
+    | 21 | **Cards render as working buttons, not an error box.** Open the notifications popup and confirm each dose card shows its snooze / mark-taken sub-buttons. Criterion 17 alone would pass on an error box, since an error box is technically "present". |
+    | 22 | **`script.nino_medication_taken` handles concurrent calls.** Fire it for both doses in quick succession (ZHA button + dashboard button, different doses) and confirm neither is dropped. Exercises the `mode: queued` fix; nothing else in this list covers it. |
 
 13. **Post-verification cleanup** — Only after Task 12 passes, including at least one full day covering both doses. Nothing here is urgent, and running it early destroys the rollback trail.
     - Delete 4 orphaned registry entries: `input_boolean.nino_daily_medication_taken`, `timer.nino_daily_medication_timer`, `input_datetime.nino_daily_medication_time`, `automation.nino_daily_medication_reminder`.

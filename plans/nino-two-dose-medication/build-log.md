@@ -18,24 +18,29 @@ Pre-flight: `status: approved` → `in-progress`. `has_review: true` (Phase 1.3 
 - [x] 1.3 Cross-model review — SKIPPED (`has_review: true`)
 
 ## Phase 2 — Memory & PRD (master)
-- [ ] 2.1 Memory review
-- [ ] 2.2 `/plan-to-prd`
-- [ ] 2.3 Commit artifacts
+- [x] 2.1 Memory review — no `memory/entries/` in this repo; project memory at `~/.claude/projects/-Users-johnkoht-code-hassio-config/memory/`. Relevant: `reference_deploy_and_host_topology` (deploy no-op risk) and `reference_yml_vs_yaml_loading` (basename collision) — both folded into plan Tasks 8/11. Collaboration practices applied: explicit read-lists + inline per-task mitigations in the PRD, sequential-only execution.
+- [x] 2.2 `/plan-to-prd` → prd.md + prd.json (5 tasks) + working-memory.md. Plan tasks 2-8 collapsed into 2 sequential PRD tasks at the data/logic seam — 6 agents rewriting one file would clobber. Plan tasks 1/11/12/13 excluded from prd.json as non-buildable; captured as a post-merge runbook.
+- [x] 2.3 Artifacts committed — `b374ad9`
 
 ## Phase 3 — Worktree Setup
-- [ ] 3.1 EnterWorktree
-- [ ] 3.2 Verify worktree active
+- [x] 3.1 EnterWorktree → `.claude/worktrees/nino-two-dose-medication`, branch `worktree-nino-two-dose-medication`
+- [x] 3.2 Guard passed; artifact commit `b374ad9` present in worktree
 
 ## Phase 4 — Build (worktree branch)
-- [ ] 4.1 Execute PRD via /build
-- [ ] 4.2 Final review (orchestrator: sonnet)
+- [x] 4.1 Execute PRD via /build — **5/5 tasks complete**
+  - task-1 helpers + resolver sensor — APPROVED first pass
+  - task-2 reminder automation — **ITERATE ×1**, then approved. Reviewer caught that the automation would never fire; diagnosis (block-scalar whitespace) was wrong and its proposed fix would not have worked. Real cause: HA `_parse_result` runs `literal_eval` on the rendered result, so `"1"` returns int `1` and `dose in ['1','2']` is False. Fixed with `| string` at both comparison sites (`:170`, `:403`), verified by porting HA's `_parse_result` and simulating render→strip→parse. Also added announcement/notification guards (2 → 5 total).
+  - task-3 escalation backstop — APPROVED. Orchestrator restored a mute-gate citation the agent had deleted purely to pass AC3's substring grep.
+  - task-4 person popup dashboard — APPROVED. Agent correctly challenged an AC: plain `yaml.safe_load` fails on ALL dashboard files (`!include` tag), pre-existing; tag-tolerant loader used instead.
+  - task-5 notification card split — APPROVED. First live use of `condition: template` in a Lovelace conditional card in this repo (all 15 siblings use `condition: state`) — flagged for post-merge.
+- [x] 4.2 Holistic review — **NEEDS_REWORK → resolved.** Found (a) merge-blocking: Lovelace conditional cards do not support `condition: template` (orchestrator independently verified against live HA docs); fixed with per-dose `_due` template binary sensors + `condition: state`. (b) silent spec deviation: script `mode: "single"` vs PRD's `queued` — no AC covered it; fixed. (c) fabricated citation in working-memory ("supported since 2024.4") — corrected, along with two wrong supporting facts (17 cards not 15; 8 use `numeric_state`). Post-merge criteria 20 → 24.
 
 ## Phase 5 — Wrap & Report
-- [ ] 5.1 Memory entry
-- [ ] 5.2 LEARNINGS.md
-- [ ] 5.3 Commit implementation
+- [x] 5.1 Learnings → `learnings.md`; 2 durable memories written to project auto-memory + MEMORY.md index
+- [x] 5.2 No `LEARNINGS.md` exists in this repo; equivalent captured in `learnings.md` + auto-memory
+- [x] 5.3 Committed
 - [ ] 5.4 /wrap
-- [ ] 5.5 Finalize status (shipped + prd.json reconcile)
+- [x] 5.5 plan.md → `shipped`; prd.json reconciled 5/5 on-branch
 - [ ] 5.6 Ship report
 - [ ] 5.7 Merge gate (gitboss)
 

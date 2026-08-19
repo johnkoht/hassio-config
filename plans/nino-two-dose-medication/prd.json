@@ -9,7 +9,7 @@
     {
       "id": "task-1",
       "title": "Package helpers + pending-dose resolver sensor",
-      "description": "In packages/people/nino/medication_reminder/nino_daily_medication_reminder.yaml, replace the three single-dose helpers with paired per-dose helpers (2 taken booleans, 2 escalated booleans, 2 timers, 2 input_datetimes) and add sensor.nino_medication_pending_dose. Declarative layer only; task-2 adds the logic that consumes it. READ FIRST: the target file; packages/leak_monitoring.yaml and packages/outdoor_lighting.yaml (template: inside a package precedent); packages/mudroom/garage_entry_door/garage_entry_door_auto_lock.yaml:78 (today_at precedent); packages/CLAUDE.md. RESOLVER RULE, exactly: a dose is in play if untaken AND (its scheduled time has passed today OR its snooze timer is active); among in-play doses return the one with the LATEST scheduled time; tie goes to the higher dose number; no in-play doses or any unavailable input returns the literal string 'none'. MITIGATIONS: (1) Dose 1 initial MUST be '07:00:00' — not 08:00:00 (captured pre-migration value, kept for rollback only) and not 07:30:00 (superseded draft). (2) restore: true on both timers is load-bearing — it is what makes task-2's restart durability work. (3) The sensor must never go unknown/unavailable; input_datetime entities read unknown during HA startup and an unguarded today_at(states(...)) raises, which would silently break both the ZHA button and the wake-up deferral. (4) Order by latest scheduled time, never by timer-active; timer-active only widens membership. Ordering by timer priority is a real bug the review caught.",
+      "description": "In packages/people/nino/medication_reminder/nino_daily_medication_reminder.yaml, replace the three single-dose helpers with paired per-dose helpers (2 taken booleans, 2 escalated booleans, 2 timers, 2 input_datetimes) and add sensor.nino_medication_pending_dose. Declarative layer only; task-2 adds the logic that consumes it. READ FIRST: the target file; packages/leak_monitoring.yaml and packages/outdoor_lighting.yaml (template: inside a package precedent); packages/mudroom/garage_entry_door/garage_entry_door_auto_lock.yaml:78 (today_at precedent); packages/CLAUDE.md. RESOLVER RULE, exactly: a dose is in play if untaken AND (its scheduled time has passed today OR its snooze timer is active); among in-play doses return the one with the LATEST scheduled time; tie goes to the higher dose number; no in-play doses or any unavailable input returns the literal string 'none'. MITIGATIONS: (1) Dose 1 initial MUST be '07:00:00' \u2014 not 08:00:00 (captured pre-migration value, kept for rollback only) and not 07:30:00 (superseded draft). (2) restore: true on both timers is load-bearing \u2014 it is what makes task-2's restart durability work. (3) The sensor must never go unknown/unavailable; input_datetime entities read unknown during HA startup and an unguarded today_at(states(...)) raises, which would silently break both the ZHA button and the wake-up deferral. (4) Order by latest scheduled time, never by timer-active; timer-active only widens membership. Ordering by timer priority is a real bug the review caught.",
       "acceptanceCriteria": [
         "All 8 helper entities defined with exact IDs: input_boolean.nino_medication_{1,2}_taken, input_boolean.nino_medication_{1,2}_escalated, timer.nino_medication_{1,2}_timer, input_datetime.nino_medication_{1,2}_time",
         "input_datetime.nino_medication_1_time has initial: \"07:00:00\" and _2_time has initial: \"19:00:00\"",
@@ -18,17 +18,18 @@
         "The sensor template has an explicit fallback returning the literal string \"none\", reachable when either input_datetime is unknown or unavailable",
         "The sensor uses today_at() for time comparison",
         "No reference to any nino_daily_medication_* entity remains in the file",
-        "YAML parses via python3 yaml.safe_load — HA schema validation deferred to post-merge ha core check",
+        "YAML parses via python3 yaml.safe_load \u2014 HA schema validation deferred to post-merge ha core check",
         "File header comment block present, matching repo style"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "d56f613b8597b5d7d89d0dc2631f4884a4211be8"
     },
     {
       "id": "task-2",
       "title": "Dose-aware reminder automation, script, reset, button, and file rename",
-      "description": "Rewrite the three automations and script.nino_medication_taken as dose-aware, and rename the file to nino_medication_reminder.yaml. Reminder automation id becomes nino_medication_reminder (alias 'Nino Medication Reminder'); the reset and shortcut automations KEEP their existing ids (nino_medication_reminder_reset, nino_medication_reminder_shortcut_button) — both confirmed registered on the live host, so keeping them avoids new orphans. READ FIRST: the file as left by task-1; packages/alexa_actionable_notifications.yaml:40,50-53 (automation-level variables with trigger.*, templated target entity_id); packages/general_notifications.yaml (script contract); packages/announcements/voice_announcement.yaml; plans/nino-two-dose-medication/review.md (verified-claims table); CLAUDE.md. STRUCTURE: 5 triggers — time on each datetime (ids '1','2'), event on timer.finished for each timer (ids '1','2'), state on input_select.nino_sleep_state to 'Awake' for 5 minutes (id 'awake'). Automation-level variables: resolve dose from trigger.id, or from sensor.nino_medication_pending_dose when trigger.id == 'awake'; derive taken_boolean, snooze_timer, dose_time, tag. Conditions: dose in ['1','2'], dose untaken, dose timer idle, sleep state Awake. ACTION ORDER (this ordering IS the CRITICAL 2 fix): 1. script.voice_announcement with dose-neutral wording; 2. timer.start on the dose's timer — BEFORE the wait; 3. script.general_notification with per-dose tag nino-medication-dose-{{ dose }}; 4. wait_for_trigger 15-min timeout with three triggers (trigger: template value_template is_state(taken_boolean,'on') id 'taken'; event on push action_taken id 'taken_push'; event on push action_snooze id 'snooze'); 5. branch on wait.trigger.id — taken/taken_push call script.nino_medication_taken with the dose, snooze restarts the timer for a full 15 min, and the timeout branch is a NO-OP. MITIGATIONS: (1) CRITICAL 2 — timer.start goes BEFORE wait_for_trigger. Current code starts it only on timeout (lines 152-157), so during the 15-min wait nothing persistent records a dose in flight; any restart kills the run and the dose vanishes silently. Starting at prompt time makes it restart-durable. (2) The wait's taken trigger MUST be trigger: template, NOT trigger: state — a state trigger's entity_id cannot be templated (cv.entity_ids_or_uuids rejects it at config load). No precedent in this repo for this pattern; all 13 wait_for_trigger uses were checked. (3) Guard EVERY timer.start with is_state(taken_boolean,'off') — load-bearing for three failure modes: template trigger silently not firing, boolean flip between condition check and wait attach, duplicate parallel runs. Do not simplify away. (4) mode: parallel, max: 4, and do NOT set max_exceeded: silent. (5) Use wait.trigger.id, never trigger.id, after the wait. (6) script.nino_medication_taken must not call automation.turn_off. (7) Reset clears both taken booleans, both escalated booleans, cancels both timers, and no longer calls automation.turn_on.",
+      "description": "Rewrite the three automations and script.nino_medication_taken as dose-aware, and rename the file to nino_medication_reminder.yaml. Reminder automation id becomes nino_medication_reminder (alias 'Nino Medication Reminder'); the reset and shortcut automations KEEP their existing ids (nino_medication_reminder_reset, nino_medication_reminder_shortcut_button) \u2014 both confirmed registered on the live host, so keeping them avoids new orphans. READ FIRST: the file as left by task-1; packages/alexa_actionable_notifications.yaml:40,50-53 (automation-level variables with trigger.*, templated target entity_id); packages/general_notifications.yaml (script contract); packages/announcements/voice_announcement.yaml; plans/nino-two-dose-medication/review.md (verified-claims table); CLAUDE.md. STRUCTURE: 5 triggers \u2014 time on each datetime (ids '1','2'), event on timer.finished for each timer (ids '1','2'), state on input_select.nino_sleep_state to 'Awake' for 5 minutes (id 'awake'). Automation-level variables: resolve dose from trigger.id, or from sensor.nino_medication_pending_dose when trigger.id == 'awake'; derive taken_boolean, snooze_timer, dose_time, tag. Conditions: dose in ['1','2'], dose untaken, dose timer idle, sleep state Awake. ACTION ORDER (this ordering IS the CRITICAL 2 fix): 1. script.voice_announcement with dose-neutral wording; 2. timer.start on the dose's timer \u2014 BEFORE the wait; 3. script.general_notification with per-dose tag nino-medication-dose-{{ dose }}; 4. wait_for_trigger 15-min timeout with three triggers (trigger: template value_template is_state(taken_boolean,'on') id 'taken'; event on push action_taken id 'taken_push'; event on push action_snooze id 'snooze'); 5. branch on wait.trigger.id \u2014 taken/taken_push call script.nino_medication_taken with the dose, snooze restarts the timer for a full 15 min, and the timeout branch is a NO-OP. MITIGATIONS: (1) CRITICAL 2 \u2014 timer.start goes BEFORE wait_for_trigger. Current code starts it only on timeout (lines 152-157), so during the 15-min wait nothing persistent records a dose in flight; any restart kills the run and the dose vanishes silently. Starting at prompt time makes it restart-durable. (2) The wait's taken trigger MUST be trigger: template, NOT trigger: state \u2014 a state trigger's entity_id cannot be templated (cv.entity_ids_or_uuids rejects it at config load). No precedent in this repo for this pattern; all 13 wait_for_trigger uses were checked. (3) Guard EVERY timer.start with is_state(taken_boolean,'off') \u2014 load-bearing for three failure modes: template trigger silently not firing, boolean flip between condition check and wait attach, duplicate parallel runs. Do not simplify away. (4) mode: parallel, max: 4, and do NOT set max_exceeded: silent. (5) Use wait.trigger.id, never trigger.id, after the wait. (6) script.nino_medication_taken must not call automation.turn_off. (7) Reset clears both taken booleans, both escalated booleans, cancels both timers, and no longer calls automation.turn_on.",
       "acceptanceCriteria": [
         "File renamed to nino_medication_reminder.yaml; no nino_daily_medication_reminder.yaml remains",
         "Reminder automation has all 5 triggers with the specified ids",
@@ -42,17 +43,18 @@
         "Shortcut button automation retains device id d98b081e7991a6e9ce1672128dad93ae and calls the script with no dose argument",
         "script.nino_medication_taken accepts an optional dose, falls back to sensor.nino_medication_pending_dose, and no-ops when neither resolves",
         "Reset and shortcut automation ids unchanged; reminder automation id is nino_medication_reminder",
-        "Modern syntax only — no bare trigger:, condition:, singular action: as a top-level automation key, or root-level entity_id: in actions",
-        "YAML parses — HA schema validation deferred to post-merge ha core check"
+        "Modern syntax only \u2014 no bare trigger:, condition:, singular action: as a top-level automation key, or root-level entity_id: in actions",
+        "YAML parses \u2014 HA schema validation deferred to post-merge ha core check"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "26af4ee"
     },
     {
       "id": "task-3",
       "title": "Late-dose escalation (unmutable backstop)",
-      "description": "New file packages/people/nino/medication_reminder/nino_medication_escalation.yaml. A backstop that fires when everything else has failed quietly — deliberately dumb and independent of the resolver, the parallel-run limit, and the notification policy. READ FIRST: packages/general_notifications.yaml:206-227 (THE MUTE GATE THIS MUST BYPASS); packages/ninos_room/nino_escaping/nino_escape_monitor.yaml:81 (direct-notify precedent, also for Nino); packages/people/cristina/medication_reminder/cristina_friday_medication_reminder.yaml:71-83 (direct notify with interruption-level); the file as left by task-2 for entity IDs. DESIGN: trigger is time_pattern every 15 minutes. Per-dose condition: dose untaken AND now() >= today_at(dose_time) + timedelta(hours=2) AND that dose's _escalated boolean is off. Action: call notify.ios_family DIRECTLY with data.push.interruption-level: critical, then turn on that dose's _escalated boolean. MITIGATIONS: (1) CRITICAL 1 — MUST NOT route through script.general_notification. That script hard-gates on input_select.notification_level at packages/general_notifications.yaml:206-207; when the select is 'None' it exits silently, sending nothing and logging nothing. A backstop sharing a mute switch with the system it backs up is not a backstop. (2) Use time_pattern, NOT a template trigger — a template trigger already true at HA startup never fires, so a restart during the escalation window would disable the net precisely when a restart caused the problem. (3) The _escalated booleans prevent a critical push every 15 minutes; task-2's 3am reset clears them. (4) Own file, per one-automation-one-job — this is the one place that convention applies in this package.",
+      "description": "New file packages/people/nino/medication_reminder/nino_medication_escalation.yaml. A backstop that fires when everything else has failed quietly \u2014 deliberately dumb and independent of the resolver, the parallel-run limit, and the notification policy. READ FIRST: packages/general_notifications.yaml:206-227 (THE MUTE GATE THIS MUST BYPASS); packages/ninos_room/nino_escaping/nino_escape_monitor.yaml:81 (direct-notify precedent, also for Nino); packages/people/cristina/medication_reminder/cristina_friday_medication_reminder.yaml:71-83 (direct notify with interruption-level); the file as left by task-2 for entity IDs. DESIGN: trigger is time_pattern every 15 minutes. Per-dose condition: dose untaken AND now() >= today_at(dose_time) + timedelta(hours=2) AND that dose's _escalated boolean is off. Action: call notify.ios_family DIRECTLY with data.push.interruption-level: critical, then turn on that dose's _escalated boolean. MITIGATIONS: (1) CRITICAL 1 \u2014 MUST NOT route through script.general_notification. That script hard-gates on input_select.notification_level at packages/general_notifications.yaml:206-207; when the select is 'None' it exits silently, sending nothing and logging nothing. A backstop sharing a mute switch with the system it backs up is not a backstop. (2) Use time_pattern, NOT a template trigger \u2014 a template trigger already true at HA startup never fires, so a restart during the escalation window would disable the net precisely when a restart caused the problem. (3) The _escalated booleans prevent a critical push every 15 minutes; task-2's 3am reset clears them. (4) Own file, per one-automation-one-job \u2014 this is the one place that convention applies in this package.",
       "acceptanceCriteria": [
         "New file nino_medication_escalation.yaml exists in the medication_reminder package directory",
         "Trigger is time_pattern; the file contains no 'trigger: template' and no 'trigger: time'",
@@ -61,16 +63,17 @@
         "Conditions check dose untaken, now() past dose_time + 2h via today_at(), and _escalated is off",
         "Both doses are covered",
         "The dose's _escalated boolean is turned on after notifying",
-        "YAML parses — HA schema validation deferred to post-merge ha core check"
+        "YAML parses \u2014 HA schema validation deferred to post-merge ha core check"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "775c37a"
     },
     {
       "id": "task-4",
-      "title": "Person popup dashboard — two-dose Medications section",
-      "description": "Update dashboards/templates/button_cards/people/nino.yaml. Expand the Medications section (lines ~75-123) from one dose to two: two boolean rows ('Dose 1' / 'Dose 2'), two timer rows, and both datetime pickers ('First dose at' / 'Second dose at'). Update the section description at line ~114, which currently reads singular: 'What time should we remind Nino to take his medication?'. READ FIRST: that file; dashboards/CLAUDE.md; the package file as left by task-2 for exact entity IDs. MITIGATIONS: (1) Entity IDs must match task-1's exactly — a typo yields a silently blank card row, not an error. (2) Preserve existing card_mod !include patterns and template references verbatim; do not restyle.",
+      "title": "Person popup dashboard \u2014 two-dose Medications section",
+      "description": "Update dashboards/templates/button_cards/people/nino.yaml. Expand the Medications section (lines ~75-123) from one dose to two: two boolean rows ('Dose 1' / 'Dose 2'), two timer rows, and both datetime pickers ('First dose at' / 'Second dose at'). Update the section description at line ~114, which currently reads singular: 'What time should we remind Nino to take his medication?'. READ FIRST: that file; dashboards/CLAUDE.md; the package file as left by task-2 for exact entity IDs. MITIGATIONS: (1) Entity IDs must match task-1's exactly \u2014 a typo yields a silently blank card row, not an error. (2) Preserve existing card_mod !include patterns and template references verbatim; do not restyle.",
       "acceptanceCriteria": [
         "Two input_boolean.nino_medication_{1,2}_taken rows with existing icon and card_mod patterns preserved",
         "Two timer.nino_medication_{1,2}_timer template-entity-rows",
@@ -80,34 +83,36 @@
         "All pre-existing !include paths unchanged",
         "YAML parses"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "6525c41"
     },
     {
       "id": "task-5",
       "title": "Split the notification cards into per-dose cards",
-      "description": "Create dashboards/kohbo/shared/notifications/nino_med_reminder_1.yaml and nino_med_reminder_2.yaml, delete nino_med_reminder.yaml, and update dashboards/kohbo/shared/kohbo_notification_popup.yaml (currently line 18). One conditional card per dose, each with snooze and mark-taken sub-buttons wired to its own dose. Mark-taken passes an explicit dose (unlike the ZHA button, which relies on the resolver). Each card's condition additionally requires the dose's scheduled time to have passed, so dose 2's card doesn't sit in the notifications popup from 3am onward. READ FIRST: the existing nino_med_reminder.yaml; kohbo_notification_popup.yaml; a sibling notification card for conditional-template precedent. MITIGATIONS: (1) Register BOTH new files in kohbo_notification_popup.yaml, replacing the single line-18 include — missing this makes the cards silently never appear. (2) script.nino_medication_taken keeps its name; the live host has Assist exposure and dashboard references to it. Do not rename it.",
+      "description": "Create dashboards/kohbo/shared/notifications/nino_med_reminder_1.yaml and nino_med_reminder_2.yaml, delete nino_med_reminder.yaml, and update dashboards/kohbo/shared/kohbo_notification_popup.yaml (currently line 18). One conditional card per dose, each with snooze and mark-taken sub-buttons wired to its own dose. Mark-taken passes an explicit dose (unlike the ZHA button, which relies on the resolver). Each card's condition additionally requires the dose's scheduled time to have passed, so dose 2's card doesn't sit in the notifications popup from 3am onward. READ FIRST: the existing nino_med_reminder.yaml; kohbo_notification_popup.yaml; a sibling notification card for conditional-template precedent. MITIGATIONS: (1) Register BOTH new files in kohbo_notification_popup.yaml, replacing the single line-18 include \u2014 missing this makes the cards silently never appear. (2) script.nino_medication_taken keeps its name; the live host has Assist exposure and dashboard references to it. Do not rename it.",
       "acceptanceCriteria": [
         "Both new card files exist, each bound to its own dose's boolean and timer",
         "Old nino_med_reminder.yaml is deleted",
         "kohbo_notification_popup.yaml includes both new files and no longer references the old one",
         "Each card's mark-taken sub-button passes an explicit dose to script.nino_medication_taken",
-        "Each card's condition requires both dose-untaken and scheduled-time-has-passed",
-        "YAML parses for all three files"
+        "YAML parses for all three files",
+        "Each card's condition is a simple condition: state on its own dose's taken boolean (Lovelace conditional cards do not support condition: template)"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "282a6d6"
     }
   ],
   "postMergeRunbook": {
     "note": "NOT part of the build. Requires the live HA Yellow at 192.168.1.36 (ssh hassio). No build task can satisfy these and no build agent should claim to. Full detail in plan tasks 11-13 and prd.md.",
     "deploy": [
-      "ha core check FIRST; on failure do not reload — git revert, re-push, re-deploy, then investigate",
+      "ha core check FIRST; on failure do not reload \u2014 git revert, re-push, re-deploy, then investigate",
       "Push to GitHub before ./deploy.sh (deploy pulls from the remote)",
       "Prove the deploy landed: host git HEAD has diverged from local (e6dab15 vs 28b243c), the known condition where deploy.sh pulls nothing and exits 0. Confirm host HEAD matches the merge commit and the new file exists on the host. Exit code 0 is not evidence.",
-      "homeassistant.reload_all — an automations-only reload looks successful while every new entity is missing",
+      "homeassistant.reload_all \u2014 an automations-only reload looks successful while every new entity is missing",
       "Check the HA log for template-render warnings from the medication package"
     ],
     "verifyHighestValue": [
@@ -120,14 +125,14 @@
     "cleanup": [
       "Only after verification passes, including one full both-dose day",
       "Delete 4 orphaned registry entries: input_boolean.nino_daily_medication_taken, timer.nino_daily_medication_timer, input_datetime.nino_daily_medication_time, automation.nino_daily_medication_reminder",
-      "Fix the 'UI Test' storage-mode dashboard (/ui-test, sidebar-visible) — its People view has rows bound to the old boolean and timer. Lovelace UI editor only; there is no file to edit.",
-      "Re-expose the timer to voice assistants — the old timer had a cloud.google_assistant exposure the rename orphans. Settings -> Voice Assistants -> Expose."
+      "Fix the 'UI Test' storage-mode dashboard (/ui-test, sidebar-visible) \u2014 its People view has rows bound to the old boolean and timer. Lovelace UI editor only; there is no file to edit.",
+      "Re-expose the timer to voice assistants \u2014 the old timer had a cloud.google_assistant exposure the rename orphans. Settings -> Voice Assistants -> Expose."
     ]
   },
   "metadata": {
     "createdAt": "2026-08-18T23:30:00-05:00",
     "totalTasks": 5,
-    "completedTasks": 0,
+    "completedTasks": 5,
     "failedTasks": 0
   }
 }
