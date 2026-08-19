@@ -33,19 +33,19 @@ Pre-flight: `status: approved` → `in-progress`. `has_review: true` (Phase 1.3 
   - task-3 escalation backstop — APPROVED. Orchestrator restored a mute-gate citation the agent had deleted purely to pass AC3's substring grep.
   - task-4 person popup dashboard — APPROVED. Agent correctly challenged an AC: plain `yaml.safe_load` fails on ALL dashboard files (`!include` tag), pre-existing; tag-tolerant loader used instead.
   - task-5 notification card split — APPROVED. First live use of `condition: template` in a Lovelace conditional card in this repo (all 15 siblings use `condition: state`) — flagged for post-merge.
-- [x] 4.2 Holistic review — **NEEDS_REWORK → resolved.** Found (a) merge-blocking: Lovelace conditional cards do not support `condition: template` (orchestrator independently verified against live HA docs); fixed with per-dose `_due` template binary sensors + `condition: state`. (b) silent spec deviation: script `mode: "single"` vs PRD's `queued` — no AC covered it; fixed. (c) fabricated citation in working-memory ("supported since 2024.4") — corrected, along with two wrong supporting facts (17 cards not 15; 8 use `numeric_state`). Post-merge criteria 20 → 24.
+- [x] 4.2 Holistic review — **NEEDS_REWORK → resolved.** Found (a) merge-blocking: Lovelace conditional cards do not support `condition: template` (orchestrator independently verified against live HA docs); fixed with per-dose `_due` template binary sensors + `condition: state`. (b) silent spec deviation: script `mode: "single"` vs PRD's `queued` — no AC covered it; fixed. (c) fabricated citation in working-memory ("supported since 2024.4") — corrected, along with two wrong supporting facts (17 cards not 15; 8 use `numeric_state`). Post-merge criteria 20 → 24, later 24 → 22 after the scope correction.
 
 ## Phase 5 — Wrap & Report
 - [x] 5.1 Learnings → `learnings.md`; 2 durable memories written to project auto-memory + MEMORY.md index
 - [x] 5.2 No `LEARNINGS.md` exists in this repo; equivalent captured in `learnings.md` + auto-memory
 - [x] 5.3 Committed
-- [ ] 5.4 /wrap
+- [x] 5.4 /wrap — all checks ✅ (working tree clean, 0 open ledger entries, no stale refs, both CRITICAL mitigations confirmed present in final tree, all 9 dashboard entities resolve)
 - [x] 5.5 plan.md → `shipped`; prd.json reconciled 5/5 on-branch
-- [ ] 5.6 Ship report
-- [ ] 5.7 Merge gate (gitboss)
+- [x] 5.6 Ship report delivered
+- [x] 5.7 Merge — **builder approved and merged** to master as `83ca747` (--no-ff). Builder is running deploy + verification.
 
 ## Phase 6 — Cleanup
-- [ ] 6.1 ExitWorktree
+- [x] 6.1 Worktree removed after merge
 
 ---
 
@@ -114,3 +114,15 @@ The agent reported that "template-trigger-inside-`wait_for_trigger` variable acc
 ### Informational
 
 Supervisor reports the Terminal & SSH add-on in `state: error` (agent connected via OS-level root SSH instead). Unrelated. HA 2026.8.2 available; 2026.7.4 installed.
+
+---
+
+## Scope correction — post-build, pre-merge (2026-08-19)
+
+Builder flagged the solution as more complex than the ask warranted. Assessed and agreed: ~78 lines of real YAML and 4 of 8 helper entities were additions not requested.
+
+**Cut**: card time-gating and the two `_due` binary sensors. Cards reverted to `condition: state` on their own dose's taken boolean — the previous single card's behavior. This also removed the only piece of the change that needed a template condition in a Lovelace card, which was the holistic review's sole merge blocker. Post-merge criteria 24 → 22.
+
+**Kept**: the escalation backstop, after arguing the case explicitly — every notification in this house dies silently when `input_select.notification_level` is `None`, a hole that predates this change and that nothing else detects.
+
+Notable: the unrequested feature generated its own merge blocker, its own rework round, and a share of the review burden. Cutting it removed more than its line count.
