@@ -2,13 +2,20 @@
 # Nino Medication Escalation
 #
 # Unmutable backstop for a missed dose. Polls every 15 minutes and,
-# for either dose, sends a critical push directly (bypassing the
-# house notification helper script entirely, which silently drops
-# everything when input_select.notification_level is "None") once
-# that dose is more than 2 hours late and still untaken. Deliberately
-# dumb and independent of the reminder automation, the pending-dose
-# resolver, and house notification policy — this is what still fires
-# when everything else has failed quietly.
+# for either dose, sends a critical push once that dose is more than
+# 2 hours late and still untaken. Deliberately dumb and independent
+# of the reminder automation, the pending-dose resolver, and house
+# notification policy — this is what still fires when everything
+# else has failed quietly.
+#
+# WHY notify.ios_family DIRECTLY, and not the shared notification
+# helper script every other automation in this package uses:
+# see packages/general_notifications.yaml lines 206-207. That script
+# hard-gates on input_select.notification_level and, when the select
+# is "None", exits silently — no push, no log, no error. A backstop
+# that shares a mute switch with the system it backs up is not a
+# backstop. Making this "consistent" with the rest of the package
+# would re-introduce exactly the failure it exists to survive.
 #
 # Uses time_pattern rather than a template trigger: a template
 # trigger that is already true when HA starts does not fire, so it
