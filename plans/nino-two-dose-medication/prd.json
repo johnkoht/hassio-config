@@ -21,9 +21,10 @@
         "YAML parses via python3 yaml.safe_load — HA schema validation deferred to post-merge ha core check",
         "File header comment block present, matching repo style"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "d56f613b8597b5d7d89d0dc2631f4884a4211be8"
     },
     {
       "id": "task-2",
@@ -127,7 +128,7 @@
   "metadata": {
     "createdAt": "2026-08-18T23:30:00-05:00",
     "totalTasks": 5,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "failedTasks": 0
   }
 }
