@@ -1,7 +1,7 @@
 ---
 title: Nino Two-Dose Medication Reminder
 slug: nino-two-dose-medication
-status: in-progress
+status: shipped
 created: 2026-08-18
 has_pre_mortem: true
 has_review: true
@@ -160,6 +160,10 @@ Confirmed against the HA Yellow at `192.168.1.36` (`ssh hassio`) before build. F
     | 18 | Restart HA → `sensor.nino_medication_pending_dose` reads `none`, never `unavailable` |
     | 19 | Escalation fires: leave a dose untaken past its window → `critical` push arrives, `_escalated` sets, no repeat |
     | 20 | **Escalation survives muting**: set `input_select.notification_level` to `None`, leave a dose untaken → the critical push **still arrives**. *This is CRITICAL 1.* |
+    | 21 | **Cards render as working buttons, not an error box.** Open the notifications popup and confirm each dose card shows its snooze / mark-taken sub-buttons — not an "invalid conditions" error. Criterion 17 alone would pass on an error box, since an error box is technically "present". *Added after the holistic review found the original `condition: template` implementation unsupported.* |
+    | 22 | **`script.nino_medication_taken` handles concurrent calls.** Fire it for both doses in quick succession (ZHA button + dashboard button, different doses) and confirm neither is dropped. Exercises the `mode: queued` fix; nothing else in this list covers it. |
+    | 23 | **Card visibility survives a mid-snooze time edit.** With a dose snoozing, move its scheduled time to the future; its card must stay visible (the `_due` binary sensor's timer-active clause). Mirrors criterion 11, but for the card rather than the resolver. |
+    | 24 | **`binary_sensor.nino_medication_{1,2}_due` never go `unavailable`** — same startup hazard as the resolver sensor (criterion 18); check both after a restart. |
 
 13. **Post-verification cleanup** — Only after Task 12 passes, including at least one full day covering both doses. Nothing here is urgent, and running it early destroys the rollback trail.
     - Delete 4 orphaned registry entries: `input_boolean.nino_daily_medication_taken`, `timer.nino_daily_medication_timer`, `input_datetime.nino_daily_medication_time`, `automation.nino_daily_medication_reminder`.
