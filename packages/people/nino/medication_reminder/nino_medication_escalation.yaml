@@ -1,0 +1,84 @@
+#
+# Nino Medication Escalation
+#
+# Unmutable backstop for a missed dose. Polls every 15 minutes and,
+# for either dose, sends a critical push directly (bypassing the
+# house notification helper script entirely, which silently drops
+# everything when input_select.notification_level is "None") once
+# that dose is more than 2 hours late and still untaken. Deliberately
+# dumb and independent of the reminder automation, the pending-dose
+# resolver, and house notification policy — this is what still fires
+# when everything else has failed quietly.
+#
+# Uses time_pattern rather than a template trigger: a template
+# trigger that is already true when HA starts does not fire, so it
+# would disable this net exactly when a restart caused the missed
+# dose. time_pattern polls and is restart-proof.
+#
+# Each dose's `_escalated` boolean guards against re-sending a
+# critical push every 15 minutes once escalated; it's cleared by
+# nino_medication_reminder_reset at 3am.
+#
+
+automation:
+  - id: "nino_medication_escalation"
+    alias: "Nino Medication Escalation"
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        minutes: "/15"
+    conditions: []
+    actions:
+      #
+      # Dose 1
+      #
+      - alias: "Dose 1 - critical push if more than 2 hours late"
+        if:
+          - condition: template
+            value_template: >-
+              {% set t = states('input_datetime.nino_medication_1_time') %}
+              {% set ok = t not in ['unknown', 'unavailable', '', None] %}
+              {{
+                ok
+                and is_state('input_boolean.nino_medication_1_taken', 'off')
+                and is_state('input_boolean.nino_medication_1_escalated', 'off')
+                and now() >= today_at(t) + timedelta(hours=2)
+              }}
+        then:
+          - action: notify.ios_family
+            data:
+              title: "Nino's Medication Reminder"
+              message: "Nino's Dose 1 medication is more than 2 hours late and still hasn't been marked taken."
+              data:
+                push:
+                  interruption-level: "critical"
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.nino_medication_1_escalated
+
+      #
+      # Dose 2
+      #
+      - alias: "Dose 2 - critical push if more than 2 hours late"
+        if:
+          - condition: template
+            value_template: >-
+              {% set t = states('input_datetime.nino_medication_2_time') %}
+              {% set ok = t not in ['unknown', 'unavailable', '', None] %}
+              {{
+                ok
+                and is_state('input_boolean.nino_medication_2_taken', 'off')
+                and is_state('input_boolean.nino_medication_2_escalated', 'off')
+                and now() >= today_at(t) + timedelta(hours=2)
+              }}
+        then:
+          - action: notify.ios_family
+            data:
+              title: "Nino's Medication Reminder"
+              message: "Nino's Dose 2 medication is more than 2 hours late and still hasn't been marked taken."
+              data:
+                push:
+                  interruption-level: "critical"
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.nino_medication_2_escalated
