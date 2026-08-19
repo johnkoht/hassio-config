@@ -1,27 +1,39 @@
+#
+# Nino Medication Reminder — Dose 2
+#
+# Shown only while dose 2 is untaken AND its scheduled time has
+# passed today, so this card doesn't sit in the notifications
+# popup before the dose is even due.
+#
 type: conditional
 conditions:
   - condition: state
-    entity: input_boolean.nino_daily_medication_taken
+    entity: input_boolean.nino_medication_2_taken
     state: "off"
+  - condition: template
+    value_template: >-
+      {% set t = states('input_datetime.nino_medication_2_time') %}
+      {% set ok = t not in ['unknown', 'unavailable', '', 'none', None] %}
+      {{ ok and now() >= today_at(t) }}
 card:
   type: custom:bubble-card
   card_type: button
   button_type: switch
-  entity: input_boolean.nino_daily_medication_taken
-  name: Nino's Daily Medication
+  entity: input_boolean.nino_medication_2_taken
+  name: Nino's Medication - Dose 2
   show_state: false
   show_last_changed: true
   show_last_updated: false
   sub_button:
     # Snooze
-    - entity: timer.nino_daily_medication_timer
+    - entity: timer.nino_medication_2_timer
       icon: mdi:rewind-15
       show_background: false
       tap_action:
         action: perform-action
         perform_action: timer.start
         target:
-          entity_id: timer.nino_daily_medication_timer
+          entity_id: timer.nino_medication_2_timer
     # Mark taken
     - entity: script.nino_medication_taken
       icon: mdi:check-circle
@@ -31,6 +43,8 @@ card:
         action: perform-action
         perform_action: script.nino_medication_taken
         target: {}
+        data:
+          dose: "2"
   tap_action:
     action: none
   button_action:
