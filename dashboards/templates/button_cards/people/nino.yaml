@@ -1,12 +1,12 @@
 type: custom:bubble-card
 card_type: pop-up
-hash: '#nino'
+hash: "#nino"
 styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    
+
 cards:
-  # 
+  #
   # Profile Picture
-  # 
+  #
   - type: custom:button-card
     entity: person.nino
     template: people_profile_picture
@@ -18,27 +18,24 @@ cards:
           }
         ]]]
 
-
-
-  # 
+  #
   # Heading
-  # 
+  #
   - type: custom:button-card
     name: "Nino"
     template: kohbo_person_heading
     custom_fields:
       location: '[[[ return states["input_select.nino_sleep_state"].state ]]]'
-        
 
-  # 
+  #
   # Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      # 
+      #
       # Status
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-person-status
         name: Status
@@ -53,9 +50,9 @@ cards:
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
-      # 
+      #
       # Bed Occupancy
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-bed
         name: Bed Occupancy
@@ -70,11 +67,9 @@ cards:
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
-
-
-  # 
+  #
   # Medications
-  # 
+  #
   - type: custom:stack-in-card
     mode: vertical
     card_mod:
@@ -124,10 +119,6 @@ cards:
           - type: custom:button-card
             name: Medication Reminder Time
             template: kohbo_card_section_title
-
-          - type: custom:button-card
-            name: What times should we remind Nino to take his medications?
-            template: kohbo_card_section_description
 
           - type: entities
             card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
