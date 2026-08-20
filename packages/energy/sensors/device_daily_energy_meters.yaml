@@ -7,12 +7,13 @@ utility_meter:
   #---------------------------------------------------------------------------
   # Z-Wave Appliances (use _electric_consumption_kwh sensors)
   #---------------------------------------------------------------------------
-  
+
   # Upstairs Washer (Z-Wave)
-  # Note: Verify this sensor exists - might be sensor.upstairs_washing_machine_electric_consumption_kwh
   upstairs_washer_daily_energy:
     name: "Upstairs Washer Daily Energy"
-    source: sensor.upstairs_washing_machine_electric_consumption_kwh
+    # source fixed 2026-08-20: id was sensor.upstairs_washing_machine_...; live id is
+    # sensor.upstairs_washer_electric_consumption_kwh (verified via /api/states).
+    source: sensor.upstairs_washer_electric_consumption_kwh
     cycle: daily
     always_available: true
 
@@ -44,14 +45,17 @@ utility_meter:
   # John's Desk
   johns_desk_daily_energy:
     name: "John's Desk Daily Energy"
-    source: sensor.johns_desk_summation_delivered
+    # source fixed 2026-08-20: sensor.johns_desk_summation_delivered never existed
+    # (plug renamed) — meter accumulated 0 forever. Live entity verified via /api/states.
+    source: sensor.smart_plug_11_summation_delivered
     cycle: daily
     always_available: true
 
   # Cristina's Desk
   cristinas_desk_daily_energy:
     name: "Cristina's Desk Daily Energy"
-    source: sensor.cristinas_desk_summation_delivered
+    # source fixed 2026-08-20: sensor.cristinas_desk_summation_delivered never existed.
+    source: sensor.smart_plug_22_summation_delivered
     cycle: daily
     always_available: true
 
@@ -84,6 +88,8 @@ utility_meter:
     always_available: true
 
   # Smart Plug 18 - Kids Playroom Xmas Light 4
+  # KNOWN-DEAD SOURCE (2026-08-20 audit): smart_plug_18 no longer exposes
+  # summation_delivered (plug re-paired?); nothing consumes this meter. Left in place.
   smart_plug_18_daily_energy:
     name: "Kids Playroom Xmas 4 Daily Energy"
     source: sensor.smart_plug_18_summation_delivered
