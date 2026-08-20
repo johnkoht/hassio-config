@@ -87,17 +87,32 @@ cards:
       - type: entities
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
         entities:
-          - entity: input_boolean.nino_daily_medication_taken
+          - entity: input_boolean.nino_medication_1_taken
             icon: kohbo:kohbo-medication
-            name: Daily Medication
+            name: Dose 1
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
 
           - type: custom:template-entity-row
             icon: kohbo:kohbo-timer
-            name: Daily Reminder
-            entity: timer.nino_daily_medication_timer
+            name: Dose 1 Reminder
+            entity: timer.nino_medication_1_timer
+            state: "{{ states[config.entity].state | title }}"
+            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+          - entity: input_boolean.nino_medication_2_taken
+            icon: kohbo:kohbo-medication
+            name: Dose 2
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          - type: custom:template-entity-row
+            icon: kohbo:kohbo-timer
+            name: Dose 2 Reminder
+            entity: timer.nino_medication_2_timer
             state: "{{ states[config.entity].state | title }}"
             secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
             card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
@@ -111,12 +126,15 @@ cards:
             template: kohbo_card_section_title
 
           - type: custom:button-card
-            name: What time should we remind Nino to take his medication?
+            name: What times should we remind Nino to take his medications?
             template: kohbo_card_section_description
 
           - type: entities
             card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
             entities:
-              - entity: input_datetime.nino_daily_medication_time
-                name: Remind him at
-                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml  
+              - entity: input_datetime.nino_medication_1_time
+                name: First dose at
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - entity: input_datetime.nino_medication_2_time
+                name: Second dose at
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
