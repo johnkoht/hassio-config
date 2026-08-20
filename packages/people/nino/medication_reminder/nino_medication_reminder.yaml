@@ -55,13 +55,13 @@ input_datetime:
     icon: mdi:clock-time-seven
     has_date: false
     has_time: true
-    initial: "07:00:00"
+    initial: "07:30:00"
   nino_medication_2_time:
     name: Nino Medication 2 Time
     icon: mdi:clock-time-seven
     has_date: false
     has_time: true
-    initial: "19:00:00"
+    initial: "13:00:00"
 
 #
 # Pending Dose Resolver
