@@ -7,3 +7,12 @@ light:
       - light.office_light_2
       - light.office_light_3
       - light.office_light_4
+
+  - platform: group
+    name: Office All Lights
+    unique_id: office_all_lights_group
+    entities:
+      - light.office_light_switch
+      - light.office_office_lamp
+      - light.office_shelf_lights
+      - light.office_el_gato_light
