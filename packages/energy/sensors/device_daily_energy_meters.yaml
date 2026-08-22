@@ -87,14 +87,8 @@ utility_meter:
     cycle: daily
     always_available: true
 
-  # Smart Plug 18 - Kids Playroom Xmas Light 4
-  # KNOWN-DEAD SOURCE (2026-08-20 audit): smart_plug_18 no longer exposes
-  # summation_delivered (plug re-paired?); nothing consumes this meter. Left in place.
-  smart_plug_18_daily_energy:
-    name: "Kids Playroom Xmas 4 Daily Energy"
-    source: sensor.smart_plug_18_summation_delivered
-    cycle: daily
-    always_available: true
+  # (smart_plug_18 has no daily meter: it's a non-metering plug — no energy sensor
+  #  to accumulate. Removed 2026-08-22, John's ruling.)
 
   # Smart Plug 2 - Nino's Heater
   smart_plug_2_daily_energy:
