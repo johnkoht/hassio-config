@@ -1,6 +1,6 @@
-# 
+#
 # Main floor lights
-# 
+#
 light:
   - platform: group
     name: Main Floor Lights
@@ -8,7 +8,7 @@ light:
     entities:
       - light.foyer_lights
       - light.playroom_lights
-      - light.office_light_switch
+      - light.office_all_lights_group
       - light.kitchen_lights
       - light.dining_room_lights
       - light.garage_lights
@@ -19,10 +19,9 @@ light:
       - light.powder_room_main_lights
       - light.mudroom_bathroom_main_lights
 
-
-# 
+#
 # Main Floor Lights On Count
-# 
+#
 template:
   - sensor:
       - name: Main Floor Lights On
