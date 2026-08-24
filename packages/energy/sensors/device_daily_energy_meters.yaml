@@ -138,3 +138,11 @@ utility_meter:
     source: sensor.smart_plug_14_summation_delivered
     cycle: daily
     always_available: true
+
+  # Office Floor Lamp (Zigbee metering switch, added 2026-08-23)
+  # Entity id derives from `name`, not this key: sensor.office_lamp_daily_energy.
+  office_lamp_daily_energy:
+    name: "Office Lamp Daily Energy"
+    source: sensor.office_office_lamp_summation_delivered
+    cycle: daily
+    always_available: true
