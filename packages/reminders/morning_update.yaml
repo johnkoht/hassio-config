@@ -116,18 +116,32 @@ script:
             {% elif states.input_boolean.primary_school_day.state == "on" %}
               Today is a school day, so remind Nino to get ready and check the lunch menu.  
 
-              {% set menu = states.sensor.primary_school_lunch_menu.attributes.lunch_menu | lower %}
-              {% set favorites = ['chicken nugget', 'pizza', 'cheeseburger', 'caesar salad', 'beef nachos'] %}
+              {% set menu = state_attr('sensor.primary_school_lunch_menu', 'lunch_menu') | default([], true) %}
+              {% set entrees = state_attr('sensor.primary_school_lunch_menu', 'entrees') | default([], true) %}
+              {% set favorites = ['nachos', 'pizza', 'burger', 'chicken tenders', 'bosco sticks',
+                                  'quesadilla', 'french toast', 'waffle', 'watermelon'] %}
+              {# Nino wants the real-meat version, not the plant based / veggie sausage one #}
+              {% set exclude = ['plant based', 'veggie'] %}
               {% set ns = namespace(liked_items=[]) %}
-              {% for fav in favorites %}
-                {% if fav in menu %}
-                  {% set ns.liked_items = ns.liked_items + [fav] %}
+              {% for item in menu %}
+                {% set name = item | lower %}
+                {% if not exclude | select('in', name) | list %}
+                  {% for fav in favorites if fav in name %}
+                    {% set ns.liked_items = ns.liked_items + [item] %}
+                  {% endfor %}
                 {% endif %}
               {% endfor %}
+              {% set liked = ns.liked_items | unique | list %}
+              {% set bag_lunch = entrees | select('search', '(?i)uncrustable') | first | default('', true) %}
 
-              {% if ns.liked_items | length > 0 %}
+              {% if menu | length == 0 %}
+                Hey Nino, don't forget to check the lunch menu today!
+              {% elif liked | length > 0 %}
                 The lunch menu includes some items that Nino likes today! Please let him know about those items and don't forget to see what else is on the menu.
-                You can say somethign like: "Yum! Nino, the lunch menu includes {{ ns.liked_items | join(', ') }} today! Don't forget to see what else is on the menu."
+                You can say something like: "Yum! Nino, the lunch menu includes {{ liked | join(', ') }} today! Don't forget to see what else is on the menu."
+              {% elif bag_lunch %}
+                There's nothing on today's lunch menu that Nino especially likes, so suggest the bag lunch instead.
+                You can say something like: "Nino, today's lunch menu isn't your favorite — you might want the bag lunch, it's the {{ bag_lunch }}."
               {% else %}
                 Hey Nino, don't forget to check the lunch menu today!
               {% endif %}
