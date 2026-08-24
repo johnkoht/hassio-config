@@ -1,52 +1,62 @@
 # Office Lights On
 #
-# Turn the lights on when the Office comes
-# occupied or theirs motions and it's dull.
+# Turn the lights on when the Office becomes occupied,
+# or 15 mins after sunset, if it's dull in the room.
 #
+# Targets light.office_ceiling_bulbs (the Hue bulbs) rather than the Inovelli.
+# In Smart Bulb Mode the switch cannot control the load, and Adaptive Lighting
+# only intercepts turn_on calls aimed at the bulbs themselves.
+#
+
 automation:
   - id: "office_lights_on"
-    initial_state: on
     alias: "Office lights On"
-    trigger:
+    mode: single
+    triggers:
       # Office becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "on"
       # 15 mins after sunset
-      - platform: sun
+      - trigger: sun
         event: sunset
         offset: "00:15:00"
-    condition:
-      - condition: or
-        conditions:
-          # Office is Auto
-          - condition: state
-            entity_id: input_select.office
-            state: "Auto"
-          # Office is DnD
-          - condition: state
-            entity_id: input_select.office
-            state: "DnD"
-      # Office is occupied
-      - condition: state
-        entity_id: input_boolean.office_occupied
-        state: "on"
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
+        state: "on"
+      # Office is occupied
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      # Office is Auto or DnD
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.office
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.office
+            state: "DnD"
       # Light is low
       - condition: numeric_state
         entity_id: sensor.office_aqara_illuminance
         below: 150
       # Lights are currently off
       - condition: state
-        entity_id: light.office_light_switch
+        entity_id: light.office_ceiling_bulbs
         state: "off"
-    action:
-      - service: light.turn_on
-        entity_id: light.office_light_switch
-      
-      # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.office_lights_auto
+    actions:
+      # Bare turn_on so Adaptive Lighting sets brightness/colour temp
+      - action: light.turn_on
+        target:
+          entity_id: light.office_ceiling_bulbs
+
+      # Flag that this was an automatic turn-on
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.office_lights_auto

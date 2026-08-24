@@ -1,20 +1,23 @@
 # Office Lights Motion Off
 #
 # If motion is no longer detected and the Office
-# is not occupied, let's turn the lights off quickly
+# is not occupied, turn the lights off quickly.
 #
+# Enabled by office_lights_motion_on, disables itself after running.
+#
+
 automation:
   - id: "office_lights_motion_off"
     initial_state: off
     alias: "Office lights motion off"
-    trigger:
-      # Motion no longer detected
-      - platform: state
+    mode: single
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.office_aqara_motion_sensor
         to: "off"
         for:
           minutes: 1
-    condition:
+    conditions:
       # Office is not occupied
       - condition: state
         entity_id: input_boolean.office_occupied
@@ -25,17 +28,19 @@ automation:
         state: "off"
       # Lights are currently on
       - condition: state
-        entity_id: light.office_light_switch
+        entity_id: light.office_ceiling_bulbs
         state: "on"
-    action:
-      # Turn off the lights
-      - service: light.turn_off
-        entity_id: light.office_light_switch
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id: light.office_ceiling_bulbs
 
       # Turn off this automation
-      - service: automation.turn_off
-        entity_id: automation.office_lights_motion_off
+      - action: automation.turn_off
+        target:
+          entity_id: automation.office_lights_motion_off
 
-      # Toggle off the lighting automatically turned on boolean
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.office_lights_auto
+      # Clear the auto flag
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.office_lights_auto

@@ -1,0 +1,46 @@
+# Office Lights — Sync Switch To Bulbs
+#
+# The Inovelli is in Smart Bulb Mode, so its internal on/off state (endpoint 1,
+# `light.office_light_switch`) is decoupled from the load — writing to it only
+# moves the LED bar, it can never cut power to the bulbs.
+#
+# When anything in HA changes the bulbs (automation, dashboard, scene button),
+# nothing tells endpoint 1, so the LED bar goes stale. This mirrors the bulb
+# group onto the switch so the paddle always reads true.
+#
+# Pairs with office_lights_sync_bulbs_from_switch.yaml (the other direction).
+#
+
+automation:
+  - id: "office_lights_sync_switch_state"
+    alias: "Office lights - Sync switch to bulbs"
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: light.office_ceiling_bulbs
+        to: "on"
+      - trigger: state
+        entity_id: light.office_ceiling_bulbs
+        to: "off"
+    conditions:
+      # Only act when the two actually disagree — this is what stops the
+      # two sync automations from ping-ponging off each other.
+      - alias: "Switch does not already match the bulbs"
+        condition: template
+        value_template: >
+          {{ states('light.office_light_switch')
+             != states('light.office_ceiling_bulbs') }}
+    actions:
+      - if:
+          - condition: state
+            entity_id: light.office_ceiling_bulbs
+            state: "on"
+        then:
+          - action: light.turn_on
+            target:
+              entity_id: light.office_light_switch
+        else:
+          - action: light.turn_off
+            target:
+              entity_id: light.office_light_switch

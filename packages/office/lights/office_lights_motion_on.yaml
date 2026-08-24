@@ -1,43 +1,47 @@
 # Office Lights Motion On
 #
 # Turn the lights on whenever motion is
-# detected and it's dull in the Office
+# detected and it's dull in the Office.
 #
+
 automation:
   - id: "office_lights_motion_on"
-    initial_state: on
     alias: "Office lights Motion On"
-    trigger:
-      # Motion detected
-      - platform: state
+    mode: single
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.office_aqara_motion_sensor
         to: "on"
-    condition:
-      # Office is Auto
-      - condition: state
-        entity_id: input_select.office
-        state: "Auto"
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # Office lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.office_lighting_automations
         state: "on"
+      # Office is Auto
+      - condition: state
+        entity_id: input_select.office
+        state: "Auto"
       # Light is low
       - condition: numeric_state
         entity_id: sensor.office_aqara_illuminance
         below: 150
       # Lights are currently off
       - condition: state
-        entity_id: light.office_light_switch
+        entity_id: light.office_ceiling_bulbs
         state: "off"
-    action:
-      - service: light.turn_on
-        entity_id: light.office_light_switch
-      - service: automation.turn_on
-        entity_id: automation.office_lights_motion_off
-      # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.office_lights_auto
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.office_ceiling_bulbs
+
+      - action: automation.turn_on
+        target:
+          entity_id: automation.office_lights_motion_off
+
+      # Flag that this was an automatic turn-on
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.office_lights_auto

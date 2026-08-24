@@ -48,7 +48,7 @@ cards:
 
   # Ceiling Lights
   - type: tile
-    entity: light.office_light_switch
+    entity: light.office_ceiling_bulbs
     name: Ceiling Lights
     icon: mdi:ceiling-light-multiple
     show_entity_picture: false
@@ -269,11 +269,12 @@ cards:
   - type: custom:decluttering-card
     template: light_popup
     variables:
-      # - light_entity: light.office_light_switch
-      - light_entity: light.office_lights
+      # NOTE: light.office_lights is the ZHA group (Zigbee-level, used by the
+      # binding). Target the HA group so Adaptive Lighting can expand it.
+      - light_entity: light.office_ceiling_bulbs
       - popup_hash: "#office_ceiling_lights"
       - popup_title: "Ceiling Lights"
-      - entity_id: light.office_lights
+      - entity_id: light.office_ceiling_bulbs
       # - entity_id:
       #   - light.office_1
       #   - light.office_2

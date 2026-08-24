@@ -1,49 +1,48 @@
 # Office Lights Day On
 #
-# Automatically turn the lights on based at sunset,
-# if it's too dark in the room, or from bad weather.
+# Automatically turn the lights on when it gets too dark
+# in the room, or from bad weather.
 #
+# Targets the Hue bulbs, not the Inovelli — see office_lights_on.yaml.
+#
+
 automation:
   - id: "office_lights_day_on"
-    initial_state: on
     alias: "Office lights Day On"
-    trigger:
-      # If the lighting is low in the office
-      - platform: numeric_state
+    mode: single
+    triggers:
+      # Lighting is low in the office
+      - trigger: numeric_state
         entity_id: sensor.office_aqara_illuminance
         below: 150
         for:
           minutes: 3
-      # If the lighting is low in the office
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.office_aqara_illuminance
         below: 125
         for:
           minutes: 3
-      # If the lighting is low in the office
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.office_aqara_illuminance
         below: 100
         for:
           minutes: 5
       # The weather is bad outside
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bad_weather
         to: "on"
-      # Light automations is enabled
-      - platform: state
+      # Lighting automations enabled
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-      # Light automations is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # Office lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.office_lighting_automations
         state: "on"
@@ -51,28 +50,29 @@ automation:
       - condition: state
         entity_id: input_boolean.office_occupied
         state: "on"
+      # Office is Auto or DnD
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.office
+            state: "Auto"
+          - condition: state
+            entity_id: input_select.office
+            state: "DnD"
       # Light is low
       - condition: numeric_state
         entity_id: sensor.office_aqara_illuminance
         below: 150
       # Lights are currently off
       - condition: state
-        entity_id: light.office_light_switch
+        entity_id: light.office_ceiling_bulbs
         state: "off"
-      - condition: or
-        conditions:
-          # Office is Auto
-          - condition: state
-            entity_id: input_select.office
-            state: "Auto"
-          # Office is DnD
-          - condition: state
-            entity_id: input_select.office
-            state: "DnD"
-    action:
-      - service: light.turn_on
-        entity_id: light.office_light_switch
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.office_ceiling_bulbs
 
-      # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.office_lights_auto
+      # Flag that this was an automatic turn-on
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.office_lights_auto
