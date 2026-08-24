@@ -1,57 +1,52 @@
 # Office Lights Off
 #
-# Automatically turn the lights off based on various
-# triggers like the office is off/not occupied, or
-# the weather has improve or it's bright eneough.
+# Automatically turn the lights off when the Office
+# goes Off or becomes unoccupied.
 #
+# NOTE: office_all_lights now contains the ceiling BULBS rather than the
+# Inovelli. In Smart Bulb Mode turning the switch "off" leaves the bulbs lit,
+# which is why this used to leave the room on.
+#
+
 automation:
   - id: "office_lights_off"
-    initial_state: on
     alias: "Office lights off"
-    trigger:
+    mode: single
+    triggers:
       # Office is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.office
         to: "Off"
       # Office is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "off"
-        # for:
-        #   minutes: 2
       # Lighting automations turn on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-    condition:
-      # Office is not occupied
-      - condition: state
-        entity_id: input_boolean.office_occupied
-        state: "off"
+    conditions:
       # Office lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.office_lighting_automations
         state: "on"
-      # Office is Off, not occupied, or the room is bright enough
+      # Office is Off, or nobody is in it
+      # (brightness-based turn-off is office_lights_day_off's job)
       - condition: or
         conditions:
-          # Office is Off
           - condition: state
             entity_id: input_select.office
             state: "Off"
-          # Office is not occupied
           - condition: state
             entity_id: input_boolean.office_occupied
             state: "off"
-          # Room is bright enough
-          - condition: numeric_state
-            entity_id: sensor.office_aqara_illuminance
-            above: 151
-    action:
+    actions:
       # Turn off the lights
-      - service: light.turn_off
-        entity_id: light.office_all_lights_group
+      - action: light.turn_off
+        target:
+          entity_id: light.office_all_lights
 
-      # Toggle off the lighting automatically turned on boolean
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.office_lights_auto
+      # Clear the auto flag
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.office_lights_auto

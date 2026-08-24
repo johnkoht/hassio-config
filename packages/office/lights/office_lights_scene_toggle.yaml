@@ -12,5 +12,5 @@ automation:
     actions:
       - action: script.lights_scene_toggle
         data:
-          lights: light.office_lights
+          lights: light.office_ceiling_bulbs
           scene_select: input_select.office_scene

@@ -1,55 +1,41 @@
 # Office Lights Day Off
 #
-# If the lights turned on due to poor lighting or
-# bad weather, this will turn them off when the
-# lighting or weather improves.
+# If the lights turned on due to poor lighting or bad weather,
+# turn them off again when the lighting or weather improves.
 #
+
 automation:
   - id: "office_lights_day_off"
-    initial_state: on
     alias: "Office lights day off"
-    trigger:
+    mode: single
+    triggers:
       # Light is bright enough
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.office_aqara_illuminance
         above: 151
         for:
           minutes: 10
-      # Light is bright enough
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.office_aqara_illuminance
         above: 250
         for:
           minutes: 5
-      # The weather not bad anymore
-      - platform: state
+      # The weather isn't bad anymore
+      - trigger: state
         entity_id: input_boolean.bad_weather
         to: "off"
-    condition:
+    conditions:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # Office lighting automation is enabled
       - condition: state
         entity_id: input_boolean.office_lighting_automations
         state: "on"
       # Office is not in DnD mode
       - condition: template
         value_template: "{{ not is_state('input_select.office','DnD') }}"
-      #
-      # # John's camera is NOT on AND he's in the office
-      # - condition: and
-      #   conditions:
-      #     # And camera is off
-      #     - condition: state
-      #       entity_id: binary_sensor.john_laptop_camera_active
-      #       state: "off"
-      #     # John's in the office
-      #     - condition: state
-      #       entity_id: sensor.john_room_presence
-      #       state: "Office"
-      # The weather not bad anymore
+      # The weather isn't bad anymore
       - condition: state
         entity_id: input_boolean.bad_weather
         state: "off"
@@ -57,11 +43,12 @@ automation:
       - condition: numeric_state
         entity_id: sensor.office_aqara_illuminance
         above: 151
-    action:
-      # Turn off the lights
-      - service: light.turn_off
-        entity_id: light.office_light_switch
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id: light.office_ceiling_bulbs
 
-      # Toggle off the lighting automatically turned on boolean
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.office_lights_auto
+      # Clear the auto flag
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.office_lights_auto

@@ -1,0 +1,50 @@
+# Office Lights — Sync Bulbs From Switch
+#
+# The paddle updates the switch's own state (endpoint 1) over unicast, so HA
+# always sees a paddle press. The Zigbee binding fires from endpoint 2 as a
+# group-cast, which HA does NOT see — so HA's picture of the bulbs can drift.
+#
+# Recorder history (2026-08-23/24) shows paddle-to-bulb lag of 16s, 44s, 6min
+# and several presses where the bulbs never followed at all — so the binding
+# is not reliably driving them today. This makes the paddle authoritative.
+#
+# If/when the endpoint-2 binding is confirmed healthy, the light.turn_on /
+# light.turn_off below can be downgraded to homeassistant.update_entity so HA
+# only re-reads the bulbs instead of commanding them.
+#
+# Pairs with office_lights_sync_switch_state.yaml (the other direction).
+#
+
+automation:
+  - id: "office_lights_sync_bulbs_from_switch"
+    alias: "Office lights - Sync bulbs from switch"
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: light.office_light_switch
+        to: "on"
+      - trigger: state
+        entity_id: light.office_light_switch
+        to: "off"
+    conditions:
+      - alias: "Bulbs do not already match the switch"
+        condition: template
+        value_template: >
+          {{ states('light.office_ceiling_bulbs')
+             != states('light.office_light_switch') }}
+    actions:
+      - if:
+          - condition: state
+            entity_id: light.office_light_switch
+            state: "on"
+        then:
+          # Bare turn_on with no brightness/color so Adaptive Lighting
+          # intercepts it and the bulbs come up at the right colour temp.
+          - action: light.turn_on
+            target:
+              entity_id: light.office_ceiling_bulbs
+        else:
+          - action: light.turn_off
+            target:
+              entity_id: light.office_ceiling_bulbs

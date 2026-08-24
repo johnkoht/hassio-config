@@ -79,11 +79,13 @@ binary_sensor:
       #   prob_given_false: 0.79
       #   to_state: "off"
 
-      # Aqara Motino
+      # Aqara Motion
       #
-      # Occupany ON
+      # Occupancy ON
+      # NOTE: was binary_sensor.office_aqara_motion, which does not exist —
+      # this 0.85-weight observation had been contributing nothing.
       - platform: state
-        entity_id: binary_sensor.office_aqara_motion
+        entity_id: binary_sensor.office_aqara_motion_sensor
         prob_given_true: 0.85
         prob_given_false: 0.15
         to_state: "on"
@@ -118,18 +120,17 @@ binary_sensor:
 
       # Office Lights
       #
-      # Lights ON
-      - platform: state
-        entity_id: light.office_light_switch
-        prob_given_true: 0.55
-        prob_given_false: 0.2
-        to_state: "on"
-      # # Lights OFF
+      # REMOVED — this was a feedback loop. The lighting automations turn the
+      # lights on, "lights on" pushed this sensor toward occupied, occupied
+      # kept the lights on, and the room could never go unoccupied. With the
+      # computer-active (0.80) and work-hours (0.70) observations that was
+      # enough on its own to hold the sensor above the 0.9 threshold all day.
+      #
       # - platform: state
-      #   entity_id: light.office_lights
-      #   prob_given_true: 0.70
-      #   prob_given_false: 0.98
-      #   to_state: "off"
+      #   entity_id: light.office_ceiling_bulbs
+      #   prob_given_true: 0.55
+      #   prob_given_false: 0.2
+      #   to_state: "on"
 
       # Office Guest Mode
       #

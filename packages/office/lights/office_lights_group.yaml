@@ -1,7 +1,20 @@
+# Office Light Groups
+#
+# NOTE: "Office Lights" is deliberately NOT used as a name here.
+# `light.office_lights` is the ZHA group entity (Zigbee group 4) that the
+# Inovelli is bound to. Naming a helper group "Office Lights" collides with
+# it and silently gets renamed to light.office_lights_2.
+#
+# - light.office_ceiling_bulbs : HA group of the 4 Hue bulbs. Automations
+#   target THIS so Adaptive Lighting can expand it and intercept turn_on.
+# - light.office_lights        : ZHA group (Zigbee-level). Used by the
+#   binding and the scene script. Not managed here.
+#
+
 light:
   - platform: group
-    name: Office Lights
-    unique_id: office_lights_group
+    name: Office Ceiling Bulbs
+    unique_id: office_ceiling_bulbs
     entities:
       - light.office_light_1
       - light.office_light_2
@@ -12,7 +25,7 @@ light:
     name: Office All Lights
     unique_id: office_all_lights_group
     entities:
-      - light.office_light_switch
+      - light.office_ceiling_bulbs
       - light.office_office_lamp
       - light.office_shelf_lights
       - light.office_el_gato_light
