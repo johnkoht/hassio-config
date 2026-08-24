@@ -1,12 +1,27 @@
 # Nino - Days to Birthday
 #
-# How many days until Nino's birthday?
+# How many days until Nino's next birthday?
+#
+# Calculated from sensor.ninos_birthday (sourced from secrets.yaml)
+# so this doesn't depend on a calendar entity. Rolls over to next year
+# the day after the birthday.
+#
 template:
   - sensor:
       - name: Nino - Days to Birthday
+        unique_id: nino_days_to_birthday
+        default_entity_id: sensor.nino_days_to_birthday
+        icon: mdi:cake-variant
+        unit_of_measurement: days
+        availability: >
+          {{ states('sensor.ninos_birthday') not in
+             ['unknown', 'unavailable', 'none', ''] }}
         state: >
-          {% set t = now() %}
-          {% set midnight = today_at() %}
-          {% set event = state_attr('calendar.ninos_bday', 'start_time') | as_datetime | as_local %}
-          {% set delta = event - midnight %}
-          {{ delta.days }}
+          {% set born = strptime(states('sensor.ninos_birthday'), '%Y-%m-%d').date() %}
+          {% set today = now().date() %}
+          {% set this_year = born.replace(year=today.year) %}
+          {% if this_year >= today %}
+            {{ (this_year - today).days }}
+          {% else %}
+            {{ (born.replace(year=today.year + 1) - today).days }}
+          {% endif %}

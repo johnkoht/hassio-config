@@ -1,43 +1,33 @@
+# Nino Countdown to Birthday - Turn Off
+#
+# Turn the countdown boolean off once the birthday has passed and the
+# sensor rolls over to next year (i.e. more than 15 days out).
+#
 automation:
-  # Nino Countdown to Birthday - Turn Off
-  #
-  # Triggered each day to check if we should activate the
-  # boolean to start the bday countdown
   - id: "nino_countdown_to_birthday_turn_off"
     alias: "Nino Countdown to Birthday - Turn Off"
     mode: "single"
-    initial_state: off
     triggers:
-      # Trigger on 4/18
-      - trigger: template
-        value_template: "{{ now().month == 4 and now().day == 18 }}"
-      # # First thing in the morning
-      # - platform: time
-      #   at: "00:00:01"
-      # # Hassio reloads/starts
-      # - platform: event
-      #   event_type: automation_reloaded
-      # - platform: homeassistant
-      #   event: start
-    # condition:
-    #   # - condition: numeric_state
-    #   #   entity_id: sensor.nino_days_to_birthday
-    #   #   above: 15
-    #   #   below: 0
+      # Rolled over past the countdown window
+      - trigger: numeric_state
+        entity_id: sensor.nino_days_to_birthday
+        above: 15
+      # Re-evaluate on start / reload
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+    conditions:
+      - alias: "Outside the 15 day countdown window"
+        condition: numeric_state
+        entity_id: sensor.nino_days_to_birthday
+        above: 15
     actions:
-      # Turn OFF the boolean
       - action: input_boolean.turn_off
-        entity_id: input_boolean.nino_countdown_to_birthday
+        target:
+          entity_id: input_boolean.nino_countdown_to_birthday
 
-      # Turn this automation off
-      # Turn OFF the daily reminder automation
-      # Turn OFF the daily reset
-      - action: automation.turn_off
-        entity_id:
-          - automation.nino_countdown_to_birthday_turn_off
-          - automation.nino_birthday_countdown_reminder
-          - automation.nino_birthday_daily_reset
-
-      # Turn the other automation ON to wait for next year
-      - action: automation.turn_on
-        entity_id: automation.nino_countdown_to_birthday_turn_on
+      # Reset the announced flag so next year starts clean
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.nino_countdown_announced
