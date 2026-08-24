@@ -1,20 +1,21 @@
-# Daily Reset
+# Gianluca Birthday Daily Reset
 #
 # Reset the announced boolean so we can trigger the countdown
 # message again the next day
+#
 automation:
   - id: "gianluca_birthday_daily_reset"
     alias: "Gianluca Birthday Daily Reset"
     mode: "single"
-    initial_state: off
-    trigger:
-      - platform: time
-        at: "00:00:05"
-    condition:
+    triggers:
+      - trigger: time
+        at: "00:05:00"
+    conditions:
       - condition: state
         entity_id: input_boolean.gianluca_countdown_to_birthday
         state: "on"
-    action:
+    actions:
       # Turn off the announced boolean
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.gianluca_countdown_announced
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.gianluca_countdown_announced
