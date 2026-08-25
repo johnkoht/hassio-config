@@ -7,11 +7,16 @@ automation:
   - id: "gianluca_countdown_to_birthday_turn_off"
     alias: "Gianluca Countdown to Birthday - Turn Off"
     mode: "single"
+    initial_state: on
     triggers:
       # Rolled over past the countdown window
       - trigger: numeric_state
         entity_id: sensor.gianluca_days_to_birthday
         above: 15
+      # Daily re-evaluation so a stale boolean self-corrects within a day
+      # even if the numeric crossing was missed
+      - trigger: time
+        at: "00:01:00"
       # Re-evaluate on start / reload
       - trigger: homeassistant
         event: start

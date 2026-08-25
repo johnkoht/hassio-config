@@ -7,6 +7,7 @@ automation:
   - id: "gianluca_birthday_countdown_reminder"
     alias: "Gianluca Birthday Countdown Reminder"
     mode: "single"
+    initial_state: on
     triggers:
       # At 7am
       - trigger: time
@@ -31,6 +32,13 @@ automation:
       - condition: state
         entity_id: input_boolean.gianluca_countdown_to_birthday
         state: "on"
+      # Belt and braces: never announce outside the 15 day window, even if
+      # the countdown boolean is stale. A stuck boolean once produced a
+      # "235 days until your birthday" announcement.
+      - alias: "Inside the 15 day countdown window"
+        condition: numeric_state
+        entity_id: sensor.gianluca_days_to_birthday
+        below: 16
       # Not already announced
       - condition: state
         entity_id: input_boolean.gianluca_countdown_announced
