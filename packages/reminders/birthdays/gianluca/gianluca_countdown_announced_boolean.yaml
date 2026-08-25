@@ -1,6 +1,9 @@
-# Has the countdown been announce for the day?
+# Has the countdown been announced for the day?
+#
+# No `initial:` — the state should restore across a restart so a mid-day
+# restart doesn't clear the flag and re-announce. It's cleared at 00:05
+# by <kid>_birthday_daily_reset.
 input_boolean:
   gianluca_countdown_announced:
     name: Gianluca Countdown Announced
     icon: mdi:bullhorn-outline
-    initial: false

@@ -8,11 +8,15 @@ automation:
   - id: "nino_countdown_to_birthday_turn_on"
     alias: "Nino Countdown to Birthday - Turn On"
     mode: "single"
+    initial_state: on
     triggers:
       # Crossed into the countdown window
       - trigger: numeric_state
         entity_id: sensor.nino_days_to_birthday
         below: 16
+      # Daily re-evaluation so a missed crossing self-corrects within a day
+      - trigger: time
+        at: "00:01:00"
       # Re-evaluate on start / reload
       - trigger: homeassistant
         event: start
