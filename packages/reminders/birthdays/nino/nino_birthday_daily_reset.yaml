@@ -1,19 +1,20 @@
 # Nino Birthday Daily Reset
 #
 # Reset the announced boolean so we can trigger the countdown
-# message again the next day
+# message again the next day.
+#
+# Runs unconditionally: gating this on nino_countdown_to_birthday meant
+# the announced flag could get stranded on if the countdown turned off
+# first, permanently blocking the next countdown.
 #
 automation:
   - id: "nino_birthday_daily_reset"
     alias: "Nino Birthday Daily Reset"
     mode: "single"
+    initial_state: on
     triggers:
       - trigger: time
         at: "00:05:00"
-    conditions:
-      - condition: state
-        entity_id: input_boolean.nino_countdown_to_birthday
-        state: "on"
     actions:
       # Turn off the announced boolean
       - action: input_boolean.turn_off

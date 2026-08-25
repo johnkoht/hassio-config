@@ -3,15 +3,20 @@
 # Turn the countdown boolean off once the birthday has passed and the
 # sensor rolls over to next year (i.e. more than 15 days out).
 #
+# This is also the safety net that clears a countdown boolean left on
+# from a previous year, so it must never come up disabled -> initial_state.
+#
 automation:
   - id: "gianluca_countdown_to_birthday_turn_off"
     alias: "Gianluca Countdown to Birthday - Turn Off"
     mode: "single"
+    initial_state: on
     triggers:
-      # Rolled over past the countdown window
-      - trigger: numeric_state
+      # The days sensor re-renders daily, so re-evaluate on every change.
+      # A plain state trigger also catches unknown -> value at startup,
+      # which a numeric_state crossing would miss.
+      - trigger: state
         entity_id: sensor.gianluca_days_to_birthday
-        above: 15
       # Re-evaluate on start / reload
       - trigger: homeassistant
         event: start

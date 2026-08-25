@@ -4,15 +4,21 @@
 # Driven directly off sensor.nino_days_to_birthday, plus a re-check
 # on start/reload so it self-corrects instead of relying on a one-shot.
 #
+# initial_state is required: this automation used to disable itself as
+# part of the old choreography, so without it HA restores that stale
+# disabled state and the countdown never starts.
+#
 automation:
   - id: "nino_countdown_to_birthday_turn_on"
     alias: "Nino Countdown to Birthday - Turn On"
     mode: "single"
+    initial_state: on
     triggers:
-      # Crossed into the countdown window
-      - trigger: numeric_state
+      # The days sensor re-renders daily, so re-evaluate on every change.
+      # A plain state trigger also catches unknown -> value at startup,
+      # which a numeric_state crossing would miss.
+      - trigger: state
         entity_id: sensor.nino_days_to_birthday
-        below: 16
       # Re-evaluate on start / reload
       - trigger: homeassistant
         event: start
