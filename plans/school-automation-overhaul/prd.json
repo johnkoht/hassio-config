@@ -15,9 +15,10 @@
         "The secrets.fake.yaml retain-or-retire decision is recorded in working-memory.md Decision Ledger",
         "Lands as its own commit, separate from every other task"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "56f20ac772720c7406e5ae6199f4e74ddb2ce933"
     },
     {
       "id": "task-2",
@@ -28,9 +29,10 @@
         "grep -rn 'google_calendars' . excluding plans/ returns no hits",
         "configuration.yaml is confirmed to contain no google: block before deleting"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "574149603e9201c9087bd10e343e54978bc45d22"
     },
     {
       "id": "task-3",
@@ -43,9 +45,11 @@
         "For each deletion, a grep confirms no remaining consumer outside plans/",
         "Nothing deleted here is read by packages/reminders/morning_update.yaml"
       ],
-      "status": "pending",
+      "status": "blocked",
       "passes": false,
-      "attemptCount": 0
+      "attemptCount": 1,
+      "commitSha": "574149603e9201c9087bd10e343e54978bc45d22",
+      "blockerNote": "8 of 9 files deleted and the Nino Pickup automations.yaml block removed (see commit). packages/school/district/district_late_start_wednesday_boolean.yaml was WITHHELD: the phantom-check found live consumers of input_boolean.district_late_start_wednesday in packages/school/primary_school/primary_school_day_on.yaml:47, primary_school_day_off.yaml:34-39, and packages/school/school_day_reminder.yaml:39 (a states.input_boolean.district_late_start_wednesday.state read, which raises UndefinedError on a missing entity per the repo's documented gotcha). primary_school_day_on.yaml and primary_school_day_off.yaml match the CRITICAL SAFETY RULE's explicit protected pattern primary_school_day_*.yaml. Deleting the boolean now would break the still-live old system this build must keep additive. Needs a human ruling: either this file moves to Track C alongside its consumers, or the consumers are updated first. AC 'All nine listed files are deleted' is therefore not met (8/9)."
     },
     {
       "id": "task-4",
