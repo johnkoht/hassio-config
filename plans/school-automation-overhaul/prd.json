@@ -124,9 +124,10 @@
         "in_session requires school-year-active AND weekday AND not closed AND school_day_override_off is off",
         "No Glenbrook South / high-school file is created"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "c6bfdef1a949eaf6b868847cffb95173b536803e"
     },
     {
       "id": "task-8",
@@ -139,9 +140,13 @@
         "binary_sensor.parochial_school_in_session_today requires a 'Gianluca School' event AND no 'no school' marker AND the override off",
         "Entity IDs use parochial_school_*; only friendly names say Junior Kindergarten"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "c6bfdef1a949eaf6b868847cffb95173b536803e",
+      "deviatedFromAcceptanceCriteria": [
+        "binary_sensor.parochial_school_in_session_today was NOT implemented as 'requires a Gianluca School event present AND no no-school marker'. The task-8 work order (given directly to the task-7/8 developer, superseding this prd.json text) specified: parochial closure sensor off AND override off AND weekday. No shipped sensor computes 'event present' for a specific literal calendar summary, and the classification pipeline in parochial_school_calendar_sensors.yaml (task-6) only emits closed_today/tier1/tier2, not an event-presence flag \u2014 implementing the literal PRD wording would require inventing new unshipped logic. Implemented instead as: not is_state('binary_sensor.parochial_school_closed_today','on') and is_state('input_boolean.school_day_override_off','off') and now().weekday() < 5, mirroring task-7's in_session_today shape. Flagged for review rather than silently complied with."
+      ]
     },
     {
       "id": "task-9",
@@ -271,7 +276,7 @@
   "metadata": {
     "createdAt": "2026-08-25T00:00:00Z",
     "totalTasks": 16,
-    "completedTasks": 3,
+    "completedTasks": 5,
     "failedTasks": 0
   }
 }
