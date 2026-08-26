@@ -275,16 +275,16 @@
         "grep -rn 'hours: 1$' packages/school/ returns nothing",
         "Every new trigger-based template contains event_template_reloaded"
       ],
-      "status": "partial",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
       "attemptCount": 0,
-      "blockerNote": "7 of 8 static checks pass (basename uniqueness, no .yml, no initial:, no 'hours: 1', event_template_reloaded on all 3 trigger-templates, no legacy syntax, 41 files parse). The `ha core check` / Docker check_config criterion is BLOCKED: the Docker daemon is not running on this machine, and there is no `ha` binary in the worktree. This must run before merge \u2014 it is the only check that catches schema errors YAML parsing cannot. Procedure is in working-memory.md (cp secrets.fake.yaml secrets.yaml, run, rm). Worktree only \u2014 never in the main repo."
+      "resolutionNote": "All 8 checks pass. HA 2026.7.4 check_config run in Docker against this worktree and against the pre-build baseline (6f434bc): 31 error lines each, IDENTICAL sets \u2014 zero new errors introduced, and no school/dashboard file appears in any error. The 31 pre-existing errors are 27 environmental (24 'Unknown device' from the absent .storage device registry, 3 gitignored custom_components) plus 4 genuine pre-existing repo bugs unrelated to this work."
     }
   ],
   "metadata": {
     "createdAt": "2026-08-25T00:00:00Z",
     "totalTasks": 16,
-    "completedTasks": 15,
+    "completedTasks": 16,
     "failedTasks": 0
   }
 }
