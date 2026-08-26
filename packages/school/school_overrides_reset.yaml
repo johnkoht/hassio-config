@@ -1,0 +1,47 @@
+# School Overrides Reset
+#
+# Unconditionally turn off both school override booleans every night
+# at 23:58. There is NO `conditions` block here — not empty, not
+# gated on school-year-active, house-occupied, or anything else. This
+# is deliberate, not an oversight.
+#
+# Why: this exact failure mode already happened in this house. See
+# packages/reminders/birthdays/nino/nino_countdown_to_birthday_turn_off.yaml
+# — its reset was gated on a numeric_state condition (days-to-birthday
+# > 15). The day that condition stopped evaluating true for any reason
+# other than the intended yearly rollover, the reset silently stopped
+# firing and the flag latched on permanently, with zero automation
+# traces to reveal why. A gated reset can always find a way to stop
+# being gate-true.
+#
+# school_day_override_off and early_dismissal_today are the ONLY two
+# manual controls in an otherwise fully-derived school system. If
+# either one latches on, it silently overrides every derived
+# school-day/dismissal automation downstream, indefinitely, with no
+# visible symptom until someone notices school automations have
+# stopped behaving correctly. An unconditional reset cannot fail that
+# way — it runs every single night no matter what else is true or
+# false in the house.
+#
+# Do NOT add a `conditions` block here, even one that looks safe on
+# its face (e.g. "only reset if the school year is active" — a snow
+# day override flipped on right at the tail end of the school year
+# would then never get reset once the year ends). Do NOT add
+# `initial_state` either — if this automation is ever manually
+# disabled, HA persists that across restarts with nothing to
+# re-enable it, and the overrides would go unswept forever.
+#
+
+automation:
+  - id: "school_overrides_reset"
+    alias: "School Overrides - Reset"
+    mode: "single"
+    triggers:
+      - trigger: time
+        at: "23:58:00"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id:
+            - input_boolean.school_day_override_off
+            - input_boolean.early_dismissal_today
