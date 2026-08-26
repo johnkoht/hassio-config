@@ -1,0 +1,157 @@
+# Parochial School Bell Schedule (Junior Kindergarten)
+#
+# Runtime-editable bell-schedule inputs for Gianluca's building (OLPH),
+# plus the derived "today" timestamp and session sensors that the
+# reminder and kid-layer automations (tasks 9-13) read.
+#
+# Entity IDs use `parochial_school_*` throughout — only `name:` values
+# and this header comment say "Junior Kindergarten". JK is a grade
+# Gianluca ages out of; the school (and these entities) are not.
+#
+# input_datetime.parochial_school_start_time, _departure_time, and the
+# five per-weekday _monday_dismissal .. _friday_dismissal inputs hold
+# the actual clock times. They deliberately carry NO `initial` field —
+# see school_year.yaml for why (it disables state restoration across
+# restarts, so any dashboard edit would silently revert on the next
+# restart). Real times for the 2026-2027 school year (set at runtime
+# via the dashboard or `input_datetime.set_datetime`, deliberately NOT
+# seeded in this YAML):
+#   start:            08:05
+#   departure:         07:45 (fixed, see below)
+#   Monday dismissal:  14:20
+#   Tuesday dismissal: 12:20
+#   Wednesday dismissal: 14:20
+#   Thursday dismissal:  12:20
+#   Friday dismissal:    12:20
+#
+# Departure is an ABSOLUTE time input, not a lead-minutes subtraction
+# off the start time (unlike Nino's departure in the kid layer, which
+# is start-minus-lead-minutes). Drop-off at OLPH opens at 07:45, and a
+# fixed 07:45 departure clears Cristina's 8:03/8:23 train regardless
+# of what the start-time input is set to — subtracting a lead time
+# from a runtime-editable start time could silently drift departure
+# later than 07:45 and make her miss both trains.
+#
+# Timestamp sensors are built as:
+#   today_at('00:00') + timedelta(seconds=state_attr('input_datetime.x','timestamp') | int(0))
+# today_at() returns a timezone-aware local datetime, and timedelta
+# arithmetic on a zoneinfo-aware datetime is wall-clock arithmetic —
+# that's what makes this DST-safe across 2026-11-01 and 2027-03-08.
+# Never build this by parsing a concatenated date+time string into a
+# naive datetime — that yields a naive datetime, and SensorEntity.state RAISES
+# under device_class: timestamp on a naive value, erroring the entity
+# out entirely rather than just failing a trigger. The `| int(0)`
+# fallback keeps the render itself from raising when the input is
+# unset; the `availability:` template (not the state) is what tells
+# the UI "unavailable" in that case.
+#
+# No late-start concept here — OLPH doesn't run a weekly late-start
+# day, so sensor.parochial_school_start_time_today has no late/normal
+# branching, unlike the three D34 grade-band files.
+#
+# binary_sensor.parochial_school_in_session_today = the parochial
+# closure sensor (binary_sensor.parochial_school_closed_today, from
+# packages/school/parochial_school_calendar_sensors.yaml, fed from
+# calendar.gianluca_school + calendar.olph_school) is off AND
+# input_boolean.school_day_override_off is off AND today is a weekday.
+# Whether Gianluca actually has school on a given day is confirmed by
+# his own calendar via that closure sensor's classification pipeline
+# (including the JK own-band guard against OLPH's grade-scoped closure
+# events) — this sensor doesn't re-derive that, it only adds the
+# weekday and manual-override gates on top.
+#
+
+input_datetime:
+  parochial_school_start_time:
+    name: Junior Kindergarten Start Time
+    icon: mdi:clock-start
+    has_time: true
+    has_date: false
+  parochial_school_departure_time:
+    name: Junior Kindergarten Departure Time
+    icon: mdi:car-clock
+    has_time: true
+    has_date: false
+  parochial_school_monday_dismissal:
+    name: Junior Kindergarten Monday Dismissal
+    icon: mdi:clock-end
+    has_time: true
+    has_date: false
+  parochial_school_tuesday_dismissal:
+    name: Junior Kindergarten Tuesday Dismissal
+    icon: mdi:clock-end
+    has_time: true
+    has_date: false
+  parochial_school_wednesday_dismissal:
+    name: Junior Kindergarten Wednesday Dismissal
+    icon: mdi:clock-end
+    has_time: true
+    has_date: false
+  parochial_school_thursday_dismissal:
+    name: Junior Kindergarten Thursday Dismissal
+    icon: mdi:clock-end
+    has_time: true
+    has_date: false
+  parochial_school_friday_dismissal:
+    name: Junior Kindergarten Friday Dismissal
+    icon: mdi:clock-end
+    has_time: true
+    has_date: false
+
+template:
+  - binary_sensor:
+      - name: Parochial School In Session Today
+        unique_id: parochial_school_in_session_today
+        default_entity_id: binary_sensor.parochial_school_in_session_today
+        icon: mdi:school
+        state: >-
+          {{ not is_state('binary_sensor.parochial_school_closed_today', 'on')
+             and is_state('input_boolean.school_day_override_off', 'off')
+             and now().weekday() < 5 }}
+
+    sensor:
+      - name: Junior Kindergarten Start Time Today
+        unique_id: parochial_school_start_time_today
+        default_entity_id: sensor.parochial_school_start_time_today
+        icon: mdi:clock-start
+        device_class: timestamp
+        availability: >-
+          {{ is_state('binary_sensor.parochial_school_in_session_today', 'on')
+             and state_attr('input_datetime.parochial_school_start_time', 'timestamp') is not none }}
+        state: >-
+          {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.parochial_school_start_time', 'timestamp') | int(0))).isoformat() }}
+      - name: Junior Kindergarten Dismissal Time Today
+        unique_id: parochial_school_dismissal_time_today
+        default_entity_id: sensor.parochial_school_dismissal_time_today
+        icon: mdi:clock-end
+        device_class: timestamp
+        availability: >-
+          {%- set wd = now().weekday() -%}
+          {%- if wd == 0 -%}
+            {%- set input_id = 'input_datetime.parochial_school_monday_dismissal' -%}
+          {%- elif wd == 1 -%}
+            {%- set input_id = 'input_datetime.parochial_school_tuesday_dismissal' -%}
+          {%- elif wd == 2 -%}
+            {%- set input_id = 'input_datetime.parochial_school_wednesday_dismissal' -%}
+          {%- elif wd == 3 -%}
+            {%- set input_id = 'input_datetime.parochial_school_thursday_dismissal' -%}
+          {%- else -%}
+            {%- set input_id = 'input_datetime.parochial_school_friday_dismissal' -%}
+          {%- endif -%}
+          {{ is_state('binary_sensor.parochial_school_in_session_today', 'on')
+             and wd < 5
+             and state_attr(input_id, 'timestamp') is not none }}
+        state: >-
+          {%- set wd = now().weekday() -%}
+          {%- if wd == 0 -%}
+            {%- set input_id = 'input_datetime.parochial_school_monday_dismissal' -%}
+          {%- elif wd == 1 -%}
+            {%- set input_id = 'input_datetime.parochial_school_tuesday_dismissal' -%}
+          {%- elif wd == 2 -%}
+            {%- set input_id = 'input_datetime.parochial_school_wednesday_dismissal' -%}
+          {%- elif wd == 3 -%}
+            {%- set input_id = 'input_datetime.parochial_school_thursday_dismissal' -%}
+          {%- else -%}
+            {%- set input_id = 'input_datetime.parochial_school_friday_dismissal' -%}
+          {%- endif -%}
+          {{ (today_at('00:00') + timedelta(seconds=state_attr(input_id, 'timestamp') | int(0))).isoformat() }}

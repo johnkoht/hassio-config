@@ -1,0 +1,141 @@
+# Primary School Bell Schedule (Grades K-2)
+#
+# Runtime-editable bell-schedule inputs for the primary grade band
+# (Lyon School — Nino's building), plus the derived "today"/"tomorrow"
+# timestamp and session sensors that the reminder and kid-layer
+# automations (tasks 9-13) read.
+#
+# input_datetime.primary_school_start_time / _late_start_time /
+# _dismissal_time hold the actual clock times. They deliberately carry
+# NO `initial` field — see school_year.yaml for why (it disables state
+# restoration across restarts, so any dashboard edit would silently
+# revert on the next restart). Real times for the 2026-2027 school
+# year (set at runtime via the dashboard or `input_datetime.set_datetime`,
+# deliberately NOT seeded in this YAML):
+#   start:       08:45
+#   late start:  09:45 (Wednesdays only)
+#   dismissal:   15:40
+#
+# Timestamp sensors are built as:
+#   today_at('00:00') + timedelta(seconds=state_attr('input_datetime.x','timestamp') | int(0))
+# today_at() returns a timezone-aware local datetime, and timedelta
+# arithmetic on a zoneinfo-aware datetime is wall-clock arithmetic —
+# that's what makes this DST-safe across 2026-11-01 and 2027-03-08.
+# Never build this by parsing a concatenated date+time string into a
+# naive datetime — that yields a naive datetime, and SensorEntity.state RAISES
+# under device_class: timestamp on a naive value, erroring the entity
+# out entirely rather than just failing a trigger. The `| int(0)`
+# fallback keeps the render itself from raising when the input is
+# unset; the `availability:` template (not the state) is what tells
+# the UI "unavailable" in that case.
+#
+# Closure source: binary_sensor.primary_school_closed_today /
+# _closed_tomorrow_v2 (packages/school/primary_school_calendar_sensors.yaml),
+# fed from calendar.lyon_school. Primary is the one D34 band with its
+# own per-school calendar feed; intermediate and middle have no such
+# feed and fall back to the districtwide closure sensors instead (see
+# those two files' header comments).
+#
+# Late start is DERIVED every time from today's/tomorrow's weekday
+# (Wednesday, weekday()==2) and the matching in-session sensor — never
+# latched into a boolean. A latched flag is exactly how the birthday-
+# countdown "announced" flags got stuck on forever.
+#
+# in_session_today = binary_sensor.school_year_active is on AND today
+# is a weekday AND binary_sensor.primary_school_closed_today is off
+# AND input_boolean.school_day_override_off is off.
+# in_session_tomorrow mirrors this against tomorrow's date (inlined
+# against the school_year_first_day/last_day inputs, since there's no
+# "school_year_active_tomorrow" sensor), tomorrow's weekday, and the
+# _closed_tomorrow_v2 sensor. It also reads today's override boolean —
+# a deliberate simplification, since school_overrides_reset.yaml
+# unconditionally clears that boolean at 23:58 every night, so by the
+# time "tomorrow" actually arrives the override is back to off
+# regardless of what this sensor read at evaluation time.
+#
+# No Glenbrook South / high-school file exists here or is planned —
+# that's District 225, out of scope for this D34 grade-band layer.
+#
+
+input_datetime:
+  primary_school_start_time:
+    name: Primary School Start Time
+    icon: mdi:clock-start
+    has_time: true
+    has_date: false
+  primary_school_late_start_time:
+    name: Primary School Late Start Time
+    icon: mdi:clock-alert
+    has_time: true
+    has_date: false
+  primary_school_dismissal_time:
+    name: Primary School Dismissal Time
+    icon: mdi:clock-end
+    has_time: true
+    has_date: false
+
+template:
+  - binary_sensor:
+      - name: Primary School Late Start Today
+        unique_id: primary_school_late_start_today
+        default_entity_id: binary_sensor.primary_school_late_start_today
+        icon: mdi:clock-alert-outline
+        state: >-
+          {{ now().weekday() == 2
+             and is_state('binary_sensor.primary_school_in_session_today', 'on') }}
+      - name: Primary School Late Start Tomorrow
+        unique_id: primary_school_late_start_tomorrow
+        default_entity_id: binary_sensor.primary_school_late_start_tomorrow
+        icon: mdi:clock-alert-outline
+        state: >-
+          {{ (now() + timedelta(days=1)).weekday() == 2
+             and is_state('binary_sensor.primary_school_in_session_tomorrow', 'on') }}
+      - name: Primary School In Session Today
+        unique_id: primary_school_in_session_today
+        default_entity_id: binary_sensor.primary_school_in_session_today
+        icon: mdi:school
+        state: >-
+          {{ is_state('binary_sensor.school_year_active', 'on')
+             and now().weekday() < 5
+             and not is_state('binary_sensor.primary_school_closed_today', 'on')
+             and is_state('input_boolean.school_day_override_off', 'off') }}
+      - name: Primary School In Session Tomorrow
+        unique_id: primary_school_in_session_tomorrow
+        default_entity_id: binary_sensor.primary_school_in_session_tomorrow
+        icon: mdi:school
+        state: >-
+          {%- set tomorrow = now() + timedelta(days=1) -%}
+          {%- set tomorrow_str = tomorrow.strftime('%Y-%m-%d') -%}
+          {{ states('input_datetime.school_year_first_day') not in ['unknown', 'unavailable', 'none', '']
+             and states('input_datetime.school_year_last_day') not in ['unknown', 'unavailable', 'none', '']
+             and tomorrow_str >= states('input_datetime.school_year_first_day')
+             and tomorrow_str <= states('input_datetime.school_year_last_day')
+             and tomorrow.weekday() < 5
+             and not is_state('binary_sensor.primary_school_closed_tomorrow_v2', 'on')
+             and is_state('input_boolean.school_day_override_off', 'off') }}
+
+    sensor:
+      - name: Primary School Start Time Today
+        unique_id: primary_school_start_time_today
+        default_entity_id: sensor.primary_school_start_time_today
+        icon: mdi:clock-start
+        device_class: timestamp
+        availability: >-
+          {%- set late = is_state('binary_sensor.primary_school_late_start_today', 'on') -%}
+          {%- set input_id = 'input_datetime.primary_school_late_start_time' if late else 'input_datetime.primary_school_start_time' -%}
+          {{ is_state('binary_sensor.primary_school_in_session_today', 'on')
+             and state_attr(input_id, 'timestamp') is not none }}
+        state: >-
+          {%- set late = is_state('binary_sensor.primary_school_late_start_today', 'on') -%}
+          {%- set input_id = 'input_datetime.primary_school_late_start_time' if late else 'input_datetime.primary_school_start_time' -%}
+          {{ (today_at('00:00') + timedelta(seconds=state_attr(input_id, 'timestamp') | int(0))).isoformat() }}
+      - name: Primary School Dismissal Time Today
+        unique_id: primary_school_dismissal_time_today
+        default_entity_id: sensor.primary_school_dismissal_time_today
+        icon: mdi:clock-end
+        device_class: timestamp
+        availability: >-
+          {{ is_state('binary_sensor.primary_school_in_session_today', 'on')
+             and state_attr('input_datetime.primary_school_dismissal_time', 'timestamp') is not none }}
+        state: >-
+          {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.primary_school_dismissal_time', 'timestamp') | int(0))).isoformat() }}
