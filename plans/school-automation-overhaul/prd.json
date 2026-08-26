@@ -240,9 +240,11 @@
         "The Tier 2 informational list is added to the prompt, capped at 5 entries",
         "After this task morning_update.yaml references no entity that Track C will delete"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "30db60af554e724aaf1ee719b3f1220d0b81fdd1",
+      "resolutionNote": "Deviated from the third acceptance criterion as literally worded: calendar.gianluca_school is NOT warned against in the shipped comment, because it was already present in the (unchanged, per the same criterion) target list — warning against an entity three lines below the warning would mislead the next reader. The task's own author flagged and corrected this mid-task. Shipped comment names only the real risk, calendar.olph_school (710 events, 523 grade 5-8 athletics), and notes calendar.gianluca_school is fine at ~1 event/day. This acceptance-criterion line should be corrected in prd.md before Track C review."
     },
     {
       "id": "task-15",
