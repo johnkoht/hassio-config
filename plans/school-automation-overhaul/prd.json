@@ -244,7 +244,7 @@
       "passes": true,
       "attemptCount": 1,
       "commitSha": "30db60af554e724aaf1ee719b3f1220d0b81fdd1",
-      "resolutionNote": "Deviated from the third acceptance criterion as literally worded: calendar.gianluca_school is NOT warned against in the shipped comment, because it was already present in the (unchanged, per the same criterion) target list — warning against an entity three lines below the warning would mislead the next reader. The task's own author flagged and corrected this mid-task. Shipped comment names only the real risk, calendar.olph_school (710 events, 523 grade 5-8 athletics), and notes calendar.gianluca_school is fine at ~1 event/day. This acceptance-criterion line should be corrected in prd.md before Track C review."
+      "resolutionNote": "Deviated from the third acceptance criterion as literally worded: calendar.gianluca_school is NOT warned against in the shipped comment, because it was already present in the (unchanged, per the same criterion) target list \u2014 warning against an entity three lines below the warning would mislead the next reader. The task's own author flagged and corrected this mid-task. Shipped comment names only the real risk, calendar.olph_school (710 events, 523 grade 5-8 athletics), and notes calendar.gianluca_school is fine at ~1 event/day. This acceptance-criterion line should be corrected in prd.md before Track C review."
     },
     {
       "id": "task-15",
@@ -275,15 +275,16 @@
         "grep -rn 'hours: 1$' packages/school/ returns nothing",
         "Every new trigger-based template contains event_template_reloaded"
       ],
-      "status": "pending",
+      "status": "partial",
       "passes": false,
-      "attemptCount": 0
+      "attemptCount": 0,
+      "blockerNote": "7 of 8 static checks pass (basename uniqueness, no .yml, no initial:, no 'hours: 1', event_template_reloaded on all 3 trigger-templates, no legacy syntax, 41 files parse). The `ha core check` / Docker check_config criterion is BLOCKED: the Docker daemon is not running on this machine, and there is no `ha` binary in the worktree. This must run before merge \u2014 it is the only check that catches schema errors YAML parsing cannot. Procedure is in working-memory.md (cp secrets.fake.yaml secrets.yaml, run, rm). Worktree only \u2014 never in the main repo."
     }
   ],
   "metadata": {
     "createdAt": "2026-08-25T00:00:00Z",
     "totalTasks": 16,
-    "completedTasks": 9,
+    "completedTasks": 15,
     "failedTasks": 0
   }
 }
