@@ -205,7 +205,7 @@ Three independent trigger-based template blocks. **Separate files, not one share
 **Acceptance criteria**
 - Lines 114, 116, 150 read the new sensors and are converted from `states.<domain>.<object>.state` to **`is_state()`**, so a missing entity degrades instead of raising `UndefinedError` and killing the entire prompt render.
 - Line 248's phantom `calendar.ninos_school` target is removed from the `calendar_events_today` `get_events` call.
-- The `calendar_events_today` target list is **otherwise unchanged**, with a comment at line ~247 stating that `calendar.olph_school` and `calendar.gianluca_school` must not be added there because that aggregation is not tier-filtered — adding OLPH would pipe 710 events, 523 of them grade 5–8 volleyball practices, into a daily LLM prompt.
+- The `calendar_events_today` target list is **otherwise unchanged**, with a comment at line ~247 stating that `calendar.olph_school` must not be added there because that aggregation is not tier-filtered (`calendar.gianluca_school` is already in the list and stays — ~1 event/day) — adding OLPH would pipe 710 events, 523 of them grade 5–8 volleyball practices, into a daily LLM prompt.
 - The Tier 2 informational list is added to the prompt, **capped at 5 entries**.
 - After this task, `morning_update.yaml` references no entity that Track C will delete.
 
