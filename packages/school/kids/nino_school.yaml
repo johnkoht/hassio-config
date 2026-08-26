@@ -1,0 +1,107 @@
+# Nino School Day
+#
+# Maps Nino to the PRIMARY grade band (Lyon School) and derives his
+# school-day / departure / pickup sensors from that band's schedule
+# (packages/school/schools/primary_school_schedule.yaml).
+#
+# --- BAND MAPPING ----------------------------------------------------
+# Nino is in the PRIMARY band today. He moves up to intermediate in
+# ~2 years — when that happens, change these 3 references (and only
+# these 3) and nothing else in this file:
+#   binary_sensor.primary_school_in_session_today   (school-day source)
+#   sensor.primary_school_start_time_today            (departure source)
+#   sensor.primary_school_dismissal_time_today         (pickup source)
+# -----------------------------------------------------------------------
+#
+# input_number.nino_departure_lead_minutes / nino_pickup_lead_minutes
+# are runtime-editable lead times, in minutes, subtracted from the
+# band's start/dismissal timestamps. They deliberately carry NO
+# `initial` field — see school_year.yaml for why (it disables state
+# restoration across restarts, so any dashboard edit would silently
+# revert on the next restart). Real defaults for the 2026-2027 school
+# year (set at runtime via the dashboard):
+#   departure lead: 25 minutes
+#   pickup lead:    20 minutes
+#
+# binary_sensor.nino_school_day MIRRORS binary_sensor.primary_school_
+# in_session_today rather than re-checking school-year-active, weekday,
+# closure or the override — that sensor already folds all of that in
+# (see the band file's header comment). Re-deriving any of those
+# conditions here would just be a second, driftable copy of logic that
+# already lives in the band file. Don't "helpfully" add them back.
+#
+# Both timestamp sensors read the band's own timestamp sensors through
+# as_datetime(states('sensor.primary_school_..._today')). That's safe
+# here (not the forbidden naive-string-concatenation case) because the
+# band file already built that sensor's state as a timezone-aware ISO
+# string via today_at()+timedelta — as_datetime() is just re-parsing an
+# ISO string HA itself produced, not assembling one from parts.
+#
+# When the band sensor is unavailable (source inputs unset, or it's not
+# a school day), states() on it returns the string "unavailable", and
+# as_datetime() has no default arg here so it would raise on that
+# string. Each state template guards against this the same way the
+# band file guards state_attr(...) with `| int(0)`: substitute now() as
+# an inert placeholder when the source isn't a parseable ISO string.
+# The placeholder value never reaches the dashboard because
+# `availability:` is false in exactly that situation.
+#
+# availability: false when the source band sensor is unknown/
+# unavailable/empty, OR when binary_sensor.nino_school_day is not on.
+# The second half matters as much as the first — a departure sensor
+# that still resolves to a real timestamp on a non-school day is
+# exactly how a reminder fires on a holiday.
+#
+
+input_number:
+  nino_departure_lead_minutes:
+    name: Nino Departure Lead Minutes
+    icon: mdi:clock-fast
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: min
+    mode: box
+  nino_pickup_lead_minutes:
+    name: Nino Pickup Lead Minutes
+    icon: mdi:clock-fast
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: min
+    mode: box
+
+template:
+  - binary_sensor:
+      - name: Nino School Day
+        unique_id: nino_school_day
+        default_entity_id: binary_sensor.nino_school_day
+        icon: mdi:school
+        state: >-
+          {{ is_state('binary_sensor.primary_school_in_session_today', 'on') }}
+
+    sensor:
+      - name: Nino Departure Time
+        unique_id: nino_departure_time
+        default_entity_id: sensor.nino_departure_time
+        icon: mdi:clock-start
+        device_class: timestamp
+        availability: >-
+          {{ states('sensor.primary_school_start_time_today') not in ['unknown', 'unavailable', 'none', '']
+             and is_state('binary_sensor.nino_school_day', 'on') }}
+        state: >-
+          {%- set src = states('sensor.primary_school_start_time_today') -%}
+          {%- set base = as_datetime(src) if src not in ['unknown', 'unavailable', 'none', ''] else now() -%}
+          {{ (base - timedelta(minutes=states('input_number.nino_departure_lead_minutes') | int(0))).isoformat() }}
+      - name: Nino Pickup Time
+        unique_id: nino_pickup_time
+        default_entity_id: sensor.nino_pickup_time
+        icon: mdi:clock-end
+        device_class: timestamp
+        availability: >-
+          {{ states('sensor.primary_school_dismissal_time_today') not in ['unknown', 'unavailable', 'none', '']
+             and is_state('binary_sensor.nino_school_day', 'on') }}
+        state: >-
+          {%- set src = states('sensor.primary_school_dismissal_time_today') -%}
+          {%- set base = as_datetime(src) if src not in ['unknown', 'unavailable', 'none', ''] else now() -%}
+          {{ (base - timedelta(minutes=states('input_number.nino_pickup_lead_minutes') | int(0))).isoformat() }}
