@@ -161,9 +161,10 @@
         "Every <kid>_school_day sensor honours input_boolean.school_day_override_off",
         "No unique_id overlaps the still-live input_boolean.nino_school_day / gianluca_school_day"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "13f4cd55e535fb4a655b30d81101ea8827f15dbb"
     },
     {
       "id": "task-10",
@@ -276,7 +277,7 @@
   "metadata": {
     "createdAt": "2026-08-25T00:00:00Z",
     "totalTasks": 16,
-    "completedTasks": 5,
+    "completedTasks": 6,
     "failedTasks": 0
   }
 }
