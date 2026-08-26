@@ -105,9 +105,10 @@
         "Event payloads in attributes; state: is now().isoformat() (255-char state limit)",
         "No unique_id collides with the still-live primary_school_closed or primary_school_closed_tomorrow"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "6a270f4a34ddd86f3b894e8af8eb23a2c2d2fba5"
     },
     {
       "id": "task-7",
