@@ -61,6 +61,8 @@ Track A adds **no new `!secret` keys**, so no update to `secrets.fake.yaml` is n
 ## Context Corrections
 *(Add: [Task N] MISSING_CONTEXT: what was missing and where to find it)*
 
+- [Task 4,5] NOTHING_NOVEL — school_year.yaml, school_overrides.yaml, and school_overrides_reset.yaml followed existing patterns exactly: `template: - binary_sensor:` with `availability:` guard (copied shape from `packages/reminders/birthdays/nino/nino_days_to_birthday.yaml`), no-`initial:` input_datetime/input_boolean (seeded constraint #1), and an ungated nightly reset citing `nino_countdown_to_birthday_turn_off.yaml` as the latch-bug precedent (seeded constraint from task instructions). No new entity names invented beyond what the task specified. Basenames confirmed globally unique via `find . -name "<basename>"`.
+
 ## Decision Ledger
 *(Builder rulings that supersede or refine a documented rule.)*
 

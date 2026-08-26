@@ -64,9 +64,10 @@
         "Header comment records Glenbrook South as out of scope (District 225)",
         "Modern syntax throughout: triggers/conditions/actions, trigger:/action: keys"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "8fad9e300ecb57059a4cd7729c24bdd38a0ba1f4"
     },
     {
       "id": "task-5",
@@ -79,9 +80,10 @@
         "The reset is in its own file, not buried in school_overrides.yaml",
         "Header comment explains why the reset is ungated, citing the prior latch failure"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "8fad9e300ecb57059a4cd7729c24bdd38a0ba1f4"
     },
     {
       "id": "task-6",
