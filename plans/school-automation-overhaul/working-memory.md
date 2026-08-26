@@ -21,6 +21,24 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 **No `!secret` in Track A.** Calendar entity IDs go inline with a `# TODO(track-b)` marker. The keys don't exist locally or on the host yet, so `!secret` would fail `ha core check`.
 
+## ⚠️ Validating config in this worktree — read before task-16
+
+`secrets.yaml` is gitignored, so **this worktree does not have one** (verified). Every `!secret` reference in the repo — 40 keys — would fail `check_config` here. Task-1 removed the automatic `cp secrets.fake.yaml secrets.yaml` from `deploy.sh`, so that no longer happens for you.
+
+Verified: `secrets.fake.yaml` contains 51 keys and covers **all 40** referenced keys, so it is sufficient for validation.
+
+Procedure for task-16, in the worktree only:
+
+```bash
+cp secrets.fake.yaml secrets.yaml     # temporary, gitignored
+./deploy.sh --check                   # or the docker check_config directly
+rm -f secrets.yaml                    # ALWAYS clean up
+```
+
+**Never run this in the main repo** at `/Users/johnkoht/code/hassio-config`. A real `secrets.yaml` lives there, and copying the fake over it destroys it permanently — that is the exact data-loss bug task-1 just removed. The copy is safe here *only* because this worktree has no real file.
+
+Track A adds **no new `!secret` keys**, so no update to `secrets.fake.yaml` is needed.
+
 ## Discovered Patterns
 *(Add: [Task N] pattern-name: description at file:line)*
 
