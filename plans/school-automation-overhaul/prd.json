@@ -175,9 +175,10 @@
         "The late-start branch reads binary_sensor.primary_school_late_start_today, not the old input_boolean",
         "Does not duplicate gating already inside script.voice_announcement"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "218c41f2eaaef3f9bb62f8d3ba31df0c1329143f"
     },
     {
       "id": "task-11",
@@ -191,9 +192,10 @@
         "Each conditions on the corresponding binary_sensor.<kid>_school_day",
         "Each carries a comment noting the trigger only schedules when the sensor time is in the future, so a mid-morning reload can silently skip the day"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "218c41f2eaaef3f9bb62f8d3ba31df0c1329143f"
     },
     {
       "id": "task-12",
@@ -206,9 +208,11 @@
         "The tag typo nino_school_pikcup is corrected to nino_school_pickup",
         "New files live under packages/school/reminders/ and their basenames do not collide with the still-live originals"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "218c41f2eaaef3f9bb62f8d3ba31df0c1329143f",
+      "resolutionNote": "Filenames shipped as nino_pickup_reminder_v2.yaml / gianluca_pickup_reminder_v2.yaml, not the plain nino_pickup_reminder.yaml / gianluca_pickup_reminder.yaml prd.md's task-12 section names \u2014 per an explicit work order superseding that text, so the new automation ids (nino_pickup_reminder_v2 / gianluca_pickup_reminder_v2) don't collide with the still-live originals' ids (nino_school_pickup_reminder / gianluca_school_pickup_reminder) during the shadow-run week. TODO(track-c) comments in both files mark the rename once the originals are deleted."
     },
     {
       "id": "task-13",
@@ -220,9 +224,10 @@
         "Late-start-tomorrow reads binary_sensor.primary_school_late_start_tomorrow",
         "No school_notable_event_tomorrow_reminder is created"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "218c41f2eaaef3f9bb62f8d3ba31df0c1329143f"
     },
     {
       "id": "task-14",
