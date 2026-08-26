@@ -111,10 +111,10 @@ script:
             ---
 
             ### SCHOOL & LUNCH
-            {% if states.binary_sensor.primary_school_closed.state == "on" %}
+            {% if is_state('binary_sensor.primary_school_closed_today', 'on') %}
               Let Nino know there's no school today!
-            {% elif states.input_boolean.primary_school_day.state == "on" %}
-              Today is a school day, so remind Nino to get ready and check the lunch menu.  
+            {% elif is_state('binary_sensor.nino_school_day', 'on') %}
+              Today is a school day, so remind Nino to get ready and check the lunch menu.
 
               {% set menu = state_attr('sensor.primary_school_lunch_menu', 'lunch_menu') | default([], true) %}
               {% set entrees = state_attr('sensor.primary_school_lunch_menu', 'entrees') | default([], true) %}
@@ -147,8 +147,13 @@ script:
               {% endif %}
             {% endif %}
 
-            {% if states.binary_sensor.gianluca_is_today_school_day.state == "on" %}
+            {% if is_state('binary_sensor.gianluca_school_day', 'on') %}
               Today is a school day, so let Gianluca know that he has school today!
+            {% endif %}
+
+            {% set informational_events = state_attr('sensor.primary_school_events_today', 'informational') | default([], true) %}
+            {% if informational_events | length > 0 %}
+              There are also a few upcoming school happenings worth a quick mention: {{ informational_events[:5] | join(', ') }}.
             {% endif %}
 
             ---
@@ -242,10 +247,15 @@ template:
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ now().strftime('%Y-%m-%d 23:59:59') }}"
+        # This aggregation is NOT tier-filtered — whatever is listed here goes
+        # straight into the daily LLM prompt. Do NOT add calendar.olph_school:
+        # its feed carries 710 events, 523 of them grade 5-8 athletics
+        # practices. School closures and events reach this briefing through the
+        # tier-capped sensor.primary_school_events_today instead.
+        # (calendar.gianluca_school below is fine — ~1 event/day.)
         target:
           entity_id:
             - calendar.gianluca_school
-            - calendar.ninos_school
             - calendar.kohbocal
             - calendar.lyon_school
             - calendar.holidays_in_united_states
