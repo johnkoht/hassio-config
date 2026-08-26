@@ -46,6 +46,28 @@
 # and binary_sensor.gianluca_is_today_school_day (different domain/name),
 # untouched here and not deleted until Track C.
 #
+# binary_sensor.parochial_school_has_event_today / _tomorrow — verified
+# 2026-08-26 against the live OLPH events feed: it does NOT reliably mark
+# breaks as no-school. Christmas Eve, all of winter break, and all eleven
+# days of Easter Vacation (2027-03-29 through 2027-04-08) carry either no
+# events at all or an "Easter Vacation" event whose summary contains no
+# "no school" string — closed_today/_tomorrow above read false on every
+# one of those days. The reliable signal instead is Gianluca's own
+# SCHEDULE calendar (calendar.gianluca_school, resp_gianluca below): it
+# carries a recurring "Gianluca School" event on exactly the 189 days he
+# actually attends and is absent on every break day, so absence-of-event
+# is authoritative independent of whether OLPH's feed says anything.
+# These two sensors are built from resp_gianluca only (NOT resp_olph,
+# NOT the merged `events` list used by the closure pipeline above) and
+# match `'gianluca school' in (summary | lower)` on TIMED (non-all-day)
+# events only. Two things his calendar also carries that this must NOT
+# match: one-off markers like "Gianluca First Day of JK OLPH" / "Gianluca
+# OLPH JK Begins" (summary doesn't contain "gianluca school"), and
+# all-day "GIANLUCA - NO SCHOOL" entries (excluded by the timed-only
+# filter, since only actual attendance is a timed event). Same overlap
+# matching as the classification pipeline above (start[:10] <= day <=
+# end[:10] for timed events) — no start-date equality.
+#
 
 template:
   - triggers:
@@ -123,6 +145,26 @@ template:
           tier1_tomorrow: "{{ classified | selectattr('tier', 'eq', 1) | selectattr('applies_tomorrow') | map(attribute='summary') | list }}"
           tier2_today: "{{ classified | selectattr('tier', 'eq', 2) | selectattr('applies_today') | map(attribute='summary') | list }}"
           tier2_tomorrow: "{{ classified | selectattr('tier', 'eq', 2) | selectattr('applies_tomorrow') | map(attribute='summary') | list }}"
+          gianluca_schedule_events: >-
+            {{ (resp_gianluca | default({})).values() | map(attribute='events') | sum(start=[]) | list }}
+          has_event_flags: >-
+            {%- set ns = namespace(today=false, tomorrow=false) -%}
+            {%- for event in gianluca_schedule_events -%}
+              {%- set is_all_day = (event.start | length) == 10 -%}
+              {%- if not is_all_day and 'gianluca school' in (event.summary | lower) -%}
+                {%- set start_date = event.start[:10] -%}
+                {%- set end_date = event.end[:10] -%}
+                {%- if start_date <= today <= end_date -%}
+                  {%- set ns.today = true -%}
+                {%- endif -%}
+                {%- if start_date <= tomorrow <= end_date -%}
+                  {%- set ns.tomorrow = true -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ {'today': ns.today, 'tomorrow': ns.tomorrow} }}
+          has_event_today: "{{ has_event_flags.today }}"
+          has_event_tomorrow: "{{ has_event_flags.tomorrow }}"
 
     binary_sensor:
       - name: Parochial School Closed Today
@@ -131,6 +173,12 @@ template:
       - name: Parochial School Closed Tomorrow
         unique_id: parochial_school_closed_tomorrow
         state: "{{ closed_tomorrow }}"
+      - name: Parochial School Has Event Today
+        unique_id: parochial_school_has_event_today
+        state: "{{ has_event_today }}"
+      - name: Parochial School Has Event Tomorrow
+        unique_id: parochial_school_has_event_tomorrow
+        state: "{{ has_event_tomorrow }}"
 
     sensor:
       - name: Parochial School Events Today

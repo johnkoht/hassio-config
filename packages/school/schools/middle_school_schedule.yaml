@@ -111,8 +111,7 @@ template:
              and tomorrow_str >= states('input_datetime.school_year_first_day')
              and tomorrow_str <= states('input_datetime.school_year_last_day')
              and tomorrow.weekday() < 5
-             and not is_state('binary_sensor.district_closed_tomorrow', 'on')
-             and is_state('input_boolean.school_day_override_off', 'off') }}
+             and not is_state('binary_sensor.district_closed_tomorrow', 'on') }}
 
     sensor:
       - name: Middle School Start Time Today

@@ -49,16 +49,42 @@
 # day, so sensor.parochial_school_start_time_today has no late/normal
 # branching, unlike the three D34 grade-band files.
 #
-# binary_sensor.parochial_school_in_session_today = the parochial
-# closure sensor (binary_sensor.parochial_school_closed_today, from
-# packages/school/parochial_school_calendar_sensors.yaml, fed from
-# calendar.gianluca_school + calendar.olph_school) is off AND
-# input_boolean.school_day_override_off is off AND today is a weekday.
-# Whether Gianluca actually has school on a given day is confirmed by
-# his own calendar via that closure sensor's classification pipeline
-# (including the JK own-band guard against OLPH's grade-scoped closure
-# events) — this sensor doesn't re-derive that, it only adds the
-# weekday and manual-override gates on top.
+# binary_sensor.parochial_school_in_session_today = EVENT PRESENCE is
+# the authority, not the OLPH closure feed. Verified 2026-08-26 against
+# the live calendars: OLPH's events feed does not reliably mark breaks
+# as no-school — Christmas Eve, every weekday of winter break, and all
+# eleven days of Easter Vacation (2027-03-29 - 2027-04-08) carry either
+# no events or an "Easter Vacation" event whose summary has no "no
+# school" string, so binary_sensor.parochial_school_closed_today reads
+# false (open) on every one of those days. Relying on "not closed" alone
+# would fire Gianluca's 07:45 departure reminder on Christmas Eve and
+# throughout both breaks.
+#
+# The reliable signal is his own SCHEDULE calendar
+# (calendar.gianluca_school): it carries a recurring "Gianluca School"
+# event on exactly the days he actually attends and is absent on every
+# break day, regardless of whether OLPH's feed says anything. That
+# presence/absence is pre-computed in
+# packages/school/parochial_school_calendar_sensors.yaml as
+# binary_sensor.parochial_school_has_event_today / _tomorrow (built from
+# the schedule-calendar response only, matched on timed events whose
+# summary contains "gianluca school").
+#
+# So: in_session_today = has_event_today is on AND the parochial closure
+# sensor (still checked — an actual OLPH-announced closure on a day his
+# calendar wasn't yet updated for should still close him) is off AND
+# input_boolean.school_day_override_off is off. No weekday clause: his
+# calendar only ever has events on weekdays, so it's redundant, and it
+# would be actively wrong if OLPH ever held a Saturday session.
+#
+# availability: reads unavailable/unknown while has_event_today hasn't
+# rendered yet (freshly reloaded, before the first hourly tick) so this
+# sensor reports unavailable rather than a confident false in that
+# window — a departure reminder that silently doesn't fire because its
+# gating sensor is unavailable is recoverable; one that fires at 07:45
+# on Christmas morning because the sensor defaulted to "not closed" is
+# not. binary_sensor.parochial_school_in_session_tomorrow mirrors this,
+# reading has_event_tomorrow, for the evening announcements.
 #
 
 input_datetime:
@@ -104,10 +130,28 @@ template:
         unique_id: parochial_school_in_session_today
         default_entity_id: binary_sensor.parochial_school_in_session_today
         icon: mdi:school
+        availability: >-
+          {{ not is_state('binary_sensor.parochial_school_has_event_today', 'unknown')
+             and not is_state('binary_sensor.parochial_school_has_event_today', 'unavailable') }}
         state: >-
-          {{ not is_state('binary_sensor.parochial_school_closed_today', 'on')
-             and is_state('input_boolean.school_day_override_off', 'off')
-             and now().weekday() < 5 }}
+          {{ is_state('binary_sensor.parochial_school_has_event_today', 'on')
+             and not is_state('binary_sensor.parochial_school_closed_today', 'on')
+             and is_state('input_boolean.school_day_override_off', 'off') }}
+      - name: Parochial School In Session Tomorrow
+        unique_id: parochial_school_in_session_tomorrow
+        default_entity_id: binary_sensor.parochial_school_in_session_tomorrow
+        icon: mdi:school
+        # Mirrors _today, minus the override. school_day_override_off means
+        # "no school TODAY" and is swept every night at 23:58, so applying it
+        # to tomorrow is a category error: flipping it for a snow day this
+        # morning would make tonight's evening announcement claim there's no
+        # school tomorrow, which has nothing to do with the snow day.
+        availability: >-
+          {{ not is_state('binary_sensor.parochial_school_has_event_tomorrow', 'unknown')
+             and not is_state('binary_sensor.parochial_school_has_event_tomorrow', 'unavailable') }}
+        state: >-
+          {{ is_state('binary_sensor.parochial_school_has_event_tomorrow', 'on')
+             and not is_state('binary_sensor.parochial_school_closed_tomorrow', 'on') }}
 
     sensor:
       - name: Junior Kindergarten Start Time Today
