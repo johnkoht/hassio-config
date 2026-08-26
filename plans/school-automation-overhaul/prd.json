@@ -1,0 +1,268 @@
+{
+  "name": "school-automation-overhaul",
+  "branchName": "feature/school-automation-overhaul",
+  "goal": "Build the complete new school-automation layer (district / school-by-grade-band / kid) as additive files that run alongside the existing system, so it can be shadow-run for a full school week before anything live is removed. Track A only: everything achievable in a worktree with no live Home Assistant instance and no human in the loop.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Take deploy.sh out of the secrets business",
+      "description": "Remove every line where deploy.sh writes to or deletes secrets.yaml, and make the Docker-missing validation branch fail loudly instead of silently skipping. Ships as its own commit, before all other work.",
+      "acceptanceCriteria": [
+        "cp secrets.fake.yaml secrets.yaml (~line 60), the rm -f secrets.yaml in the check_config failure branch (~line 66), and the trailing rm -f secrets.yaml (~line 68) are all removed",
+        "grep -n 'secrets.yaml' deploy.sh shows only read-only or comment references",
+        "The Docker-missing branch (~line 56) exits non-zero instead of warning and continuing",
+        "A comment above check_config states secrets.yaml is human-managed and no script may modify it",
+        "The secrets.fake.yaml retain-or-retire decision is recorded in working-memory.md Decision Ledger",
+        "Lands as its own commit, separate from every other task"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Delete google_calendars.yaml",
+      "description": "Dead legacy config for a Google integration format HA no longer reads, and the repo's largest privacy exposure (contains Gianluca's Google calendar ID).",
+      "acceptanceCriteria": [
+        "google_calendars.yaml is deleted",
+        "grep -rn 'google_calendars' . excluding plans/ returns no hits",
+        "configuration.yaml is confirmed to contain no google: block before deleting"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Delete dead files with no live consumer",
+      "description": "Remove nine dead files plus the legacy Nino Pickup automation. Phantom-check each before deletion.",
+      "acceptanceCriteria": [
+        "All nine listed files are deleted",
+        "templates/speech/briefing.yaml is deleted in full, not just the pickup_nino() macro whose call site is at line 57; templates/ confirmed unreferenced in configuration.yaml",
+        "The Nino Pickup block (id 1646884521741) is removed from automations.yaml and the file still parses",
+        "For each deletion, a grep confirms no remaining consumer outside plans/",
+        "Nothing deleted here is read by packages/reminders/morning_update.yaml"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Build school_year.yaml",
+      "description": "Year-bound input_datetime helpers plus the derived binary_sensor.school_year_active.",
+      "acceptanceCriteria": [
+        "Declares input_datetime.school_year_first_day and school_year_last_day, has_date true, has_time false",
+        "Neither carries initial: \u2014 it disables state restoration and silently reverts dashboard edits on restart. Real dates (2026-08-20, 2027-05-27) in a header comment only",
+        "binary_sensor.school_year_active is true when today falls within the two dates inclusive, with an availability: guard when either input is unset",
+        "Header comment records Glenbrook South as out of scope (District 225)",
+        "Modern syntax throughout: triggers/conditions/actions, trigger:/action: keys"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Override booleans and their ungated nightly reset",
+      "description": "The only manual controls in a derived system, plus the reset that stops them latching forever.",
+      "acceptanceCriteria": [
+        "school_overrides.yaml declares input_boolean.school_day_override_off and early_dismissal_today, neither with initial:",
+        "school_overrides_reset.yaml has one automation at 23:58:00 turning both off",
+        "The reset has NO conditions: block at all \u2014 a gated reset is how the birthday-countdown flags latched forever",
+        "The reset is in its own file, not buried in school_overrides.yaml",
+        "Header comment explains why the reset is ungated, citing the prior latch failure"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Calendar sensors \u2014 one template block per calendar",
+      "description": "Three independent trigger-based template files. Separate files because a response-returning service resolving to zero entities raises and would kill every sensor in a shared block.",
+      "acceptanceCriteria": [
+        "Three separate files: district_calendar_sensors.yaml, primary_school_calendar_sensors.yaml, parochial_school_calendar_sensors.yaml",
+        "Each has three triggers: time_pattern hours: /1, homeassistant start, and event_template_reloaded. Never hours: 1 (fires once daily at 01:00)",
+        "Every calendar.get_events call has continue_on_error: true and every response var is dereferenced with | default({})",
+        "Responses iterated as .values() | map(attribute='events') | sum(start=[]) \u2014 no calendar entity ID inside Jinja",
+        "Entity IDs inline in target: blocks, each marked with a # TODO(track-b) comment for the !secret migration",
+        "Day matching is by OVERLAP not start-date equality: all-day uses start[:10] <= day and day < end[:10]; timed uses start[:10] <= day <= end[:10]; all-day detected via start|length == 10",
+        "Closure test is 'no school' in summary|lower; the 'District Closed' clause is NOT carried over",
+        "Grade-scope guard rejects grade[s]?\\s*[K0-9], \\d(st|nd|rd|th)\\s+grade, and word-scopes kindergarten/preschool/EC unless the summary names JK or junior kindergarten; unrecognized scoped closures fail OPEN into Tier 2",
+        "Tier 1 is tested BEFORE the athletics filter",
+        "Athletics filter matches ' - Practice' / ' - Game'",
+        "Events deduped on (summary, start)",
+        "Emits binary_sensor.<scope>_closed_today/_tomorrow and sensor.<scope>_events_today/_tomorrow",
+        "Event payloads in attributes; state: is now().isoformat() (255-char state limit)",
+        "No unique_id collides with the still-live primary_school_closed or primary_school_closed_tomorrow"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-7",
+      "title": "The three D34 grade-band schedules",
+      "description": "primary (K-2), intermediate (3-5), middle (6-8). No high-school file.",
+      "acceptanceCriteria": [
+        "Each declares <band>_school_start_time, _late_start_time, _dismissal_time \u2014 none with initial:; real times in header comments (primary 8:45/9:45/15:40, intermediate 7:45/8:45/14:40, middle 8:15/9:15/15:10)",
+        "Each defines sensor.<band>_school_start_time_today and _dismissal_time_today with device_class: timestamp",
+        "Timestamps built as today_at('00:00') + timedelta(seconds=state_attr(...,'timestamp')), never as_datetime() on a concatenated string \u2014 a naive value makes SensorEntity.state raise and errors the entity",
+        "Each timestamp sensor has an availability: template rather than an empty state render",
+        "Each defines binary_sensor.<band>_school_late_start_today/_late_start_tomorrow/_in_session_today/_in_session_tomorrow",
+        "Late start is derived (weekday == 2 and in_session), never latched",
+        "in_session requires school-year-active AND weekday AND not closed AND school_day_override_off is off",
+        "No Glenbrook South / high-school file is created"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-8",
+      "title": "Parochial (Junior Kindergarten) schedule",
+      "description": "Start time, fixed departure, and five per-weekday dismissal inputs.",
+      "acceptanceCriteria": [
+        "Declares parochial_school_start_time, parochial_school_departure_time, and five per-weekday dismissals \u2014 none with initial:; header comment records 8:05 start, 7:45 departure, Mon 14:20 / Tue 12:20 / Wed 14:20 / Thu 12:20 / Fri 12:20",
+        "Departure is an absolute input, not a lead-minutes subtraction",
+        "sensor.parochial_school_dismissal_time_today selects by weekday, device_class: timestamp, same construction and availability rules as task 7",
+        "binary_sensor.parochial_school_in_session_today requires a 'Gianluca School' event AND no 'no school' marker AND the override off",
+        "Entity IDs use parochial_school_*; only friendly names say Junior Kindergarten"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-9",
+      "title": "The kid layer",
+      "description": "Map Nino to primary and Gianluca to parochial, deriving school-day, departure and pickup per kid.",
+      "acceptanceCriteria": [
+        "Filename uniqueness verified first: find packages -name 'nino_school.yaml' -o -name 'gianluca_school.yaml' returns only these two \u2014 !include_dir_named keys by basename globally and collisions are silent",
+        "The kid-to-band mapping is a single referenced entity per kid, so a band change is a one-line edit",
+        "Each defines binary_sensor.<kid>_school_day, sensor.<kid>_departure_time, sensor.<kid>_pickup_time (latter two device_class: timestamp, built and gated per task 7 rules)",
+        "Nino gets nino_departure_lead_minutes and nino_pickup_lead_minutes; Gianluca gets gianluca_pickup_lead_minutes only \u2014 his departure reads the fixed input from task 8",
+        "No initial: on any input_number; defaults (25/20/20) in header comments",
+        "Every <kid>_school_day sensor honours input_boolean.school_day_override_off",
+        "No unique_id overlaps the still-live input_boolean.nino_school_day / gianluca_school_day"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-10",
+      "title": "Morning reminder",
+      "description": "Household breakfast nudge, late-start aware, reading the new derived sensors.",
+      "acceptanceCriteria": [
+        "Declares input_datetime.school_breakfast_reminder_time (no initial:) and one automation triggering on it",
+        "Conditions: house_occupied on, and either kid's new binary_sensor.<kid>_school_day on",
+        "Calls script.voice_announcement with media_players: auto, sound school-bell-chime, preserving the random-line style and the both-kids / Nino-only / Gianluca-only branches",
+        "The late-start branch reads binary_sensor.primary_school_late_start_today, not the old input_boolean",
+        "Does not duplicate gating already inside script.voice_announcement"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-11",
+      "title": "Per-kid departure reminders",
+      "description": "Split the single shared reminder into two, routed to the parent doing each drop-off. Push-only for week one.",
+      "acceptanceCriteria": [
+        "Each triggers via trigger: time / at: sensor.<kid>_departure_time",
+        "Nino's pushes to devices: jk; Gianluca's to devices: cfalb",
+        "Both ship push-only: script.general_notification only, with the script.voice_announcement call present but COMMENTED OUT",
+        "Header comment states enabling TTS is an explicit decision after one week, not a scheduled un-suppression \u2014 this turns one daily announcement into two 35 min apart",
+        "Each conditions on the corresponding binary_sensor.<kid>_school_day",
+        "Each carries a comment noting the trigger only schedules when the sensor time is in the future, so a mid-morning reload can silently skip the day"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-12",
+      "title": "Per-kid pickup reminders",
+      "description": "Rebuild both pickups against the new timestamp sensors with consistent notification plumbing.",
+      "acceptanceCriteria": [
+        "Each triggers via trigger: time / at: sensor.<kid>_pickup_time",
+        "Both use script.general_notification; Gianluca's raw notify.ios_family call is not carried over",
+        "Pushes route to the parent doing that pickup",
+        "The tag typo nino_school_pikcup is corrected to nino_school_pickup",
+        "New files live under packages/school/reminders/ and their basenames do not collide with the still-live originals"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-13",
+      "title": "Evening announcements",
+      "description": "Closed-tomorrow and late-start-tomorrow heads-ups, consuming the _tomorrow sensors.",
+      "acceptanceCriteria": [
+        "Each fires in the evening off the _tomorrow sensors from tasks 6 and 7",
+        "Both call script.voice_announcement and condition on input_boolean.house_occupied",
+        "Late-start-tomorrow reads binary_sensor.primary_school_late_start_tomorrow",
+        "No school_notable_event_tomorrow_reminder is created"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-14",
+      "title": "Re-point morning_update.yaml",
+      "description": "Move the three school reads onto the new sensors, harden them, and fix the phantom calendar target.",
+      "acceptanceCriteria": [
+        "Lines 114, 116, 150 read the new sensors and are converted from states.<domain>.<object>.state to is_state(), so a missing entity degrades instead of raising UndefinedError and killing the whole prompt render",
+        "Line 248's phantom calendar.ninos_school target is removed from the calendar_events_today get_events call",
+        "The calendar_events_today target list is otherwise unchanged, with a comment at ~line 247 stating calendar.olph_school and calendar.gianluca_school must not be added there because that aggregation is not tier-filtered",
+        "The Tier 2 informational list is added to the prompt, capped at 5 entries",
+        "After this task morning_update.yaml references no entity that Track C will delete"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-15",
+      "title": "School dashboard view",
+      "description": "Build the missing view and wire it into kohbo.yaml. It is the sole editing surface for every schedule input.",
+      "acceptanceCriteria": [
+        "New view at path 'school', included in dashboards/kohbo/kohbo.yaml, resolving the dead link at dashboards/templates/includes/navbar.yaml:73",
+        "Card conventions match an existing view \u2014 read dashboards/kohbo/climate/climate.yaml or a room view first and follow its structure and template usage",
+        "Sections: Today (per-kid state, leave/start/pickup times, late-start badge, closures, both override toggles), Schools (per-band pickers), Junior Kindergarten (start, departure, five dismissals), Calendar, Lunch",
+        "Every schedule input_datetime from tasks 4, 7, 8 is editable from this view \u2014 YAML-declared helpers are editable: false and never appear in Settings > Helpers",
+        "Header comment warns the Yellow's kohbo.yaml must be verified against this repo before deploying (host git divergence would make this a clobber)"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-16",
+      "title": "Static validation",
+      "description": "Everything verifiable without a live Home Assistant instance.",
+      "acceptanceCriteria": [
+        "ha core check (or ./deploy.sh --check with Docker confirmed running) passes",
+        "find packages -name '*.yaml' | xargs -n1 basename | sort | uniq -d returns nothing",
+        "No new file uses a .yml extension",
+        "No legacy syntax in newly created files under packages/school/",
+        "grep -rn 'initial:' packages/school/ returns nothing",
+        "grep -rn 'hours: 1$' packages/school/ returns nothing",
+        "Every new trigger-based template contains event_template_reloaded"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-08-25T00:00:00Z",
+    "totalTasks": 16,
+    "completedTasks": 0,
+    "failedTasks": 0
+  }
+}
