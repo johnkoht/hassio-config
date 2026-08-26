@@ -1,0 +1,68 @@
+# Nino Departure Reminder
+#
+# Replaces the single house-wide packages/school/school_departure_reminder.yaml
+# (still live) with a per-kid reminder timed off Nino's own derived
+# departure sensor, so John gets pinged at Nino's actual leave time
+# rather than one shared time for both kids.
+#
+# Ships PUSH ONLY. The script.voice_announcement call below is present
+# but commented out on purpose. Splitting one shared departure
+# announcement into two per-kid announcements (this file + the
+# Gianluca equivalent, ~35 minutes apart per their different school
+# start times) is a real behavior change to what gets broadcast
+# through script.voice_announcement's media_players: auto — it goes
+# into whichever rooms are currently occupied, twice a morning instead
+# of once. That hasn't been lived with yet. Enabling TTS here is meant
+# to be an explicit decision made after a week of watching the push-only
+# version in practice, not something that flips on by itself on a
+# schedule or a future reload. Do not uncomment it as part of an
+# unrelated change.
+#
+# Trigger gotcha: `trigger: time` / `at: sensor.nino_departure_time`
+# only schedules a firing if the sensor's timestamp is still in the
+# future at the moment HA evaluates the trigger (on start or reload).
+# A config reload that happens AFTER today's departure time has
+# already passed will silently skip today — the automation won't error,
+# it just won't fire until tomorrow's timestamp is computed. Nothing
+# reschedules it retroactively.
+#
+# Push routes to John (`devices: jk`) — he's the one who drives Nino.
+#
+
+automation:
+  - id: "nino_departure_reminder"
+    alias: "Nino Departure Reminder"
+    mode: single
+    triggers:
+      - trigger: time
+        at: sensor.nino_departure_time
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.nino_school_day
+        state: "on"
+    actions:
+      # Commented out until it's been lived with for a week — see
+      # header comment. Uncomment only as a deliberate decision.
+      # - action: script.voice_announcement
+      #   data:
+      #     media_players: auto
+      #     sound: "school-bell"
+      #     speech_message: >-
+      #       {{
+      #         [
+      #           "Nino, it's time to head out for school!",
+      #           "Hey there, time to get Nino out the door for school!",
+      #           "Reminder: it's time to leave for Nino's school!"
+      #         ] | random
+      #       }}
+
+      - action: script.general_notification
+        data:
+          title: "Time to leave for Nino's school"
+          message: "It's time to head out — Nino needs to leave for school."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "nino_departure_reminder"

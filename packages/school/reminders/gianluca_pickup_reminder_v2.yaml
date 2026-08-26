@@ -1,0 +1,66 @@
+# Gianluca Pickup Reminder (v2)
+#
+# TODO(track-c): rename to gianluca_pickup_reminder once the original
+# packages/school/gianluca_school/automations/gianluca_school_pickup_reminder.yaml
+# is deleted — the `_v2` suffix here exists only to avoid an id/filename
+# collision with that still-live file during the shadow-run week.
+#
+# The original trigger was `trigger: calendar` / `event: end` on
+# calendar.gianluca_school with a -20min offset, and its TTS message
+# pulled the event label from trigger.calendar_event.summary. This
+# version triggers off the new derived sensor.gianluca_pickup_time
+# (dismissal minus input_number.gianluca_pickup_lead_minutes) instead,
+# so there's no calendar_event in the trigger context and no event
+# label to build the message from — the message below uses the same
+# generic "school" phrasing as Nino's pickup reminder rather than the
+# label-substitution pattern the calendar-triggered original used.
+#
+# Gated on the new binary_sensor.gianluca_school_day instead of the
+# legacy input_boolean.gianluca_school_day. The original's raw
+# `notify.ios_family` push call is NOT carried over — this version
+# routes push through script.general_notification like every other
+# reminder in this package, to Cristina (`devices: cfalb`), who does
+# Gianluca's pickup.
+#
+# Pickup TTS is NOT suppressed the way departure TTS is (see
+# gianluca_departure_reminder.yaml) — pickup is a same-day, time-critical
+# heads-up, not a daily-cadence behavior change, so it ships live from
+# day one.
+#
+
+automation:
+  - id: "gianluca_pickup_reminder_v2"
+    alias: "Gianluca Pickup Reminder"
+    mode: single
+    triggers:
+      - trigger: time
+        at: sensor.gianluca_pickup_time
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.gianluca_school_day
+        state: "on"
+    actions:
+      # Call the announcement engine
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "school-bell-chime"
+          priority: normal
+          speech_message: >-
+            {{
+              [
+                "School is done! Time to pick up Gianluca!",
+                "Hey there! It's time to pickup Gianluca from school!",
+                "Dont forget to pick up Gianluca from school!",
+                "Quick reminder that school is almost over, time to pick Gianluca up."
+              ] | random
+            }}
+
+      # Notify Cristina via push — she does Gianluca's pickup
+      - action: script.general_notification
+        data:
+          title: "Gianluca's school is ending soon"
+          message: "School will be over soon, it's time to pick up Gianluca from school."
+          devices: "cfalb"
+          priority: "time-sensitive"
+          tag: "gianluca_school_pickup"
