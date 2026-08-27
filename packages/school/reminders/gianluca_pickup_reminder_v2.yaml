@@ -1,0 +1,43 @@
+# Gianluca Pickup Reminder (v2)
+#
+# Pickup reminder timed off sensor.gianluca_pickup_time, with dual TTS + push.
+# Named "v2" to avoid a collision with the still-live original pickup
+# reminder in gianluca_school/automations/.
+#
+
+automation:
+  - id: "gianluca_pickup_reminder_v2"
+    alias: "Gianluca Pickup Reminder"
+    mode: single
+    triggers:
+      - trigger: time
+        at: sensor.gianluca_pickup_time
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.gianluca_school_day
+        state: "on"
+    actions:
+      # Call the announcement engine
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "school-bell-chime"
+          priority: normal
+          speech_message: >-
+            {{
+              [
+                "School is done! Time to pick up Gianluca!",
+                "Hey there! It's time to pickup Gianluca from school!",
+                "Dont forget to pick up Gianluca from school!",
+                "Quick reminder that school is almost over, time to pick Gianluca up."
+              ] | random
+            }}
+
+      # Notify Cristina via push — she does Gianluca's pickup
+      - action: script.general_notification
+        data:
+          title: "Gianluca's school is ending soon"
+          message: "School will be over soon, it's time to pick up Gianluca from school."
+          devices: "cfalb"
+          priority: "time-sensitive"
+          tag: "gianluca_school_pickup"

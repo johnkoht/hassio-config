@@ -1,0 +1,34 @@
+# School Late Start Tomorrow Reminder
+#
+# Evening heads-up at 19:30 when Nino has a late start tomorrow.
+# Nino-specific — Gianluca's parochial schedule has no late-start concept.
+#
+
+automation:
+  - id: "school_late_start_tomorrow_reminder"
+    alias: "School Late Start Tomorrow Reminder"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "19:30:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.primary_school_late_start_tomorrow
+        state: "on"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "arcade"
+          priority: normal
+          speech_message: >-
+            {{
+              [
+                "Heads up, Nino has a late start tomorrow!",
+                "Just a reminder that tomorrow is a late start day for Nino.",
+                "Quick note, Nino doesn't need to be at school as early tomorrow — it's a late start day!"
+              ] | random
+            }}

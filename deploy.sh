@@ -53,19 +53,19 @@ if ! $SKIP_CI; then
   fi
 
   echo "==> Checking HA config (Docker, v${HA_VERSION})..."
+  # secrets.yaml is human-managed and gitignored/unrecoverable — no script
+  # (this one included) may write to, copy over, or delete it. Validation
+  # runs against whatever secrets.yaml is already on disk.
   if ! command -v docker &>/dev/null; then
-    echo "⚠️  Docker not found. Skipping config check."
+    echo "❌ Docker not found. Start Docker or use --skip-ci to bypass validation."
+    exit 1
   else
-    # Copy fake secrets into place for validation
-    cp secrets.fake.yaml secrets.yaml 2>/dev/null || true
-
     docker run --rm \
       -v "$(pwd):/config" \
       "ghcr.io/home-assistant/home-assistant:${HA_VERSION}" \
       python -m homeassistant --config /config --script check_config \
-      || { rm -f secrets.yaml; echo "❌ Config check failed. Fix errors or use --skip-ci."; exit 1; }
+      || { echo "❌ Config check failed. Fix errors or use --skip-ci."; exit 1; }
 
-    rm -f secrets.yaml
     echo "    ✓ Config check passed"
   fi
 
