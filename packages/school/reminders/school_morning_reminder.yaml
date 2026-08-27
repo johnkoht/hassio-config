@@ -1,29 +1,11 @@
 # School Morning Reminder
 #
-# Announces breakfast/get-ready time on school mornings, replacing the
-# legacy packages/school/school_day_reminder.yaml (still live, still
-# reads input_datetime.school_day_breakfast_reminder_time — a distinct
-# input from the one declared below, so the two coexist during the
-# shadow-run week without colliding).
+# Announces breakfast/get-ready time on school mornings for whichever
+# kid(s) have school today, with a late-start callout for Nino.
 #
-# input_datetime.school_breakfast_reminder_time deliberately carries NO
-# `initial` field — see school_year.yaml for why (it disables state
-# restoration across restarts, so any dashboard edit would silently
-# revert on the next restart). Real value for the 2026-2027 school
-# year (set at runtime via the dashboard): 07:15.
-#
-# Message branching (both kids / Nino only / Gianluca only, each with
-# a random line) is ported from the legacy file's speech_message
-# template. The late-start clause now reads
-# binary_sensor.primary_school_late_start_today (derived, never
-# latched — see primary_school_schedule.yaml) instead of the legacy
-# input_boolean.district_late_start_wednesday, and every entity read
-# uses is_state() rather than states.<domain>.<object>.state — the
-# latter raises UndefinedError on a missing entity and kills the
-# entire template render, silencing the whole announcement.
-#
-# Gating already inside script.voice_announcement (speech_notifications,
-# 6am-11pm window, bedtime) is intentionally NOT duplicated here.
+# No `initial:` on input_datetime.school_breakfast_reminder_time — state
+# restoration keeps runtime-edited values across restarts (see
+# school_year.yaml).
 #
 
 input_datetime:

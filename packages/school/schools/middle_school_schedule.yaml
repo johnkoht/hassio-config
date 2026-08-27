@@ -1,60 +1,15 @@
 # Middle School Bell Schedule (Grades 6-8)
 #
-# Runtime-editable bell-schedule inputs for the middle grade band,
-# plus the derived "today"/"tomorrow" timestamp and session sensors
-# that the reminder and kid-layer automations (tasks 9-13) read.
+# Bell-schedule inputs for the middle band plus derived today/tomorrow
+# session, late-start, and timestamp sensors. No per-school calendar
+# feed exists for this band, so closure comes from
+# binary_sensor.district_closed_today/_tomorrow.
 #
-# input_datetime.middle_school_start_time / _late_start_time /
-# _dismissal_time hold the actual clock times. They deliberately carry
-# NO `initial` field — see school_year.yaml for why (it disables state
-# restoration across restarts, so any dashboard edit would silently
-# revert on the next restart). Real times for the 2026-2027 school
-# year (set at runtime via the dashboard or `input_datetime.set_datetime`,
-# deliberately NOT seeded in this YAML):
-#   start:       08:15
-#   late start:  09:15 (Wednesdays only)
-#   dismissal:   15:10
+# Timestamps use today_at('00:00') + timedelta(seconds=...) — DST-safe
+# wall-clock arithmetic. Never build via naive date+time string parsing;
+# device_class: timestamp raises on a naive datetime.
 #
-# Timestamp sensors are built as:
-#   today_at('00:00') + timedelta(seconds=state_attr('input_datetime.x','timestamp') | int(0))
-# today_at() returns a timezone-aware local datetime, and timedelta
-# arithmetic on a zoneinfo-aware datetime is wall-clock arithmetic —
-# that's what makes this DST-safe across 2026-11-01 and 2027-03-08.
-# Never build this by parsing a concatenated date+time string into a
-# naive datetime — that yields a naive datetime, and SensorEntity.state RAISES
-# under device_class: timestamp on a naive value, erroring the entity
-# out entirely rather than just failing a trigger. The `| int(0)`
-# fallback keeps the render itself from raising when the input is
-# unset; the `availability:` template (not the state) is what tells
-# the UI "unavailable" in that case.
-#
-# Closure source: binary_sensor.district_closed_today / _tomorrow
-# (packages/school/district_calendar_sensors.yaml). No per-school
-# calendar feed exists for the middle school — only the districtwide
-# calendar.district_34_events — so this band consumes the district
-# closure sensors directly rather than a school-specific one (unlike
-# primary, which has calendar.lyon_school).
-#
-# Late start is DERIVED every time from today's/tomorrow's weekday
-# (Wednesday, weekday()==2) and the matching in-session sensor — never
-# latched into a boolean. A latched flag is exactly how the birthday-
-# countdown "announced" flags got stuck on forever.
-#
-# in_session_today = binary_sensor.school_year_active is on AND today
-# is a weekday AND binary_sensor.district_closed_today is off AND
-# input_boolean.school_day_override_off is off.
-# in_session_tomorrow mirrors this against tomorrow's date (inlined
-# against the school_year_first_day/last_day inputs, since there's no
-# "school_year_active_tomorrow" sensor), tomorrow's weekday, and
-# binary_sensor.district_closed_tomorrow. It also reads today's
-# override boolean — a deliberate simplification, since
-# school_overrides_reset.yaml unconditionally clears that boolean at
-# 23:58 every night, so by the time "tomorrow" actually arrives the
-# override is back to off regardless of what this sensor read at
-# evaluation time.
-#
-# No Glenbrook South / high-school file exists here or is planned —
-# that's District 225, out of scope for this D34 grade-band layer.
+# Late start is derived from weekday, never latched into a boolean.
 #
 
 input_datetime:

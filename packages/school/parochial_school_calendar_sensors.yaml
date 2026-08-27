@@ -1,72 +1,16 @@
 # Parochial School Calendar Sensors
 #
-# Trigger-based template block covering Gianluca's two calendars:
-# calendar.gianluca_school (his personal schedule calendar) and
-# calendar.olph_school (OLPH's school-wide events feed, currently empty —
-# subscribed to the wrong Blackbaud feed, fixed in Track B).
+# Fetches Gianluca's schedule calendar (calendar.gianluca_school) and
+# OLPH's events feed (calendar.olph_school) separately — calendar.get_events
+# raises if a target resolves to zero entities, so one bad feed can't take
+# down the other. Classifies events into closures (Tier 1), informational
+# (Tier 2), and noise (Tier 3), with day-match by overlap (not start-date
+# equality) since all-day events are end-exclusive.
 #
-# TWO independent calendar.get_events calls, not one call with two
-# targets — same zero-entities-raises hazard that split this task into
-# three files in the first place. calendar.olph_school resolving to zero
-# events (or the entity itself not existing until Track B re-subscribes
-# it) must not also take down the Gianluca-schedule half of this file.
-# continue_on_error: true and | default({}) sit on both calls.
-#
-# Classification pipeline (same shape in district_calendar_sensors.yaml
-# and primary_school_calendar_sensors.yaml):
-#   1. Fetch today 00:00:00 -> tomorrow 23:59:59, per calendar.
-#   2. Dedup on (summary, start) — this is the file where it actually
-#      matters: an event mirrored on both Gianluca's schedule calendar
-#      and the OLPH events feed would otherwise be announced twice.
-#   3. Day-match by OVERLAP, not start-date equality. All-day events are
-#      end-exclusive (event.end is the day AFTER the closure ends).
-#      Verified necessary: 9 of OLPH's 119 all-day events span multiple
-#      days, e.g. "NO SCHOOL - Thanksgiving" (2026-11-25 -> 2026-11-28)
-#      and an 11-day Easter Vacation. Start-date equality would report
-#      school open for all of Thanksgiving break except day one.
-#   4. Tier 1 (actionable) is tested before the Tier 3 (ignored/athletics)
-#      filter, so a Tier 1 event isn't eaten by a coincidental "- Game"
-#      match in its summary.
-#   5. Grade-scope guard — REQUIRED here, not just for consistency. OLPH
-#      publishes grade-scoped closures ("Grade 2 - No School", "Grade 8 -
-#      No School", "Grades 6 & 7 - No School"). Without this guard,
-#      Gianluca's school reads closed on three days he is actually
-#      attending, since he's Junior Kindergarten, not grades 2/6/7/8.
-#      own_band_match here checks for "jk" / "junior kindergarten" in the
-#      summary — a closure naming Gianluca's own band still counts.
-#      Anything else grade-scoped fails OPEN into Tier 2 rather than
-#      flipping closed_today/closed_tomorrow, so an unrecognized scoped
-#      closure stays visible instead of silently misclassifying.
-#   6. Athletics filter (' - practice' / ' - game') removes 523 of OLPH's
-#      710 events — 73% of the feed, once it's re-subscribed in Track B.
-#
-# unique_id note: no existing sensor uses the "parochial_school_*" prefix
-# (verified via grep -rn "unique_id" packages/), so no collision risk.
-# Gianluca's still-live entities are input_boolean.gianluca_school_day
-# and binary_sensor.gianluca_is_today_school_day (different domain/name),
-# untouched here and not deleted until Track C.
-#
-# binary_sensor.parochial_school_has_event_today / _tomorrow — verified
-# 2026-08-26 against the live OLPH events feed: it does NOT reliably mark
-# breaks as no-school. Christmas Eve, all of winter break, and all eleven
-# days of Easter Vacation (2027-03-29 through 2027-04-08) carry either no
-# events at all or an "Easter Vacation" event whose summary contains no
-# "no school" string — closed_today/_tomorrow above read false on every
-# one of those days. The reliable signal instead is Gianluca's own
-# SCHEDULE calendar (calendar.gianluca_school, resp_gianluca below): it
-# carries a recurring "Gianluca School" event on exactly the 189 days he
-# actually attends and is absent on every break day, so absence-of-event
-# is authoritative independent of whether OLPH's feed says anything.
-# These two sensors are built from resp_gianluca only (NOT resp_olph,
-# NOT the merged `events` list used by the closure pipeline above) and
-# match `'gianluca school' in (summary | lower)` on TIMED (non-all-day)
-# events only. Two things his calendar also carries that this must NOT
-# match: one-off markers like "Gianluca First Day of JK OLPH" / "Gianluca
-# OLPH JK Begins" (summary doesn't contain "gianluca school"), and
-# all-day "GIANLUCA - NO SCHOOL" entries (excluded by the timed-only
-# filter, since only actual attendance is a timed event). Same overlap
-# matching as the classification pipeline above (start[:10] <= day <=
-# end[:10] for timed events) — no start-date equality.
+# has_event_today/_tomorrow are built from Gianluca's own schedule calendar
+# only, not the OLPH closure feed — OLPH doesn't reliably mark breaks as
+# no-school, but his schedule calendar has a recurring event on exactly
+# the days he attends.
 #
 
 template:

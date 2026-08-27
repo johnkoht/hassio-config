@@ -1,34 +1,16 @@
 # School Year Bounds
 #
-# The first and last day of the current school year, plus a derived
-# binary sensor for "is today within the school year". Replaces the
-# old district_school_year_activate / district_school_year_deactivate
-# automation pair (packages/school/district/), which flipped a boolean
-# via two separate time-triggered automations that had to independently
-# stay in sync with each other and with the two input_datetimes. This
-# collapses that to one state-based sensor with nothing to fall out of
-# sync.
+# First/last day of the school year, plus binary_sensor.school_year_active
+# (today within those bounds).
 #
-# input_datetime.school_year_first_day / input_datetime.school_year_last_day
-# hold the actual bounds. They deliberately have NO `initial` field — HA
-# only restores input_datetime/input_boolean/input_number state across a
-# restart when that field is absent; setting it disables restore, so any
-# dashboard edit would silently revert on the next restart. Real values
-# for the 2026-2027 school year (set at runtime via the dashboard or
-# `input_datetime.set_datetime`, deliberately NOT seeded in this YAML):
-#   first day: 2026-08-20
-#   last day:  2027-05-27
+# No `initial:` field on the input_datetimes — HA only restores
+# input_datetime/input_boolean/input_number state across a restart when
+# that field is absent, so setting it would make dashboard edits silently
+# revert on the next restart. Set values via the dashboard or
+# input_datetime.set_datetime, not in this file.
 #
-# binary_sensor.school_year_active is true when today falls between
-# those two dates, inclusive. It uses an `availability` template so it
-# reports "unavailable" instead of a bogus true/false when either input is
-# still unset — which is the shipped state until someone sets them via
-# the dashboard.
-#
-# Scope: District 34 grade schools (primary/intermediate/middle) only.
-# Glenbrook South (high school) is OUT OF SCOPE — it's District 225, a
-# separate district with its own calendar and closure feed, and its
-# school-year hours are TBD.
+# Scope: District 34 grade schools only. Glenbrook South (D225) is out
+# of scope — separate district, calendar, and closure feed.
 #
 
 input_datetime:

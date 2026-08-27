@@ -1,27 +1,12 @@
 # School Dashboard
 #
-# The sole editing surface for every schedule value in the school
-# automation system (task-15, school-automation-overhaul). Resolves the
-# dead mdi:school navbar link (dashboards/templates/includes/navbar.yaml,
-# "More" popup -> /dashboard-kohbo/school).
+# Editing surface for every schedule value in the school automation
+# system. These input_datetime/input_number entities are declared in
+# YAML (editable: false), so this view is their only edit surface —
+# none appear under Settings -> Helpers.
 #
-# WARNING: verify the Yellow's live dashboards/kohbo/kohbo.yaml against
-# this repo before deploying this view. Host git has diverged from this
-# repo before, and ./deploy.sh pulls from GitHub — a deploy run against
-# a diverged host can silently no-op or clobber whatever's live. Confirm
-# the include list on the host matches this repo before pushing.
-#
-# Every input_datetime / input_number below is declared in YAML
-# (packages/school/**), which means editable: false in the entity
-# registry — none of them ever appear under Settings -> Helpers. This
-# view is the ONLY place in the house any of them can be set. If a
-# section here goes missing or an entity ID drifts, there is no
-# fallback except Developer Tools -> Actions
-# (input_datetime.set_datetime / input_number.set_value).
-#
-# Grade bands are labeled generically (Primary K-2 / Intermediate 3-5 /
-# Middle 6-8 / Junior Kindergarten) — this repo is public, so no real
-# school name appears anywhere in this file.
+# Grade bands are labeled generically (no real school names — this
+# repo is public).
 #
 type: custom:vertical-layout
 title: School

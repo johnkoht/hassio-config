@@ -1,23 +1,8 @@
 # School Closed Tomorrow Reminder
 #
-# Evening announcement consuming the "_tomorrow" sensors from tasks 6
-# and 7 — binary_sensor.primary_school_in_session_tomorrow (Nino) and
-# binary_sensor.parochial_school_in_session_tomorrow (Gianluca) —
-# nothing reads either of those today. Fires once, at a fixed 19:30,
-# whenever at least one kid has no school tomorrow but the other might
-# (a district holiday, a school-specific closure, a diocese-only day,
-# etc.) so the house gets a heads-up the night before instead of
-# discovering it at the morning reminder.
-#
-# Gated on binary_sensor.school_year_active so this stays silent all
-# summer and winter break — without that gate, "no school tomorrow"
-# would be true (and announced) every single night once classes let
-# out.
-#
-# Deliberately reads is_state() rather than states.<x>.state, so a
-# temporarily-unavailable sensor (fresh reload, before the first hourly
-# calendar tick) degrades to "not off" instead of raising and killing
-# the whole automation.
+# Evening heads-up at 19:30 when either kid has no school tomorrow.
+# Gated on binary_sensor.school_year_active so it stays silent over
+# summer/winter break.
 #
 
 automation:
@@ -45,7 +30,7 @@ automation:
       - action: script.voice_announcement
         data:
           media_players: auto
-          sound: "school-bell-chime"
+          sound: "arcade"
           priority: normal
           speech_message: >-
             {% set nino_off = not is_state('binary_sensor.primary_school_in_session_tomorrow', 'on') %}

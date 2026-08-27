@@ -247,12 +247,6 @@ template:
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ now().strftime('%Y-%m-%d 23:59:59') }}"
-        # This aggregation is NOT tier-filtered — whatever is listed here goes
-        # straight into the daily LLM prompt. Do NOT add calendar.olph_school:
-        # its feed carries 710 events, 523 of them grade 5-8 athletics
-        # practices. School closures and events reach this briefing through the
-        # tier-capped sensor.primary_school_events_today instead.
-        # (calendar.gianluca_school below is fine — ~1 event/day.)
         target:
           entity_id:
             - calendar.gianluca_school

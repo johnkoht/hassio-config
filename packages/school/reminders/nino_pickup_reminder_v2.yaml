@@ -1,25 +1,8 @@
 # Nino Pickup Reminder (v2)
 #
-# TODO(track-c): rename to nino_pickup_reminder once the original
-# packages/school/nino_school/automations/nino_school_pickup_reminder.yaml
-# is deleted — the `_v2` suffix here exists only to avoid an id/filename
-# collision with that still-live file during the shadow-run week.
-#
-# Same dual TTS + push shape as the original, but timed off the new
-# derived sensor.nino_pickup_time (dismissal minus
-# input_number.nino_pickup_lead_minutes) instead of
-# input_datetime.primary_school_pickup_reminder, and gated on the new
-# binary_sensor.nino_school_day instead of the legacy
-# input_boolean.nino_school_day.
-#
-# Pickup TTS is NOT suppressed the way departure TTS is (see
-# nino_departure_reminder.yaml) — pickup is a same-day, time-critical
-# heads-up, not a daily-cadence behavior change, so it ships live from
-# day one.
-#
-# Push routes to John (`devices: jk`) — he's the one who does Nino's
-# pickup. Tag typo from the original (`nino_school_pikcup`) is fixed to
-# `nino_school_pickup`.
+# Pickup reminder timed off sensor.nino_pickup_time, with dual TTS + push.
+# Named "v2" to avoid a collision with the still-live original pickup
+# reminder in nino_school/automations/.
 #
 
 automation:

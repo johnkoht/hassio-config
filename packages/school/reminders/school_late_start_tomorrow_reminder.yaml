@@ -1,16 +1,7 @@
 # School Late Start Tomorrow Reminder
 #
-# Evening announcement consuming binary_sensor.primary_school_late_start_tomorrow
-# from task 7 — a "_tomorrow" signal nothing reads today. Nino-specific:
-# only the primary band (Lyon School) runs a weekly late start;
-# Gianluca's parochial schedule has no late-start concept at all (see
-# parochial_school_schedule.yaml's header comment), so there is
-# nothing to check on his side.
-#
-# Late start is derived every time from tomorrow's weekday and the
-# in-session-tomorrow sensor, never latched — see
-# primary_school_schedule.yaml for why (a latched flag is exactly how
-# the birthday-countdown "announced" flags got stuck on forever).
+# Evening heads-up at 19:30 when Nino has a late start tomorrow.
+# Nino-specific — Gianluca's parochial schedule has no late-start concept.
 #
 
 automation:
@@ -31,7 +22,7 @@ automation:
       - action: script.voice_announcement
         data:
           media_players: auto
-          sound: "school-bell-chime"
+          sound: "arcade"
           priority: normal
           speech_message: >-
             {{

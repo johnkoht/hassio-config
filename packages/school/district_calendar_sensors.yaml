@@ -1,40 +1,13 @@
 # District Calendar Sensors
 #
-# Trigger-based template block for calendar.district_34_events — the
-# districtwide event feed (late starts, board announcements, districtwide
-# closures). This is its own file, not shared with the school-specific
-# calendars, because calendar.get_events RAISES when its target resolves
-# to zero entities. One shared action sequence across every calendar
-# would mean a single bad reference (e.g. calendar.olph_school before its
-# Blackbaud feed is fixed in Track B) aborts every closure sensor in the
-# house at once. Separate files fail independently.
+# Fetches calendar.district_34_events and classifies today/tomorrow
+# events into closures (Tier 1) and informational (Tier 2), ignoring
+# noise (Tier 3). Own file per calendar — calendar.get_events raises
+# if the target resolves to zero entities, so one bad calendar can't
+# take down the others.
 #
-# Classification pipeline (same shape in primary_school_calendar_sensors.yaml
-# and parochial_school_calendar_sensors.yaml):
-#   1. Fetch today 00:00:00 -> tomorrow 23:59:59 in one call.
-#   2. Dedup on (summary, start) — matters when a file combines multiple
-#      calendars (parochial file does); harmless no-op here with one feed.
-#   3. Day-match by OVERLAP, not start-date equality. All-day events are
-#      end-exclusive (event.end is the day AFTER the closure ends), so a
-#      multi-day break like "NO SCHOOL - Thanksgiving" (2026-11-25 ->
-#      2026-11-28) is correctly "closed" on every day in [start, end).
-#      Start-date equality would only catch day one of any break.
-#   4. Tier 1 (actionable) is tested before the Tier 3 (ignored/athletics)
-#      filter, so a Tier 1 event isn't eaten by a coincidental "- Game"
-#      match in its summary.
-#   5. The grade-scope guard runs here too, for consistency across all
-#      three files, even though D34's feed has no grade-scoped closures
-#      today (verified) — costs nothing, protects against a future feed
-#      change. It has no "own band" to exempt at the district level, so
-#      own_band_match is hardcoded false: any grade-scoped closure found
-#      here fails OPEN into Tier 2 rather than flipping closed_today/
-#      closed_tomorrow.
-#
-# unique_id note: nothing else in packages/ uses a "district_*" prefix
-# (verified via grep -rn "unique_id" packages/), so there's no collision
-# risk here — unlike primary_school_calendar_sensors.yaml, which has to
-# dodge the still-live primary_school_closed / primary_school_closed_tomorrow
-# (deleted in Track C, not yet).
+# Day-match uses overlap (start <= day < end), not start-date equality,
+# since all-day events are end-exclusive — required for multi-day breaks.
 #
 
 template:

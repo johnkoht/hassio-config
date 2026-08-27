@@ -1,52 +1,9 @@
 # Primary School Calendar Sensors
 #
-# Trigger-based template block for calendar.lyon_school — Nino's school
-# events feed. This is its own file, not shared with district_calendar_
-# sensors.yaml or the parochial file, because calendar.get_events RAISES
-# when its target resolves to zero entities. One shared action sequence
-# across every calendar would mean a single bad reference aborts every
-# closure sensor in the house at once. Separate files fail independently.
-#
-# Supersedes packages/school/primary_school/primary_school_closed.yaml and
-# primary_school_closed_tomorrow.yaml, which stay live (Track A is
-# additive) until the shadow-run week is over and Track C deletes them.
-# Two bugs from those files are NOT carried over:
-#   - `hours: 1` fired once daily at 01:00, not hourly. This file uses
-#     `hours: /1`.
-#   - The `'District Closed' in event.summary` clause false-positived on
-#     bare office-closure markers (Dec 24/25/31, Jan 1). This file's
-#     closure test is only `'no school' in summary | lower`.
-#
-# Classification pipeline (same shape in district_calendar_sensors.yaml
-# and parochial_school_calendar_sensors.yaml):
-#   1. Fetch today 00:00:00 -> tomorrow 23:59:59 in one call.
-#   2. Dedup on (summary, start) — matters when a file combines multiple
-#      calendars (parochial file does); harmless no-op here with one feed.
-#   3. Day-match by OVERLAP, not start-date equality. All-day events are
-#      end-exclusive (event.end is the day AFTER the closure ends), so a
-#      multi-day break is correctly "closed" on every day in [start, end).
-#      Start-date equality would only catch day one of any break.
-#   4. Tier 1 (actionable) is tested before the Tier 3 (ignored/athletics)
-#      filter, so a Tier 1 event isn't eaten by a coincidental "- Game"
-#      match in its summary.
-#   5. The grade-scope guard runs here too, for consistency across all
-#      three files, even though Lyon's feed has no verified grade-scoped
-#      closures today — costs nothing, protects against a future feed
-#      change. Nino has no single "own band" callout the way Gianluca's
-#      JK does, so own_band_match is hardcoded false: any grade-scoped
-#      closure found here fails OPEN into Tier 2 rather than flipping
-#      closed_today/closed_tomorrow.
-#
-# unique_id / entity_id collision note — CRITICAL:
-# binary_sensor.primary_school_closed and binary_sensor.primary_school_
-# closed_tomorrow still exist (primary_school_closed.yaml, primary_school_
-# closed_tomorrow.yaml) and are not deleted until Track C. "Today"'s new
-# name/unique_id (primary_school_closed_today) doesn't collide with the
-# old "primary_school_closed" — different strings. "Tomorrow"'s new name
-# WOULD collide (old unique_id and object_id are both literally
-# "primary_school_closed_tomorrow"), so this file names it "Primary
-# School Closed Tomorrow V2" / unique_id primary_school_closed_tomorrow_v2
-# instead. Verified with grep -rn "unique_id" packages/ before committing.
+# Fetches calendar.lyon_school (Nino's events feed) and classifies
+# today/tomorrow events into closures (Tier 1) and informational (Tier 2).
+# Own file per calendar — calendar.get_events raises if the target
+# resolves to zero entities, so one bad calendar can't take down others.
 #
 
 template:
@@ -118,6 +75,8 @@ template:
       - name: Primary School Closed Today
         unique_id: primary_school_closed_today
         state: "{{ closed_today }}"
+      # Named "V2" to avoid a unique_id/entity_id collision with the
+      # still-live primary_school_closed_tomorrow.
       - name: Primary School Closed Tomorrow V2
         unique_id: primary_school_closed_tomorrow_v2
         state: "{{ closed_tomorrow }}"

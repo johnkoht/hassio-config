@@ -1,62 +1,16 @@
 # Gianluca School Day
 #
 # Maps Gianluca to the PAROCHIAL band (OLPH / Junior Kindergarten) and
-# derives his school-day / departure / pickup sensors from that band's
-# schedule (packages/school/schools/parochial_school_schedule.yaml).
+# derives his school-day, departure, and pickup sensors from that band's
+# schedule. If that ever changes, only the 3 parochial_school_* references
+# below need to change.
 #
-# --- BAND MAPPING ----------------------------------------------------
-# Gianluca is in the PAROCHIAL band. If that ever changes, change these
-# references (and only these) and nothing else in this file:
-#   binary_sensor.parochial_school_in_session_today       (school-day source)
-#   input_datetime.parochial_school_departure_time          (departure source)
-#   sensor.parochial_school_dismissal_time_today             (pickup source)
-# -----------------------------------------------------------------------
-#
-# input_number.gianluca_pickup_lead_minutes is the only lead-time input
-# here. Gianluca gets NO departure lead: his departure is the fixed
-# input_datetime.parochial_school_departure_time (07:45), not a
-# subtraction off the start time — drop-off at OLPH opens at 07:45, and
-# a fixed departure clears Cristina's 8:03/8:23 train regardless of
-# what the start-time input is set to. See the band file's header
-# comment for the full reasoning. Deliberately NO `initial` field on
-# the lead input — see school_year.yaml for why (it disables state
-# restoration across restarts, so any dashboard edit would silently
-# revert on the next restart). Real default for the 2026-2027 school
-# year: pickup lead 20 minutes.
-#
-# binary_sensor.gianluca_school_day MIRRORS binary_sensor.parochial_
-# school_in_session_today rather than re-checking event presence,
-# closure, or the override — that sensor already folds all of that in
-# (see the band file's header comment: has_event_today AND not closed
-# AND override off). Re-deriving any of that here would just be a
-# second, driftable copy of logic that already lives in the band file.
-# Don't "helpfully" add it back.
-#
-# sensor.gianluca_departure_time reads the fixed input_datetime
-# directly, so it uses the today_at('00:00') + timedelta(seconds=...)
-# construction (same as the band files), NOT as_datetime() — there's no
-# intermediate ISO-string sensor to re-parse for departure, only a raw
-# input_datetime.
-#
-# sensor.gianluca_pickup_time reads the band's own dismissal-today
-# sensor (already a timezone-aware ISO string) through
-# as_datetime(states(...)) — same approach as Nino's pickup sensor, and
-# safe for the same reason: it's re-parsing an ISO string HA itself
-# produced, not assembling one from parts. When the band sensor is
-# unavailable, states() on it returns "unavailable", and as_datetime()
-# has no default arg here so it would raise on that string — guarded by
-# substituting now() as an inert placeholder in that case, matching
-# Nino's pattern. The placeholder never reaches the dashboard because
-# `availability:` is false in exactly that situation.
-#
-# availability: false when the relevant source is unknown/unavailable/
-# empty (or, for departure, when the input_datetime's timestamp
-# attribute is unset), OR when binary_sensor.gianluca_school_day is not
-# on. The second half matters as much as the first — a departure
-# sensor that still resolves to a real timestamp on a non-school day is
-# exactly how a reminder fires on a holiday.
+# Gianluca gets no departure lead: departure is a fixed 07:45 clock time
+# (see parochial_school_schedule.yaml), not a subtraction off start time.
 #
 
+# No `initial:` on this — state restoration keeps runtime-edited values
+# across restarts (see school_year.yaml).
 input_number:
   gianluca_pickup_lead_minutes:
     name: Gianluca Pickup Lead Minutes
@@ -76,6 +30,8 @@ template:
         state: >-
           {{ is_state('binary_sensor.parochial_school_in_session_today', 'on') }}
 
+    # availability is false on non-school days too, so a stale timestamp
+    # can't fire a reminder on a day off.
     sensor:
       - name: Gianluca Departure Time
         unique_id: gianluca_departure_time

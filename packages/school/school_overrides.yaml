@@ -1,19 +1,10 @@
 # School Overrides
 #
-# Manual override booleans for the otherwise fully-derived school
-# system (calendars + school_year.yaml + the bell-schedule
-# input_datetimes). These two booleans are the ONLY manual controls
-# anywhere in that system — every other school entity derives from
-# calendar/date/time state, never from a human flipping a switch.
+# The only two manual controls in the otherwise fully-derived school
+# system. See school_overrides_reset.yaml for why these must reset
+# unconditionally every night.
 #
-# That's exactly why they matter so much to reset reliably: a manual
-# flag with no guaranteed reset is a flag that can get stuck on
-# forever and silently override every derived automation downstream.
-# See school_overrides_reset.yaml for the unconditional reset and the
-# specific bug in this house that reset is designed to prevent.
-#
-# No `initial` field on either boolean — see school_year.yaml for why
-# (it disables state restoration across restarts).
+# No `initial:` on either boolean — see school_year.yaml for why.
 #
 
 input_boolean:
