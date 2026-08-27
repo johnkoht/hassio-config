@@ -1,0 +1,96 @@
+# Primary School Calendar Sensors
+#
+# Fetches calendar.lyon_school (Nino's events feed) and classifies
+# today/tomorrow events into closures (Tier 1) and informational (Tier 2).
+# Own file per calendar — calendar.get_events raises if the target
+# resolves to zero entities, so one bad calendar can't take down others.
+#
+
+template:
+  - triggers:
+      - trigger: time_pattern
+        hours: /1
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - alias: "Fetch primary school events for today and tomorrow"
+        action: calendar.get_events
+        continue_on_error: true
+        target:
+          entity_id:
+            # TODO(track-b): move to !secret
+            - calendar.lyon_school
+        data:
+          start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
+          end_date_time: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d 23:59:59') }}"
+        response_variable: resp
+      - variables:
+          events: >-
+            {{ (resp | default({})).values() | map(attribute='events') | sum(start=[]) | list }}
+          today: "{{ now().strftime('%Y-%m-%d') }}"
+          tomorrow: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d') }}"
+          classified: >-
+            {%- set ns = namespace(seen=[], out=[]) -%}
+            {%- for event in events -%}
+              {%- set key = event.summary ~ '|' ~ event.start -%}
+              {%- if key not in ns.seen -%}
+                {%- set ns.seen = ns.seen + [key] -%}
+                {%- set summary_lower = event.summary | lower -%}
+                {%- set is_all_day = (event.start | length) == 10 -%}
+                {%- set start_date = event.start[:10] -%}
+                {%- set end_date = event.end[:10] -%}
+                {%- set applies_today = (start_date <= today and today < end_date) if is_all_day else (start_date <= today and today <= end_date) -%}
+                {%- set applies_tomorrow = (start_date <= tomorrow and tomorrow < end_date) if is_all_day else (start_date <= tomorrow and tomorrow <= end_date) -%}
+                {%- if applies_today or applies_tomorrow -%}
+                  {%- set is_grade_scoped = event.summary | regex_search('(grade[s]?\s*[K0-9])|(\d(st|nd|rd|th)\s+grade)|(kindergarten)|(preschool)|(\bEC\b)', ignorecase=True) -%}
+                  {%- set own_band_match = false -%}
+                  {%- set guard_reject = is_grade_scoped and not own_band_match -%}
+                  {%- set no_school = ('no school' in summary_lower) and not guard_reject -%}
+                  {%- set last_day_ok = ('last day of school' in summary_lower) and ('last day of school: staff' not in summary_lower) -%}
+                  {%- set other_tier1 = ('dismissal' in summary_lower) or ('picture day' in summary_lower) or ('picture retake' in summary_lower) or ('school pictures' in summary_lower) or ('vision and hearing' in summary_lower) or ('parent teacher conference' in summary_lower) or ('family teacher conference' in summary_lower) or ('first day of school' in summary_lower) or last_day_ok or ('school resumes' in summary_lower) or ('classes resume' in summary_lower) or ('no bus' in summary_lower) -%}
+                  {%- set is_tier1 = no_school or other_tier1 -%}
+                  {%- if is_tier1 -%}
+                    {%- set tier = 1 -%}
+                  {%- else -%}
+                    {%- set is_tier3 = ('board of education' in summary_lower) or ('school advisory board' in summary_lower) or ('parent club' in summary_lower) or ('boe ' in summary_lower) or ('curriculum night' in summary_lower) or ('partners in learning' in summary_lower) or ('preschool screening' in summary_lower) or ('last day of school: staff' in summary_lower) or ('dining for dollars' in summary_lower) or ('photo shoot' in summary_lower) or ('shopping event' in summary_lower) or ('food drive' in summary_lower) or ('annual benefit' in summary_lower) or ('pta meeting' in summary_lower) or (' - practice' in summary_lower) or (' - game' in summary_lower) -%}
+                    {%- set tier = 3 if is_tier3 else 2 -%}
+                  {%- endif -%}
+                  {%- if tier != 3 -%}
+                    {%- set ns.out = ns.out + [{'summary': event.summary, 'start': event.start, 'tier': tier, 'closure': no_school, 'applies_today': applies_today, 'applies_tomorrow': applies_tomorrow}] -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ ns.out }}
+          closed_today: "{{ classified | selectattr('closure') | selectattr('applies_today') | list | length > 0 }}"
+          closed_tomorrow: "{{ classified | selectattr('closure') | selectattr('applies_tomorrow') | list | length > 0 }}"
+          tier1_today: "{{ classified | selectattr('tier', 'eq', 1) | selectattr('applies_today') | map(attribute='summary') | list }}"
+          tier1_tomorrow: "{{ classified | selectattr('tier', 'eq', 1) | selectattr('applies_tomorrow') | map(attribute='summary') | list }}"
+          tier2_today: "{{ classified | selectattr('tier', 'eq', 2) | selectattr('applies_today') | map(attribute='summary') | list }}"
+          tier2_tomorrow: "{{ classified | selectattr('tier', 'eq', 2) | selectattr('applies_tomorrow') | map(attribute='summary') | list }}"
+
+    binary_sensor:
+      - name: Primary School Closed Today
+        unique_id: primary_school_closed_today
+        state: "{{ closed_today }}"
+      # Named "V2" to avoid a unique_id/entity_id collision with the
+      # still-live primary_school_closed_tomorrow.
+      - name: Primary School Closed Tomorrow V2
+        unique_id: primary_school_closed_tomorrow_v2
+        state: "{{ closed_tomorrow }}"
+
+    sensor:
+      - name: Primary School Events Today
+        unique_id: primary_school_events_today
+        state: "{{ now().isoformat() }}"
+        attributes:
+          actionable: "{{ tier1_today }}"
+          informational: "{{ tier2_today }}"
+      - name: Primary School Events Tomorrow
+        unique_id: primary_school_events_tomorrow
+        state: "{{ now().isoformat() }}"
+        attributes:
+          actionable: "{{ tier1_tomorrow }}"
+          informational: "{{ tier2_tomorrow }}"

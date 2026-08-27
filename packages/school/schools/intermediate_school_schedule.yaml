@@ -1,0 +1,95 @@
+# Intermediate School Bell Schedule (Grades 3-5)
+#
+# Bell-schedule inputs for the intermediate band plus derived
+# today/tomorrow session, late-start, and timestamp sensors. No
+# per-school calendar feed exists for this band, so closure comes
+# from binary_sensor.district_closed_today/_tomorrow.
+#
+# Timestamps use today_at('00:00') + timedelta(seconds=...) — DST-safe
+# wall-clock arithmetic. Never build via naive date+time string parsing;
+# device_class: timestamp raises on a naive datetime.
+#
+# Late start is derived from weekday, never latched into a boolean.
+#
+
+input_datetime:
+  intermediate_school_start_time:
+    name: Intermediate School Start Time
+    icon: mdi:clock-start
+    has_time: true
+    has_date: false
+  intermediate_school_late_start_time:
+    name: Intermediate School Late Start Time
+    icon: mdi:clock-alert
+    has_time: true
+    has_date: false
+  intermediate_school_dismissal_time:
+    name: Intermediate School Dismissal Time
+    icon: mdi:clock-end
+    has_time: true
+    has_date: false
+
+template:
+  - binary_sensor:
+      - name: Intermediate School Late Start Today
+        unique_id: intermediate_school_late_start_today
+        default_entity_id: binary_sensor.intermediate_school_late_start_today
+        icon: mdi:clock-alert-outline
+        state: >-
+          {{ now().weekday() == 2
+             and is_state('binary_sensor.intermediate_school_in_session_today', 'on') }}
+      - name: Intermediate School Late Start Tomorrow
+        unique_id: intermediate_school_late_start_tomorrow
+        default_entity_id: binary_sensor.intermediate_school_late_start_tomorrow
+        icon: mdi:clock-alert-outline
+        state: >-
+          {{ (now() + timedelta(days=1)).weekday() == 2
+             and is_state('binary_sensor.intermediate_school_in_session_tomorrow', 'on') }}
+      - name: Intermediate School In Session Today
+        unique_id: intermediate_school_in_session_today
+        default_entity_id: binary_sensor.intermediate_school_in_session_today
+        icon: mdi:school
+        state: >-
+          {{ is_state('binary_sensor.school_year_active', 'on')
+             and now().weekday() < 5
+             and not is_state('binary_sensor.district_closed_today', 'on')
+             and is_state('input_boolean.school_day_override_off', 'off') }}
+      - name: Intermediate School In Session Tomorrow
+        unique_id: intermediate_school_in_session_tomorrow
+        default_entity_id: binary_sensor.intermediate_school_in_session_tomorrow
+        icon: mdi:school
+        state: >-
+          {%- set tomorrow = now() + timedelta(days=1) -%}
+          {%- set tomorrow_str = tomorrow.strftime('%Y-%m-%d') -%}
+          {{ states('input_datetime.school_year_first_day') not in ['unknown', 'unavailable', 'none', '']
+             and states('input_datetime.school_year_last_day') not in ['unknown', 'unavailable', 'none', '']
+             and tomorrow_str >= states('input_datetime.school_year_first_day')
+             and tomorrow_str <= states('input_datetime.school_year_last_day')
+             and tomorrow.weekday() < 5
+             and not is_state('binary_sensor.district_closed_tomorrow', 'on') }}
+
+    sensor:
+      - name: Intermediate School Start Time Today
+        unique_id: intermediate_school_start_time_today
+        default_entity_id: sensor.intermediate_school_start_time_today
+        icon: mdi:clock-start
+        device_class: timestamp
+        availability: >-
+          {%- set late = is_state('binary_sensor.intermediate_school_late_start_today', 'on') -%}
+          {%- set input_id = 'input_datetime.intermediate_school_late_start_time' if late else 'input_datetime.intermediate_school_start_time' -%}
+          {{ is_state('binary_sensor.intermediate_school_in_session_today', 'on')
+             and state_attr(input_id, 'timestamp') is not none }}
+        state: >-
+          {%- set late = is_state('binary_sensor.intermediate_school_late_start_today', 'on') -%}
+          {%- set input_id = 'input_datetime.intermediate_school_late_start_time' if late else 'input_datetime.intermediate_school_start_time' -%}
+          {{ (today_at('00:00') + timedelta(seconds=state_attr(input_id, 'timestamp') | int(0))).isoformat() }}
+      - name: Intermediate School Dismissal Time Today
+        unique_id: intermediate_school_dismissal_time_today
+        default_entity_id: sensor.intermediate_school_dismissal_time_today
+        icon: mdi:clock-end
+        device_class: timestamp
+        availability: >-
+          {{ is_state('binary_sensor.intermediate_school_in_session_today', 'on')
+             and state_attr('input_datetime.intermediate_school_dismissal_time', 'timestamp') is not none }}
+        state: >-
+          {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.intermediate_school_dismissal_time', 'timestamp') | int(0))).isoformat() }}

@@ -72,6 +72,10 @@ views:
 
     # More
     - !include /config/dashboards/kohbo/more/people.yaml
+
+    # School
+    - !include /config/dashboards/kohbo/school/school.yaml
+
     - !include /config/dashboards/kohbo/energy/energy.yaml
 
     # Holidays

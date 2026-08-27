@@ -1,0 +1,42 @@
+# School Year Bounds
+#
+# First/last day of the school year, plus binary_sensor.school_year_active
+# (today within those bounds).
+#
+# No `initial:` field on the input_datetimes — HA only restores
+# input_datetime/input_boolean/input_number state across a restart when
+# that field is absent, so setting it would make dashboard edits silently
+# revert on the next restart. Set values via the dashboard or
+# input_datetime.set_datetime, not in this file.
+#
+# Scope: District 34 grade schools only. Glenbrook South (D225) is out
+# of scope — separate district, calendar, and closure feed.
+#
+
+input_datetime:
+  school_year_first_day:
+    name: School Year First Day
+    icon: mdi:calendar-start
+    has_date: true
+    has_time: false
+  school_year_last_day:
+    name: School Year Last Day
+    icon: mdi:calendar-end
+    has_date: true
+    has_time: false
+
+template:
+  - binary_sensor:
+      - name: "School Year Active"
+        unique_id: school_year_active
+        default_entity_id: binary_sensor.school_year_active
+        icon: mdi:school
+        availability: >-
+          {{ states('input_datetime.school_year_first_day') not in
+               ['unknown', 'unavailable', 'none', '']
+             and states('input_datetime.school_year_last_day') not in
+               ['unknown', 'unavailable', 'none', ''] }}
+        state: >-
+          {% set today = now().strftime('%Y-%m-%d') %}
+          {{ today >= states('input_datetime.school_year_first_day')
+             and today <= states('input_datetime.school_year_last_day') }}
