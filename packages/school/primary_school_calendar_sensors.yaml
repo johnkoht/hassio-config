@@ -1,6 +1,6 @@
 # Primary School Calendar Sensors
 #
-# Fetches calendar.lyon_school (Nino's events feed) and classifies
+# Fetches the primary school events feed and classifies
 # today/tomorrow events into closures (Tier 1) and informational (Tier 2).
 # Own file per calendar — calendar.get_events raises if the target
 # resolves to zero entities, so one bad calendar can't take down others.
@@ -20,8 +20,7 @@ template:
         continue_on_error: true
         target:
           entity_id:
-            # TODO(track-b): move to !secret
-            - calendar.lyon_school
+            - !secret primary_school_calendar
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d 23:59:59') }}"

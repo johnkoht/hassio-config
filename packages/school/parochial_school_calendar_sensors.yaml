@@ -1,14 +1,14 @@
 # Parochial School Calendar Sensors
 #
 # Fetches Gianluca's schedule calendar (calendar.gianluca_school) and
-# OLPH's events feed (calendar.olph_school) separately — calendar.get_events
+# the school events feed separately — calendar.get_events
 # raises if a target resolves to zero entities, so one bad feed can't take
 # down the other. Classifies events into closures (Tier 1), informational
 # (Tier 2), and noise (Tier 3), with day-match by overlap (not start-date
 # equality) since all-day events are end-exclusive.
 #
 # has_event_today/_tomorrow are built from Gianluca's own schedule calendar
-# only, not the OLPH closure feed — OLPH doesn't reliably mark breaks as
+# only, not the closure feed — it doesn't reliably mark breaks as
 # no-school, but his schedule calendar has a recurring event on exactly
 # the days he attends.
 #
@@ -27,27 +27,25 @@ template:
         continue_on_error: true
         target:
           entity_id:
-            # TODO(track-b): move to !secret
-            - calendar.gianluca_school
+            - !secret parochial_school_calendar
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d 23:59:59') }}"
         response_variable: resp_gianluca
-      - alias: "Fetch OLPH's school events calendar for today and tomorrow"
+      - alias: "Fetch the school events calendar for today and tomorrow"
         action: calendar.get_events
         continue_on_error: true
         target:
           entity_id:
-            # TODO(track-b): move to !secret
-            - calendar.olph_school
+            - !secret parochial_school_events_calendar
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d 23:59:59') }}"
-        response_variable: resp_olph
+        response_variable: resp_events
       - variables:
           events: >-
             {{ ((resp_gianluca | default({})).values() | map(attribute='events') | sum(start=[]) | list)
-               + ((resp_olph | default({})).values() | map(attribute='events') | sum(start=[]) | list) }}
+               + ((resp_events | default({})).values() | map(attribute='events') | sum(start=[]) | list) }}
           today: "{{ now().strftime('%Y-%m-%d') }}"
           tomorrow: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d') }}"
           classified: >-

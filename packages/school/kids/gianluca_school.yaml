@@ -1,6 +1,6 @@
 # Gianluca School Day
 #
-# Maps Gianluca to the PAROCHIAL band (OLPH / Junior Kindergarten) and
+# Maps Gianluca to the PAROCHIAL band (Junior Kindergarten) and
 # derives his school-day, departure, and pickup sensors from that band's
 # schedule. If that ever changes, only the 3 parochial_school_* references
 # below need to change.

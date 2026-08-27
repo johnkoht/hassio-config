@@ -1,10 +1,10 @@
 # Primary School Lunch Menu
 #
 # Nino's district replaced Choosi with HealthePro (menus.healthepro.com).
-# Fetches Lyon Elementary's "26-27 Lunch K-2" calendar for the current month
+# Fetches the primary school's lunch calendar for the current month
 # and exposes today's lunch items.
 #
-# org 3878 = district, site 18853 = Lyon Elementary, menu 136529 = 26-27 Lunch K-2
+# Org/site/menu identifiers live in secrets.yaml as lunch_menu_url.
 # The menu ID is per school year and per grade band — it will change next August.
 #
 # Notes on the payload:
@@ -19,8 +19,7 @@
 
 rest_command:
   fetch_primary_daily_menu:
-    url: >-
-      https://menus.healthepro.com/api/organizations/3878/menus/136529/year/{{ now().year }}/month/{{ now().month }}/date_overwrites
+    url: !secret lunch_menu_url
     method: GET
     headers:
       Accept: "application/json"
