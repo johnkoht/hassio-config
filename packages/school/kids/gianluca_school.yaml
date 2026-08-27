@@ -39,7 +39,7 @@ template:
         icon: mdi:clock-start
         device_class: timestamp
         availability: >-
-          {{ state_attr('input_datetime.parochial_school_departure_time', 'timestamp') is not none
+          {{ state_attr('input_datetime.parochial_school_departure_time', 'timestamp') | int(0) > 0
              and is_state('binary_sensor.gianluca_school_day', 'on') }}
         state: >-
           {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.parochial_school_departure_time', 'timestamp') | int(0))).isoformat() }}

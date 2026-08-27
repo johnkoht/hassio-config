@@ -86,7 +86,7 @@ template:
         device_class: timestamp
         availability: >-
           {{ is_state('binary_sensor.parochial_school_in_session_today', 'on')
-             and state_attr('input_datetime.parochial_school_start_time', 'timestamp') is not none }}
+             and state_attr('input_datetime.parochial_school_start_time', 'timestamp') | int(0) > 0 }}
         state: >-
           {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.parochial_school_start_time', 'timestamp') | int(0))).isoformat() }}
       - name: Junior Kindergarten Dismissal Time Today
@@ -109,7 +109,7 @@ template:
           {%- endif -%}
           {{ is_state('binary_sensor.parochial_school_in_session_today', 'on')
              and wd < 5
-             and state_attr(input_id, 'timestamp') is not none }}
+             and state_attr(input_id, 'timestamp') | int(0) > 0 }}
         state: >-
           {%- set wd = now().weekday() -%}
           {%- if wd == 0 -%}
