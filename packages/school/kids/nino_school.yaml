@@ -1,0 +1,63 @@
+# Nino School Day
+#
+# Maps Nino to the PRIMARY grade band (Lyon School) and derives his
+# school-day, departure, and pickup sensors from that band's schedule.
+# To move him up a band, change only the 3 primary_school_* references below.
+#
+
+# No `initial:` on these — state restoration keeps runtime-edited values
+# across restarts (see school_year.yaml).
+input_number:
+  nino_departure_lead_minutes:
+    name: Nino Departure Lead Minutes
+    icon: mdi:clock-fast
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: min
+    mode: box
+  nino_pickup_lead_minutes:
+    name: Nino Pickup Lead Minutes
+    icon: mdi:clock-fast
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: min
+    mode: box
+
+template:
+  - binary_sensor:
+      - name: Nino School Day
+        unique_id: nino_school_day
+        default_entity_id: binary_sensor.nino_school_day
+        icon: mdi:school
+        state: >-
+          {{ is_state('binary_sensor.primary_school_in_session_today', 'on') }}
+
+    # availability is false on non-school days too, so a stale timestamp
+    # can't fire a reminder on a day off.
+    sensor:
+      - name: Nino Departure Time
+        unique_id: nino_departure_time
+        default_entity_id: sensor.nino_departure_time
+        icon: mdi:clock-start
+        device_class: timestamp
+        availability: >-
+          {{ states('sensor.primary_school_start_time_today') not in ['unknown', 'unavailable', 'none', '']
+             and is_state('binary_sensor.nino_school_day', 'on') }}
+        state: >-
+          {%- set src = states('sensor.primary_school_start_time_today') -%}
+          {%- set base = as_datetime(src) if src not in ['unknown', 'unavailable', 'none', ''] else now() -%}
+          {{ (base - timedelta(minutes=states('input_number.nino_departure_lead_minutes') | int(0))).isoformat() }}
+      - name: Nino Pickup Time
+        unique_id: nino_pickup_time
+        default_entity_id: sensor.nino_pickup_time
+        icon: mdi:clock-end
+        device_class: timestamp
+        availability: >-
+          {{ states('sensor.primary_school_dismissal_time_today') not in ['unknown', 'unavailable', 'none', '']
+             and is_state('binary_sensor.nino_school_day', 'on') }}
+        state: >-
+          {%- set src = states('sensor.primary_school_dismissal_time_today') -%}
+          {%- set base = as_datetime(src) if src not in ['unknown', 'unavailable', 'none', ''] else now() -%}
+          {{ (base - timedelta(minutes=states('input_number.nino_pickup_lead_minutes') | int(0))).isoformat() }}

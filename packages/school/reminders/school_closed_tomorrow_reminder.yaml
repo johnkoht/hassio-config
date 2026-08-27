@@ -1,0 +1,68 @@
+# School Closed Tomorrow Reminder
+#
+# Evening heads-up at 19:30 when either kid has no school tomorrow.
+# Gated on binary_sensor.school_year_active so it stays silent over
+# summer/winter break.
+#
+
+automation:
+  - id: "school_closed_tomorrow_reminder"
+    alias: "School Closed Tomorrow Reminder"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "19:30:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.school_year_active
+        state: "on"
+      # At least one kid is off tomorrow
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ not is_state('binary_sensor.primary_school_in_session_tomorrow', 'on') }}"
+          - condition: template
+            value_template: "{{ not is_state('binary_sensor.parochial_school_in_session_tomorrow', 'on') }}"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "arcade"
+          priority: normal
+          speech_message: >-
+            {% set nino_off = not is_state('binary_sensor.primary_school_in_session_tomorrow', 'on') %}
+            {% set gl_off = not is_state('binary_sensor.parochial_school_in_session_tomorrow', 'on') %}
+
+            {# Both kids are off tomorrow #}
+            {% if nino_off and gl_off %}
+              {{
+                [
+                  "Heads up, neither Nino nor Gianluca have school tomorrow!",
+                  "Just a reminder that there's no school tomorrow for either of the kids.",
+                  "Good news, both Nino and Gianluca are off from school tomorrow!"
+                ] | random
+              }}
+
+            {# Only Nino is off #}
+            {% elif nino_off %}
+              {{
+                [
+                  "Heads up, Nino doesn't have school tomorrow!",
+                  "Just a reminder that Nino is off from school tomorrow.",
+                  "Quick note, no school for Nino tomorrow!"
+                ] | random
+              }}
+
+            {# Only Gianluca is off #}
+            {% elif gl_off %}
+              {{
+                [
+                  "Heads up, Gianluca doesn't have school tomorrow!",
+                  "Just a reminder that Gianluca is off from school tomorrow.",
+                  "Quick note, no school for Gianluca tomorrow!"
+                ] | random
+              }}
+            {% endif %}
