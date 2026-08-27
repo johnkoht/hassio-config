@@ -78,7 +78,7 @@ template:
           {%- set late = is_state('binary_sensor.intermediate_school_late_start_today', 'on') -%}
           {%- set input_id = 'input_datetime.intermediate_school_late_start_time' if late else 'input_datetime.intermediate_school_start_time' -%}
           {{ is_state('binary_sensor.intermediate_school_in_session_today', 'on')
-             and state_attr(input_id, 'timestamp') is not none }}
+             and state_attr(input_id, 'timestamp') | int(0) > 0 }}
         state: >-
           {%- set late = is_state('binary_sensor.intermediate_school_late_start_today', 'on') -%}
           {%- set input_id = 'input_datetime.intermediate_school_late_start_time' if late else 'input_datetime.intermediate_school_start_time' -%}
@@ -90,6 +90,6 @@ template:
         device_class: timestamp
         availability: >-
           {{ is_state('binary_sensor.intermediate_school_in_session_today', 'on')
-             and state_attr('input_datetime.intermediate_school_dismissal_time', 'timestamp') is not none }}
+             and state_attr('input_datetime.intermediate_school_dismissal_time', 'timestamp') | int(0) > 0 }}
         state: >-
           {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.intermediate_school_dismissal_time', 'timestamp') | int(0))).isoformat() }}
