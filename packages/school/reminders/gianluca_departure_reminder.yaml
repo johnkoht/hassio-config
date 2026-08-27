@@ -1,0 +1,46 @@
+# Gianluca Departure Reminder
+#
+# Per-kid departure reminder (TTS + push) timed off Gianluca's derived
+# departure sensor (a fixed 07:45 OLPH drop-off time, not a lead-minutes
+# subtraction — see parochial_school_schedule.yaml).
+#
+# `trigger: time` only fires if the sensor's timestamp is still in the
+# future when HA evaluates it — a reload after today's time has already
+# passed silently skips today.
+#
+
+automation:
+  - id: "gianluca_departure_reminder"
+    alias: "Gianluca Departure Reminder"
+    mode: single
+    triggers:
+      - trigger: time
+        at: sensor.gianluca_departure_time
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.gianluca_school_day
+        state: "on"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "school-bell"
+          speech_message: >-
+            {{
+              [
+                "Gianluca, it's time to head out for school!",
+                "Hey there, time to get Gianluca out the door for school!",
+                "Reminder: it's time to leave for Gianluca's school!"
+              ] | random
+            }}
+
+      - action: script.general_notification
+        data:
+          title: "Time to leave for Gianluca's school"
+          message: "It's time to head out — Gianluca needs to leave for school."
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "gianluca_departure_reminder"

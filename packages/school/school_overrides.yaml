@@ -1,0 +1,16 @@
+# School Overrides
+#
+# The only two manual controls in the otherwise fully-derived school
+# system. See school_overrides_reset.yaml for why these must reset
+# unconditionally every night.
+#
+# No `initial:` on either boolean — see school_year.yaml for why.
+#
+
+input_boolean:
+  school_day_override_off:
+    name: School Day Override Off
+    icon: mdi:school-off
+  early_dismissal_today:
+    name: Early Dismissal Today
+    icon: mdi:clock-fast

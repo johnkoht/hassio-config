@@ -58,7 +58,9 @@ Dead legacy config for a Google integration format HA no longer reads, and the r
 
 ### task-3: Delete dead files with no live consumer
 
-**Files** (delete): `packages/school/district/district_late_start_tomorrow.yaml`, `packages/school/district/district_late_start_wednesday_boolean.yaml`, `packages/school/primary_school/primary_school_events_today.yaml`, `packages/school/nino_school/automations/nino_school_day_reminder.yaml`, `packages/school/nino_school/automations/nino_school_reminder_notification.yaml`, `packages/school/nino_school/automations/nino_school_departure_reminder.yaml`, `packages/school/gianluca_school/automations/gianluca_school_reminder_notification.yaml`, `packages/school/nino_school/binary_sensors/nino_is_today_school_day.yaml`, `templates/speech/briefing.yaml`
+> **Amended mid-build.** `packages/school/district/district_late_start_wednesday_boolean.yaml` was originally listed here and is **wrong** — it defines `input_boolean.district_late_start_wednesday`, which has four live references across `primary_school_day_on.yaml:47`, `primary_school_day_off.yaml:34,39` and `school_day_reminder.yaml:39`. That last one reads it via `states.input_boolean.….state`, so deleting it would raise `UndefinedError` and kill the morning reminder during the shadow-run week. **Deferred to Track C**, where it is deleted alongside its consumers. Caught by the task-3 developer, who correctly refused to delete it.
+
+**Files** (delete): `packages/school/district/district_late_start_tomorrow.yaml`, `packages/school/primary_school/primary_school_events_today.yaml`, `packages/school/nino_school/automations/nino_school_day_reminder.yaml`, `packages/school/nino_school/automations/nino_school_reminder_notification.yaml`, `packages/school/nino_school/automations/nino_school_departure_reminder.yaml`, `packages/school/gianluca_school/automations/gianluca_school_reminder_notification.yaml`, `packages/school/nino_school/binary_sensors/nino_is_today_school_day.yaml`, `templates/speech/briefing.yaml`
 
 Also remove the legacy `Nino Pickup` automation (`id: '1646884521741'`) from `automations.yaml`.
 
@@ -203,7 +205,7 @@ Three independent trigger-based template blocks. **Separate files, not one share
 **Acceptance criteria**
 - Lines 114, 116, 150 read the new sensors and are converted from `states.<domain>.<object>.state` to **`is_state()`**, so a missing entity degrades instead of raising `UndefinedError` and killing the entire prompt render.
 - Line 248's phantom `calendar.ninos_school` target is removed from the `calendar_events_today` `get_events` call.
-- The `calendar_events_today` target list is **otherwise unchanged**, with a comment at line ~247 stating that `calendar.olph_school` and `calendar.gianluca_school` must not be added there because that aggregation is not tier-filtered — adding OLPH would pipe 710 events, 523 of them grade 5–8 volleyball practices, into a daily LLM prompt.
+- The `calendar_events_today` target list is **otherwise unchanged**, with a comment at line ~247 stating that `calendar.olph_school` must not be added there because that aggregation is not tier-filtered (`calendar.gianluca_school` is already in the list and stays — ~1 event/day) — adding OLPH would pipe 710 events, 523 of them grade 5–8 volleyball practices, into a daily LLM prompt.
 - The Tier 2 informational list is added to the prompt, **capped at 5 entries**.
 - After this task, `morning_update.yaml` references no entity that Track C will delete.
 

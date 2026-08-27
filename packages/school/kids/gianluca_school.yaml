@@ -1,0 +1,57 @@
+# Gianluca School Day
+#
+# Maps Gianluca to the PAROCHIAL band (OLPH / Junior Kindergarten) and
+# derives his school-day, departure, and pickup sensors from that band's
+# schedule. If that ever changes, only the 3 parochial_school_* references
+# below need to change.
+#
+# Gianluca gets no departure lead: departure is a fixed 07:45 clock time
+# (see parochial_school_schedule.yaml), not a subtraction off start time.
+#
+
+# No `initial:` on this — state restoration keeps runtime-edited values
+# across restarts (see school_year.yaml).
+input_number:
+  gianluca_pickup_lead_minutes:
+    name: Gianluca Pickup Lead Minutes
+    icon: mdi:clock-fast
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: min
+    mode: box
+
+template:
+  - binary_sensor:
+      - name: Gianluca School Day
+        unique_id: gianluca_school_day
+        default_entity_id: binary_sensor.gianluca_school_day
+        icon: mdi:school
+        state: >-
+          {{ is_state('binary_sensor.parochial_school_in_session_today', 'on') }}
+
+    # availability is false on non-school days too, so a stale timestamp
+    # can't fire a reminder on a day off.
+    sensor:
+      - name: Gianluca Departure Time
+        unique_id: gianluca_departure_time
+        default_entity_id: sensor.gianluca_departure_time
+        icon: mdi:clock-start
+        device_class: timestamp
+        availability: >-
+          {{ state_attr('input_datetime.parochial_school_departure_time', 'timestamp') is not none
+             and is_state('binary_sensor.gianluca_school_day', 'on') }}
+        state: >-
+          {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.parochial_school_departure_time', 'timestamp') | int(0))).isoformat() }}
+      - name: Gianluca Pickup Time
+        unique_id: gianluca_pickup_time
+        default_entity_id: sensor.gianluca_pickup_time
+        icon: mdi:clock-end
+        device_class: timestamp
+        availability: >-
+          {{ states('sensor.parochial_school_dismissal_time_today') not in ['unknown', 'unavailable', 'none', '']
+             and is_state('binary_sensor.gianluca_school_day', 'on') }}
+        state: >-
+          {%- set src = states('sensor.parochial_school_dismissal_time_today') -%}
+          {%- set base = as_datetime(src) if src not in ['unknown', 'unavailable', 'none', ''] else now() -%}
+          {{ (base - timedelta(minutes=states('input_number.gianluca_pickup_lead_minutes') | int(0))).isoformat() }}

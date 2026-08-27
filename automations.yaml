@@ -236,29 +236,6 @@
       speech_message: The weather isn't looking great so turning on the some interior
         lights.
   mode: single
-- id: '1646884521741'
-  alias: Nino Pickup
-  description: ''
-  trigger:
-  - platform: time
-    at: '12:30:00'
-  condition:
-  - condition: time
-    before: 00:00:00
-    weekday:
-    - tue
-    - wed
-    - thu
-  action:
-  - service: script.notify_engine
-    data:
-      title: Kohbo Reminder
-      message: Time to pick up Nino from school!
-      who: family
-  - service: script.speech_engine
-    data:
-      speech_message: Time to pick up Nino from school!
-  mode: single
 - id: '1647462190395'
   alias: Quiet Mode - Enable
   description: ''
