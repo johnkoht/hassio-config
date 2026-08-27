@@ -1,0 +1,115 @@
+
+  #
+  # School Settings Popup
+  #
+  type: custom:bubble-card
+  card_type: pop-up
+  hash: '#school_settings_popup'
+  close_by_clicking_outside: true
+  styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+  margin_top_mobile: calc(100vh - 825px)
+  margin_top_desktop: calc(100vh - 825px)
+
+  cards:
+    #
+    # Title
+    #
+    - type: custom:button-card
+      template: kohbo_popup_page_title
+      name: Settings
+
+    #
+    # Other Schools
+    #
+    - type: custom:button-card
+      template: section_title
+      name: Other Schools
+    - type: custom:button-card
+      name: Turn these on if a kid changes buildings and moves into that grade band.
+      template: kohbo_card_section_description
+    - type: entities
+      entities:
+        - entity: input_boolean.intermediate_school_enabled
+          name: Intermediate School (3-5)
+          icon: mdi:school
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+        - entity: input_boolean.middle_school_enabled
+          name: Middle School (6-8)
+          icon: mdi:school
+          card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+          secondary_info: last-changed
+          state_color: true
+
+    #
+    # Intermediate School (3-5) — hidden unless enabled above
+    #
+    - type: conditional
+      conditions:
+        - condition: state
+          entity_id: input_boolean.intermediate_school_enabled
+          state: 'on'
+      card:
+        type: vertical-stack
+        cards:
+          - type: custom:button-card
+            template: section_title
+            name: Intermediate School (3-5)
+          - type: entities
+            entities:
+              - entity: binary_sensor.intermediate_school_in_session_today
+                name: In Session Today
+                icon: mdi:school
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
+              - entity: binary_sensor.intermediate_school_late_start_today
+                name: Late Start Today
+                icon: mdi:clock-alert
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
+              - entity: input_datetime.intermediate_school_start_time
+                name: Start Time
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - entity: input_datetime.intermediate_school_late_start_time
+                name: Late Start Time (Wednesdays)
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - entity: input_datetime.intermediate_school_dismissal_time
+                name: Dismissal Time
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+    #
+    # Middle School (6-8) — hidden unless enabled above
+    #
+    - type: conditional
+      conditions:
+        - condition: state
+          entity_id: input_boolean.middle_school_enabled
+          state: 'on'
+      card:
+        type: vertical-stack
+        cards:
+          - type: custom:button-card
+            template: section_title
+            name: Middle School (6-8)
+          - type: entities
+            entities:
+              - entity: binary_sensor.middle_school_in_session_today
+                name: In Session Today
+                icon: mdi:school
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
+              - entity: binary_sensor.middle_school_late_start_today
+                name: Late Start Today
+                icon: mdi:clock-alert
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
+              - entity: input_datetime.middle_school_start_time
+                name: Start Time
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - entity: input_datetime.middle_school_late_start_time
+                name: Late Start Time (Wednesdays)
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - entity: input_datetime.middle_school_dismissal_time
+                name: Dismissal Time
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
