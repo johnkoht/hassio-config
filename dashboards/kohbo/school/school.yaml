@@ -29,8 +29,14 @@ cards:
           template: kohbo_header_page_title
           name: School
 
+        # Settings button
         - type: custom:button-card
-          template: empty_column
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#school_settings_popup'
 
   #===========================================================================
   # TODAY
@@ -125,16 +131,32 @@ cards:
             icon: mdi:school-off
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             state_color: true
-          - entity: binary_sensor.district_closed_today
-            name: Intermediate / Middle Closed Today
-            icon: mdi:school-off
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            state_color: true
           - entity: binary_sensor.parochial_school_closed_today
             name: Junior Kindergarten Closed Today
             icon: mdi:school-off
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             state_color: true
+
+      # Only relevant while a district band is enabled (see settings popup)
+      - type: conditional
+        conditions:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_boolean.intermediate_school_enabled
+                state: 'on'
+              - condition: state
+                entity_id: input_boolean.middle_school_enabled
+                state: 'on'
+        card:
+          type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: binary_sensor.district_closed_today
+              name: Intermediate / Middle Closed Today
+              icon: mdi:school-off
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
 
   # Manual overrides — the only two manual controls in the school system
   - type: custom:button-card
@@ -223,67 +245,8 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             state_color: true
 
-  # Intermediate (3-5)
-  - type: custom:stack-in-card
-    mode: vertical
-    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
-    cards:
-      - type: custom:button-card
-        template: kohbo_card_header
-        name: Intermediate (3-5)
-      - type: entities
-        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
-        entities:
-          - entity: input_datetime.intermediate_school_start_time
-            name: Start Time
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-          - entity: input_datetime.intermediate_school_late_start_time
-            name: Late Start Time (Wednesdays)
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-          - entity: input_datetime.intermediate_school_dismissal_time
-            name: Dismissal Time
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-          - entity: binary_sensor.intermediate_school_in_session_today
-            name: In Session Today
-            icon: mdi:school
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            state_color: true
-          - entity: binary_sensor.intermediate_school_late_start_today
-            name: Late Start Today
-            icon: mdi:clock-alert
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            state_color: true
-
-  # Middle (6-8)
-  - type: custom:stack-in-card
-    mode: vertical
-    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
-    cards:
-      - type: custom:button-card
-        template: kohbo_card_header
-        name: Middle (6-8)
-      - type: entities
-        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
-        entities:
-          - entity: input_datetime.middle_school_start_time
-            name: Start Time
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-          - entity: input_datetime.middle_school_late_start_time
-            name: Late Start Time (Wednesdays)
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-          - entity: input_datetime.middle_school_dismissal_time
-            name: Dismissal Time
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-          - entity: binary_sensor.middle_school_in_session_today
-            name: In Session Today
-            icon: mdi:school
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            state_color: true
-          - entity: binary_sensor.middle_school_late_start_today
-            name: Late Start Today
-            icon: mdi:clock-alert
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            state_color: true
+  # Intermediate and Middle schedules moved to the settings popup
+  # (#school_settings_popup) — hidden behind their enable toggles.
 
   #===========================================================================
   # JUNIOR KINDERGARTEN
@@ -399,49 +362,61 @@ cards:
           {% endfor -%}
           {%- endif -%}
 
-  # Intermediate / Middle (district feed)
-  - type: custom:stack-in-card
-    mode: vertical
-    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
-    cards:
-      - type: custom:button-card
-        template: kohbo_card_header
-        name: Intermediate / Middle (District)
-      - type: entities
-        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
-        entities:
-          - entity: binary_sensor.district_closed_today
-            name: Closed Today
-            icon: mdi:school-off
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            state_color: true
-          - entity: binary_sensor.district_closed_tomorrow
-            name: Closed Tomorrow
-            icon: mdi:school-off
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            state_color: true
-      - type: markdown
-        card_mod:
-          style: |
-            ha-card {
-              background: transparent;
-              box-shadow: none;
-              border: none;
-              padding: 0 16px 16px;
-            }
-        content: >-
-          {%- set actionable = state_attr('sensor.district_events_today', 'actionable') | default([], true) -%}
-          {%- set informational = state_attr('sensor.district_events_today', 'informational') | default([], true) -%}
-          {%- if (actionable | length) == 0 and (informational | length) == 0 -%}
-          No events today.
-          {%- else -%}
-          {%- for e in actionable %}
-          - ⚠️ {{ e }}
-          {% endfor -%}
-          {%- for e in informational %}
-          - {{ e }}
-          {% endfor -%}
-          {%- endif -%}
+  # Intermediate / Middle (district feed) — only relevant while a district
+  # band is enabled (see settings popup)
+  - type: conditional
+    conditions:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.intermediate_school_enabled
+            state: 'on'
+          - condition: state
+            entity_id: input_boolean.middle_school_enabled
+            state: 'on'
+    card:
+      type: custom:stack-in-card
+      mode: vertical
+      card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+      cards:
+        - type: custom:button-card
+          template: kohbo_card_header
+          name: Intermediate / Middle (District)
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: binary_sensor.district_closed_today
+              name: Closed Today
+              icon: mdi:school-off
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+            - entity: binary_sensor.district_closed_tomorrow
+              name: Closed Tomorrow
+              icon: mdi:school-off
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+        - type: markdown
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent;
+                box-shadow: none;
+                border: none;
+                padding: 0 16px 16px;
+              }
+          content: >-
+            {%- set actionable = state_attr('sensor.district_events_today', 'actionable') | default([], true) -%}
+            {%- set informational = state_attr('sensor.district_events_today', 'informational') | default([], true) -%}
+            {%- if (actionable | length) == 0 and (informational | length) == 0 -%}
+            No events today.
+            {%- else -%}
+            {%- for e in actionable %}
+            - ⚠️ {{ e }}
+            {% endfor -%}
+            {%- for e in informational %}
+            - {{ e }}
+            {% endfor -%}
+            {%- endif -%}
 
   # Junior Kindergarten
   - type: custom:stack-in-card
@@ -524,3 +499,8 @@ cards:
   # Navbar
   #
   - !include /config/dashboards/templates/includes/navbar.yaml
+
+  #
+  # School Settings
+  #
+  - !include /config/dashboards/kohbo/school/components/school_settings_popup.yaml

@@ -1,0 +1,16 @@
+# School Band Toggles
+#
+# Dashboard-visibility switches for grade bands not currently in use
+# (intermediate, middle). Off by default; the sensors stay live either
+# way — see school_settings_popup.yaml.
+#
+# No `initial:` on either — see school_year.yaml for why.
+#
+
+input_boolean:
+  intermediate_school_enabled:
+    name: Intermediate School Enabled
+    icon: mdi:school
+  middle_school_enabled:
+    name: Middle School Enabled
+    icon: mdi:school
