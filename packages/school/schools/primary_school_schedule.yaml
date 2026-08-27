@@ -1,6 +1,6 @@
 # Primary School Bell Schedule (Grades K-2)
 #
-# Bell-schedule inputs for the primary band (Lyon School) plus derived
+# Bell-schedule inputs for the primary band (the primary band) plus derived
 # today/tomorrow session, late-start, and timestamp sensors.
 #
 # Timestamps use today_at('00:00') + timedelta(seconds=...) — DST-safe

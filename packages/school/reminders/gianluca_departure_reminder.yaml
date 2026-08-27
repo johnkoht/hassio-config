@@ -1,7 +1,7 @@
 # Gianluca Departure Reminder
 #
 # Per-kid departure reminder (TTS + push) timed off Gianluca's derived
-# departure sensor (a fixed 07:45 OLPH drop-off time, not a lead-minutes
+# departure sensor (a fixed 07:45 drop-off time, not a lead-minutes
 # subtraction — see parochial_school_schedule.yaml).
 #
 # `trigger: time` only fires if the sensor's timestamp is still in the

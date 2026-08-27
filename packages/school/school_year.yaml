@@ -9,7 +9,7 @@
 # revert on the next restart. Set values via the dashboard or
 # input_datetime.set_datetime, not in this file.
 #
-# Scope: District 34 grade schools only. Glenbrook South (D225) is out
+# Scope: District 34 grade schools only. the high school (D225) is out
 # of scope — separate district, calendar, and closure feed.
 #
 

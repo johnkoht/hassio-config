@@ -1,12 +1,12 @@
 # Parochial School Bell Schedule (Junior Kindergarten)
 #
-# Bell-schedule inputs for Gianluca's building (OLPH) plus derived
+# Bell-schedule inputs for Gianluca's school plus derived
 # today/tomorrow session and timestamp sensors. Entity IDs use
 # `parochial_school_*` — JK is a grade he ages out of, the school isn't.
 #
 # in_session uses has_event_today/_tomorrow (Gianluca's own schedule
-# calendar) as the authority, not the OLPH closure feed — OLPH doesn't
-# reliably mark breaks as no-school. No late-start concept (OLPH has none).
+# calendar) as the authority, not the closure feed — it doesn't
+# reliably mark breaks as no-school. No late-start concept here.
 #
 # Departure is a fixed clock time, not start-minus-lead-minutes — a
 # runtime-edited start time must not drift Cristina's 07:45 drop-off.

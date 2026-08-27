@@ -1,6 +1,6 @@
 # Nino School Day
 #
-# Maps Nino to the PRIMARY grade band (Lyon School) and derives his
+# Maps Nino to the PRIMARY grade band (the primary band) and derives his
 # school-day, departure, and pickup sensors from that band's schedule.
 # To move him up a band, change only the 3 primary_school_* references below.
 #

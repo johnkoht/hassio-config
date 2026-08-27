@@ -24,8 +24,7 @@ template:
         continue_on_error: true
         target:
           entity_id:
-            # TODO(track-b): move to !secret
-            - calendar.district_34_events
+            - !secret district_calendar
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
           end_date_time: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d 23:59:59') }}"
