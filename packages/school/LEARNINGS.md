@@ -22,7 +22,7 @@ Non-obvious things discovered building the school layer (Aug 2026). Most apply r
 
 ## Design decisions
 
-**Schools are named by grade band** (`primary` K-2, `intermediate` 3-5, `middle` 6-8), not by building — a kid changing schools is a three-line mapping edit in `kids/<kid>_school.yaml`. Glenbrook South is out of scope: different district, different calendar.
+**Schools are named by grade band** (`primary` K-2, `intermediate` 3-5, `middle` 6-8), not by building — a kid changing schools is a three-line mapping edit in `kids/<kid>_school.yaml`. The high school is out of scope: different district, different calendar.
 
 **Gianluca is calendar-driven, not date-driven.** `school_year_active` gates only the D34 bands. His school day comes from a `Gianluca School` event existing on his calendar, because his school's feed doesn't reliably mark breaks — Christmas Eve, all of winter break, and eleven days of Easter Vacation carry no "no school" string. Absence of an event is the authority.
 
