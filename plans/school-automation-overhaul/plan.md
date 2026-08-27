@@ -1,7 +1,7 @@
 ---
 title: School Automation Overhaul
 slug: school-automation-overhaul
-status: in-progress
+status: shipped
 created: 2026-08-25
 has_pre_mortem: true
 has_review: true
@@ -9,6 +9,12 @@ has_prd: true
 ---
 
 # School Automation Overhaul
+
+## Status
+
+**Track A shipped 2026-08-26** — merged in PR #10, deployed, and cut over: the four legacy school automations were disabled the same evening, making the derived layer live.
+
+Outstanding: **Track B** (remaining live verification, shadow observation) and **Track C** (deleting the old layer — `primary_school_day_*`, `nino_school_day_*`, `gianluca_school_day_*`, `district_school_year_*`, the four superseded reminder files, `district_late_start_wednesday_boolean.yaml` and its four consumers, plus the `_v2`/`_tomorrow_v2` renames and the orphaned entity-registry rows).
 
 ## Problem
 
