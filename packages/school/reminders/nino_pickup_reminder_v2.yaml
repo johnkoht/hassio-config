@@ -38,6 +38,6 @@ automation:
         data:
           title: "Nino's school is ending soon"
           message: "School will be over soon, it's time to pick up Nino from school."
-          devices: "jk"
+          devices: "all"
           priority: "time-sensitive"
           tag: "nino_school_pickup"

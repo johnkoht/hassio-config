@@ -38,6 +38,6 @@ automation:
         data:
           title: "Gianluca's school is ending soon"
           message: "School will be over soon, it's time to pick up Gianluca from school."
-          devices: "cfalb"
+          devices: "all"
           priority: "time-sensitive"
           tag: "gianluca_school_pickup"

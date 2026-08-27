@@ -1,7 +1,7 @@
 # Nino Departure Reminder
 #
 # Per-kid departure reminder (TTS + push) timed off Nino's derived
-# departure sensor. Push routes to John (devices: jk) — he drives Nino.
+# departure sensor. Push goes to both parents.
 #
 # `trigger: time` only fires if the sensor's timestamp is still in the
 # future when HA evaluates it — a reload after today's time has already
@@ -40,6 +40,6 @@ automation:
         data:
           title: "Time to leave for Nino's school"
           message: "It's time to head out — Nino needs to leave for school."
-          devices: "jk"
+          devices: "all"
           priority: "time-sensitive"
           tag: "nino_departure_reminder"
