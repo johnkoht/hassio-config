@@ -77,7 +77,7 @@ template:
       # Named "V2" to avoid a unique_id/entity_id collision with the
       # still-live primary_school_closed_tomorrow.
       - name: Primary School Closed Tomorrow V2
-        unique_id: primary_school_closed_tomorrow_v2
+        unique_id: primary_school_closed_tomorrow
         state: "{{ closed_tomorrow }}"
 
     sensor:

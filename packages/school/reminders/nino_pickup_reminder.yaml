@@ -5,6 +5,10 @@
 # reminder in nino_school/automations/.
 #
 
+# The internal id: keeps its _v2 suffix on purpose. Automation entity_ids
+# derive from alias:, so automation.nino_pickup_reminder is already correct —
+# but id: is the registry unique_id, and changing it would orphan the old row
+# and force a _2 suffix on the entity. Not worth it for an invisible field.
 automation:
   - id: "nino_pickup_reminder_v2"
     alias: "Nino Pickup Reminder"
