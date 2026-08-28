@@ -334,7 +334,7 @@ cards:
             icon: mdi:school-off
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             state_color: true
-          - entity: binary_sensor.primary_school_closed_tomorrow_v2
+          - entity: binary_sensor.primary_school_closed_tomorrow
             name: Closed Tomorrow
             icon: mdi:school-off
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
