@@ -12,9 +12,26 @@ has_prd: true
 
 ## Status
 
-**Track A shipped 2026-08-26** — merged in PR #10, deployed, and cut over: the four legacy school automations were disabled the same evening, making the derived layer live.
+**Complete — 2026-08-28.** All three tracks shipped.
 
-Outstanding: **Track B** (remaining live verification, shadow observation) and **Track C** (deleting the old layer — `primary_school_day_*`, `nino_school_day_*`, `gianluca_school_day_*`, `district_school_year_*`, the four superseded reminder files, `district_late_start_wednesday_boolean.yaml` and its four consumers, plus the `_v2`/`_tomorrow_v2` renames and the orphaned entity-registry rows).
+- **Track A** (2026-08-26) — the derived layer built and merged via PR #10.
+- **Track B** (2026-08-26/27) — secrets migrated, OLPH calendar re-pointed at the populated Blackbaud feed, schedule values entered, live verification passed. Cut over the same evening: the four legacy automations were disabled, then found to be re-enabling themselves and were deleted outright.
+- **Track C** (2026-08-28) — legacy layer deleted (20 files), `_v2` suffixes dropped, ~38 orphaned registry rows and 10 stale helpers removed.
+
+Verified live on 2026-08-28: all 8 automations `on` with 5 having fired that day at correct times; every timestamp sensor arithmetically correct; all four closure sensors reading real calendar data; lunch menu and morning briefing intact. `check_config` shows the same 31 pre-existing errors as the pre-project baseline — zero introduced.
+
+### Still to watch
+
+- **Wed 2026-09-02** — first late-start morning under the new system. Nino's departure should shift to 09:25. The sensors were verified correct on 8/26 but no Wednesday has run since cutover.
+- **Tue 2026-09-01 evening** — `school_late_start_tomorrow_reminder`'s first-ever fire.
+- **Sun 2026-09-06 evening** — `school_closed_tomorrow_reminder`'s first fire, ahead of Labor Day.
+
+### Deliberately not done
+
+- Dashboard refinement — functional, but rough.
+- `input_boolean.late_start_cancelled`, per-band closure sensors for intermediate/middle, and the OLPH feed-2 `(EC)` day markers that would retire Gianluca's hand-maintained calendar. All priced in the Optional section and cut.
+- Renaming `school_year_first_day` / `school_year_last_day` to `district_school_year_*`. They gate only the D34 bands, but the generic name reads global.
+- Intermediate and middle time pickers are unset and their bands hidden behind toggles until a kid moves up.
 
 ## Problem
 
