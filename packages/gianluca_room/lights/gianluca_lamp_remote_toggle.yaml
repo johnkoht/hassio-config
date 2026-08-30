@@ -1,0 +1,36 @@
+# Gianluca's Lamp Remote - Toggle
+#
+# Top button toggles the lamp. The remote's own binding only ever sends
+# "off", so HA decides the direction instead of using light.toggle.
+#
+
+automation:
+  - id: "gianluca_lamp_remote_toggle"
+    alias: "Gianluca's Lamp Remote - Toggle"
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: zha_event
+        event_data:
+          device_ieee: "00:17:88:01:0d:89:28:9c"
+          cluster_id: 64512
+          command: "on_press"
+    actions:
+      - choose:
+          - alias: "Lamp is on, or the remote's binding just switched it off"
+            conditions:
+              - condition: template
+                value_template: >
+                  {% set lamp = states.light.gianluca_lamp %}
+                  {{ lamp.state == 'on'
+                     or ((now() - lamp.last_changed).total_seconds() < 2
+                         and lamp.context.parent_id is none
+                         and lamp.context.user_id is none) }}
+            sequence:
+              - action: light.turn_off
+                target:
+                  entity_id: light.gianluca_lamp
+        default:
+          - action: light.turn_on
+            target:
+              entity_id: light.gianluca_lamp
