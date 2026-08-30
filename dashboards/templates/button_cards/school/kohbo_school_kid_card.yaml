@@ -1,0 +1,130 @@
+#------------------------------------------------------------------------------
+# School Kid Card
+#
+# Big-avatar card for a kid on the school dashboard — mirrors kohbo_person_card
+# from the People page. Photo, status dot, name, school-day line, two-column
+# time footer.
+#
+# The footer flips from morning (Starts / Leave By) to afternoon
+# (Dismissal / Pickup) on that kid's own start time, via variables.started.
+# On a non-school day the footer renders empty.
+#
+# Usage:
+#   - type: custom:button-card
+#     template: kohbo_school_kid_card
+#     entity: person.nino
+#     name: Nino
+#     variables:
+#       school_day: binary_sensor.nino_school_day
+#       started: binary_sensor.nino_school_started
+#       start_time: sensor.primary_school_start_time_today
+#       departure_time: sensor.nino_departure_time
+#       dismissal_time: sensor.primary_school_dismissal_time_today
+#       pickup_time: sensor.nino_pickup_time
+#------------------------------------------------------------------------------
+kohbo_school_kid_card:
+  template: kohbo_device_entity
+  show_entity_picture: true
+  show_icon: false
+  show_state: true
+  size: 130px
+  tap_action:
+    action: none
+  styles:
+    grid:
+      - grid-template-areas: '"i i" "school_state school_state" "n n" "s s" "slot_left slot_right"'
+      - grid-template-columns: 1fr 1fr
+      - grid-template-rows: auto auto auto auto auto
+    card:
+      - position: relative
+      - height: 205px
+    name:
+      - justify-self: center
+      - margin-bottom: 3px
+    state:
+      - justify-self: center
+      - width: 100%
+      - margin-bottom: 14px
+      - text-align: center
+    img_cell:
+      - border-radius: 50%
+      - justify-self: center
+      - height: 60px
+      - width: 60px
+    custom_fields:
+      school_state:
+        - background-color: >
+            [[[
+              const sd = states[variables.school_day];
+              return (sd && sd.state === 'on')
+                ? "var(--success-color)"
+                : "var(--text-light-primary-color)";
+            ]]]
+        - border-radius: 50%
+        - margin: auto
+        - margin-top: -19px
+        - z-index: 1
+        - height: 10px
+        - width: 10px
+        - box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5)
+      slot_left:
+        - justify-self: start
+      slot_right:
+        - justify-self: end
+        - text-align: right
+  state_display: >
+    [[[
+      const sd = states[variables.school_day];
+      return (sd && sd.state === 'on') ? "School Today" : "No School";
+    ]]]
+  custom_fields:
+    school_state: >
+      [[[
+        return "";
+      ]]]
+    slot_left: >
+      [[[
+        const sd = states[variables.school_day];
+        if (!sd || sd.state !== 'on') return "";
+
+        const st = states[variables.started];
+        const afternoon = st && st.state === 'on';
+        const label = afternoon ? "Dismissal" : "Starts";
+        const src = states[afternoon ? variables.dismissal_time : variables.start_time];
+
+        let value = "—";
+        if (src && !['unknown', 'unavailable', 'none', ''].includes(src.state)) {
+          const d = new Date(src.state);
+          if (!isNaN(d)) {
+            value = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          }
+        }
+
+        return `
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--secondary-text-color);margin-bottom:3px;">${label}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--primary-text-color);line-height:16px;">${value}</div>
+        `;
+      ]]]
+    slot_right: >
+      [[[
+        const sd = states[variables.school_day];
+        if (!sd || sd.state !== 'on') return "";
+
+        const st = states[variables.started];
+        const afternoon = st && st.state === 'on';
+        const label = afternoon ? "Pickup" : "Leave By";
+        const src = states[afternoon ? variables.pickup_time : variables.departure_time];
+
+        let value = "—";
+        if (src && !['unknown', 'unavailable', 'none', ''].includes(src.state)) {
+          const d = new Date(src.state);
+          if (!isNaN(d)) {
+            value = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          }
+        }
+
+        return `
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--secondary-text-color);margin-bottom:3px;">${label}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--primary-text-color);line-height:16px;">${value}</div>
+        `;
+      ]]]

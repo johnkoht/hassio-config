@@ -1,0 +1,12 @@
+|
+  ha-card {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    row-gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    height: auto !important;
+    min-height: 45px;
+  }

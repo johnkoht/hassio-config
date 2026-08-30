@@ -1,0 +1,60 @@
+# School Dashboard Rollups
+#
+# Visibility flags for the school dashboard. Lovelace `type: conditional`
+# accepts only state/numeric_state conditions, so anything template-shaped
+# has to become a binary_sensor first.
+#
+
+template:
+  - binary_sensor:
+      - name: Nino School Events Today
+        unique_id: nino_school_events_today
+        default_entity_id: binary_sensor.nino_school_events_today
+        icon: mdi:calendar-star
+        state: >-
+          {{ (state_attr('sensor.primary_school_events_today', 'actionable') | default([], true) | count)
+             + (state_attr('sensor.primary_school_events_today', 'informational') | default([], true) | count) > 0 }}
+
+      - name: Gianluca School Events Today
+        unique_id: gianluca_school_events_today
+        default_entity_id: binary_sensor.gianluca_school_events_today
+        icon: mdi:calendar-star
+        state: >-
+          {{ (state_attr('sensor.parochial_school_events_today', 'actionable') | default([], true) | count)
+             + (state_attr('sensor.parochial_school_events_today', 'informational') | default([], true) | count) > 0 }}
+
+      # Gates the lunch card. The menu sensor's own state counts every recipe
+      # (sides, milk, condiments); the card renders entrees only, so gating on
+      # the state would show an empty card on a sides-only day.
+      - name: Nino Lunch Menu Today
+        unique_id: nino_lunch_menu_today
+        default_entity_id: binary_sensor.nino_lunch_menu_today
+        icon: mdi:silverware-fork-knife
+        state: >-
+          {{ is_state('binary_sensor.nino_school_day', 'on')
+             and (state_attr('sensor.primary_school_lunch_menu', 'entrees') | default([], true) | count) > 0 }}
+
+      # District feed only matters while a district band is switched on, so
+      # the band check lives here rather than in a nested card condition.
+      - name: District School Events Today
+        unique_id: district_school_events_today
+        default_entity_id: binary_sensor.district_school_events_today
+        icon: mdi:calendar-star
+        state: >-
+          {{ (is_state('input_boolean.intermediate_school_enabled', 'on')
+              or is_state('input_boolean.middle_school_enabled', 'on'))
+             and ((state_attr('sensor.district_events_today', 'actionable') | default([], true) | count)
+                  + (state_attr('sensor.district_events_today', 'informational') | default([], true) | count) > 0) }}
+
+      # Drives the evening "tomorrow" card — closures or a late start ahead.
+      - name: School Notable Tomorrow
+        unique_id: school_notable_tomorrow
+        default_entity_id: binary_sensor.school_notable_tomorrow
+        icon: mdi:calendar-arrow-right
+        state: >-
+          {{ is_state('binary_sensor.primary_school_closed_tomorrow', 'on')
+             or is_state('binary_sensor.parochial_school_closed_tomorrow', 'on')
+             or is_state('binary_sensor.primary_school_late_start_tomorrow', 'on')
+             or ((is_state('input_boolean.intermediate_school_enabled', 'on')
+                  or is_state('input_boolean.middle_school_enabled', 'on'))
+                 and is_state('binary_sensor.district_closed_tomorrow', 'on')) }}
