@@ -1,0 +1,28 @@
+# Gianluca's Lamp Remote - Brightness Cycle
+#
+# The bottom "hue" button (reported as off_press) cycles the lamp
+# through 100% -> 50% -> 5%, turning it on if it was off.
+#
+
+automation:
+  - id: "gianluca_lamp_remote_brightness_cycle"
+    alias: "Gianluca's Lamp Remote - Brightness Cycle"
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: zha_event
+        event_data:
+          device_ieee: "00:17:88:01:0d:89:28:9c"
+          cluster_id: 64512
+          command: "off_press"
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.gianluca_lamp
+        data:
+          brightness_pct: >
+            {% set lamp = states.light.gianluca_lamp %}
+            {% set b = lamp.attributes.brightness | int(0) if lamp.state == 'on' else 0 %}
+            {% if b >= 192 %}50
+            {% elif b >= 71 %}5
+            {% else %}100{% endif %}
