@@ -30,6 +30,18 @@ template:
         state: >-
           {{ is_state('binary_sensor.parochial_school_in_session_today', 'on') }}
 
+      # Flips the dashboard card from morning times to afternoon times.
+      # now() re-evaluates this every minute.
+      - name: Gianluca School Started
+        unique_id: gianluca_school_started
+        default_entity_id: binary_sensor.gianluca_school_started
+        icon: mdi:clock-check
+        state: >-
+          {%- set src = states('sensor.parochial_school_start_time_today') -%}
+          {{ is_state('binary_sensor.gianluca_school_day', 'on')
+             and src not in ['unknown', 'unavailable', 'none', '']
+             and now() >= as_datetime(src) }}
+
     # availability is false on non-school days too, so a stale timestamp
     # can't fire a reminder on a day off.
     sensor:

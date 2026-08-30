@@ -2,6 +2,10 @@
   #
   # School Settings Popup
   #
+  # Every schedule value in the school system. These input_datetime /
+  # input_number entities are declared in YAML (editable: false), so this
+  # popup is their only edit surface — none appear under Settings -> Helpers.
+  #
   type: custom:bubble-card
   card_type: pop-up
   hash: '#school_settings_popup'
@@ -19,6 +23,167 @@
       name: Settings
 
     #
+    # School Year
+    #
+    - type: custom:button-card
+      template: section_title
+      name: School Year
+    - type: custom:stack-in-card
+      mode: vertical
+      card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+      cards:
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: input_datetime.school_year_first_day
+              name: First Day
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.school_year_last_day
+              name: Last Day
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: binary_sensor.school_year_active
+              name: School Year Active
+              icon: mdi:calendar-range
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+
+    #
+    # Primary (K-2) — Nino
+    #
+    - type: custom:button-card
+      template: section_title
+      name: Primary (K-2)
+    - type: custom:stack-in-card
+      mode: vertical
+      card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+      cards:
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: input_datetime.primary_school_start_time
+              name: Start Time
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.primary_school_late_start_time
+              name: Late Start Time (Wednesdays)
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.primary_school_dismissal_time
+              name: Dismissal Time
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: binary_sensor.primary_school_in_session_today
+              name: In Session Today
+              icon: mdi:school-outline
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+            - entity: binary_sensor.primary_school_late_start_today
+              name: Late Start Today
+              icon: mdi:clock-alert-outline
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+            - entity: binary_sensor.primary_school_closed_today
+              name: Closed Today
+              icon: mdi:school-off-outline
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+            - entity: binary_sensor.primary_school_closed_tomorrow
+              name: Closed Tomorrow
+              icon: mdi:calendar-arrow-right
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+
+    #
+    # Junior Kindergarten — Gianluca
+    #
+    - type: custom:button-card
+      template: section_title
+      name: Junior Kindergarten
+    - type: custom:stack-in-card
+      mode: vertical
+      card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+      cards:
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: input_datetime.parochial_school_start_time
+              name: Start Time
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.parochial_school_departure_time
+              name: Departure Time
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+        - type: custom:button-card
+          template: kohbo_card_header
+          name: Dismissal By Day
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: input_datetime.parochial_school_monday_dismissal
+              name: Monday
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.parochial_school_tuesday_dismissal
+              name: Tuesday
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.parochial_school_wednesday_dismissal
+              name: Wednesday
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.parochial_school_thursday_dismissal
+              name: Thursday
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.parochial_school_friday_dismissal
+              name: Friday
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: binary_sensor.parochial_school_in_session_today
+              name: In Session Today
+              icon: mdi:school-outline
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+            - entity: binary_sensor.parochial_school_closed_today
+              name: Closed Today
+              icon: mdi:school-off-outline
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+            - entity: binary_sensor.parochial_school_closed_tomorrow
+              name: Closed Tomorrow
+              icon: mdi:calendar-arrow-right
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+
+    #
+    # Reminders
+    #
+    - type: custom:button-card
+      template: section_title
+      name: Reminders
+    - type: custom:button-card
+      name: Lead times are subtracted from the school's bell schedule to decide when to announce.
+      template: kohbo_card_section_description
+    - type: custom:stack-in-card
+      mode: vertical
+      card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+      cards:
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: input_datetime.school_breakfast_reminder_time
+              name: Breakfast Reminder
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_number.nino_departure_lead_minutes
+              name: Nino Departure Lead
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_number.nino_pickup_lead_minutes
+              name: Nino Pickup Lead
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_number.gianluca_pickup_lead_minutes
+              name: Gianluca Pickup Lead
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+    #
     # Other Schools
     #
     - type: custom:button-card
@@ -31,13 +196,13 @@
       entities:
         - entity: input_boolean.intermediate_school_enabled
           name: Intermediate School (3-5)
-          icon: mdi:school
+          icon: mdi:school-outline
           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
           secondary_info: last-changed
           state_color: true
         - entity: input_boolean.middle_school_enabled
           name: Middle School (6-8)
-          icon: mdi:school
+          icon: mdi:school-outline
           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
           secondary_info: last-changed
           state_color: true
@@ -60,12 +225,12 @@
             entities:
               - entity: binary_sensor.intermediate_school_in_session_today
                 name: In Session Today
-                icon: mdi:school
+                icon: mdi:school-outline
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 state_color: true
               - entity: binary_sensor.intermediate_school_late_start_today
                 name: Late Start Today
-                icon: mdi:clock-alert
+                icon: mdi:clock-alert-outline
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 state_color: true
               - entity: input_datetime.intermediate_school_start_time
@@ -96,12 +261,12 @@
             entities:
               - entity: binary_sensor.middle_school_in_session_today
                 name: In Session Today
-                icon: mdi:school
+                icon: mdi:school-outline
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 state_color: true
               - entity: binary_sensor.middle_school_late_start_today
                 name: Late Start Today
-                icon: mdi:clock-alert
+                icon: mdi:clock-alert-outline
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 state_color: true
               - entity: input_datetime.middle_school_start_time

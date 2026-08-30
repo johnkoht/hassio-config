@@ -1,0 +1,69 @@
+#------------------------------------------------------------------------------
+# School List Card
+#
+# Renders an attribute list (calendar events, lunch entrees) as styled rows.
+# Replaces the markdown cards that were the only four in the whole dashboard.
+#
+# variables.items must return an array of strings. variables.flagged (optional)
+# returns an array rendered above it with a warning marker.
+#
+# Usage:
+#   - type: custom:button-card
+#     template: kohbo_school_list_card
+#     name: Lunch
+#     variables:
+#       items: |
+#         [[[ return states['sensor.x'].attributes.entrees || []; ]]]
+#       empty_text: No menu today
+#------------------------------------------------------------------------------
+kohbo_school_list_card:
+  template: kohbo_default
+  show_icon: false
+  show_name: true
+  show_state: false
+  tap_action:
+    action: none
+  styles:
+    grid:
+      - grid-template-areas: '"n" "list"'
+      - grid-template-columns: 1fr
+    card:
+      - background: var(--darker-primary-color)
+      - box-shadow: none
+      - border: none
+      - padding: 16px 20px 20px
+    name:
+      - font-size: 12px
+      - font-weight: 600
+      - color: var(--secondary-text-color)
+      - text-transform: uppercase
+      - letter-spacing: 0.5px
+      - justify-self: start
+      - margin-bottom: 12px
+    custom_fields:
+      list:
+        - justify-self: start
+        - width: 100%
+  custom_fields:
+    list: >
+      [[[
+        const items = variables.items || [];
+        const flagged = variables.flagged || [];
+
+        const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[c]);
+
+        if (!items.length && !flagged.length) {
+          return `<div style="font-size:14px;color:var(--semi-dark-grey-color);text-align:left;">${esc(variables.empty_text || 'Nothing today')}</div>`;
+        }
+
+        const row = (text, warn) => `
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:14px;line-height:19px;text-align:left;color:${warn ? 'var(--primary-text-color)' : '#CED4DA'};font-weight:${warn ? '600' : '400'};">
+            <span style="color:${warn ? 'var(--warning-color)' : 'var(--semi-dark-grey-color)'};flex:0 0 auto;">${warn ? '&#9888;' : '&bull;'}</span>
+            <span>${esc(text)}</span>
+          </div>
+        `;
+
+        return flagged.map(i => row(i, true)).join('') + items.map(i => row(i, false)).join('');
+      ]]]
