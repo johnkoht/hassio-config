@@ -30,7 +30,11 @@ automation:
               - action: light.turn_off
                 target:
                   entity_id: light.gianluca_lamp
+                data:
+                  transition: 1
         default:
           - action: light.turn_on
             target:
               entity_id: light.gianluca_lamp
+            data:
+              transition: 1
