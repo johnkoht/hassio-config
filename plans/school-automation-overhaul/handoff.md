@@ -24,10 +24,18 @@ Sections in `school.yaml`, in order: **Today** (per-kid state, leave/start/picku
 
 ## Known rough edges
 
-- Never visually reviewed. It renders and the pickers work, but the layout was written blind against the conventions above.
-- The Calendar and Lunch sections were built last and got the least attention.
-- Event lists use native `type: markdown` cards rendering `state_attr(...)` lists — no decluttering template exists for list output. Fine, but inconsistent with the rest.
+The view was rebuilt as a status page (commit `b73ccb6`): status pills, a
+`kohbo_school_kid_card` per kid, then events / lunch / tomorrow — each hidden
+when it has nothing to say. Every schedule value moved into
+`#school_settings_popup`. The markdown cards are gone, replaced by
+`kohbo_school_list_card`.
+
+- Still not visually reviewed at the time of writing — written against the conventions above, not against a screenshot.
+- `kohbo_school_kid_card` adds a 5th grid row to the `kohbo_person_card` layout (a two-column time footer). Card height is pinned at 205px so both kids match when one has no school; may need tuning.
+- The morning→afternoon flip is driven by `binary_sensor.<kid>_school_started`, which uses `now()` for per-minute re-evaluation. Don't replace it with an in-card time comparison — button-card JS has no ticker.
 - Intermediate/middle time pickers are unset (`00:00:00`), so their `_start_time_today` / `_dismissal_time_today` sensors read `unavailable` by design. Not a bug — the `timestamp > 0` availability guard.
+
+Open items live in `backlog.md` — notably **Early Dismissal is wired to nothing**.
 
 ## Entities worth knowing
 
