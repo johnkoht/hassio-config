@@ -1,108 +1,127 @@
+# Garage Doors Close When Home
+#
+# Close the doors when the house turns in for the night, the garage is
+# switched Off, or nobody has been in it for a while. Time-based closing
+# lives in garage_doors_close_if_open_too_long.
+#
+
 automation:
   - id: "garage_doors_close_when_home"
     alias: "Garage doors close when home"
     initial_state: on
+    mode: single
     triggers:
-      # If any doors have been open for more than 30 mins
-      - trigger: state
-        entity_id: cover.garage_doors
-        to: "open"
-        for:
-          minutes: 30
-      # If the garage is set to Off
-      - trigger: state
-        entity_id: input_select.garage
-        to: "Off"
       # House goes into bedtime mode
       - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
+        id: "bedtime"
+      # If the garage is set to Off
+      - trigger: state
+        entity_id: input_select.garage
+        to: "Off"
+        id: "garage_off"
       # Garage is no longer occupied for 20 minutes
       - trigger: state
         entity_id: input_boolean.garage_occupied
         to: "off"
         for:
           minutes: 20
+        id: "unoccupied"
       # Hassio reloads/starts
       - trigger: event
         event_type: automation_reloaded
+        id: "startup"
       - trigger: homeassistant
         event: start
+        id: "startup"
     conditions:
+      # A door is actually open
+      - condition: state
+        entity_id: cover.garage_doors
+        state: "open"
+      # No BLE devices detected
+      - condition: state
+        entity_id: binary_sensor.garage_ble_occupancy
+        state: "off"
+      # Nothing moving in the garage
+      - condition: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        state: "off"
+      # The reason to close is still true
       - condition: or
         conditions:
-          # If the house is in bedtime mode, then we can skip
-          # some other conditions.
+          # Bedtime and Off close regardless of the override
           - condition: state
             entity_id: input_boolean.bedtime
             state: "on"
-          # Garage is NOT occupied for at least 20 mins and override is NOT active
+          - condition: state
+            entity_id: input_select.garage
+            state: "Off"
+          # Otherwise the garage has to have been empty, with no override
           - condition: and
             conditions:
-              # Garage is not occupied
               - condition: state
                 entity_id: input_boolean.garage_occupied
                 state: "off"
                 for:
                   minutes: 20
-              # Garage override is not active
               - condition: state
                 entity_id: input_boolean.garage_override
                 state: "off"
-      # Either garage door is open
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: cover.garage_door_1
-            state: "open"
-            for:
-              minutes: 30
-          - condition: state
-            entity_id: cover.garage_door_2
-            state: "open"
-            for:
-              minutes: 30
-          - condition: state
-            entity_id: cover.garage_door_3
-            state: "open"
-            for:
-              minutes: 30
-      # No BLE devices detected
-      - condition: state
-        entity_id: binary_sensor.garage_ble_occupancy
-        state: "off"
     actions:
-      # Call the announcement engine
-      - action: script.voice_announcement
-        data:
-          media_players: auto
-          sound: "police-whistle"
-          priority: high
-          speech_message: "{{ expand('cover.garage_doors')|selectattr('state', 'eq', 'open')|map(attribute='name')|list|join(', ') }} has been open for a while but nobody is around so I'm automaticallly closing."
-
-      # Notification for logging
-      - action: script.general_notification
-        data:
-          title: "Garage Doors Open!"
-          message: "{{ expand('cover.garage_doors')|selectattr('state', 'eq', 'open')|map(attribute='name')|list|join(', ') }} has been open for a while but nobody is around so I'm automaticallly closing."
-          devices: "all"
-          priority: "time-sensitive"
-          tag: "garage-doors-open-home"
-          url: /dashboard-kohbo/security-garage-doors
+      # Capture which doors are open before we start closing them
+      - variables:
+          open_doors: >-
+            {{ expand('cover.garage_door_1', 'cover.garage_door_2', 'cover.garage_door_3')
+               | selectattr('state', 'eq', 'open') | map(attribute='name') | list | join(', ') }}
 
       # Close the garage doors
       - action: cover.close_cover
-        data: {}
         target:
           entity_id: cover.garage_doors
 
       # Turn off the garage lights
       - action: light.turn_off
-        entity_id: light.garage_lights
+        target:
+          entity_id: light.garage_lights
 
-# 
+      # Bedtime and Off are both suppressed by the announcement engine,
+      # so only enqueue TTS for the unoccupied case.
+      - if:
+          - condition: trigger
+            id: "unoccupied"
+        then:
+          - action: script.voice_announcement
+            data:
+              media_players: auto
+              sound: "police-whistle"
+              priority: high
+              speech_message: "Nobody has been in the garage for a while, so I'm closing {{ open_doors }}."
+
+      # Notification for logging
+      - action: script.general_notification
+        data:
+          title: "Garage Doors Open!"
+          message: >-
+            {% if is_state('input_boolean.bedtime', 'on') %}
+              Bedtime started with {{ open_doors }} open, so I'm closing.
+            {% elif is_state('input_select.garage', 'Off') %}
+              The garage was switched off with {{ open_doors }} open, so I'm closing.
+            {% else %}
+              {{ open_doors }} was open with nobody around, so I'm closing.
+            {% endif %}
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "garage-doors-open-home"
+          url: /dashboard-kohbo/security-garage-doors
+
+#
 # Garage Doors Close When Home Timeout
-# 
+#
+# The fair-weather baseline. sensor.garage_doors_auto_close_timeout
+# shortens it when it's cold out.
+#
 input_number:
   garage_doors_close_when_home_timeout:
     name: Garage Doors Close When Home Timeout
@@ -112,4 +131,3 @@ input_number:
     unit_of_measurement: minutes
     icon: mdi:timer-outline
     mode: box
-    initial: 30
