@@ -33,19 +33,6 @@ climate_away:
       entity_id: input_text.temperature_mode_2nd_floor
   mode: single
   icon: mdi:hvac-off
-garage_close:
-  alias: Garage Close
-  sequence:
-  - device_id: d21fee64f0e0c227432ffa0d1fef645c
-    domain: cover
-    entity_id: cover.garage_door_1
-    type: close
-  - device_id: 74a88108496f76670a72647bd2ae7638
-    domain: cover
-    entity_id: cover.garage_door_2
-    type: close
-  mode: single
-  icon: mdi:garage-variant
 tvs_off:
   alias: TVs Off
   sequence:
