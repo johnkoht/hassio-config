@@ -1,0 +1,30 @@
+# Garage Doors Auto Close Timeout
+#
+# How long a garage door may stay open before it gets closed automatically.
+# Shrinks as it gets colder outside, and caps lower while the garage
+# radiant floor is actively heating so we're not heating the driveway.
+#
+
+template:
+  - sensor:
+      - name: "Garage Doors Auto Close Timeout"
+        unique_id: garage_doors_auto_close_timeout
+        default_entity_id: sensor.garage_doors_auto_close_timeout
+        unit_of_measurement: minutes
+        state_class: measurement
+        icon: mdi:timer-outline
+        state: >-
+          {% set outside = states('sensor.tempest_temperature') | float(70) %}
+          {% set base = states('input_number.garage_doors_close_when_home_timeout') | float(30) %}
+          {% set timeout = 5 if outside < 20 else
+                           10 if outside < 32 else
+                           20 if outside < 45 else
+                           base %}
+          {% if state_attr('climate.garage', 'hvac_action') == 'heating' %}
+            {{ [timeout, 15] | min | round(0) | int }}
+          {% else %}
+            {{ timeout | round(0) | int }}
+          {% endif %}
+        attributes:
+          outside_temperature: "{{ states('sensor.tempest_temperature') | float(70) }}"
+          garage_heating: "{{ state_attr('climate.garage', 'hvac_action') == 'heating' }}"

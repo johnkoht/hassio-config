@@ -1,0 +1,97 @@
+# Garage Doors Close If Open Too Long
+#
+# Close a door that's been open past sensor.garage_doors_auto_close_timeout,
+# which shortens as it gets colder out. State-based closing (bedtime, Off,
+# no occupancy) lives in garage_doors_close_when_home.
+#
+
+automation:
+  - id: "garage_doors_close_if_open_too_long"
+    alias: "Garage Doors - Close If Open Too Long"
+    initial_state: on
+    mode: single
+    triggers:
+      # A door has been open longer than the dynamic timeout.
+      # now() makes this re-evaluate every minute.
+      - trigger: template
+        value_template: >-
+          {% set timeout = states('sensor.garage_doors_auto_close_timeout') | float(30) %}
+          {{ expand('cover.garage_door_1', 'cover.garage_door_2', 'cover.garage_door_3')
+             | selectattr('state', 'eq', 'open')
+             | selectattr('last_changed', 'le', now() - timedelta(minutes=timeout))
+             | list | count > 0 }}
+      # Hassio reloads/starts. A template trigger only fires on a
+      # false -> true edge, so without this a door already open past
+      # the timeout at startup would never trigger.
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - alias: "A door is still open past the timeout"
+        condition: template
+        value_template: >-
+          {% set timeout = states('sensor.garage_doors_auto_close_timeout') | float(30) %}
+          {{ expand('cover.garage_door_1', 'cover.garage_door_2', 'cover.garage_door_3')
+             | selectattr('state', 'eq', 'open')
+             | selectattr('last_changed', 'le', now() - timedelta(minutes=timeout))
+             | list | count > 0 }}
+      # Bedtime closing belongs to garage_doors_close_when_home. Without
+      # this both automations fire together on a reload.
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # Garage override is not active
+      - condition: state
+        entity_id: input_boolean.garage_override
+        state: "off"
+      # No BLE devices detected
+      - condition: state
+        entity_id: binary_sensor.garage_ble_occupancy
+        state: "off"
+      # Nothing moving in the garage
+      - condition: state
+        entity_id: binary_sensor.garage_motion_sensor_occupancy
+        state: "off"
+    actions:
+      # Capture which doors are open before we start closing them
+      - variables:
+          open_doors: >-
+            {{ expand('cover.garage_door_1', 'cover.garage_door_2', 'cover.garage_door_3')
+               | selectattr('state', 'eq', 'open') | map(attribute='name') | list | join(', ') }}
+          timeout: "{{ states('sensor.garage_doors_auto_close_timeout') | int(30) }}"
+          is_cold: >-
+            {{ states('sensor.garage_doors_auto_close_timeout') | int(30)
+               < states('input_number.garage_doors_close_when_home_timeout') | int(30) }}
+
+      # Close the garage doors
+      - action: cover.close_cover
+        target:
+          entity_id: cover.garage_doors
+
+      # Turn off the garage lights
+      - action: light.turn_off
+        target:
+          entity_id: light.garage_lights
+
+      # Call the announcement engine
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "police-whistle"
+          priority: high
+          speech_message: >-
+            {{ open_doors }} has been open {{ timeout }} minutes with nobody around
+            {%- if is_cold %} and it's cold out{% endif %}, so I'm closing.
+
+      # Notification for logging
+      - action: script.general_notification
+        data:
+          title: "Garage Doors Open!"
+          message: >-
+            {{ open_doors }} was open past the {{ timeout }} minute timeout
+            ({{ states('sensor.tempest_temperature') | round(0) }}°F outside), so I'm closing.
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "garage-doors-open-too-long"
+          url: /dashboard-kohbo/security-garage-doors
