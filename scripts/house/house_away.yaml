@@ -22,9 +22,7 @@ sequence:
   # Turn off the TVs - handle via all_away_media_off.yaml
   # - service: script.tvs_off
   #   data: {}
-  # Close the garage
-  # - service: script.garage_close
-  #   data: {}
+  # Garage doors - handled via garage_doors_close_when_empty_house.yaml
   - service: script.general_notification
     data:
       title: Away Mode
