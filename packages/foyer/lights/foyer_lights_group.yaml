@@ -7,6 +7,7 @@ light:
       - light.foyer_chandelier
       - light.foyer_coat_closet
       - light.stairs_light
+      - light.stairs_sconces
 
   - platform: group
     name: Foyer Ceiling Lights Group
