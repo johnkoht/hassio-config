@@ -1,0 +1,46 @@
+# Gianluca Bedroom - Sync Switch To Bulbs
+#
+# The Inovelli is in Smart Bulb Mode, so its internal on/off state (endpoint 1,
+# `light.gianluca_ceiling_light_switch`) is decoupled from the load — writing to
+# it only moves the LED bar, it can never cut power to the bulbs.
+#
+# When anything in HA changes the bulbs (automation, dashboard, scene button),
+# nothing tells endpoint 1, so the LED bar goes stale. This mirrors the bulb
+# group onto the switch so the paddle always reads true.
+#
+# Pairs with gianluca_lights_sync_bulbs_from_switch.yaml (the other direction).
+#
+
+automation:
+  - id: "gianluca_lights_sync_switch_state"
+    alias: "Gianluca Bedroom lights - Sync switch to bulbs"
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: light.gianluca_bedroom_lights
+        to: "on"
+      - trigger: state
+        entity_id: light.gianluca_bedroom_lights
+        to: "off"
+    conditions:
+      # Only act when the two actually disagree — this is what stops the
+      # two sync automations from ping-ponging off each other.
+      - alias: "Switch does not already match the bulbs"
+        condition: template
+        value_template: >
+          {{ states('light.gianluca_ceiling_light_switch')
+             != states('light.gianluca_bedroom_lights') }}
+    actions:
+      - if:
+          - condition: state
+            entity_id: light.gianluca_bedroom_lights
+            state: "on"
+        then:
+          - action: light.turn_on
+            target:
+              entity_id: light.gianluca_ceiling_light_switch
+        else:
+          - action: light.turn_off
+            target:
+              entity_id: light.gianluca_ceiling_light_switch

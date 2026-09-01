@@ -1,0 +1,52 @@
+# Gianluca Bedroom - Sync Bulbs From Switch
+#
+# The paddle updates the switch's own state (endpoint 1) over unicast, so HA
+# always sees a paddle press. A Zigbee binding from endpoint 2 would fire as a
+# group-cast that HA does NOT see — so HA's picture of the bulbs can drift.
+#
+# Unlike the Office, the endpoint-2 group-bind for this switch has NOT been
+# created yet (that is John's Phase 2 UI work, still pending). Until it is,
+# this automation is the ONLY thing that makes the paddle drive the bulbs, so
+# it must command them, not merely refresh their state.
+#
+# Once the binding is created and confirmed healthy, the light.turn_on /
+# light.turn_off below can be downgraded to homeassistant.update_entity so HA
+# only re-reads the bulbs instead of commanding them (as noted in the Office
+# version of this file).
+#
+# Pairs with gianluca_lights_sync_switch_state.yaml (the other direction).
+#
+
+automation:
+  - id: "gianluca_lights_sync_bulbs_from_switch"
+    alias: "Gianluca Bedroom lights - Sync bulbs from switch"
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: light.gianluca_ceiling_light_switch
+        to: "on"
+      - trigger: state
+        entity_id: light.gianluca_ceiling_light_switch
+        to: "off"
+    conditions:
+      - alias: "Bulbs do not already match the switch"
+        condition: template
+        value_template: >
+          {{ states('light.gianluca_bedroom_lights')
+             != states('light.gianluca_ceiling_light_switch') }}
+    actions:
+      - if:
+          - condition: state
+            entity_id: light.gianluca_ceiling_light_switch
+            state: "on"
+        then:
+          # Bare turn_on with no brightness/color so Adaptive Lighting
+          # intercepts it and the bulbs come up at the right colour temp.
+          - action: light.turn_on
+            target:
+              entity_id: light.gianluca_bedroom_lights
+        else:
+          - action: light.turn_off
+            target:
+              entity_id: light.gianluca_bedroom_lights
