@@ -1,13 +1,28 @@
+# Gianluca's Room Occupied
+#
+# Mark Gianluca's room as occupied when the door closes, the ceiling
+# light switch paddle is pressed, or the bed becomes occupied.
+#
+# NOTE: The Inovelli VZM31-SN here is in Smart Bulb Mode, so
+# light.gianluca_ceiling_light_switch cannot control the load — but a paddle
+# press still updates the switch's own on/off state, making it a valid
+# presence signal for the trigger below. Only the state CHECK in the
+# condition block was retargeted to the bulb group, since that's the entity
+# that actually reflects whether the room's lights are lit.
+#
+
 automation:
   - id: "gianlucas_room_occupied"
     initial_state: on
     alias: "Gianluca's room occupied"
+    mode: single
     triggers:
       # Gianluca's door is closed
       - trigger: state
         entity_id: binary_sensor.gianlucas_door_sensor_status
         to: "off"
-      # Lights turned on
+      # Lights turned on (paddle press) — intentionally left on the switch;
+      # see header note.
       - trigger: state
         entity_id: light.gianluca_ceiling_light_switch
         to: "on"
@@ -26,9 +41,9 @@ automation:
           - condition: state
             entity_id: binary_sensor.gianlucas_door_sensor_status
             state: "off"
-          # Gianluca's lights are ON
+          # Gianluca's bulbs are ON
           - condition: state
-            entity_id: light.gianluca_ceiling_light_switch
+            entity_id: light.gianluca_bedroom_lights
             state: "on"
           # OR his bed is occupied
           - condition: state
@@ -36,4 +51,5 @@ automation:
             state: "on"
     actions:
       - action: input_boolean.turn_on
-        entity_id: input_boolean.gianlucas_room_occupied
+        target:
+          entity_id: input_boolean.gianlucas_room_occupied
