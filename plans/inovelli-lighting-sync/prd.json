@@ -1,0 +1,86 @@
+{
+  "name": "inovelli-lighting-sync",
+  "branchName": "feature/inovelli-lighting-sync",
+  "goal": "Port the verified-working Office lighting fix (2e72108) to Gianluca's bedroom: retarget every automation and dashboard reference from the Inovelli switch entity to the Hue bulb group, and add the two guarded state-sync automations. Repo changes only — ZHA rebinding and Adaptive Lighting reconfiguration are .storage/UI operations handled by John.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Audit: verify every referenced entity exists on the live system",
+      "description": "Grep the Gianluca package and its upper-floor dashboards for every light.*, binary_sensor.*, input_boolean.* and input_select.* reference, then verify each exists on the live system BEFORE any edit. The Office work found two nonexistent entities (light.office_all_lights_group, binary_sensor.office_aqara_motion) that had silently made automations no-ops for months; assume the same class of bug is present until proven otherwise. Verify read-only via: ssh -o BatchMode=yes hassio 'curl -s -H \"Authorization: Bearer $SUPERVISOR_TOKEN\" http://supervisor/core/api/states/<entity_id>'. Never mutate host state and never write to /config/.storage.",
+      "acceptanceCriteria": [
+        "A written inventory exists in plans/inovelli-lighting-sync/working-memory.md listing every entity referenced in the Gianluca package and its upper-floor dashboards, each marked EXISTS or MISSING against the live API.",
+        "Any MISSING entity is reported explicitly and corrected in the relevant task, or escalated if the correct entity is ambiguous.",
+        "light.gianluca_bedroom_lights is confirmed to be platform=group containing light.gianluca_ceiling_light_1..4, with no entity_id collision.",
+        "The absence of a Bayesian presence sensor in Gianluca's room is confirmed against the files, not assumed."
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Retarget Gianluca automations from the switch to the bulbs",
+      "description": "Replace light.gianluca_ceiling_light_switch with light.gianluca_bedroom_lights in every ACTION and CONDITION across packages/gianluca_room/lights/gianluca_lights_off.yaml (line 36), packages/gianluca_room/modes/gianlucas_room_occupied.yaml (lines 12, 31) and packages/gianluca_room/modes/gianlucas_room_not_occupied.yaml (lines 14, 38). In Smart Bulb Mode the switch entity cannot control the load, so these calls are currently no-ops. IMPORTANT judgment call: a paddle press is still a legitimate presence signal, so a TRIGGER pointing at the switch may be correct as-is — the Office kept the equivalent trigger (office_occupied.yaml:31). Evaluate each hit as trigger vs action/condition rather than blind-replacing. Turn-on calls must be bare light.turn_on with no brightness/color so Adaptive Lighting can intercept.",
+      "acceptanceCriteria": [
+        "No action or condition in the Gianluca package targets light.gianluca_ceiling_light_switch for load control.",
+        "Any retained switch reference is a trigger and carries a comment explaining why it is intentional.",
+        "All three files use modern syntax: triggers:/conditions:/actions:, 'action:' not 'service:', and target: blocks rather than root-level entity_id:.",
+        "Every turn-on action is a bare light.turn_on with no brightness or color data.",
+        "Each file retains or gains a header comment block per CLAUDE.md."
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Add the two guarded state-sync automations",
+      "description": "Create packages/gianluca_room/lights/gianluca_lights_sync_switch_state.yaml (bulbs -> switch LED bar) and packages/gianluca_room/lights/gianluca_lights_sync_bulbs_from_switch.yaml (paddle -> bulbs). Read the Office originals first (packages/office/lights/office_lights_sync_switch_state.yaml and office_lights_sync_bulbs_from_switch.yaml) and port them with Gianluca's entities substituted. These are already deployed and confirmed working in production — port the pattern, do not reinvent it. Mirroring onto the switch is safe because Smart Bulb Mode decouples the switch's internal state from the load.",
+      "acceptanceCriteria": [
+        "Both automations use mode: single and max_exceeded: silent.",
+        "Both carry a template condition that fires only when the two states actually differ — this guard prevents the pair from ping-ponging, and its absence is a build failure.",
+        "Automation IDs match their filenames per repo convention: gianluca_lights_sync_switch_state and gianluca_lights_sync_bulbs_from_switch.",
+        "Each file opens with a header comment explaining the Smart Bulb Mode decoupling and naming its counterpart file.",
+        "Modern HA syntax throughout."
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Fix dashboard entity references",
+      "description": "Point the room cards, tile and light popup consistently at light.gianluca_bedroom_lights across dashboards/kohbo/rooms/upper_floor/gianlucas_bedroom.yaml (lines 53, 148, 151), dashboards/kohbo/rooms/upper_floor/partials/gianlucas_bedroom_card.yaml (line 18) and dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml (line 100). Line 148 currently uses light.gianluca_bedroom_lights for light_entity while line 151 uses light.gianluca_ceiling_lights (the ZHA group) for entity_id — resolve that split in favour of the helper group, because Adaptive Lighting can expand an HA group but not a ZHA group entity.",
+      "acceptanceCriteria": [
+        "No dashboard file under dashboards/ references light.gianluca_ceiling_light_switch for control.",
+        "The light popup uses the same entity for both light_entity and entity_id.",
+        "A comment records why light.gianluca_ceiling_lights (the ZHA group) is deliberately not used by the dashboard."
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Validate and commit",
+      "description": "Validate every changed file before handing off. There is no 'ha core check' available from the dev machine, so parse locally with HA's custom tags stubbed via a yaml.SafeLoader subclass registering no-op constructors for !include, !include_dir_named, !include_dir_list, !include_dir_merge_list, !include_dir_merge_named, !secret and !env_var. Then re-verify every entity_id in the final diff against the live API. Produce one commit; never push and never deploy — John does both. Never run deploy.sh --check (it destroys the gitignored secrets.yaml); never restart Home Assistant.",
+      "acceptanceCriteria": [
+        "Every changed YAML file parses without error under the stubbed loader.",
+        "Every entity_id in every changed file is re-verified to EXIST on the live system, run against the final diff rather than the starting state.",
+        "git status shows only intended files changed — no stray edits to packages/office/** or unrelated packages.",
+        "A single commit is created with a descriptive message following the repo convention (see 2e72108), documenting root causes rather than just listing file changes.",
+        "Nothing is pushed and nothing is deployed.",
+        "The completion report surfaces two items rather than actioning them: (a) Gianluca's room has no 'lights on' automation, only a lights-off; (b) renaming switch.inovelli_vzm31_sn_* to switch.gianluca_ceiling_light_switch_* is available as optional polish and is John's .storage click."
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-09-01T00:00:00Z",
+    "totalTasks": 5,
+    "completedTasks": 0,
+    "failedTasks": 0
+  }
+}
