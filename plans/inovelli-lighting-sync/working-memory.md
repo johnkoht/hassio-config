@@ -24,6 +24,10 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [Task 1 — LOCATION CORRECTED, see callout in Entity Inventory] **Found the Gianluca equivalent bug**: `sensor.gianluca_room_people_list` does not exist. Referenced at `packages/house/areas/upper_floor/gianlucas_bedroom.yaml:49-50`, NOT at the dashboard line task-1 reported. The live entity (backed by the same template in `packages/gianluca_room/occupancy/gianluca_room_ble_presence.yaml`) is actually `sensor.gianlucas_room_people_list` (note the extra "s" — matches the `<room>_people_list` naming convention used by every other room, e.g. `sensor.ninos_room_people_list`, `sensor.office_people_list`). The YAML's `unique_id: gianluca_room_people_list` never matched the entity_id HA actually assigned. This is a dashboard fix, not a package fix — flag it for task-4 even though the PRD's line list for that file (`gianlucas_bedroom.yaml:53,148,151`) doesn't mention line 27.
 - [Task 1] Confirmed no `sensor.<room>_people_list`-style naming bugs elsewhere in the file — grepped the full live entity dump for every other Gianluca reference and found zero additional drift. Treat this as an isolated one-off, not a systemic naming pattern to re-audit elsewhere in this build.
 
+- [Orchestrator] **ADJUDICATION of Task 2's flagged tension — retargeting the two conditions is CORRECT, keep it.** The Office removed its lights-on presence observation because it created a feedback loop (auto-on turns lights on → presence → lights stay on). **That concern does NOT transfer here**: Gianluca's room has *no* lights-on automation at all, so `light.gianluca_bedroom_lights` can only become `on` through human action (paddle or dashboard). It is therefore a genuine presence signal, and the bulb group is the entity that truthfully reflects whether the room is lit. Triggers stay on the switch (a paddle press is the human signal itself); conditions read the bulbs (the actual room state). No change needed.
+
+- [Orchestrator] **PRE-EXISTING DEADLOCK found while adjudicating — flagged for John, deliberately NOT fixed.** `gianlucas_room_not_occupied` requires `light.gianluca_bedroom_lights == "off"` in its AND block, while `gianluca_bedroom_lights_off` requires `input_boolean.gianlucas_room_occupied == "off"` before it will turn the bulbs off. That is circular: **if Gianluca leaves with the lights on, the room can never become unoccupied, so the lights never turn off.** This is the identical symptom John reported for the Office ("lights don't turn off when I leave"). It predates this build (the same condition previously read the switch) and is NOT introduced by task-2. The only escape today is turning the lights off by paddle on the way out. Fixing it means changing occupancy logic — a behaviour change that needs John's call, not a silent in-build edit. Out of scope for this PRD.
+
 ## Shared Utilities Created
 
 *(Add: [Task N] functionName() in path/to/file)*
@@ -295,3 +299,38 @@ Re-verified `light.gianluca_bedroom_lights` live before relying on it: state `of
 Net: 1 action + 2 conditions retargeted to `light.gianluca_bedroom_lights`; 2 triggers kept on `light.gianluca_ceiling_light_switch` with explanatory comments. All three files converted to modern syntax (`triggers:`/`conditions:`/`actions:`, `action:` not `service:`, `target:` blocks, `mode: single` added) and each gained a header comment block (the two `modes/` files previously had none). No turn-on actions exist in these three files (only `light.turn_off` in `gianluca_lights_off.yaml`, and `input_boolean.turn_on`/`turn_off` in the mode files), so the "bare `light.turn_on`" AC has nothing to apply to here — noted so a reviewer doesn't go looking for a turn-on action that was never present.
 
 NOTHING_NOVEL beyond the above — no new shared utilities, no additional missing entities found.
+
+## Task 3 — Sync automations added, ping-pong trace
+
+Ported `office_lights_sync_switch_state.yaml` and `office_lights_sync_bulbs_from_switch.yaml` verbatim, substituting `light.gianluca_ceiling_light_switch` for `light.office_light_switch` and `light.gianluca_bedroom_lights` for `light.office_ceiling_bulbs`. No structural changes — same `mode: single`, `max_exceeded: silent`, template-diff guard, and bare `light.turn_on`/`light.turn_off` actions as the Office originals.
+
+One deliberate divergence from the Office header, called out explicitly per the task brief: `gianluca_lights_sync_bulbs_from_switch.yaml`'s header does NOT claim a Zigbee binding exists (the Office header cites recorder-measured paddle-to-bulb lag as evidence the binding is unreliable). Gianluca's endpoint-2 group-bind has not been created at all yet (John's pending Phase 2 UI work), so the header instead says this automation is currently the *only* thing that makes the paddle drive the bulbs, and must command them, not merely refresh their state. The "downgrade to `homeassistant.update_entity` once the binding is healthy" note is preserved, adapted to reference "once the binding is created and confirmed healthy" rather than "if/when ... confirmed healthy" (since today there is no binding to reference).
+
+Both `light.gianluca_ceiling_light_switch` and `light.gianluca_bedroom_lights` re-verified live immediately before writing (2026-09-01, supervisor REST API): both return `state: "off"`, no errors — matches task-1's inventory, unchanged.
+
+**Hand-traced ping-pong analysis:**
+
+1. Something in HA (dashboard, automation, scene) calls `light.turn_on`/`turn_off` on `light.gianluca_bedroom_lights`. Bulb group changes to (say) `on`.
+2. `gianluca_lights_sync_switch_state`'s trigger fires (bulb group `to: "on"`). Its condition checks `states('light.gianluca_ceiling_light_switch') != states('light.gianluca_bedroom_lights')` — true (switch is still `off`), so it proceeds and turns the switch `on`.
+3. The switch's state change (`off` → `on`) fires `gianluca_lights_sync_bulbs_from_switch`'s trigger. Its condition checks `states('light.gianluca_bedroom_lights') != states('light.gianluca_ceiling_light_switch')` — **both are now `on`, so the condition evaluates to `false` and the automation's actions never run.** This is the loop-breaker: by the time B's trigger fires, A has already made the two states equal, so B's guard immediately stops the chain.
+4. Symmetric case (paddle press): switch changes first, `gianluca_lights_sync_bulbs_from_switch` fires and equalizes the bulbs, then `gianluca_lights_sync_switch_state`'s trigger fires but its guard now sees equal states and stops.
+
+Net: each direction fires exactly once per real change; the reverse automation's own guard is what stops the reflected trigger from doing anything, because by the time it evaluates, the states already match. This is identical to the Office's proven trace — no divergence introduced.
+
+NOTHING_NOVEL beyond the header adaptation noted above.
+
+## Task 4 — Dashboard entity fix + package typo
+
+Re-verified both target entities live immediately before editing (2026-09-01, supervisor REST API): `light.gianluca_bedroom_lights` → `state: "off"`, `entity_id` attribute lists exactly the 4 ceiling lights (unchanged from task-1). `sensor.gianlucas_room_people_list` → `state: "0"`, `attributes.people: []` (unchanged from the Orchestrator correction).
+
+Part A (dashboards), all three known-hit files matched the PRD's line numbers exactly — no drift from tasks 2/3 since these files are outside their edit scope:
+- `dashboards/kohbo/rooms/upper_floor/gianlucas_bedroom.yaml:53` — tile `entity:` retargeted from `light.gianluca_ceiling_light_switch` to `light.gianluca_bedroom_lights`.
+- Same file, light popup block (`light_entity`/`entity_id`) — both now point at `light.gianluca_bedroom_lights`; added the Office's exact comment wording ("NOTE: light.gianluca_ceiling_lights is the ZHA group (Zigbee-level, used by the binding). Target the HA group so Adaptive Lighting can expand it.") copied verbatim in structure from `office.yaml:272-273`, substituting entity names.
+- `dashboards/kohbo/rooms/upper_floor/partials/gianlucas_bedroom_card.yaml:18` and `dashboards/kohbo/rooms/partials/upper_floor_room_cards.yaml:100` — both `entity:` retargeted the same way.
+- Confirmed via grep: zero remaining `gianluca_ceiling_light_switch` references anywhere under `dashboards/`; the only remaining `gianluca_ceiling_lights` (ZHA) mention in dashboards is inside the new explanatory comment, not a live entity reference.
+
+Part B (package typo) — confirmed via full path per the Orchestrator's correction: `packages/house/areas/upper_floor/gianlucas_bedroom.yaml:49-50` (NOT the dashboard file, which already had the correct entity at its own line 27 and was left untouched there). Both `state_attr(...)` and `states(...)` calls retargeted from `sensor.gianluca_room_people_list` to `sensor.gianlucas_room_people_list`.
+
+Did NOT touch `dining_room.yaml` or `upstairs_hallway.yaml` (explicitly out of scope — those `people_list` sensors are a missing-feature gap, not a typo, per the Orchestrator's callout).
+
+NOTHING_NOVEL — Task 4.

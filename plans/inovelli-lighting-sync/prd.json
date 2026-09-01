@@ -13,9 +13,10 @@
         "light.gianluca_bedroom_lights is confirmed to be platform=group containing light.gianluca_ceiling_light_1..4, with no entity_id collision.",
         "The absence of a Bayesian presence sensor in Gianluca's room is confirmed against the files, not assumed."
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "a871c45"
     },
     {
       "id": "task-2",
@@ -28,9 +29,10 @@
         "Every turn-on action is a bare light.turn_on with no brightness or color data.",
         "Each file retains or gains a header comment block per CLAUDE.md."
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "131a54a"
     },
     {
       "id": "task-3",
@@ -43,9 +45,10 @@
         "Each file opens with a header comment explaining the Smart Bulb Mode decoupling and naming its counterpart file.",
         "Modern HA syntax throughout."
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "45b2ea7"
     },
     {
       "id": "task-4",
@@ -56,9 +59,10 @@
         "The light popup uses the same entity for both light_entity and entity_id.",
         "A comment records why light.gianluca_ceiling_lights (the ZHA group) is deliberately not used by the dashboard."
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "PENDING"
     },
     {
       "id": "task-5",

@@ -46,5 +46,5 @@ template:
             {% else %}
               0
             {% endif %}
-          people: "{{ state_attr('sensor.gianluca_room_people_list', 'people') | default([]) }}"
-          people_count: "{{ states('sensor.gianluca_room_people_list') | int | default(0) }}"
+          people: "{{ state_attr('sensor.gianlucas_room_people_list', 'people') | default([]) }}"
+          people_count: "{{ states('sensor.gianlucas_room_people_list') | int | default(0) }}"
