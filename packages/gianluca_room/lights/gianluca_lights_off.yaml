@@ -1,21 +1,34 @@
+# Gianluca Bedroom - Lights Off
+#
+# Automatically turn the lights off when Gianluca's Bedroom
+# goes Off or becomes unoccupied.
+#
+# NOTE: The Inovelli VZM31-SN in this room is in Smart Bulb Mode, so
+# light.gianluca_ceiling_light_switch is decoupled from the load — commanding
+# it can never turn the actual bulbs on or off. Target light.gianluca_bedroom_lights
+# (the Hue bulb group) instead. This is the same defect fixed in the Office
+# (commit 2e72108).
+#
+
 automation:
   - id: "gianluca_bedroom_lights_off"
     initial_state: on
     alias: "Gianluca Bedroom - Lights Off"
-    trigger:
+    mode: single
+    triggers:
       # Gianluca's Bedroom is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.gianlucas_bedroom
         to: "Off"
       # Gianluca's Bedroom is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.gianlucas_room_occupied
         to: "off"
       # Lighting automations turn on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Gianluca's Bedroom is not occupied
       - condition: state
         entity_id: input_boolean.gianlucas_room_occupied
@@ -31,6 +44,9 @@ automation:
           - condition: state
             entity_id: input_boolean.gianlucas_room_occupied
             state: "off"
-    action:
-      - service: light.turn_off
-        entity_id: light.gianluca_ceiling_light_switch
+    actions:
+      # Turn off the bulbs directly — light.gianluca_ceiling_light_switch is
+      # in Smart Bulb Mode and cannot control the load (see header note).
+      - action: light.turn_off
+        target:
+          entity_id: light.gianluca_bedroom_lights

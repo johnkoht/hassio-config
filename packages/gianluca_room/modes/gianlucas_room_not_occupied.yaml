@@ -1,7 +1,22 @@
+# Gianluca's Room Not Occupied
+#
+# Clear occupancy once the door has been open, the ceiling light switch
+# has been off, and the bed has been unoccupied, each for their guard
+# duration.
+#
+# NOTE: The Inovelli VZM31-SN here is in Smart Bulb Mode, so
+# light.gianluca_ceiling_light_switch cannot control the load — but a paddle
+# press still updates the switch's own on/off state, making it a valid
+# presence signal for the trigger below. Only the state CHECK in the
+# condition block was retargeted to the bulb group, since that's the entity
+# that actually reflects whether the room's lights are lit.
+#
+
 automation:
   - id: "gianlucas_room_not_occupied"
     initial_state: on
     alias: "Gianluca's room not occupied"
+    mode: single
     triggers:
       # Gianluca's door is open for 5 minutes
       - trigger: state
@@ -9,7 +24,8 @@ automation:
         to: "on"
         for:
           minutes: 5
-      # Lights turned OFF for 3 mins
+      # Lights turned OFF for 3 mins (paddle press) — intentionally left on
+      # the switch; see header note.
       - trigger: state
         entity_id: light.gianluca_ceiling_light_switch
         to: "off"
@@ -21,26 +37,27 @@ automation:
         to: "off"
         for:
           minutes: 5
-    condition:
+    conditions:
       # Currently occupied
       - condition: state
         entity_id: input_boolean.gianlucas_room_occupied
         state: "on"
-      # Lights are OFF and door is OPEN
+      # Bulbs are OFF and door is OPEN
       - condition: and
         conditions:
           # Door is OPEN
           - condition: state
             entity_id: binary_sensor.gianlucas_door_sensor_status
             state: "on"
-          # Lights are OFF
+          # Bulbs are OFF
           - condition: state
-            entity_id: light.gianluca_ceiling_light_switch
+            entity_id: light.gianluca_bedroom_lights
             state: "off"
           # Bed is NOT occupied
           - condition: state
             entity_id: binary_sensor.gianluca_bed_occupied
             state: "off"
-    action:
+    actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.gianlucas_room_occupied
+        target:
+          entity_id: input_boolean.gianlucas_room_occupied
