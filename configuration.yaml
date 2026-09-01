@@ -78,7 +78,7 @@ logger:
   #   zigpy: debug
   #   zigpy_znp: debug
   #   zhaquirks: debug
-  #   custom_components.auth_header: debugs
+  #   custom_components.auth_header: debug
 
 # Recorder
 #
