@@ -43,3 +43,26 @@ Applied from `~/.claude/build/memory/collaboration.md` corrections:
 - Pre-flight: plan `status: approved`, working tree clean except the `/approve` stamp, branch `master`, `origin/master` in sync, `2e72108` (Office fix) confirmed in history.
 - Roles resolved: orchestrator=`sonnet`, gitboss=`haiku`.
 - Phase 0 complete.
+
+### 2026-09-01 — Session 1 (cont.)
+
+All 5 tasks complete, reviewer verdict READY on first pass, 0 rework rounds.
+
+| Task | Commit | Note |
+|---|---|---|
+| task-1 audit | `a871c45` | Found 1 missing entity; **location was wrong**, corrected by orchestrator |
+| task-2 retarget | `131a54a` | 1 action + 2 conditions retargeted; 2 triggers correctly kept on the switch |
+| task-3 sync automations | `45b2ea7` | Verbatim port of the Office pair; ping-pong guard verified by hand |
+| task-4 dashboards + typo | `d7067df` | Plus `bff12c9` tracking commit |
+| task-5 validate | `bcdea70` | Full-diff sweep found **4 more** broken entity refs |
+
+**Key finding — the audit's scope was wrong, not its method.** Task-1 covered `packages/gianluca_room/**` + dashboards and reported "1 MISSING, all else clean." The final full-diff entity check found 4 more, all in house-level files the room-scoped audit never looked at: three dead climate sensors in `packages/house/areas/upper_floor/gianlucas_bedroom.yaml` (his room card has been showing no climate data) and the Inovelli switch sitting in the Upper Floor Lights group in `packages/lights/upper_floor_lights.yaml`.
+
+Phase 4.2 reviewer independently verified the "no lights-on automation" premise across the whole repo (including the six previously-unexamined files in `automation/gianlucas_room/`) and confirmed all remaining switch references there are `platform: state` triggers, not actions. Orchestrator re-verified that claim directly.
+
+- [x] Phase 1 — SKIPPED per lite mode (1.2 pre-mortem, 1.3 review)
+- [x] Phase 2 — Memory & PRD (`d392dd8`)
+- [x] Phase 3 — Worktree `worktree-inovelli-lighting-sync`
+- [x] Phase 4 — Build + holistic review (READY)
+- [x] Phase 5 — Wrap: memory entry, prd.json reconciled, plan stamped `shipped`
+- [ ] Phase 6 — Cleanup

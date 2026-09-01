@@ -1,7 +1,7 @@
 ---
 title: Inovelli Lighting Sync — Gianluca Bedroom + LED Bar Indicator
 slug: inovelli-lighting-sync
-status: in-progress
+status: shipped
 created: 2026-08-24
 has_pre_mortem: false
 has_review: false
