@@ -60,7 +60,6 @@ lovelace:
       show_in_sidebar: true
       filename: dashboards/kohbo/kohbo.yaml
 
-
 zone:
   - name: Home
     latitude: !secret home_latitude
@@ -70,26 +69,36 @@ zone:
 
 logger:
   default: info
-  logs:
-    serialpy: debug
+  # Debug loggers left on permanently burn memory and bury real errors.
+  # Uncomment only while actively diagnosing, then re-comment.
+  # logs:
+  #   homeassistant.components.zha: debug
+  #   bellows.zigbee.application: debug
+  #   bellows.ezsp: debug
+  #   zigpy: debug
+  #   zigpy_znp: debug
+  #   zhaquirks: debug
+  #   custom_components.auth_header: debugs
 
-    homeassistant.core: debug
-    homeassistant.components.zha: debug
-
-    bellows.zigbee.application: debug
-    bellows.ezsp: debug
-    zigpy: debug
-    zigpy_deconz.zigbee.application: debug
-    zigpy_deconz.api: debug
-    zigpy_deconz.uart: debug
-    zigpy_xbee.zigbee.application: debug
-    zigpy_xbee.api: debug
-    zigpy_zigate: debug
-    zigpy_znp: debug
-    zhaquirks: debug
-    asyncio: debug
-    # Header Auth for HA
-    custom_components.auth_header: debug
+# Recorder
+#
+# mmWave radar telemetry (still/move energy, target coordinates) was ~40% of all
+# recorded state changes. Excluding it does not affect automations — only history.
+recorder:
+  purge_keep_days: 7
+  commit_interval: 5
+  exclude:
+    entities:
+      - sensor.screek_human_sensor_l12_73d3d8_luminance
+    entity_globs:
+      - sensor.*_still_distance
+      - sensor.*_still_energy
+      - sensor.*_move_energy
+      - sensor.*_moving_distance
+      - sensor.*_target_*
+      - sensor.*_voltage
+      - sensor.*_rms_current
+      - sensor.kohbo_udm_*_utilization*
 
 camera:
   # Main Level Vacuum
@@ -122,7 +131,7 @@ http:
   use_x_forwarded_for: true
   cors_allowed_origins:
     - "http://10.0.10.80:3001"
-    - "http://192.168.1.0/24" 
+    - "http://192.168.1.0/24"
   trusted_proxies:
     #- 192.168.1.14
     - 192.168.1.0/24
@@ -134,4 +143,4 @@ auth_header:
   # Optionally set this if you don't want to bypass the login prompt
   # allow_bypass_login: false
   # Optionally enable debug mode to see the headers Home-Assistant gets
-  debug: true
+  debug: false
