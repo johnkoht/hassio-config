@@ -11,20 +11,20 @@ template:
           icon: "kohbo:kohbo-bed-single"
           permalink: "/dashboard-kohbo/rooms-gianluca-bedroom"
           temperature: >
-            {% if states('sensor.gianluca_room_awair_temperature') not in ['unavailable', 'unknown', ''] %}
-              {{ states('sensor.gianluca_room_awair_temperature') | float }}
+            {% if states('sensor.gianluca_bedroom_awair_temperature') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.gianluca_bedroom_awair_temperature') | float }}
             {% else %}
               ""
             {% endif %}
           humidity: >
-            {% if states('sensor.gianluca_room_awair_humidity') not in ['unavailable', 'unknown', ''] %}
-              {{ states('sensor.gianluca_room_awair_humidity') | float }}
+            {% if states('sensor.gianluca_bedroom_awair_humidity') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.gianluca_bedroom_awair_humidity') | float }}
             {% else %}
               ""
             {% endif %}
           aqi: >
-            {% if states('sensor.gianluca_room_air_quality') not in ['unavailable', 'unknown', ''] %}
-              {{ states('sensor.gianluca_room_air_quality') }}
+            {% if states('sensor.gianluca_bedroom_air_quality') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.gianluca_bedroom_air_quality') }}
             {% else %}
               ""
             {% endif %}

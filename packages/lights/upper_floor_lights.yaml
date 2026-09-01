@@ -10,7 +10,9 @@ light:
       - light.stairs_light
       - light.stairs_sconces
       - light.upstairs_hallway_picture_lights
-      - light.gianluca_ceiling_light_switch
+      # Must be the bulb group — the Inovelli is in Smart Bulb Mode and
+      # commanding it cannot turn Gianluca's ceiling bulbs on or off.
+      - light.gianluca_bedroom_lights
       - light.gianluca_lamp
       - light.ninos_bedroom_main_lights
       - light.nino_bedroom_lamp
