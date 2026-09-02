@@ -3,10 +3,12 @@ script:
     alias: Lights Scene Toggle
     mode: "queued"
     fields:
-      # 
-      # 
-      # Select select
-      # 
+      #
+      # NOTE: these selectors are UI metadata for Developer Tools only —
+      # Home Assistant does not validate script fields, so a caller can pass
+      # any entity. They are kept accurate so the picker is useful, not
+      # because they gate anything.
+      #
       scene_select:
         name: Scene Select
         description: Input select for the light to manage scene states
@@ -16,16 +18,18 @@ script:
           select:
             options:
               - input_select.office_scene
+              - input_select.gianluca_scene
 
       lights:
         name: Lights
         description: Lights to set the scenes to
-        example: light.office_lights
-        default: light.office_lights
+        example: light.office_ceiling_bulbs
+        default: light.office_ceiling_bulbs
         selector:
           select:
             options:
-              - light.office_lights
+              - light.office_ceiling_bulbs
+              - light.gianluca_bedroom_lights
 
     sequence:
       - action: input_select.select_next
@@ -81,5 +85,19 @@ script:
                 data:
                   brightness_pct: 80
                   color_temp_kelvin: 4000
+                  transition: 1
+          # Bedroom-only scene (input_select.gianluca_scene). The Office
+          # cycle uses Focus in this slot instead.
+          - alias: Night — near-dark, very warm
+            conditions:
+              - condition: template
+                value_template: '{{ scene == "Night" }}'
+            sequence:
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ lights }}"
+                data:
+                  brightness_pct: 5
+                  color_temp_kelvin: 2200
                   transition: 1
 

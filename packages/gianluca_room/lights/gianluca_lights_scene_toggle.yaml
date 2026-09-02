@@ -1,0 +1,30 @@
+# Gianluca Bedroom Lights Scene Toggle
+#
+# Cycles input_select.gianluca_scene on each press of the Inovelli's
+# config button and applies the matching scene to the ceiling bulbs.
+#
+# The config button is endpoint 3 on the VZM31-SN. That endpoint is
+# deliberately NOT Zigbee-bound to the bulb group — binding it would make
+# the config button dim the bulbs directly AND fire this automation on the
+# same press. Scene cycling goes through HA's device trigger instead.
+#
+# Targets light.gianluca_bedroom_lights (the HA helper group), not
+# light.gianluca_ceiling_lights (the ZHA group entity).
+#
+
+automation:
+  - id: "gianluca_lights_scene_toggle"
+    alias: "Gianluca Bedroom Lights Scene Toggle"
+    mode: single
+    triggers:
+      - device_id: c3e05c788833053ea47fa3a827ed9ff0
+        domain: zha
+        type: press
+        subtype: Config
+        trigger: device
+    conditions: []
+    actions:
+      - action: script.lights_scene_toggle
+        data:
+          lights: light.gianluca_bedroom_lights
+          scene_select: input_select.gianluca_scene
