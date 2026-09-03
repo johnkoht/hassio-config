@@ -3,6 +3,7 @@
 # Maps Nino to the PRIMARY grade band (the primary band) and derives his
 # school-day, departure, and pickup sensors from that band's schedule.
 # To move him up a band, change only the 3 primary_school_* references below.
+# Also derives binary_sensor.nino_at_school (positive-evidence, no availability).
 #
 
 # No `initial:` on these — state restoration keeps runtime-edited values
@@ -46,6 +47,26 @@ template:
              and src not in ['unknown', 'unavailable', 'none', '']
              and now() >= as_datetime(src) }}
 
+      # On only with positive evidence Nino is at school: school day, not
+      # marked home, dropped off today; deliberately no availability block.
+      - name: Nino At School
+        unique_id: nino_at_school
+        default_entity_id: binary_sensor.nino_at_school
+        icon: mdi:school
+        state: >-
+          {%- set dropped = states.input_boolean.nino_dropped_off -%}
+          {%- set start = states('sensor.primary_school_start_time_today') -%}
+          {%- set dismissal = states('sensor.primary_school_dismissal_time_today') -%}
+          {{ is_state('binary_sensor.nino_school_day', 'on')
+             and is_state('input_boolean.nino_home_today', 'off')
+             and is_state('input_boolean.nino_dropped_off', 'on')
+             and dropped is not none
+             and dropped.last_changed >= today_at('00:00')
+             and start not in ['unknown', 'unavailable', 'none', '']
+             and dismissal not in ['unknown', 'unavailable', 'none', '']
+             and now() >= as_datetime(start)
+             and now() <= as_datetime(dismissal) }}
+
     # availability is false on non-school days too, so a stale timestamp
     # can't fire a reminder on a day off.
     sensor:
@@ -73,3 +94,15 @@ template:
           {%- set src = states('sensor.primary_school_dismissal_time_today') -%}
           {%- set base = as_datetime(src) if src not in ['unknown', 'unavailable', 'none', ''] else now() -%}
           {{ (base - timedelta(minutes=states('input_number.nino_pickup_lead_minutes') | int(0))).isoformat() }}
+      - name: Nino Dropoff Check Time
+        unique_id: nino_dropoff_check_time
+        default_entity_id: sensor.nino_dropoff_check_time
+        icon: mdi:account-question
+        device_class: timestamp
+        availability: >-
+          {{ is_state('binary_sensor.nino_school_day', 'on')
+             and states('sensor.primary_school_start_time_today') not in ['unknown', 'unavailable', 'none', ''] }}
+        state: >-
+          {%- set src = states('sensor.primary_school_start_time_today') -%}
+          {%- set base = as_datetime(src) if src not in ['unknown', 'unavailable', 'none', ''] else now() -%}
+          {{ (base + timedelta(minutes=30)).isoformat() }}

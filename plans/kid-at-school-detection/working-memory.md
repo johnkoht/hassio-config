@@ -6,6 +6,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 *(Add: [Task N] pattern-name: description at file:line)*
 - NOTHING_NOVEL — Task 1
 - [Task 2] template-trigger-over-zone-persons: replaces the invalid `trigger: zone` + `for:` combo. `trigger: template` on `'person.x' in (state_attr('zone.y', 'persons') or [])`, with `for: "00:03:00"` doing the debounce the zone trigger can't. See `packages/school/kids/nino_dropped_off.yaml:11-15` and `packages/school/kids/gianluca_dropped_off.yaml:11-15`.
+- [Task 3] none-guarded-last_changed: to read `last_changed` on an `input_boolean` without risking `UndefinedError` on a missing entity, grab the state object once (`{%- set dropped = states.input_boolean.x -%}`) then short-circuit with `dropped is not none and dropped.last_changed >= today_at('00:00')` — Jinja's `and` short-circuits left-to-right so the attribute access never runs against `none`. This is the one sanctioned exception to the repo's `is_state()`/`states()`-only rule (`states.x.y.state` still raises and must never be used). See `packages/school/kids/nino_school.yaml` and `gianluca_school.yaml`, the `*_at_school` binary_sensor state templates.
 
 ## Phantom Check Log
 - [Task 1] `grep -rn "nino_home_today\|nino_dropped_off\|gianluca_home_today\|gianluca_dropped_off" packages/ dashboards/` returned nothing (exit 1) before the edit, confirming these entity IDs were not already referenced anywhere.
