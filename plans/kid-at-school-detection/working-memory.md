@@ -31,3 +31,33 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [2026-09-03] at_school polarity is POSITIVE evidence (dropped_off required); default is "announce". Supersedes the original plan draft's default-on design. — docs affected: plan.md (folded) — status: folded
 - [2026-09-03] Gianluca gets helpers + latch + sensor only; no ping, no handler, no chip until a consumer exists. — docs affected: plan.md (folded) — status: folded
 - [2026-09-03] Voice gate scoped to dose 2 only via the existing `dose` variable. — docs affected: plan.md (folded) — status: folded
+
+## Task 7 — Validation record (2026-09-03)
+
+**Local suite** `run_tests.py --quick`: 63 passed, 9 skipped, 1 failed.
+- FAIL `tests/test_template_migration.py:143` `test_pinned_entity_ids_exist_in_registry` — PRE-EXISTING / environmental. `tests/conftest.py:19` hardcodes `CONFIG_ROOT = Path("/root/config")` (the Yellow's path), so `_iter_config_yaml()` finds nothing on a laptop and the non-empty assert trips. Unrelated to this branch (no test file changed on it). Syntax + modern tests use the `packages_dir` fixture and pass: 7 passed, 1 skipped.
+
+**Live checks on the Yellow (read-only, via homelab agent, HA 2026.7.4, America/Chicago):**
+| Item | Exists | Detail |
+|---|---|---|
+| zone.lyon_school | yes | radius 122 m, passive false |
+| zone.olph_school | yes | radius 87 m, passive false |
+| automation.school_overrides_reset | yes | on, last_triggered 2026-09-03 04:58 UTC (23:58 CDT prior day) |
+| notify.mobile_app_jk_2 | yes | John's phone; `devices: jk` routes here |
+| binary_sensor.nonna_presence | yes | on |
+| sensor.primary_school_start_time_today | yes | 08:45 CDT today |
+| sensor.primary_school_dismissal_time_today | yes | 15:40 CDT today |
+| sensor.gianluca_departure_time | yes | 07:45 CDT today |
+| sensor.parochial_school_start_time_today | yes | 08:05 CDT (friendly name "Junior Kindergarten …", expected) |
+| sensor.parochial_school_dismissal_time_today | yes | 12:20 CDT |
+| person.john_koht / person.cristina_falbo | yes | both home |
+
+Dose 2 (13:00 CDT) sits inside the primary window 08:45–15:40, so the gate is live on ordinary school days.
+
+**Post-merge runbook (John runs; nothing here was deployed):**
+1. Push master to GitHub (deploy pulls from GitHub).
+2. On the Yellow: `./deploy.sh --skip-ci` (never `--check`, it deletes secrets.yaml).
+3. `ha core check`.
+4. Reload in order: Developer Tools → YAML → Input booleans; Template entities; Automations. No restart.
+5. Confirm in Developer Tools → States: `binary_sensor.nino_at_school` = off, `sensor.nino_dropoff_check_time` = today's start + 30 min (or unavailable on a non-school day), `input_boolean.nino_home_today` present.
+6. First school morning: Logbook → `automation.nino_dropped_off` fires ~3 min after arriving at Lyon; `binary_sensor.nino_at_school` flips on at 08:45. First Nonna-drives morning: John's phone gets the "Nino drop-off" push at start + 30; tap "At school".

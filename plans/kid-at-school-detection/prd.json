@@ -112,15 +112,16 @@
         "automation.school_overrides_reset last_triggered recorded; older than 48h flagged as blocker",
         "No remote mutation performed; runbook written for John in working-memory.md"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "(validation-only, see working-memory.md)"
     }
   ],
   "metadata": {
     "createdAt": "2026-09-03T22:37:57.467160+00:00",
     "totalTasks": 7,
-    "completedTasks": 6,
+    "completedTasks": 7,
     "failedTasks": 0
   }
 }
