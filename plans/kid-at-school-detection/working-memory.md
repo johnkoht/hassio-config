@@ -5,6 +5,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 ## Discovered Patterns
 *(Add: [Task N] pattern-name: description at file:line)*
 - NOTHING_NOVEL — Task 1
+- [Task 2] template-trigger-over-zone-persons: replaces the invalid `trigger: zone` + `for:` combo. `trigger: template` on `'person.x' in (state_attr('zone.y', 'persons') or [])`, with `for: "00:03:00"` doing the debounce the zone trigger can't. See `packages/school/kids/nino_dropped_off.yaml:11-15` and `packages/school/kids/gianluca_dropped_off.yaml:11-15`.
 
 ## Phantom Check Log
 - [Task 1] `grep -rn "nino_home_today\|nino_dropped_off\|gianluca_home_today\|gianluca_dropped_off" packages/ dashboards/` returned nothing (exit 1) before the edit, confirming these entity IDs were not already referenced anywhere.
