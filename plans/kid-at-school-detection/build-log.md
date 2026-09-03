@@ -11,8 +11,8 @@ Started: 2026-09-03
 | 2.1 Memory review | complete | collaboration.md constraints folded into PRD global constraints |
 | 2.2 PRD | complete | 7 tasks, prd.md + prd.json + working-memory.md |
 | 2.3 Commit artifacts | complete | see git log |
-| 3 Worktree | pending | |
-| 4.1 Build | pending | |
-| 4.2 Final review | pending | |
+| 3 Worktree | complete | .claude/worktrees/kid-at-school-detection, branch worktree-kid-at-school-detection from ee9d0f4 |
+| 4.1 Build | complete | 7/7 tasks; 1 reviewer iteration (task-2 header trim); commits c4cde8a b28fcfc 28b6bc0 1148c5b 93f858a bc90893 ca280e8 |
+| 4.2 Final review | in progress | holistic reviewer dispatched |
 | 5 Wrap & report | pending | |
 | 6 Cleanup | pending | |
