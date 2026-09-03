@@ -97,9 +97,10 @@
         "No other dashboard file changed; no layout include changed",
         "YAML parses with the HA-aware loader from tests/"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "ca280e8"
     },
     {
       "id": "task-7",
@@ -119,7 +120,7 @@
   "metadata": {
     "createdAt": "2026-09-03T22:37:57.467160+00:00",
     "totalTasks": 7,
-    "completedTasks": 5,
+    "completedTasks": 6,
     "failedTasks": 0
   }
 }
