@@ -1,6 +1,6 @@
 # School Overrides Reset
 #
-# Unconditionally clears both school override booleans nightly at 23:58.
+# Unconditionally clears all six school override booleans nightly at 23:58.
 # No `conditions` block, on purpose — a gated reset is how the birthday
 # countdown flag latched on forever (see
 # nino_countdown_to_birthday_turn_off.yaml). Do not add conditions or
@@ -20,3 +20,7 @@ automation:
           entity_id:
             - input_boolean.school_day_override_off
             - input_boolean.early_dismissal_today
+            - input_boolean.nino_home_today
+            - input_boolean.nino_dropped_off
+            - input_boolean.gianluca_home_today
+            - input_boolean.gianluca_dropped_off
