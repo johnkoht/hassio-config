@@ -1,0 +1,34 @@
+# Nino Dropped Off
+#
+# Latches input_boolean.nino_dropped_off when a parent lingers in
+# Lyon's zone (UI-defined, not in this repo) during Nino's drop-off
+# window. Reset nightly by school_overrides_reset.yaml.
+#
+
+automation:
+  - id: "nino_dropped_off"
+    alias: "Nino Dropped Off"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: >-
+          {{ 'person.john_koht' in (state_attr('zone.lyon_school', 'persons') or [])
+             or 'person.cristina_falbo' in (state_attr('zone.lyon_school', 'persons') or []) }}
+        for: "00:03:00"
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.nino_school_day
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.nino_dropped_off
+        state: "off"
+      - alias: "Within Nino's drop-off window"
+        condition: template
+        value_template: >-
+          {%- set src = states('sensor.primary_school_start_time_today') -%}
+          {{ src not in ['unknown', 'unavailable', 'none', '']
+             and as_datetime(src) - timedelta(minutes=45) <= now() <= as_datetime(src) + timedelta(minutes=20) }}
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.nino_dropped_off

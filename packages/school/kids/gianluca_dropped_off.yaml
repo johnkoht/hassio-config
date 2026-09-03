@@ -1,0 +1,35 @@
+# Gianluca Dropped Off
+#
+# Latches input_boolean.gianluca_dropped_off when a parent lingers in
+# OLPH's zone (UI-defined, not in this repo) during Gianluca's drop-off
+# window, anchored on departure time not start time (see
+# parochial_school_schedule.yaml). Reset nightly by school_overrides_reset.yaml.
+#
+
+automation:
+  - id: "gianluca_dropped_off"
+    alias: "Gianluca Dropped Off"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: >-
+          {{ 'person.john_koht' in (state_attr('zone.olph_school', 'persons') or [])
+             or 'person.cristina_falbo' in (state_attr('zone.olph_school', 'persons') or []) }}
+        for: "00:03:00"
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.gianluca_school_day
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.gianluca_dropped_off
+        state: "off"
+      - alias: "Within Gianluca's drop-off window"
+        condition: template
+        value_template: >-
+          {%- set src = states('sensor.gianluca_departure_time') -%}
+          {{ src not in ['unknown', 'unavailable', 'none', '']
+             and as_datetime(src) - timedelta(minutes=20) <= now() <= as_datetime(src) + timedelta(minutes=20) }}
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.gianluca_dropped_off
