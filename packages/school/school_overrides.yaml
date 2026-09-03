@@ -1,10 +1,10 @@
 # School Overrides
 #
-# The only two manual controls in the otherwise fully-derived school
+# The six manual controls in the otherwise fully-derived school
 # system. See school_overrides_reset.yaml for why these must reset
 # unconditionally every night.
 #
-# No `initial:` on either boolean — see school_year.yaml for why.
+# No `initial:` on any boolean — see school_year.yaml for why.
 #
 
 input_boolean:
@@ -14,3 +14,15 @@ input_boolean:
   early_dismissal_today:
     name: Early Dismissal Today
     icon: mdi:clock-fast
+  nino_home_today:
+    name: Nino Home Today
+    icon: mdi:home-heart
+  nino_dropped_off:
+    name: Nino Dropped Off
+    icon: mdi:car-arrow-right
+  gianluca_home_today:
+    name: Gianluca Home Today
+    icon: mdi:home-heart
+  gianluca_dropped_off:
+    name: Gianluca Dropped Off
+    icon: mdi:car-arrow-right
