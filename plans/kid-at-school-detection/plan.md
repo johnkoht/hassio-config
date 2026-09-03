@@ -53,5 +53,7 @@ Alternatives rejected: default-on "at school" with the toggle as the only overri
 - **Person state changes to the zone name while in the zone**: nothing in automations checks literal `not_home` for John or Cristina, and the people cards already render zone names.
 - **Ping fatigue on Nonna-drives-him days**: one push per such morning, two taps to answer. If it becomes daily, the fix is a future Nonna-based inference, deliberately out of v1.
 - **Push snooze loop and 15:00 escalation still run on school days**: out of scope, push behaviour is unchanged by request. Backlog.
+- **False latch on a sick day**: a parent parked inside the school zone for 3 minutes during the window, for an unrelated reason, on a day Nino is home and nobody pre-marked him, latches `dropped_off` and silences the 13:00 voice cue. The only positive-evidence path that can silence a sick-day dose. Accepted: the zone is sized to the car line, the window is 65 minutes, and the Nino Home chip exists so a known sick day is marked before the window opens. If it ever happens, narrow the window before touching the radius.
+- **Ping goes to John only**: the review argued for both parents because Cristina does drop-offs. Builder decision: her phone still latches the drop-off automatically, so the ping only matters on mornings nobody drove, and John asked for it to reach him alone.
 
 On approval → /approve → /ship kid-at-school-detection
