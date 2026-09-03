@@ -1,9 +1,8 @@
 # Gianluca Dropped Off
 #
 # Latches input_boolean.gianluca_dropped_off when a parent lingers in
-# OLPH's zone (UI-defined, not in this repo) during Gianluca's drop-off
-# window, anchored on departure time not start time (see
-# parochial_school_schedule.yaml). Reset nightly by school_overrides_reset.yaml.
+# OLPH's zone (UI-defined) during the drop-off window, anchored on departure
+# time not start time (see parochial_school_schedule.yaml). Reset nightly.
 #
 
 automation:
