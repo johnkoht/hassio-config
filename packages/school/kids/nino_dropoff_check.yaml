@@ -1,0 +1,36 @@
+# Nino Dropoff Check
+#
+# If nobody has confirmed Nino's drop-off 30 min after school start,
+# ask John. Static action IDs — no wait, no context.id, reload-safe.
+#
+
+automation:
+  - id: "nino_dropoff_check"
+    alias: "Nino Dropoff Check"
+    mode: single
+    triggers:
+      - trigger: time
+        at: sensor.nino_dropoff_check_time
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.nino_school_day
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.nino_home_today
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.nino_dropped_off
+        state: "off"
+    actions:
+      - action: script.general_notification
+        data:
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "nino-dropoff-check"
+          title: "Nino drop-off"
+          message: "{{ 'Nobody dropped Nino off this morning. Nonna is home.' if is_state('binary_sensor.nonna_presence', 'on') else 'Nobody dropped Nino off this morning. Nonna is not home.' }}"
+          actions:
+            - action: "NINO_AT_SCHOOL"
+              title: "At school"
+            - action: "NINO_HOME_TODAY"
+              title: "Home today"
