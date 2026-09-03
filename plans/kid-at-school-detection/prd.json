@@ -47,9 +47,10 @@
         "sensor.nino_dropoff_check_time exists, tz-aware, = start + 30 min, unavailable on non-school days; no Gianluca equivalent",
         "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "1148c5b"
     },
     {
       "id": "task-4",
@@ -116,7 +117,7 @@
   "metadata": {
     "createdAt": "2026-09-03T22:37:57.467160+00:00",
     "totalTasks": 7,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "failedTasks": 0
   }
 }
