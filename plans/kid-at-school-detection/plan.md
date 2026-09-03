@@ -1,7 +1,7 @@
 ---
 title: Kid At-School Detection
 slug: kid-at-school-detection
-status: in-progress
+status: shipped
 created: 2026-09-03
 has_pre_mortem: true
 has_review: true

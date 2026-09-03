@@ -14,5 +14,5 @@ Started: 2026-09-03
 | 3 Worktree | complete | .claude/worktrees/kid-at-school-detection, branch worktree-kid-at-school-detection from ee9d0f4 |
 | 4.1 Build | complete | 7/7 tasks; 1 reviewer iteration (task-2 header trim); commits c4cde8a b28fcfc 28b6bc0 1148c5b 93f858a bc90893 ca280e8 |
 | 4.2 Final review | complete | READY; two doc gaps folded into plan.md Risks + Decision Ledger |
-| 5 Wrap & report | in progress | 5.1 memory entry + 5.2 LEARNINGS done; wrap next |
+| 5 Wrap & report | complete | wrap all green; status shipped; merge gate next |
 | 6 Cleanup | pending | |
