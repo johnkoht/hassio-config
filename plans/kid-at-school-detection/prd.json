@@ -14,9 +14,10 @@
         "Phantom check (grep for the four new ids across packages/ and dashboards/) returned nothing and is recorded in working-memory.md",
         "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "c4cde8a"
     },
     {
       "id": "task-2",
@@ -114,7 +115,7 @@
   "metadata": {
     "createdAt": "2026-09-03T22:37:57.467160+00:00",
     "totalTasks": 7,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "failedTasks": 0
   }
 }
