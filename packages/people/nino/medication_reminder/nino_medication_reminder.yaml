@@ -184,12 +184,16 @@ automation:
       #
       # Guarded on the taken boolean: if it flipped on between the
       # conditions block passing and this action running, skip the
-      # announcement for a dose that's already been given.
+      # announcement for a dose that's already been given. Dose 2
+      # is also skipped while Nino is at school.
       #
       - alias: "Announce only if this dose is still untaken"
         if:
           - condition: template
             value_template: "{{ is_state(taken_boolean, 'off') }}"
+          - alias: "Skip the voice cue for dose 2 while Nino is at school"
+            condition: template
+            value_template: "{{ not (dose | string == '2' and is_state('binary_sensor.nino_at_school', 'on')) }}"
         then:
           - action: script.voice_announcement
             data:
