@@ -20,7 +20,15 @@ Non-obvious things discovered building the school layer (Aug 2026). Most apply r
 
 **Timestamp sensors must be timezone-aware.** Build as `today_at('00:00') + timedelta(seconds=state_attr(...,'timestamp') | int(0))`. A naive datetime makes `SensorEntity.state` *raise* under `device_class: timestamp` — the entity errors out entirely, it doesn't just fail a trigger. HA does re-render templates using `now()`/`today_at()` on time boundaries, so midnight rollover works.
 
+**`trigger: zone` does not accept `for:`.** The zone trigger schema is `entity_id` / `zone` / `event` only. For "in the zone for N minutes", use a `template` trigger over `state_attr('zone.x', 'persons') or []` with `for:`; the `or []` matters because `persons` is `None` when the zone is empty and `in None` raises. Keep `now()` out of that template or it re-evaluates every minute and defeats the hold.
+
+**`condition: state` with `state: "off"` is false on `unavailable`.** A gate written that way silences whatever it guards the moment its sensor goes unavailable. When the guarded action is the thing that must happen (a medication cue), write the gate as `{{ not is_state('binary_sensor.x', 'on') }}` and give the sensor no `availability:` block.
+
+**`tests/run_tests.py --quick` has one Yellow-only test.** `tests/conftest.py` hardcodes `CONFIG_ROOT = /root/config`, so `test_pinned_entity_ids_exist_in_registry` always fails on a laptop. `--syntax --modern` is the honest local gate.
+
 ## Design decisions
+
+**"At school" is positive evidence, and the default is announce.** `binary_sensor.<kid>_at_school` is on only when the kid's drop-off latched today (zone or a tapped push) inside the bell window with `home_today` off. Every derivation failure reads `off`, which lets the medication voice cue play. A default-on design had six silent paths to a muted sick-day dose.
 
 **Schools are named by grade band** (`primary` K-2, `intermediate` 3-5, `middle` 6-8), not by building — a kid changing schools is a three-line mapping edit in `kids/<kid>_school.yaml`. The high school is out of scope: different district, different calendar.
 

@@ -31,6 +31,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [2026-09-03] at_school polarity is POSITIVE evidence (dropped_off required); default is "announce". Supersedes the original plan draft's default-on design. — docs affected: plan.md (folded) — status: folded
 - [2026-09-03] Gianluca gets helpers + latch + sensor only; no ping, no handler, no chip until a consumer exists. — docs affected: plan.md (folded) — status: folded
 - [2026-09-03] Voice gate scoped to dose 2 only via the existing `dose` variable. — docs affected: plan.md (folded) — status: folded
+- [2026-09-03] Drop-off ping is John-only (`devices: jk`), not both parents; Cristina's phone latches automatically so the ping only matters when nobody drove. — docs affected: plan.md Risks (folded) — status: folded
+- [2026-09-03] False-latch-on-sick-day accepted as the one positive-evidence silencing path; mitigated by the Nino Home chip and the narrow zone, not by code. — docs affected: plan.md Risks (folded) — status: folded
 
 ## Task 7 — Validation record (2026-09-03)
 
