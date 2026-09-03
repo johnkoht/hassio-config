@@ -116,6 +116,22 @@ cards:
               icon:
                 - color: var(--error-color)
 
+        # Sick-day toggle. Tap to mark Nino home before the drop-off ping
+        # asks; the medication voice gate and the ping both read it.
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_boolean.nino_home_today
+          name: Nino Home
+          icon: mdi:home-heart
+          tap_action:
+            action: toggle
+          state_display: >
+            [[[ return entity.state === 'on' ? 'Home' : 'School'; ]]]
+          styles:
+            icon:
+              - color: >
+                  [[[ return entity.state === 'on' ? 'var(--warning-color)' : 'var(--secondary-text-color)'; ]]]
+
   #===========================================================================
   # THE KIDS
   #===========================================================================
