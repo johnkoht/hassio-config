@@ -1,0 +1,127 @@
+{
+  "name": "kid-at-school-detection",
+  "branchName": "feature/kid-at-school-detection",
+  "goal": "Per-kid binary_sensor.<kid>_at_school with positive-evidence semantics, gating the Nino dose-2 voice announcement; every derivation failure lands on 'announce'.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Per-kid helpers and nightly reset",
+      "description": "Add nino/gianluca home_today and dropped_off input_booleans to packages/school/school_overrides.yaml (no initial:), update its header, and add all four to the unconditional 23:58 reset in school_overrides_reset.yaml.",
+      "acceptanceCriteria": [
+        "school_overrides.yaml declares exactly six input_booleans (two existing + four new); none has initial:",
+        "school_overrides_reset.yaml turns off all six at 23:58; still no conditions: and no initial_state:",
+        "Header of school_overrides.yaml no longer says 'only two manual controls'",
+        "Phantom check (grep for the four new ids across packages/ and dashboards/) returned nothing and is recorded in working-memory.md",
+        "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "c4cde8a"
+    },
+    {
+      "id": "task-2",
+      "title": "Drop-off latch automations (both kids)",
+      "description": "Create packages/school/kids/nino_dropped_off.yaml and gianluca_dropped_off.yaml. Template trigger over the zone persons attribute (or [] guard) with for: 00:03:00 \u2014 trigger: zone does NOT accept for:. Nino: zone.primary_school, window -45/+20 min around sensor.primary_school_start_time_today. Gianluca: zone.parochial_school, window -20/+20 around sensor.gianluca_departure_time (not start time). Conditions ordered school_day on -> latch off -> in window, guarding unavailable timestamps. Action turns on the kid's dropped_off.",
+      "acceptanceCriteria": [
+        "Both files exist, one automation each, id matches filename, modern syntax throughout",
+        "Trigger is trigger: template with for: '00:03:00' and the 'or []' guard; no trigger: zone in either file",
+        "Nino references zone.primary_school + sensor.primary_school_start_time_today with -45/+20; Gianluca references zone.parochial_school + sensor.gianluca_departure_time with -20/+20",
+        "Conditions ordered school-day -> latch-off -> window; window template guards an unavailable timestamp sensor",
+        "Header comment is title + at most 3 lines",
+        "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "b28fcfc"
+    },
+    {
+      "id": "task-3",
+      "title": "At-school sensors and Nino check-time sensor",
+      "description": "Add binary_sensor.nino_at_school / gianluca_at_school to the kid files with NO availability block: on only when school_day on, home_today off, dropped_off on AND last_changed today, and now() between the band's start and dismissal sensors (unavailable inputs -> off). Add sensor.nino_dropoff_check_time (tz-aware timestamp = start + 30 min, available only on school days). No Gianluca check-time sensor.",
+      "acceptanceCriteria": [
+        "binary_sensor.nino_at_school and binary_sensor.gianluca_at_school exist in their kid files with no availability: key",
+        "Each at-school template references exactly: kid school_day, home_today, dropped_off (state AND last_changed today), band start-time and dismissal-time sensors",
+        "With any input unavailable/unknown the template evaluates to off; no raise-capable expressions (no states.x.y.state)",
+        "sensor.nino_dropoff_check_time exists, tz-aware, = start + 30 min, unavailable on non-school days; no Gianluca equivalent",
+        "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "1148c5b"
+    },
+    {
+      "id": "task-4",
+      "title": "No-drop-off ping and action handler (Nino only)",
+      "description": "Create packages/school/kids/nino_dropoff_check.yaml (trigger: time at sensor.nino_dropoff_check_time; conditions school_day on -> home_today off -> dropped_off off; script.general_notification devices jk, priority time-sensitive, tag nino-dropoff-check, message states Nonna home/away from binary_sensor.nonna_presence, two static actions NINO_AT_SCHOOL / NINO_HOME_TODAY; fire-and-forget, no wait_for_trigger, no context.id) and nino_dropoff_check_handler.yaml (always-listening mode: parallel on mobile_app_notification_action, copy camera_notification_action_handler.yaml pattern; AT_SCHOOL -> turn on nino_dropped_off, HOME_TODAY -> turn on nino_home_today).",
+      "acceptanceCriteria": [
+        "Both files exist, one automation each, ids match filenames, modern syntax",
+        "Ping has no wait_for_trigger and no context.id; action IDs are the literal strings NINO_AT_SCHOOL and NINO_HOME_TODAY",
+        "Ping sends via script.general_notification with devices 'jk', priority time-sensitive, tag nino-dropoff-check, and the message states Nonna's home/away",
+        "Ping conditions are school_day on, home_today off, dropped_off off, in that order",
+        "Handler triggers on mobile_app_notification_action, conditions on the two IDs, and turns on the correct boolean for each",
+        "No Gianluca ping or handler exists",
+        "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "93f858a"
+    },
+    {
+      "id": "task-5",
+      "title": "Medication voice gate (dose 2 only)",
+      "description": "In nino_medication_reminder.yaml add a second condition to the voice-announcement if: block only: {{ not (dose | string == '2' and is_state('binary_sensor.nino_at_school', 'on')) }}. Negative gate so unknown/unavailable cannot silence. Nothing else in the file or in nino_medication_escalation.yaml changes.",
+      "acceptanceCriteria": [
+        "Diff touches only the voice if: block and its comment; git diff --stat shows one file",
+        "New condition uses not (...) with is_state(..., 'on') and dose | string == '2'; never compares against 'off'",
+        "Existing taken-boolean condition remains first in the if: list, unchanged",
+        "Push, timer, escalation, reset, and shortcut automations byte-identical to before",
+        "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "bc90893"
+    },
+    {
+      "id": "task-6",
+      "title": "Dashboard surfaces",
+      "description": "school.yaml: one always-visible kohbo_chip_card for input_boolean.nino_home_today ('Nino Home', mdi:home-heart, tap_action toggle, warning color when on) after the Override chip; no Gianluca chip. school_settings_popup.yaml: 'Nino Today' entities row (home_today, dropped_off, at_school) under the Primary stack and 'Gianluca Today' under the Junior Kindergarten stack.",
+      "acceptanceCriteria": [
+        "school.yaml has exactly one new chip, bound to input_boolean.nino_home_today, tap_action: action: toggle, not wrapped in type: conditional",
+        "No Gianluca chip and no chip for dropped_off or at_school on school.yaml",
+        "school_settings_popup.yaml shows the three Nino entities under Primary and the three Gianluca entities under Junior Kindergarten (six new - entity: rows)",
+        "No other dashboard file changed; no layout include changed",
+        "YAML parses with the HA-aware loader from tests/"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "ca280e8"
+    },
+    {
+      "id": "task-7",
+      "title": "Validation and live pre-merge checks",
+      "description": "Run tests/run_tests.py --quick; dispatch the homelab agent read-only against the Yellow to confirm zone.primary_school and zone.parochial_school exist (with radii), automation.school_overrides_reset last_triggered within 48h, and the seven referenced entity ids exist. Record everything plus the post-merge runbook (push -> deploy.sh --skip-ci -> ha core check -> reload input_boolean, template, automations) in working-memory.md. No remote mutation.",
+      "acceptanceCriteria": [
+        "tests/run_tests.py --quick passes, or every failure is pre-existing and listed with file:line in working-memory.md",
+        "All live entity checks recorded yes/no, zones with radius; any 'no' halts the ship with a note",
+        "automation.school_overrides_reset last_triggered recorded; older than 48h flagged as blocker",
+        "No remote mutation performed; runbook written for John in working-memory.md"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "(validation-only, see working-memory.md)"
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-09-03T22:37:57.467160+00:00",
+    "totalTasks": 7,
+    "completedTasks": 7,
+    "failedTasks": 0
+  }
+}
