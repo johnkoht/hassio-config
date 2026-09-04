@@ -58,7 +58,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 Dose 2 (13:00 CDT) sits inside the primary window 08:45–15:40, so the gate is live on ordinary school days.
 
 **Post-merge runbook (John runs; nothing here was deployed):**
-0. In the HA UI, rename the two school zones' entity IDs to `zone.primary_school` and `zone.parochial_school` (Settings → Areas & zones → zone → entity settings). The automations reference the band-named IDs; until renamed, the latch never fires and the ping asks every school morning (the safe direction).
+0. DONE 2026-09-03: both school zones renamed in the UI to `zone.primary_school` and `zone.parochial_school` (friendly names kept as the school names on purpose; only the IDs are in the repo). Verified live: both new IDs return 200 with radius/passive intact, both old IDs return 404.
 1. Push master to GitHub (deploy pulls from GitHub).
 2. On the Yellow: `./deploy.sh --skip-ci` (never `--check`, it deletes secrets.yaml).
 3. `ha core check`.
