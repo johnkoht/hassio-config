@@ -1,0 +1,14 @@
+input_select:
+  # Tracks which scene the config button last applied.
+  # Cycles via input_select.select_next on each config press.
+  #
+  # Mirrors input_select.office_scene, except Focus (80% / 4000K task
+  # lighting) is replaced by Night (5% / 2200K) — a bedroom needs a
+  # near-dark warm setting far more than neutral daylight.
+  gianluca_scene:
+    name: Gianluca Scene
+    options:
+      - "Bright"
+      - "Warm"
+      - "Dim"
+      - "Night"

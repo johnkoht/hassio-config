@@ -93,6 +93,30 @@
               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
               state_color: true
 
+        - type: custom:button-card
+          template: kohbo_card_header
+          name: Nino Today
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: input_boolean.nino_home_today
+              name: Home Today
+              icon: mdi:home-heart
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              secondary_info: last-changed
+              state_color: true
+            - entity: input_boolean.nino_dropped_off
+              name: Dropped Off
+              icon: mdi:car-arrow-right
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              secondary_info: last-changed
+              state_color: true
+            - entity: binary_sensor.nino_at_school
+              name: At School
+              icon: mdi:school
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+
     #
     # Junior Kindergarten — Gianluca
     #
@@ -151,6 +175,30 @@
             - entity: binary_sensor.parochial_school_closed_tomorrow
               name: Closed Tomorrow
               icon: mdi:calendar-arrow-right
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              state_color: true
+
+        - type: custom:button-card
+          template: kohbo_card_header
+          name: Gianluca Today
+        - type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+          entities:
+            - entity: input_boolean.gianluca_home_today
+              name: Home Today
+              icon: mdi:home-heart
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              secondary_info: last-changed
+              state_color: true
+            - entity: input_boolean.gianluca_dropped_off
+              name: Dropped Off
+              icon: mdi:car-arrow-right
+              card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+              secondary_info: last-changed
+              state_color: true
+            - entity: binary_sensor.gianluca_at_school
+              name: At School
+              icon: mdi:school
               card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
               state_color: true
 
