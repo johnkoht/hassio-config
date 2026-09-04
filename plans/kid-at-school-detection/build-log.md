@@ -15,5 +15,5 @@ Started: 2026-09-03
 | 4.1 Build | complete | 7/7 tasks; 1 reviewer iteration (task-2 header trim); commits c4cde8a b28fcfc 28b6bc0 1148c5b 93f858a bc90893 ca280e8 |
 | 4.2 Final review | complete | READY; two doc gaps folded into plan.md Risks + Decision Ledger |
 | 5 Wrap & report | complete | wrap all green; status shipped; merge gate next |
-| 5.7 Merge gate | awaiting builder | gitboss MERGE-READY; ff-only from master |
+| 5.7 Merge gate | PR open | gitboss MERGE-READY; https://github.com/johnkoht/hassio-config/pull/12 |
 | 6 Cleanup | pending | after merge |
