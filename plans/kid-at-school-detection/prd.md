@@ -15,7 +15,7 @@ Add a per-kid `binary_sensor.<kid>_at_school` that is on only with positive evid
 - **Header comments short**: title line + 1-3 lines. Reasoning goes in the commit message, not the file.
 - **No `initial:`** on any helper (disables state restoration, see LEARNINGS).
 - **Entity IDs derive from `alias:`/`name:`**, not `id:`/`unique_id:`. Use `default_entity_id:` on template entities as the neighbouring files do.
-- **Zones are UI-defined** (`zone.lyon_school`, `zone.olph_school`) and do not appear in the repo. Do not add them to `configuration.yaml`.
+- **Zones are UI-defined** (`zone.primary_school`, `zone.parochial_school`) and do not appear in the repo. Do not add them to `configuration.yaml`.
 - **Scope discipline**: build exactly what the task says. Gianluca gets helpers + latch + sensor only. No Gianluca ping, handler, or chip. No unrequested polish.
 - **Validation**: `ha core check` does not exist on this machine. Local validation is `tests/.venv/bin/python tests/run_tests.py --syntax --modern` (fallback: `python3 -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" <file>` for files without custom tags). Never claim "config is valid"; the honest AC is "YAML parses and the modern-syntax test passes; HA schema validation deferred to post-merge `ha core check` on the Yellow". Never run `deploy.sh --check` (it deletes `secrets.yaml`). Never restart HA.
 - **Sequential subagents only.** One developer at a time in the worktree.
@@ -51,8 +51,8 @@ Add four `input_boolean`s to `school_overrides.yaml` under the existing two: `ni
   triggers:
     - trigger: template
       value_template: >-
-        {{ 'person.john_koht' in (state_attr('zone.lyon_school', 'persons') or [])
-           or 'person.cristina_falbo' in (state_attr('zone.lyon_school', 'persons') or []) }}
+        {{ 'person.john_koht' in (state_attr('zone.primary_school', 'persons') or [])
+           or 'person.cristina_falbo' in (state_attr('zone.primary_school', 'persons') or []) }}
       for: "00:03:00"
   ```
   The `or []` guard matters: `persons` is `None` when the zone is empty and `in None` raises.
@@ -65,7 +65,7 @@ Add four `input_boolean`s to `school_overrides.yaml` under the existing two: `ni
 **Acceptance criteria:**
 1. Both files exist, one automation each, id matches filename, modern syntax throughout.
 2. Trigger is `trigger: template` with `for: "00:03:00"` and the `or []` guard; no `trigger: zone` anywhere in either file.
-3. Nino references `zone.lyon_school` and `sensor.primary_school_start_time_today` with the -45/+20 window; Gianluca references `zone.olph_school` and `sensor.gianluca_departure_time` with the -20/+20 window.
+3. Nino references `zone.primary_school` and `sensor.primary_school_start_time_today` with the -45/+20 window; Gianluca references `zone.parochial_school` and `sensor.gianluca_departure_time` with the -20/+20 window.
 4. Conditions ordered school-day → latch-off → window, and the window template guards against an unavailable timestamp sensor.
 5. Header comment is title + at most 3 lines.
 6. YAML parses and `tests/run_tests.py --syntax --modern` passes; HA schema validation deferred to post-merge `ha core check`.
@@ -175,7 +175,7 @@ In `school_settings_popup.yaml`, inside the Primary (K-2) stack after the "Close
 
 **Read first:** `plans/kid-at-school-detection/pre-mortem.md` (HIGH 5 and HIGH 6); `CLAUDE.md` section "Infrastructure Access — the homelab agent"; memory note `reference_deploy_and_host_topology.md` (production HA is the Yellow at 192.168.1.36, ssh `hassio`, NOT epicurus).
 
-Run the full local suite: `tests/.venv/bin/python tests/run_tests.py --quick` and paste the summary line into working-memory.md. Then dispatch the `homelab` agent (read-only) to confirm on the live Yellow: (a) `zone.lyon_school` and `zone.olph_school` exist with their radii; (b) `automation.school_overrides_reset` has a `last_triggered` within the last 48 h; (c) the entity ids `notify.mobile_app_jk_2`, `binary_sensor.nonna_presence`, `sensor.primary_school_start_time_today`, `sensor.primary_school_dismissal_time_today`, `sensor.gianluca_departure_time`, `sensor.parochial_school_start_time_today`, `sensor.parochial_school_dismissal_time_today` all exist. Record each answer. Do NOT reload, restart, or deploy; John does that.
+Run the full local suite: `tests/.venv/bin/python tests/run_tests.py --quick` and paste the summary line into working-memory.md. Then dispatch the `homelab` agent (read-only) to confirm on the live Yellow: (a) `zone.primary_school` and `zone.parochial_school` exist with their radii; (b) `automation.school_overrides_reset` has a `last_triggered` within the last 48 h; (c) the entity ids `notify.mobile_app_jk_2`, `binary_sensor.nonna_presence`, `sensor.primary_school_start_time_today`, `sensor.primary_school_dismissal_time_today`, `sensor.gianluca_departure_time`, `sensor.parochial_school_start_time_today`, `sensor.parochial_school_dismissal_time_today` all exist. Record each answer. Do NOT reload, restart, or deploy; John does that.
 
 Write the post-merge runbook into working-memory.md: push to GitHub, `./deploy.sh --skip-ci` on the Yellow, then `ha core check`, then reload `input_boolean`, template entities, and automations in that order. Watch one school morning in Logbook for the latch and one Nonna-drives day for the ping.
 

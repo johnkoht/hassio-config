@@ -22,11 +22,11 @@
     {
       "id": "task-2",
       "title": "Drop-off latch automations (both kids)",
-      "description": "Create packages/school/kids/nino_dropped_off.yaml and gianluca_dropped_off.yaml. Template trigger over the zone persons attribute (or [] guard) with for: 00:03:00 \u2014 trigger: zone does NOT accept for:. Nino: zone.lyon_school, window -45/+20 min around sensor.primary_school_start_time_today. Gianluca: zone.olph_school, window -20/+20 around sensor.gianluca_departure_time (not start time). Conditions ordered school_day on -> latch off -> in window, guarding unavailable timestamps. Action turns on the kid's dropped_off.",
+      "description": "Create packages/school/kids/nino_dropped_off.yaml and gianluca_dropped_off.yaml. Template trigger over the zone persons attribute (or [] guard) with for: 00:03:00 \u2014 trigger: zone does NOT accept for:. Nino: zone.primary_school, window -45/+20 min around sensor.primary_school_start_time_today. Gianluca: zone.parochial_school, window -20/+20 around sensor.gianluca_departure_time (not start time). Conditions ordered school_day on -> latch off -> in window, guarding unavailable timestamps. Action turns on the kid's dropped_off.",
       "acceptanceCriteria": [
         "Both files exist, one automation each, id matches filename, modern syntax throughout",
         "Trigger is trigger: template with for: '00:03:00' and the 'or []' guard; no trigger: zone in either file",
-        "Nino references zone.lyon_school + sensor.primary_school_start_time_today with -45/+20; Gianluca references zone.olph_school + sensor.gianluca_departure_time with -20/+20",
+        "Nino references zone.primary_school + sensor.primary_school_start_time_today with -45/+20; Gianluca references zone.parochial_school + sensor.gianluca_departure_time with -20/+20",
         "Conditions ordered school-day -> latch-off -> window; window template guards an unavailable timestamp sensor",
         "Header comment is title + at most 3 lines",
         "YAML parses and tests/run_tests.py --syntax --modern passes; HA schema validation deferred to post-merge ha core check"
@@ -105,7 +105,7 @@
     {
       "id": "task-7",
       "title": "Validation and live pre-merge checks",
-      "description": "Run tests/run_tests.py --quick; dispatch the homelab agent read-only against the Yellow to confirm zone.lyon_school and zone.olph_school exist (with radii), automation.school_overrides_reset last_triggered within 48h, and the seven referenced entity ids exist. Record everything plus the post-merge runbook (push -> deploy.sh --skip-ci -> ha core check -> reload input_boolean, template, automations) in working-memory.md. No remote mutation.",
+      "description": "Run tests/run_tests.py --quick; dispatch the homelab agent read-only against the Yellow to confirm zone.primary_school and zone.parochial_school exist (with radii), automation.school_overrides_reset last_triggered within 48h, and the seven referenced entity ids exist. Record everything plus the post-merge runbook (push -> deploy.sh --skip-ci -> ha core check -> reload input_boolean, template, automations) in working-memory.md. No remote mutation.",
       "acceptanceCriteria": [
         "tests/run_tests.py --quick passes, or every failure is pre-existing and listed with file:line in working-memory.md",
         "All live entity checks recorded yes/no, zones with radius; any 'no' halts the ship with a note",

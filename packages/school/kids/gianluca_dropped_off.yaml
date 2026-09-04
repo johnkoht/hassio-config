@@ -1,7 +1,7 @@
 # Gianluca Dropped Off
 #
 # Latches input_boolean.gianluca_dropped_off when a parent lingers in
-# OLPH's zone (UI-defined) during the drop-off window, anchored on departure
+# the parochial school zone (UI-defined) during the drop-off window, anchored on departure
 # time not start time (see parochial_school_schedule.yaml). Reset nightly.
 #
 
@@ -12,8 +12,8 @@ automation:
     triggers:
       - trigger: template
         value_template: >-
-          {{ 'person.john_koht' in (state_attr('zone.olph_school', 'persons') or [])
-             or 'person.cristina_falbo' in (state_attr('zone.olph_school', 'persons') or []) }}
+          {{ 'person.john_koht' in (state_attr('zone.parochial_school', 'persons') or [])
+             or 'person.cristina_falbo' in (state_attr('zone.parochial_school', 'persons') or []) }}
         for: "00:03:00"
     conditions:
       - condition: state
