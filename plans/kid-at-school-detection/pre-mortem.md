@@ -48,14 +48,14 @@ This is not a detail a build subagent will catch: `grep -rn "trigger: zone" pack
 triggers:
   - trigger: template
     value_template: >-
-      {%- set z = state_attr('zone.lyon_school', 'persons') or [] -%}
+      {%- set z = state_attr('zone.primary_school', 'persons') or [] -%}
       {{ 'person.john_koht' in z or 'person.cristina_falbo' in z }}
     for: "00:03:00"
 ```
 
 Adding a second circle is then one more `state_attr(...)` union in the same template — which preserves the plan's "zone list so a second circle can be added without touching logic" intent. Do **not** use `person.<x>` state-string comparison against a zone's friendly name.
 
-**Verification**: `ha core check` green, and the automation shows a `last_triggered` after a real school morning. Zero `last_triggered` after a week of school days means the template never fired — check `state_attr('zone.lyon_school','persons')` in Developer Tools → Template before assuming GPS is the problem.
+**Verification**: `ha core check` green, and the automation shows a `last_triggered` after a real school morning. Zero `last_triggered` after a week of school days means the template never fired — check `state_attr('zone.primary_school','persons')` in Developer Tools → Template before assuming GPS is the problem.
 
 ---
 
@@ -137,9 +137,9 @@ Result: `nino_dropped_off` stuck on → `at_school` on every school day inside t
 
 ### Risk 6: The two school zones do not exist in this repo and cannot be validated before deploy — **HIGH**
 
-**Problem**: `configuration.yaml` defines exactly one zone — `zone.home`. `zone.lyon_school` and `zone.olph_school` are UI-created and live in `.storage`, invisible to this repo, invisible to `ha core check`, and invisible to any grep the builder can run. Their **entity IDs derive from the name they were created with**, and per `LEARNINGS.md` that mapping has burned this repo before ("cost an afternoon chasing 'missing' automations").
+**Problem**: `configuration.yaml` defines exactly one zone — `zone.home`. `zone.primary_school` and `zone.parochial_school` are UI-created and live in `.storage`, invisible to this repo, invisible to `ha core check`, and invisible to any grep the builder can run. Their **entity IDs derive from the name they were created with**, and per `LEARNINGS.md` that mapping has burned this repo before ("cost an afternoon chasing 'missing' automations").
 
-If either ID is wrong — `zone.lyon_elementary`, `zone.olph`, `zone.olph_school_2` — `state_attr()` returns `None`, the template trigger's `or []` fallback keeps it from raising, and the latch simply **never fires**, forever, silently. With Risk 1's mitigation applied, that means the announcement plays every day (benign but the feature does nothing) and John gets a ping every single school morning (loud, and he will turn it off).
+If either ID is wrong — `zone.primary`, `zone.parochial`, `zone.parochial_school_2` — `state_attr()` returns `None`, the template trigger's `or []` fallback keeps it from raising, and the latch simply **never fires**, forever, silently. With Risk 1's mitigation applied, that means the announcement plays every day (benign but the feature does nothing) and John gets a ping every single school morning (loud, and he will turn it off).
 
 **Mitigation**: make the zone IDs a **pre-build gate**. Delegate to the `homelab` agent: enumerate every `zone.*` entity on the Yellow with its `latitude`/`longitude`/`radius`, and paste the exact IDs and radii into the PRD before any file is written. Also confirm `person.john_koht` and `person.cristina_falbo` actually report GPS (a router/BLE-only tracker never enters a remote zone at all).
 
@@ -303,7 +303,7 @@ The related memory footgun (`deploy.sh --check` deleting `secrets.yaml`) appears
 2. **`trigger: zone` does not accept `for:`** — the plan's central mechanism is schema-invalid, and there is no zone trigger anywhere in this repo to pattern-match against. Fix: a `template` trigger over `state_attr('zone.<x>','persons')` with `for: "00:03:00"`, specified literally in the PRD.
 3. **The gate condition inverts on `unknown`/`unavailable`** — `condition: state ... state: "off"` suppresses the announcement rather than allowing it, which is the reverse of what the plan's Risks section claims. Fix: `{{ not is_state('binary_sensor.nino_at_school','on') }}`, and give the sensor no `availability:` template.
 
-**HIGH**: the ping's `context.id` + `wait_for_trigger` dies on any reload and the tap silently does nothing (split into a standing handler with static action IDs) · a latched `dropped_off` silences the dose forever if the 23:58 reset is disabled (verify it is enabled; add a `last_changed >= today_at('00:00')` guard) · `zone.lyon_school` / `zone.olph_school` exist only in `.storage` and cannot be validated pre-deploy (make the live zone IDs a pre-build gate) · the ping shares `input_select.notification_level` with everything else, and a muted ping now has a medication consequence (Risk 1's inversion is the mitigation, and must be stated as such).
+**HIGH**: the ping's `context.id` + `wait_for_trigger` dies on any reload and the tap silently does nothing (split into a standing handler with static action IDs) · a latched `dropped_off` silences the dose forever if the 23:58 reset is disabled (verify it is enabled; add a `last_changed >= today_at('00:00')` guard) · `zone.primary_school` / `zone.parochial_school` exist only in `.storage` and cannot be validated pre-deploy (make the live zone IDs a pre-build gate) · the ping shares `input_select.notification_level` with everything else, and a muted ping now has a medication consequence (Risk 1's inversion is the mitigation, and must be stated as such).
 
 **MEDIUM**: `now()` short-circuit can drop the minute-tick listener · Task 7's reload set omits `input_boolean.reload` · the ping goes only to John while Cristina does the drop-offs · Gianluca's window is anchored to start time instead of his fixed departure time · unguarded `as_datetime` on routinely-`unavailable` schedule sensors · dose 1 gets an undocumented behaviour change.
 

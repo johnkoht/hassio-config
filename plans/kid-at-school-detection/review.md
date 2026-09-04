@@ -26,7 +26,7 @@ verdict: revise
 | `binary_sensor.<kid>_school_started` "never turns off before the nightly rollover" | ✅ Correct | `kids/nino_school.yaml` — `state: {{ school_day and now() >= start }}`. Monotonic within the day. Bounding on dismissal instead is right. |
 | `primary_school_start_time_today` already swaps to the late-start input on Wednesdays | ✅ Correct | `schools/primary_school_schedule.yaml`, both `availability:` and `state:` select `late_start_time` when `late_start_today` is on. |
 | Nothing in automations checks literal `not_home` on John/Cristina | ✅ Correct | Confirmed across `packages/`, `automation/`, `dashboards/`. |
-| `zone.lyon_school` is 122 m; `zone.olph_school` exists | ⚠️ **Unverifiable here, and no task creates them** | `configuration.yaml:63` defines exactly one zone (`Home`). Every other zone in use (`zone.john_s_work`, `zone.union_station`, …) lives in `.storage`, which is not in this repo. See Concern 3. |
+| `zone.primary_school` is 122 m; `zone.parochial_school` exists | ⚠️ **Unverifiable here, and no task creates them** | `configuration.yaml:63` defines exactly one zone (`Home`). Every other zone in use (`zone.john_s_work`, `zone.union_station`, …) lives in `.storage`, which is not in this repo. See Concern 3. |
 | Dose 1 is at 07:30, so the gate can't touch it | ⚠️ **Assumption, not a property** | `input_datetime.nino_medication_1_time` is user-editable from `dashboards/templates/button_cards/people/nino.yaml:126`. `input_datetime.primary_school_start_time` is user-editable from `school_settings_popup.yaml`. Nothing couples them. See Concern 4. |
 | "the school view chip row is a fixed-height horizontal stack" (Risks) | ❌ **Stale** | `dashboards/kohbo/school/school.yaml:43-46` already uses `page_chip_layout_wrap.yaml`, with a comment saying exactly why. The risk was fixed before this plan was written. |
 | "Dismissal-time sensor unavailable → sensor falls to off → announcements play … failing loud is the safer direction" | ❌ **Wrong, and it is the plan's only stated failure-direction analysis** | See Concern 1. The dominant failure direction of this design is silence, not noise. |
@@ -100,11 +100,11 @@ zone:
     latitude: !secret home_latitude
 ```
 
-Every other zone the repo references (`zone.john_s_work`, `zone.union_station`, `zone.cristina_s_work`, `zone.north_shore_k9`) is UI-created and lives in `.storage`, invisible from here. `zone.lyon_school` and `zone.olph_school` appear nowhere in `packages/`, `dashboards/`, `automation/`, or `configuration.yaml`. The plan states their radii as fact but has no task to create them and no verification step that they resolve.
+Every other zone the repo references (`zone.john_s_work`, `zone.union_station`, `zone.cristina_s_work`, `zone.north_shore_k9`) is UI-created and lives in `.storage`, invisible from here. `zone.primary_school` and `zone.parochial_school` appear nowhere in `packages/`, `dashboards/`, `automation/`, or `configuration.yaml`. The plan states their radii as fact but has no task to create them and no verification step that they resolve.
 
 This matters because it fails silently in both directions: a `trigger: zone` referencing a nonexistent zone passes `ha core check` (entity-id *format* is validated, not existence) and simply never fires — which per Concern 2 lands on "silenced while home."
 
-Also worth deciding deliberately: these would be the first *school* zones. Zone entry on `person.john_koht` will now render "Lyon School" as his person state on the people cards and in every arrival/departure automation's `from`/`to` view. The plan checked that nothing tests literal `not_home` (good) — but it did not check `packages/people/john/` arrival/departure automations for `to: home` / `from: home` transitions that a new intermediate zone could reorder.
+Also worth deciding deliberately: these would be the first *school* zones. Zone entry on `person.john_koht` will now render "Primary School" as his person state on the people cards and in every arrival/departure automation's `from`/`to` view. The plan checked that nothing tests literal `not_home` (good) — but it did not check `packages/people/john/` arrival/departure automations for `to: home` / `from: home` transitions that a new intermediate zone could reorder.
 
 - **Fix**: add an explicit task — create both zones (YAML in `configuration.yaml` alongside Home with `!secret` lat/lon, matching how Home is done, since this repo is public), and add "person state renders correctly and no arrival/departure automation misfires" to verification.
 
@@ -131,7 +131,7 @@ Two aggravating details:
 
 ### 5. MAJOR — The drop-off latch's false-positive silences the exact case it exists to detect
 
-`nino_dropped_off` latches when John **or** Cristina sits in `zone.lyon_school` for 3 minutes between start−45 and start+20. That window is 65 minutes wide on a weekday morning. Any reason to be near Nino's school in that window latches it: dropping the other kid at a school on the same street, a parked car waiting for someone, a coffee stop inside a 122 m circle, GPS drift from an adjacent road.
+`nino_dropped_off` latches when John **or** Cristina sits in `zone.primary_school` for 3 minutes between start−45 and start+20. That window is 65 minutes wide on a weekday morning. Any reason to be near Nino's school in that window latches it: dropping the other kid at a school on the same street, a parked car waiting for someone, a coffee stop inside a 122 m circle, GPS drift from an adjacent road.
 
 The consequence chain is:
 
@@ -307,7 +307,7 @@ Task 7 is the plan's only quality gate and reads as prose. "Watch one school mor
 | 4 | "Watch one school morning" | Doesn't test the durable-handler failure | "Send the ping, run `ha core reload-automations`, then tap Yes; `home_today` turns on." (Fails today — this is Concern 8's test.) |
 | 4 | *(none)* | Silent no-op after timeout | "Tap Yes after the timeout has elapsed; either it works, or something is logged." |
 | 1 | *(none)* | Reset untested | "Turn all four booleans on, trigger `automation.school_overrides_reset` manually, all four are off." |
-| 7 | "confirm every referenced entity exists in the repo or the UI" | Not a check, and `.storage` isn't greppable from here | "`zone.lyon_school` and `zone.olph_school` resolve in Developer Tools → States with a stated radius; both zone triggers appear in the automation's trace." |
+| 7 | "confirm every referenced entity exists in the repo or the UI" | Not a check, and `.storage` isn't greppable from here | "`zone.primary_school` and `zone.parochial_school` resolve in Developer Tools → States with a stated radius; both zone triggers appear in the automation's trace." |
 
 **Test coverage gaps beyond the table**: nothing verifies that the new person-in-zone state doesn't disturb John's or Cristina's arrival/departure automations (Concern 3), and nothing verifies the push-loop behaviour on a school day (Concern 10).
 
@@ -378,7 +378,7 @@ Once revised — whether to the small v1 or the full version with inverted polar
 - **Where**: Tasks 2, 4, 6; Goal ("Gianluca gets the same sensors and latch so a future use has them ready").
 
 **Change 4 — Create the zones** *(new task, before Task 2)* — MAJOR
-- **What's wrong**: `zone.lyon_school` / `zone.olph_school` exist nowhere in this repo; a zone trigger on a nonexistent zone loads clean and never fires.
+- **What's wrong**: `zone.primary_school` / `zone.parochial_school` exist nowhere in this repo; a zone trigger on a nonexistent zone loads clean and never fires.
 - **What to do**: add a task creating both (YAML alongside `zone: Home` in `configuration.yaml` with `!secret` coordinates, since the repo is public), plus verification that they resolve and that no arrival/departure automation on John or Cristina is disturbed by the new intermediate zone.
 - **Where**: new task; Task 7 verification.
 

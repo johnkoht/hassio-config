@@ -1,7 +1,7 @@
 # Nino Dropped Off
 #
 # Latches input_boolean.nino_dropped_off when a parent lingers in
-# Lyon's zone (UI-defined, not in this repo) during Nino's drop-off
+# the primary school zone (UI-defined, not in this repo) during Nino's drop-off
 # window. Reset nightly by school_overrides_reset.yaml.
 #
 
@@ -12,8 +12,8 @@ automation:
     triggers:
       - trigger: template
         value_template: >-
-          {{ 'person.john_koht' in (state_attr('zone.lyon_school', 'persons') or [])
-             or 'person.cristina_falbo' in (state_attr('zone.lyon_school', 'persons') or []) }}
+          {{ 'person.john_koht' in (state_attr('zone.primary_school', 'persons') or [])
+             or 'person.cristina_falbo' in (state_attr('zone.primary_school', 'persons') or []) }}
         for: "00:03:00"
     conditions:
       - condition: state

@@ -19,7 +19,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [Plan] `trigger: zone` does not accept `for:`; use a template trigger over `state_attr('zone.x','persons') or []`.
 - [Plan] `condition: state / state: "off"` is FALSE on unavailable. Gate the medication voice with `not is_state(..., 'on')`.
 - [Plan] `ha core check` does not run on this machine. Local gate is `tests/.venv/bin/python tests/run_tests.py --syntax --modern`. Never `deploy.sh --check`.
-- [Plan] Zones `zone.lyon_school` (122 m) and `zone.olph_school` are UI-defined; they are not in the repo and must not be added to configuration.yaml.
+- [Plan] Zones `zone.primary_school` (122 m) and `zone.parochial_school` are UI-defined; they are not in the repo and must not be added to configuration.yaml.
 
 ## Shared Utilities Created
 *(Add: [Task N] functionName() in path/to/file)*
@@ -32,6 +32,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [2026-09-03] Gianluca gets helpers + latch + sensor only; no ping, no handler, no chip until a consumer exists. — docs affected: plan.md (folded) — status: folded
 - [2026-09-03] Voice gate scoped to dose 2 only via the existing `dose` variable. — docs affected: plan.md (folded) — status: folded
 - [2026-09-03] Drop-off ping is John-only (`devices: jk`), not both parents; Cristina's phone latches automatically so the ping only matters when nobody drove. — docs affected: plan.md Risks (folded) — status: folded
+- [2026-09-03] School zones are referenced by grade band (`zone.primary_school`, `zone.parochial_school`), never by school name, matching the package convention; the repo is public. — docs affected: plan.md, prd.md, the two latch automations (folded) — status: folded
 - [2026-09-03] False-latch-on-sick-day accepted as the one positive-evidence silencing path; mitigated by the Nino Home chip and the narrow zone, not by code. — docs affected: plan.md Risks (folded) — status: folded
 
 ## Task 7 — Validation record (2026-09-03)
@@ -42,8 +43,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 **Live checks on the Yellow (read-only, via homelab agent, HA 2026.7.4, America/Chicago):**
 | Item | Exists | Detail |
 |---|---|---|
-| zone.lyon_school | yes | radius 122 m, passive false |
-| zone.olph_school | yes | radius 87 m, passive false |
+| zone.primary_school | yes | radius 122 m, passive false |
+| zone.parochial_school | yes | radius 87 m, passive false |
 | automation.school_overrides_reset | yes | on, last_triggered 2026-09-03 04:58 UTC (23:58 CDT prior day) |
 | notify.mobile_app_jk_2 | yes | John's phone; `devices: jk` routes here |
 | binary_sensor.nonna_presence | yes | on |
@@ -57,9 +58,10 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 Dose 2 (13:00 CDT) sits inside the primary window 08:45–15:40, so the gate is live on ordinary school days.
 
 **Post-merge runbook (John runs; nothing here was deployed):**
+0. In the HA UI, rename the two school zones' entity IDs to `zone.primary_school` and `zone.parochial_school` (Settings → Areas & zones → zone → entity settings). The automations reference the band-named IDs; until renamed, the latch never fires and the ping asks every school morning (the safe direction).
 1. Push master to GitHub (deploy pulls from GitHub).
 2. On the Yellow: `./deploy.sh --skip-ci` (never `--check`, it deletes secrets.yaml).
 3. `ha core check`.
 4. Reload in order: Developer Tools → YAML → Input booleans; Template entities; Automations. No restart.
 5. Confirm in Developer Tools → States: `binary_sensor.nino_at_school` = off, `sensor.nino_dropoff_check_time` = today's start + 30 min (or unavailable on a non-school day), `input_boolean.nino_home_today` present.
-6. First school morning: Logbook → `automation.nino_dropped_off` fires ~3 min after arriving at Lyon; `binary_sensor.nino_at_school` flips on at 08:45. First Nonna-drives morning: John's phone gets the "Nino drop-off" push at start + 30; tap "At school".
+6. First school morning: Logbook → `automation.nino_dropped_off` fires ~3 min after arriving at the primary school; `binary_sensor.nino_at_school` flips on at 08:45. First Nonna-drives morning: John's phone gets the "Nino drop-off" push at start + 30; tap "At school".
