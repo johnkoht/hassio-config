@@ -106,9 +106,9 @@ script:
             - condition: state
               entity_id: binary_sensor.front_door
               state: "off"
-            # Only 3 times max
+            # Only 3 times max — repeat.index is 1-based
             - condition: template
-              value_template: "{{ repeat.index <= 2 }}"
+              value_template: "{{ repeat.index <= 3 }}"
           sequence:
             - action: script.announcement_engine
               data:
