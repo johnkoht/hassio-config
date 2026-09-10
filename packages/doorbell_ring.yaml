@@ -1,15 +1,29 @@
+# Doorbell Ring
+#
+# UniFi Protect reports rings on an event entity, not a binary_sensor.
+# The event entity's state is the ring timestamp, so trigger on state,
+# not on the event_type attribute (only value is "ring", so it never changes).
+#
+
 automation:
-  # Doorbell Ring
-  #
   - id: "doorbell_ring"
     alias: "Doorbell Ring"
     mode: "single"
     triggers:
       # Doorbell is pressed
       - trigger: state
-        entity_id: binary_sensor.front_door_camera_doorbell
-        to: "on"
-    action:
+        entity_id: event.front_door_camera_doorbell
+        not_from:
+          - "unknown"
+          - "unavailable"
+        not_to:
+          - "unknown"
+          - "unavailable"
+    conditions:
+      - alias: "The event was a ring"
+        condition: template
+        value_template: "{{ trigger.to_state.attributes.event_type == 'ring' }}"
+    actions:
       # Sound the doorbell
       - action: script.activate_doorbell_chime
         data: {}

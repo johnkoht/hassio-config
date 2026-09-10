@@ -51,24 +51,6 @@
       speech_message: It's garbage day. Don't forget to collect garbage from the bathrooms
         and diaper bin!
   mode: single
-- id: '1624048450884'
-  alias: Front Door Alert
-  description: ''
-  trigger:
-  - type: motion
-    platform: device
-    device_id: 92b464fee4dab94c831b8ff8686f330a
-    entity_id: binary_sensor.front_door_camera_motion
-    domain: binary_sensor
-  condition: []
-  action:
-  - service: script.set_doorbell_message
-    data:
-      message: "{% if states('input_boolean.quiet_mode') == 'on'  %}\n  quiet_mode\n{%
-        else %}\n  welcome\n{% endif %}"
-  - service: script.display_doorbell_snapshot_on_tvs
-    data: {}
-  mode: single
 - id: '1644810800643'
   alias: Vacation Faux Home On
   description: Make it appear as if people are home when we're out of town
@@ -121,33 +103,6 @@
         - 37ab5381dccd0ec08d2043d4cf433d72
       no_motion_wait: 240
       motion_entity: binary_sensor.mudroom_trisensor_home_security_motion_detection
-- id: '1646251632973'
-  alias: Doorbell Ring (Duplicate)
-  description: ''
-  trigger:
-  - type: occupied
-    platform: device
-    device_id: 92b464fee4dab94c831b8ff8686f330a
-    entity_id: binary_sensor.front_door_camera_doorbell
-    domain: binary_sensor
-  condition: []
-  action:
-  - service: camera.snapshot
-    data:
-      filename: /config/www/images/doorbell_camera_alert.jpg
-    target:
-      device_id: 92b464fee4dab94c831b8ff8686f330a
-  - service: script.display_doorbell_snapshot_on_tvs
-    data: {}
-  - service: script.play_doorbell
-    data: {}
-  - service: notify.ios_family
-    data:
-      message: ' Somebody is at the front door!'
-      title: Kohbo Front Door
-      data:
-        image: /config/www/images/doorbell_camera_alert.jpg
-  mode: single
 - id: '1646272122915'
   alias: Turn on Outdoor Lights
   description: ''
