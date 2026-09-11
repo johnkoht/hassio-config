@@ -139,56 +139,6 @@ climate_activate:
       entity_id: climate.nest_2nd_floor
   mode: single
   icon: mdi:hvac
-display_doorbell_snapshot_on_tvs:
-  mode: single
-  alias: Display Doorbell Snapshot on TVs
-  icon: mdi:doorbell-video
-  sequence:
-  - condition: state
-    entity_id: remote.sony_bravia_tv
-    state: 'on'
-  - service: camera.snapshot
-    target:
-      device_id: 92b464fee4dab94c831b8ff8686f330a
-    data:
-      filename: /config/www/images/doorbell_camera_alert.jpg
-  - service: notify.family_room_tv
-    data:
-      message: Somebody is at the door!
-      data:
-        image:
-          path: /config/www/images/doorbell_camera_alert.jpg
-      title: Bouncer
-play_doorbell:
-  alias: Play Doorbell
-  icon: mdi:doorbell
-  mode: single
-  sequence:
-  - condition: state
-    entity_id: group.family
-    state: home
-  - condition: state
-    entity_id: input_boolean.quiet_mode
-    state: 'off'
-  - service: media_player.play_media
-    data:
-      entity_id:
-      - media_player.sonos_office
-      - media_player.sonos_family_and_kitchen
-      media_content_id: https://raw.githubusercontent.com/johnkoht/hass-config/master/config/sounds/ding-dong.mp3
-      media_content_type: music
-set_doorbell_message:
-  alias: Set Doorbell Message
-  mode: single
-  icon: mdi:android-messages
-  sequence:
-  - service: select.select_option
-    data:
-      entity_id: select.front_door_camera_doorbell_text
-      option: "{% if message == \"quiet_mode\" %}\n  SHHH…KIDS SLEEPING\n{% elif message
-        == \"dnd\" %}\n  DO NOT DISTURB\n{% elif message == \"leave_package\" %}\n
-        \ LEAVE PACKAGE AT DOOR\n{% elif message == \"welcome\" %}\n  WELCOME!\n{%
-        else %}\n  WELCOME!\n{% endif %}"
 test_speech_engine:
   alias: Test speech engine
   mode: queued
