@@ -27,14 +27,14 @@ automation:
       - trigger: homeassistant
         event: start
     conditions:
-      # Skip tonight is ON
-      - condition: state
-        entity_id: input_boolean.main_level_vacuum_skip_tonight
-        state: "on"
       # Outside the nightly window
       - condition: time
         after: "05:00:00"
         before: "22:00:00"
+      # Skip tonight is ON
+      - condition: state
+        entity_id: input_boolean.main_level_vacuum_skip_tonight
+        state: "on"
     actions:
       # Defer the nightly rooms to the next empty-house clean
       - if:
