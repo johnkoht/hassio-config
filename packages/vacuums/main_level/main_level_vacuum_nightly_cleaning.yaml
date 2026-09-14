@@ -48,6 +48,11 @@ automation:
       - condition: state
         entity_id: group.main_level_vacuum_nightly_cleaning_group
         state: "on"
+      # Skip tonight is OFF
+      # (deferred to the next empty-house clean by main_level_vacuum_skip_tonight_close_out)
+      - condition: state
+        entity_id: input_boolean.main_level_vacuum_skip_tonight
+        state: "off"
       # Jr. Suite door is OPEN
       # otherwise the vacuum will get stuck in the Jr. Suite
       - condition: state

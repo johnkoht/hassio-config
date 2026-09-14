@@ -1,0 +1,55 @@
+# Main Level Vacuum - Skip Tonight Close Out
+#
+# At 05:00 (end of the nightly window) if skip tonight is on, defer the
+# nightly rooms to the next empty-house clean and clear the skip flag.
+# Also runs on HA start so a restart at 05:00 can't latch the flag.
+#
+automation:
+  - id: "main_level_vacuum_skip_tonight_close_out"
+    alias: "Main Level Vacuum - Skip Tonight Close Out"
+    mode: single
+    variables:
+      #
+      # Map the selected nightly rooms to their quick/scheduled clean
+      # booleans, which is what clean_when_house_is_empty reads.
+      # input_boolean.vacuum_kitchen_at_night -> input_boolean.vacuum_kitchen
+      #
+      deferred_rooms: >
+        {{ state_attr('group.main_level_vacuum_nightly_cleaning_group', 'entity_id')
+          | select('is_state', 'on')
+          | map('replace', '_at_night', '')
+          | list }}
+    triggers:
+      # End of the nightly cleaning window
+      - trigger: time
+        at: "05:00:00"
+      # Catch a restart that swallowed the 05:00 trigger
+      - trigger: homeassistant
+        event: start
+    conditions:
+      # Skip tonight is ON
+      - condition: state
+        entity_id: input_boolean.main_level_vacuum_skip_tonight
+        state: "on"
+      # Outside the nightly window
+      - condition: time
+        after: "05:00:00"
+        before: "22:00:00"
+    actions:
+      # Defer the nightly rooms to the next empty-house clean
+      - if:
+          - alias: "At least one nightly room is selected"
+            condition: template
+            value_template: "{{ deferred_rooms | count > 0 }}"
+        then:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: "{{ deferred_rooms }}"
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.main_level_vacuum_clean_when_house_empty
+
+      # Clear the skip flag
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.main_level_vacuum_skip_tonight
