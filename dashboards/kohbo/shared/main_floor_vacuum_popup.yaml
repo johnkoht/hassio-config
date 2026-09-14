@@ -184,3 +184,30 @@ cards:
               font-weight: 500 !important;
               padding: 15px 10px !important;
             }
+      # 
+      # Skip Tonight
+      # 
+      - type: custom:button-card
+        entity: input_boolean.main_level_vacuum_skip_tonight
+        name: >
+          [[[
+            return states['input_boolean.main_level_vacuum_skip_tonight'].state === 'on' ? "Tonight's Cleaning Skipped (tap to undo)" : "Skip Tonight's Cleaning";
+          ]]]
+        show_icon: false
+        tap_action:
+          action: toggle
+          haptic: heavy
+        card_mod:
+          style: |
+            :host {
+              padding: 0 !important;
+            }
+            ha-card {
+              background: transparent !important;
+              border: 1px solid var(--primary-color) !important;
+              color: var(--primary-text-color) !important;
+              border-radius: 30px !important;
+              font-size: 14px !important;
+              font-weight: 500 !important;
+              padding: 15px 10px !important;
+            }

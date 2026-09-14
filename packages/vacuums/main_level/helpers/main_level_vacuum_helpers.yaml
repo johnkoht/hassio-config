@@ -14,3 +14,9 @@ input_boolean:
   main_level_vacuum_clean_when_house_empty:
     name: Main Level Vacuum Clean When House Empty
     icon: mdi:vacuum
+
+  # Skip tonight's nightly cleaning (e.g. someone sleeping in the Jr. Suite).
+  # Cleared and deferred to the next empty-house clean at 05:00.
+  main_level_vacuum_skip_tonight:
+    name: Main Level Vacuum Skip Tonight
+    icon: mdi:sleep
