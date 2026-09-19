@@ -75,6 +75,11 @@ routes:
         url: /dashboard-kohbo/school
         label: School
 
+      # Chores
+      - icon: mdi:clipboard-check
+        url: /dashboard-kohbo/chores
+        label: Chores
+
       # Energy
       - icon: mdi:lightning-bolt
         url: /dashboard-kohbo/energy

@@ -1,0 +1,217 @@
+# Chores Dashboard
+#
+# Parent surface for ChoreOps. Its job is approvals — the kids' surface is the
+# mudroom family board. Approve / Needs Work also ride the push notification;
+# this page is the fallback when one gets missed.
+#
+# Nothing here hardcodes a chore. auto-entities finds claims by state and the
+# card reads its button targets off each entity's own attributes.
+#
+type: custom:vertical-layout
+title: Chores
+path: chores
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  #
+  # Page Header
+  #
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        - type: custom:button-card
+          template: empty_column
+
+        # Page Title
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Chores
+
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#chores_settings_popup'
+
+  #===========================================================================
+  # STATUS PILLS
+  #===========================================================================
+  - type: custom:mod-card
+    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout_wrap.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # What's waiting on a parent. A dead sensor must not read "All Clear".
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: sensor.chores_pending_approval_count
+          name: Pending
+          icon: mdi:clipboard-alert
+          tap_action:
+            action: none
+          state_display: >
+            [[[
+              const n = Number(entity.state);
+              if (!Number.isFinite(n)) return "—";
+              if (n === 0) return "All Clear";
+              return n === 1 ? "1 Waiting" : `${n} Waiting`;
+            ]]]
+          styles:
+            icon:
+              - color: >
+                  [[[
+                    const n = Number(entity.state);
+                    if (!Number.isFinite(n)) return "var(--light-grey-color)";
+                    return n > 0 ? "var(--warning-color)" : "var(--success-color)";
+                  ]]]
+
+        # Balances — kohbo_chip_card hides the name, so it goes in state_display
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: sensor.nino_choreops_emeralds
+          name: Nino Emeralds
+          icon: mdi:diamond-stone
+          tap_action:
+            action: more-info
+          state_display: >
+            [[[
+              const n = Number(entity.state);
+              if (!Number.isFinite(n)) return "Nino: —";
+              return `Nino: ${Math.round(n).toLocaleString()}`;
+            ]]]
+          styles:
+            icon:
+              - color: var(--success-color)
+
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: sensor.gianluca_choreops_emeralds
+          name: Gianluca Emeralds
+          icon: mdi:diamond-stone
+          tap_action:
+            action: more-info
+          state_display: >
+            [[[
+              const n = Number(entity.state);
+              if (!Number.isFinite(n)) return "Gianluca: —";
+              return `Gianluca: ${Math.round(n).toLocaleString()}`;
+            ]]]
+          styles:
+            icon:
+              - color: var(--primary-color)
+
+  #===========================================================================
+  # NEEDS APPROVAL
+  #
+  # No `type: conditional` and no template sensor gating this on purpose. The
+  # title lives on the entities card itself, so auto-entities' `show_empty`
+  # hides the header and its rows together and they cannot disagree — a
+  # separate gate would be a second source of truth that can fail hidden while
+  # real claims are waiting.
+  #
+  # Chore claims and reward redemptions land in the same list; the card reads
+  # chore_name or reward_name and the matching button eid off whichever entity
+  # it was handed.
+  #===========================================================================
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Needs Approval
+      card_mod:
+        style: |
+          ha-card {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+          }
+          ha-card .card-header {
+            padding: 10px 0 12px 0;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: normal;
+            text-transform: uppercase;
+            color: #F8F9FA;
+          }
+          ha-card #states {
+            padding: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+          ha-card #states > div {
+            margin: 0 !important;
+          }
+    filter:
+      include:
+        - entity_id: /_choreops_chore_status_/
+          state: claimed
+          options:
+            type: custom:button-card
+            template: kohbo_chore_approval_card
+        - entity_id: /_choreops_reward_status_/
+          state: requested
+          options:
+            type: custom:button-card
+            template: kohbo_chore_approval_card
+    # Oldest claim first — it's a queue, not a feed.
+    sort:
+      method: last_changed
+
+  #===========================================================================
+  # THE KIDS
+  #===========================================================================
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        template: kohbo_chore_kid_card
+        entity: person.nino
+        name: Nino
+        variables:
+          points: sensor.nino_choreops_emeralds
+          chores: sensor.nino_choreops_chores
+          badges: sensor.nino_choreops_badges
+
+      - type: custom:button-card
+        template: kohbo_chore_kid_card
+        entity: person.gianluca
+        name: Gianluca
+        variables:
+          points: sensor.gianluca_choreops_emeralds
+          chores: sensor.gianluca_choreops_chores
+          badges: sensor.gianluca_choreops_badges
+
+  #===========================================================================
+  # TODAY — every chore per kid, live state
+  #===========================================================================
+  - type: custom:button-card
+    template: section_title
+    name: Today
+
+  - type: custom:decluttering-card
+    template: chore_day_list
+    variables:
+      - name: Nino
+      - kid: nino
+
+  - type: custom:decluttering-card
+    template: chore_day_list
+    variables:
+      - name: Gianluca
+      - kid: gianluca
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml
+
+  #
+  # Chores Settings
+  #
+  - !include /config/dashboards/kohbo/chores/components/chores_settings_popup.yaml
