@@ -1,0 +1,121 @@
+#------------------------------------------------------------------------------
+# Chore Kid Card
+#
+# Big-avatar card for a kid on the chores dashboard — mirrors
+# kohbo_school_kid_card. Photo, status dot, name, emerald balance, then a
+# two-column footer of rank and today's progress.
+#
+# The status dot is green once every chore due today is done.
+#
+# Usage:
+#   - type: custom:button-card
+#     template: kohbo_chore_kid_card
+#     entity: person.nino
+#     name: Nino
+#     variables:
+#       points: sensor.nino_choreops_emeralds
+#       chores: sensor.nino_choreops_chores
+#       badges: sensor.nino_choreops_badges
+#------------------------------------------------------------------------------
+kohbo_chore_kid_card:
+  template: kohbo_device_entity
+  show_entity_picture: true
+  show_icon: false
+  show_state: true
+  size: 130px
+  tap_action:
+    action: none
+  styles:
+    grid:
+      - grid-template-areas: '"i i" "chore_state chore_state" "n n" "s s" "slot_left slot_right"'
+      - grid-template-columns: 1fr 1fr
+      - grid-template-rows: auto auto auto auto auto
+    card:
+      - position: relative
+      - height: 205px
+    name:
+      - justify-self: center
+      - margin-bottom: 3px
+    state:
+      - justify-self: center
+      - width: 100%
+      - margin-bottom: 14px
+      - text-align: center
+    img_cell:
+      - border-radius: 50%
+      - justify-self: center
+      - height: 60px
+      - width: 60px
+    custom_fields:
+      chore_state:
+        - background-color: >
+            [[[
+              const c = states[variables.chores];
+              if (!c) return "var(--text-light-primary-color)";
+              const due = c.attributes.chore_stat_current_due_today || 0;
+              const done = c.attributes.chore_stat_completed_today || 0;
+              // Overdue outranks "all of today's done" — a backlog is not green.
+              if ((c.attributes.chore_stat_current_overdue || 0) > 0) return "var(--error-color)";
+              if (due > 0 && done >= due) return "var(--success-color)";
+              return "var(--text-light-primary-color)";
+            ]]]
+        - border-radius: 50%
+        - margin: auto
+        - margin-top: -19px
+        - z-index: 1
+        - height: 10px
+        - width: 10px
+        - box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5)
+      slot_left:
+        - justify-self: start
+      slot_right:
+        - justify-self: end
+        - text-align: right
+  state_display: >
+    [[[
+      const p = states[variables.points];
+      if (!p || ['unknown', 'unavailable', 'none', ''].includes(p.state)) return "—";
+      return `${Math.round(Number(p.state)).toLocaleString()} emeralds`;
+    ]]]
+  custom_fields:
+    chore_state: >
+      [[[
+        return "";
+      ]]]
+
+    # Rank comes from the badges roll-up. current_badge_name is null until the
+    # first sword is earned, so fall back to what they're working toward.
+    slot_left: >
+      [[[
+        const b = states[variables.badges];
+        let label = "Rank";
+        let value = "—";
+        if (b) {
+          const current = b.attributes.current_badge_name;
+          if (current) {
+            value = current;
+          } else if (b.attributes.next_higher_badge_name) {
+            label = "Next Rank";
+            value = b.attributes.next_higher_badge_name;
+          }
+        }
+        return `
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--secondary-text-color);margin-bottom:3px;">${label}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--primary-text-color);line-height:16px;">${value}</div>
+        `;
+      ]]]
+
+    slot_right: >
+      [[[
+        const c = states[variables.chores];
+        let value = "—";
+        if (c) {
+          const due = c.attributes.chore_stat_current_due_today;
+          const done = c.attributes.chore_stat_completed_today || 0;
+          if (due !== null && due !== undefined) value = `${done}/${due}`;
+        }
+        return `
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--secondary-text-color);margin-bottom:3px;">Today</div>
+          <div style="font-size:15px;font-weight:700;color:var(--primary-text-color);line-height:16px;">${value}</div>
+        `;
+      ]]]

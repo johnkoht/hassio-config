@@ -1,0 +1,102 @@
+#
+# Chores Settings Popup
+#
+# Manual emerald adjustments. ChoreOps exposes these only as button entities
+# (the integration has no number or switch entity), so each amount is its own
+# button. Adjustments count toward lifetime points, so they move the sword
+# rank as well as the balance.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#chores_settings_popup'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+margin_top_mobile: calc(100vh - 625px)
+margin_top_desktop: calc(100vh - 625px)
+
+cards:
+  #
+  # Title
+  #
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Chores
+
+  - type: custom:button-card
+    name: "Manual emerald adjustments. These count toward lifetime points, so they move the sword rank as well as the balance."
+    template: kohbo_card_section_description
+    styles:
+      card:
+        - margin-bottom: 14px
+
+  #
+  # Nino
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Nino
+
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.nino_choreops_decrement_100_0_emeralds
+        name: "-100"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.nino_choreops_decrement_50_0_emeralds
+        name: "-50"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.nino_choreops_decrement_10_0_emeralds
+        name: "-10"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.nino_choreops_increment_10_0_emeralds
+        name: "+10"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.nino_choreops_increment_50_0_emeralds
+        name: "+50"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.nino_choreops_increment_100_0_emeralds
+        name: "+100"
+
+  #
+  # Gianluca
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Gianluca
+
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.gianluca_choreops_decrement_100_0_emeralds
+        name: "-100"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.gianluca_choreops_decrement_50_0_emeralds
+        name: "-50"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.gianluca_choreops_decrement_10_0_emeralds
+        name: "-10"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.gianluca_choreops_increment_10_0_emeralds
+        name: "+10"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.gianluca_choreops_increment_50_0_emeralds
+        name: "+50"
+      - type: custom:button-card
+        template: kohbo_chore_points_button
+        entity: button.gianluca_choreops_increment_100_0_emeralds
+        name: "+100"
