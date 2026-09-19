@@ -23,6 +23,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.gianluca_school_day
         state: "on"
+      - condition: state
+        entity_id: input_boolean.gianluca_home_today
+        state: "off"
     actions:
       - action: script.voice_announcement
         data:
