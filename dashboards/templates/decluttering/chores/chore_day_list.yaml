@@ -1,0 +1,56 @@
+#
+# Chore Day List
+#
+# One kid's full chore set with live state. Read-only — claiming is the kid's
+# job on the family board, approving happens in Needs Approval.
+#
+# Usage:
+#   - type: custom:decluttering-card
+#     template: chore_day_list
+#     variables:
+#       - name: Nino
+#       - kid: nino
+#
+chore_day_list:
+  card:
+    type: custom:stack-in-card
+    mode: vertical
+    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_header
+        name: '[[name]]'
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+        filter:
+          include:
+            - entity_id: /^sensor\.[[kid]]_choreops_chore_status_/
+              options:
+                type: custom:template-entity-row
+                card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+                # HA's friendly_name is "<Kid> (ChoreOps) Chore Status - X";
+                # chore_name is the clean one.
+                name: "{{ state_attr(config.entity, 'chore_name') or 'Chore' }}"
+                icon: "{{ state_attr(config.entity, 'icon') or 'mdi:clipboard-outline' }}"
+                state: >
+                  {% set s = states(config.entity) %}
+                  {% if s == 'pending' %}To do
+                  {% elif s == 'claimed' %}Needs approval
+                  {% elif s == 'completed' %}Done
+                  {% elif s == 'overdue' %}Overdue
+                  {% elif s == 'waiting' %}Not yet
+                  {% else %}{{ s | title }}{% endif %}
+                secondary: "{{ state_attr(config.entity, 'default_points') | int(0) }} emeralds"
+                # Colors the icon badge, not the state text.
+                color: >
+                  {% set s = states(config.entity) %}
+                  {% if s == 'completed' %}var(--success-color)
+                  {% elif s == 'claimed' %}var(--warning-color)
+                  {% elif s == 'overdue' %}var(--error-color)
+                  {% else %}var(--light-grey-color){% endif %}
+        sort:
+          method: attribute
+          attribute: chore_name

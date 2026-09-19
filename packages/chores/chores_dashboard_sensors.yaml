@@ -1,0 +1,24 @@
+# Chores Dashboard Rollups
+#
+# Count behind the "Pending" chip on the chores view.
+#
+# The Needs Approval list itself is NOT gated on a template sensor. It uses
+# auto-entities' own `show_empty: false` over the same chore/reward status
+# entities it renders, so the header cannot outlive its rows and a sensor
+# hiccup cannot hide a real queue.
+#
+
+template:
+  - sensor:
+      - name: Chores Pending Approval Count
+        unique_id: chores_pending_approval_count
+        default_entity_id: sensor.chores_pending_approval_count
+        icon: mdi:clipboard-alert
+        unit_of_measurement: "claims"
+        state: >-
+          {% set n = state_attr('sensor.nino_choreops_ui_dashboard_helper', 'pending_approvals') or {} %}
+          {% set g = state_attr('sensor.gianluca_choreops_ui_dashboard_helper', 'pending_approvals') or {} %}
+          {{ (n.get('chores') | default([], true) | count)
+             + (n.get('rewards') | default([], true) | count)
+             + (g.get('chores') | default([], true) | count)
+             + (g.get('rewards') | default([], true) | count) }}
