@@ -1,7 +1,8 @@
 # School Dashboard
 #
 # Glanceable view of today: status pills, a card per kid, then calendar
-# and lunch. Every schedule value lives behind the gear
+# and lunch. Per-day state (Home Today / Dropped Off) lives in the Today
+# section; only schedule values stay behind the gear
 # (#school_settings_popup) — those input_datetime/input_number entities are
 # declared in YAML (editable: false), so the popup is their only edit surface.
 #
@@ -116,8 +117,9 @@ cards:
               icon:
                 - color: var(--error-color)
 
-        # Sick-day toggle. Tap to mark Nino home before the drop-off ping
-        # asks; the medication voice gate and the ping both read it.
+        # Sick-day toggles — one per kid. Tap to mark a kid home before the
+        # drop-off ping asks. kohbo_chip_card sets show_name: false, so the
+        # kid's name has to live in state_display or the chip is anonymous.
         - type: custom:button-card
           template: kohbo_chip_card
           entity: input_boolean.nino_home_today
@@ -126,7 +128,21 @@ cards:
           tap_action:
             action: toggle
           state_display: >
-            [[[ return entity.state === 'on' ? 'Home' : 'School'; ]]]
+            [[[ return entity.state === 'on' ? 'Nino: Home' : 'Nino: School'; ]]]
+          styles:
+            icon:
+              - color: >
+                  [[[ return entity.state === 'on' ? 'var(--warning-color)' : 'var(--secondary-text-color)'; ]]]
+
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_boolean.gianluca_home_today
+          name: Gianluca Home
+          icon: mdi:home-heart
+          tap_action:
+            action: toggle
+          state_display: >
+            [[[ return entity.state === 'on' ? 'Gianluca: Home' : 'Gianluca: School'; ]]]
           styles:
             icon:
               - color: >
@@ -305,6 +321,85 @@ cards:
                 }
                 return out;
               ]]]
+
+  #===========================================================================
+  # TODAY — per-kid manual state. Was behind the gear; it belongs on the page
+  # because Home Today is a same-morning decision, not a settings value.
+  #===========================================================================
+  - type: custom:button-card
+    template: section_title
+    name: Today
+
+  - type: custom:button-card
+    name: "Home Today marks a kid absent for the day. Dropped Off latches on its own in the school zone, and At School is derived from both. All reset at 23:58."
+    template: kohbo_card_section_description
+    styles:
+      card:
+        - margin-bottom: 14px
+
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_header
+        name: Nino
+      - type: entities
+        entities:
+          - entity: input_boolean.nino_home_today
+            name: Home Today
+            icon: mdi:home-heart
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: input_boolean.nino_dropped_off
+            name: Dropped Off
+            icon: mdi:car-arrow-right
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: binary_sensor.nino_at_school
+            name: At School
+            icon: mdi:school
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            state_color: true
+
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_header
+        name: Gianluca
+      - type: entities
+        entities:
+          - entity: input_boolean.gianluca_home_today
+            name: Home Today
+            icon: mdi:home-heart
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: input_boolean.gianluca_dropped_off
+            name: Dropped Off
+            icon: mdi:car-arrow-right
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: binary_sensor.gianluca_at_school
+            name: At School
+            icon: mdi:school
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            state_color: true
 
   #===========================================================================
   # OVERRIDES — the only two manual controls in the school system
