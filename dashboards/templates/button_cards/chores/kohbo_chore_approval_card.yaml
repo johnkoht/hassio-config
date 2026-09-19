@@ -1,0 +1,139 @@
+#------------------------------------------------------------------------------
+# Chore Approval Card
+#
+# One claim waiting on a parent — icon, name, kid + point value, and
+# Approve / Needs Work buttons. Handles both chore claims and reward
+# redemptions; they carry the same attribute shape apart from the name key.
+#
+# Both button targets are read off the entity's own attributes
+# (approve_button_eid / disapprove_button_eid), so chores and rewards can be
+# added, renamed, or deleted in ChoreOps without touching this file.
+#
+# Usage: auto-entities sets `entity` — see dashboards/kohbo/chores/chores.yaml
+#------------------------------------------------------------------------------
+kohbo_chore_approval_card:
+  template: kohbo_default
+  show_icon: true
+  show_name: true
+  show_state: false
+  tap_action:
+    action: none
+  icon: |
+    [[[
+      if (entity.attributes.icon) return entity.attributes.icon;
+      return entity.attributes.reward_name ? 'mdi:gift-outline' : 'mdi:clipboard-check-outline';
+    ]]]
+  name: |
+    [[[
+      return entity.attributes.chore_name
+          || entity.attributes.reward_name
+          || 'Claim';
+    ]]]
+  styles:
+    grid:
+      - grid-template-areas: '"i n approve deny" "i meta approve deny"'
+      - grid-template-columns: 34px 1fr 44px 44px
+      - grid-template-rows: auto auto
+      - grid-column-gap: 12px
+      - align-items: center
+    card:
+      - background: var(--darker-primary-color)
+      - box-shadow: none
+      - border: none
+      - border-radius: 12px
+      - padding: 12px 14px
+    img_cell:
+      - width: 34px
+      - height: 34px
+      - justify-self: start
+      - align-self: center
+      - background: transparent
+    icon:
+      - width: 24px
+      - height: 24px
+      - color: var(--warning-color)
+    name:
+      - justify-self: start
+      - font-size: 15px
+      - font-weight: 600
+      - color: var(--primary-text-color)
+      - margin-bottom: 2px
+    custom_fields:
+      meta:
+        - justify-self: start
+      approve:
+        - align-self: center
+      deny:
+        - align-self: center
+  custom_fields:
+    meta: |
+      [[[
+        const kid = entity.attributes.user_name || '';
+        // Chores carry default_points (earned); rewards carry cost (spent).
+        const pts = entity.attributes.default_points;
+        const cost = entity.attributes.cost;
+        const parts = [];
+        if (kid) parts.push(kid);
+        if (pts !== null && pts !== undefined) {
+          parts.push(`${Math.round(pts).toLocaleString()} emeralds`);
+        } else if (cost !== null && cost !== undefined) {
+          parts.push(`costs ${Math.round(cost).toLocaleString()} emeralds`);
+        }
+        return `<div style="font-size:12px;color:var(--secondary-text-color);">${parts.join(' &middot; ')}</div>`;
+      ]]]
+
+    # Approve — presses the chore's own approve button entity.
+    approve:
+      card:
+        type: custom:button-card
+        icon: mdi:check
+        show_name: false
+        show_state: false
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          haptic: success
+          target:
+            entity_id: |
+              [[[ return entity.attributes.approve_button_eid; ]]]
+        styles:
+          card:
+            - background: rgba(6, 214, 160, 0.15)
+            - border: none
+            - border-radius: 10px
+            - height: 40px
+            - width: 40px
+            - padding: 0
+            - box-shadow: none
+          icon:
+            - width: 22px
+            - height: 22px
+            - color: var(--success-color)
+
+    # Needs Work — presses the chore's own disapprove button entity.
+    deny:
+      card:
+        type: custom:button-card
+        icon: mdi:close
+        show_name: false
+        show_state: false
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          haptic: warning
+          target:
+            entity_id: |
+              [[[ return entity.attributes.disapprove_button_eid; ]]]
+        styles:
+          card:
+            - background: rgba(239, 71, 111, 0.15)
+            - border: none
+            - border-radius: 10px
+            - height: 40px
+            - width: 40px
+            - padding: 0
+            - box-shadow: none
+          icon:
+            - width: 22px
+            - height: 22px
+            - color: var(--error-color)

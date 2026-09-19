@@ -1,0 +1,42 @@
+#------------------------------------------------------------------------------
+# Chore Points Button
+#
+# One manual emerald adjustment. ChoreOps exposes each amount as its own
+# button entity, so the card just presses whichever one it was given.
+#
+# Usage:
+#   - type: custom:button-card
+#     template: kohbo_chore_points_button
+#     entity: button.nino_choreops_increment_50_0_emeralds
+#     name: "+50"
+#------------------------------------------------------------------------------
+kohbo_chore_points_button:
+  template: kohbo_default
+  show_icon: false
+  show_state: false
+  show_name: true
+  tap_action:
+    action: perform-action
+    perform_action: button.press
+    haptic: medium
+    target:
+      entity_id: |
+        [[[ return entity.entity_id; ]]]
+  styles:
+    card:
+      - background: var(--darker-primary-color)
+      - box-shadow: none
+      - border: none
+      - border-radius: 10px
+      - height: 46px
+      - padding: 0
+    name:
+      - font-size: 15px
+      - font-weight: 700
+      # Taking emeralds away should not look like the same act as giving them.
+      - color: >
+          [[[
+            return entity.entity_id.includes('_decrement_')
+              ? "var(--error-color)"
+              : "var(--success-color)";
+          ]]]
