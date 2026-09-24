@@ -1,0 +1,39 @@
+# Zigbee Coordinator Offline
+#
+# Push when the ZHA integration (UZG-01 coordinator) has not been loaded for 3 minutes, or still isn't 6 minutes after HA starts.
+# ZHA exposes no coordinator entity, so this reads the config entry state; now() re-checks it each minute.
+#
+
+automation:
+  - id: "zigbee_coordinator_offline"
+    alias: "Zigbee - Coordinator Offline"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: >
+          {% set s = config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') %}
+          {{ now() is not none and (s is none or s.value != 'loaded') }}
+        for:
+          minutes: 3
+      - trigger: homeassistant
+        event: start
+        id: "startup"
+    actions:
+      - if:
+          - condition: trigger
+            id: "startup"
+        then:
+          - delay:
+              minutes: 6
+      - alias: "Coordinator is still offline"
+        condition: template
+        value_template: >
+          {% set s = config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') %}
+          {{ s is none or s.value != 'loaded' }}
+      - action: script.general_notification
+        data:
+          title: "Zigbee Offline"
+          message: "The Zigbee coordinator is offline. Power-cycle the UZG (192.168.1.91), then reload ZHA."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "zigbee-coordinator-offline"
