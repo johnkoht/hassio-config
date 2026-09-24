@@ -1,0 +1,36 @@
+# UPS Offline
+#
+# Push when HA loses contact with the UPS (3 min, or still 6 min after HA starts), since power-outage alerts can't fire.
+#
+
+automation:
+  - id: "ups_offline"
+    alias: "UPS - Offline"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: sensor.apc_ups_status
+        to: "unavailable"
+        for:
+          minutes: 3
+      - trigger: homeassistant
+        event: start
+        id: "startup"
+    actions:
+      - if:
+          - condition: trigger
+            id: "startup"
+        then:
+          - delay:
+              minutes: 6
+      - alias: "UPS is still unreachable"
+        condition: state
+        entity_id: sensor.apc_ups_status
+        state: "unavailable"
+      - action: script.general_notification
+        data:
+          title: "UPS Offline"
+          message: "HA lost contact with the UPS, so power-outage alerts won't fire. Check the NUT connection."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "ups-offline"
