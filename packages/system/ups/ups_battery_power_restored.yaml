@@ -1,0 +1,27 @@
+# UPS Battery Power Restored
+#
+# Push when the UPS is back on line power (OL) after the battery alert fired, even across an unavailable gap.
+#
+
+automation:
+  - id: "ups_battery_power_restored"
+    alias: "UPS - Battery Power Restored"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: "{{ 'OL' in states('sensor.apc_ups_status_data').split() }}"
+    conditions:
+      - alias: "Battery alert fired since the last restored push"
+        condition: template
+        value_template: >
+          {% set on_battery = state_attr('automation.ups_battery_power_activated', 'last_triggered') %}
+          {% set restored = this.attributes.last_triggered %}
+          {{ on_battery is not none and (restored is none or on_battery > restored) }}
+    actions:
+      - action: script.general_notification
+        data:
+          title: "UPS Power Restored!"
+          message: "The UPS is now back on AC power."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "ups-power-restored"
