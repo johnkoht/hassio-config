@@ -1,6 +1,7 @@
 # Zigbee Coordinator Offline
 #
-# Push when the ZHA coordinator (UZG-01) has been unavailable for 3 minutes.
+# Push when the ZHA integration (UZG-01 coordinator) has not been loaded for 3 minutes.
+# ZHA exposes no coordinator entity, so this reads the config entry state; now() re-checks it each minute.
 #
 
 automation:
@@ -8,9 +9,10 @@ automation:
     alias: "Zigbee - Coordinator Offline"
     mode: single
     triggers:
-      - trigger: state
-        entity_id: sensor.texas_instruments_coordinator
-        to: "unavailable"
+      - trigger: template
+        value_template: >
+          {{ now() is not none and
+             config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state').value != 'loaded' }}
         for:
           minutes: 3
     actions:
