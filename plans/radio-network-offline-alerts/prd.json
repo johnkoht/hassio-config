@@ -12,9 +12,9 @@
         "Normal state and unavailable-on-integration-down evidence recorded in working-memory.md",
         "No guessed ids; unverified ones flagged to John before task-2"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
@@ -25,9 +25,9 @@
         "trigger: state, coordinator entity, to unavailable, for 3 min",
         "script.general_notification devices jk, priority time-sensitive, tag zigbee-coordinator-offline, message says to power-cycle the UZG then reload ZHA"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3",
@@ -38,9 +38,9 @@
         "trigger: ZWA-2 controller entity to unavailable for 3 min",
         "time-sensitive push, tag zwave-controller-offline, message says to check zwave-js-ui on hermes"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4",
@@ -52,9 +52,9 @@
         "time-sensitive push, tag ups-offline",
         "ups_battery_power_activated.yaml unchanged"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5",
@@ -65,15 +65,15 @@
         "ids and basenames are unique",
         "config check passes; no HA restart"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     }
   ],
   "metadata": {
     "createdAt": "2026-09-23T21:36:20.589477",
     "totalTasks": 5,
-    "completedTasks": 0,
+    "completedTasks": 5,
     "failedTasks": 0
   }
 }

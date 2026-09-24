@@ -1,7 +1,7 @@
 ---
 title: Zigbee, Z-Wave & UPS Offline Alerts
 slug: radio-network-offline-alerts
-status: in-progress
+status: shipped
 created: 2026-09-23
 has_pre_mortem: false
 has_review: false
