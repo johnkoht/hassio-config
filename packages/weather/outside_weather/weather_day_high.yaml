@@ -1,7 +1,0 @@
-input_number:
-  weather_day_high:
-    name: Weather - Day High
-    min: -100
-    max: 100
-    unit_of_measurement: °F
-    icon: mdi:sun-thermometer
