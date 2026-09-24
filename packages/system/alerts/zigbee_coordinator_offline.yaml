@@ -1,0 +1,33 @@
+# Zigbee Coordinator Offline
+#
+# Push when the ZHA coordinator (UZG-01) has been offline for 3 minutes.
+# Detected via two ZHA groups on the coordinator device going unavailable together.
+#
+
+automation:
+  - id: "zigbee_coordinator_offline"
+    alias: "Zigbee - Coordinator Offline"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id:
+          - light.office_lights
+          - light.gianluca_ceiling_lights
+        to: "unavailable"
+        for:
+          minutes: 3
+    conditions:
+      - alias: "Both coordinator groups are unavailable"
+        condition: state
+        entity_id:
+          - light.office_lights
+          - light.gianluca_ceiling_lights
+        state: "unavailable"
+    actions:
+      - action: script.general_notification
+        data:
+          title: "Zigbee Offline"
+          message: "The Zigbee coordinator is offline. Power-cycle the UZG (192.168.1.91), then reload ZHA."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "zigbee-coordinator-offline"

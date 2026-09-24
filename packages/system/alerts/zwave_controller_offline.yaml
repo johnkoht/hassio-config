@@ -1,0 +1,26 @@
+# Z-Wave Controller Offline
+#
+# Push when the ZWA-2 controller has been unavailable, unresponsive or jammed for 3 minutes.
+#
+
+automation:
+  - id: "zwave_controller_offline"
+    alias: "Z-Wave - Controller Offline"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: sensor.home_assistant_connect_zwa_2_status
+        to:
+          - "unavailable"
+          - "unresponsive"
+          - "jammed"
+        for:
+          minutes: 3
+    actions:
+      - action: script.general_notification
+        data:
+          title: "Z-Wave Offline"
+          message: "The Z-Wave controller is {{ trigger.to_state.state }}. Check zwave-js-ui on hermes (10.0.10.80:3000)."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "zwave-controller-offline"
