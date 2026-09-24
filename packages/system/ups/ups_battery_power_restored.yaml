@@ -1,0 +1,25 @@
+# UPS Battery Power Restored
+#
+# Push when the UPS goes from battery (OB) back to line power (OL). Ignores OL after an HA restart.
+#
+
+automation:
+  - id: "ups_battery_power_restored"
+    alias: "UPS - Battery Power Restored"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: "{{ 'OL' in states('sensor.apc_ups_status_data').split() }}"
+    conditions:
+      - alias: "UPS was on battery"
+        condition: template
+        value_template: >
+          {{ trigger.from_state is not none and 'OB' in trigger.from_state.state.split() }}
+    actions:
+      - action: script.general_notification
+        data:
+          title: "UPS Power Restored!"
+          message: "The UPS is now back on AC power."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "ups-power-restored"
