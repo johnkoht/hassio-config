@@ -1,18 +1,16 @@
-# 
-# UPS Battery Power Automation
-# 
-# 
+# UPS Battery Power Activated
+#
+# Critical push when the UPS switches to battery (raw NUT code OB, e.g. "OB DISCHRG").
+#
+
 automation:
-  # 
-  # UPS Battery Power Activated
-  # 
-  - alias: UPS Battery Power Activated
-    trigger:
-      - platform: state
-        entity_id: sensor.apc_ups_status
-        to: "OB"
-    action:
-      # Send a a critical notification
+  - id: "ups_battery_power_activated"
+    alias: "UPS - Battery Power Activated"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: "{{ 'OB' in states('sensor.apc_ups_status_data').split() }}"
+    actions:
       - action: script.general_notification
         data:
           title: "Power Outage!"
@@ -20,22 +18,3 @@ automation:
           devices: "jk"
           priority: "critical"
           tag: "ups-power-outage"
-
-
-  # 
-  # UPS Battery Power Deactivated
-  # 
-  - alias: UPS Battery Power Deactivated
-    trigger:
-      - platform: state
-        entity_id: sensor.apc_ups_status
-        to: "OL"
-    action:
-      - action: script.general_notification
-        data:
-          title: "UPS Power Restored!"
-          message: "The UPS is now back on AC power."
-          devices: "jk"
-          priority: "time-sensitive"
-          tag: "ups-power-restored"
-        
