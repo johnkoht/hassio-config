@@ -1,6 +1,6 @@
 # UPS Offline
 #
-# Push when HA loses contact with the UPS, since power-outage alerts can't fire.
+# Push when HA loses contact with the UPS (3 min, or still 6 min after HA starts), since power-outage alerts can't fire.
 #
 
 automation:
@@ -13,7 +13,20 @@ automation:
         to: "unavailable"
         for:
           minutes: 3
+      - trigger: homeassistant
+        event: start
+        id: "startup"
     actions:
+      - if:
+          - condition: trigger
+            id: "startup"
+        then:
+          - delay:
+              minutes: 6
+      - alias: "UPS is still unreachable"
+        condition: state
+        entity_id: sensor.apc_ups_status
+        state: "unavailable"
       - action: script.general_notification
         data:
           title: "UPS Offline"
