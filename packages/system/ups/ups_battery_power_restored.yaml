@@ -1,6 +1,6 @@
 # UPS Battery Power Restored
 #
-# Push when the UPS goes from battery (OB) back to line power (OL). Ignores OL after an HA restart.
+# Push when the UPS is back on line power (OL) after the battery alert fired, even across an unavailable gap.
 #
 
 automation:
@@ -11,10 +11,12 @@ automation:
       - trigger: template
         value_template: "{{ 'OL' in states('sensor.apc_ups_status_data').split() }}"
     conditions:
-      - alias: "UPS was on battery"
+      - alias: "Battery alert fired since the last restored push"
         condition: template
         value_template: >
-          {{ trigger.from_state is not none and 'OB' in trigger.from_state.state.split() }}
+          {% set on_battery = state_attr('automation.ups_battery_power_activated', 'last_triggered') %}
+          {% set restored = this.attributes.last_triggered %}
+          {{ on_battery is not none and (restored is none or on_battery > restored) }}
     actions:
       - action: script.general_notification
         data:
