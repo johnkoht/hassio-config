@@ -1,7 +1,6 @@
 # Zigbee Coordinator Offline
 #
-# Push when the ZHA coordinator (UZG-01) has been offline for 3 minutes.
-# Detected via two ZHA groups on the coordinator device going unavailable together.
+# Push when the ZHA coordinator (UZG-01) has been unavailable for 3 minutes.
 #
 
 automation:
@@ -10,19 +9,10 @@ automation:
     mode: single
     triggers:
       - trigger: state
-        entity_id:
-          - light.office_lights
-          - light.gianluca_ceiling_lights
+        entity_id: sensor.texas_instruments_coordinator
         to: "unavailable"
         for:
           minutes: 3
-    conditions:
-      - alias: "Both coordinator groups are unavailable"
-        condition: state
-        entity_id:
-          - light.office_lights
-          - light.gianluca_ceiling_lights
-        state: "unavailable"
     actions:
       - action: script.general_notification
         data:
