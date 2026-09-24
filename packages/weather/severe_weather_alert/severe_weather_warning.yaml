@@ -299,36 +299,6 @@ automation:
 
   #
   #
-  # Update the Event ID Variable
-  #
-  - id: "nws_update_event_id_variable"
-    alias: NWS Update Event ID Variable
-    initial_state: on
-    triggers:
-      - trigger: state
-        entity_id: sensor.nws_alerts
-    actions:
-      - action: variable.set_variable
-        data:
-          variable: nws_alerts_event_ids
-          attributes:
-            history_1: "{{ states('sensor.nws_alerts_event_ids') }}"
-            history_2: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_1') }}"
-            history_3: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_2') }}"
-            history_4: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_3') }}"
-            history_5: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_4') }}"
-            history_6: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_5') }}"
-            history_7: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_6') }}"
-            history_8: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_7') }}"
-            history_9: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_8') }}"
-            history_10: "{{ state_attr('sensor.nws_alerts_event_ids', 'history_9') }}"
-      - action: variable.set_variable
-        data:
-          variable: nws_alerts_event_ids
-          value: "{{ (trigger.to_state.attributes.event_id).split('-')[0] }}"
-
-  #
-  #
   # Lots of rain soon
   #
   - id: "severe_rain_incoming"
