@@ -1,0 +1,25 @@
+# Cristina Office Day Helpers
+#
+# Office-day flag and per-train dedup counters for the Metra delay alert.
+#
+
+input_boolean:
+  cristina_office_day:
+    name: Cristina Office Day
+    icon: mdi:office-building
+
+input_number:
+  cristina_train_1_notified_delay:
+    name: Cristina Train 1 Notified Delay
+    min: -1
+    max: 999
+    step: 1
+    mode: box
+    # -1 = none pushed, 999 = cancellation pushed
+  cristina_train_2_notified_delay:
+    name: Cristina Train 2 Notified Delay
+    min: -1
+    max: 999
+    step: 1
+    mode: box
+    # -1 = none pushed, 999 = cancellation pushed

@@ -1,0 +1,37 @@
+# Metra Trains
+#
+# Poll bin/metra_train.py for delay/cancellation status of the two
+# configured trains. Feeds the Cristina train-delay alert and morning update.
+#
+
+command_line:
+  - sensor:
+      name: "Metra Train 1"
+      unique_id: metra_train_1
+      command: "python3 /config/bin/metra_train.py 1"
+      scan_interval: 60
+      command_timeout: 15
+      unit_of_measurement: "min"
+      availability: "{{ value_json.delay is number }}"
+      value_template: "{{ value_json.delay }}"
+      json_attributes:
+        - status
+        - scheduled_departure
+        - expected_departure
+        - last_update
+        - error
+  - sensor:
+      name: "Metra Train 2"
+      unique_id: metra_train_2
+      command: "python3 /config/bin/metra_train.py 2"
+      scan_interval: 60
+      command_timeout: 15
+      unit_of_measurement: "min"
+      availability: "{{ value_json.delay is number }}"
+      value_template: "{{ value_json.delay }}"
+      json_attributes:
+        - status
+        - scheduled_departure
+        - expected_departure
+        - last_update
+        - error

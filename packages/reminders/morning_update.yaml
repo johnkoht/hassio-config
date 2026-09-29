@@ -102,8 +102,8 @@ script:
               Remind us kindly to leave cold water for delivery people since it's going to be hot today.
             {% endif %}
 
-            {% if now().strftime('%A') in ['Tuesday','Wednesday', "Thursday"] %}
-              Cristina commutes today — if rain probability is high, remind her to bring an umbrella. 
+            {% if is_state('input_boolean.cristina_office_day', 'on') %}
+              Cristina commutes today — if rain probability is high, remind her to bring an umbrella.
               1h rain chance: {{ states.sensor.pirateweather_precip_probability_1h.state }}%
               6h rain chance: {{ states.sensor.pirateweather_precip_probability_6h.state }}%
             {% endif %}
@@ -154,6 +154,25 @@ script:
             {% set informational_events = state_attr('sensor.primary_school_events_today', 'informational') | default([], true) %}
             {% if informational_events | length > 0 %}
               There are also a few upcoming school happenings worth a quick mention: {{ informational_events[:5] | join(', ') }}.
+            {% endif %}
+
+            ---
+
+            ### CRISTINA'S TRAIN
+            Only mention Cristina's train if a line appears below; otherwise say nothing about trains.
+            {% if is_state('input_boolean.cristina_office_day', 'on') %}
+              {% for t in ['1', '2'] %}
+                {% set sensor = 'sensor.metra_train_' ~ t %}
+                {% set status = state_attr(sensor, 'status') | default(none) %}
+                {% set sched = state_attr(sensor, 'scheduled_departure') | default(none) %}
+                {% set exp = state_attr(sensor, 'expected_departure') | default(none) %}
+                {% set delay = states(sensor) | int(0) %}
+                {% if status == 'cancelled' and sched is not none and now() < as_datetime(sched) %}
+            Cristina's {{ as_datetime(sched).strftime('%-H:%M') }} train is cancelled.
+                {% elif status == 'delayed' and sched is not none and exp is not none and now() < as_datetime(exp) %}
+            Cristina's {{ as_datetime(sched).strftime('%-H:%M') }} train is running {{ delay }} minutes late, now expected around {{ as_datetime(exp).strftime('%-H:%M') }}.
+                {% endif %}
+              {% endfor %}
             {% endif %}
 
             ---
