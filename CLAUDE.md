@@ -207,6 +207,29 @@ data:
 
 ---
 
+## Privacy — This Repo Is Public
+
+Everything committed here is world-readable on GitHub, and that includes history. Make every effort to keep PII and family details out of it.
+
+**Never commit:**
+- routines and schedules: commute trains/times, school or work hours, pickup times, when the house is empty;
+- locations: addresses, GPS coordinates, workplace, school or station names tied to a person;
+- identifiers: phone numbers, emails, device serials, account IDs, birthdates;
+- health details beyond what an existing automation already names.
+
+**Where it goes instead:**
+- `secrets.yaml` (gitignored), with a placeholder in `secrets.fake.yaml` (see `cristinas_birthday`).
+- YAML reads it with `!secret`. `!secret` only works as a whole YAML value, not inside a Jinja template, so when a template needs it, expose it through an entity:
+  - a sensor whose value comes from `!secret`;
+  - a script that reads `/config/secrets.yaml` itself (see `bin/metra_train.py`).
+- Name entities generically (`sensor.metra_train_1`, not the train number) and fill in real values at runtime.
+
+**This applies to everything that gets pushed**: config, `plans/`, `memory/`, `docs/`, tests and fixtures, commit messages and PR descriptions. Use neutral placeholders ("train 1", `<STOP_ID>`) in writing.
+
+**Before pushing**, grep the diff for anything personal. If something slips into a pushed commit, rewrite the history before merge; editing it out in a later commit isn't enough.
+
+---
+
 ## Quality Standards
 
 - **Follow existing patterns first** — before writing any automation, find a similar one in the same package and use it as the template. Don't invent structure that isn't already in the codebase.
