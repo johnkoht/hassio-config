@@ -1,0 +1,151 @@
+# Cristina Train Delay Alert
+#
+# Pushes when either of Cristina's trains is 5+ min late or cancelled,
+# deduped per train via an input_number helper; clears when back on time.
+#
+
+automation:
+  - id: "cristina_train_delay_alert"
+    alias: "Cristina - Train Delay Alert"
+    mode: queued
+    max: 10
+    triggers:
+      # Delay (state) trigger. not_to excludes unavailable/unknown to cut
+      # noise; cancelled trains still report numeric state 0, so this
+      # never hides a cancellation.
+      - trigger: state
+        id: "1"
+        entity_id: sensor.metra_train_1
+        not_to:
+          - "unavailable"
+          - "unknown"
+      - trigger: state
+        id: "1"
+        entity_id: sensor.metra_train_1
+        attribute: status
+      - trigger: state
+        id: "2"
+        entity_id: sensor.metra_train_2
+        not_to:
+          - "unavailable"
+          - "unknown"
+      - trigger: state
+        id: "2"
+        entity_id: sensor.metra_train_2
+        attribute: status
+    conditions:
+      - condition: state
+        entity_id: input_boolean.cristina_office_day
+        state: "on"
+      - alias: "Train hasn't left yet"
+        condition: template
+        value_template: >-
+          {%- set sensor = 'sensor.metra_train_' ~ trigger.id -%}
+          {%- set status = state_attr(sensor, 'status') -%}
+          {%- if status == 'cancelled' -%}
+            {%- set sched = state_attr(sensor, 'scheduled_departure') -%}
+            {{ sched is not none and now() < as_datetime(sched) }}
+          {%- else -%}
+            {%- set exp = state_attr(sensor, 'expected_departure') -%}
+            {{ exp is not none and now() < as_datetime(exp) }}
+          {%- endif -%}
+    actions:
+      - alias: "Compute train context"
+        variables:
+          train: "{{ trigger.id }}"
+          sensor: "sensor.metra_train_{{ train }}"
+          helper: "input_number.cristina_train_{{ train }}_notified_delay"
+          st: "{{ states(sensor) }}"
+          status: "{{ state_attr(sensor, 'status') }}"
+          delay: "{{ states(sensor) | int(none) }}"
+          h: "{{ states(helper) | int(-1) }}"
+          scheduled_departure: "{{ state_attr(sensor, 'scheduled_departure') }}"
+          expected_departure: "{{ state_attr(sensor, 'expected_departure') }}"
+          sched_hm: >-
+            {{ as_datetime(scheduled_departure).strftime('%-H:%M') if scheduled_departure is not none else '' }}
+          exp_hm: >-
+            {{ as_datetime(expected_departure).strftime('%-H:%M') if expected_departure is not none else '' }}
+      - choose:
+          # Risk 1: no data is a strict no-op — never push, never clear.
+          - conditions:
+              - alias: "No data"
+                condition: template
+                value_template: "{{ st in ['unavailable', 'unknown'] or status in [none, 'no_data'] }}"
+            sequence:
+              - stop: "No data for this train"
+
+          - conditions:
+              - alias: "Cancelled"
+                condition: template
+                value_template: "{{ status == 'cancelled' and h != 999 }}"
+            sequence:
+              - action: script.general_notification
+                data:
+                  title: "Metra"
+                  message: "🚫 Your {{ sched_hm }} train is cancelled."
+                  devices: "cfalb"
+                  priority: "time-sensitive"
+                  tag: "metra-{{ train }}"
+              - action: input_number.set_value
+                target:
+                  entity_id: "{{ helper }}"
+                data:
+                  value: 999
+
+          - conditions:
+              # h == 999 covers a cancellation that later un-cancels into a
+              # delay: that must still push, treated as "changed".
+              - alias: "Late"
+                condition: template
+                value_template: >-
+                  {{ status == 'delayed' and delay is not none and delay >= 5
+                     and (h == -1 or h == 999 or (delay - h) | abs >= 5) }}
+            sequence:
+              - action: script.general_notification
+                data:
+                  title: "Metra"
+                  message: "🚆 Your {{ sched_hm }} train is running {{ delay }} min late — now ~{{ exp_hm }}."
+                  devices: "cfalb"
+                  priority: "time-sensitive"
+                  tag: "metra-{{ train }}"
+              - action: input_number.set_value
+                target:
+                  entity_id: "{{ helper }}"
+                data:
+                  value: "{{ delay }}"
+
+          - conditions:
+              - alias: "Un-cancelled"
+                condition: template
+                value_template: "{{ status == 'on_time' and h == 999 }}"
+            sequence:
+              - action: script.general_notification
+                data:
+                  title: "Metra"
+                  message: "✅ Your {{ sched_hm }} train is back on schedule."
+                  devices: "cfalb"
+                  priority: "time-sensitive"
+                  tag: "metra-{{ train }}"
+              - action: input_number.set_value
+                target:
+                  entity_id: "{{ helper }}"
+                data:
+                  value: -1
+
+          - conditions:
+              # Clear at <= 2, not < 5, so a delay wobbling around 5
+              # doesn't push/clear/push; 3–4 leaves the push in place.
+              - alias: "Back on time"
+                condition: template
+                value_template: "{{ status == 'on_time' and delay is not none and delay <= 2 and h not in [-1, 999] }}"
+            sequence:
+              - action: script.clear_notifications
+                data:
+                  devices: "cfalb"
+                  tag: "metra-{{ train }}"
+              - action: input_number.set_value
+                target:
+                  entity_id: "{{ helper }}"
+                data:
+                  value: -1
+        default: []

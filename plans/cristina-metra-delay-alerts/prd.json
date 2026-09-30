@@ -1,0 +1,129 @@
+{
+  "name": "cristina-metra-delay-alerts",
+  "branchName": "feature/cristina-metra-delay-alerts",
+  "goal": "Office-day push + morning-update mention when either of Cristina's Metra MD-N trains is ≥5 min late or cancelled at her station; silent when on time.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Metra feed script and tests",
+      "description": "Stdlib-only bin/metra_train.py decoding GTFS-RT tripupdates for two configured trains/stop (secrets metra_trains/metra_stop); pytest suite with real fixture.",
+      "acceptanceCriteria": [
+        "Stdlib imports only",
+        "Token + config from /config/secrets.yaml (or METRA_SECRETS), 8s fetch timeout",
+        "Wire decoder with pinned field numbers; unknown fields skipped",
+        "Match _<fragment>_; arrival.time fallback departure.time",
+        "Scheduled times from metra_trains config, ZoneInfo America/Chicago",
+        "delay=floor(sec/60+0.5); rounding edge tests",
+        "Output keys delay,status,scheduled_departure,expected_departure,last_update,error; statuses on_time/delayed/cancelled/no_data with error codes",
+        "Outside 06:45-09:00 -> no_data/outside_window with no network call; injectable clock",
+        "Always exit 0 + valid JSON; token/URL never printed",
+        "Fixture decodes 52 entities; MN2152 fixture trip @ its downstream stop -> -2",
+        "Tests: not_in_feed, CANCELED, SKIPPED, outside window, missing config, missing token, 401, timeout, garbage, token absent, DST",
+        "Dev-only cross-check vs gtfs-realtime-bindings recorded in working-memory",
+        "pytest tests/test_metra_train.py passes"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 2,
+      "commitSha": "4305214082bd647983542a28a60c7c794b36d713"
+    },
+    {
+      "id": "task-2",
+      "title": "Metra sensors package",
+      "description": "packages/transit/metra_trains.yaml with two command_line sensors + secrets.fake.yaml placeholders.",
+      "acceptanceCriteria": [
+        "sensor.metra_train_1 / sensor.metra_train_2, scan_interval 60, command_timeout 15, unit min",
+        "value_template null-safe (number else none); json_attributes status,scheduled_departure,expected_departure,last_update,error",
+        "Unique basename, short header",
+        "secrets.fake.yaml has metra_api_token/metra_trains/metra_stop placeholders; secrets.yaml untouched",
+        "yamllint passes"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "e5cc127"
+    },
+    {
+      "id": "task-3",
+      "title": "Office-day helper and resets",
+      "description": "input_boolean.cristina_office_day, two notified_delay input_numbers, office-day 03:00 sync, helper reset 03:00+06:40.",
+      "acceptanceCriteria": [
+        "Boolean with no initial:",
+        "input_numbers -1..999 box, no initial:",
+        "cristina_office_day_reset syncs to binary_sensor.workday_sensor at 03:00",
+        "cristina_train_alert_reset sets helpers -1 at 03:00 and 06:40",
+        "Modern syntax, no initial_state"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "e7d3c3e"
+    },
+    {
+      "id": "task-4",
+      "title": "Dashboard toggle",
+      "description": "Add Office Day row to Cristina's person popup.",
+      "acceptanceCriteria": [
+        "Row after input_boolean.cristina_commuting in existing entities card, same style",
+        "Name 'Office Day'",
+        "No other card changes"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-5",
+      "title": "Delay alert automation",
+      "description": "cristina_train_delay_alert: push/re-push/clear per train with helper dedup.",
+      "acceptanceCriteria": [
+        "Triggers: sensor state + attribute status per train, ids 1/2; none on last_update",
+        "mode queued",
+        "Conditions: office day on, then null-safe not-yet-departed template",
+        "No home/zone condition",
+        "no_data/unknown/unavailable = no-op; cancelled push once (h=999); delay>=5 push when h=-1 or |delay-h|>=5; on_time numeric<5 with h!=-1 clears + h=-1",
+        "general_notification devices cfalb, time-sensitive, tag metra-<slot>",
+        "Helper written only in those branches, never from trigger.from_state",
+        "Aliases on templates/branches; short header"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "1255b99"
+    },
+    {
+      "id": "task-6",
+      "title": "Morning update hook",
+      "description": "Swap Tue-Thu umbrella block to office day; add conditional CRISTINA'S TRAIN section.",
+      "acceptanceCriteria": [
+        "Tue-Thu condition replaced with is_state office_day on; inner text unchanged",
+        "Train section renders lines only for delayed/cancelled, not departed, office day on",
+        "Null-safe with sensors missing",
+        "Renders without error in 4 cases; train text only for delayed/cancelled; recorded in working-memory"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "55cfc4d"
+    },
+    {
+      "id": "task-7",
+      "title": "Verification and deploy handoff",
+      "description": "Local gates, fake-state matrix walk, deploy checklist for John.",
+      "acceptanceCriteria": [
+        "yamllint + quick tests pass; no new failures from new files",
+        "Fake-state matrix walked with expected outcomes recorded",
+        "Deploy checklist in ship report incl. secrets on Yellow, no --check, possible one-time restart is John's call"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-09-28T22:06:52.854864-05:00",
+    "totalTasks": 7,
+    "completedTasks": 7,
+    "failedTasks": 0
+  }
+}

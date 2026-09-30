@@ -1,0 +1,28 @@
+# Cristina Office Day Reset
+#
+# Daily 03:00 sync of the office-day flag from the workday sensor,
+# so the Metra alert and morning update know whether to watch for it.
+#
+
+automation:
+  - id: "cristina_office_day_reset"
+    alias: "Cristina Office Day - Reset"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "03:00:00"
+    conditions: []
+    actions:
+      - if:
+          - alias: "Today is a workday"
+            condition: state
+            entity_id: binary_sensor.workday_sensor
+            state: "on"
+        then:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.cristina_office_day
+        else:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.cristina_office_day
