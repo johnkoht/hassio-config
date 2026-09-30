@@ -1,0 +1,24 @@
+# Cristina Train Alert Reset
+#
+# Clears both train dedup counters at 03:00 and again at 06:40, right
+# before the alert window, so a missed 03:00 run can't suppress a push.
+#
+
+automation:
+  - id: "cristina_train_alert_reset"
+    alias: "Cristina Train Alert - Reset"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "03:00:00"
+      - trigger: time
+        at: "06:40:00"
+    conditions: []
+    actions:
+      - action: input_number.set_value
+        target:
+          entity_id:
+            - input_number.cristina_train_1_notified_delay
+            - input_number.cristina_train_2_notified_delay
+        data:
+          value: -1

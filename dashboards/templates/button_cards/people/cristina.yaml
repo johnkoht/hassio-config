@@ -89,6 +89,13 @@ cards:
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
 
+      - entity: input_boolean.cristina_office_day
+        icon: mdi:office-building
+        name: Office Day
+        secondary_info: last-changed
+        state_color: true
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+
 
   # 
   # Medications
