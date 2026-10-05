@@ -1,0 +1,15 @@
+#
+# Celi Person
+#
+# The Person sensor is way of creating a Person
+# with additional attributes that the standard
+# person sensor doesn't have.
+#
+template:
+  - sensor:
+      - name: "Celi Person"
+        unique_id: celi_person
+        state: "{{ states('person.celi') }}"
+        attributes:
+          unlock_privilege: "{{ states('input_boolean.celi_unlock_privilege') }}"
+          avatar: "{{ state_attr('person.celi', 'entity_picture') }}"

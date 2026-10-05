@@ -12,6 +12,7 @@ automation:
           - person.antoun_koht
           - person.sonia_koht
           - person.katia
+          - person.celi
           - person.joe_falbo
         to: "home"
       # House becomes occupied
