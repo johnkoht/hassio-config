@@ -64,7 +64,7 @@
     - type: entities
       entities:
         # Announce Arrival
-        - entity: automation.celi_announce_arrival
+        - entity: automation.celi_presence_announce_arrival
           name: Announce Arrival
           icon: mdi:home-plus
           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
@@ -72,7 +72,7 @@
           state_color: true
 
         # Announce Departure
-        - entity: automation.celi_announce_departure
+        - entity: automation.celi_presence_announce_departure
           name: Announce Departure
           icon: mdi:home-remove
           card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
