@@ -9,10 +9,21 @@ automation:
       - trigger: state
         entity_id: input_boolean.gianluca_in_bed
         to: "on"
+      # House comes back from Away with Gianluca still asleep
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+      - trigger: state
+        entity_id: input_select.house
+        to: "Auto"
     conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
+        state: "on"
+      # Gianluca is in bed
+      - condition: state
+        entity_id: input_boolean.gianluca_in_bed
         state: "on"
       # Gianluca's Bedroom is not already Bedtime
       - condition: template
