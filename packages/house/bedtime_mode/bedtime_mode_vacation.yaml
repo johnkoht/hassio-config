@@ -21,6 +21,10 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "off"
+      # Only on vacation (initial_state re-enables this on restart)
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "on"
     action:
       - action: input_boolean.turn_on
         entity_id: input_boolean.bedtime
