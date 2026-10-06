@@ -1,0 +1,28 @@
+# Celi Presence - Away
+#
+# Turn off celi_home when person.celi leaves.
+#
+automation:
+  - id: "celi_is_away"
+    alias: "Celi Presence - Away"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: person.celi
+        to: "not_home"
+      # Handle restarts and reloads of HA
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: input_boolean.celi_home
+        state: "on"
+      - condition: state
+        entity_id: person.celi
+        state: "not_home"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.celi_home

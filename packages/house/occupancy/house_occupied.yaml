@@ -22,6 +22,7 @@ automation:
           - sensor.tayta_person
           - sensor.jido_person
           - sensor.katia_person
+          - sensor.celi_person
           - sensor.joe_person
           - sensor.sylvia_person
           - sensor.alex_person
