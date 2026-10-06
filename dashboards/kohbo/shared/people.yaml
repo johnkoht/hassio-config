@@ -8,3 +8,4 @@
 - !include /config/dashboards/templates/button_cards/people/jido.yaml
 - !include /config/dashboards/templates/button_cards/people/nonno.yaml
 - !include /config/dashboards/templates/button_cards/people/katia.yaml
+- !include /config/dashboards/templates/button_cards/people/celi.yaml
