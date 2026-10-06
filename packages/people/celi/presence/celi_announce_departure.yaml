@@ -1,0 +1,36 @@
+# Celi Presence - Announce Departure
+#
+# Announce Celi's departure when somebody's still home.
+#
+automation:
+  - id: "celi_announce_departure"
+    alias: Celi Presence - Announce Departure
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: person.celi
+        from: "home"
+        to: "not_home"
+    conditions:
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+      - condition: state
+        entity_id: person.celi
+        state: "not_home"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          speech_message: >-
+            {{
+              [
+                "Celi has left the house!",
+                "Bye Celi! See you next time!",
+                "Celi just left!",
+                "Pardon the interruption but Celi just left"
+              ] | random
+            }}

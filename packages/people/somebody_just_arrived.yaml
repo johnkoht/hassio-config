@@ -11,6 +11,7 @@ template:
               states('input_select.nonna_status'),
               states('input_select.joe_status_dropdown'),
               states('input_select.katia_status'),
+              states('input_select.celi_status'),
               states('input_select.alex_status'),
               states('input_select.jido_status'),
               states('input_select.tayta_status')

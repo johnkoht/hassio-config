@@ -1,0 +1,74 @@
+# Celi Status
+#
+# Home / Just Arrived / Just Left / Away, driven by input_boolean.celi_home.
+#
+
+input_select:
+  celi_status:
+    name: Celi
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+
+automation:
+  - id: "celi_presence_just_arrived"
+    alias: Celi Presence - Just Arrived
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.celi_home
+        to: "on"
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.celi_status
+        data:
+          option: "{{ 'Home' if is_state('input_select.celi_status', 'Just Left') else 'Just Arrived' }}"
+
+  - id: "celi_presence_home"
+    alias: Celi Presence - Home
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_select.celi_status
+        to: "Just Arrived"
+        for:
+          minutes: 5
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.celi_status
+        data:
+          option: Home
+
+  - id: "celi_presence_just_left"
+    alias: Celi Presence - Just Left
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.celi_home
+        to: "off"
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.celi_status
+        data:
+          option: Just Left
+
+  - id: "celi_presence_away"
+    alias: Celi Presence - Away
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_select.celi_status
+        to: "Just Left"
+        for:
+          minutes: 5
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.celi_status
+        data:
+          option: Away

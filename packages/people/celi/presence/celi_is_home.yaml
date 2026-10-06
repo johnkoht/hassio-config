@@ -1,0 +1,28 @@
+# Celi Presence - Home
+#
+# Turn on celi_home when person.celi (UniFi + iPhone Detect) is home.
+#
+automation:
+  - id: "celi_is_home"
+    alias: "Celi Presence - Home"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: person.celi
+        to: "home"
+      # Handle restarts and reloads of HA
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: input_boolean.celi_home
+        state: "off"
+      - condition: state
+        entity_id: person.celi
+        state: "home"
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.celi_home

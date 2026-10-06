@@ -196,6 +196,17 @@ cards:
                   action: navigate
                   haptic: light
                   navigation_path: '#katia'
+              - type: custom:button-card
+                entity: person.celi
+                template: kohbo_person_entity
+                visibility:
+                  - condition: state
+                    entity: input_boolean.celi_home
+                    state: "on"
+                tap_action:
+                  action: navigate
+                  haptic: light
+                  navigation_path: '#celi'
 
       
   # 

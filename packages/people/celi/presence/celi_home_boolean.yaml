@@ -1,0 +1,4 @@
+input_boolean:
+  celi_home:
+    name: Celi Home
+    icon: mdi:home

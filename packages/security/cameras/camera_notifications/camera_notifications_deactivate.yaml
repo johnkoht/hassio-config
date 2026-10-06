@@ -38,6 +38,7 @@ automation:
           - input_boolean.joe_home
           - input_boolean.nonna_home
           - input_boolean.katia_home
+          - input_boolean.celi_home
         to: "on"
       # If any garage door opens
       - platform: state

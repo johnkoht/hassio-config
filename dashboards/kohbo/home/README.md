@@ -43,7 +43,7 @@ The top header contains:
 - **Notifications Button** - Bell icon linking to `#notifications` popup
 - **House Mode Chip** - Current house mode (Auto, Away, Quiet, Bedtime, Entertainment, Vacation) with color-coded icons (opens house mode popup)
 - **Energy Usage Chip** - Real-time power consumption with color-coded status (links to [energy dashboard](../energy/README.md))
-- **People Avatars** - Shows people currently at home (John, Cristina, Nonna, Katia) with status indicators (sleeping, DND)
+- **People Avatars** - Shows people currently at home (John, Cristina, Nonna, Katia, Celi) with status indicators (sleeping, DND)
 
 ### Security Overview
 

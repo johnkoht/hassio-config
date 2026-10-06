@@ -1,0 +1,43 @@
+# Celi Presence - Announce Arrival
+#
+# Announce Celi's arrival when somebody's already home.
+#
+automation:
+  - id: "celi_announce_arrival"
+    alias: Celi Presence - Announce Arrival
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: person.celi
+        from: "not_home"
+        to: "home"
+    conditions:
+      # We've been home for at least 5 minutes
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+        for:
+          minutes: 5
+      - condition: state
+        entity_id: person.celi
+        state: "home"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          speech_message: >-
+            {{
+              [
+                "Guess who's here? It's Celi!",
+                "Celi is in the house!",
+                "Pardon the interruption but Celi is here!",
+                "Knock knock. Who's there? Celi is here!"
+              ] | random
+            }}
+      # Suppress the generic guest-mode announcement
+      - condition: state
+        entity_id: input_boolean.guest_mode_announced
+        state: "off"
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.guest_mode_announced

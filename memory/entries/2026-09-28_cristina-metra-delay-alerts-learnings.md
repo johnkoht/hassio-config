@@ -25,6 +25,15 @@ Pushes Cristina when either of her two Metra MD-N trains (configured via secrets
 - **command_line value_template returns a string.** It goes through `render_with_context().strip()`, so returning `none` gives `"None"`, which a sensor with a unit rejects. Use `availability:` instead. While unavailable, the sensor's attributes are hidden.
 - **The alert's dedup compares against the last pushed delay**, kept in `input_number`. It never uses `trigger.from_state`, so a slow drift like 6 → 8 → 11 still re-pushes.
 
+## Post-merge (2026-09-29)
+- **Privacy scrub before merge.** The first push of PR #15 named the trains, their times and the station across code, docs and commit messages, in a PUBLIC repo. The fix:
+  - Moved them to secrets (`metra_trains`, `metra_stop`) and made the entity names generic.
+  - Squashed and force-pushed the branch.
+  - Added the "Privacy — This Repo Is Public" section to CLAUDE.md.
+  - GitHub still keeps the old commits, the title-change event and the description's edit history, and only GitHub Support can purge those. Check for personal data at plan time, not after the push.
+- **The first `command_line` load needed a full restart**, as pre-mortem Risk 6 predicted: the reload option doesn't exist until the integration has loaded once. After the restart, both sensors registered and read `unavailable` outside the window, and the logs were clean.
+- **Holidays are handled.** `binary_sensor.workday_sensor` already excludes US federal holidays (Workday: excludes sat/sun/holiday). If Cristina's employer calendar differs, add a separate Workday entry for her; don't edit the shared sensor, because John's automations use it.
+
 ## Follow-ups (backlog)
 - Watch the calendar for a WFH event.
 - A stale-data push to John.

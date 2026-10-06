@@ -30,6 +30,7 @@ group:
     entities:
       - person.sylvia
       - person.katia
+      - person.celi
       - group.extended_family
 
   all_people:
@@ -72,6 +73,7 @@ group:
       - sensor.tayta_person
       - sensor.jido_person
       - sensor.katia_person
+      - sensor.celi_person
       - sensor.joe_person
       - sensor.sylvia_person
       - sensor.alex_person

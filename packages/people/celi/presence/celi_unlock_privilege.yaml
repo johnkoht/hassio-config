@@ -1,0 +1,9 @@
+#
+# Celi Unlock Privilege
+# Provides privilege to unlock the doors,
+# disarm the alarm, and unlock the garage.
+#
+input_boolean:
+  celi_unlock_privilege:
+    name: Celi Unlock Privilege
+    icon: mdi:key-outline
