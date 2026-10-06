@@ -5,10 +5,10 @@ automation:
     initial_state: on
     alias: "Gianluca's Bedroom - Mode Auto"
     triggers:
-      # Gianluca's Bedroom is occupied
+      # Gianluca's Bedroom is NOT occupied
       - trigger: state
         entity_id: input_boolean.gianlucas_room_occupied
-        to: "on"
+        to: "off"
       # House turn to Auto mode
       - trigger: state
         entity_id: input_select.house

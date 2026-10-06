@@ -10,10 +10,12 @@ automation:
     alias: "House not occupied"
     initial_state: "on"
     triggers:
-      # If nobody is home
+      # If nobody is home (debounced: a group reload briefly flips it)
       - trigger: state
         entity_id: group.all_people
         to: "not_home"
+        for:
+          minutes: 1
       # Hassio reloads/starts
       - trigger: event
         event_type: automation_reloaded
