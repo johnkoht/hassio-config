@@ -26,6 +26,8 @@ Non-obvious things discovered building the school layer (Aug 2026). Most apply r
 
 **`tests/run_tests.py --quick` has one Yellow-only test.** `tests/conftest.py` hardcodes `CONFIG_ROOT = /root/config`, so `test_pinned_entity_ids_exist_in_registry` always fails on a laptop. `--syntax --modern` is the honest local gate.
 
+**Time triggers take an `offset:` on timestamp sensors.** `at: {entity_id: sensor.x_departure_time, offset: "-00:05:00"}` fires relative to the sensor, so derived-time edits carry through. Same reload caveat as the plain trigger: if the offset time has passed, today is skipped.
+
 ## Design decisions
 
 **"At school" is positive evidence, and the default is announce.** `binary_sensor.<kid>_at_school` is on only when the kid's drop-off latched today (zone or a tapped push) inside the bell window with `home_today` off. Every derivation failure reads `off`, which lets the medication voice cue play. A default-on design had six silent paths to a muted sick-day dose.

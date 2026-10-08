@@ -1,0 +1,38 @@
+# Nino Departure Warning
+#
+# Five-minute heads-up (TTS only) before Nino's departure reminder.
+#
+
+automation:
+  - id: "nino_departure_warning"
+    alias: "Nino Departure Warning"
+    mode: single
+    triggers:
+      - trigger: time
+        at:
+          entity_id: sensor.nino_departure_time
+          offset: "-00:05:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.nino_school_day
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.nino_home_today
+        state: "off"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "chime"
+          priority: normal
+          speech_message: >-
+            {{
+              [
+                "Nino, five minutes until it's time to leave for school! Start packing up.",
+                "Heads up Nino, you've got five minutes before it's time to head out for school!",
+                "Five minute warning! Nino, grab your things, we leave for school in five minutes."
+              ] | random
+            }}
