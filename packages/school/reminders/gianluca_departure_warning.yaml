@@ -26,7 +26,7 @@ automation:
       - action: script.voice_announcement
         data:
           media_players: auto
-          sound: "school-bell-chime"
+          sound: "chime"
           priority: normal
           speech_message: >-
             {{

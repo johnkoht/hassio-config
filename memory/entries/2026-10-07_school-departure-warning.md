@@ -12,5 +12,5 @@ Voice-only 5-minute heads-up before each kid's departure reminder
   is skipped when music plays in the room and expires after 3 min — useless
   for a heads-up. The sibling departure reminders still default to `low`;
   worth revisiting.
-- Distinct sound (`school-bell-chime`) from the departure reminder
-  (`school-bell`) so the two are distinguishable.
+- Sound is `chime`, not a school bell: the departure reminder rings
+  `school-bell` 5 min later, and `arcade` already means "no school tomorrow".
