@@ -1,0 +1,38 @@
+# Gianluca Departure Warning
+#
+# Five-minute heads-up (TTS only) before Gianluca's departure reminder.
+#
+
+automation:
+  - id: "gianluca_departure_warning"
+    alias: "Gianluca Departure Warning"
+    mode: single
+    triggers:
+      - trigger: time
+        at:
+          entity_id: sensor.gianluca_departure_time
+          offset: "-00:05:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.gianluca_school_day
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.gianluca_home_today
+        state: "off"
+    actions:
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "chime"
+          priority: normal
+          speech_message: >-
+            {{
+              [
+                "Gianluca, five minutes until it's time to leave for school! Start packing up.",
+                "Heads up Gianluca, you've got five minutes before it's time to head out for school!",
+                "Five minute warning! Gianluca, grab your things, we leave for school in five minutes."
+              ] | random
+            }}
