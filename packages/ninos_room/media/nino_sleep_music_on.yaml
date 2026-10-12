@@ -1,0 +1,70 @@
+# Nino Sleep Music On
+#
+# Play the sleep playlist on shuffle + repeat once Nino has been in bed
+# for 3 minutes with the ceiling lights off and the lamp below 20%.
+#
+
+automation:
+  - id: "nino_sleep_music_on"
+    alias: "Nino's Bedroom - Sleep Music On"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.nino_bed_occupied
+        to: "on"
+        for:
+          minutes: 3
+      - trigger: state
+        entity_id: light.ninos_bedroom_main_lights
+        to: "off"
+      # Fires on brightness changes too
+      - trigger: state
+        entity_id: light.nino_bedroom_lamp
+        not_from: "unavailable"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: time
+        after: "19:00:00"
+        before: "07:00:00"
+      - condition: template
+        value_template: "{{ not is_state('input_select.ninos_bedroom', 'Off') }}"
+      - condition: state
+        entity_id: binary_sensor.nino_bed_occupied
+        state: "on"
+        for:
+          minutes: 3
+      - condition: state
+        entity_id: light.ninos_bedroom_main_lights
+        state: "off"
+      - alias: "Lamp is off or below 20%"
+        condition: template
+        value_template: >
+          {{ is_state('light.nino_bedroom_lamp', 'off')
+             or (is_state('light.nino_bedroom_lamp', 'on')
+                 and (state_attr('light.nino_bedroom_lamp', 'brightness') | int(0)) < 51) }}
+      - condition: template
+        value_template: "{{ not is_state('media_player.ninos_room', 'playing') }}"
+    actions:
+      # Set play mode first so the first track is shuffled too
+      - action: media_player.shuffle_set
+        target:
+          entity_id: media_player.ninos_room
+        data:
+          shuffle: true
+      - action: media_player.repeat_set
+        target:
+          entity_id: media_player.ninos_room
+        data:
+          repeat: "all"
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.ninos_room
+        data:
+          media_content_type: "playlist"
+          media_content_id: "spotify:playlist:0Aip39YSo3rqFim2uiRCc6"
+          enqueue: "replace"
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.nino_sleep_music_playing

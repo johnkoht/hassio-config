@@ -1,0 +1,10 @@
+# Nino Sleep Music Playing
+#
+# Set when the sleep music automation starts the playlist, so the
+# turn-off automation only stops music it started.
+#
+
+input_boolean:
+  nino_sleep_music_playing:
+    name: Nino Sleep Music Playing
+    icon: mdi:music-note-eighth

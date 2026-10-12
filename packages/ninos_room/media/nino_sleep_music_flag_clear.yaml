@@ -1,0 +1,28 @@
+# Nino Sleep Music Flag Clear
+#
+# Clear the sleep music flag once the speaker stops, so a manual stop
+# doesn't leave the off automation pausing someone else's music later.
+#
+
+automation:
+  - id: "nino_sleep_music_flag_clear"
+    alias: "Nino's Bedroom - Sleep Music Flag Clear"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: media_player.ninos_room
+        to:
+          - "paused"
+          - "idle"
+          - "off"
+          - "unavailable"
+        for:
+          minutes: 1
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nino_sleep_music_playing
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.nino_sleep_music_playing
