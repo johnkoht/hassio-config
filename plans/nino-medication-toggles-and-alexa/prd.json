@@ -1,0 +1,90 @@
+{
+  "name": "nino-medication-toggles-and-alexa",
+  "branchName": "feature/nino-medication-toggles-and-alexa",
+  "goal": "App-toggleable master/voice/push switches for Nino's medication reminder, and 'Alexa, Nino took his meds' via the existing script.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Add toggle booleans",
+      "description": "See prd.md Task 1",
+      "acceptanceCriteria": [
+        "All ACs under Task 1 in prd.md"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Gate the reminder automation",
+      "description": "See prd.md Task 2",
+      "acceptanceCriteria": [
+        "All ACs under Task 2 in prd.md"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Gate escalation on master",
+      "description": "See prd.md Task 3",
+      "acceptanceCriteria": [
+        "All ACs under Task 3 in prd.md"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Early-dose fallback in nino_medication_taken",
+      "description": "See prd.md Task 4",
+      "acceptanceCriteria": [
+        "All ACs under Task 4 in prd.md"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Reminder Settings on Nino's person card",
+      "description": "See prd.md Task 5",
+      "acceptanceCriteria": [
+        "All ACs under Task 5 in prd.md"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Hide popup cards when reminders off",
+      "description": "See prd.md Task 6",
+      "acceptanceCriteria": [
+        "All ACs under Task 6 in prd.md"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-7",
+      "title": "Handoff note",
+      "description": "See prd.md Task 7",
+      "acceptanceCriteria": [
+        "All ACs under Task 7 in prd.md"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-12T23:45:41",
+    "totalTasks": 7,
+    "completedTasks": 0,
+    "failedTasks": 0
+  }
+}

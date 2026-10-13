@@ -5,7 +5,7 @@ status: in-progress
 created: 2026-10-12
 has_pre_mortem: true
 has_review: true
-has_prd: false
+has_prd: true
 ---
 
 # Nino Medication Toggles and Alexa
