@@ -9,7 +9,7 @@
 # reliably mark breaks as no-school. No late-start concept here.
 #
 # Departure is a fixed clock time, not start-minus-lead-minutes — a
-# runtime-edited start time must not drift Cristina's 07:45 drop-off.
+# runtime-edited start time must not drift the drop-off time.
 #
 # Timestamps use today_at('00:00') + timedelta(seconds=...) — DST-safe
 # wall-clock arithmetic. Never build via naive date+time string parsing.

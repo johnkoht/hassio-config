@@ -1,8 +1,8 @@
 # Gianluca Dropped Off
 #
 # Latches input_boolean.gianluca_dropped_off when a parent lingers in
-# the parochial school zone (UI-defined) during the drop-off window, anchored on departure
-# time not start time (see parochial_school_schedule.yaml). Reset nightly.
+# the parochial school zone (UI-defined) around the start bell, same
+# window as Nino's. Reset nightly.
 #
 
 automation:
@@ -14,7 +14,7 @@ automation:
         value_template: >-
           {{ 'person.john_koht' in (state_attr('zone.parochial_school', 'persons') or [])
              or 'person.cristina_falbo' in (state_attr('zone.parochial_school', 'persons') or []) }}
-        for: "00:03:00"
+        for: "00:02:00"
     conditions:
       - condition: state
         entity_id: binary_sensor.gianluca_school_day
@@ -25,9 +25,9 @@ automation:
       - alias: "Within Gianluca's drop-off window"
         condition: template
         value_template: >-
-          {%- set src = states('sensor.gianluca_departure_time') -%}
+          {%- set src = states('sensor.parochial_school_start_time_today') -%}
           {{ src not in ['unknown', 'unavailable', 'none', '']
-             and as_datetime(src) - timedelta(minutes=20) <= now() <= as_datetime(src) + timedelta(minutes=20) }}
+             and as_datetime(src) - timedelta(minutes=45) <= now() <= as_datetime(src) + timedelta(minutes=20) }}
     actions:
       - action: input_boolean.turn_on
         target:
