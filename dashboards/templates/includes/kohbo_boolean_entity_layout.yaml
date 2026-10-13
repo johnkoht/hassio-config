@@ -71,6 +71,9 @@ style:
                           0px 3px 8px rgba(0, 0, 0, 0.15),
                           0px 3px 1px rgba(0, 0, 0, 0.06) !important;
               transform: translateY(-50%) !important;
+              /* WA moves the thumb with `translate` (a separate property from
+                 transform), which stacks on top of `left` and overshoots. */
+              translate: none !important;
               transition: left 0.15s ease, background 0.15s ease !important;
             }
 
