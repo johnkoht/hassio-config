@@ -1,0 +1,42 @@
+# Nino Sleep Music Off
+#
+# Stop the sleep music when Nino is up for the day (out of bed 5 min,
+# after 6am) or has left his bed for the night (out of bed 30 min).
+#
+
+automation:
+  - id: "nino_sleep_music_off"
+    alias: "Nino's Bedroom - Sleep Music Off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.nino_bed_occupied
+        to: "off"
+        for:
+          minutes: 5
+        id: "morning"
+      - trigger: state
+        entity_id: binary_sensor.nino_bed_occupied
+        to: "off"
+        for:
+          minutes: 30
+        id: "left_bed"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nino_sleep_music_playing
+        state: "on"
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: "left_bed"
+          - alias: "Morning wake-up"
+            condition: time
+            after: "06:00:00"
+            before: "12:00:00"
+    actions:
+      - action: media_player.media_pause
+        target:
+          entity_id: media_player.ninos_room
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.nino_sleep_music_playing
