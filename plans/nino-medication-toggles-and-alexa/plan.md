@@ -1,7 +1,7 @@
 ---
 title: Nino Medication Toggles and Alexa
 slug: nino-medication-toggles-and-alexa
-status: in-progress
+status: shipped
 created: 2026-10-12
 has_pre_mortem: true
 has_review: true
