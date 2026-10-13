@@ -1,11 +1,13 @@
 #
 # Nino Medication Escalation
 #
-# Unmutable backstop for a missed dose. Polls every 15 minutes and,
+# Backstop for a missed dose. input_boolean.nino_medication_reminders
+# is its single deliberate off switch. Polls every 15 minutes and,
 # for either dose, sends a critical push once that dose is more than
 # 2 hours late and still untaken. Deliberately dumb and independent
 # of the reminder automation, the pending-dose resolver, and house
-# notification policy — this is what still fires when everything
+# notification policy (it ignores notification_level and the voice/push
+# toggles) — this is what still fires when everything
 # else has failed quietly.
 #
 # WHY notify.ios_family DIRECTLY, and not the shared notification
@@ -34,7 +36,10 @@ automation:
     triggers:
       - trigger: time_pattern
         minutes: "/15"
-    conditions: []
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nino_medication_reminders
+        state: "on"
     actions:
       #
       # Dose 1
