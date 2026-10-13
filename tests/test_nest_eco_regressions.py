@@ -41,7 +41,7 @@ def test_bedtime_eco_has_no_unconditional_fallback():
     guard = [c for c in auto["conditions"] if c.get("condition") == "or"]
     assert guard, "bedtime trigger needs a time-window guard"
     times = [c for c in guard[0]["conditions"] if c.get("condition") == "time"]
-    assert times and times[0]["before"] == "04:00:00"
+    assert times and times[0]["before"] == "04:00:00" and times[0]["after"] == "12:00:00"
 
 
 @pytest.mark.parametrize("floor,climate,helper", FLOORS)
