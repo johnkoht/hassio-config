@@ -238,6 +238,14 @@ cards:
             secondary_info: last-changed
             state_color: true
 
+          # Sleep music
+          - entity: automation.nino_s_bedroom_sleep_music_on
+            name: Sleep Music
+            icon: mdi:music-note-eighth
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
       # 
       # Sensors
       # 
