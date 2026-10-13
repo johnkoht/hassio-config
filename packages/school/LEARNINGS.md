@@ -41,3 +41,5 @@ Non-obvious things discovered building the school layer (Aug 2026). Most apply r
 **Grade-scoped closures need a guard.** The parochial feed publishes `Grade 2 - No School`, `Grade 8 - No School`. Unguarded, those close school for a JK student. Guard rejects other-grade scopes and fails *open* into informational so nothing vanishes silently.
 
 **Overrides must reset unconditionally.** `school_overrides_reset.yaml` has no `conditions:` block on purpose — a gated reset is how the birthday-countdown flags latched on forever.
+
+**Anchor drop-off windows on the start bell, never on departure time.** Departure is a runtime-editable helper; Gianluca's window was departure ±20 min, so moving departure earlier closed it before the bell and real drop-offs silently stopped latching (2026-10-12). Both kids now use start −45/+20 with a 2-min zone hold — keep `{nino,gianluca}_dropped_off.yaml` in step.
