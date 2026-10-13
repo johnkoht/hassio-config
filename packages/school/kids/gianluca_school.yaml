@@ -5,7 +5,7 @@
 # schedule. If that ever changes, only the 3 parochial_school_* references
 # below need to change.
 #
-# Gianluca gets no departure lead: departure is a fixed 07:45 clock time
+# Gianluca gets no departure lead: departure is a fixed clock time
 # (see parochial_school_schedule.yaml), not a subtraction off start time.
 # Also derives binary_sensor.gianluca_at_school (positive-evidence, no availability).
 #
