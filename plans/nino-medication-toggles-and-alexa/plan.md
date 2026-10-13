@@ -1,9 +1,9 @@
 ---
 title: Nino Medication Toggles and Alexa
 slug: nino-medication-toggles-and-alexa
-status: approved
+status: in-progress
 created: 2026-10-12
-has_pre_mortem: false
+has_pre_mortem: true
 has_review: true
 has_prd: false
 ---
@@ -43,7 +43,7 @@ Manual steps for you, which I can't do from the repo: expose `script.nino_medica
 5. Dashboard:
    - Add a "Reminder Settings" section with the three toggles to `dashboards/templates/button_cards/people/nino.yaml`, using `kohbo_boolean_entity_layout.yaml` like the existing dose rows.
    - Add a master `condition: state` to `dashboards/kohbo/shared/notifications/nino_med_reminder_1.yaml` and `_2.yaml`, so the popup cards hide when reminders are off.
-6. Validate: `tests/run.sh` passes and CI `ha-check` is green. Deploy with `--skip-ci` (never `--check`). Reload `input_boolean`, `script`, `automation`; no restart.
+6. Validate: `yamllint -c .yamllint` clean on changed files; a local Jinja harness renders the new fallback across the scenario matrix; CI `ha-check` green on the PR. `tests/run.sh` is host-only (`/root/config`), so it's not a local gate. Deploy with `--skip-ci` (never `--check`). Reload `input_boolean`, `script`, `automation`; no restart.
 7. Write a handoff note covering the steps you do by hand:
    - turn the three toggles on;
    - expose `script.nino_medication_taken` to Alexa via Nabu Casa and run "Discover devices";
