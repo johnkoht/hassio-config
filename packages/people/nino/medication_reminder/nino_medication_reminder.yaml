@@ -412,7 +412,7 @@ script:
         name: Dose
         description: >-
           The dose number to mark as taken. Optional — when omitted,
-          falls back to the pending-dose resolver sensor.
+          uses the pending dose, else the earliest untaken dose today.
         example: "1"
         selector:
           select:
@@ -420,14 +420,31 @@ script:
               - "1"
               - "2"
     variables:
-      # Resolve the dose: use what was passed in if it's valid,
-      # otherwise fall back to the pending-dose resolver. If neither
-      # resolves to a real dose, this ends up "none" and the script
-      # below no-ops rather than guessing.
+      # Resolve the dose: requested, else pending, else earliest untaken
+      # (earliest-first is intentional: an early dose, or a skipped
+      # dose 1, is marked first), else "none" and the script no-ops.
       resolved_dose: >-
         {% set requested = dose | default('', true) | string %}
-        {% set fallback = states('sensor.nino_medication_pending_dose') %}
-        {{ requested if requested in ['1', '2'] else fallback }}
+        {% set pending = states('sensor.nino_medication_pending_dose') | string %}
+        {% set time_1 = states('input_datetime.nino_medication_1_time') %}
+        {% set time_2 = states('input_datetime.nino_medication_2_time') %}
+        {% set time_1_ok = time_1 not in ['unknown', 'unavailable', '', None] %}
+        {% set time_2_ok = time_2 not in ['unknown', 'unavailable', '', None] %}
+        {% set dose_1_open = time_1_ok and is_state('input_boolean.nino_medication_1_taken', 'off') %}
+        {% set dose_2_open = time_2_ok and is_state('input_boolean.nino_medication_2_taken', 'off') %}
+        {% if requested | string in ['1', '2'] %}
+        {{ requested }}
+        {% elif pending | string in ['1', '2'] %}
+        {{ pending }}
+        {% elif dose_1_open and dose_2_open %}
+        {{ 1 if today_at(time_1) <= today_at(time_2) else 2 }}
+        {% elif dose_1_open %}
+        1
+        {% elif dose_2_open %}
+        2
+        {% else %}
+        none
+        {% endif %}
     sequence:
       - if:
           - condition: template
