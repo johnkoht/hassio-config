@@ -143,10 +143,16 @@ cards:
             entities:
               - entity: input_boolean.nino_medication_reminders
                 name: Reminders
-                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+                icon: mdi:pill
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
               - entity: input_boolean.nino_medication_voice
                 name: Voice
-                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+                icon: mdi:account-voice
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
               - entity: input_boolean.nino_medication_push
                 name: Push
-                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+                icon: mdi:cellphone-message
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
