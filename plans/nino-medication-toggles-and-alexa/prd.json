@@ -10,9 +10,10 @@
       "acceptanceCriteria": [
         "All ACs under Task 1 in prd.md"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "f0d77a0"
     },
     {
       "id": "task-2",
@@ -21,9 +22,10 @@
       "acceptanceCriteria": [
         "All ACs under Task 2 in prd.md"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "f0d77a0"
     },
     {
       "id": "task-3",
@@ -32,9 +34,10 @@
       "acceptanceCriteria": [
         "All ACs under Task 3 in prd.md"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "f0d77a0"
     },
     {
       "id": "task-4",
@@ -43,8 +46,9 @@
       "acceptanceCriteria": [
         "All ACs under Task 4 in prd.md"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
+      "commitSha": "3599ac4",
       "attemptCount": 0
     },
     {
@@ -54,9 +58,10 @@
       "acceptanceCriteria": [
         "All ACs under Task 5 in prd.md"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "a390d5a"
     },
     {
       "id": "task-6",
@@ -65,9 +70,10 @@
       "acceptanceCriteria": [
         "All ACs under Task 6 in prd.md"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "a390d5a"
     },
     {
       "id": "task-7",
@@ -76,15 +82,16 @@
       "acceptanceCriteria": [
         "All ACs under Task 7 in prd.md"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "handoff (plans commit)"
     }
   ],
   "metadata": {
     "createdAt": "2026-10-12T23:45:41",
     "totalTasks": 7,
-    "completedTasks": 0,
+    "completedTasks": 7,
     "failedTasks": 0
   }
 }
