@@ -6,13 +6,15 @@ automation:
   - id: "main_floor_climate_resume_when_energy_prices_fall"
     alias: "Main Floor Climate - Resume When Energy Prices Fall"
     initial_state: on
-    trigger:
-      # If energy prices are too high
-      - platform: state
+    triggers:
+      # Energy prices have stayed low for 15 minutes (limits Eco churn)
+      - trigger: state
         entity_id: binary_sensor.energy_prices_are_high
         from: "on"
         to: "off"
-    condition:
+        for:
+          minutes: 15
+    conditions:
       # Make sure the Nest isn't set to a preset already
       - condition: template
         value_template: "{{ states.climate.nest_main_floor.attributes.preset_mode != 'none' }}"
@@ -28,6 +30,6 @@ automation:
           - condition: state
             entity_id: input_boolean.nearly_home
             state: "on"
-    action:
+    actions:
       - action: script.main_floor_climate_to_resume
         data: {}

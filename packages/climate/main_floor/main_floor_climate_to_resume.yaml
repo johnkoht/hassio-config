@@ -7,16 +7,45 @@ script:
   main_floor_climate_to_resume:
     alias: Main Floor Climate Resume
     mode: restart
+    variables:
+      was_eco: "{{ state_attr('climate.nest_main_floor', 'preset_mode') == 'eco' }}"
     sequence:
       # Turn OFF eco mode
-      - service: climate.set_preset_mode
+      - action: climate.set_preset_mode
         target:
           entity_id: climate.nest_main_floor
         data:
           preset_mode: none
 
+      # Nest sometimes flips HVAC mode itself after leaving Eco;
+      # once it settles, restore the mode saved before Eco
+      - if:
+          - alias: "Nest was in Eco when resume started"
+            condition: template
+            value_template: "{{ was_eco }}"
+        then:
+          - wait_template: "{{ state_attr('climate.nest_main_floor', 'preset_mode') == 'none' }}"
+            timeout: "00:00:30"
+            continue_on_timeout: true
+          - delay:
+              seconds: 10
+          - if:
+              - alias: "Still out of Eco and mode drifted from a valid saved mode"
+                condition: template
+                value_template: >
+                  {% set saved = states('input_text.temperature_mode_main_floor') %}
+                  {{ saved in ['heat', 'cool', 'heat_cool', 'off']
+                     and state_attr('climate.nest_main_floor', 'preset_mode') == 'none'
+                     and states('climate.nest_main_floor') != saved }}
+            then:
+              - action: climate.set_hvac_mode
+                target:
+                  entity_id: climate.nest_main_floor
+                data:
+                  hvac_mode: "{{ states('input_text.temperature_mode_main_floor') }}"
+
       # Push notification
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Main Floor Climate"
           message: "The main floor climate has been activated. The temperature is ste to {{ state_attr('climate.nest_main_floor', 'temperature') }} and the HVAC mode is {{ states('climate.nest_main_floor') }}"
