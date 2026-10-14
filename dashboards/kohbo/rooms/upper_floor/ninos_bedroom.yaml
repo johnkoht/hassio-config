@@ -254,14 +254,6 @@ cards:
         name: Sensors
       - type: entities
         entities:
-          # BLE Base Station
-          - entity: binary_sensor.bluetooth_proxy_nino_s_bedroom_connectivity
-            icon: mdi:bluetooth
-            name: BLE Base Station
-            secondary_info: last-changed
-            state_color: true
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-
           # Bed Occupancy
           - entity: binary_sensor.nino_bed_occupied
             icon: mdi:bed
