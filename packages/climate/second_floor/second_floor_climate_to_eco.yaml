@@ -14,21 +14,28 @@ script:
       #     value: "{{ state_attr('climate.nest_2nd_floor', 'temperature') }}"
       #   target:
       #     entity_id: input_number.temperature_2nd_floor
-      # # Save the current HVAC mode
-      # - service: input_text.set_value
-      #   data:
-      #     value: "{{ states('climate.nest_2nd_floor') }}"
-      #   target:
-      #     entity_id: input_text.temperature_mode_2nd_floor
+      # Save the current HVAC mode so resume can restore it
+      - if:
+          - alias: "Nest is in a real HVAC mode and not already in Eco"
+            condition: template
+            value_template: >
+              {{ states('climate.nest_2nd_floor') in ['heat', 'cool', 'heat_cool', 'off']
+                 and state_attr('climate.nest_2nd_floor', 'preset_mode') != 'eco' }}
+        then:
+          - action: input_text.set_value
+            target:
+              entity_id: input_text.temperature_mode_2nd_floor
+            data:
+              value: "{{ states('climate.nest_2nd_floor') }}"
       # Set the Nest to Eco mode
-      - service: climate.set_preset_mode
+      - action: climate.set_preset_mode
         target:
           entity_id: climate.nest_2nd_floor
         data:
           preset_mode: eco
 
       # Push notification
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Second Floor Climate"
           message: "The Second floor climate has turned to ECO. The temperature is ste to {{ state_attr('climate.nest_2nd_floor', 'temperature') }} and the HVAC mode is {{ states('climate.nest_2nd_floor') }}"

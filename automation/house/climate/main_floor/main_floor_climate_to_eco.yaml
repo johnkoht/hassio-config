@@ -6,24 +6,24 @@
 id: "main_floor_climate_to_eco"
 alias: "Main floor climate to Eco"
 initial_state: "on"
-trigger:
+triggers:
   # If the house goes into Bedtime mode
-  - platform: state
+  - trigger: state
     entity_id: input_boolean.bedtime
     to: "on"
   # The house is empty for 30 minutes
-  - platform: state
+  - trigger: state
     entity_id: input_boolean.house_occupied
     to: "off"
     for:
       minutes: 30
   # The house is empty for 60 minutes
-  - platform: state
+  - trigger: state
     entity_id: input_boolean.house_occupied
     to: "off"
     for:
       minutes: 60
-condition:
+conditions:
   # Guest Mode is disabled
   - condition: state
     entity_id: input_boolean.guest_mode
@@ -31,19 +31,15 @@ condition:
   # Make sure the Nest isn't set to a preset already
   - condition: template
     value_template: "{{ states.climate.nest_main_floor.attributes.preset_mode == 'none' }}"
-action:
-  - choose:
-      # If trigger is bedtime mode then lets make sure it's before 4am
-      - conditions:
-          - condition: template
-            value_template: "{{ trigger.entity_id == 'input_boolean.bedtime' }}"
-          # Before 4am
-          - condition: time
-            before: "04:00:00"
-        sequence:
-          - service: script.main_floor_climate_to_eco
-            data: {}
-    default:
-      - service: script.main_floor_climate_to_eco
-        data: {}
-      
+  # Skip a morning back-to-bed (bedtime between 4am and noon)
+  - alias: "Not bedtime, or bedtime outside 4am-noon"
+    condition: or
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.entity_id != 'input_boolean.bedtime' }}"
+      - condition: time
+        after: "12:00:00"
+        before: "04:00:00"
+actions:
+  - action: script.main_floor_climate_to_eco
+    data: {}

@@ -9,10 +9,12 @@ automation:
     alias: "Main Floor Climate - Activate Eco When Energy is Expensive"
     initial_state: on
     triggers:
-      # If energy prices are too high
+      # Energy prices have stayed high for 15 minutes (limits Eco churn)
       - trigger: state
         entity_id: binary_sensor.energy_prices_are_high
         to: "on"
+        for:
+          minutes: 15
     conditions:
       # House is occupied
       - condition: state
