@@ -129,3 +129,30 @@ cards:
               - entity: input_datetime.nino_medication_2_time
                 name: Second dose at
                 card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            name: Reminder Settings
+            template: kohbo_card_section_title
+
+          - type: entities
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+            entities:
+              - entity: input_boolean.nino_medication_reminders
+                name: Reminders
+                icon: mdi:pill
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
+              - entity: input_boolean.nino_medication_voice
+                name: Voice
+                icon: mdi:account-voice
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true
+              - entity: input_boolean.nino_medication_push
+                name: Push
+                icon: mdi:cellphone-message
+                card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+                state_color: true

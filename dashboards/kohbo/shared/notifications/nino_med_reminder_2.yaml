@@ -3,9 +3,13 @@
 #
 # Shown in the notifications popup whenever dose 2 is untaken.
 # Cleared as soon as it's marked taken.
+# Hidden while reminders are off.
 #
 type: conditional
 conditions:
+  - condition: state
+    entity: input_boolean.nino_medication_reminders
+    state: "on"
   - condition: state
     entity: input_boolean.nino_medication_2_taken
     state: "off"
