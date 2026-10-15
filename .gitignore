@@ -66,3 +66,7 @@ production_auth.json
 
 
 
+
+# Local Claude Code config (can hold HA tokens)
+.mcp.json
+.claude/settings.local.json
