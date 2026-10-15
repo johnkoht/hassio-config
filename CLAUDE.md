@@ -15,11 +15,13 @@ A Home Assistant configuration for a fully automated smart home running on Home 
 No build system. Changes are applied by reloading or restarting Home Assistant.
 
 ```bash
-ha core check              # validate YAML syntax
-ha core reload-automations # reload automations without restart
-ha core reload-scripts     # reload scripts
-ha core restart            # full restart (use sparingly)
+./deploy.sh --check        # lint + HA config check locally (Docker), no deploy
+./deploy.sh --reload       # pull on the HA host, check, reload automations + scripts
+./deploy.sh --restart      # full restart (use sparingly)
 ```
+
+`deploy.sh` pulls from GitHub, so push first. `HA_TARGET` selects the host:
+`yellow` (HAOS, `ha` CLI) or `epicurus` (Docker; `docker exec`/REST reloads).
 
 ESPHome devices are compiled/flashed separately:
 ```bash

@@ -15,9 +15,10 @@ from ruamel.yaml import YAML
 # Path Configuration
 # ============================================================================
 
-# Base paths - adjust these if your setup differs
-CONFIG_ROOT = Path("/root/config")
-HA_STORAGE_ROOT = Path("/homeassistant/.storage")
+# Base paths — default to the checkout this file lives in, so the suite runs
+# the same on a laptop, the Yellow, or epicurus. Override with env vars.
+CONFIG_ROOT = Path(os.environ.get("HA_CONFIG_ROOT", Path(__file__).resolve().parent.parent))
+HA_STORAGE_ROOT = Path(os.environ.get("HA_STORAGE_ROOT", CONFIG_ROOT / ".storage"))
 PACKAGES_DIR = CONFIG_ROOT / "packages"
 ENTITY_REGISTRY_PATH = HA_STORAGE_ROOT / "core.entity_registry"
 
