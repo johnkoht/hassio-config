@@ -17,10 +17,10 @@ automation:
       - trigger: state
         entity_id: light.ninos_bedroom_main_lights
         to: "off"
-      # Fires on brightness changes too
+      # Lamp dimmed or turned off (brightness goes to none)
       - trigger: state
         entity_id: light.nino_bedroom_lamp
-        not_from: "unavailable"
+        attribute: brightness
     conditions:
       - condition: state
         entity_id: input_boolean.house_occupied
