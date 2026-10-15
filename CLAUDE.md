@@ -228,6 +228,8 @@ Everything committed here is world-readable on GitHub, and that includes history
 
 **Before pushing**, grep the diff for anything personal. If something slips into a pushed commit, rewrite the history before merge; editing it out in a later commit isn't enough.
 
+**Automated guard:** gitleaks (`.gitleaks.toml`, secrets plus GPS/phone/email rules) runs on staged changes and commit messages via `.githooks/`, and on every pushed range in CI. In each new clone, run `git config core.hooksPath .githooks` (requires `brew install gitleaks`). Never bypass it with `--no-verify`; a genuine false positive goes in `.gitleaksignore`. Local-only files that hold tokens (`.mcp.json`, `.claude/settings.local.json`) are gitignored. Keep them that way.
+
 ---
 
 ## Quality Standards

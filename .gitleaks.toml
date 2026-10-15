@@ -1,0 +1,38 @@
+# gitleaks config — secrets plus the PII rules from CLAUDE.md "Privacy".
+# Runs on staged changes (.githooks/pre-commit), commit messages
+# (.githooks/commit-msg) and every pushed range in CI.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "gps-coordinates"
+description = "GPS coordinates (home or other locations)"
+regex = '''(?i)\b(?:lat|latitude|lon|lng|longitude)["']?\s*[:=]\s*["']?(-?\d{1,3}\.\d{4,})'''
+secretGroup = 1
+keywords = ["lat", "lon", "lng"]
+
+[[rules]]
+id = "us-phone-number"
+description = "Phone number"
+regex = '''(?:\+1[\s.-]?)?\(?\b[2-9]\d{2}\)?[\s.-]\d{3}[\s.-]\d{4}\b|\+1[2-9]\d{9}\b'''
+
+[[rules]]
+id = "email-address"
+description = "Email address"
+regex = '''\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'''
+keywords = ["@"]
+  [[rules.allowlists]]
+  regexes = [
+    '''noreply@anthropic\.com''',
+    '''@example\.(?:com|org)''',
+    '''@users\.noreply\.github\.com''',
+  ]
+
+[allowlist]
+description = "Fake fixtures and vendored files"
+paths = [
+  '''secrets\.fake\.yaml''',
+  '''tests/\.venv/''',
+  '''\.claude/worktrees/''',
+]

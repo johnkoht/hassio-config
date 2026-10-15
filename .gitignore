@@ -21,9 +21,9 @@
 .storage
 /.storage
 .google.token
-.john.koht@gmail.com.august.conf
-alexa_mediajohn.koht@gmail.comget.html
-alexa_mediajohn.koht@gmail.compost.html
+*.august.conf
+*@*get.html
+*@*post.html
 .uuid
 core.*
 core

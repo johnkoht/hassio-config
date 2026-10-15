@@ -1,0 +1,14 @@
+#!/bin/bash
+# Block commits that add secrets or personal details (see .gitleaks.toml).
+# Enable once per clone: git config core.hooksPath .githooks
+
+if ! command -v gitleaks &>/dev/null; then
+  echo "❌ gitleaks not installed (brew install gitleaks). Commit blocked."
+  exit 1
+fi
+
+gitleaks git --staged --config .gitleaks.toml --redact --verbose --no-banner --log-level warn || {
+  echo "❌ Possible secret or PII in staged changes. Move it to secrets.yaml (see CLAUDE.md → Privacy)."
+  echo "   Real false positive? Add the finding's fingerprint to .gitleaksignore."
+  exit 1
+}
