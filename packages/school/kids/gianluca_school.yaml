@@ -74,8 +74,15 @@ template:
         availability: >-
           {{ state_attr('input_datetime.parochial_school_departure_time', 'timestamp') | int(0) > 0
              and is_state('binary_sensor.gianluca_school_day', 'on') }}
+        # Late time only if Cristina left well before the normal drop-off,
+        # so leaving with him doesn't re-arm the reminders.
         state: >-
-          {{ (today_at('00:00') + timedelta(seconds=state_attr('input_datetime.parochial_school_departure_time', 'timestamp') | int(0))).isoformat() }}
+          {%- set normal = today_at('00:00') + timedelta(seconds=state_attr('input_datetime.parochial_school_departure_time', 'timestamp') | int(0)) -%}
+          {%- set late_secs = state_attr('input_datetime.parochial_school_late_departure_time', 'timestamp') | int(0) -%}
+          {%- set home = states.input_boolean.cristina_home -%}
+          {%- set away = home is not none and home.state == 'off'
+                         and home.last_changed < normal - timedelta(minutes=15) -%}
+          {{ (today_at('00:00') + timedelta(seconds=late_secs) if away and late_secs > 0 else normal).isoformat() }}
       - name: Gianluca Pickup Time
         unique_id: gianluca_pickup_time
         default_entity_id: sensor.gianluca_pickup_time

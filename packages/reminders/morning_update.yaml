@@ -83,9 +83,9 @@ script:
               Use a warm, grateful Thanksgiving tone — mention gratitude and family.
             {% elif today == '04-01' %}
               It's April Fool's Day! Make it funny with one or two playful pranks, like silly weather or "Enderdragon burgers" for Nino's lunch.
-            {% elif today == '05-12' %}
+            {% elif today == '05-12' and is_state('input_boolean.cristina_home', 'on') %}
               It's Mother's Day — be extra sweet and thankful to Cristina.
-            {% elif today == '06-16' %}
+            {% elif today == '06-16' and is_state('input_boolean.john_home', 'on') %}
               It's Father's Day — make John feel like the hero of the day.
             {% endif %}
 
@@ -102,7 +102,7 @@ script:
               Remind us kindly to leave cold water for delivery people since it's going to be hot today.
             {% endif %}
 
-            {% if is_state('input_boolean.cristina_office_day', 'on') %}
+            {% if is_state('input_boolean.cristina_office_day', 'on') and is_state('input_boolean.cristina_home', 'on') %}
               Cristina commutes today — if rain probability is high, remind her to bring an umbrella.
               1h rain chance: {{ states.sensor.pirateweather_precip_probability_1h.state }}%
               6h rain chance: {{ states.sensor.pirateweather_precip_probability_6h.state }}%
@@ -160,7 +160,7 @@ script:
 
             ### CRISTINA'S TRAIN
             Only mention Cristina's train if a line appears below; otherwise say nothing about trains.
-            {% if is_state('input_boolean.cristina_office_day', 'on') %}
+            {% if is_state('input_boolean.cristina_office_day', 'on') and is_state('input_boolean.cristina_home', 'on') %}
               {% for t in ['1', '2'] %}
                 {% set sensor = 'sensor.metra_train_' ~ t %}
                 {% set status = state_attr(sensor, 'status') | default(none) %}

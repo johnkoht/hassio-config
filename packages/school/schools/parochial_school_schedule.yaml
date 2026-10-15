@@ -26,6 +26,12 @@ input_datetime:
     icon: mdi:car-clock
     has_time: true
     has_date: false
+  # Used instead of the departure time when Cristina is away
+  parochial_school_late_departure_time:
+    name: Junior Kindergarten Late Departure Time
+    icon: mdi:car-clock
+    has_time: true
+    has_date: false
   parochial_school_monday_dismissal:
     name: Junior Kindergarten Monday Dismissal
     icon: mdi:clock-end
