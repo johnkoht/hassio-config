@@ -1,0 +1,9 @@
+#!/bin/bash
+# Block commit messages that carry secrets or personal details.
+
+command -v gitleaks &>/dev/null || { echo "❌ gitleaks not installed (brew install gitleaks)."; exit 1; }
+
+gitleaks stdin --config .gitleaks.toml --redact --verbose --no-banner --log-level warn < "$1" || {
+  echo "❌ Possible secret or PII in the commit message."
+  exit 1
+}
