@@ -1,0 +1,35 @@
+# Nino Dropped Off - Nonna
+#
+# Nonna has no GPS tracker, so assume she took Nino when she leaves
+# home in the drop-off window and nobody else has latched it yet.
+#
+
+automation:
+  - id: "nino_dropped_off_by_nonna"
+    alias: "Nino Dropped Off - Nonna"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: person.mary_falbo
+        from: "home"
+        to: "not_home"
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.nino_school_day
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.nino_home_today
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.nino_dropped_off
+        state: "off"
+      - alias: "Within Nino's drop-off window (+10 min for Wi-Fi tracker lag)"
+        condition: template
+        value_template: >-
+          {%- set src = states('sensor.primary_school_start_time_today') -%}
+          {{ src not in ['unknown', 'unavailable', 'none', '']
+             and as_datetime(src) - timedelta(minutes=45) <= now() <= as_datetime(src) + timedelta(minutes=10) }}
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.nino_dropped_off

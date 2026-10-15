@@ -43,3 +43,5 @@ Non-obvious things discovered building the school layer (Aug 2026). Most apply r
 **Overrides must reset unconditionally.** `school_overrides_reset.yaml` has no `conditions:` block on purpose — a gated reset is how the birthday-countdown flags latched on forever.
 
 **Anchor drop-off windows on the start bell, never on departure time.** Departure is a runtime-editable helper; Gianluca's window was departure ±20 min, so moving departure earlier closed it before the bell and real drop-offs silently stopped latching (2026-10-12). Both kids now use start −45/+20 with a 2-min zone hold — keep `{nino,gianluca}_dropped_off.yaml` in step.
+
+**Nonna's drop-off is inferred, not observed.** She has only Wi-Fi/ping trackers, so `nino_dropped_off_by_nonna.yaml` latches on `person.mary_falbo` home → not_home in start −45/+10 instead of a zone hold. The +10 is deliberate (not the zone files' +20); a false latch silences the start+30 check push, so don't widen it casually.
