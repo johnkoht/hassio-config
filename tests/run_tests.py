@@ -14,8 +14,8 @@ Usage:
     ./run_tests.py --help                  # Show help
     
 Alternatively, use the shell wrapper:
-    /root/config/tests/run.sh              # Run all tests
-    /root/config/tests/run.sh --quick      # Run quick tests
+    tests/run.sh                           # Run all tests
+    tests/run.sh --quick                   # Run quick tests
 """
 import sys
 import os
@@ -215,7 +215,7 @@ def quick_check():
     import yaml
     from pathlib import Path
     
-    config_root = Path("/root/config")
+    config_root = Path(os.environ.get("HA_CONFIG_ROOT", TESTS_DIR.parent))
     packages_dir = config_root / "packages"
     
     print("Quick YAML Syntax Check")
