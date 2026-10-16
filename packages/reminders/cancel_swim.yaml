@@ -4,6 +4,9 @@ script:
     mode: "single"
     sequence:
       - action: rest_command.cancel_swim_class
+        data:
+          phone_number: !secret cancel_swim_phone
+          task: !secret cancel_swim_task
 
 rest_command:
   cancel_swim_class:
@@ -13,4 +16,5 @@ rest_command:
     headers:
       authorization: !secret bland_api_key
       accept: "application/json"
-    payload: '{ "phone_number": "+17082617227", "task": "We are the Koht family. Koht is pronounced coat. You are our family personal AI assistant. Your primary role is to make calls on my behalf to friends, family, restaurants, and other businesses, so I dont have to do that myself. You are calling Foss Swim School, a swim school our kids attend. Unfortunately, we wont be able to make it today. Please inform them that Nino and Gianluca Koht will not attend their classes." }'
+    payload: >-
+      {"phone_number": {{ phone_number | string | to_json }}, "task": {{ task | to_json }}}
