@@ -23,7 +23,7 @@ packages/security/
 │   ├── alarm_disarm_when_somebody_arrives_and_house_occupied.yaml
 │   ├── alarm_disarm_in_morning.yaml
 │   ├── alarm_arm_home_script.yaml
-│   ├── alerm_triggered.yaml          # alarm triggered response
+│   ├── alarm_triggered.yaml          # alarm triggered response
 │   └── panic_button.yaml
 ├── cameras/
 │   ├── camera_notifications/         # global on/off for camera notifications
@@ -86,7 +86,7 @@ The alarm uses the `alarmo` custom integration. Always use `!secret` for the cod
 
 ### Alarm triggered response
 
-When the alarm triggers (`alerm_triggered.yaml`), the standard response is:
+When the alarm triggers (`alarm_triggered.yaml`), the standard response is:
 1. Flash lights throughout the house
 2. Play critical TTS announcement
 3. Send push notification

@@ -2,6 +2,8 @@
 template:
   - sensor:
       - name: "Currently Cleaning Rooms"
+        unique_id: currently_cleaning_rooms
+        default_entity_id: sensor.currently_cleaning_rooms
         icon: mdi:robot-vacuum
         state: >
           {% set room_map = {

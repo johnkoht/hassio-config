@@ -43,8 +43,7 @@ thermostat_popup:
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-          - entity: '[[temperature_sensor]]'
-            icon: mdi:thermometer-lines
+          - icon: mdi:thermometer-lines
             name: 'Outside Temperature'
             entity: '[[outside_temperature_sensor]]'
             secondary_info: last-changed

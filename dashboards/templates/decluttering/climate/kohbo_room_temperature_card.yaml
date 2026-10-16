@@ -8,7 +8,6 @@ kohbo_room_temperature_card:
   card:
     type: custom:mini-graph-card
     name: '[[name]]'
-    decimals: 0
     icon: '[[icon]]'
     points_per_hour: 2
     line_width: 4
