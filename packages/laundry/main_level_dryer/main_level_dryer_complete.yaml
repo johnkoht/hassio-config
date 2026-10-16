@@ -2,17 +2,17 @@ automation:
   - id: "main_level_dryer_complete"
     alias: "Main Level Dryer Complete"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_select.main_level_dryer_status
         to: "Clean"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.main_level_dryer_status
         state: "Clean"
-    action:
+    actions:
       # Voice Announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "chirp"
@@ -20,7 +20,7 @@ automation:
           expires_in: 120
           speech_message: "The main level dryer finished and is ready to be emptied."
       # Notification
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "The main level dryer is finished and ready to be emptied."
           title: "Main Level Drying Machine"
@@ -35,7 +35,7 @@ automation:
             entity_id: media_player.sony_bravia_tv
             state: "on"
         then:
-          - service: notify.family_room_sony_bravia_tv
+          - action: notify.family_room_sony_bravia_tv
             data:
               message: The main level dryer is finished and ready to be emptied.
               title: Laundry is complete!

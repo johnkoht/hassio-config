@@ -2,18 +2,18 @@ automation:
   - id: "audi_is_home"
     initial_state: on
     alias: "Audi is Home"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.audi_presence
         from: "not_home"
-      - platform: state
+      - trigger: state
         entity_id: sensor.audi_presence
         to: "garage"
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       - condition: or
         conditions:
           - condition: state
@@ -21,6 +21,6 @@ automation:
             state: "garage"
           - condition: template
             value_template: "{{ states.sensor.audi_presence.state != 'not_home'}}"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.audi_home

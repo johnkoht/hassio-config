@@ -3,12 +3,12 @@ automation:
   - id: "kitchen_lights_motion_on"
     initial_state: on
     alias: "Kitchen Lights Motion On"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion_sensor_status
         to: "on"
-    condition:
+    conditions:
       # Lighting automation is enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -43,7 +43,7 @@ automation:
           - condition: numeric_state
             entity_id: sensor.kitchen_motion_sensor_table_illuminance
             below: 150
-    action:
+    actions:
       - choose:
           # Kitchen is in Auto mode
           - conditions:
@@ -51,7 +51,7 @@ automation:
                 entity_id: input_select.kitchen
                 state: "Auto"
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.kitchen_ceiling_lights
                 data:
                   transition: 5
@@ -61,7 +61,7 @@ automation:
                 entity_id: input_select.kitchen
                 state: "Dim"
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.kitchen_island_pendants
                 data:
                   brightness_pct: 35
@@ -70,5 +70,5 @@ automation:
       # - service: automation.turn_on
       #   entity_id: automation.kitchen_lights_motion_off
       # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.kitchen_lights_auto

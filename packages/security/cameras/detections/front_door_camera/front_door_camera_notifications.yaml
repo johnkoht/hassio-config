@@ -20,8 +20,8 @@ timer:
 
 
 template:
-  - trigger:
-    - platform: time_pattern
+  - triggers:
+    - trigger: time_pattern
       seconds: '/1'
     sensor:
     - name: Front Door Timer Countdown
@@ -87,7 +87,7 @@ automation:
         event_type: timer.started
         event_data:
           entity_id: timer.front_door_camera_notifications_snooze_timer
-    action:
+    actions:
       # Turn off the notifications
       - action: input_boolean.turn_off
         entity_id: input_boolean.front_door_camera_notifications

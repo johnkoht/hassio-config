@@ -4,17 +4,17 @@ automation:
   - id: "main_bedroom_lights_turned_off"
     initial_state: on
     alias: "Main Bedroom lights Manually Turned Off"
-    trigger:
+    triggers:
       # Lights turned off
-      - platform: state
+      - trigger: state
         entity_id: light.main_bedroom_main_lights
         to: "off"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.main_bedroom_lights_auto
         state: "on"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.main_bedroom_lights_auto
       # # Deactivate the motion sensors
       # - service: input_boolean.turn_off
@@ -25,5 +25,5 @@ automation:
           - condition: template
             value_template: "{{ trigger.to_state.context.parent_id == none }}"
         then:
-          - service: input_boolean.turn_on
+          - action: input_boolean.turn_on
             entity_id: input_boolean.main_bedroom_lights_manually_toggled

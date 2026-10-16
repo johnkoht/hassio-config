@@ -30,7 +30,7 @@ automation:
   - id: "air_quality_alert_good"
     alias: "Air Quality - Alert for Good Conditions"
     initial_state: on
-    trigger:
+    triggers:
       - trigger: state
         entity_id: input_select.air_quality_state
         to: "Good"
@@ -46,7 +46,7 @@ automation:
   - id: "air_quality_alert_unhealthy"
     alias: "Air Quality - Alert for Unhealthy Conditions"
     initial_state: on
-    trigger:
+    triggers:
       - trigger: state
         entity_id: input_select.air_quality_state
         from:
@@ -87,7 +87,7 @@ automation:
   - id: "air_quality_alert_very_unhealthy"
     alias: "Air Quality - Alert for Very Unhealthy Conditions"
     initial_state: on
-    trigger:
+    triggers:
       - trigger: state
         entity_id: input_select.air_quality_state
         from:
@@ -173,7 +173,7 @@ automation:
         event_type: automation_reloaded
       - trigger: homeassistant
         event: start
-    action:
+    actions:
       - action: input_select.select_option
         data:
           entity_id: input_select.air_quality_state

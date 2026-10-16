@@ -2,12 +2,12 @@ automation:
   - id: "stairs_lights_motion_on"
     initial_state: on
     alias: "Stairs lights Motion On"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.stairs_motion_status
         to: "on"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -37,6 +37,6 @@ automation:
       - condition: state
         entity_id: light.foyer_chandelier
         state: "off"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.stairs_light

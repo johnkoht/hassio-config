@@ -10,7 +10,7 @@ automation:
     triggers:
       - trigger: time
         at: "08:05:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -19,7 +19,7 @@ automation:
       - condition: state
         entity_id: person.john_koht
         state: "home"
-    action:
+    actions:
       # # Wait for the office to be occupied
       # - wait_template: "{{ is_state('input_boolean.office_occupied', 'on') }}"
       #   timeout: "02:00:00"

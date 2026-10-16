@@ -4,12 +4,12 @@ automation:
   - id: "kitchen_lights_manually_turned_off"
     initial_state: on
     alias: "Kitchen lights Manually Turned Off"
-    trigger:
+    triggers:
       # Lights turned off
-      - platform: state
+      - trigger: state
         entity_id: light.kitchen_ceiling_lights
         to: "off"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.kitchen_lights_auto
         state: "on"
@@ -17,14 +17,14 @@ automation:
       #   value_template: "{{ trigger.to_state.context.user_id == none }}"
       - condition: template
         value_template: "{{ trigger.to_state.context.parent_id == none }}"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.kitchen_lights_auto
       # Deactivate the motion sensors
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.kitchen_lighting_automations
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Kitchen Lights"
           message: "The kitchen lights have been turned off. The parent id is {{trigger.to_state.context.parent_id}} and the user_id is {{trigger.to_state.context.user_id}}."

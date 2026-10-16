@@ -38,7 +38,7 @@ automation:
             after: "22:00:00"
     actions:
       # Lock the door!
-      - service: lock.lock
+      - action: lock.lock
         entity_id: lock.front_door
 
 

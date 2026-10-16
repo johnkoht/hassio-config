@@ -7,7 +7,7 @@ automation:
     alias: Christmas Enabled
     mode: "single"
     initial_state: false
-    trigger:
+    triggers:
       - trigger: homeassistant
         event: start
       # At 2am

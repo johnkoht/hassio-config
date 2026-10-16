@@ -6,12 +6,12 @@ automation:
   - id: "garage_mode_off"
     initial_state: on
     alias: "Garage mode off"
-    trigger:
+    triggers:
       # House is turned to Bedtime
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Bedtime"
-    condition:
+    conditions:
       # Garage is not occupied
       - condition: state
         entity_id: input_boolean.garage_occupied
@@ -20,11 +20,11 @@ automation:
       - condition: state
         entity_id: input_select.house
         state: "Bedtime"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.garage
           option: "Off"
       # Turn on the garage door automation for occupied house
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id: automation.garage_doors_close_when_home

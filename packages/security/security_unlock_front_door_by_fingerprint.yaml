@@ -15,12 +15,12 @@ automation:
           | select('defined')
           | list %}
         {{ fingerprint_ids }}
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: state_changed
         event_data:
           entity_id: event.front_door_camera_fingerprint
-    condition:
+    conditions:
       # Fingerprint is identified and allowed
       - condition: template
         value_template: >
@@ -36,12 +36,12 @@ automation:
       - condition: state
         entity_id: lock.front_door
         state: "locked"
-    action:
+    actions:
       # Unlock the front door
-      - service: lock.unlock
+      - action: lock.unlock
         entity_id: lock.front_door
       # Notify via push notification
-      - service: notify.mobile_app_jk_2
+      - action: notify.mobile_app_jk_2
         data:
           message: "Fingerprint identified with ID: {{ trigger.event.data.new_state.attributes.ulp_id }} and unlocked the front door"
           title: "Fingerprint Scan Notification"

@@ -14,14 +14,14 @@ automation:
   - id: "cristina_phone_plugged_in"
     alias: "Cristina's phone is plugged in"
     mode: "single"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.cfalb_iphone_17_battery_state
         to: "Charging"
-      - platform: state
+      - trigger: state
         entity_id: sensor.cfalb_iphone_17_battery_state
         to: "Full"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.cristina_phone_plugged_in
         state: "off"
@@ -33,24 +33,24 @@ automation:
           - condition: state
             entity_id: sensor.cfalb_iphone_17_battery_state
             state: "Full"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.cristina_phone_plugged_in
 
   # Cristina's phone is no longer plugged in or charging
   - id: "cristina_phone_unplugged"
     alias: "Cristina's phone is unplugged"
     mode: "single"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.cfalb_iphone_17_battery_state
         to: "Not Charging"
-    condition:
+    conditions:
       - condition: state
         entity_id: sensor.cfalb_iphone_17_battery_state
         state: "Not Charging"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.cristina_phone_plugged_in
 
   # John
@@ -59,14 +59,14 @@ automation:
   - id: "john_phone_plugged_in"
     alias: "John's phone is plugged in"
     mode: "single"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.jk_iphone_14_battery_state
         to: "Charging"
-      - platform: state
+      - trigger: state
         entity_id: sensor.jk_iphone_14_battery_state
         to: "Full"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.john_phone_plugged_in
         state: "off"
@@ -78,21 +78,21 @@ automation:
           - condition: state
             entity_id: sensor.jk_iphone_14_battery_state
             state: "Full"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.john_phone_plugged_in
 
   - id: "john_phone_unplugged"
     alias: "John's phone is unplugged"
     mode: "single"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.jk_iphone_14_battery_state
         to: "Not Charging"
-    condition:
+    conditions:
       - condition: state
         entity_id: sensor.jk_iphone_14_battery_state
         state: "Not Charging"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.john_phone_plugged_in

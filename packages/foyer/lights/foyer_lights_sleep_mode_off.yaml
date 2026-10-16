@@ -8,14 +8,14 @@ automation:
   - id: "foyer_lights_sleep_mode_off"
     initial_state: off
     alias: "Foyer Lights Sleep Mode Off"
-    trigger:
+    triggers:
       # At sunrise
-      - platform: sun
+      - trigger: sun
         event: sunrise
       # Or at 8am
-      - platform: time
+      - trigger: time
         at: "08:00:00"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -26,6 +26,6 @@ automation:
       # # After 8am
       # - condition: time
       #   after: "08:00:00"
-    action:
-      - service: switch.turn_off
+    actions:
+      - action: switch.turn_off
         entity_id: switch.adaptive_lighting_sleep_mode_foyer

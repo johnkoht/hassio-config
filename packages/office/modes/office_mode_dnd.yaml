@@ -8,9 +8,9 @@ automation:
   - id: "office_mode_dnd"
     initial_state: on
     alias: "Office Mode DnD"
-    trigger:
+    triggers:
       # Office DnD Boolean turned on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_dnd
         to: "on"
       # # Office is occupied
@@ -25,7 +25,7 @@ automation:
       # - platform: state
       #   entity_id: sensor.john_room_presence
       #   to: "office"
-    condition:
+    conditions:
       # Office is occupied
       - condition: state
         entity_id: input_boolean.office_occupied
@@ -37,8 +37,8 @@ automation:
       - condition: state
         entity_id: input_boolean.office_dnd
         state: "on"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.office
           option: "DnD"

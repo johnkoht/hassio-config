@@ -4,28 +4,28 @@ automation:
   - id: "kitchen_lights_to_off"
     initial_state: on
     alias: "Kitchen Lights to off"
-    trigger:
+    triggers:
       # Kitchen turns to Off Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.kitchen
         to: "Off"
       # Kitchen is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.kitchen_occupied
         to: "off"
       # Kitchen is not occupied for 2 mins
       # This helps handle some lag when the lighting automation
       # is turned off
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.kitchen_occupied
         to: "off"
         for:
           minutes: 2
       # Lighting automations turn on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Lighting automations enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -68,11 +68,11 @@ automation:
       - condition: state
         entity_id: light.kitchen_lights
         state: "on"
-    action:
+    actions:
       # Turn OFF the lights
-      - service: light.turn_off
+      - action: light.turn_off
         entity_id: light.kitchen_lights
       # Turn OFF the boolean that identifies lights
       # automatically turned on
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.kitchen_lights_auto

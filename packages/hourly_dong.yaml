@@ -2,41 +2,41 @@ automation:
   - id: "hourly_dong"
     alias: "Hourly Dong"
     mode: "single"
-    trigger:
+    triggers:
       # At 7am
-      - platform: time
+      - trigger: time
         at: "07:00:00"
       # At 8am
-      - platform: time
+      - trigger: time
         at: "08:00:00"
       # At 9am
-      - platform: time
+      - trigger: time
         at: "09:00:00"
       # At 10am
-      - platform: time
+      - trigger: time
         at: "10:00:00"
       # At 11am
-      - platform: time
+      - trigger: time
         at: "11:00:00"
       # At 12pm
-      - platform: time
+      - trigger: time
         at: "12:00:00"
       # At 3pm
-      - platform: time
+      - trigger: time
         at: "15:00:00"
       # At 4pm
-      - platform: time
+      - trigger: time
         at: "16:00:00"
       # At 5pm
-      - platform: time
+      - trigger: time
         at: "17:00:00"
       # At 6pm
-      - platform: time
+      - trigger: time
         at: "18:00:00"
       # At 7pm
-      - platform: time
+      - trigger: time
         at: "19:00:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -53,7 +53,7 @@ automation:
       - condition: state
         entity_id: binary_sensor.announceable_rooms_occupied
         state: "on"
-    action:
+    actions:
       # Media players of occupied rooms
       - alias: "Sound File"
         variables:
@@ -87,7 +87,7 @@ automation:
 
       # Call the announcement engine and pass the requested media_players
       # or default to ones in occupied rooms
-      - service: script.announcement_engine
+      - action: script.announcement_engine
         data:
           sound_file: "{{sound_file}}"
           sound_length: "{{sound_file_length}}"

@@ -7,29 +7,29 @@ automation:
   - id: "basement_not_occupied"
     initial_state: on
     alias: "Basement not occupied"
-    trigger:
+    triggers:
       # No BLE for 2 minutes
-      - platform: template
+      - trigger: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['basement_main', 'basement_hub'])|map(attribute='name')|list | length == 0 }}"
         for:
           minutes: 5
       # No motion detected for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.basement_motion_sensor
         to: "off"
         for:
           minutes: 5
       # No aqara occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.basement_occupancy_sensor
         to: "off"
       # No aqara occupancy for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.basement_occupancy_sensor
         to: "off"
         for:
           minutes: 5
-    condition:
+    conditions:
       # Basement is occupied
       - condition: state
         entity_id: input_boolean.basement_occupied
@@ -68,6 +68,6 @@ automation:
       # No BLE devices detected
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['basement_main', 'basement_hub'])|map(attribute='name')|list | length == 0 }}"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.basement_occupied

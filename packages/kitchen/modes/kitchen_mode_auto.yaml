@@ -2,20 +2,20 @@ automation:
   - id: "kitchen_mode_auto"
     initial_state: on
     alias: "Kitchen mode Auto"
-    trigger:
+    triggers:
       # Kitchen is occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.kitchen_occupied
         to: "on"
       # House turn to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -31,8 +31,8 @@ automation:
       - condition: state
         entity_id: input_select.house
         state: "Auto"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.kitchen
           option: "Auto"

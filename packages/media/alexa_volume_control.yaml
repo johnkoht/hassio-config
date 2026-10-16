@@ -2,22 +2,22 @@ automation:
   - id: "alexa_volume_control"
     initial_state: on
     alias: "Alexa Volume Control"
-    trigger:
+    triggers:
       # Quiet mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.quiet_mode
         to: "on"
       # Bedtime mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
-      - service: media_player.volume_set
+    actions:
+      - action: media_player.volume_set
         data:
           entity_id:
             - media_player.john_s_echo_dot
@@ -29,22 +29,22 @@ automation:
   - id: "alexa_volume_control_turn_up"
     initial_state: on
     alias: "Alexa Volume Control - Turn Up"
-    trigger:
+    triggers:
       # Quiet mode is disabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.quiet_mode
         to: "off"
       # Bedtime mod is disabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "off"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
-      - service: media_player.volume_set
+    actions:
+      - action: media_player.volume_set
         data:
           entity_id:
             - media_player.john_s_echo_dot

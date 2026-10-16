@@ -22,7 +22,7 @@ automation:
         to: "on"
         for:
           minutes: 3
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -37,6 +37,6 @@ automation:
       # After 7pm
       - condition: time
         after: "19:00:00"
-    action:
-      - service: switch.turn_on
+    actions:
+      - action: switch.turn_on
         entity_id: switch.adaptive_lighting_sleep_mode_foyer

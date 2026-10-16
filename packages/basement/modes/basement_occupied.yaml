@@ -4,16 +4,16 @@ automation:
   - id: "basement_occupied"
     initial_state: on
     alias: "Basement occupied"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.basement_motion_sensor
         to: "on"
       # Occupancy detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.basement_occupancy_sensor
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -30,6 +30,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.basement_occupancy_sensor
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.basement_occupied

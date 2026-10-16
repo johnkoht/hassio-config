@@ -13,18 +13,18 @@ automation:
   - id: "late_night_reminders"
     alias: "Late Night Reminders"
     mode: "restart"
-    trigger:
+    triggers:
       # It's 9pm
-      - platform: time
+      - trigger: time
         at: "21:00:00"
       # Family room TV turns off
-      - platform: state
+      - trigger: state
         entity_id: media_player.sony_bravia_tv
         to: "off"
       # - platform: state
       #   entity_id: binary_sensor.kitchen_motion_sensor_main_motion_detection
       #   to: "on"
-    condition:
+    conditions:
       - condition: time
         after: "21:00:00"
         before: "02:00:00"
@@ -49,7 +49,7 @@ automation:
       # # Last motion in the familiy room is less than 5 mins ago
       # - condition: template
       #   value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.family_room_motion_sensor.last_updated)) | int < 300 }}"
-    action:
+    actions:
       # Wait for motion in the kitchen
       - wait_template: "{{ is_state('binary_sensor.kitchen_motion_sensor_main_motion_detection', 'on') }}"
         timeout: "00:05:00"
@@ -64,13 +64,13 @@ automation:
       #     value: "{{ states.media_player.john_s_echo_show.attributes.volume_level }}"
 
       # Set the volume to low
-      - service: media_player.volume_set
+      - action: media_player.volume_set
         data:
           entity_id: media_player.john_s_echo_show
           volume_level: 0.25
 
       # Notify Alex device
-      - service: notify.alexa_media
+      - action: notify.alexa_media
         data:
           data:
             type: tts

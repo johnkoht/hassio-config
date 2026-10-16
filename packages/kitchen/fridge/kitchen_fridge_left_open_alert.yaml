@@ -21,21 +21,21 @@ automation:
   - id: "kitchen_fridge_door_left_open"
     initial_state: on
     alias: "Kitchen Fridge Door Left Open"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.kitchen_fridge_door_status
         to: "on"
         for:
           minutes: 2
-    condition:
+    conditions:
       - condition: state
         entity_id: binary_sensor.kitchen_fridge_door_status
         state: "on"
-    action:
+    actions:
       - alias: "Repeat until the fridge door is closed"
         repeat:
           sequence:
-            - service: script.voice_announcement
+            - action: script.voice_announcement
               data:
                 media_players: auto
                 sound: "police-whistle"

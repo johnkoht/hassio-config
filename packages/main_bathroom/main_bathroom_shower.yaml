@@ -23,26 +23,26 @@ automation:
   - id: "main_bathroom_shower_occupied"
     alias: "Main Bathroom Shower Occupied"
     mode: "single"
-    trigger:
+    triggers:
       # Shower humidity over 60%
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_bathroom_humidity
         above: 60
       # Humidity spikes more than 25%
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) > 25 }}"
       # Humidity spikes more than 40%
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) > 40 }}"
-    condition:
+    conditions:
       # Main Bathroom is occupied
       - condition: state
         entity_id: input_boolean.main_bathroom_occupied
         state: "on"
       - condition: template
         value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) > 25 }}"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.main_bathroom_shower_occupied
 
   # Main Shower Not Occupied
@@ -52,17 +52,17 @@ automation:
   - id: "main_bathroom_shower_not_occupied"
     alias: "Main Bathroom Shower Not Occupied"
     mode: "single"
-    trigger:
+    triggers:
       # Shower humidity crosses under 85%
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_bathroom_humidity
         below: 85
       # Shower humidity crosses under 75%
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_bathroom_humidity
         below: 75
       # Shower humidity crosses under 65%
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_bathroom_humidity
         below: 65
       # # Shower humidity crosses under 55%
@@ -74,11 +74,11 @@ automation:
       #   entity_id: sensor.main_bathroom_humidity
       #   below: 45
       # Humidity drops to within 23% of initial humidity
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.main_bathroom_humidity.state | int) - (states.input_number.main_bathroom_initial_humidity.state | int) < 23 }}"
         for:
           minutes: 4
-    condition:
+    conditions:
       # # Main Bathroom is occupied
       # - condition: state
       #   entity_id: input_boolean.main_bathroom_occupied
@@ -90,8 +90,8 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bathroom_shower_occupied
         state: "on"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.main_bathroom_shower_occupied
 
   # Record the bathroom humidity when the
@@ -101,13 +101,13 @@ automation:
   - id: "main_bathroom_set_initial_humidity"
     alias: "Main bathroom Set Initial Humidity"
     mode: "single"
-    trigger:
+    triggers:
       # When the bathroom becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bathroom_occupied
         to: "on"
-    action:
-      - service: input_number.set_value
+    actions:
+      - action: input_number.set_value
         data:
           entity_id: input_number.main_bathroom_initial_humidity
           value: "{{ states.sensor.main_bathroom_humidity.state }}"

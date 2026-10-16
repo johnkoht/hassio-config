@@ -4,15 +4,15 @@ automation:
   - id: "family_room_lights_sleep_mode_off"
     initial_state: off
     alias: "Family Room Lights Sleep Mode Off"
-    trigger:
+    triggers:
       # 1 hour after sunrise
-      - platform: sun
+      - trigger: sun
         event: sunrise
         offset: "00:15:00"
       # Or at 7am
-      - platform: time
+      - trigger: time
         at: "07:00:00"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -25,9 +25,9 @@ automation:
           # OR it's after 7am
           - condition: time
             after: "07:00:00"
-    action:
-      - service: switch.turn_off
+    actions:
+      - action: switch.turn_off
         entity_id: switch.adaptive_lighting_sleep_mode_family_room
       # Turn off this automation
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.family_room_lights_sleep_mode_off

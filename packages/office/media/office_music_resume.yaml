@@ -68,7 +68,7 @@ automation:
       - condition: state
         entity_id: binary_sensor.john_computer_active
         state: "on"
-    action:
+    actions:
       # Check if there are items in the queue
       - action: sonos.get_queue
         target:

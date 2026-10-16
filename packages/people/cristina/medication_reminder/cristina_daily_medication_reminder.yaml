@@ -41,7 +41,7 @@ automation:
   - id: "cristina_daily_medication_reminder"
     alias: "Cristina Daily Medication Reminder"
     initial_state: false
-    trigger:
+    triggers:
       # Trigger at 7:30am
       - trigger: time
         at: "07:30:00"
@@ -172,7 +172,7 @@ automation:
   - id: "cristina_medication_reminder_reset"
     alias: "Cristina Medication Reminder Reset"
     initial_state: false
-    trigger:
+    triggers:
       - trigger: time
         at: "03:00:01"
     actions:

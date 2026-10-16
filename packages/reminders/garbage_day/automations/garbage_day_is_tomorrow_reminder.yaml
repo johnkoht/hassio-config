@@ -2,20 +2,20 @@ automation:
   - id: "garbage_day_is_tomorrow_reminder"
     alias: "Garbage Day Is Tomorrow Reminder"
     mode: "single"
-    trigger:
+    triggers:
       # At 5:30 PM
-      - platform: time
+      - trigger: time
         at: "17:30:00"
       # At 8pm
-      - platform: time
+      - trigger: time
         at: "20:00:00"
       # House becomes occupied for 15 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
         for:
           minutes: 15
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -27,7 +27,7 @@ automation:
       # After 5pm
       - condition: time
         after: "17:00:00"
-    action:
+    actions:
       # Wait for motion in the kitchen or family room
       - wait_template: >-
           {{
@@ -41,7 +41,7 @@ automation:
         delay: 2
 
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "message-alert"
@@ -54,7 +54,7 @@ automation:
               ] | random
             }}
 
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "Tomorrow is garbage day reminder!"
           title: "Garbage Day"

@@ -7,9 +7,9 @@ automation:
   - id: "office_music_off"
     initial_state: on
     alias: "Office Music Off"
-    trigger:
+    triggers:
       # Office is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "off"
         # for:
@@ -25,18 +25,18 @@ automation:
       #   entity_id: input_boolean.house_occupied
       #   to: "off"
       # Office is in DnD Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.office
         to: "DnD"
       # Office is in Off Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.office
         to: "Off"
       # My laptop becomes inactive
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.john_computer_active
         to: "off"
-    condition:
+    conditions:
       - condition: or
         conditions:
           # Office is NOT OCCUPIED
@@ -61,7 +61,7 @@ automation:
       - condition: state
         entity_id: media_player.sonos_office
         state: "playing"
-    action:
+    actions:
       #
       # If the office speakers are in a group, then unjoin
       # and then pause the music.
@@ -77,12 +77,12 @@ automation:
             entity_id: media_player.sonos_office
 
           # Pause the music on the player
-          - service: media_player.media_pause
+          - action: media_player.media_pause
             entity_id: media_player.sonos_office
 
           # Turn on the music playing boolean so we can
           # restore next time the room is occupied
-          - service: input_boolean.turn_on
+          - action: input_boolean.turn_on
             entity_id: input_boolean.office_music_playing
 
         #
@@ -90,10 +90,10 @@ automation:
         #
         else:
           # Pause the music on the player
-          - service: media_player.media_pause
+          - action: media_player.media_pause
             entity_id: media_player.sonos_office
 
           # Turn on the music playing boolean so we can
           # restore next time the room is occupied
-          - service: input_boolean.turn_on
+          - action: input_boolean.turn_on
             entity_id: input_boolean.office_music_playing

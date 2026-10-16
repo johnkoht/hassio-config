@@ -69,6 +69,6 @@ def test_automation_references_resolve():
     for path, auto in AUTOS:
         for node in walk(auto.get("actions", [])):
             if str(node.get("action", "")).startswith("automation."):
-                targets = node["target"]["entity_id"]
+                targets = (node.get("target") or {}).get("entity_id", node.get("entity_id"))
                 for t in targets if isinstance(targets, list) else [targets]:
                     assert t in entity_ids, f"{path.name}: {t} matches no commute automation alias"
