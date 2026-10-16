@@ -1,0 +1,34 @@
+# John Arrived at Home Station
+#
+# End of the evening return: switch the return-trip automations back off.
+#
+
+automation:
+  - id: "john_arrived_home_station"
+    alias: "John Arrived at Home Station"
+    initial_state: off
+    triggers:
+      - trigger: zone
+        entity_id: person.john_koht
+        zone: !secret commute_home_station_zone
+        event: enter
+    conditions:
+      # John is not home
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "off"
+      # After noon
+      - condition: time
+        after: "12:00:00"
+      # John is commuting boolean is ON
+      - condition: state
+        entity_id: input_boolean.john_commuting
+        state: "on"
+    actions:
+      # Turn off the return automations, including this one
+      - action: automation.turn_off
+        target:
+          entity_id:
+            - automation.john_departed_city_station
+            - automation.john_passing_midway_station
+            - automation.john_arrived_at_home_station
