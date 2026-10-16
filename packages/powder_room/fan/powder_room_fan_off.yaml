@@ -6,18 +6,18 @@ automation:
   - id: "powder_room_fan_off"
     initial_state: on
     alias: "Powder Room Fan Off"
-    trigger:
+    triggers:
       # Powder Room is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.powder_room
         to: "Off"
       # Bathroom is not occupied for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.powder_room_occupied
         to: "off"
         for:
           minutes: 5
-    condition:
+    conditions:
       # Fan is currently ON
       - condition: state
         entity_id: fan.powder_room_fan
@@ -32,6 +32,6 @@ automation:
           - condition: state
             entity_id: input_boolean.powder_room_occupied
             state: "off"
-    action:
-      - service: fan.turn_off
+    actions:
+      - action: fan.turn_off
         entity_id: fan.powder_room_fan

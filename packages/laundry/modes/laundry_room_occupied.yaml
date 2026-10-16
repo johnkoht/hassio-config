@@ -4,21 +4,21 @@ automation:
   - id: "laundry_room_occupied"
     initial_state: on
     alias: "Laundry Room occupied"
-    trigger:
+    triggers:
       # Entry motion sensor detects motion
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.laundry_room_motion_sensor_motion
         to: "on"
       # Laundry Room lights are turned on
-      - platform: state
+      - trigger: state
         entity_id: switch.laundry_room_main_lights
         to: "on"
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -38,6 +38,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.laundry_room_motion_sensor_motion
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.laundry_room_occupied

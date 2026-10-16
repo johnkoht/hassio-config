@@ -2,9 +2,9 @@ automation:
   - id: "main_bedroom_lights_day_on"
     initial_state: on
     alias: "Main bedroom lights day on"
-    trigger:
+    triggers:
       # The lighting is low in the bedroom
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           - sensor.main_bedroom_motion_sensor_entry_illuminance
           - sensor.main_bedroom_motion_sensor_back_illuminance
@@ -12,7 +12,7 @@ automation:
         for:
           minutes: 2
       # The lighting is low in the bedroom
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           - sensor.main_bedroom_motion_sensor_entry_illuminance
           - sensor.main_bedroom_motion_sensor_back_illuminance
@@ -20,7 +20,7 @@ automation:
         for:
           minutes: 5
       # The lighting is low in the bedroom
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           - sensor.main_bedroom_motion_sensor_entry_illuminance
           - sensor.main_bedroom_motion_sensor_back_illuminance
@@ -28,18 +28,18 @@ automation:
         for:
           minutes: 10
       # The weather is bad outside
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bad_weather
         to: "on"
       # Light automations is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
       # Light automations is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Light automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -77,12 +77,12 @@ automation:
       - condition: state
         entity_id: light.main_bedroom_main_lights
         state: "off"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         target:
           entity_id: light.main_bedroom_main_lights
         data:
           transition: 5
       # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lights_auto

@@ -18,7 +18,7 @@ automation:
       - trigger: state
         entity_id: binary_sensor.somebody_in_bed
         to: "off"
-    condition:
+    conditions:
       # Main Bedroom is occupied
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied

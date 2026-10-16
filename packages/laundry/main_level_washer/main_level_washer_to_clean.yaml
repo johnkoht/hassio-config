@@ -6,8 +6,8 @@ automation:
   - id: "main_level_washer_to_clean"
     alias: "Main Level Washer to Clean"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_select.main_level_washer_status
         to: "Finishing"
         for:
@@ -18,18 +18,18 @@ automation:
       # - platform: numeric_state
       #   entity_id: sensor.main_level_washing_machine_electric_consumption_w
       #   below: 50
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_level_washing_machine_electric_consumption_w
         below: 20
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.main_level_washer_status
         state: "Finishing"
       - condition: numeric_state
         entity_id: sensor.main_level_washing_machine_electric_consumption_w
         below: 50
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.main_level_washer_status
           option: "Clean"

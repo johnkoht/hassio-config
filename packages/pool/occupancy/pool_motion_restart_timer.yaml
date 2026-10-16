@@ -3,14 +3,14 @@ automation:
     initial_state: on
     alias: "Pool Motion - Restart Timer"
     mode: "single"
-    trigger:
+    triggers:
       # Motion in either of the motion sensors
-      - platform: state
+      - trigger: state
         entity_id:
           - binary_sensor.pool_motion_east_entry_occupancy
           - binary_sensor.pool_motion_west_occupancy
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -23,6 +23,6 @@ automation:
       - condition: state
         entity_id: input_select.pool
         state: "Auto"
-    action:
-      - service: timer.start
+    actions:
+      - action: timer.start
         entity_id: timer.pool_occupancy

@@ -2,24 +2,24 @@ automation:
   - id: "upstairs_hallway_not_occupied"
     initial_state: on
     alias: "Upstairs Hallway Not Occupied"
-    trigger:
+    triggers:
       # No motion for 10 mins
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.upstairs_hallway_motion
         to: "off"
         for:
           minutes: 10
-    condition:
+    conditions:
       # Upstairs Hallway is occupied
       - condition: state
         entity_id: input_boolean.upstairs_hallway_occupied
         state: "on"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.upstairs_hallway_occupied
       # Wait 2 seconds
       - alias: "Wait 2 seconds"
         delay: 02
       # Enable upstairs hallway lighting automations
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.upstairs_hallway_lighting_automations

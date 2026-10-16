@@ -2,19 +2,19 @@ automation:
   - id: "neighborhood_event_upcoming_reminder"
     alias: "Neighborhood Event Upcoming Reminder"
     mode: "single"
-    trigger:
-      - platform: calendar
+    triggers:
+      - trigger: calendar
         event: start
         entity_id: calendar.golf_acres
         offset: "-01:00:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
+    actions:
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "success-trumpets"

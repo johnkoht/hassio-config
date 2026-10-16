@@ -2,21 +2,21 @@ automation:
   - id: "audi_is_away"
     alias: "Audi is Away"
     initial_state: on
-    trigger:
+    triggers:
       # BLE detected not_home
-      - platform: state
+      - trigger: state
         entity_id: sensor.audi_presence
         to: "not_home"
       # Handle restarts and reloads of HA
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # Not detected home
       - condition: state
         entity_id: sensor.audi_presence
         state: "not_home"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.audi_home

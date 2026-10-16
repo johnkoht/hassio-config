@@ -8,31 +8,31 @@ automation:
   - id: "john_wake_up"
     alias: "John wake up"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.john_in_bed
         to: "off"
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.john_in_bed
         to: "off"
         for:
           minutes: 3
       # Door is open
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_door_sensor_status
         to: "on"
 
       # Sleep state changes to just got up
-      - platform: state
+      - trigger: state
         entity_id: input_select.john_sleep_state
         to: "Just Got Up"
         for:
           minutes: 2
       # Sleep state changes to Awake
-      - platform: state
+      - trigger: state
         entity_id: input_select.john_sleep_state
         to: "Awake"
-    condition:
+    conditions:
       # Make sure the bayesian sensor is off
       - condition: state
         entity_id: binary_sensor.john_in_bed
@@ -72,10 +72,10 @@ automation:
       # - condition: time
       #   after: "05:30:00"
       #   before: "21:00:00"
-    action:
+    actions:
       # Turn OFF the john in bed input_boolean
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.john_is_in_bed
       # Turn ON the john is awake input_boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.john_is_awake

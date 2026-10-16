@@ -2,12 +2,12 @@ template:
   #
   #
   #
-  - trigger:
+  - triggers:
       - trigger: time_pattern
         # hours: /1
         # minutes: /15
         minutes: /1
-    action:
+    actions:
       - action: weather.get_forecasts
         data:
           type: hourly

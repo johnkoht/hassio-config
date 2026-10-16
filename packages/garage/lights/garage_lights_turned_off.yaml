@@ -4,18 +4,18 @@ automation:
   - id: "garage_lights_turned_off"
     initial_state: on
     alias: "Garage lights Manually Turned Off"
-    trigger:
+    triggers:
       # Lights turned off
-      - platform: state
+      - trigger: state
         entity_id: light.garage_lights
         to: "off"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.garage_lights_auto
         state: "on"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.garage_lights_auto
       # Deactivate the motion sensors
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.garage_lighting_automations

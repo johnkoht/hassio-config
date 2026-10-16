@@ -36,17 +36,17 @@ rest_command:
 #   3. Build array of prices indexed by hour
 #-----------------------------------------------------------------------------
 template:
-  - trigger:
+  - triggers:
       # Primary fetch at 4:35 PM CT
-      - platform: time
+      - trigger: time
         at: "16:35:00"
       # Retry fetch at 5:05 PM CT
-      - platform: time
+      - trigger: time
         at: "17:05:00"
       # Fetch on Home Assistant start
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    action:
+    actions:
       - action: rest_command.fetch_comed_day_ahead_prices
         response_variable: response
     sensor:

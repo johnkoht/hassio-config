@@ -4,32 +4,32 @@ automation:
   - id: "nino_bedroom_heater_on"
     alias: "Nino bedroom heater on"
     initial_state: on
-    trigger:
+    triggers:
       # Nino's room is occupied (e.g. door is closed)
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.ninos_bedroom_occupied
         to: "on"
         for:
           minutes: 1
       # Temperature is below 70 degrees
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.nino_room_temperature
         below: 70
         for:
           minutes: 5
       # Less than 69.5 for redundancy
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 69.5 }}"
       # Temperature is below 69 degrees
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.nino_room_temperature
         below: 69
         for:
           minutes: 5
       # After 6:30 pm
-      - platform: time
+      - trigger: time
         at: "18:30:00"
-    condition:
+    conditions:
       # The house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -45,56 +45,56 @@ automation:
       # Less than 71.3 degrees
       - condition: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) < 71.3 }}"
-    action:
+    actions:
       # Switch the power plug on
-      - service: switch.turn_on
+      - action: switch.turn_on
         entity_id: switch.smart_plug_2_switch
 
   - id: "nino_bedroom_heater_off"
     alias: "Nino bedroom heater off"
     initial_state: on
-    trigger:
+    triggers:
       # Nino's door is open for 10 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "on"
         for:
           minutes: 10
       # Temperature is above 70.5
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 70.15 }}"
       # Temperature is above 71 degrees
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.nino_room_temperature
         above: 71
       # Temperature is above 72 degrees
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.nino_room_temperature
         above: 72
       # Temperature is above 72.5
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.nino_room_temperature.state | float) > 72.5 }}"
       # Temperature is above 73 degrees
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.nino_room_temperature
         above: 73
       # Temperature is above 74 degrees
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.nino_room_temperature
         above: 74
       # Temperature is above 75 degrees
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.nino_room_temperature
         above: 75
       # If the house is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # Room is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"
-    condition:
+    conditions:
       - condition: or
         conditions:
           - condition: template
@@ -111,31 +111,31 @@ automation:
       - condition: state
         entity_id: switch.smart_plug_2_switch
         state: "on"
-    action:
+    actions:
       # Switch the power plug of
-      - service: switch.turn_off
+      - action: switch.turn_off
         entity_id: switch.smart_plug_2_switch
 
   - id: "ninos_bedroom_heater_turn_on_upon_arrival"
     alias: "Nino Bedroom Heater - Turn On Upon Arrival"
     initial_state: on
-    trigger:
+    triggers:
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
       # We're home
-      - platform: state
+      - trigger: state
         entity_id: group.family
         from: "not_home"
         to: "home"
       # We just arrived
-      - platform: state
+      - trigger: state
         entity_id:
           - person.cristina_falbo
           - person.john_koht
         to: "Just Arrived"
-    condition:
+    conditions:
       - condition: or
         conditions:
           # House has just become occupied
@@ -161,7 +161,7 @@ automation:
       # After 6:30 PM
       - condition: time
         after: "18:30:00"
-    action:
+    actions:
       # Switch the power plug on
-      - service: switch.turn_on
+      - action: switch.turn_on
         entity_id: switch.smart_plug_2_switch

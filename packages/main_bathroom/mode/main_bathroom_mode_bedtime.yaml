@@ -32,7 +32,7 @@ automation:
           - condition: state
             entity_id: input_select.main_bedroom
             state: "Bedtime"
-    action:
+    actions:
       - action: input_select.select_option
         data:
           entity_id: input_select.main_bathroom

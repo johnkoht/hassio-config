@@ -8,16 +8,16 @@ automation:
   - id: "bedtime_notifications"
     alias: "Bedtime Notifications"
     mode: "single"
-    trigger:
+    triggers:
       # # Bedtime is enaled
       # - platform: state
       #   entity_id: input_boolean.bedtime
       #   to: "on"
       # Main bedroom enters bedtime mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Bedtime"
-    condition:
+    conditions:
       # Main bedroom is in bedtime mode
       - condition: state
         entity_id: input_select.main_bedroom
@@ -29,9 +29,9 @@ automation:
       # - condition: state
       #   entity_id: input_boolean.main_bedroom_occupied
       #   state: "on"
-    action:
+    actions:
       # Set the invput text value to nil
-      - service: input_text.set_value
+      - action: input_text.set_value
         entity_id: input_text.bedtime_notification_message
         data:
           value: ""
@@ -42,7 +42,7 @@ automation:
             entity_id: lock.front_door
             state: "unlocked"
         then:
-          - service: input_text.set_value
+          - action: input_text.set_value
             entity_id: input_text.bedtime_notification_message
             data:
               value: "The front door is unlocked."
@@ -54,7 +54,7 @@ automation:
             entity_id: binary_sensor.jr_suite_door_status
             state: "off"
         then:
-          - service: input_text.set_value
+          - action: input_text.set_value
             entity_id: input_text.bedtime_notification_message
             data:
               value: >-
@@ -73,7 +73,7 @@ automation:
             entity_id: binary_sensor.windows
             state: "on"
         then:
-          - service: input_text.set_value
+          - action: input_text.set_value
             entity_id: input_text.bedtime_notification_message
             data:
               value: >-
@@ -91,12 +91,12 @@ automation:
       - condition: template
         value_template: "{{states.input_text.bedtime_notification_message.state | length > 0}}"
 
-      - service: input_text.set_value
+      - action: input_text.set_value
         entity_id: input_text.bedtime_notification_message
         data:
           value: "Hey there, just wanted to let you know {{states.input_text.bedtime_notification_message.state}}"
 
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "{{states.input_text.bedtime_notification_message.state}}"
           title: Bedtime Notifications
@@ -105,13 +105,13 @@ automation:
           tag: "bedtime-notifications"
 
       # Set the volume to low
-      - service: media_player.volume_set
+      - action: media_player.volume_set
         data:
           entity_id: media_player.main_bedroom
           volume_level: 0.25
 
       # Notify Alex device
-      - service: notify.alexa_media
+      - action: notify.alexa_media
         data:
           data:
             type: tts

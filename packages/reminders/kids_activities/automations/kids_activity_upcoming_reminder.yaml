@@ -2,19 +2,19 @@ automation:
   - id: "kids_activity_upcoming_reminder"
     alias: "Kids Activity Upcoming Reminder"
     mode: "single"
-    trigger:
-      - platform: calendar
+    triggers:
+      - trigger: calendar
         event: start
         entity_id: calendar.kohbocal
         offset: "-01:00:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
+    actions:
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "flute-cell-phone-alert"

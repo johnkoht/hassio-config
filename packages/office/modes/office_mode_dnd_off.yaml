@@ -9,18 +9,18 @@ automation:
   - id: "office_mode_dnd_off"
     initial_state: off
     alias: "Office Mode DnD Off"
-    trigger:
+    triggers:
       # Office is occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "off"
       # John's DnD is off
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.john_dnd
         to: "off"
         for:
           minutes: 2
-    condition:
+    conditions:
       # Office is currently DnD mode
       - condition: state
         entity_id: input_select.office
@@ -39,8 +39,8 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.office
           option: "Auto"

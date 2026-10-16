@@ -3,29 +3,29 @@ automation:
     initial_state: on
     alias: "John Work Call Off"
     mode: queued
-    trigger:
+    triggers:
       # Work Calendar ended
-      - platform: calendar
+      - trigger: calendar
         event: end
         entity_id: calendar.john_koht_reserv_com
         offset: "00:00:10"
       # Sometimes the work call doesn't turn off
       # so let's just turn it off when work hours are OFF
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.work_hours
         to: "off"
-    condition:
+    conditions:
       # Work call boolean is ON
       - condition: state
         entity_id: input_boolean.john_work_call
         state: "on"
-    action:
+    actions:
       # Turn OFF the boolean
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.john_work_call
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "John's work call has been turned OFF"
           title: "John Work Call OFF"

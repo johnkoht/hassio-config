@@ -29,11 +29,11 @@ script:
         description: "Alexa device you want to trigger"
         example: "media_player.bedroom_echo"
     sequence:
-      - service: input_text.set_value
+      - action: input_text.set_value
         data:
           entity_id: input_text.alexa_actionable_notification
           value: '{"text": "{{ text }}", "event": "{{ event_id }}"}'
-      - service: media_player.play_media
+      - action: media_player.play_media
         data:
           media_content_type: skill
           media_content_id: amzn1.ask.skill.0a83e419-361d-4f8e-9e60-6daab02c1c16
@@ -43,21 +43,21 @@ script:
 automation:
   - id: "1672413097885"
     alias: Hello World Response
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: alexa_actionable_notification
         event_data:
           event_id: hello_world
     variables:
       response_type: "{{ trigger.event.data.event_response_type }}"
       response: "{{ trigger.event.data.event_response }}"
-    action:
-      - service: input_text.set_value
+    actions:
+      - action: input_text.set_value
         data:
           value: "{{ response_type }}"
         target:
           entity_id: input_text.l
-      - service: input_text.set_value
+      - action: input_text.set_value
         data:
           value: "{{ response }}"
         target:

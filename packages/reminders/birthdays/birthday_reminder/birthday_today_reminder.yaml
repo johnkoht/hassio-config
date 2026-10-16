@@ -2,14 +2,14 @@ automation:
   - id: "birthday_today_reminder"
     alias: "Birthday Today Reminder"
     mode: "single"
-    trigger:
+    triggers:
       # At 7:30 am
-      - platform: time
+      - trigger: time
         at: "07:35:00"
       # At 5:15pm
-      - platform: time
+      - trigger: time
         at: "17:15:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -18,7 +18,7 @@ automation:
       - condition: state
         entity_id: calendar.birthdays_2
         state: "on"
-    action:
+    actions:
       # Wait for motion in the kitchen or family room
       - wait_template: >-
           {{
@@ -32,7 +32,7 @@ automation:
         delay: 2
 
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "success-trumpets"
@@ -46,7 +46,7 @@ automation:
               ] | random
             }}
 
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "Today is {{states.calendar.birthdays_2.attributes.message}}"
           title: "Birthday Reminder"

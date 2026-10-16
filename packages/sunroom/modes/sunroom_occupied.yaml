@@ -4,24 +4,24 @@ automation:
   - id: "sunroom_occupied"
     initial_state: on
     alias: "Sunroom Occupied"
-    trigger:
+    triggers:
       # If anybody is detected via Bluetooth
       # - platform: template
       #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'sunroom')|map(attribute='name')|list | length > 0 }}"
       # Sunroom sensor detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.sunroom_motion_sensor_occupancy
         to: "on"
       # Sunroom sensor detects motion
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.sunroom_motion_sensor_status
         to: "on"
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -40,6 +40,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.sunroom_motion_sensor_occupancy
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.sunroom_occupied

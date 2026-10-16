@@ -7,12 +7,12 @@ automation:
   - id: "laundry_room_lights_motion_on"
     initial_state: on
     alias: "Laundry Room lights Motion On"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.laundry_room_motion_sensor_motion
         to: "on"
-    condition:
+    conditions:
       # Laundry Room is Auto
       - condition: state
         entity_id: input_select.laundry_room
@@ -29,11 +29,11 @@ automation:
       - condition: state
         entity_id: light.laundry_room_main_lights
         state: "off"
-    action:
+    actions:
       # Turn the lights ON
-      - service: light.turn_on
+      - action: light.turn_on
         entity_id: light.laundry_room_main_lights
       # Turn ON the boolean to notify it's been automatically
       # turned on
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.laundry_room_lights_auto

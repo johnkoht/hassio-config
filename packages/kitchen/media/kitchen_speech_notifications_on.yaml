@@ -5,16 +5,16 @@ automation:
   - id: "kitchen_speech_notifications_on"
     initial_state: on
     alias: "Kitchen Speech Notifications On"
-    trigger:
+    triggers:
       # Kitchen becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.kitchen_occupied
         to: "on"
       # Kitchen turns to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.kitchen
         to: "Auto"
-    condition:
+    conditions:
       # Kitchen is occupied
       - condition: state
         entity_id: input_boolean.kitchen_occupied
@@ -28,7 +28,7 @@ automation:
           - condition: state
             entity_id: input_select.kitchen
             state: "Dim"
-    action:
+    actions:
       # Turn on the speech notifications boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.kitchen_speech_notifications

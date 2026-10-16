@@ -2,10 +2,10 @@ automation:
   - alias: NWS Alerts Update Event ID History
     id: nws_alerts_update_event_id_history
     initial_state: "on"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.nws_alerts
-    action:
+    actions:
       - delay:
           minutes: 5
       - repeat:
@@ -22,7 +22,7 @@ automation:
                 {% set current_id_list = set(ns.ids) %}
                 {% set history_id_list = set( (states.sensor.nws_alerts_event_ids.attributes.values()| reject('match', 'nws_alerts_event_ids') | reject('match', 'None') | reject('match', 'unknown'))|list ) %}
                 {{ (current_id_list.difference(history_id_list)|list) | count > 0 }}
-            - service: variable.update_sensor
+            - action: variable.update_sensor
               target:
                 entity_id: sensor.nws_alerts_event_ids
               data:
@@ -37,7 +37,7 @@ automation:
                   {% if (current_id_list.difference(history_id_list)|list)[0] is defined %}
                     {{ (current_id_list.difference(history_id_list)|list)[0] }}
                   {% endif %}
-            - service: variable.update_sensor
+            - action: variable.update_sensor
               target:
                 entity_id: sensor.nws_alerts_event_ids
               data:

@@ -2,16 +2,16 @@ automation:
   - id: "foyer_lights_to_off"
     initial_state: on
     alias: "Foyer lights to off"
-    trigger:
+    triggers:
       # If foyer is turned to off
-      - platform: state
+      - trigger: state
         entity_id: input_select.foyer
         to: "Off"
       # Or foyer is turned to away
-      - platform: state
+      - trigger: state
         entity_id: input_select.foyer
         to: "Away"
-    condition:
+    conditions:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -39,8 +39,8 @@ automation:
       - condition: state
         entity_id: light.foyer_lights
         state: "on"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.foyer_lights
         data:
           transition: 1

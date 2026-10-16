@@ -6,20 +6,20 @@ automation:
   - id: "pool_occupied"
     initial_state: on
     alias: "Pool Occupied"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.pool_motion_sensor_status
         to: "on"
       # The pool gate changes state
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.pool_main_gate_opening
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -38,7 +38,7 @@ automation:
           - condition: state
             entity_id: timer.pool_occupancy
             state: "active"
-    action:
+    actions:
       # Turn ON the pool occupied boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.pool_occupied

@@ -2,9 +2,9 @@ automation:
   - id: "grocery_store_announcement"
     alias: "Grocery Store Announcement"
     mode: "single"
-    trigger:
+    triggers:
       # One of us is at the grocery store
-      - platform: state
+      - trigger: state
         entity_id:
           - person.john_koht
           - person.cristina_falbo
@@ -17,9 +17,9 @@ automation:
         for:
           minutes: 5
     # condition:
-    action:
+    actions:
       # Voice announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: musical-flute

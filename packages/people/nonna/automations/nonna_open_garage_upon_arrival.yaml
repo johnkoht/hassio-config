@@ -3,16 +3,16 @@ automation:
     alias: Nonna Open Garage Upon Arrival
     mode: queued
     initial_state: off
-    trigger:
+    triggers:
       # Nonna is home for 3 seconds
       # This is to avoid race condition where other
       # home automations are running
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.nonna_home
         to: "on"
         for:
           seconds: 3
-    condition:
+    conditions:
       # Nonna is home
       - condition: state
         entity_id: person.mary_falbo
@@ -32,16 +32,16 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-    action:
+    actions:
       # Wait until a person is detected by the garage
       - alias: "Wait for a person to be detected"
         wait_for_trigger:
-          - platform: state
+          - trigger: state
             entity_id: binary_sensor.garage_driveway_person_detected
             to: "on"
         timeout: "00:03:00"
         continue_on_timeout: false
 
       # Open garage door 2
-      - service: cover.open_cover
+      - action: cover.open_cover
         entity_id: cover.garage_door_2

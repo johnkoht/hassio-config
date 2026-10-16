@@ -3,11 +3,11 @@ automation:
   - id: "reset_room_selections_after_complete"
     alias: "Reset Room Selection After Vacuum Finishes"
     description: "Turns off all room selection booleans when the vacuum completes cleaning"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: vacuum.main_floor_vacuum
         to: 'returning'
-    condition:
+    conditions:
       # Only run if at least one room was selected
       - condition: template
         value_template: >
@@ -18,8 +18,8 @@ automation:
             {% endif %}
           {% endfor %}
           {{ false }}
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         target:
           entity_id: >
             {% set entities = [] %}

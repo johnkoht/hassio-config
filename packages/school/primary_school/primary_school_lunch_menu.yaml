@@ -26,12 +26,12 @@ rest_command:
     timeout: 30
 
 template:
-  - trigger:
+  - triggers:
       - trigger: time_pattern
         hours: /1
       - trigger: homeassistant
         event: start
-    action:
+    actions:
       - alias: "Fetch this month's menu calendar"
         action: rest_command.fetch_primary_daily_menu
         response_variable: response

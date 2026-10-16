@@ -7,16 +7,16 @@ automation:
   - id: "jr_suite_lights_off"
     initial_state: on
     alias: "Jr. Suite lights off"
-    trigger:
+    triggers:
       # Jr. Suite is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.jr_suite
         to: "Off"
       # Lighting automations turn on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Lights are currently on
       - condition: state
         entity_id: light.jr_suite_bedroom_main_lights
@@ -25,6 +25,6 @@ automation:
       - condition: state
         entity_id: input_select.jr_suite
         state: "Off"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.jr_suite_bedroom_main_lights

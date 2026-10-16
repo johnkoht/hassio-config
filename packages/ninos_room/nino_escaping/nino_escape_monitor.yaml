@@ -2,12 +2,12 @@ automation:
   - id: "nino_escape_monitor"
     alias: "Nino Escape Monitor"
     initial_state: on
-    trigger:
+    triggers:
       # Door is opened
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "on"
-    condition:
+    conditions:
       # Nobody is in his room
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'in', ['nino_room'])|map(attribute='name')|list | length == 0 }}"
@@ -76,9 +76,9 @@ automation:
       #     - condition: state
       #       entity_id: input_boolean.bedtime
       #       state: "on"
-    action:
+    actions:
       # Notification for testing
-      - service: notify.mobile_app_jk_2
+      - action: notify.mobile_app_jk_2
         data:
           message: Nino is escaping!
           title: Nino Escape Monitor

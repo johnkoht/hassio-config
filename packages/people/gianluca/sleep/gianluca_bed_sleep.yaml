@@ -9,7 +9,7 @@ automation:
         to: "Just Laid Down"
         for:
           minutes: 5
-    action:
+    actions:
       - action: input_select.select_option
         data:
           entity_id: input_select.gianluca_sleep_state

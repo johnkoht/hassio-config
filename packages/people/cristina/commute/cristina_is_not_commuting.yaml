@@ -2,20 +2,20 @@ automation:
   - id: "cristina_is_not_commuting"
     alias: "Cristina is Not Commuting"
     initial_state: off
-    trigger:
+    triggers:
       # Cristina is home
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.cristina_home
         to: "on"
-    condition:
+    conditions:
       # Commuting boolean is ON
       - condition: state
         entity_id: input_boolean.cristina_commuting
         state: "on"
-    action:
+    actions:
       # Turn OFF the boolean
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.cristina_commuting
       # Turn OFF this automatino
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.cristina_is_not_commuting

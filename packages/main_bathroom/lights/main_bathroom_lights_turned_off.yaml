@@ -4,17 +4,17 @@ automation:
   - id: "main_bathroom_lights_turned_off"
     initial_state: on
     alias: "Main Bathroom lights Manually Turned Off"
-    trigger:
+    triggers:
       # Lights turned off
-      - platform: state
+      - trigger: state
         entity_id: light.main_bathroom_main_lights
         to: "off"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.main_bathroom_lights_auto
         state: "on"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.main_bathroom_lights_auto
       # # Deactivate the motion sensors
       # - service: input_boolean.turn_off

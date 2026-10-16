@@ -267,12 +267,12 @@ automation:
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
-    condition:
+    conditions:
       # Notification level is ALL
       - condition: state
         entity_id: input_select.notification_level
         state: "All"
-    action:
+    actions:
       # Set the notification level to "Important"
       - action: input_select.select_option
         data:

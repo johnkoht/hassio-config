@@ -6,16 +6,16 @@ automation:
   - id: "main_bedroom_music_off"
     initial_state: on
     alias: "Main Bedroom Music Off"
-    trigger:
+    triggers:
       # Main Bedroom is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "off"
       # Main Bedroom is in Off Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Off"
-    condition:
+    conditions:
       # Main Bedroom is NOT OCCUPIED
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
@@ -28,11 +28,11 @@ automation:
       - condition: state
         entity_id: media_player.sonos_main_bedroom
         state: "playing"
-    action:
+    actions:
       # Unjoin if it's joined
-      - service: media_player.unjoin
+      - action: media_player.unjoin
         entity_id: media_player.sonos_main_bedroom
 
       # Turn off the Sonos music
-      - service: media_player.media_pause
+      - action: media_player.media_pause
         entity_id: media_player.sonos_main_bedroom

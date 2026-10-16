@@ -2,39 +2,39 @@ automation:
   - id: "playroom_not_occupied"
     initial_state: on
     alias: "Playroom not occupied"
-    trigger:
+    triggers:
       # If anybody is detected out of the room
-      - platform: template
+      - trigger: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length == 0 }}"
         for:
           minutes: 2
       # Playroom sensor no longer detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_occupancy
         to: "off"
       # No occupancy for 5 minutes (15 total)
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_occupancy
         to: "off"
         for:
           minutes: 5
       # No occupancy for 10 minutes (20 total)
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_occupancy
         to: "off"
         for:
           minutes: 10
       # No motion for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_motion
         to: "off"
         for:
           minutes: 5
       # Playroom EPL Sensor Detects NO Occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_presence_sensor
         to: "off"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.playroom_occupied
         state: "on"
@@ -86,8 +86,8 @@ automation:
       #       entity_id: binary_sensor.playroom_occupancy
       #       state: "off"
 
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.playroom_occupied
 
       # Wait 2 seconds
@@ -95,5 +95,5 @@ automation:
         delay: 02
 
       # Enable playroom lighting automations
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.playroom_lighting_automations

@@ -23,7 +23,7 @@ automation:
       # At sunrise
       - trigger: sun
         event: sunrise
-    condition:
+    conditions:
       - condition: time
         after: "05:00:00"
       - condition: or
@@ -56,6 +56,6 @@ automation:
                   - condition: state
                     entity_id: input_boolean.cristina_is_awake
                     state: "on"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.bedtime

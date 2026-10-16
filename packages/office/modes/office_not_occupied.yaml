@@ -7,38 +7,38 @@ automation:
   - id: "office_not_occupied"
     initial_state: on
     alias: "Office not occupied"
-    trigger:
+    triggers:
       # Office Bayesian sensor is off
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.office_presence
         to: "off"
         for:
           minutes: 2
       # No BLE for 2 minutes
-      - platform: template
+      - trigger: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'office')|map(attribute='name')|list | length == 0 }}"
         for:
           minutes: 2
       # Motion not detected for 3 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.office_aqara_motion_sensor
         to: "off"
         for:
           minutes: 3
       # Office sensor no longer detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.office_aqara_occupancy
         to: "off"
       # If the house is unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # Office is currently occupied
       - condition: state
         entity_id: input_boolean.office_occupied
@@ -69,13 +69,13 @@ automation:
       #       entity_id: binary_sensor.office_aqara_occupancy
       #       state: "off"
 
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.office_occupied
 
       - alias: "Wait 2 seconds"
         delay: 02
 
       # Enable office lighting automations
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.office_lighting_automations

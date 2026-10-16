@@ -2,13 +2,13 @@ automation:
   - id: "upstairs_dryer_to_idle"
     alias: "Upstairs Dryer to Idle"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_select.upstairs_dryer_status
         to: "Clean"
         for:
           minutes: 5
-    condition:
+    conditions:
       # Washer is in status Clean or Finishing
       - condition: or
         conditions:
@@ -23,8 +23,8 @@ automation:
           - condition: state
             entity_id: input_select.upstairs_dryer_status
             state: "Finishing"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.upstairs_dryer_status
           option: "Idle"

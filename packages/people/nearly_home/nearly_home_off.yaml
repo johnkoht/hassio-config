@@ -5,21 +5,21 @@ automation:
   - id: "nearly_home_off"
     alias: "Nearly Home - Turn Off"
     initial_state: on
-    trigger:
+    triggers:
       # We're home
-      - platform: state
+      - trigger: state
         entity_id: group.family
         to: "home"
-      - platform: state
+      - trigger: state
         entity_id:
           - person.cristina_falbo
           - person.john_koht
         to: "home"
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
-    condition:
+    conditions:
       # Family has been away for 20 minutes
       - condition: state
         entity_id: group.family
@@ -32,17 +32,17 @@ automation:
       - condition: state
         entity_id: input_boolean.nearly_home
         state: "on"
-    action:
+    actions:
       # Turn OFF the boolean
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.nearly_home
 
       # Turn OFF this automation
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.nearly_home_turn_off
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: Nearly Home Off
           message: Nearly Home turned off since you're home

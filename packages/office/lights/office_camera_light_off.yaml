@@ -5,22 +5,22 @@ automation:
   - id: "office_camera_light_off"
     initial_state: on
     alias: "Office Camera Light Off"
-    trigger:
+    triggers:
       # Laptop camera goes off
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.john_laptop_camera_active
         to: "off"
         for:
           seconds: 4
       # Office no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "off"
       # Laptop is turned off
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.john_computer_active
         to: "off"
-    condition:
+    conditions:
       # Laptop camera is off
       - condition: state
         entity_id: binary_sensor.john_laptop_camera_active
@@ -29,6 +29,6 @@ automation:
       - condition: state
         entity_id: light.office_el_gato_light
         state: "on"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.office_el_gato_light

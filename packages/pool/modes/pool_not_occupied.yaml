@@ -4,21 +4,21 @@ automation:
   - id: "pool_not_occupied"
     initial_state: on
     alias: "Pool Not Occupied"
-    trigger:
+    triggers:
       # Pool occupancy timer goes idle
-      - platform: state
+      - trigger: state
         entity_id: timer.pool_occupancy
         to: "idle"
       # Nobody detected via Bluetooth for 2 minutes
-      - platform: template
+      - trigger: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gazebo')|map(attribute='name')|list | length == 0 }}"
         for:
           minutes: 2
       # The pool gate is closed
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.pool_main_gate_opening
         to: "off"
-    condition:
+    conditions:
       # Pool is occupied
       - condition: state
         entity_id: input_boolean.pool_occupied
@@ -34,7 +34,7 @@ automation:
       # Nobody detected via BLE
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'gazebo')|map(attribute='name')|list | length == 0 }}"
-    action:
+    actions:
       # Turn OFF the pool occupied boolean
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.pool_occupied

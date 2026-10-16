@@ -12,7 +12,7 @@ automation:
       # go from unavailable to just laid down
       - condition: template
         value_template: "{{ not is_state('input_select.gianluca_sleep_state','Sleep') }}"
-    action:
+    actions:
       - action: input_select.select_option
         data:
           entity_id: input_select.gianluca_sleep_state

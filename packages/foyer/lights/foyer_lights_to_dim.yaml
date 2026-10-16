@@ -4,12 +4,12 @@ automation:
   - id: "foyer_lights_to_dim"
     initial_state: on
     alias: "Foyer lights to dim"
-    trigger:
+    triggers:
       # somebody is in bed
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.somebody_in_bed
         to: "on"
-    condition:
+    conditions:
       # Make sure lighting automations are on
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -22,8 +22,8 @@ automation:
       - condition: state
         entity_id: light.foyer_chandelier
         state: "on"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.foyer_chandelier
         data:
           brightness_pct: 15

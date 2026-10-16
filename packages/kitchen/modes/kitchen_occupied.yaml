@@ -4,28 +4,28 @@ automation:
   - id: "kitchen_occupied"
     initial_state: on
     alias: "Kitchen occupied"
-    trigger:
+    triggers:
       # If anybody is detected via Bluetooth
       # - platform: template
       #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'kitchen')|map(attribute='name')|list | length > 0 }}"
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion_sensor_status
         to: "on"
       # Occupancy detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion_sensor_occupancy
         to: "on"
       # Lights are turned on
-      - platform: state
+      - trigger: state
         entity_id: light.kitchen_lights
         to: "on"
       # EPL Occupancy Detected
-      - platform: state
+      - trigger: state
         #entity_id: binary_sensor.epl_kitchen_occupancy
         entity_id: binary_sensor.kitchen_presence_sensor
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -50,6 +50,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.kitchen_presence_sensor
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.kitchen_occupied

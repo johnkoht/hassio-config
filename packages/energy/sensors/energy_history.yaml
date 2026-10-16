@@ -80,8 +80,8 @@ automation:
   - id: "energy_history_hourly_snapshot"
     alias: "Energy History Hourly Snapshot"
     mode: single
-    trigger:
-      - platform: time_pattern
+    triggers:
+      - trigger: time_pattern
         minutes: "5"
         seconds: "0"
 
@@ -101,7 +101,7 @@ automation:
       bin_prefix: "{{ 'energy_weekend_h' if is_weekend else 'energy_weekday_h' }}"
       target_entity: "{{ 'input_number.' ~ bin_prefix ~ '%02d'|format(prev_hour) }}"
 
-    action:
+    actions:
       # Wait for utility meter to have last_period available (up to 3 min)
       - wait_template: >
           {{ state_attr('sensor.whole_home_energy_hourly_usage', 'last_period') is not none }}
@@ -118,7 +118,7 @@ automation:
       - condition: template
         value_template: "{{ prev_val > 0 }}"
 
-      - service: input_number.set_value
+      - action: input_number.set_value
         target:
           entity_id: "{{ target_entity }}"
         data:

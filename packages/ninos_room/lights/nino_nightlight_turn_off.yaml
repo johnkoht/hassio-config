@@ -4,17 +4,17 @@ automation:
   - id: "nino_nightlight_turn_off"
     initial_state: on
     alias: "Nino Nightlight - Turn Off"
-    trigger:
+    triggers:
       # Room is NOT occupied for an hour
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"
         for:
           hours: 1
       # At 7am
-      - platform: time
+      - trigger: time
         at: "07:00:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -26,6 +26,6 @@ automation:
       # After 6am
       - condition: time
         after: "06:00:00"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.nino_bedroom_lamp

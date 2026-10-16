@@ -20,7 +20,7 @@ automation:
     # This trigger is used to listen for the announcement queue state
     # and the house occupied state.
     #
-    trigger:
+    triggers:
       # Announcement Queue State
       - trigger: state
         entity_id: sensor.announcement_queue
@@ -44,7 +44,7 @@ automation:
         for:
           minutes: 3
 
-    condition:
+    conditions:
       # Make sure the house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -79,7 +79,7 @@ automation:
             false
           {% endif %}
 
-    action:
+    actions:
       # Turn on the announcement queue running flag
       - action: input_boolean.turn_on
         entity_id: input_boolean.announcement_queue_running

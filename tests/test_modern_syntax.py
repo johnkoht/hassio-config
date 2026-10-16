@@ -66,26 +66,33 @@ class TestModernAutomationSyntax:
         Modern: trigger: state
         Deprecated: platform: state
         """
+        # Only trigger lists count: Bayesian observations, mqtt_room and other
+        # sensor platforms legitimately use `platform:`.
         errors = []
-        
-        # Also check raw content for platform: usage in trigger context
-        platform_pattern = re.compile(
-            r'^\s+-\s*platform:\s*(state|time|event|numeric_state|sun|template|mqtt|webhook|zone|device)',
-            re.MULTILINE
-        )
-        
+
+        def trigger_lists(node):
+            if isinstance(node, dict):
+                for k, v in node.items():
+                    if k in ("trigger", "triggers", "wait_for_trigger") and isinstance(v, (list, dict)):
+                        yield v if isinstance(v, list) else [v]
+                    yield from trigger_lists(v)
+            elif isinstance(node, list):
+                for x in node:
+                    yield from trigger_lists(x)
+
         for yf in yaml_files:
-            matches = platform_pattern.findall(yf.raw_content)
-            if matches:
-                # Find line numbers
-                lines = yf.raw_content.split('\n')
-                for i, line in enumerate(lines, 1):
-                    if re.match(r'\s+-\s*platform:', line):
-                        errors.append(
-                            f"{yf.relative_path}:{i}: Uses deprecated 'platform: {line.split(':')[-1].strip()}' "
-                            f"instead of 'trigger: ...'"
-                        )
-        
+            scopes = [yf.content.get(k) for k in yf.content
+                      if k == "template" or str(k).startswith("automation") or k == "script"]
+            for scope in scopes:
+                for triggers in trigger_lists(scope):
+                    for t in triggers:
+                        if isinstance(t, dict) and "platform" in t and "trigger" not in t:
+                            alias = t.get("platform")
+                            errors.append(
+                                f"{yf.relative_path}: trigger uses deprecated 'platform: {alias}' "
+                                f"instead of 'trigger: {alias}'"
+                            )
+
         if errors:
             pytest.fail(
                 f"Found {len(errors)} trigger(s) using deprecated 'platform:' syntax:\n" +

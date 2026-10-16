@@ -8,20 +8,20 @@ automation:
   - id: "main_level_washer_complete_alert"
     alias: "Main Level Washer Complete Alert"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_select.main_level_washer_status
         to: "Clean"
       # If the home becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
         for:
           minutes: 10
       # After 8 am
-      - platform: time
+      - trigger: time
         at: "08:01:00"
-    condition:
+    conditions:
       # The house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -42,9 +42,9 @@ automation:
           {% else %}
             false
           {% endif %}
-    action:
+    actions:
       # Announce throughout the house
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "chirp"
@@ -52,7 +52,7 @@ automation:
           expires_in: 120
           speech_message: "The main level washer finished and is ready to be emptied."
       # Notify whoever is home
-      - service: >
+      - action: >
           {% if (is_state("input_boolean.john_home", "on")) and (is_state("input_boolean.cristina_home", "on"))  %}
             notify.ios_family
           {% elif is_state("input_boolean.john_home", "on") %}
@@ -71,7 +71,7 @@ automation:
             entity_id: media_player.sony_bravia_tv
             state: "on"
         then:
-          - service: notify.family_room_sony_bravia_tv
+          - action: notify.family_room_sony_bravia_tv
             data:
               message: The main level washer is finished and is ready to be emptied.
               title: Laundry is complete!

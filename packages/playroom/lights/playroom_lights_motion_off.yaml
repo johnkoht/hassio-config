@@ -7,18 +7,18 @@ automation:
   - id: "playroom_lights_motion_off"
     initial_state: off
     alias: "Playroom lights motion off"
-    trigger:
+    triggers:
       # Motion no longer detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_motion
         to: "off"
         for:
           minutes: 2
       # Playroom sensor detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_occupancy
         to: "off"
-    condition:
+    conditions:
       # Playroom is not occupied
       - condition: state
         entity_id: input_boolean.playroom_occupied
@@ -27,8 +27,8 @@ automation:
       - condition: state
         entity_id: light.playroom_lights
         state: "on"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.playroom_lights
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.playroom_lights_motion_off

@@ -3,12 +3,12 @@ automation:
     alias: Nonna Bluetooth Detected Home
     mode: queued
     initial_state: off
-    trigger:
+    triggers:
       # If ESPresense detects her in a room
-      - platform: template
+      - trigger: template
         value_template: "{{ states.sensor.mary_room_presence.state != 'not_home'}}"
-    action:
-      - service: device_tracker.see
+    actions:
+      - action: device_tracker.see
         data:
           dev_id: nonna_iphone_ble_device_tracker
           location_name: >-

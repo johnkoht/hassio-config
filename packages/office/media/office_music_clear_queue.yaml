@@ -6,7 +6,7 @@ automation:
   - id: "office_music_clear_queue"
     initial_state: on
     alias: "Office Music Clear Queue"
-    trigger:
+    triggers:
       # At 1am
       - trigger: time
         at: "01:00:00"

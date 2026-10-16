@@ -5,15 +5,15 @@ automation:
   - id: "foyer_lights_days_on"
     initial_state: on
     alias: "Foyer Lights Day On"
-    trigger:
+    triggers:
       # Bad weather boolean is activate for 5 mins
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bad_weather
         to: "on"
         for:
           minutes: 1
       # It's getting dark outside
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.tempest_illuminance
         below: 0
         for:
@@ -30,7 +30,7 @@ automation:
       # - platform: state
       #   entity_id: input_select.foyer
       #   to: "Auto"
-    condition:
+    conditions:
       # Make sure lighting automations are on
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -65,6 +65,6 @@ automation:
           - condition: state
             entity_id: light.foyer_chandelier
             state: "off"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.foyer_chandelier

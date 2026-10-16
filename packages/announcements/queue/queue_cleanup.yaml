@@ -12,13 +12,13 @@ automation:
   - id: announcement_queue_cleanup
     alias: "Announcement Queue - Cleanup on Empty House"
     mode: single
-    trigger:
+    triggers:
       # The house is empty
       - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
 
-    action:
+    actions:
       #
       # Variables
       #

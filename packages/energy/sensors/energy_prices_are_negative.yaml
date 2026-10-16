@@ -20,12 +20,12 @@ automation:
     alias: "Energy Prices Are Negative"
     mode: "single"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.energy_prices_are_negative
         to: "on"
-    action:
-      - service: script.general_notification
+    actions:
+      - action: script.general_notification
         data:
           message: "Energy prices are negative at {{ states.sensor.energy_price.state }}. Turn on everything!!!"
           title: "Energy Prices Are Negative"

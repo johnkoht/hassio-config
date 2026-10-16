@@ -2,16 +2,16 @@ automation:
   - id: "main_bathroom_lights_off"
     initial_state: on
     alias: "Main Bathroom - Lights Off"
-    trigger:
+    triggers:
       # Bathroom is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bathroom
         to: "Off"
       # Bathroom is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bathroom_occupied
         to: "off"
-    condition:
+    conditions:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -28,6 +28,6 @@ automation:
       - condition: state
         entity_id: light.main_bathroom_lights
         state: "on"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.main_bathroom_lights

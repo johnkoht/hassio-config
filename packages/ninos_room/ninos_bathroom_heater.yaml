@@ -5,26 +5,26 @@ automation:
   - id: "enable_nino_bathroom_heater_automation"
     alias: "Enable Nino's Bathroom Heater Automation"
     initial_state: off
-    trigger:
+    triggers:
       # Nino's room becomes occupied for 30 mins
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.ninos_bedroom_occupied
         to: "on"
         for:
           minutes: 30
       # Bedtime mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Just after midnight
-      - platform: time
+      - trigger: time
         at: "00:01:00"
       # Hassio reloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -40,8 +40,8 @@ automation:
       - condition: state
         entity_id: automation.nino_s_bathroom_heater_on
         state: "off"
-    action:
-      - service: automation.turn_on
+    actions:
+      - action: automation.turn_on
         entity_id: automation.nino_s_bathroom_heater_on
 
   #
@@ -50,21 +50,21 @@ automation:
   - id: "ninos_bathroom_heater_on"
     alias: "Nino's Bathroom Heater On"
     initial_state: off
-    trigger:
+    triggers:
       # It's morning time
-      - platform: time
+      - trigger: time
         at: "05:00:00"
       # Nino's door is opened
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "on"
       # It's less than 71
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 71.0 }}"
       # It's less than 61
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) < 61.0 }}"
-    condition:
+    conditions:
       # The house is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -88,12 +88,12 @@ automation:
       - condition: state
         entity_id: switch.smart_plug_2_switch
         state: "off"
-    action:
+    actions:
       # Switch the power plug on
-      - service: switch.turn_on
+      - action: switch.turn_on
         entity_id: switch.smart_plug_2_switch
       # Turn off the automation
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.nino_s_bathroom_heater_on
 
   #
@@ -103,56 +103,56 @@ automation:
   - id: "ninos_bathroom_heater_off"
     alias: "Nino's Bathroom Heater Off"
     initial_state: on
-    trigger:
+    triggers:
       # Bathroom temperature over 73.5
-      - platform: template
+      - trigger: template
         value_template: "{{ (states.sensor.aqara_weather_sensor_1_temperature.state | float) > 73.5 }}"
       # Nino's room is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"
         for:
           minutes: 20
       # If the house is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # If the plug is on for more than 3 hours
-      - platform: state
+      - trigger: state
         entity_id: switch.smart_plug_2_switch
         to: "on"
         for:
           hours: 3
-    condition:
+    conditions:
       # Switch is ON
       - condition: state
         entity_id: switch.smart_plug_2_switch
         state: "on"
-    action:
+    actions:
       # Switch the power plug OFF
-      - service: switch.turn_off
+      - action: switch.turn_off
         entity_id: switch.smart_plug_2_switch
 
   - id: "ninos_bathroom_heater_turn_on_upon_arrival"
     alias: "Nino's Bathroom Heater - Turn On Upon Arrival"
     initial_state: on
-    trigger:
+    triggers:
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
       # We're home
-      - platform: state
+      - trigger: state
         entity_id: group.family
         from: "not_home"
         to: "home"
       # We just arrived
-      - platform: state
+      - trigger: state
         entity_id:
           - person.cristina_falbo
           - person.john_koht
         to: "Just Arrived"
-    condition:
+    conditions:
       - condition: or
         conditions:
           # House has just become occupied
@@ -178,7 +178,7 @@ automation:
       # After 6:30 PM
       - condition: time
         after: "18:30:00"
-    action:
+    actions:
       # Switch the power plug on
-      - service: switch.turn_on
+      - action: switch.turn_on
         entity_id: switch.smart_plug_2_switch

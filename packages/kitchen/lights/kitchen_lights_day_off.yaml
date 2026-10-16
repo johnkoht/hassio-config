@@ -4,30 +4,30 @@ automation:
   - id: "kitchen_lights_day_off"
     initial_state: on
     alias: "Kitchen Lights Day Off"
-    trigger:
+    triggers:
       # If the lighting is better in the kitchen
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.kitchen_illuminance
         above: 450
         for:
           minutes: 10
       # If the lighting is better in the kitchen
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.kitchen_illuminance
         above: 500
         for:
           minutes: 5
       # If the lighting is better in the kitchen
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.kitchen_illuminance
         above: 600
         for:
           minutes: 3
       # The weather is not bad outside anymore
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bad_weather
         to: "off"
-    condition:
+    conditions:
       # Lighting automation is enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -67,11 +67,11 @@ automation:
       - condition: state
         entity_id: light.kitchen_lights
         state: "on"
-    action:
+    actions:
       # Turn OFF the lights
-      - service: light.turn_off
+      - action: light.turn_off
         entity_id: light.kitchen_lights
       # Turn off the boolean that identifies if the
       # lights were automatically turned on
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.kitchen_lights_auto

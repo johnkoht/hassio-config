@@ -8,18 +8,18 @@ automation:
   - id: "upstairs_hallway_lights_sleep_mode_off"
     initial_state: on
     alias: "Upstairs Hallway Lights Sleep Mode Off"
-    trigger:
+    triggers:
       # At sunrise
-      - platform: sun
+      - trigger: sun
         event: sunrise
       # Or at 7am
-      - platform: time
+      - trigger: time
         at: "07:00:00"
       # Upstairs hallways goes into Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.upstairs_hallway
         to: "Auto"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -31,6 +31,6 @@ automation:
       # # Sun is up
       - condition: sun
         after: sunrise
-    action:
-      - service: switch.turn_off
+    actions:
+      - action: switch.turn_off
         entity_id: switch.adaptive_lighting_sleep_mode_upstairs_hallway

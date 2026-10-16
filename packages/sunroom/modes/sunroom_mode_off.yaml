@@ -7,21 +7,21 @@ automation:
   - id: "sunroom_mode_off"
     initial_state: on
     alias: "Sunroom Mode Off"
-    trigger:
+    triggers:
       # House becomes unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # Bedtime mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Hassio restart/relaod
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    condition:
+    conditions:
       # Sunroom is not already Off
       - condition: template
         value_template: "{{ not is_state('input_select.sunroom','Off') }}"
@@ -39,8 +39,8 @@ automation:
           # - condition: state
           #   entity_id: input_boolean.sunroom_occupied
           #   state: "off"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.sunroom
           option: "Off"

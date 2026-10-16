@@ -2,15 +2,15 @@ automation:
   - id: "office_music_on"
     initial_state: off
     alias: "Office Music On"
-    trigger:
+    triggers:
       # Office becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "on"
         for:
           minutes: 3
           seconds: 10
-    condition:
+    conditions:
       # Office is occupied
       - condition: state
         entity_id: input_boolean.office_occupied
@@ -37,11 +37,11 @@ automation:
       - condition: state
         entity_id: binary_sensor.john_computer_actives
         state: "on"
-    action:
+    actions:
       # Resume the music
-      - service: sonos.play_queue
+      - action: sonos.play_queue
         entity_id: media_player.sonos_office
       # Turn off the input_boolean.office_music_playing so
       # we don't always just keep playing music upon occupancy
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.office_music_playing

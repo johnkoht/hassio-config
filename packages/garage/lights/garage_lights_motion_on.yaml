@@ -4,20 +4,20 @@ automation:
   - id: "garage_lights_motion_on"
     initial_state: on
     alias: "Garage lights Motion On"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.garage_motion_sensor_motion
         to: "on"
       # Garage interior door is opened
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.interior_garage_door
         to: "on"
       # If any garage door is opened
-      - platform: state
+      - trigger: state
         entity_id: cover.garage_doors
         to: "open"
-    condition:
+    conditions:
       # Garage is Auto
       - condition: state
         entity_id: input_select.garage
@@ -38,9 +38,9 @@ automation:
       - condition: state
         entity_id: light.garage_lights
         state: "off"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.garage_lights
       # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.garage_lights_auto

@@ -4,7 +4,7 @@ automation:
   - id: "playroom_occupied"
     initial_state: on
     alias: "Playroom occupied"
-    trigger:
+    triggers:
       # If anybody is detected via Bluetooth
       # - platform: template
       #   value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'playroom')|map(attribute='name')|list | length > 0 }}"
@@ -17,23 +17,23 @@ automation:
       #   entity_id: binary_sensor.playroom_motion
       #   to: "on"
       # Entry motion sensor detects motion
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_entry_motion_sensor_motion
         to: "on"
       # Playroom lights are turned on
-      - platform: state
+      - trigger: state
         entity_id: light.playroom_lights
         to: "on"
       # Playroom EPL Sensor Detects Occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.playroom_presence_sensor
         to: "on"
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -60,6 +60,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.playroom_presence_sensor
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.playroom_occupied

@@ -2,12 +2,12 @@ automation:
   - id: "main_bedroom_lights_motion_on"
     initial_state: on
     alias: "Main bedroom lights motion on"
-    trigger:
+    triggers:
       # Motion is detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.main_bedroom_motion_sensor
         to: "on"
-    condition:
+    conditions:
       # Light automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -32,8 +32,8 @@ automation:
       - condition: state
         entity_id: light.main_bedroom_main_lights
         state: "off"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         target:
           entity_id: light.main_bedroom_main_lights
         data:
@@ -41,5 +41,5 @@ automation:
       # - service: automation.turn_on
       #   entity_id: automation.main_bedroom_lights_motion_off
       # Toggle the boolean to flag it was auto
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lights_auto

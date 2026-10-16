@@ -2,9 +2,9 @@ automation:
   - id: "travel_arrival_announcement"
     alias: "Travel - Arrival Announcement"
     mode: "single"
-    trigger:
+    triggers:
       # Arrive to a location
-      - platform: state
+      - trigger: state
         entity_id:
           - person.john_koht
           - person.cristina_falbo
@@ -13,9 +13,9 @@ automation:
         for:
           minutes: 1
     # condition:
-    action:
+    actions:
       # Voice announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: musical-flute

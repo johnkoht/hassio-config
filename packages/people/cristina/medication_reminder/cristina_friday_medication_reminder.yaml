@@ -57,7 +57,7 @@ automation:
         entity_id: input_boolean.cristina_friday_medication_taken
         state: "off"
 
-    action:
+    actions:
       #
       # Set the action variables
       #

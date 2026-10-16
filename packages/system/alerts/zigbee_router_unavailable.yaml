@@ -2,8 +2,8 @@ automation:
   - id: "zigbee_router_unavailable"
     initial_state: on
     alias: "Zigbee Router Unavailable"
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id:
           - switch.smart_plug_1_switch
           - switch.smart_plug_2_switch
@@ -32,8 +32,8 @@ automation:
         to: "unavailable"
         for:
           minutes: 15
-    action:
-      - service: script.general_notification
+    actions:
+      - action: script.general_notification
         data:
           title: "Zigbee System Issue"
           message: "There is an issue with the following Zigbee routers: {{ trigger.to_state.attributes.friendly_name }}"

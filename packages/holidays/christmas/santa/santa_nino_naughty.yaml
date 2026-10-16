@@ -13,7 +13,7 @@ script:
         state: "on"
 
       # Play an announcement ping
-      - service: media_player.play_media
+      - action: media_player.play_media
         data:
           entity_id:
             - media_player.sonos_playroom

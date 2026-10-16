@@ -5,13 +5,13 @@ automation:
     initial_state: on
     alias: "Playroom - Deactivate Party Time"
     mode: "single"
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: zwave_js_value_notification
         event_data:
           device_id: cd626e869b9ddd77c680a7c1b1bd9bfc
           value: KeyReleased
-    condition:
+    conditions:
       # # House is occupied
       # - condition: state
       #   entity_id: input_boolean.house_occupied
@@ -24,20 +24,20 @@ automation:
       - condition: state
         entity_id: input_boolean.playroom_party_time_boolean
         state: "on"
-    action:
+    actions:
       # Turn off the Sonos music
-      - service: media_player.media_pause
+      - action: media_player.media_pause
         entity_id: media_player.sonos_playroom
       # Turn off the scene
-      - service: scene.turn_off
+      - action: scene.turn_off
         target:
           entity_id: scene.playroom_osaka
       # Turn OFF the boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.playroom_party_time_boolean
       # Notification for debugging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Playroom Party Time Off"
           message: "Playroom party time has been turned OFF!"

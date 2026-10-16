@@ -2,25 +2,25 @@ automation:
   - id: "alarm_arm_when_house_empty"
     alias: "Alarm - Arm When House is Empty"
     mode: "single"
-    trigger:
+    triggers:
       # House is in the away state for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Away"
         for:
           minutes: 1
       # We leave the neighborhood zone
-      - platform: zone
+      - trigger: zone
         entity_id:
           - person.john_koht
           - person.cristina_falbo
         zone: zone.neighborhood
         event: leave
       # We're more than 5 miles away
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.home_nearest_distance
         above: 5
-    condition:
+    conditions:
       # Alarm is current disarmed
       - condition: state
         # entity_id: alarm_control_panel.kohbo
@@ -30,6 +30,6 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "off"
-    action:
+    actions:
       # Call the script to arm the home
       - action: script.alarm_arm_home

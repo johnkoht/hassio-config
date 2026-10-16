@@ -4,20 +4,20 @@ automation:
   - id: "tayta_is_home"
     initial_state: on
     alias: "Tayta is Home"
-    trigger:
+    triggers:
       # If ESPresense detects her in a room
-      - platform: state
+      - trigger: state
         entity_id: sensor.tayta_room_presence
         from: "not_home"
       # Tayta's home
-      - platform: state
+      - trigger: state
         entity_id: person.sonia_koht
         to: "home"
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       - condition: or
         conditions:
           - condition: state
@@ -25,6 +25,6 @@ automation:
             state: "home"
           - condition: template
             value_template: "{{ states.sensor.tayta_room_presence.state != 'not_home'}}"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.tayta_home

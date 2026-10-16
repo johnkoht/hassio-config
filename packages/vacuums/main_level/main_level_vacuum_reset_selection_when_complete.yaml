@@ -3,9 +3,9 @@ automation:
     alias: "Main Level Vacuum - Reset Selection When Complete"
     description: "Turns off all room selection booleans when the vacuum completes cleaning"
     mode: single
-    trigger:
+    triggers:
       # Vacuum is returning to dock
-      - platform: state
+      - trigger: state
         entity_id: vacuum.main_floor_vacuum
         to: 'returning'
 

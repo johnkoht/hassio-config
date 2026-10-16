@@ -3,12 +3,12 @@ automation:
     alias: "Garbage Day Is Today Reminder"
     mode: "single"
     initial_state: off
-    trigger:
+    triggers:
       # At 6:30am
-      - platform: time
+      - trigger: time
         at: "06:30:00"
       # Kitchen's been occupied for 15 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion_sensor_occupancy
         to: "on"
         for:
@@ -19,7 +19,7 @@ automation:
       #   to: "Auto"
       #   for:
       #     minutes: 15
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -32,7 +32,7 @@ automation:
       - condition: time
         after: "06:00:00"
         before: "09:00:00"
-    action:
+    actions:
       # Kitchen has been occupied for more than 15 minutes
       - wait_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_motion_sensor_occupancy.last_changed)) | int >= 900 }}"
         timeout: "00:15:00"
@@ -47,7 +47,7 @@ automation:
         delay: 2
 
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "message-alert"

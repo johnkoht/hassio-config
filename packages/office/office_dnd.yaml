@@ -22,24 +22,24 @@ automation:
   - id: "office_dnd_on"
     alias: "Office DnD On"
     mode: "single"
-    trigger:
+    triggers:
       # John's DnD is activated
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.john_dnd
         to: "on"
       # Office becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "on"
       # John enters the office
-      - platform: state
+      - trigger: state
         entity_id: sensor.john_room_presence
         to: "office"
       # Office guest mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_guest_mode
         to: "on"
-    condition:
+    conditions:
       # Office is occupied
       - condition: state
         entity_id: input_boolean.office_occupied
@@ -61,8 +61,8 @@ automation:
           - condition: state
             entity_id: input_boolean.office_guest_mode
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.office_dnd
 
   #
@@ -74,28 +74,28 @@ automation:
   - id: "office_dnd_off"
     alias: "Office DnD Off"
     mode: "single"
-    trigger:
+    triggers:
       # John's DnD is off
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.john_dnd
         to: "off"
         for:
           minutes: 2
       # Office is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_occupied
         to: "off"
       # Office guest mode is disabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_guest_mode
         to: "off"
         for:
           minutes: 2
       # John exits the office
-      - platform: state
+      - trigger: state
         entity_id: sensor.john_room_presence
         from: "office"
-    condition:
+    conditions:
       - condition: and
         conditions:
           # John is not in DnD mode or no longer in the office
@@ -112,6 +112,6 @@ automation:
           - condition: state
             entity_id: input_boolean.office_guest_mode
             state: "off"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.office_dnd

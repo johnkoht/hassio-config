@@ -4,12 +4,12 @@ automation:
   - id: "upstairs_hallway_mode_auto"
     initial_state: on
     alias: "Upstairs Hallway - Mode Auto"
-    trigger:
+    triggers:
       # House turn to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -21,9 +21,9 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-    action:
+    actions:
       # Turn the upstairs hwallway to Auto.
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.upstairs_hallway
           option: "Auto"

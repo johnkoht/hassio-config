@@ -80,7 +80,7 @@ script:
           value: "{{ rooms }}"
 
       # Start cleaning the selected rooms
-      - service: vacuum.send_command
+      - action: vacuum.send_command
         target:
           entity_id: vacuum.main_floor_vacuum
         data:

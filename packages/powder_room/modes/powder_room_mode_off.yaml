@@ -7,25 +7,25 @@ automation:
   - id: "powder_room_mode_off"
     initial_state: on
     alias: "Powder Room mode off"
-    trigger:
+    triggers:
       # House becomes unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # House is turned to Away
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Away"
       # Bedtime mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Hassio restart/relaod
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    condition:
+    conditions:
       # Powder Room is not already Off
       - condition: template
         value_template: "{{ not is_state('input_select.powder_room','Off') }}"
@@ -43,8 +43,8 @@ automation:
           - condition: state
             entity_id: input_boolean.bedtime
             state: "on"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.powder_room
           option: "Off"
