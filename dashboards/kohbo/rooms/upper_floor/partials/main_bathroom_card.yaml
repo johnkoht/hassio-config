@@ -1,6 +1,6 @@
-# 
+#
 # Main Bathroom
-# 
+#
 type: custom:decluttering-card
 template: room_card
 variables:
@@ -14,21 +14,21 @@ variables:
   - aqi: "[[[ return states['sensor.main_bedroom_air_quality'].state ]]]"
   - icon: mdi:shower
   - room_devices:
-    # Lights
-    - type: custom:button-card
-      entity: light.main_bathroom_lights
-      name: Lights
-      template: kohbo_room_card_device
-      icon: kohbo:kohbo-device-lights
-      color: auto
-    # Door
-    - type: custom:button-card
-      entity: binary_sensor.main_bathroom_door_sensor_status
-      name: Door
-      template: kohbo_room_card_device
-    # Shower
-    - type: custom:button-card
-      entity: input_boolean.main_bathroom_shower_occupied
-      name: Shower
-      template: kohbo_room_card_device
-      icon: mdi:shower
+      # Lights
+      - type: custom:button-card
+        entity: light.main_bathroom_lights
+        name: Lights
+        template: kohbo_room_card_device
+        icon: kohbo:kohbo-device-lights
+        color: auto
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.main_bathroom_door_sensor_status
+        name: Door
+        template: kohbo_room_card_device
+      # Shower
+      - type: custom:button-card
+        entity: input_boolean.main_bathroom_shower_occupied
+        name: Shower
+        template: kohbo_room_card_device
+        icon: mdi:shower
