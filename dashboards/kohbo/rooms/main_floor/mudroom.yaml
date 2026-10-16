@@ -172,7 +172,6 @@ cards:
           # Illuminance
           - entity: sensor.mudroom_motion_sensor_illuminance
             name: Illuminance
-            entity: sensor.mudroom_motion_sensor_illuminance
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml

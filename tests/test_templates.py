@@ -120,31 +120,32 @@ class TestJinja2Syntax:
         """Verify all Jinja2 templates can be parsed."""
         errors = []
         
-        # Create a sandboxed environment with HA functions
-        env = SandboxedEnvironment()
+        # Parse each YAML string as one template, as HA does. HA enables these extensions.
+        env = SandboxedEnvironment(extensions=["jinja2.ext.loopcontrols", "jinja2.ext.do"])
         env.globals.update(HA_JINJA_GLOBALS)
-        
-        # Pattern to find templates
-        template_pattern = re.compile(r'\{\{(.+?)\}\}', re.DOTALL)
-        statement_pattern = re.compile(r'\{%(.+?)%\}', re.DOTALL)
-        
+
+        def strings(node):
+            if isinstance(node, str):
+                yield node
+            elif isinstance(node, dict):
+                for v in node.values():
+                    yield from strings(v)
+            elif isinstance(node, list):
+                for v in node:
+                    yield from strings(v)
+
         for yf in yaml_files:
-            # Find all templates in the file
-            templates = template_pattern.findall(yf.raw_content)
-            statements = statement_pattern.findall(yf.raw_content)
-            
-            for tmpl in templates + statements:
-                # Wrap in proper template syntax for parsing
+            for text in strings(yf.content):
+                if "{{" not in text and "{%" not in text:
+                    continue
                 try:
-                    if tmpl.strip():
-                        env.parse("{{ " + tmpl + " }}")
+                    env.parse(text)
                 except TemplateSyntaxError as e:
-                    # Find line number
-                    line_num = self._find_template_line(yf.raw_content, tmpl)
+                    line_num = self._find_template_line(yf.raw_content, text.strip())
                     errors.append(
                         f"{yf.relative_path}:{line_num}: Template syntax error: {e.message}"
                     )
-        
+
         if errors:
             pytest.fail(
                 f"Found {len(errors)} Jinja2 syntax error(s):\n" +
@@ -206,7 +207,7 @@ class TestTemplatePatterns:
         # This is informational only
         if warnings:
             print(f"\nℹ️  Template filter suggestions:")
-            for w in set(warnings)[:5]:
+            for w in sorted(set(warnings))[:5]:
                 print(f"    • {w}")
 
     def test_no_undefined_variables_in_common_patterns(self, yaml_files: List[YAMLFile]):

@@ -167,7 +167,7 @@ script:
               - Mary, a.k.a, Nonna, is Cristina's mom, grandmother to Nino and Gianluca - state: {{ states.person.mary_falbo.state }}
               - Sonia, a.k.a., Tayta, is John's mom, grandmother to Nino and Gianluca - state: {{ states.person.sonia_koht.state }}
               - Joe is Cristina's brother (my brother in law) - state: {{ states.person.joe_falbo.state }}
-              - Alex is John's brother (cristina's brother in law) - state: .person.alex.state }}
+              - Alex is John's brother (cristina's brother in law) - state: {{ states.person.alex.state }}
               - Antoun, a.k.a, Jido, is John's data, grandparent to Nino and Gianluca - state: {{ states.person.antoun_koht.state }}
               - Yara is John's sister
               - Shawn is Yara's husband, John and Cristina's brother in law

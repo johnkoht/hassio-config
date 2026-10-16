@@ -25,6 +25,8 @@ template:
       seconds: '/1'
     sensor:
     - name: Backyard Porch Timer Countdown
+      unique_id: backyard_porch_timer_countdown
+      default_entity_id: sensor.backyard_porch_timer_countdown
       state: >
         {% set end = state_attr('timer.backyard_porch_camera_notifications_snooze_timer', 'finishes_at') %}
         {% if end is not none %}

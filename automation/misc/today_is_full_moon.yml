@@ -46,7 +46,6 @@ action:
     data:
       media_players: auto
       sound: "chime"
-      speech_message: "The sun has set so I'm turning on the exterior lights."
       speech_message: >-
         {{
           [

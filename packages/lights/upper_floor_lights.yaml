@@ -26,4 +26,6 @@ light:
 template:
   - sensor:
       - name: Upper Floor Lights On
+        unique_id: upper_floor_lights_on
+        default_entity_id: sensor.upper_floor_lights_on
         state: "{{ expand(states.light.upper_floor_lights) | selectattr( 'state', 'eq', 'on') | list | count  }}"

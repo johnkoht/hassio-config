@@ -25,6 +25,8 @@ template:
       seconds: '/1'
     sensor:
     - name: Backyard South Timer Countdown
+      unique_id: backyard_south_timer_countdown
+      default_entity_id: sensor.backyard_south_timer_countdown
       state: >
         {% set end = state_attr('timer.backyard_south_camera_notifications_snooze_timer', 'finishes_at') %}
         {% if end is not none %}

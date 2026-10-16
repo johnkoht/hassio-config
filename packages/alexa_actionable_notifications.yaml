@@ -16,6 +16,7 @@ input_button:
 # Script to dial out to Alexa's API service
 script:
   activate_alexa_actionable_notification:
+    alias: "Activate Alexa Actionable Notification"
     description: "Activates an actionable notification on a specific echo device"
     fields:
       text:

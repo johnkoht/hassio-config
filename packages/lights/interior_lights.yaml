@@ -16,4 +16,6 @@ light:
 template:
   - sensor:
       - name: Interior Lights On
+        unique_id: interior_lights_on
+        default_entity_id: sensor.interior_lights_on
         state: "{{ expand(states.light.interior_lights) | selectattr( 'state', 'eq', 'on') | list | count  }}"

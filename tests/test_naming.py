@@ -167,6 +167,10 @@ class TestFileNaming:
 class TestAutomationNaming:
     """Test suite for automation ID and alias naming."""
 
+    # UI-generated ids already in the entity registry. Renaming one re-registers
+    # the automation as `<alias>_2`, so they stay as-is.
+    LEGACY_UI_IDS = {"1672413097885"}
+
     def test_automation_ids_are_snake_case(self, yaml_files: List[YAMLFile]):
         """Verify automation IDs use snake_case."""
         errors = []
@@ -186,6 +190,8 @@ class TestAutomationNaming:
                 
                 # Check for snake_case (allowing quotes)
                 id_clean = str(auto_id).strip('"\'')
+                if id_clean in self.LEGACY_UI_IDS:
+                    continue
                 if not re.match(r'^[a-z][a-z0-9_]*$', id_clean):
                     alias = auto.get("alias", "unnamed")
                     errors.append(
