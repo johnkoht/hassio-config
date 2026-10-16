@@ -23,6 +23,6 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 ## Context Corrections
 
 ## Decision Ledger
-- [2026-10-15] Main bathroom page built by hand; shared small-bathroom template deferred to JK-1222 (deviation from "two uses = template") — docs affected: none-yet — status: open
+- [2026-10-15] Main bathroom page built by hand; shared small-bathroom template deferred to JK-1222 (deviation from "two uses = template") — docs affected: none-yet — status: folded (tracked in JK-1222)
 
 - [Task 3/4] Only leak template is kohbo_device_leak_entity_horizontal (horizontal); page uses kohbo_device_entity + mdi:water-alert. Smart plug template takes `variables: confirmation: true` (not a button-card confirmation key). Pre-existing yamllint errors in kohbo.yaml (indent line 19, no EOF newline) and upper_floor_index.yaml (no EOF newline); room-card partials copy bedroom's indent style which yamllint flags.

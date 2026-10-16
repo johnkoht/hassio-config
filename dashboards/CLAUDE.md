@@ -156,5 +156,6 @@ Icons are referenced as `kohbo:kohbo-<name>`. Common icons:
 2. Use the `room_card` decluttering template as the base
 3. Add a navigation entry in the rooms floor index view
 4. Add any room-specific popups using `bubble-card` or `browser-mod`
+5. Register the page in `kohbo/kohbo.yaml` under `views:` — without it the route doesn't exist
 
 See existing room views (e.g. `kohbo/rooms/main_floor/kitchen.yaml`) as the reference pattern.
