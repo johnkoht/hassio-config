@@ -4,12 +4,12 @@ automation:
   - id: "foyer_mode_auto"
     initial_state: on
     alias: "Foyer mode auto"
-    trigger:
+    triggers:
       # House turn to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -21,9 +21,9 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-    action:
+    actions:
       # Turn the foyer to dime.
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.foyer
           option: "Auto"

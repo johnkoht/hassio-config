@@ -6,12 +6,12 @@ automation:
   - id: "office_dnd_light_off"
     initial_state: on
     alias: "Office DnD Light Off"
-    trigger:
+    triggers:
       # Office goes off DnD Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.office
         from: "DnD"
-    condition:
+    conditions:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -19,8 +19,8 @@ automation:
       # Office no longer in DnD mode
       - condition: template
         value_template: "{{ not is_state('input_select.office','DnD') }}"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.hue_play_1
 
       # Reset the inovelli light switch led bar

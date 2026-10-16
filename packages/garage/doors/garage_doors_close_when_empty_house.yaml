@@ -2,17 +2,17 @@ automation:
   - id: "garage_doors_close_when_empty_house"
     alias: "Garage doors close when empty house"
     initial_state: on
-    trigger:
+    triggers:
       # If the garage is set to Away
-      - platform: state
+      - trigger: state
         entity_id: input_select.garage
         to: "Away"
       # Hassio reloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # One of the garage doors is open
       - condition: state
         entity_id: cover.garage_doors
@@ -21,15 +21,15 @@ automation:
       - condition: state
         entity_id: input_select.garage
         state: "Away"
-    action:
+    actions:
       # Close the garage doors
-      - service: cover.close_cover
+      - action: cover.close_cover
         entity_id: cover.garage_doors
 
       # Notify the family
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: "Garage Doors Open!"
           message: "The house is empty or off so I'm closing the garage doors"

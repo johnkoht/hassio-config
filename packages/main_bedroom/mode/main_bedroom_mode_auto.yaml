@@ -4,19 +4,19 @@ automation:
   - id: "main_bedroom_mode_auto"
     initial_state: on
     alias: "Main Bedroom mode auto"
-    trigger:
+    triggers:
       # House is turned to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
         id: "house_auto"
       # Main bedroom becomes unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "off"
         id: "main_bedroom_unoccupied"
       # Bedroom is Wake for 10 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Wake"
         for:

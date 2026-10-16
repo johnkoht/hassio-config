@@ -6,16 +6,16 @@ automation:
   - id: "playroom_music_off"
     initial_state: on
     alias: "Playroom Music Off"
-    trigger:
+    triggers:
       # Playroom is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.playroom_occupied
         to: "off"
       # Playroom is in Off Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.playroom
         to: "Off"
-    condition:
+    conditions:
       # Playroom is NOT OCCUPIED
       - condition: state
         entity_id: input_boolean.playroom_occupied
@@ -26,11 +26,11 @@ automation:
       - condition: state
         entity_id: media_player.sonos_playroom
         state: "playing"
-    action:
+    actions:
       # Unjoin if it's joined
-      - service: media_player.unjoin
+      - action: media_player.unjoin
         entity_id: media_player.sonos_playroom
 
       # Turn off the Sonos music
-      - service: media_player.media_pause
+      - action: media_player.media_pause
         entity_id: media_player.sonos_playroom

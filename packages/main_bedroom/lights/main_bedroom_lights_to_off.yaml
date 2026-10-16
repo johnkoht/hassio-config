@@ -2,25 +2,25 @@ automation:
   - id: "main_bedroom_lights_off"
     initial_state: on
     alias: "Main bedroom lights off"
-    trigger:
+    triggers:
       # Bedroom is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Off"
       # House is off
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Off"
       # Main bedroom is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "off"
       # Main bedroom lighting automation turned on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_lighting_automations
         from: "off"
         to: "on"
-    condition:
+    conditions:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -57,6 +57,6 @@ automation:
       - condition: state
         entity_id: light.main_bedroom_lights
         state: "on"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.main_bedroom_lights

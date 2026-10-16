@@ -14,7 +14,7 @@ automation:
     #
     # This trigger is used to listen for the /append topic.
     #
-    trigger:
+    triggers:
       - trigger: mqtt
         topic: home/announcement_queue/append
 
@@ -42,7 +42,7 @@ automation:
       queue_data_topic: "home/announcement_queue/data"
       queue_state_topic: "home/announcement_queue/state"
 
-    action:
+    actions:
       # Get current queue from sensor attributes
       - variables:
           #

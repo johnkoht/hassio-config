@@ -6,15 +6,15 @@ automation:
   - id: "foyer_lights_nightlight_off"
     initial_state: on
     alias: "Foyer Lights Nightlight Off"
-    trigger:
+    triggers:
       # At sunrise
-      - platform: sun
+      - trigger: sun
         event: sunrise
       # When it's no longer dark outside
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.dark_outside
         to: "off"
-    condition:
+    conditions:
       # Make sure lighting automations are on
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -36,11 +36,11 @@ automation:
       - condition: state
         entity_id: light.foyer_chandelier
         state: "on"
-    action:
+    actions:
       # Turn off the light
-      - service: light.turn_off
+      - action: light.turn_off
         entity_id: light.foyer_chandelier
 
       # Turn the automation off
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.foyer_lights_nightlight_off

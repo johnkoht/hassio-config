@@ -22,13 +22,13 @@ automation:
       - trigger: state
         entity_id: input_boolean.christmas_season_active
         to: "on"
-    action:
+    actions:
       # Turn ON the Christmas Season boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.christmas_season_active
 
       # Turn ON a bunch of automations
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id:
           - automation.christmas_activated
           - automation.christmas_not_activated

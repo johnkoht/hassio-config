@@ -7,29 +7,29 @@ automation:
   - id: "dining_room_not_occupied"
     initial_state: on
     alias: "Dining Room not occupied"
-    trigger:
+    triggers:
       # No BLE for 2 minutes
-      - platform: template
+      - trigger: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'dining_room')|map(attribute='name')|list | length == 0 }}"
         for:
           minutes: 2
       # No motion detected for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.dining_room_north_motion_sensor_motion
         to: "off"
         for:
           minutes: 5
       # No aqara occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.dining_room_north_motion_sensor_occupancy
         to: "off"
       # No aqara occupancy for 5 minutes (15 total)
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.dining_room_north_motion_sensor_occupancy
         to: "off"
         for:
           minutes: 5
-    condition:
+    conditions:
       # Dining Room is occupied
       - condition: state
         entity_id: input_boolean.dining_room_occupied
@@ -68,13 +68,13 @@ automation:
       # No BLE devices detected
       - condition: template
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'dining_room')|map(attribute='name')|list | length == 0 }}"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.dining_room_occupied
 
       - alias: "Wait 2 seconds"
         delay: 02
 
       # Enable Dining Room lighting automations
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.dining_room_lighting_automations

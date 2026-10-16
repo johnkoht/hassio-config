@@ -3,12 +3,12 @@ automation:
     alias: Katia Announce Arrival
     mode: queued
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: person.katia
         from: "not_home"
         to: "home"
-    condition:
+    conditions:
       # A guest is home
       - condition: state
         entity_id: person.katia
@@ -19,9 +19,9 @@ automation:
         state: "on"
         for:
           minutes: 5
-    action:
+    actions:
       # Announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           speech_message: >-
@@ -39,5 +39,5 @@ automation:
       - condition: state
         entity_id: input_boolean.guest_mode_announced
         state: "off"
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.guest_mode_announced

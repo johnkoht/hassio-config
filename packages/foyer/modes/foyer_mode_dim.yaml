@@ -2,31 +2,31 @@ automation:
   - id: "foyer_mode_dim"
     initial_state: off
     alias: "Foyer mode dim"
-    trigger:
+    triggers:
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
       # At sunset
-      - platform: sun
+      - trigger: sun
         event: sunset
       # It's after 9pm
-      - platform: time
+      - trigger: time
         at: "21:00:00"
       # It becomes dark outside
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.dark_outside
         to: "on"
       # Bedtime turns off
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "off"
       # House goes from bedtime to auto in the morning
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         from: "Bedtime"
         to: "Auto"
-    condition:
+    conditions:
       # Lighting automations is enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -50,13 +50,13 @@ automation:
       # Foyer isn't already set to dim
       - condition: template
         value_template: "{{ not is_state('input_select.foyer','Dim') }}"
-    action:
+    actions:
       # Turn the foyer to dim
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.foyer
           option: "Dim"
-      - service: switch.turn_on
+      - action: switch.turn_on
         entity_id:
           - switch.adaptive_lighting_foyer
           - switch.adaptive_lighting_sleep_mode_foyer

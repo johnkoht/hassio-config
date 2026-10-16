@@ -2,28 +2,28 @@ automation:
   - id: "christmas_activated"
     alias: "Christmas Activated"
     mode: "single"
-    trigger:
+    triggers:
       # It's dark outside
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.dark_outside
         to: "on"
       # At 4pm
-      - platform: time
+      - trigger: time
         at: "16:00:00"
       # House turn to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
       # House becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "on"
       # Hassio reloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -47,6 +47,6 @@ automation:
       - condition: time
         after: "12:00:00"
         before: "22:00:00"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.christmas_active

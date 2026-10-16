@@ -15,12 +15,12 @@ automation:
       #   to: "off"
       - trigger: time
         at: "07:05:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-    action:
+    actions:
       # Wait for quiet mode to be disabled
       - wait_template: "{{ is_state('input_boolean.quiet_mode', 'off') }}"
         timeout: "00:45:00"
@@ -299,10 +299,10 @@ script:
 # Calendar Events for Today Template Sensor
 #
 template:
-  - trigger:
+  - triggers:
       - trigger: time_pattern
         hours: /1
-    action:
+    actions:
       - action: calendar.get_events
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"
@@ -338,12 +338,12 @@ template:
   #
   # Weather Forecast Sensor
   #
-  - trigger:
+  - triggers:
       # - platform: state
       #   entity_id: weather.pirateweather
       - trigger: time_pattern
         hours: /1
-    action:
+    actions:
       - action: weather.get_forecasts
         data:
           type: hourly

@@ -7,18 +7,18 @@ automation:
   - id: "office_camera_light_on"
     initial_state: on
     alias: "Office Camera Light On"
-    trigger:
+    triggers:
       # Laptop camera goes on
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.john_laptop_camera_active
         to: "on"
         for:
           seconds: 2
       # John's room presence is the office
-      - platform: state
+      - trigger: state
         entity_id: sensor.john_room_presence
         to: "office"
-    condition:
+    conditions:
       # Office is occupied
       - condition: state
         entity_id: input_boolean.office_occupied
@@ -35,6 +35,6 @@ automation:
       - condition: state
         entity_id: light.office_el_gato_light
         state: "off"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.office_el_gato_light

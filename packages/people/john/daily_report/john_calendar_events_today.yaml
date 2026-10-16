@@ -1,9 +1,9 @@
 template:
-  - trigger:
+  - triggers:
       - trigger: time_pattern
         #hours: /1
         minutes: /1
-    action:
+    actions:
       - action: calendar.get_events
         data:
           start_date_time: "{{ now().strftime('%Y-%m-%d 00:00:00') }}"

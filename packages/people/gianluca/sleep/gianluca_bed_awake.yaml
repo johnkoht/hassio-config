@@ -9,7 +9,7 @@ automation:
         to: "Just Got Up"
         for:
           minutes: 5
-    action:
+    actions:
       # Change his sleep state to Awake
       - action: input_select.select_option
         data:

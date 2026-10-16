@@ -2,19 +2,19 @@ automation:
   - id: nino_bed_awake
     alias: "Nino Bed - Awake"
     mode: single
-    trigger:
+    triggers:
       # Nino's been OUT in bed for 5 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_select.nino_sleep_state
         to: "Just Got Up"
         for:
           minutes: 5
-    action:
+    actions:
       # Change his sleep state to Awake
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.nino_sleep_state
           option: "Awake"
       # Turn off the Nino in Bed boolean
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.nino_in_bed

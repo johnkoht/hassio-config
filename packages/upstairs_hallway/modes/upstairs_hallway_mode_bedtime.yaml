@@ -4,16 +4,16 @@ automation:
   - id: "upstairs_hallway_mode_bedtime"
     initial_state: on
     alias: "Upstairs Hallway - Mode Bedtime"
-    trigger:
+    triggers:
       # House turn to bedtime mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Bedtime"
       # Bedtime mode enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -21,9 +21,9 @@ automation:
       # Upstairs Hallway is not already Bedtime
       - condition: template
         value_template: "{{ not is_state('input_select.upstairs_hallway','Bedtime') }}"
-    action:
+    actions:
       # Turn the upstairs hwallway to Bedtime.
-      - service: input_select.select_option
+      - action: input_select.select_option
         data:
           entity_id: input_select.upstairs_hallway
           option: "Bedtime"

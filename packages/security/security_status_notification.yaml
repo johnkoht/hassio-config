@@ -10,20 +10,20 @@ automation:
   - id: "security_status_notification"
     alias: "Security - Status Notification"
     mode: "single"
-    trigger:
+    triggers:
       # House goes into bedtime mode
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
         for:
           minutes: 5
       # House becomes unoccupied for 7 minutes
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
         for:
           minutes: 7
-    condition:
+    conditions:
       # Only notify if we haven't notified in the last hour
       - condition: template
         value_template: >
@@ -34,8 +34,8 @@ automation:
           {% else %}
             true
           {% endif %}
-    action:
-      - service: script.general_notification
+    actions:
+      - action: script.general_notification
         data:
           message: >
             {% set trigger = trigger.to_state.entity_id %}

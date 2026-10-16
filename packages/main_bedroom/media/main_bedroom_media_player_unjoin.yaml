@@ -7,28 +7,28 @@ automation:
   - id: "main_bedroom_media_player_unjoin"
     initial_state: on
     alias: "Main Bedroom Media Player Unjoin"
-    trigger:
+    triggers:
       # Main Bedroom is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "off"
       # Main Bedroom is in Off Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bedroom
         to: "Off"
       # The Main Bedroom player pauses for 10 mins
-      - platform: state
+      - trigger: state
         entity_id: media_player.sonos_main_bedroom
         to: "paused"
         for:
           minutes: 10
       # The Main Bedroom player pauses for 30 mins
-      - platform: state
+      - trigger: state
         entity_id: media_player.sonos_main_bedroom
         to: "paused"
         for:
           minutes: 30
-    condition:
+    conditions:
       # Main Bedroom is NOT OCCUPIED
       - condition: state
         entity_id: input_boolean.main_bedroom_occupied
@@ -44,7 +44,7 @@ automation:
       # The media player is part of a group
       - condition: template
         value_template: "{{ states.media_player.sonos_main_bedroom.attributes.group_members | count > 1 }}"
-    action:
+    actions:
       # Unjoin if it's joined
-      - service: media_player.unjoin
+      - action: media_player.unjoin
         entity_id: media_player.sonos_main_bedroom

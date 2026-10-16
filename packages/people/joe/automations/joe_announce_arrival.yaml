@@ -19,7 +19,7 @@ automation:
         state: "on"
         for:
           minutes: 5
-    action:
+    actions:
       # Announcement script
       - action: script.person_announcement
         data:

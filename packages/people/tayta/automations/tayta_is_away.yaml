@@ -5,17 +5,17 @@ automation:
   - id: "tayta_is_away"
     alias: "Tayta is Away"
     initial_state: on
-    trigger:
+    triggers:
       # Tayta not home
-      - platform: state
+      - trigger: state
         entity_id: person.mary_falbo
         to: "not_home"
       # Handle restarts and reloads of HA
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # Didn't just leave
       - condition: not
         conditions:
@@ -26,6 +26,6 @@ automation:
       - condition: state
         entity_id: person.sonia_koht
         state: "not_home"
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.tayta_home

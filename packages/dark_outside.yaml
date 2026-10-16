@@ -9,29 +9,29 @@ automation:
   - id: "turn_on_dark_outside"
     alias: "Turn on Dark Outside"
     mode: "single"
-    trigger:
+    triggers:
       # Sun has set
-      - platform: sun
+      - trigger: sun
         event: sunset
       # 10 minutes after sunset
-      - platform: sun
+      - trigger: sun
         event: sunset
         offset: "00:10:00"
       # Sun elevation below 4
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sun.sun
         attribute: elevation
         below: 4.0
       # It's getting dark outside
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.tempest_illuminance
         below: 15
       # Hassio reloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # The input boolean is OFF
       - condition: state
         entity_id: input_boolean.dark_outside
@@ -45,37 +45,37 @@ automation:
       - condition: numeric_state
         entity_id: sensor.tempest_illuminance
         below: 20
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.dark_outside
 
   # Turn OFF dark outside boolean
   - id: "turn_off_dark_outside"
     alias: "Turn off Dark Outside"
     mode: "single"
-    trigger:
+    triggers:
       # Sun is up
-      - platform: sun
+      - trigger: sun
         event: sunrise
       # 10 before after sunset
-      - platform: sun
+      - trigger: sun
         event: sunrise
         offset: "-00:10:00"
       # Sun elevation above 4
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sun.sun
         attribute: elevation
         above: -4.0
       # It's getting light outside
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.tempest_illuminance
         above: 15
       # Hassio reloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # The input boolean is ON
       - condition: state
         entity_id: input_boolean.dark_outside
@@ -89,6 +89,6 @@ automation:
       - condition: numeric_state
         entity_id: sensor.tempest_illuminance
         above: 15
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.dark_outside

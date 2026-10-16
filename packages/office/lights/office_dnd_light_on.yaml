@@ -7,16 +7,16 @@ automation:
   - id: "office_dnd_light_on"
     initial_state: on
     alias: "Office DnD Light On"
-    trigger:
+    triggers:
       # Office goes to DnD Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.office
         to: "DnD"
       # Light automations is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -29,8 +29,8 @@ automation:
       - condition: state
         entity_id: input_select.office
         state: "DnD"
-    action:
-      - service: hue.hue_activate_scene
+    actions:
+      - action: hue.hue_activate_scene
         data:
           group_name: Office Signal
           scene_name: John DnD

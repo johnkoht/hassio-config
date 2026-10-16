@@ -35,7 +35,7 @@ automation:
             entity_id: media_player.sonos_kitchen
 
           # Pause the music on the player
-          - service: media_player.media_pause
+          - action: media_player.media_pause
             entity_id: media_player.sonos_kitchen
 
         #
@@ -43,5 +43,5 @@ automation:
         #
         else:
           # Pause the music on the player
-          - service: media_player.media_pause
+          - action: media_player.media_pause
             entity_id: media_player.sonos_kitchen

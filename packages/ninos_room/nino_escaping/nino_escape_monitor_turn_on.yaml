@@ -2,18 +2,18 @@ automation:
   - id: "nino_escape_monitor_turn_on"
     alias: "Nino Escape Monitor - Turn On"
     initial_state: on
-    trigger:
+    triggers:
       # House goes into bedtime mode
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
       # Door is closed
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.ninos_door_sensor_status
         to: "off"
         for:
           minutes: 30
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -22,6 +22,6 @@ automation:
       - condition: state
         entity_id: binary_sensor.ninos_door_sensor_status
         state: "off"
-    action:
-      - service: automation.turn_on
+    actions:
+      - action: automation.turn_on
         entity_id: automation.nino_escape_monitor

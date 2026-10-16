@@ -2,17 +2,17 @@ automation:
   - id: "upstairs_dryer_complete"
     alias: "Upstairs Dryer Complete"
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_select.upstairs_dryer_status
         to: "Clean"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.upstairs_dryer_status
         state: "Clean"
-    action:
+    actions:
       # Voice Announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "chirp"
@@ -20,7 +20,7 @@ automation:
           expires_in: 120
           speech_message: "The upstairs dryer finished and is ready to be emptied."
       # Notification
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "The upstairsdryer is finished and ready to be emptied."
           title: "Upstairs Drying Machine"

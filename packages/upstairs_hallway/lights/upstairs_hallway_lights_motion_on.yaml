@@ -28,7 +28,7 @@ automation:
       - condition: state
         entity_id: input_boolean.quiet_mode
         state: "off"
-    action:
+    actions:
       - if:
           # If either of the kids rooms are occupied
           # then don't turn them up 100%

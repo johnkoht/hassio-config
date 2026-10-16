@@ -7,9 +7,9 @@ automation:
   - id: "playroom_lights_day_on"
     initial_state: on
     alias: "Playroom lights Day On"
-    trigger:
+    triggers:
       # If the lighting is low in the playroom
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
@@ -17,7 +17,7 @@ automation:
         for:
           minutes: 5
       # If the lighting is low in the playroom
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
@@ -25,7 +25,7 @@ automation:
         for:
           minutes: 2
       # If the lighting is low in the playroom
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           - sensor.playroom_motion_sensor_illuminance
           - sensor.playroom_entry_motion_sensor_illuminance
@@ -33,18 +33,18 @@ automation:
         for:
           minutes: 1
       # The weather is bad outside
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bad_weather
         to: "on"
       # Light automations is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
       # Light automations is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.playroom_lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -75,6 +75,6 @@ automation:
       - condition: state
         entity_id: input_select.playroom
         state: "Auto"
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.playroom_lights

@@ -7,16 +7,16 @@ automation:
   - id: "garage_mode_away"
     initial_state: on
     alias: "Garage mode away"
-    trigger:
+    triggers:
       # House becomes unoccupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.house_occupied
         to: "off"
       # House is turned to Away
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Away"
-    condition:
+    conditions:
       # Garage is not already in Away Mode
       - condition: template
         value_template: "{{ not is_state('input_select.garage','Away') }}"
@@ -30,8 +30,8 @@ automation:
           - condition: state
             entity_id: input_select.house
             state: "Away"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.garage
           option: "Away"

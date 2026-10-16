@@ -2,24 +2,24 @@ automation:
   - id: "kitchen_mode_dim"
     initial_state: on
     alias: "Kitchen Mode Dim"
-    trigger:
+    triggers:
       # Evening chill time
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.evening_chill
         to: "on"
       # Family room TV is turned on
-      - platform: state
+      - trigger: state
         entity_id: media_player.sony_bravia_tv
         to: "playing"
       # Family room lights go off
-      - platform: state
+      - trigger: state
         entity_id: light.family_room_main_lights
         to: "off"
       # Kitchen is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.kitchen_occupied
         to: "off"
-    condition:
+    conditions:
       # Lighting automation is enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -55,8 +55,8 @@ automation:
       - condition: state
         entity_id: light.family_room_main_lights
         state: "off"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.kitchen
           option: "Dim"

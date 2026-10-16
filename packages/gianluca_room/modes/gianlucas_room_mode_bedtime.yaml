@@ -28,7 +28,7 @@ automation:
       # Gianluca's Bedroom is not already Bedtime
       - condition: template
         value_template: "{{ not is_state('input_select.gianlucas_bedroom','Bedtime') }}"
-    action:
+    actions:
       - action: input_select.select_option
         data:
           entity_id: input_select.gianlucas_bedroom

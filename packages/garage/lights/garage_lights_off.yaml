@@ -4,24 +4,24 @@ automation:
   - id: "garage_lights_off"
     initial_state: on
     alias: "Garage lights off"
-    trigger:
+    triggers:
       # Garage is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.garage
         to: "Off"
       # Garage is Away
-      - platform: state
+      - trigger: state
         entity_id: input_select.garage
         to: "Away"
       # Garage is not occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.garage_occupied
         to: "off"
       # Lighting automations turn on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-    condition:
+    conditions:
       # Garage is not occupied
       - condition: state
         entity_id: input_boolean.garage_occupied
@@ -41,6 +41,6 @@ automation:
           - condition: state
             entity_id: input_boolean.garage_occupied
             state: "off"
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.garage_lights

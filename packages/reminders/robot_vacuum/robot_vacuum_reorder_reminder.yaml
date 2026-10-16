@@ -2,13 +2,13 @@ automation:
   - id: "robot_vacuum_reorder_reminder"
     alias: "Robot Vacuum Reorder Reminder"
     mode: "single"
-    trigger:
+    triggers:
       # # Main brush life (less than 50 hours)
       # - platform: numeric_state
       #   entity_id: sensor.main_floor_vacuum_main_brush_remaining
       #   below: 180000
       # Main brush life (less than 20 hours)
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_floor_vacuum_main_brush_remaining
         below: 72000
       # # Side brush life (less than 50 hours)
@@ -16,7 +16,7 @@ automation:
       #   entity_id: sensor.main_floor_vacuum_side_brush_remaining
       #   below: 180000
       # Side brush life (less than 20 hours)
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_floor_vacuum_side_brush_remaining
         below: 72000
       # # Filter life (less than 50 hours)
@@ -24,18 +24,18 @@ automation:
       #   entity_id: sensor.main_floor_vacuum_filter_remaining
       #   below: 180000
       # Filter life (less than 20 hours)
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.main_floor_vacuum_filter_remaining
         below: 72000
-    action:
+    actions:
       # Wait until 6:30am
       - wait_for_trigger:
-          - platform: time
+          - trigger: time
             at: "07:05:00"
 
       # Wait for the kitchen to be occupied for 10 minutes
       - wait_for_trigger:
-          - platform: state
+          - trigger: state
             entity_id: binary_sensor.kitchen_motion_sensor_occupancy
             to: "on"
             for:
@@ -46,7 +46,7 @@ automation:
 
       # Wait for John to be present or wait 5 mins
       - wait_for_trigger:
-          - platform: state
+          - trigger: state
             entity_id: sensor.john_room_presence
             to: "kitchen"
         timeout:
@@ -54,7 +54,7 @@ automation:
         continue_on_timeout: true
 
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "one-chime"
@@ -62,7 +62,7 @@ automation:
           speech_message: "The robot vacuum will need some maintenance soon. Please reoder {{trigger.from_state.attributes.friendly_name}}"
 
       # Send a push notification
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "The robot vacuum will need some maintenance soon. Please reorder {{trigger.from_state.attributes.friendly_name}}"
           title: Robot Vacuum Maintenance

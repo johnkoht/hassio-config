@@ -4,20 +4,20 @@ automation:
   - id: "dining_room_occupied"
     initial_state: on
     alias: "Dining Room occupied"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.dining_room_north_motion_sensor_motion
         to: "on"
       # Occupancy detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.dining_room_north_motion_sensor_occupancy
         to: "on"
       # Lights are turned on
-      - platform: state
+      - trigger: state
         entity_id: light.dining_room_lights
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -34,6 +34,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.dining_room_north_motion_sensor_occupancy
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.dining_room_occupied

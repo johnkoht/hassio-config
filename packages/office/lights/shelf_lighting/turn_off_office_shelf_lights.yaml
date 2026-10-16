@@ -6,7 +6,7 @@ automation:
   - id: "turn_off_office_shelf_lights"
     alias: "Turn off office shelf lights"
     initial_state: on
-    trigger:
+    triggers:
       # If the house becomes unoccupied
       - trigger: state
         entity_id: input_boolean.house_occupied

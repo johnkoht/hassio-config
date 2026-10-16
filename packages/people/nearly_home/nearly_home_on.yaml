@@ -5,16 +5,16 @@ automation:
   - id: "nearly_home_on"
     alias: "Nearly Home - Turn On"
     initial_state: on
-    trigger:
+    triggers:
       # Not far from home
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           #- sensor.home_cristina_distance
           #- sensor.home_john_distance
           - sensor.home_nearest_distance
         below: 5
         above: 1
-    condition:
+    conditions:
       # Nearly home boolean is OFF
       - condition: state
         entity_id: input_boolean.nearly_home
@@ -35,17 +35,17 @@ automation:
       - condition: state
         entity_id: sensor.home_nearest_direction_of_travel
         state: "towards"
-    action:
+    actions:
       # Turn on the boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.nearly_home
 
       # Turn ON the automation that turns off
       # the input boolean once we're home
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id: automation.nearly_home_turn_off
 
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           title: Nearly Home On
           message: Nearly home automation turned on

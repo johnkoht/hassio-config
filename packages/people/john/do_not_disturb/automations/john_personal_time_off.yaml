@@ -3,33 +3,33 @@ automation:
     initial_state: on
     alias: "John Personal Time Off"
     mode: queued
-    trigger:
+    triggers:
       # Block Calendar ended
-      - platform: calendar
+      - trigger: calendar
         event: end
         entity_id: calendar.john_block
       # GSD Calendar ended
-      - platform: calendar
+      - trigger: calendar
         event: end
         entity_id: calendar.john_gsd
       # OOO Calendar ended
-      - platform: calendar
+      - trigger: calendar
         event: end
         entity_id: calendar.john_ooo
       # At midnight reset
-      - platform: time
+      - trigger: time
         at: "00:00:00"
-    condition:
+    conditions:
       # Personal time boolean is ON
       - condition: state
         entity_id: input_boolean.john_personal_time
         state: "on"
-    action:
+    actions:
       # Turn OFF the boolean
-      - service: input_boolean.turn_off
+      - action: input_boolean.turn_off
         entity_id: input_boolean.john_personal_time
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "John personal time turned OFF"
           title: "John Personal Time"

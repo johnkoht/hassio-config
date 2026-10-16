@@ -7,9 +7,9 @@ automation:
   - id: "office_occupied"
     initial_state: on
     alias: "Office occupied"
-    trigger:
+    triggers:
       # Office Bayesian sensor is on
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.office_presence
         to: "on"
       # # If anybody is detected via Bluetooth
@@ -19,27 +19,27 @@ automation:
       #     - sensor.cristina_room_presence
       #   to: office"
       # Office sensor detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.office_aqara_occupancy
         to: "on"
       # Office sensor detects motion
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.office_aqara_motion_sensor
         to: "on"
       # Lights turned on
-      - platform: state
+      - trigger: state
         entity_id: light.office_light_switch
         to: "on"
       # Office guest mode on
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.office_guest_mode
         to: "on"
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -88,6 +88,6 @@ automation:
       #     - condition: state
       #       entity_id: binary_sensor.office_aqara_occupancy
       #       state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.office_occupied

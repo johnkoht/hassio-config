@@ -4,20 +4,20 @@ automation:
   - id: "garage_mode_auto"
     initial_state: on
     alias: "Garage mode auto"
-    trigger:
+    triggers:
       # Garage is occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.garage_occupied
         to: "on"
       # House turn to Auto mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.house
         to: "Auto"
       # Garage sensor detects occupancy
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.garage_motion_sensor_occupancy
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -29,8 +29,8 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-    action:
-      - service: input_select.select_option
+    actions:
+      - action: input_select.select_option
         data:
           entity_id: input_select.garage
           option: "Auto"

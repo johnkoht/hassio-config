@@ -3,12 +3,12 @@ automation:
     alias: Katia Announce Departure
     mode: queued
     initial_state: on
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: person.katia
         from: "home"
         to: "not_home"
-    condition:
+    conditions:
       # Not home
       - condition: state
         entity_id: person.katia
@@ -19,9 +19,9 @@ automation:
         state: "on"
         for:
           minutes: 5
-    action:
+    actions:
       # Announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           speech_message: >-

@@ -2,14 +2,14 @@ automation:
   - id: "vacuum_clean_kitchen_during_nap"
     alias: "Vacuum - Clean Kitchen During Nap"
     mode: "single"
-    trigger:
+    triggers:
       # GL's room becomes occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.gianlucas_room_occupied
         to: "on"
         for:
           minutes: 10
-    condition:
+    conditions:
       # Quiet mode is enabled
       - condition: state
         entity_id: input_boolean.quiet_mode
@@ -22,7 +22,7 @@ automation:
       - condition: state
         entity_id: input_boolean.entertainment_mode
         state: "off"
-    action:
+    actions:
       # Vacuum the Kitchen
       - action: vacuum.send_command
         target:

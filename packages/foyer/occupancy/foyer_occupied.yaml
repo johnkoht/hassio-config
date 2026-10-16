@@ -4,17 +4,17 @@ automation:
   - id: "foyer_occupied"
     initial_state: on
     alias: "Foyer occupied"
-    trigger:
+    triggers:
       # Entry motion sensor detects motion
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.foyer_motion
         to: "on"
       # Hassio resloads/starts
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -34,6 +34,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.foyer_motion
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.foyer_occupied

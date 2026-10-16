@@ -7,28 +7,28 @@ automation:
   - id: "playroom_media_player_unjoin"
     initial_state: on
     alias: "Playroom Media Player Unjoin"
-    trigger:
+    triggers:
       # Playroom is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.playroom_occupied
         to: "off"
       # Playroom is in Off Mode
-      - platform: state
+      - trigger: state
         entity_id: input_select.playroom
         to: "Off"
       # The playroom player pauses for 10 mins
-      - platform: state
+      - trigger: state
         entity_id: media_player.sonos_playroom
         to: "paused"
         for:
           minutes: 10
       # The playroom player pauses for 30 mins
-      - platform: state
+      - trigger: state
         entity_id: media_player.sonos_playroom
         to: "paused"
         for:
           minutes: 30
-    condition:
+    conditions:
       # Playroom is NOT OCCUPIED
       - condition: state
         entity_id: input_boolean.playroom_occupied
@@ -42,7 +42,7 @@ automation:
       # The media player is part of a group
       - condition: template
         value_template: "{{ states.media_player.sonos_playroom.attributes.group_members | count > 1 }}"
-    action:
+    actions:
       # Unjoin if it's joined
-      - service: media_player.unjoin
+      - action: media_player.unjoin
         entity_id: media_player.sonos_playroom

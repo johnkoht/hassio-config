@@ -3,13 +3,13 @@ automation:
     initial_state: on
     alias: "John Work Call On"
     mode: queued
-    trigger:
+    triggers:
       # Work Calendar started
-      - platform: calendar
+      - trigger: calendar
         event: start
         entity_id: calendar.john_koht_reserv_com
         # offset: "00:00:02"
-    condition:
+    conditions:
       # # Personal time is OFF
       # - condition: state
       #   entity_id: binary_sensor.john_calendar_personal_time
@@ -20,13 +20,13 @@ automation:
         value_template: >-
           {% set summary = trigger.calendar_event.summary | lower %}
           {{ false if "gsd" in summary or "ooo" in summary or "block" in summary else true }}
-    action:
+    actions:
       # Turn ON the boolean
-      - service: input_boolean.turn_on
+      - action: input_boolean.turn_on
         entity_id: input_boolean.john_work_call
 
       # Notification for logging
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: "John's work call has been turned ON"
           title: "John Work Call ON"
@@ -35,12 +35,12 @@ automation:
           tag: "john-work-call"
 
       # Turn the Work call off automation temporarily OFF
-      - service: automation.turn_off
+      - action: automation.turn_off
         entity_id: automation.john_work_call_off
 
       # Delay 1 minutes
       - delay: "00:01:00"
 
       # Turn the Work call Off automation back ON
-      - service: automation.turn_on
+      - action: automation.turn_on
         entity_id: automation.john_work_call_off

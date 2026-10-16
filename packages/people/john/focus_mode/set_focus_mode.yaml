@@ -21,7 +21,7 @@ automation:
         event: start
       - trigger: event
         event_type: automation_reloaded
-    condition:
+    conditions:
       # Only run after 5am, otherwise it turns into
       # deep work mode at midnight
       - condition: time
@@ -40,7 +40,7 @@ automation:
           {% set calendar_mode = states('sensor.john_calendar_focus_mode') %}
           {% set current_mode = states('input_select.john_focus_mode') %}
           {{ calendar_mode != current_mode and calendar_mode != '' }}
-    action:
+    actions:
       # Update the focus mode input_select
       - action: input_select.select_option
         target:

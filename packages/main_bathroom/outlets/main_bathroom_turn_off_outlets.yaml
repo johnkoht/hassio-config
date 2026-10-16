@@ -2,16 +2,16 @@ automation:
   - id: "main_bathroom_turn_off_outlets"
     initial_state: on
     alias: "Main Bathroom - Turn Off Outlets"
-    trigger:
+    triggers:
       # Bathroom is Off
-      - platform: state
+      - trigger: state
         entity_id: input_select.main_bathroom
         to: "Off"
       # Bathroom is no longer occupied
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.main_bathroom_occupied
         to: "off"
-    condition:
+    conditions:
       # Main bathroom is not occupied
       - condition: state
         entity_id: input_boolean.main_bathroom_occupied
@@ -27,8 +27,8 @@ automation:
           - condition: state
             entity_id: switch.smart_plug_13_switch
             state: "on"
-    action:
-      - service: switch.turn_off
+    actions:
+      - action: switch.turn_off
         entity_id:
           - switch.smart_plug_12_switch
           - switch.smart_plug_13_switch

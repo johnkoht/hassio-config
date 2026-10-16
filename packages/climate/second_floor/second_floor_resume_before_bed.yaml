@@ -6,11 +6,11 @@ automation:
   - id: "second_floor_climate_resume_before_bed"
     alias: "Second Floor Climate - Resume Before Bed"
     initial_state: on
-    trigger:
+    triggers:
       #  At 6:30pm
-      - platform: time
+      - trigger: time
         at: "18:30:00"
-    condition:
+    conditions:
       # Make sure the Nest isn't set to a preset already
       - condition: template
         value_template: "{{ states.climate.nest_2nd_floor.attributes.preset_mode != 'none' }}"
@@ -26,6 +26,6 @@ automation:
           - condition: state
             entity_id: input_boolean.nearly_home
             state: "on"
-    action:
+    actions:
       - action: script.second_floor_climate_to_resume
         data: {}

@@ -2,11 +2,11 @@ automation:
   - id: "neighborhood_event_tomorrow_reminder"
     alias: "Kids Activity Tomorrow Reminder"
     mode: "single"
-    trigger:
+    triggers:
       # At 8pm
-      - platform: time
+      - trigger: time
         at: "20:00:00"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -15,7 +15,7 @@ automation:
       - condition: state
         entity_id: binary_sensor.neighborhood_event_tomorrow
         state: "on"
-    action:
+    actions:
       # Wait for motion in the kitchen or family room
       - wait_template: >-
           {{
@@ -29,7 +29,7 @@ automation:
         delay: 2
 
       # Call the announcement engine
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "message-alert"
@@ -45,7 +45,7 @@ automation:
               ] | random
             }}
 
-      - service: script.general_notification
+      - action: script.general_notification
         data:
           message: >-
             {% set time =  states.calendar.golf_acres.attributes.start_time | as_datetime | as_local %}

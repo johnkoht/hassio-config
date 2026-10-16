@@ -20,8 +20,8 @@ timer:
 
 
 template:
-  - trigger:
-    - platform: time_pattern
+  - triggers:
+    - trigger: time_pattern
       seconds: '/1'
     sensor:
     - name: Driveway Front Timer Countdown
@@ -91,7 +91,7 @@ automation:
       - trigger: state
         entity_id: input_boolean.camera_notifications
         to: "off"
-    action:
+    actions:
       # Turn off the notifications
       - action: input_boolean.turn_off
         entity_id: input_boolean.driveway_front_camera_notifications

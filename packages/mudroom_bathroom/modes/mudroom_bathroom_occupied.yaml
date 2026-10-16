@@ -4,16 +4,16 @@ automation:
   - id: "mudroom_bathroom_occupied"
     initial_state: on
     alias: "Mudroom Bathroom Occupied"
-    trigger:
+    triggers:
       # Motion detected
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.mudroom_bathroom_motion
         to: "on"
       # Mudroom Bathroom lights are turned on
-      - platform: state
+      - trigger: state
         entity_id: light.mudroom_bathroom_main_lights
         to: "on"
-    condition:
+    conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -37,6 +37,6 @@ automation:
           - condition: state
             entity_id: light.mudroom_bathroom_main_lights
             state: "on"
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.mudroom_bathroom_occupied
