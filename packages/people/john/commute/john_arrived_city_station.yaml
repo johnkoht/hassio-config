@@ -1,0 +1,47 @@
+# John Arrived at City Station
+#
+# Morning arrival downtown: announce it and arm the return-trip automations.
+#
+
+automation:
+  - id: "john_arrived_city_station"
+    alias: "John Arrived at City Station"
+    initial_state: on
+    triggers:
+      - trigger: zone
+        entity_id: person.john_koht
+        zone: !secret commute_city_station_zone
+        event: enter
+    conditions:
+      # John is not home
+      - condition: state
+        entity_id: input_boolean.john_home
+        state: "off"
+      # At the train station
+      - condition: zone
+        entity_id: person.john_koht
+        zone: !secret commute_city_station_zone
+      # It's before noon
+      - condition: time
+        before: "12:00:00"
+    actions:
+      # Turn on the return automations
+      - action: automation.turn_on
+        target:
+          entity_id:
+            - automation.john_departed_city_station
+            - automation.john_passing_midway_station
+            - automation.john_arrived_at_home_station
+      # Announcement
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          sound: "arcade"
+          priority: normal
+          speech_message: >-
+            {{
+              [
+                "Attention! Baba just arrived at " ~ trigger.zone.attributes.friendly_name ~ ".",
+                "Pardon the interruption, just wanted to let you know Baba's train arrived downtown."
+              ] | random
+            }}

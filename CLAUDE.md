@@ -242,6 +242,7 @@ Everything committed here is world-readable on GitHub, and that includes history
 - **One automation, one job** — if an automation is doing two distinct things, split it into two files.
 - **No fabrication** — don't invent entity names, sensor IDs, or room names. If you don't know the exact entity ID, say so and ask, or look it up in the relevant package directory.
 - **Validate before presenting** — run `ha core check` mentally: does this YAML parse? Are all required fields present? Is the `target:` block used correctly?
+- **Docs travel with the change** — when behaviour or entities change, update the matching `docs/*.md` and package READMEs in the same PR (`/wrap` and `/hotfix` check for this).
 
 ---
 

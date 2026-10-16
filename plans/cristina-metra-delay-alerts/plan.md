@@ -12,7 +12,7 @@ has_prd: true
 
 ## Problem
 
-Cristina takes the Metra MD-N from her station to Union Station on office days, on either train 1 or train 2. Nothing in the house tells her when her train is late or cancelled, so she finds out on the platform. The repo has no transit data. Nothing records whether a given weekday is an office day. The only commute signal in the morning update is a hard-coded Tuesday–Thursday block, which no longer matches her Monday–Friday schedule.
+Cristina takes the Metra MD-N from her station to the downtown terminal on office days, on either train 1 or train 2. Nothing in the house tells her when her train is late or cancelled, so she finds out on the platform. The repo has no transit data. Nothing records whether a given weekday is an office day. The only commute signal in the morning update is a hard-coded Tuesday–Thursday block, which no longer matches her Monday–Friday schedule.
 
 ## Goal
 

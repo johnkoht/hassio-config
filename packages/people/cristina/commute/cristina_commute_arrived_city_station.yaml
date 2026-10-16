@@ -1,0 +1,46 @@
+# Cristina Commute - Arrived at City Station
+#
+# Morning arrival downtown: announce it and arm the return-trip automations.
+#
+
+automation:
+  - id: "cristina_commute_arrived_city_station"
+    alias: "Cristina Commute - Arrived at City Station"
+    initial_state: on
+    triggers:
+      - trigger: zone
+        entity_id: person.cristina_falbo
+        zone: !secret commute_city_station_zone
+        event: enter
+    conditions:
+      # Cristina is not home
+      - condition: state
+        entity_id: input_boolean.cristina_home
+        state: "off"
+      # At the train station
+      - condition: zone
+        entity_id: person.cristina_falbo
+        zone: !secret commute_city_station_zone
+      # It's before noon
+      - condition: time
+        before: "12:00:00"
+    actions:
+      # Turn on the return automations
+      - action: automation.turn_on
+        target:
+          entity_id:
+            - automation.cristina_commute_departed_city_station
+            - automation.cristina_commute_passing_midway_station
+            - automation.cristina_commute_arrived_at_home_station
+      # Announcement
+      - action: script.voice_announcement
+        data:
+          media_players: auto
+          priority: normal
+          speech_message: >-
+            {{
+              [
+                "Attention! Mamma just arrived at " ~ trigger.zone.attributes.friendly_name ~ ".",
+                "Pardon the interruption, just wanted to let you know Mamma's train arrived downtown."
+              ] | random
+            }}

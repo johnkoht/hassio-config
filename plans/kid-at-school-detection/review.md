@@ -26,7 +26,7 @@ verdict: revise
 | `binary_sensor.<kid>_school_started` "never turns off before the nightly rollover" | ✅ Correct | `kids/nino_school.yaml` — `state: {{ school_day and now() >= start }}`. Monotonic within the day. Bounding on dismissal instead is right. |
 | `primary_school_start_time_today` already swaps to the late-start input on Wednesdays | ✅ Correct | `schools/primary_school_schedule.yaml`, both `availability:` and `state:` select `late_start_time` when `late_start_today` is on. |
 | Nothing in automations checks literal `not_home` on John/Cristina | ✅ Correct | Confirmed across `packages/`, `automation/`, `dashboards/`. |
-| `zone.primary_school` is 122 m; `zone.parochial_school` exists | ⚠️ **Unverifiable here, and no task creates them** | `configuration.yaml:63` defines exactly one zone (`Home`). Every other zone in use (`zone.john_s_work`, `zone.union_station`, …) lives in `.storage`, which is not in this repo. See Concern 3. |
+| `zone.primary_school` is 122 m; `zone.parochial_school` exists | ⚠️ **Unverifiable here, and no task creates them** | `configuration.yaml:63` defines exactly one zone (`Home`). Every other zone in use (`zone.john_s_work`, `zone.<city_station>`, …) lives in `.storage`, which is not in this repo. See Concern 3. |
 | Dose 1 is at 07:30, so the gate can't touch it | ⚠️ **Assumption, not a property** | `input_datetime.nino_medication_1_time` is user-editable from `dashboards/templates/button_cards/people/nino.yaml:126`. `input_datetime.primary_school_start_time` is user-editable from `school_settings_popup.yaml`. Nothing couples them. See Concern 4. |
 | "the school view chip row is a fixed-height horizontal stack" (Risks) | ❌ **Stale** | `dashboards/kohbo/school/school.yaml:43-46` already uses `page_chip_layout_wrap.yaml`, with a comment saying exactly why. The risk was fixed before this plan was written. |
 | "Dismissal-time sensor unavailable → sensor falls to off → announcements play … failing loud is the safer direction" | ❌ **Wrong, and it is the plan's only stated failure-direction analysis** | See Concern 1. The dominant failure direction of this design is silence, not noise. |
@@ -100,7 +100,7 @@ zone:
     latitude: !secret home_latitude
 ```
 
-Every other zone the repo references (`zone.john_s_work`, `zone.union_station`, `zone.cristina_s_work`, `zone.north_shore_k9`) is UI-created and lives in `.storage`, invisible from here. `zone.primary_school` and `zone.parochial_school` appear nowhere in `packages/`, `dashboards/`, `automation/`, or `configuration.yaml`. The plan states their radii as fact but has no task to create them and no verification step that they resolve.
+Every other zone the repo references (`zone.john_s_work`, `zone.<city_station>`, `zone.cristina_s_work`, `zone.north_shore_k9`) is UI-created and lives in `.storage`, invisible from here. `zone.primary_school` and `zone.parochial_school` appear nowhere in `packages/`, `dashboards/`, `automation/`, or `configuration.yaml`. The plan states their radii as fact but has no task to create them and no verification step that they resolve.
 
 This matters because it fails silently in both directions: a `trigger: zone` referencing a nonexistent zone passes `ha core check` (entity-id *format* is validated, not existence) and simply never fires — which per Concern 2 lands on "silenced while home."
 
