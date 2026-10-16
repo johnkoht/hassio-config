@@ -11,6 +11,7 @@ variables:
   - navigation_path: '/dashboard-kohbo/rooms-main-bathroom'
   - temperature: "[[[ return states['sensor.main_bathroom_temperature'].state ]]]"
   - humidity: "[[[ return states['sensor.main_bathroom_humidity'].state ]]]"
+  # Air quality from the adjacent main bedroom Awair
   - aqi: "[[[ return states['sensor.main_bedroom_air_quality'].state ]]]"
   - icon: mdi:shower
   - room_devices:

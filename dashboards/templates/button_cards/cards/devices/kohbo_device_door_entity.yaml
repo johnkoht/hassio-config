@@ -22,7 +22,9 @@ kohbo_device_door_entity:
 
       // Determine the display state
       let stateText;
-      if (openCount === 0) {
+      if (['unavailable', 'unknown'].includes(entity.state)) {
+        stateText = "Unavailable";
+      } else if (openCount === 0) {
         stateText = "Closed";
       } else if (openCount === totalDoors) {
         stateText = "Open";
