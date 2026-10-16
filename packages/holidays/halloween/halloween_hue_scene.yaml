@@ -28,6 +28,10 @@ automation:
       # Let the accent lights turn_on land before the scene
       - delay:
           seconds: 5
+      # Bedtime may have turned the accent lights off during the delay
+      - condition: state
+        entity_id: input_boolean.exterior_accent_lights
+        state: "on"
       - action: scene.turn_on
         target:
           entity_id: scene.front_yard_halloween
