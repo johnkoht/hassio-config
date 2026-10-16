@@ -86,7 +86,7 @@ script:
             {% set day = now().strftime('%Y-%m-%d') %}
             {% set events = (holidays | default({})).get('calendar.holidays_in_united_states', {}).get('events', []) %}
             {% set names = events | selectattr('start', 'search', '^' ~ day) | map(attribute='summary')
-                           | reject('search', 'substitute') | list %}
+                           | reject('search', '(?i)substitute') | list %}
             {% if now().strftime('%m-%d') == '04-01' %}
               It's April Fool's Day! Make it funny with one or two playful pranks, like silly weather or "Enderdragon burgers" for Nino's lunch.
             {% endif %}
@@ -109,7 +109,7 @@ script:
               It's Father's Day — make John feel like the hero of the day.
                 {% endif %}
               {% else %}
-              Today is {{ name }} — add a light touch of holiday flair if it fits.
+              The calendar notes "{{ name }}" today — mention it briefly only if it's fun or useful.
               {% endif %}
             {% endfor %}
 
