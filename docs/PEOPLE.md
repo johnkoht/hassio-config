@@ -54,7 +54,7 @@ The "Just Arrived" and "Just Left" states, inspired by [Phil Hawthorne's methodo
 
 Here's how a typical day flows through the system, showing how person states drive automations throughout the house.
 
-### Morning Wake Up (6:45 AM)
+### Morning Wake Up
 
 The FSR sensor on my bed detects I'm no longer lying down. My sleep state transitions:
 
@@ -67,7 +67,7 @@ This triggers a cascade:
 
 Meanwhile, the house checks: *Is everybody awake?* If my wife is also up, `sensor.everybody_awake` becomes true, and the house exits **Bedtime** mode.
 
-### Leaving for Work (8:15 AM)
+### Leaving for Work
 
 I grab my keys and head out. The system detects I've left:
 
@@ -85,7 +85,7 @@ The house checks: *Is anybody still home?* If my wife left earlier, `input_boole
 - Alarm panel arms
 - Doors lock
 
-### Arriving Home (5:30 PM)
+### Arriving Home
 
 My phone's GPS crosses the home zone. The companion app reports I'm home:
 
@@ -100,7 +100,7 @@ After ~5 minutes:
 
 **Just Arrived** → **Home**
 
-### Evening - Do Not Disturb (7:00 PM)
+### Evening - Do Not Disturb
 
 I hop on a video call in the office. My laptop camera turns on, and my calendar shows a meeting:
 
@@ -117,7 +117,7 @@ When the call ends and my camera turns off:
 
 The Office returns to **Auto** mode.
 
-### Bedtime (10:30 PM)
+### Bedtime
 
 I get into bed. The FSR sensor detects occupancy:
 

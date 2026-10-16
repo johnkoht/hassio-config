@@ -95,7 +95,7 @@ Home presence combines multiple trackers into the HA Person integration:
 3. **Nmap Tracker** — network scan
 4. **iPhone Detect** — iOS-specific network detection
 
-Room presence uses **ESPresense** BLE base stations (~15 stations throughout the house). `sensor.{name}_room_presence` reflects current room.
+Room presence uses **Bermuda** via ESPHome Bluetooth proxies. `sensor.{name}_room_presence` wraps it: state is the HA area_id (e.g. `office`) or `not_home`. John, Cristina and Nonna are migrated; a few guest sensors still use the legacy ESPresense `mqtt_room` topic. Add a person with the `add-presence-person` skill.
 
 ---
 

@@ -11,7 +11,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 - [Exterior lights turning on/off](https://github.com/johnkoht/hassio-config/blob/master/packages/outdoor_lighting.yaml)
 - [Announce arrival and departure of family](https://github.com/johnkoht/hassio-config/blob/master/packages/people/announcements/person_announcement_script.yaml)
 - [Washer or Dryer is finished](https://github.com/johnkoht/hassio-config/tree/master/packages/laundry/main_level_washer)
-- [School day announcement, dropoff/pickup reminders](https://github.com/johnkoht/hassio-config/blob/master/packages/school/school_day_reminder.yaml)
+- [School day announcement, five-minute departure warning, dropoff/pickup reminders (skipped when a kid is home sick)](https://github.com/johnkoht/hassio-config/tree/master/packages/school/reminders)
 - [Calendar reminder (upcoming or next day)](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders)
 - [Commuting notifications (arrived at station, heading home, train five mins away)](https://github.com/johnkoht/hassio-config/tree/master/packages/people/john/commute)
 - [Garbage day](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders/garbage_day)
@@ -27,7 +27,7 @@ Here are some of my favorite and most useful automations:
 
 ### Climate
 
-- **[Climate Automation](https://github.com/johnkoht/hassio-config/blob/master/packages/climate/main_floor/main_floor_climate_activate_eco_when_energy_is_expensive.yaml)**: I switched to hourly pricing with ComEd and have started to automate the HVAC/AC system to turn off when prices spike and back on when they normalize.
+- **[Climate Automation](https://github.com/johnkoht/hassio-config/blob/master/packages/climate/main_floor/main_floor_climate_activate_eco_when_energy_is_expensive.yaml)**: I switched to hourly pricing with ComEd and have started to automate the HVAC/AC system to switch the Nests to Eco when prices spike and resume when they normalize. Resume restores the heat/cool mode saved before Eco, since the Nest sometimes flips it on its own.
 
 ### Lighting
 
@@ -49,15 +49,18 @@ Here are some of my favorite and most useful automations:
 ### Safety & Utilities
 
 - **[Safety Outlets](https://github.com/johnkoht/hassio-config/blob/master/packages/main_bathroom/outlets/main_bathroom_turn_off_outlets.yaml)**: Some outlets around the house will automatically turn off when we're not home or the room is off. The best example is the hair dryer and steamer in our main bathroom. 
+- **[Radio & UPS offline alerts](https://github.com/johnkoht/hassio-config/tree/master/packages/system)**: a push when the Zigbee coordinator, Z-Wave controller or UPS drops offline (re-checked after HA starts), plus a critical push when the UPS goes on battery and another when line power is back.
 
 ### Notifications & Reminders
 
 - **[Announcing when somebody is at the grocery store](https://github.com/johnkoht/hassio-config/blob/master/packages/places/grocery_store_announcement.yaml)**: whenever somebody is at a grocery store, a TTS message will broadcast across the house to let everybody know...in case I need some more Oreos, ya know?
 - **[Reminders](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders)**: Most of our calendars are integrated into HA and used for TTS reminders. For example birthdays, famliy calendar events, garbage day, robot vacuum maintenance, and much more.
 - **[Morning Update for the Family](https://github.com/johnkoht/hassio-config/blob/master/packages/reminders/morning_update.yaml)**: Every morning, a TTS message is broadcast at just the right time (or pretty close). This message contains weather info, school, calendar events, and much more.
+- **[Train delay alerts](https://github.com/johnkoht/hassio-config/blob/master/packages/people/cristina/commute/cristina_train_delay_alert.yaml)**: a push when a commute train is running 5+ minutes late or is cancelled, once per train, cleared when it's back on time.
 - **[John's Daily Report](https://github.com/johnkoht/hassio-config/blob/master/packages/people/john/daily_report/john_daily_report.yaml)**: every morning when I start my work day, I get a TTS notification in the office that tells me about my day, next meeting, sleep score, and more.
 
 ### Miscellaneous
 
 - **[Vacuum my office when I drop the dog at daycare](https://github.com/johnkoht/hassio-config/blob/master/packages/vacuums/main_level/vacuums_clean_office_when_dog_is_at_daycare.yaml)**: The dog stays in my office and I'm lazy, so I send the robot vacuum to clean whenever I drop the dog off at daycare.
+- **[Sleep music](https://github.com/johnkoht/hassio-config/tree/master/packages/ninos_room/media)**: once Nino is in bed with the lights down, his speaker starts a sleep playlist on shuffle. It stops when he gets up, but only if the automation started it. There's a toggle on his bedroom dashboard.
 - **[Weather automations](https://github.com/johnkoht/hassio-config/tree/master/packages/weather)**: a bunch of weather related automations for severe weather, air quality, etc.

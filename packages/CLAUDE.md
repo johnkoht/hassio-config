@@ -57,7 +57,7 @@ Controls what automations are allowed to run. Common options:
 
 The primary driver for room automations. Set `on` when any occupancy signal is detected; set `off` after all signals clear (with a delay).
 
-**What sets it on:** motion sensor, BLE presence (ESPresense), Bayesian presence sensor, door closed, bed sensor, lights turned on manually, media playing.
+**What sets it on:** motion sensor, BLE room presence (Bermuda), Bayesian presence sensor, door closed, bed sensor, lights turned on manually, media playing.
 
 **What sets it off:** all signals cleared for 1–5 minutes (use `for:` on the trigger).
 
