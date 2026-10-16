@@ -9,14 +9,14 @@ Just like any room in the house, the Kitchen can determine occupancy based on va
 (kicthen/modes/kitchen_occupied.yaml) This automation will determine if the Kitchen is occupied. There are a few triggers and conditions required to validate this. Might move some of this into a Bayesian sensor.
 
 **Triggered by**
-- ESPresense/BLE detection
 - Aqara Motion/Occupancy
+- mmWave presence sensor
 - Lights are turned on
 
 **Conditions**
 - House is occupied
 - Kitchen is not occupied
-- Either BLE detects people or Aqara does
+- BLE, Aqara or the mmWave sensor detects someone
 
 ### Kitchen is not occupied
 (kitchen/modes/kitchen_not_occupied.yaml) This automation will determine if the Kitchen is no longer occupied.
