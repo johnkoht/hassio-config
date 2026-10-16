@@ -112,6 +112,9 @@
             - entity: input_datetime.parochial_school_departure_time
               name: Departure Time
               card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+            - entity: input_datetime.parochial_school_late_departure_time
+              name: Departure Time (Cristina Away)
+              card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
         - type: custom:button-card
           template: kohbo_card_header
