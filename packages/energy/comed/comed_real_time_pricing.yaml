@@ -30,4 +30,3 @@ template:
         attributes:
           price_cents: "{{ states('sensor.comed_current_hour_average_price') | float(0) }}"
           source: "comed_hourly_pricing"
-

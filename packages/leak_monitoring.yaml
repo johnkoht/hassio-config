@@ -1,6 +1,6 @@
-# 
+#
 # Leak Sensors Group
-# 
+#
 group:
   leak_sensors:
     name: Leak Sensors
@@ -20,16 +20,16 @@ group:
       - binary_sensor.upstairs_hallway_bathroom_leak_sensor_moisture
 
 
-# 
+#
 # Leak Sensors Unavailable Sensor
-# 
+#
 template:
   - sensor:
       - name: "Leak Sensors Unavailable"
         unique_id: leak_sensors_unavailable
         state: >
           {{
-            "on" if 
+            "on" if
             (
               expand('group.leak_sensors')
               | selectattr('state', 'eq', 'unavailable')
@@ -71,9 +71,9 @@ template:
         state: >-
           {{ is_state('input_boolean.house_occupied','on') and is_state('binary_sensor.leak_sensors','on') }}
 
-# 
+#
 # Leak Sensors Binary Sensor
-# 
+#
 binary_sensor:
   # Group of leak/water sensors
   - platform: group

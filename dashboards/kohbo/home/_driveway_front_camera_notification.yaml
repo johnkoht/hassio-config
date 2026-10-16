@@ -1,6 +1,6 @@
-# 
+#
 # Driveway Front Camera Notification
-# 
+#
 type: custom:button-card
 name: "Person detected on the driveway"
 icon: mdi:alert-circle

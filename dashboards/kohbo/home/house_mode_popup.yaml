@@ -1,6 +1,6 @@
-# 
+#
 # House Mode Popup
-# 
+#
 type: custom:bubble-card
 card_type: pop-up
 hash: '#house_mode'
@@ -10,16 +10,16 @@ margin_top_mobile: calc(100vh - 800px)
 margin_top_desktop: calc(100vh - 800px)
 
 cards:
-  # 
+  #
   # Popup Title
-  # 
+  #
   - type: custom:button-card
     template: kohbo_popup_page_title
     name: House Mode
 
-  # 
+  #
   # House Mode Overview
-  # 
+  #
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -96,8 +96,8 @@ cards:
     entities:
       - entity: input_select.house
         name: House Mode
-        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
-            
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
       # Quiet Mode
       - entity: input_boolean.quiet_mode
         name: Quiet Mode
@@ -113,7 +113,7 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-      
+
       # Entertainment Mode
       - entity: input_boolean.entertainment_mode
         name: Entertainment Mode
@@ -139,9 +139,9 @@ cards:
         state_color: true
 
 
-  # 
+  #
   # Turn off the house
-  # 
+  #
   - type: custom:stack-in-card
     mode: vertical
     card_mod:
@@ -172,7 +172,7 @@ cards:
         styles:
           card:
             - padding: 0 20px
-      
+
 
       - type: custom:button-card
         name: Turn Off the House
@@ -183,7 +183,7 @@ cards:
           perform_action: input_boolean.turn_off
           data:
             entity_id: input_boolean.john_dnd
-        confirmation: 
+        confirmation:
           text: "Are you sure you want to turn off the house?"
         card_mod:
           style: |

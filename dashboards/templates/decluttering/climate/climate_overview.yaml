@@ -1,6 +1,6 @@
-# 
+#
 # Climate Overview
-# 
+#
 climate_overview:
   card:
     type: custom:stack-in-card
@@ -36,11 +36,11 @@ climate_overview:
           - type: custom:button-card
             entity: '[[humidity_sensor]]'
             template: kohbo_aqi_humidity_item
-          
+
           - type: custom:button-card
             entity: '[[carbon_dioxide_sensor]]'
             template: kohbo_aqi_co2_item
-  
+
           - type: custom:button-card
             entity: '[[vocs_sensor]]'
             template: kohbo_aqi_tvocs_item
@@ -65,7 +65,7 @@ climate_overview:
       #       - navigation_path: "/dashboard-kohbo/climate"
       #       - action_cards: '[[action_cards]]'
 
-                    
+
 
       # - type: conditional
       #   conditions:
@@ -80,11 +80,11 @@ climate_overview:
       #       - type: custom:button-card
       #         entity: '[[humidity_sensor]]'
       #         template: kohbo_aqi_humidity_item
-            
+
       #       - type: custom:button-card
       #         entity: '[[carbon_dioxide_sensor]]'
       #         template: kohbo_aqi_co2_item
-    
+
       #       - type: custom:button-card
       #         entity: '[[vocs_sensor]]'
       #         template: kohbo_aqi_tvocs_item

@@ -1,16 +1,16 @@
 group:
-  # 
+  #
   # Immediate Family Group
-  # 
+  #
   family:
     name: Family
     entities:
       - person.john_koht
       - person.cristina_falbo
 
-  # 
+  #
   # Extended Family Group
-  # 
+  #
   extended_family:
     name: Extended Family
     entities:
@@ -45,11 +45,11 @@ group:
     name: Arriving
     entities: []
 
-  # 
+  #
   # Room Presence Devices
-  # This is primarly used to track room presence and check 
+  # This is primarly used to track room presence and check
   # if anybody is currently in a room for occupancy check.
-  # 
+  #
   room_presence_devices:
     name: "Devices tracked by Room Assistant"
     entities:

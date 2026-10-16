@@ -1,8 +1,8 @@
 # Main Bedroom - Turn off Air Purifier
-# 
+#
 # Automation logic to handle turning off the
 # air purifier when we don't need it
-# 
+#
 automation:
   - id: "main_bedroom_turn_off_purifier"
     alias: Main Bedroom Air Quality - Turn off Purifier
@@ -17,7 +17,7 @@ automation:
       - trigger: state
         entity_id: input_select.main_bedroom
         to: "Off"
-      # Main Bedroom becomes unoccupied for 
+      # Main Bedroom becomes unoccupied for
       - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "off"

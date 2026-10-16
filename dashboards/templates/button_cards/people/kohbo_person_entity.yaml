@@ -30,7 +30,7 @@ kohbo_person_entity:
                 } else {
                   return "var(--text-light-primary-color)";
                 }
-              }              
+              }
             ]]]
         - border-radius: 50%
         - position: absolute
@@ -44,4 +44,3 @@ kohbo_person_entity:
       [[[
         return "";
       ]]]
-

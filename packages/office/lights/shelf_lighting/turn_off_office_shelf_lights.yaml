@@ -16,7 +16,7 @@ automation:
         entity_id: input_boolean.office_occupied
         to: "off"
     conditions:
-      - or: 
+      - or:
           - condition: state
             entity_id: input_boolean.house_occupied
             state: "off"

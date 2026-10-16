@@ -10,10 +10,10 @@ automation:
     alias: "House occupied"
     initial_state: "on"
     triggers:
-      # 
+      #
       # Triggered if any of the custom Person sensors
       # change to ON
-      # 
+      #
       - trigger: state
         entity_id:
           - sensor.john_person
@@ -29,21 +29,21 @@ automation:
           - sensor.nonno_person
         to: "home"
     conditions:
-      # 
+      #
       # House is currently NOT occupied
-      # 
+      #
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "off"
-      # 
+      #
       # Ensure that the person has unlock privilege
-      # 
+      #
       - condition: template
         value_template: >
           {{ state_attr(trigger.entity_id, 'unlock_privilege') == "on" }}
     actions:
-      # 
+      #
       # Set the house occupied to on
-      # 
+      #
       - action: input_boolean.turn_on
         entity_id: input_boolean.house_occupied

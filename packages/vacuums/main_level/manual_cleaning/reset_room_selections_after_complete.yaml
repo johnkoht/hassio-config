@@ -28,4 +28,4 @@ automation:
                 {% set entities = entities + [entity.entity_id] %}
               {% endif %}
             {% endfor %}
-            {{ entities | join(',') }} 
+            {{ entities | join(',') }}

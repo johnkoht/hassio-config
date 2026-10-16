@@ -10,7 +10,7 @@ close_by_clicking_outside: true
 styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
 margin_top_mobile: calc(100vh - 425px)
 margin_top_desktop: calc(100vh - 425px)
-    
+
 cards:
   # Title
   - type: custom:button-card

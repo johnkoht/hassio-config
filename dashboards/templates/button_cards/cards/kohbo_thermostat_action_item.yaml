@@ -16,5 +16,3 @@ kohbo_thermostat_action_item:
       - font-weight: 700
       - color: var(--primary-text-color)
       - font-size: 13px;
-
-    

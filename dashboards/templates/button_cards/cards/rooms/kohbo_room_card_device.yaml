@@ -27,4 +27,3 @@ kohbo_room_card_device:
       # - margin-top: 2px;
   tap_action:
     haptic: light
-    

@@ -12,10 +12,10 @@ cards:
       # - type: custom:button-card
       #   template: kohbo_page_title
       #   name: Main Floor
-      
-      # 
+
+      #
       # Overview Area for the main floor
-      # 
+      #
       - type: custom:mod-card
         style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
         card:
@@ -27,7 +27,7 @@ cards:
               entity: sensor.first_floor
               icon: mdi:home-floor-1
               state_display: >
-                [[[ 
+                [[[
                   if (entity.attributes.occupied_rooms_count > 0)
                     return entity.attributes.occupied_rooms_count + " Occupied"
                   else
@@ -45,7 +45,7 @@ cards:
               entity: sensor.upper_floor
               icon: mdi:home-floor-2
               state_display: >
-                [[[ 
+                [[[
                   if (entity.attributes.occupied_rooms_count > 0)
                     return entity.attributes.occupied_rooms_count + " Occupied"
                   else
@@ -56,7 +56,7 @@ cards:
                   color: var(--success-color)
                 - value: "off"
                   color: var(--error-color)
-            
+
             # Lights
             - type: custom:button-card
               template: kohbo_chip_card
@@ -72,9 +72,9 @@ cards:
                 action: more-info
 
 
-      # 
+      #
       # Office
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -83,9 +83,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/office_card.yaml
 
-      # 
+      #
       # Family Room
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -94,9 +94,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/family_room_card.yaml
 
-      # 
+      #
       # Kitchen
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -105,9 +105,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/kitchen_card.yaml
 
-      # 
+      #
       # Playroom
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -116,9 +116,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/playroom_card.yaml
 
-      # 
+      #
       # Dining Room
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -127,9 +127,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/dining_room_card.yaml
 
-      # 
+      #
       # Jr. Suite
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -138,9 +138,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/jr_suite_card.yaml
 
-      # 
+      #
       # Main Bedroom
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -149,9 +149,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/upper_floor/partials/main_bedroom_card.yaml
 
-      # 
+      #
       # Nino's Bedroom
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -160,9 +160,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/upper_floor/partials/ninos_bedroom_card.yaml
 
-      # 
+      #
       # Gianluca's Bedroom
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -171,9 +171,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/upper_floor/partials/gianlucas_bedroom_card.yaml
 
-      # 
+      #
       # Foyer
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -181,10 +181,10 @@ cards:
             state: 'on'
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/foyer_card.yaml
-      
-      # 
+
+      #
       # Mudroom
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -193,9 +193,9 @@ cards:
         card:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_card.yaml
 
-      # 
+      #
       # Upstairs Hallway
-      # 
+      #
       - type: conditional
         conditions:
           - condition: state
@@ -206,53 +206,52 @@ cards:
 
 
 
-
-  # 
+  #
   # Office Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_office
       - hash: '#office_media_player'
 
-  # 
+  #
   # Kitchen Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_kitchen
       - hash: '#kitchen_media_player'
 
-  # 
+  #
   # Dining Room Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_living_room
       - hash: '#dining_room_media_player'
 
-  # 
+  #
   # Family Room Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_family_room
       - hash: '#family_room_media_player'
 
-  # 
+  #
   # Playroom Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_playroom
       - hash: '#playroom_media_player'
-      
-  # 
+
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

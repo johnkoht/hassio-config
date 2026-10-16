@@ -1,6 +1,6 @@
-# 
+#
 # Front Door Camera Notification
-# 
+#
 type: custom:button-card
 name: "Person detected at the front door"
 icon: mdi:alert-circle

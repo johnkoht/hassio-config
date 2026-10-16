@@ -100,4 +100,3 @@ script:
                   brightness_pct: 5
                   color_temp_kelvin: 2200
                   transition: 1
-

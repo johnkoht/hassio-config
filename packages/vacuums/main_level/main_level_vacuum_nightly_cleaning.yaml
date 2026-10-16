@@ -1,27 +1,27 @@
 # Vacuum - Clean Kitchen and Family Room at Night
 #
 # Automation logic to handle vacuuming the
-# kitchen and family room at night. 
+# kitchen and family room at night.
 #
 automation:
   - id: "main_level_vacuum_nightly_cleaning"
     alias: "Main Level Vacuum - Nightly Cleaning"
     mode: "single"
     variables:
-      # 
+      #
       # Get the room_ids we'll use for vacuum cleaning script
       # from the input_boolean entity ids. This returns a list
       # like ["kitchen", "family_room", "mudroom"]
-      # 
+      #
       rooms_ids: >
         {% set rooms = state_attr('group.main_level_vacuum_nightly_cleaning_group', 'entity_id') | select('is_state', 'on') | list %}
 
         {% set room_list = namespace(rooms=[]) %}
-        
+
         {% for room in rooms %}
           {% set room_list.rooms = room_list.rooms + [room.split('.')[-1].replace("vacuum_", "").replace("_at_night", "")] %}
         {% endfor %}
-        
+
         {{ room_list.rooms }}
     triggers:
       # Bedtime mode is on for 30 minutes
@@ -39,7 +39,7 @@ automation:
       #   entity_id: input_boolean.guest_mode
       #   state: "off"
       # Only run between 10pm and 5am
-      # Otherwise, if we get out of bed at 5 for whatever reason, 
+      # Otherwise, if we get out of bed at 5 for whatever reason,
       # then get back in, it will run unnecessarily.
       - condition: time
         after: "22:00:00"

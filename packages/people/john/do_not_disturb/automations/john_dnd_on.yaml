@@ -1,5 +1,5 @@
 # John DnD On
-# 
+#
 # If I'm on a call, turn ON the DnD boolean
 automation:
   - id: "john_dnd_on"

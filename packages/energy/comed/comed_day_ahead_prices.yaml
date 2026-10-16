@@ -83,7 +83,7 @@ template:
               {% endfor %}
             {% endif %}
             {{ ns.prices }}
-          
+
           #---------------------------------------------------------------------
           # date_for: The date these prices apply to (tomorrow from fetch time)
           #---------------------------------------------------------------------
@@ -94,7 +94,7 @@ template:
             {% else %}
               unknown
             {% endif %}
-          
+
           #---------------------------------------------------------------------
           # fetched_at: Timestamp when data was last successfully fetched
           #---------------------------------------------------------------------
@@ -105,7 +105,7 @@ template:
             {% else %}
               {{ state_attr('sensor.comed_day_ahead_prices', 'fetched_at') | default('never') }}
             {% endif %}
-          
+
           #---------------------------------------------------------------------
           # Statistics: min, max, average across all 24 hours
           #---------------------------------------------------------------------
@@ -129,7 +129,7 @@ template:
             {% endif %}
             {% set valid = ns.prices | select('>', 0) | list %}
             {{ valid | min | default(0) | round(2) if valid else 0 }}
-          
+
           daily_max: >
             {% set raw = response.content | default('') %}
             {% set ns = namespace(prices=[0]*24) %}
@@ -149,7 +149,7 @@ template:
               {% endfor %}
             {% endif %}
             {{ ns.prices | max | default(0) | round(2) }}
-          
+
           daily_avg: >
             {% set raw = response.content | default('') %}
             {% set ns = namespace(prices=[0]*24) %}

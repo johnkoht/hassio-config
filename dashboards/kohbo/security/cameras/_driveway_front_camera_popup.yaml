@@ -1,6 +1,6 @@
-# 
+#
 # Driveway Front Camera Popup
-# 
+#
 type: custom:decluttering-card
 template: camera_popup
 variables:

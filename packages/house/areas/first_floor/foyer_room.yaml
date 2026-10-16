@@ -1,6 +1,6 @@
-# 
+#
 # Foyer Room Sensor
-# 
+#
 template:
   - sensor:
       - name: "Foyer"

@@ -19,7 +19,7 @@ automation:
           media_players: auto
           sound: "success-trumpets"
           speech_message: >-
-            {{ 
+            {{
               [
                 "Hey fam, " ~ states.calendar.golf_acres.attributes.message ~ " is in one hour.",
                 "Just a quick reminder that " ~ states.calendar.golf_acres.attributes.message ~ " is in one hour.",

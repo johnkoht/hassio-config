@@ -1,6 +1,6 @@
-# 
+#
 # Windows
-# 
+#
 type: custom:vertical-layout
 title: Windows
 path: security-windows
@@ -8,20 +8,20 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
       - name: Windows
       - navigation_path: /dashboard-kohbo/security
       - settings_path: '#windows_settings_popup'
-  
 
-  # 
+
+  #
   # Windows
-  # 
+  #
 
   - type: custom:button-card
     template: kohbo_device_window_entity_horizontal
@@ -37,21 +37,21 @@ cards:
     template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.playroom_window_sensor
     name: Playroom Window
-    
+
   - type: custom:button-card
     template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.playroom_window_west_left_opening
     name: Playroom West Left Opening
-    
+
   - type: custom:button-card
     template: kohbo_device_window_entity_horizontal
     entity: binary_sensor.office_window_sensor
     name: Office Window
 
-  
-  # 
+
+  #
   # Windows Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#windows_settings_popup'
@@ -65,9 +65,9 @@ cards:
         template: kohbo_popup_page_title
         name: Windows Settings
 
-      # 
+      #
       # Window Left Open Alert
-      #         
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -92,7 +92,7 @@ cards:
         template: kohbo_card_section_description
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

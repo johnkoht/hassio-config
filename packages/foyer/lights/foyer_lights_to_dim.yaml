@@ -28,4 +28,3 @@ automation:
         data:
           brightness_pct: 15
           transition: 0.5
-      

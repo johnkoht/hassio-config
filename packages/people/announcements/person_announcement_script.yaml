@@ -201,9 +201,9 @@ script:
               - DO NOT label somebody as "John's brother" or "Cristina's older brother", this information is mostly for your context
 
             Can you provide a very short welcome message that I can broadcast as a TTS message throughout our house to announce is arrival?
-            A couple of rules: 
-              - It should be short, very short, like one sentence. 
-              - Pick any of the attributes in the person context that I provided and use that as the core. 
+            A couple of rules:
+              - It should be short, very short, like one sentence.
+              - Pick any of the attributes in the person context that I provided and use that as the core.
               - Don't call out all person context that is available, just pick one at random for today
               - Keep it short, funny.
               - Consider yourself part of the family, so no need to refer to us as "The Koht Family". Prefer "Fam" or "Family.""

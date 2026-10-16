@@ -67,4 +67,3 @@ motion_detected_card:
       - font-size: 12px !important;
       - color: var(--light-grey-color)
       - font-weight: 400 !important
-  

@@ -1,6 +1,6 @@
-# 
+#
 # Room State & Occupancy
-# 
+#
 room_card_occupancy:
   card:
     type: custom:mod-card
@@ -14,9 +14,9 @@ room_card_occupancy:
         padding: 20px 20px 0px 20px
         card_margin: 0px
       cards:
-        # 
+        #
         # Room State & Occupancy
-        # 
+        #
         - type: custom:mod-card
           card_mod:
             style:
@@ -50,7 +50,7 @@ room_card_occupancy:
                     - width: 12px
                     - height: 12px
 
-              # Room Occupancy              
+              # Room Occupancy
               - type: custom:button-card
                 template: kohbo_chip_card_room_occupancy
                 entity: '[[occupancy]]'
@@ -73,9 +73,9 @@ room_card_occupancy:
                     - width: 12px
                     - height: 12px
 
-        # 
+        #
         # People in the room
-        # 
+        #
         - type: custom:mod-card
           # style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
           card_mod:
@@ -129,9 +129,9 @@ room_card_occupancy:
                     state: "[[room]]"
 
 
-        # 
+        #
         # People
-        # 
+        #
         - !include /config/dashboards/templates/button_cards/people/john.yaml
         - !include /config/dashboards/templates/button_cards/people/cristina.yaml
         - !include /config/dashboards/templates/button_cards/people/nonna.yaml

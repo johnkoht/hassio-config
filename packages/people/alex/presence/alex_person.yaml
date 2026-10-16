@@ -1,10 +1,10 @@
-# 
+#
 # Alex Person
-# 
+#
 # The Person sensor is way of creating a Person
-# with additional attributes that the standard 
+# with additional attributes that the standard
 # person sensor doesn't have.
-# 
+#
 template:
   - sensor:
       - name: "Alex Person"
@@ -12,5 +12,3 @@ template:
         state: "{{ states.person.alex.state }}"
         attributes:
           unlock_privilege: "{{ states.input_boolean.alex_unlock_privilege.state }}"
-
-

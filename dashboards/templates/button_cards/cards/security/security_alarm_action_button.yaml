@@ -26,7 +26,7 @@ security_alarm_action_button:
       - font-size: 13px
       - justify-self: center
       - margin-top: 8px
-    
+
 
 
 # ayout: vertical
@@ -34,7 +34,7 @@ security_alarm_action_button:
 #             styles:
 #               card:
 #                 - padding: 20px
-#               img_cell: 
+#               img_cell:
 #                 - height: 22px
 #               icon:
 #                 - width: 18px

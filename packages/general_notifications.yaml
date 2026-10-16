@@ -13,7 +13,7 @@
 #   actions:  # Optional - for actionable notifications
 #     - action: "ACTION_ID_1"
 #       title: "Action 1"
-#     - action: "ACTION_ID_2" 
+#     - action: "ACTION_ID_2"
 #       title: "Action 2"
 #
 
@@ -37,10 +37,10 @@ input_select:
       - "None"
 
 script:
-  # 
-  # 
+  #
+  #
   # Clear Notifications
-  # 
+  #
   clear_notifications:
     alias: "Clear Notifications"
     mode: "queued"
@@ -58,10 +58,10 @@ script:
           data:
             tag: "{{ tag }}"
 
-  # 
-  # 
+  #
+  #
   # General Notification
-  # 
+  #
   general_notification:
     alias: General Notification
     mode: "queued"
@@ -69,9 +69,9 @@ script:
 
     fields:
       #
-      # 
+      #
       # Devices
-      # 
+      #
       devices:
         name: Devices
         description: The devices to send the notification to
@@ -85,9 +85,9 @@ script:
               - jk
               - cfalb
       #
-      # 
+      #
       # Title
-      # 
+      #
       title:
         name: Title
         description: The title of the push notification
@@ -98,9 +98,9 @@ script:
           text:
             type: text
       #
-      # 
+      #
       # Message
-      # 
+      #
       message:
         name: Message
         description: The message of the push notification
@@ -111,9 +111,9 @@ script:
           text:
             type: text
       #
-      # 
+      #
       # Priority
-      # 
+      #
       priority:
         name: Priority
         description: The priority of the push notification
@@ -127,9 +127,9 @@ script:
               - time-sensitive
               - critical
       #
-      # 
+      #
       # Tag
-      # 
+      #
       tag:
         name: Tag
         description: The tag of the push notification
@@ -139,9 +139,9 @@ script:
           text:
             type: text
       #
-      # 
+      #
       # Image
-      # 
+      #
       image:
         name: Image
         description: An image to display in the push notification, typically used for camera alerts
@@ -151,9 +151,9 @@ script:
           text:
             type: text
       #
-      # 
+      #
       # Entity ID
-      # 
+      #
       entity_id:
         name: Camera Entity ID
         description: Provide the entity ID of a camera that can be used to stream directly from the notification
@@ -163,18 +163,18 @@ script:
           text:
             type: text
       #
-      # 
+      #
       # Actions
-      # 
+      #
       actions:
         name: Actionable Notification Actions
         description: Actions to display in the push notification
         example: "{{ actions }}"
         default: "{{ actions }}"
-      # 
-      # 
+      #
+      #
       # URL
-      # 
+      #
       url:
         name: URL
         description: If provided, the notification will route to this URL
@@ -183,11 +183,11 @@ script:
         selector:
           text:
             type: text
-      
-    
-    # 
+
+
+    #
     # Sequence
-    # 
+    #
     sequence:
       - alias: "Set up variables"
         variables:
@@ -216,7 +216,7 @@ script:
           # priority is time sensitive or critical
           - condition: template
             value_template: >-
-              {% 
+              {%
                 if states.input_select.notification_level.state == 'Important'
                 and (priority == "critical" or priority == "time-sensitive")
               %}
@@ -247,7 +247,7 @@ script:
               interruption-level: "{{ priority }}"
             actions: "{{ actions }}"
             url: "{{url}}"
-     
+
 
 automation:
   #

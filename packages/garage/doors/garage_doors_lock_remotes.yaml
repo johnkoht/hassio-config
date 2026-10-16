@@ -1,12 +1,12 @@
 # Garage Door Remote Lock Automation
-# 
+#
 # For additional security, we lock the garage door remotes
 # so that nobody can open the garage door from the outside.
-# 
+#
 automation:
-  # 
+  #
   # Lock the garage door remotes
-  # 
+  #
   - id: "garage_doors_lock_remotes"
     alias: "Garage Doors - Lock Remotes"
     initial_state: on
@@ -36,9 +36,9 @@ automation:
           - lock.garage_door_2_lock_remotes
           - lock.garage_door_3_lock_remotes
 
-  # 
+  #
   # Unlock the garage door remotes
-  # 
+  #
   - id: "garage_doors_unlock_remotes"
     alias: "Garage Doors - Unlock Remotes"
     initial_state: on

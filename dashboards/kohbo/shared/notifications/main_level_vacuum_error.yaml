@@ -1,6 +1,6 @@
-# 
+#
 # Main Level Vacuum Jammed/Error
-# 
+#
 type: conditional
 conditions:
   - condition: state

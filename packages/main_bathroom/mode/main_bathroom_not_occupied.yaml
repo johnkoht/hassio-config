@@ -26,7 +26,7 @@ automation:
       - trigger: state
         entity_id: binary_sensor.main_bathroom_presence_sensor_radar_target
         to: "off"
-        for: 
+        for:
           minutes: 2
     conditions:
       # Main Bathroom is occupied

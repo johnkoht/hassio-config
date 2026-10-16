@@ -1,6 +1,6 @@
-# 
+#
 # Air Purifier Kitchen Filter Change
-# 
+#
 type: conditional
 conditions:
   - condition: numeric_state

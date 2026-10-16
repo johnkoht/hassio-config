@@ -1,10 +1,10 @@
-# 
+#
 # Garagae Entry Door - Auto Lock
-# 
+#
 # This automation will lock the garage entry door
 # when the house goes into bedtime mode and the
 # house becomes unoccupied.
-# 
+#
 automation:
   - id: "garage_entry_door_lock_auto_lock"
     alias: "Garage Entry Door Lock - Auto Lock"
@@ -28,11 +28,11 @@ automation:
       - action: lock.lock
         entity_id: lock.garage_entry_door
 
-  # 
+  #
   # Garage Entry Door - Auto Lock When Home
   # An automation to handle autolocking when we're home to help
   # work around some issues and race conditions.
-  # 
+  #
   - id: "garage_entry_door_lock_auto_lock_when_home"
     alias: "Garage Entry Door Lock - Auto Lock When Home"
     initial_state: on
@@ -78,7 +78,7 @@ automation:
                 {{ as_timestamp(now()) >= as_timestamp(today_at(t)) }}
               {% endif %}
           # OR bedtime mode is enabled
-          - condition: state 
+          - condition: state
             entity_id: input_boolean.bedtime
             state: "on"
     actions:
@@ -87,9 +87,9 @@ automation:
         entity_id: lock.garage_entry_door
 
 
-# 
+#
 # Garage Entry Door Lock Time
-# 
+#
 input_datetime:
   garage_entry_door_lock_time:
     name: Garage Entry Door Lock Time

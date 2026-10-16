@@ -4,7 +4,7 @@ template:
         unique_id: main_level_washer_running
         default_entity_id: binary_sensor.main_level_washer_running
         state: >-
-          {{ 
-            states.main_level_washer_status.state == "Running" or 
+          {{
+            states.main_level_washer_status.state == "Running" or
             states.main_level_washer_status.state == "Finishing"
           }}

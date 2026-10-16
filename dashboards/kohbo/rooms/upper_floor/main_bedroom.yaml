@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,10 +15,10 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-upper-floor
       - settings_path: '#main_bedroom_settings_popup'
 
-            
-  # 
+
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
@@ -27,9 +27,9 @@ cards:
       - ble_presence: sensor.main_bedroom_people_list
 
 
-  # 
+  #
   # Climate Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -40,10 +40,10 @@ cards:
       - pm25_sensor: sensor.main_bedroom_awair_pm2_5
       - room_name: Main Bedroom
 
-                    
-  # 
+
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -62,7 +62,7 @@ cards:
     # tap_action:
     #   action: navigate
     #   navigation_path: '#office_ceiling_lights'
-  
+
   # Desk Lamp
   - type: tile
     entity: light.hue_ambiance_lamp_1
@@ -88,9 +88,9 @@ cards:
     vertical: false
 
 
-  # 
+  #
   # Media Player
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Music
@@ -103,10 +103,10 @@ cards:
       - navigation_path: '#main_bedroom_media_player'
 
 
-  
-  # 
+
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -129,13 +129,13 @@ cards:
         variables:
           power_sensor: sensor.smart_plug_7_active_power
           confirmation: true
-    
+
       # Door
       - type: custom:button-card
         entity: binary_sensor.main_bedroom_door_sensor_status
         name: Doors
         template: kohbo_device_door_entity
-      
+
       # Alexa Dot
       - type: custom:button-card
         entity: media_player.kohbo_dot_main_bedroom
@@ -144,9 +144,9 @@ cards:
         icon: phu:alexa-logo
 
 
-  # 
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -181,11 +181,11 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-        
 
-  # 
+
+  #
   # Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
@@ -193,9 +193,9 @@ cards:
       - hash: '#main_bedroom_media_player'
 
 
-  # 
+  #
   # Main Bedroom Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#main_bedroom_settings_popup'
@@ -203,18 +203,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 850px)
     margin_top_desktop: calc(100vh - 850px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -236,9 +236,9 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-      #  
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -258,7 +258,7 @@ cards:
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-            
+
           # Occupancy Sensor
           - entity: binary_sensor.main_bedroom_motion_sensor_occupancy
             icon: kohbo:kohbo-room-occupancy
@@ -274,22 +274,22 @@ cards:
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-      # 
+      #
       # Bed Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Bed Sensors
       - type: entities
         entities:
-          # John's Bed Sensor 
+          # John's Bed Sensor
           - entity: sensor.john_bed_sensor
             icon: mdi:bed
             name: John's Bed Sensor
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-          
+
           # John's Trigger Level
           - entity: number.john_bed_trigger_level
             icon: mdi:arrow-collapse-down
@@ -297,14 +297,14 @@ cards:
             secondary_info: last-changed
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-          # Cristina's Bed Sensor 
+          # Cristina's Bed Sensor
           - entity: sensor.cristina_bed_sensor
             icon: mdi:bed
             name: Cristina's Bed Sensor
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-          
+
           # Cristina's Trigger Level
           - entity: number.cristina_bed_trigger_level
             icon: mdi:arrow-collapse-down
@@ -312,7 +312,7 @@ cards:
             secondary_info: last-changed
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

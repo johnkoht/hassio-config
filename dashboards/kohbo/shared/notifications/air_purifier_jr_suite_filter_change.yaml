@@ -1,6 +1,6 @@
-# 
+#
 # Air Purifier Jr. Suite Filter Change
-# 
+#
 type: conditional
 conditions:
   - condition: numeric_state

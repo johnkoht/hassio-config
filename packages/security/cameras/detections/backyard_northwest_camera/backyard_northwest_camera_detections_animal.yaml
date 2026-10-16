@@ -44,4 +44,3 @@ automation:
           proxy_camera: "{{ proxy_camera }}"
           snooze_timer: "{{ snooze_timer }}"
           notifications_boolean: "{{ notifications_boolean }}"
-

@@ -31,7 +31,7 @@ people_profile_picture:
                 } else {
                   return "var(--text-light-primary-color)";
                 }
-              }              
+              }
             ]]]
         - border-radius: 50%
         - position: absolute

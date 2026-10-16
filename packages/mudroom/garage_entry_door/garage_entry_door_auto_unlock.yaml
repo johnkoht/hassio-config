@@ -1,9 +1,9 @@
 automation:
-  # 
+  #
   # Automatically unlock the garage entry door lock
   # when the door is opened. This is prevent somebody from
   # being locked in the garage
-  # 
+  #
   - id: "garage_entry_door_auto_unlock"
     alias: "Garage Entry Door - Auto Unlock"
     initial_state: on
@@ -28,10 +28,10 @@ automation:
         entity_id: lock.garage_entry_door
 
 
-  # 
+  #
   # Auto Unlock the garage entry in the morning
   # once we've been downstairs for a bit
-  # 
+  #
   - id: "garage_entry_door_auto_unlock_in_morning"
     alias: "Garage Entry Door - Auto Unlock in Morning"
     triggers:
@@ -67,8 +67,3 @@ automation:
       # Unlock the door!
       - action: lock.unlock
         entity_id: lock.garage_entry_door
-
-
-
-
-

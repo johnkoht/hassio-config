@@ -1,6 +1,6 @@
-# 
+#
 # Main Floor Thermostat Popup
-# 
+#
 type: custom:decluttering-card
 template: thermostat_popup
 variables:

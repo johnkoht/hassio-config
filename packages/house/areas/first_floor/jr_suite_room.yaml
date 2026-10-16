@@ -1,6 +1,6 @@
-# 
+#
 # Jr Suite Room Sensor
-# 
+#
 template:
   - sensor:
       - name: "Jr Suite"

@@ -4,7 +4,7 @@ thermostat_radiant_floor_popup:
     card_type: pop-up
     hash: '[[hash]]'
     close_by_clicking_outside: true
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 860px)
     margin_top_desktop: calc(100vh - 860px)
 
@@ -28,7 +28,7 @@ thermostat_radiant_floor_popup:
             }
 
             .arc-colored {
-              
+
             }
 
       - type: entities
@@ -48,7 +48,7 @@ thermostat_radiant_floor_popup:
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-          
+
 
       - type: custom:stack-in-card
         mode: horizontal
@@ -113,5 +113,3 @@ thermostat_radiant_floor_popup:
                 entity_id: '[[entity]]'
               data:
                 hvac_mode: "off"
-
-          

@@ -4,9 +4,9 @@ path: energy
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: top_toolbar
     variables:
@@ -59,7 +59,7 @@ cards:
           - name: Downstairs Washer
           - entity: sensor.main_level_washing_machine_electric_consumption_w
           - icon: mdi:washing-machine
-      
+
       # Downstairs Dryer (Z-Wave)
       - type: custom:decluttering-card
         template: kohbo_device_energy_card
@@ -202,7 +202,7 @@ cards:
   #===========================================================================
   - !include /config/dashboards/templates/includes/navbar.yaml
 
-  
+
   #===========================================================================
   # Energy Settings Popup
   #===========================================================================

@@ -1,7 +1,7 @@
 # Vacuum - Clean Kitchen and Family Room at Night
 #
 # Automation logic to handle vacuuming the
-# kitchen and family room at night. 
+# kitchen and family room at night.
 #
 automation:
   - id: "clean_kitchen_and_family_room_temp"

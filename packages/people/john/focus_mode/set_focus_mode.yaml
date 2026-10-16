@@ -1,9 +1,9 @@
 # Set the Focus Mode
-# 
+#
 # If my focus mode changes (based on the calendar)
 # OR i just finish up a call, then update the focus mode
 # based on the calendar
-# 
+#
 automation:
   - id: "john_set_focus_mode"
     alias: "John Set Focus Mode"
@@ -46,4 +46,4 @@ automation:
         target:
           entity_id: input_select.john_focus_mode
         data:
-          option: "{{ states('sensor.john_calendar_focus_mode') }}" 
+          option: "{{ states('sensor.john_calendar_focus_mode') }}"

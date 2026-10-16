@@ -1,6 +1,6 @@
-# 
+#
 # Air Purifier Main Bedroom Filter Change
-# 
+#
 type: conditional
 conditions:
   - condition: numeric_state

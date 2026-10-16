@@ -455,7 +455,7 @@ automation:
           {{ (current_id_list.difference(history_id_list)|list) | count > 0 }}
       - condition: template
         value_template: >
-          {{ (state_attr('sensor.nws_alerts', 'Alerts')[0].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list) 
+          {{ (state_attr('sensor.nws_alerts', 'Alerts')[0].ID not in states.sensor.nws_alerts_event_ids.attributes.values()|list)
               and (state_attr('sensor.nws_alerts', 'Alerts')[0].ID != states('sensor.nws_alerts_event_ids')) }}
       - action: script.general_notification
         data:

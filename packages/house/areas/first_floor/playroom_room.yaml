@@ -1,6 +1,6 @@
-# 
+#
 # Playroom Room Sensor
-# 
+#
 template:
   - sensor:
       - name: "Playroom"

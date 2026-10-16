@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,9 +15,9 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-main-floor
       - settings_path: '#playroom_settings_popup'
 
-  # 
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
@@ -26,9 +26,9 @@ cards:
       - ble_presence: sensor.playroom_people_list
 
 
-  # 
+  #
   # Climate Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: climate_temperature_only
     variables:
@@ -36,9 +36,9 @@ cards:
       - room_name: Playroom
 
 
-  # 
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -68,9 +68,9 @@ cards:
     features_position: inline
     vertical: false
 
-  # 
+  #
   # Media Player
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Music
@@ -82,9 +82,9 @@ cards:
       - room_name: Playroom
       - navigation_path: '#playroom_media_player'
 
-  # 
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -149,9 +149,9 @@ cards:
         icon: phu:alexa-logo
 
 
-  # 
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -187,11 +187,11 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-      
 
-  # 
+
+  #
   # Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
@@ -199,16 +199,16 @@ cards:
       - hash: '#playroom_media_player'
 
 
-  # 
+  #
   # Ceiling Lights Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: light_popup
     variables:
       - light_entity: light.playroom_lights
       - popup_hash: '#playroom_ceiling_lights'
       - popup_title: 'Ceiling Lights'
-      - entity_id: 
+      - entity_id:
         - light.playroom_1
         - light.playroom_2
         - light.playroom_3
@@ -217,9 +217,9 @@ cards:
         - light.playroom_6
 
 
-  # 
+  #
   # Playroom Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#playroom_settings_popup'
@@ -227,18 +227,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 600px)
     margin_top_desktop: calc(100vh - 600px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -251,9 +251,9 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-      # 
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -266,7 +266,7 @@ cards:
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-            
+
           # Occupancy Sensor
           - entity: binary_sensor.playroom_occupancy
             icon: kohbo:kohbo-room-occupancy
@@ -284,8 +284,7 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
-  

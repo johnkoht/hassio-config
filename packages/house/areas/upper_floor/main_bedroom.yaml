@@ -1,6 +1,6 @@
-# 
+#
 # Main Bedroom Sensor
-# 
+#
 template:
   - sensor:
       - name: "Main Bedroom"

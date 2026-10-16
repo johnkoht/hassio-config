@@ -1,8 +1,8 @@
 type: vertical-stack
 cards:
-  # 
+  #
   # Main Bedroom
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -20,7 +20,7 @@ cards:
         - type: custom:button-card
           entity: light.main_bedroom_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
           color: auto
         # Music
@@ -41,9 +41,9 @@ cards:
           template: kohbo_room_card_device
           icon: mdi:air-purifier
 
-  # 
+  #
   # Nino's Bedroom
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -60,7 +60,7 @@ cards:
         - type: custom:button-card
           entity: light.ninos_bedroom_main_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
 
         - type: custom:button-card
@@ -80,9 +80,9 @@ cards:
           template: kohbo_room_card_device
           icon: mdi:air-purifier
 
-  # 
+  #
   # Gianluca's Bedroom
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -99,14 +99,14 @@ cards:
         - type: custom:button-card
           entity: light.gianluca_bedroom_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
-        
+
         - type: custom:button-card
           entity: binary_sensor.gianlucas_door_sensor_status
           name: Door
           template: kohbo_room_card_device
-        
+
         - type: custom:button-card
           entity: switch.hue_smart_plug_1
           name: Heater
@@ -120,9 +120,9 @@ cards:
           icon: mdi:air-purifier
 
 
-  # 
+  #
   # Upstairs Hallway
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -140,11 +140,11 @@ cards:
         - type: custom:button-card
           entity: light.upstairs_hallway
           name: Ceiling
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         # Stairs lights
         - type: custom:button-card
           entity: light.stairs_light
           name: Stairs
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights

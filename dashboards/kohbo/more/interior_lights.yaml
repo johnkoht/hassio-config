@@ -4,9 +4,9 @@ path: interior-lights
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: top_toolbar
     variables:
@@ -34,6 +34,3 @@ cards:
           tap_action:
             action: navigate
             navigation_path: '#interior_lights_settings_popup'
-
-
-            

@@ -4,7 +4,7 @@ browser_mod:
   title: Playstation 5
   style:
     hui-entities-card:
-      $calendar-card$ : |
+      $calendar-card$: |
         ha-card {
           padding: 0 0.6em 0 0.8em !important;
         }

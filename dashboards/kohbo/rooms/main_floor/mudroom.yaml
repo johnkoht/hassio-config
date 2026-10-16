@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,27 +15,27 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-main-floor
       - settings_path: '#mudroom_settings_popup'
 
-  # 
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
       - occupancy: input_boolean.mudroom_occupied
       - mode: input_select.mudroom
 
-  # 
+  #
   # Climate Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: climate_temperature_only
     variables:
       - temperature_sensor: sensor.mudroom_motion_sensor_air_temperature
       - room_name: Mudroom
 
-  # 
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -53,9 +53,9 @@ cards:
     vertical: false
 
 
-  # 
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -69,7 +69,7 @@ cards:
         entity: lock.garage_entry_door
         name: Garage Door Lock
         template: kohbo_device_entity
-      
+
       # Interior Garage Door
       - type: custom:button-card
         entity: binary_sensor.interior_garage_door
@@ -78,9 +78,9 @@ cards:
 
 
 
-  # 
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -102,12 +102,10 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-  
-        
 
-   
+
   # Mudroom Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#mudroom_settings_popup'
@@ -115,18 +113,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 675px)
     margin_top_desktop: calc(100vh - 675px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -153,9 +151,9 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-      # 
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -182,10 +180,9 @@ cards:
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-          
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

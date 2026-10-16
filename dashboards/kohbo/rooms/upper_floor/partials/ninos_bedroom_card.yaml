@@ -1,6 +1,6 @@
-# 
+#
 # Nino's Bedroom
-# 
+#
 type: custom:decluttering-card
 template: room_card
 variables:
@@ -17,7 +17,7 @@ variables:
     - type: custom:button-card
       entity: light.ninos_bedroom_main_lights
       name: Lights
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-lights
 
     - type: custom:button-card

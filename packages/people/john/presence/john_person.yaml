@@ -1,10 +1,10 @@
-# 
+#
 # John Person
-# 
+#
 # The Person sensor is way of creating a Person
-# with additional attributes that the standard 
+# with additional attributes that the standard
 # person sensor doesn't have.
-# 
+#
 template:
   - sensor:
       - name: "John Person"
@@ -15,5 +15,3 @@ template:
           fingerprint_id: !secret john_fingerprint_id
           avatar: "{{ states.person.john_koht.attributes.entity_picture }}"
           room_presence: "{{ states.sensor.john_room_presence.state }}"
-
-

@@ -20,7 +20,7 @@ automation:
           sound: "flute-cell-phone-alert"
           priority: normal
           speech_message: >-
-            {{ 
+            {{
               [
                 "Hey fam, " ~ states.calendar.kohbocal.attributes.message ~ " is in one hour.",
                 "Just a quick reminder that " ~ states.calendar.kohbocal.attributes.message ~ " is in one hour.",

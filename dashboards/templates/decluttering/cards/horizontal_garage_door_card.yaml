@@ -1,10 +1,10 @@
-# 
+#
 # Horizontal Garage Door Card
-# 
+#
 # Simple horizontal card for a garage door that wraps
 # the horizontal_action_card and displays garage
 # actions and logic.
-# 
+#
 horizontal_garage_door_card:
   card:
     type: custom:decluttering-card
@@ -27,7 +27,7 @@ horizontal_garage_door_card:
             target:
               entity_id: "[[entity]]"
           styles:
-            card: 
+            card:
               - pointer-events: "[[[ return states['[[entity]]']?.state == 'open' ? 'auto' : 'none']]]"
             icon:
               - color: "[[[ return states['[[entity]]']?.state == 'open' ? 'var(--primary-text-color)' : 'var(--disabled-text-color)']]]"
@@ -42,7 +42,7 @@ horizontal_garage_door_card:
             haptic: heavy
             target:
               entity_id: "[[entity]]"
-              
+
 
         # Open garage door
         - type: custom:button-card
@@ -55,7 +55,7 @@ horizontal_garage_door_card:
             target:
               entity_id: "[[entity]]"
           styles:
-            card: 
+            card:
               - pointer-events: "[[[ return states['[[entity]]']?.state == 'closed' ? 'auto' : 'none']]]"
             icon:
               - color: "[[[ return states['[[entity]]']?.state == 'closed' ? 'var(--primary-text-color)' : 'var(--disabled-text-color)']]]"

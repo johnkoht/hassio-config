@@ -1,6 +1,6 @@
-# # 
+# #
 # # Main Level Vacuum Maintenance - Water Shortage
-# # 
+# #
 # type: conditional
 # conditions:
 #   - condition: state

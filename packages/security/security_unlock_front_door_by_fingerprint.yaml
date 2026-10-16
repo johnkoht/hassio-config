@@ -10,9 +10,9 @@ automation:
     variables:
       fingerprint_ids: >
         {% set people = expand('group.people_sensors') %}
-        {% set fingerprint_ids = people 
-          | map(attribute='attributes.fingerprint_id') 
-          | select('defined') 
+        {% set fingerprint_ids = people
+          | map(attribute='attributes.fingerprint_id')
+          | select('defined')
           | list %}
         {{ fingerprint_ids }}
     trigger:

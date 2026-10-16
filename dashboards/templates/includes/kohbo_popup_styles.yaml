@@ -18,7 +18,7 @@
   }
 
   .bubble-pop-up-container {
-    margin-top: -30px !important;    
+    margin-top: -30px !important;
   }
 
   .bubble-pop-up-container.is-scrollable {
@@ -41,4 +41,3 @@
   .mmpc-123u2ua {
     width: 100% !important;
   }
-  

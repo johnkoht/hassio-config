@@ -10,7 +10,7 @@ kohbo_device_entity_horizontal:
     card:
       - padding: 20px
       - background-color: var(--dark-primary-color)
-    label: 
+    label:
       - justify-self: start
       - font-size: 12px
       - font-weight: 400

@@ -1,8 +1,8 @@
-# 
+#
 # Horizontal Action Card Entity
-# 
+#
 # This is the primary entity for the horizontal action card.
-# 
+#
 kohbo_horizontal_action_card_entity:
   show_state: true
   layout: icon_name_state2nd

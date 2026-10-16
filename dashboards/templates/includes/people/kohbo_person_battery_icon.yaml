@@ -1,9 +1,9 @@
-> 
+>
   {% set battery_level = states[config.entity].state | int(0) %}
   {% set rounded = ((battery_level + 9) // 10) * 10 %}
 
   {% if rounded >= 90 %}
-    mdi:battery          
+    mdi:battery
   {% else %}
     mdi:battery-{{rounded}}
   {% endif %}

@@ -1,12 +1,12 @@
 # Critical Announcements
-# 
+#
 # Sometimes, we need to really make sure that an
-# announcement is heard. This script calls the 
+# announcement is heard. This script calls the
 # announcement engine but broadcasts to all rooms,
-# regardless of their occupancy. It also is much 
+# regardless of their occupancy. It also is much
 # louder and has a "nuclear" sound which is sure
 # to get our attention.
-# 
+#
 script:
   critical_announcement:
     alias: Critical Announcement
@@ -115,7 +115,7 @@ script:
                 ]
               %}
             {% elif media_players == "auto" %}
-              {% set media_players = [] %}   
+              {% set media_players = [] %}
               {# Check which rooms are occupied and if speech notifications are turned #}
               {# on for them. If so, add them to an array of announceable rooms #}
               {% if states.input_boolean.office_occupied.state == "on" %}

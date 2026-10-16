@@ -1,6 +1,6 @@
-# 
+#
 # Room Overview
-# 
+#
 room_overview:
   card:
     type: custom:mod-card
@@ -42,9 +42,9 @@ room_overview:
                   haptic: light
 
 
-        # 
+        #
         # People in the room
-        # 
+        #
         - type: conditional
           conditions:
             - condition: not
@@ -212,7 +212,7 @@ room_overview:
               #     tap_action:
               #       action: navigate
               #       navigation_path: '#office'
-                  
+
         # - type: custom:button-card
         #   show_name: false
         #   show_icon: false
@@ -239,7 +239,7 @@ room_overview:
         #           const s = states[id];
         #           const pic = s?.attributes?.avatar;
         #           const name = s?.attributes?.friendly_name ?? '';
-                  
+
         #           // Extract "john" from "John Person"
         #           const slug = name.toLowerCase().replace(' person', '').trim();
 
@@ -306,11 +306,10 @@ room_overview:
         #     }
 
 
-          
 
-        # # 
+        # #
         # # People in the room
-        # # 
+        # #
         # - type: custom:mod-card
         #   card_mod:
         #     style:
@@ -365,17 +364,16 @@ room_overview:
 
 
 
-
-        # 
+        #
         # People
-        # 
+        #
         - !include /config/dashboards/templates/button_cards/people/john.yaml
         - !include /config/dashboards/templates/button_cards/people/cristina.yaml
         - !include /config/dashboards/templates/button_cards/people/nonna.yaml
 
-# # 
+# #
 # # Room State & Occupancy
-# # 
+# #
 # room_overview:
 #   card:
 #     type: custom:mod-card
@@ -389,11 +387,11 @@ room_overview:
 #         padding: 0px
 #         card_margin: 0px
 #       cards:
-#         # 
+#         #
 #         # Room State & Occupancy
-#         # 
+#         #
 #         - type: horizontal-stack
-#           cards:            
+#           cards:
 #             - type: custom:mushroom-chips-card
 #               chips:
 #                 - type: template
@@ -414,9 +412,9 @@ room_overview:
 #                   tap_action:
 #                     action: more-info
 
-#         # # 
+#         # #
 #         # # People in the room
-#         # # 
+#         # #
 #         # - type: custom:mod-card
 #         #   style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
 #         #   card:
@@ -458,9 +456,9 @@ room_overview:
 #         #             state: "[[room]]"
 
 
-#         # # 
+#         # #
 #         # # People
-#         # # 
+#         # #
 #         # - !include /config/dashboards/templates/button_cards/people/john.yaml
 #         # - !include /config/dashboards/templates/button_cards/people/cristina.yaml
 #         # - !include /config/dashboards/templates/button_cards/people/nonna.yaml

@@ -43,7 +43,7 @@ kohbo_laundry_machine_card:
       #           } else {
       #             return "var(--text-light-primary-color)";
       #           }
-      #         }              
+      #         }
       #       ]]]
       #   - border-radius: 50%
       #   - margin: auto;
@@ -82,7 +82,7 @@ kohbo_laundry_machine_card:
         } else if (battery_level <= 60) {
           color = "var(--warning-color)";
         }
-        
+
         return `
           <ha-icon icon="${icon}" style="width: 16px; height: 16px; color: ${color};"></ha-icon>
           ${variables.battery_level}

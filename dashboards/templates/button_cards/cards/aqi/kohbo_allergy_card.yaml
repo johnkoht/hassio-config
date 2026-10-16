@@ -50,4 +50,3 @@ kohbo_allergy_card:
       - font-size: 15px !important;
       - color: var(--primary-text-color)
       - font-weight: 500 !important;
-  

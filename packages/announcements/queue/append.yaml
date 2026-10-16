@@ -1,8 +1,8 @@
 # Announcement Queue - Append
-# 
+#
 # This script is used to append a message to the announcement queue.
 # It's called by the announcement_queue_enqueue script. It basically
-# processes the /append topic and appends the new item to the queue. 
+# processes the /append topic and appends the new item to the queue.
 # it's also responsible to maintaining the queue priority order.
 #
 automation:
@@ -69,7 +69,7 @@ automation:
               {% set normal_priority = current_queue | selectattr('priority', 'eq', 'normal') | list %}
               {% set low_priority = current_queue | selectattr('priority', 'eq', 'low') | list %}
               {% set critical_msgs = current_queue | selectattr('priority', 'eq', 'critical') | list %}
-              
+
               {# Add new message to appropriate priority list #}
               {% if new_item.priority == 'high' %}
                 {% set high_priority = high_priority + [new_item] %}
@@ -78,7 +78,7 @@ automation:
               {% else %}
                 {% set normal_priority = normal_priority + [new_item] %}
               {% endif %}
-              
+
               {# Combine all lists in priority order #}
               {{ critical_msgs + high_priority + normal_priority + low_priority }}
             {% endif %}

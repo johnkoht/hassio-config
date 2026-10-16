@@ -1,6 +1,6 @@
-# 
+#
 # Climate Overview
-# 
+#
 climate_overview_linkable:
   card:
     type: custom:stack-in-card
@@ -42,14 +42,14 @@ climate_overview_linkable:
             tap_action:
               action: navigate
               navigation_path: '[[navigation_path]]'
-          
+
           - type: custom:button-card
             entity: '[[carbon_dioxide_sensor]]'
             template: kohbo_aqi_co2_item
             tap_action:
               action: navigate
               navigation_path: '[[navigation_path]]'
-  
+
           - type: custom:button-card
             entity: '[[vocs_sensor]]'
             template: kohbo_aqi_tvocs_item

@@ -1,4 +1,4 @@
-# 
+#
 # Christmas Season Active Boolean
 # If this boolean is enabled then it's Christmas season
 # and all related automations will be enabled
@@ -8,12 +8,12 @@ input_boolean:
     name: Christmas Season Active
     icon: mdi:pine-tree
 
-# 
+#
 # Activate Christmas Season Automation
 # This automation will be triggered when the Christmas Season boolean is turned ON
 # and will turn ON all related automations
 #
-# 
+#
 automation:
   - id: "activate_christmas_season"
     alias: Activate Christmas Season

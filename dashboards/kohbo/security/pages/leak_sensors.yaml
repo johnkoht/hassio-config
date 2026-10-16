@@ -4,9 +4,9 @@ path: security-leak-sensors
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - !include /config/dashboards/templates/includes/security/security_header.yaml
 
   - type: custom:button-card
@@ -35,9 +35,9 @@ cards:
         entity: sensor.leak_sensors_unavailable
         state: "on"
 
-  # 
+  #
   # Main Floor
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Main Floor
@@ -54,11 +54,11 @@ cards:
 
 
   #  Upper Floor
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Upper Floor
-  
+
   - type: custom:button-card
     template: kohbo_device_leak_entity_horizontal
     entity: binary_sensor.basement_sum_pump_leak_sensor
@@ -88,7 +88,7 @@ cards:
     template: kohbo_device_leak_entity_horizontal
     entity: binary_sensor.leak_sensor_basement_bathroom_moisture
     name: Basement Bathroom
-  
+
   #
   # Upper Floor
   #
@@ -129,12 +129,12 @@ cards:
     name: Attic Furnace Pan
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
-  # 
+  #
   # Security Settings
-  # 
+  #
   - !include /config/dashboards/kohbo/security/components/security_settings_popup.yaml

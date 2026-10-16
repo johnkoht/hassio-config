@@ -1,10 +1,10 @@
 #
 # Vacuum Running Notification
 #
-# 
+#
 # Only display if the vacuum is cleaning
 # paused or idle
-# 
+#
 type: conditional
 conditions:
   - condition: state
@@ -52,7 +52,7 @@ card:
         visibility:
           - condition: state
             entity: vacuum.main_floor_vacuum
-            state: 
+            state:
               - 'paused'
               - 'idle'
       # Dock Vacuum
@@ -68,7 +68,7 @@ card:
         visibility:
           - condition: state
             entity: vacuum.main_floor_vacuum
-            state: 
+            state:
               - 'cleaning'
               - 'paused'
               - 'idle'

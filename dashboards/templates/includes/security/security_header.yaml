@@ -1,6 +1,6 @@
-# 
+#
 # Page Header
-# 
+#
 type: custom:mod-card
 card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
 card:
@@ -33,23 +33,23 @@ card:
         - url: /dashboard-kohbo/security
           icon: mdi:shield-check
           label: Overview
-        
+
         # Cameras
         - url: /dashboard-kohbo/security-cameras
           icon: mdi:camera
           label: Cameras
-        
+
         # Leak Sensors
         - url: /dashboard-kohbo/security-leak-sensors
           icon: mdi:moisture
           label: Leak Sensors
           badge:
             show: |
-              [[[ 
+              [[[
                 return states['sensor.leak_sensors_unavailable'].state == "on";
               ]]]
             color: "var(--warning-color)"
-          
+
       haptic: true
       mobile:
         show_labels: true
@@ -81,7 +81,7 @@ card:
           padding: 12px 0 !important;
           font-size: 12px !important;
           text-transform: uppercase;
-          font-family: 'Inter', sans-serif !important; 
+          font-family: 'Inter', sans-serif !important;
           font-weight: 600 !important;
           color: var(--semi-dark-grey-color) !important;
         }

@@ -194,7 +194,7 @@ browser_mod:
                 service_data:
                   entity_id: vacuum.morty
                   command: app_goto_target
-                  params: [16821,23105]
+                  params: [16821, 23105]
               template: icon_only
 
       #################################################

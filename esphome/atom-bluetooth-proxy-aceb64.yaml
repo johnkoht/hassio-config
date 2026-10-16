@@ -18,6 +18,6 @@ wifi:
 
 #esp32_ble_tracker:
 #  scan_parameters:
-#    active: True 
+#    active: True
 #    interval: 1000ms
 #    window:   900ms

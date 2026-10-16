@@ -12,13 +12,13 @@ kohbo_device_window_entity:
       // Get the list of window entities from the group
       const windowEntities = entity.attributes.entity_id || [];
       const totalWindows = windowEntities.length;
-      
+
       // Count how many windows are open
       const openCount = windowEntities.filter(id => {
         const windowState = states[id];
         return windowState && windowState.state === 'on';
       }).length;
-      
+
       // Determine the display state
       let stateText;
       if (openCount === 0) {
@@ -28,12 +28,12 @@ kohbo_device_window_entity:
       } else {
         stateText = `${openCount} Open`;
       }
-      
+
       // Get the last changed time
       const last = new Date(entity.last_changed);
       const now = new Date();
       const diff = Math.floor((now - last) / 1000);
-      
+
       let timeAgo;
       if (diff < 3600) {
         timeAgo = `${Math.floor(diff / 60)}m`;
@@ -42,6 +42,6 @@ kohbo_device_window_entity:
       } else {
         timeAgo = `${Math.floor(diff / 86400)}d`;
       }
-      
+
       return `${stateText} - ${timeAgo}`;
     ]]]

@@ -1,6 +1,6 @@
-# 
+#
 # Garage Entry Door Lock
-# 
+#
 type: custom:decluttering-card
 template: horizontal_action_card
 variables:
@@ -17,7 +17,7 @@ variables:
       variables:
         - entity: switch.garage_entry_door_lock_switch
         - name: Garage Entry Door Lock
-  
+
     # Lock details
     - type: custom:button-card
       template: kohbo_chip_icon_action_card

@@ -1,10 +1,10 @@
-# 
+#
 # Main Level Vacuum Timeframes
-# 
+#
 input_datetime:
-  # 
+  #
   # Main Level Vacuum Daily Weekday Timeframe
-  # 
+  #
   main_level_vacuum_daily_weekday_timeframe_start:
     name: Main Level Vacuum Daily Weekday Timeframe Start
     icon: mdi:clock
@@ -17,9 +17,9 @@ input_datetime:
     has_date: false
     has_time: true
 
-  # 
+  #
   # Main Level Vacuum Daily Weekend Timeframe
-  # 
+  #
   main_level_vacuum_daily_weekend_timeframe_start:
     name: Main Level Vacuum Daily Weekend Timeframe Start
     icon: mdi:clock
@@ -32,9 +32,9 @@ input_datetime:
     has_date: false
     has_time: true
 
-  # 
+  #
   # Main Level Vacuum Evening Timeframe
-  # 
+  #
   main_level_vacuum_evening_start_time:
     name: Main Level Vacuum Evening Start Time
     icon: mdi:clock
@@ -46,14 +46,14 @@ input_datetime:
     icon: mdi:clock
     has_date: false
     has_time: true
-    
 
-  # 
+
+  #
   # Main Level Vacuum Daily Clean Backup
-  # 
+  #
   # If the hosue isn't empty, we might want to clean the house anyway. This controls
   # whether that feature is enabled and when it runs.
-  # 
+  #
   # If the house isn't empty, clean at the given time
   main_level_vacuum_daily_weekday_timeframe_start_if_not_empty:
     name: Main Level Vacuum Daily Weekday Timeframe Start If Not Empty

@@ -1,8 +1,8 @@
 type: custom:stack-in-card
 cards:
-  # 
+  #
   # Security Status / Overview
-  # 
+  #
   - type: custom:button-card
     template: security_overview_header
     entity: sensor.house_security_status
@@ -57,16 +57,16 @@ cards:
             navigation_path: '/dashboard-kohbo/security'
             haptic: light
 
-  # 
+  #
   # Security Items
-  # 
+  #
   - type: custom:stack-in-card
     mode: horizontal
     card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
     cards:
-      # 
+      #
       # Alarm
-      # 
+      #
       - type: custom:button-card
         entity: alarm_control_panel.alarmo
         name: Alarm
@@ -83,9 +83,9 @@ cards:
           navigation_path: '/dashboard-kohbo/security-alarm-panel'
           haptic: light
 
-      # 
+      #
       # Locks
-      # 
+      #
       - type: custom:button-card
         entity: lock.house_locks
         name: Locks
@@ -106,9 +106,9 @@ cards:
           action: navigate
           navigation_path: '/dashboard-kohbo/security-house-locks'
           haptic: light
-      # 
+      #
       # Garage Doors
-      # 
+      #
       - type: custom:button-card
         entity: cover.garage_doors
         name: Garage

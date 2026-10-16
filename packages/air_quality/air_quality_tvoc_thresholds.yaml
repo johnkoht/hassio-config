@@ -1,8 +1,8 @@
 # Toxic Chemicals AQI Thresholds
-# 
+#
 # Set variables to track threshold breaches
 # to set AQI state and automate purifiers
-# 
+#
 input_number:
   #
   # TVOCs Acceptable Range

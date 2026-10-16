@@ -1,6 +1,6 @@
-# 
+#
 # Air Purifier Office Filter Change
-# 
+#
 type: conditional
 conditions:
   - condition: numeric_state

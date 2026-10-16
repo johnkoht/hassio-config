@@ -1,6 +1,6 @@
-# 
+#
 # Interior Lights
-# 
+#
 light:
   - platform: group
     name: Interior Lights
@@ -10,9 +10,9 @@ light:
       - light.upper_floor_lights
 
 
-# 
+#
 # Interior Lights On Count
-# 
+#
 template:
   - sensor:
       - name: Interior Lights On

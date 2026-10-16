@@ -1,6 +1,6 @@
-# 
+#
 # Playroom
-# 
+#
 type: custom:decluttering-card
 template: room_card
 variables:
@@ -18,13 +18,13 @@ variables:
     - type: custom:button-card
       entity: light.playroom_lights
       name: Lights
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-lights
     # Party Lights
     - type: custom:button-card
       entity: switch.christmas_playroom_lights
       name: Party Lights
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-string-light
     # Music
     - type: custom:button-card

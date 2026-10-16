@@ -1,6 +1,6 @@
-# 
+#
 # Media Player
-# 
+#
 media_player:
   card:
     type: "custom:mediocre-media-player-card"

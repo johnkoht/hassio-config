@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,9 +15,9 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-main-floor
       - settings_path: '#jr_suite_settings_popup'
 
-  # 
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
@@ -25,9 +25,9 @@ cards:
       - mode: input_select.jr_suite
       - ble_presence: sensor.jr_suite_people_list
 
-  # 
+  #
   # Climate Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -38,9 +38,9 @@ cards:
       - pm25_sensor: sensor.jr_suite_awair_pm2_5
       - room_name: Jr. Suite
 
-  # 
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -57,9 +57,9 @@ cards:
     vertical: false
 
 
-  # 
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -105,9 +105,9 @@ cards:
 
 
 
-  # # 
+  # #
   # # Quick Settings
-  # # 
+  # #
   # - type: custom:button-card
   #   template: section_title
   #   name: Quick Settings
@@ -121,12 +121,11 @@ cards:
   #       secondary_info: last-changed
   #       state_color: true
 
-  
-        
 
-  # 
+
+  #
   # Jr. Suite Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#jr_suite_settings_popup'
@@ -134,18 +133,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 550px)
     margin_top_desktop: calc(100vh - 550px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -167,9 +166,9 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-      # 
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -192,7 +191,7 @@ cards:
 
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

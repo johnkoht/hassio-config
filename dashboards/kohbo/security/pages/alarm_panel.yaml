@@ -5,16 +5,16 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
       - name: Alarm Panel
       - navigation_path: /dashboard-kohbo/security
       - settings_path: '#alarm_panel_settings_popup'
-  
+
   - type: custom:more-info-card
     entity: alarm_control_panel.alarmo
     title: Alarm Panel
@@ -28,9 +28,9 @@ cards:
     hours_to_show: 48
     card_mod: !include /config/dashboards/templates/includes/card_mod/logbook_card_mod.yaml
 
-  # # 
+  # #
   # # Disarm Button
-  # # 
+  # #
   # - type: custom:button-card
   #   template: kohbo_alarm_action_card
   #   entity: alarm_control_panel.alarmo
@@ -49,9 +49,9 @@ cards:
   #     target:
   #       entity_id: alarm_control_panel.alarmo
 
-  # # 
+  # #
   # # Arm Home Button
-  # # 
+  # #
   # - type: custom:button-card
   #   template: kohbo_alarm_action_card
   #   entity: alarm_control_panel.alarmo
@@ -70,9 +70,9 @@ cards:
   #     target:
   #       entity_id: alarm_control_panel.alarmo
 
-  # # 
+  # #
   # # Arm Away Button
-  # # 
+  # #
   # - type: custom:button-card
   #   template: kohbo_alarm_action_card
   #   entity: alarm_control_panel.alarmo
@@ -92,9 +92,9 @@ cards:
   #       entity_id: alarm_control_panel.alarmo
 
 
-  # 
+  #
   # Alarm Panel Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#alarm_panel_settings_popup'
@@ -106,10 +106,10 @@ cards:
         template: kohbo_popup_page_title
         name: Alarm Panel Settings
 
-      
-      # 
+
+      #
       # Occupancy Automations
-      #   
+      #
       - type: custom:button-card
         template: section_title
         name: Occupancy Automations
@@ -155,13 +155,13 @@ cards:
             - margin-bottom: 20px
 
 
-      # 
+      #
       # Bedtime Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Bedtime Automations
- 
+
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -189,20 +189,20 @@ cards:
                 state_color: true
 
       - type: custom:button-card
-        name: These automations will automatically arm the house at bedtime and disarm in the morning. 
+        name: These automations will automatically arm the house at bedtime and disarm in the morning.
         template: kohbo_card_section_description
         styles:
           card:
             - margin-bottom: 20px
 
-      
-      # 
+
+      #
       # Misc. Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Misc Automations
- 
+
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -247,7 +247,7 @@ cards:
 
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

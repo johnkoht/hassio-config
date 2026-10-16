@@ -1,10 +1,10 @@
-# 
+#
 # Top Toolbar
-# 
+#
 # This decluttering card is a resusable card to create
 # the top toolbar for any page. You just need to pass in
-# the cards you want to display. 
-# 
+# the cards you want to display.
+#
 top_toolbar:
   card:
     type: custom:mod-card

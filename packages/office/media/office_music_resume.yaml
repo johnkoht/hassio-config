@@ -77,7 +77,7 @@ automation:
 
       - choose:
           # Load new playlists
-          # 
+          #
           # - if the queue is empty
           # - OR if the focus mode has changed
           - conditions:
@@ -116,7 +116,7 @@ automation:
                               {% else %}
                                 add
                               {% endif %}
-                        
+
                         # Add the playlist/music to the queue
                         - action: media_player.play_media
                           target:
@@ -133,12 +133,12 @@ automation:
                       entity_id: media_player.sonos_office
                     data:
                       shuffle: true
-        # 
+        #
         # Resume Playing
-        # 
+        #
         # If the queue is not empty and focus mode hasn't changed
         # just resume playing the existing queue
-        # 
+        #
         default:
           - if:
               # If music is paused
@@ -158,4 +158,3 @@ automation:
       # we don't always just keep playing music upon occupancy
       - action: input_boolean.turn_off
         entity_id: input_boolean.office_music_playing
-

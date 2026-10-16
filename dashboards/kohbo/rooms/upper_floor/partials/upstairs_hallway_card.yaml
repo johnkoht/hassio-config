@@ -1,6 +1,6 @@
-# 
+#
 # Upstairs Hallway
-# 
+#
 type: custom:decluttering-card
 template: room_card
 variables:
@@ -18,11 +18,11 @@ variables:
     - type: custom:button-card
       entity: light.upstairs_hallway
       name: Ceiling
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-lights
     # Stairs lights
     - type: custom:button-card
       entity: light.stairs_light
       name: Stairs
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-lights

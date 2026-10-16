@@ -28,4 +28,3 @@ automation:
           entity_id: input_text.vacuum_main_floor_last_cleaning
         data:
           value: "Office"
-      

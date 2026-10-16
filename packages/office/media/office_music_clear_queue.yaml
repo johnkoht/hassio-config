@@ -1,7 +1,7 @@
 # Office Music Clear Queue
-# 
+#
 # Clear the queue at 1am every day.
-# 
+#
 automation:
   - id: "office_music_clear_queue"
     initial_state: on

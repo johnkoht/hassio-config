@@ -8,7 +8,7 @@ kohbo_room_card_overview:
         return "Empty";
       } else {
         const occupancy = entity.state == "on" ? "Occupied" : "Empty";
-      
+
         const last = new Date(entity.last_changed);
         const now = new Date();
         const diff = Math.floor((now - last) / 1000);
@@ -22,7 +22,7 @@ kohbo_room_card_overview:
         }
       }
     ]]]
-  variables: 
+  variables:
     temperature: null
     humidity: null
     aqi: null
@@ -74,7 +74,7 @@ kohbo_room_card_overview:
 
   custom_fields:
     temperature: >
-      [[[ 
+      [[[
         if (variables.temperature) {
           return Math.round(variables.temperature * 10) / 10 + "°";
         }
@@ -93,4 +93,3 @@ kohbo_room_card_overview:
       #state {
         position: relative;
       }
-      

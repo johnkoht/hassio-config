@@ -4,9 +4,9 @@ path: people
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: top_toolbar
     variables:
@@ -28,18 +28,18 @@ cards:
             action: navigate
             navigation_path: '#people_settings_popup'
 
-  
-  # 
+
+  #
   # Overview Area for house mode and occupancy
-  # 
+  #
   - type: custom:mod-card
     style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
     card:
       type: horizontal-stack
       cards:
-        # 
+        #
         # How many people are in the house
-        # 
+        #
         - type: custom:button-card
           template: kohbo_chip_card
           entity: sensor.people_home_count
@@ -81,10 +81,10 @@ cards:
           entity: input_boolean.entertainment_mode
           name: Entertainment Mode
           icon: mdi:party-popper
-  
-  # 
+
+  #
   # Family
-  # 
+  #
   - type: grid
     columns: 2
     square: false
@@ -230,7 +230,7 @@ cards:
           action: navigate
           navigation_path: '#gianluca'
 
-    
+
   - type: custom:button-card
     template: section_title
     name: Extended Family
@@ -270,7 +270,7 @@ cards:
         tap_action:
           haptic: light
           action: navigate
-          navigation_path: '#joe'    
+          navigation_path: '#joe'
 
       # Tayta
       - type: custom:template-entity-row
@@ -288,7 +288,7 @@ cards:
         tap_action:
           haptic: light
           action: navigate
-          navigation_path: '#tayta'  
+          navigation_path: '#tayta'
 
       # Jido
       - type: custom:template-entity-row
@@ -306,7 +306,7 @@ cards:
         tap_action:
           haptic: light
           action: navigate
-          navigation_path: '#jido'  
+          navigation_path: '#jido'
 
       # Nonno
       - type: custom:template-entity-row
@@ -387,13 +387,13 @@ cards:
           action: navigate
           navigation_path: '#sylvia'
 
-  # 
+  #
   # People
-  # 
+  #
   - type: vertical-stack
     cards: !include /config/dashboards/kohbo/shared/people.yaml
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

@@ -1,6 +1,6 @@
-# 
+#
 # Basement Main Sensor
-# 
+#
 template:
   - sensor:
       - name: "Basement Main"

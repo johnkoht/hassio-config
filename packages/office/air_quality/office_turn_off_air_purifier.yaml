@@ -1,8 +1,8 @@
 # Kitchen - Turn off Air Purifier
-# 
+#
 # Automation logic to handle turning off the
 # air purifier when we don't need it
-# 
+#
 automation:
   - id: "office_turn_off_purifier"
     alias: Office Air Quality - Turn off Purifier

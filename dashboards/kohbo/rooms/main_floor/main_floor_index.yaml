@@ -12,10 +12,10 @@ cards:
       # - type: custom:button-card
       #   template: kohbo_page_title
       #   name: Main Floor
-      
-      # 
+
+      #
       # Overview Area for the main floor
-      # 
+      #
       - type: custom:mod-card
         style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
         card:
@@ -25,7 +25,7 @@ cards:
             - type: custom:button-card
               template: kohbo_chip_card_room_occupancy
               entity: binary_sensor.first_floor_occupied
-            
+
             # Lights
             - type: custom:button-card
               template: kohbo_chip_card
@@ -46,107 +46,106 @@ cards:
               entity: sensor.main_floor_temperature
               icon: mdi:home-thermometer
               color: var(--light-grey-color)
-            
+
             # Motion
             - type: custom:button-card
               template: kohbo_chip_card
               entity: binary_sensor.first_floor_motion
               show_state: false
 
-      # 
+      #
       # Office
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/office_card.yaml
 
-      # 
+      #
       # Family Room
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/family_room_card.yaml
-            
-            
-      # 
+
+
+      #
       # Kitchen
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/kitchen_card.yaml
 
 
 
-      # 
+      #
       # Playroom
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/playroom_card.yaml
 
 
       #
       # Dining Room
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/dining_room_card.yaml
 
 
       #
       # Jr. Suite
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/jr_suite_card.yaml
 
       #
       # Foyer
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/foyer_card.yaml
 
       #
       # Mudroom
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_card.yaml
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
 
-  # 
+  #
   # Office Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_office
       - hash: '#office_media_player'
 
-  # 
+  #
   # Kitchen Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_kitchen
       - hash: '#kitchen_media_player'
 
-  # 
+  #
   # Dining Room Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_living_room
       - hash: '#dining_room_media_player'
 
-  # 
+  #
   # Family Room Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_family_room
       - hash: '#family_room_media_player'
 
-  # 
+  #
   # Playroom Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_playroom
       - hash: '#playroom_media_player'
-

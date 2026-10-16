@@ -5,9 +5,9 @@ theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 # layout: !include /config/dashboards/templates/includes/layouts/kohbo_homepage_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
@@ -18,7 +18,7 @@ cards:
         #   template: kohbo_header_chip_card
         #   icon: mdi:comment-processing
         #   icon_color: var(--secondary-text-color)
-        #   tap_action: 
+        #   tap_action:
         #     action: assist
 
         - type: custom:button-card
@@ -37,10 +37,10 @@ cards:
             navigation_path: '#notifications'
 
 
-  # 
+  #
   # Quick Overview
   # House mode, energy usage, and people in the room
-  # 
+  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
     card:
@@ -63,9 +63,9 @@ cards:
           card:
             type: horizontal-stack
             cards:
-              # 
+              #
               # House Mode
-              # 
+              #
               - type: custom:button-card
                 template: kohbo_chip_card
                 entity: input_select.house
@@ -93,9 +93,9 @@ cards:
                   navigation_path: '#house_mode'
                   haptic: light
 
-              # 
+              #
               # Electricity Usage
-              # 
+              #
               - type: custom:button-card
                 template: kohbo_chip_card
                 name: Energy Usage
@@ -124,9 +124,9 @@ cards:
                     color: var(--success-color)
 
 
-        # 
+        #
         # People in the room
-        # 
+        #
         - type: custom:mod-card
           card_mod:
             style:
@@ -208,15 +208,15 @@ cards:
                   haptic: light
                   navigation_path: '#celi'
 
-      
-  # 
+
+  #
   # Security Overview
-  # 
+  #
   - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
 
-  # 
+  #
   # Climate Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -237,9 +237,9 @@ cards:
             navigation_path: "/dashboard-kohbo/climate"
             haptic: light
 
-  # 
+  #
   # Occupied Rooms
-  # 
+  #
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -305,10 +305,10 @@ cards:
             numeric: false
 
 
-  # 
+  #
   # Overview section
   # Includes Interior Lights, Exterior Lights, Exterior Doors, Windows
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Overview
@@ -417,9 +417,9 @@ cards:
 
 
 
-  # 
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -444,73 +444,73 @@ cards:
         state_color: true
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
-  # 
+  #
   # People
-  # 
+  #
   - type: vertical-stack
     cards: !include /config/dashboards/kohbo/shared/people.yaml
 
 
-  # 
+  #
   # Main Floor Thermostat Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/climate/_main_floor_thermostat_popup.yaml
 
-  
-  # 
+
+  #
   # Upper Floor Thermostat Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/climate/_upper_floor_thermostat_popup.yaml
 
-  
-  # 
+
+  #
   # Vacuum Running Notification
-  # 
+  #
   - !include /config/dashboards/kohbo/home/_vacuum_active_notification.yaml
-    
-  
+
+
   #
   # Camera Notification
-  # 
+  #
   - !include /config/dashboards/kohbo/home/_front_door_camera_notification.yaml
 
 
-  # 
+  #
   # Driveway Front Camera Notification
-  # 
+  #
   - !include /config/dashboards/kohbo/home/_driveway_front_camera_notification.yaml
 
 
-  # 
+  #
   # Front Door Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_front_door_camera_popup.yaml
 
 
-  # 
+  #
   # Driveway Front Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_driveway_front_camera_popup.yaml
 
 
-  # 
+  #
   # Notifications Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/shared/kohbo_notification_popup.yaml
 
 
-  # 
+  #
   # Weather Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/climate/weather_popup.yaml
 
 
-  # 
+  #
   # House Mode Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/home/house_mode_popup.yaml

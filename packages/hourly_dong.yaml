@@ -58,7 +58,7 @@ automation:
       - alias: "Sound File"
         variables:
           media_players: >-
-            {% set media_players = [] %}   
+            {% set media_players = [] %}
             {# Check which rooms are occupied and if speech notifications are turned #}
             {# on for them. If so, add them to an array of announceable rooms #}
             {% if states.input_boolean.office_occupied.state == "on" and states.input_boolean.office_speech_notifications.state == "on" %}

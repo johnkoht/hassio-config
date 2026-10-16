@@ -1,7 +1,7 @@
 # Energy Prices Are Negative
-# 
+#
 # binary sensor to check if energy prices are negative
-# 
+#
 template:
   - binary_sensor:
       - name: "Energy Prices Are Negative"
@@ -9,12 +9,12 @@ template:
         default_entity_id: binary_sensor.energy_prices_are_negative
         state: "{{ states.sensor.energy_price.state | float < 0 }}"
 
-# 
+#
 # Energy Prices Are Negative
-# 
+#
 # Notify me when energy prices are negative so I can
 # turn on everything!!!
-# 
+#
 automation:
   - id: "energy_prices_are_negative"
     alias: "Energy Prices Are Negative"

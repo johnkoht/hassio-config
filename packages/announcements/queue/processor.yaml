@@ -1,5 +1,5 @@
 # Announcement Queue - Processor
-# 
+#
 # This script is used to process the announcement queue.
 # It's called by the announcement_queue_enqueue script.
 #
@@ -112,7 +112,7 @@ automation:
               {% endfor %}
               {{ valid_msgs.list }}
             {% else %}
-              [] 
+              []
             {% endif %}
           #
           # This is the next message to be announced.
@@ -157,10 +157,10 @@ automation:
               #     tag: "test-testerson"
       #
 
-      # 
+      #
       # Run the following sequence regardless of whether the
       # announcement engine was called or not.
-      # 
+      #
 
       #
       # Publish trimmed queue back to MQTT

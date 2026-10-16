@@ -1,6 +1,6 @@
-# 
+#
 # Main Bathroom Sensor
-# 
+#
 template:
   - sensor:
       - name: "Main Bathroom"

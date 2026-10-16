@@ -1,6 +1,6 @@
 # Family Room Music Off
 #
-# Turn off the Family Room music 
+# Turn off the Family Room music
 #
 automation:
   - id: "family_room_music_off"
@@ -20,10 +20,10 @@ automation:
         entity_id: media_player.sonos_family_room
         state: "playing"
     actions:
-      # 
+      #
       # If the family room speakers are in a group, then unjoin
       # and then pause the music.
-      # 
+      #
       - if:
           - alias: "Speakers are grouped with another room"
             condition: template
@@ -38,11 +38,10 @@ automation:
           - service: media_player.media_pause
             entity_id: media_player.sonos_family_room
 
-        # 
+        #
         # Otherwise, just pause
-        # 
+        #
         else:
           # Pause the music on the player
           - service: media_player.media_pause
             entity_id: media_player.sonos_family_room
-          

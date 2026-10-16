@@ -33,4 +33,3 @@ automation:
     action:
       # Call the script to arm the home
       - action: script.alarm_arm_home
-

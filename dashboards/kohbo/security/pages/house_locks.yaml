@@ -5,23 +5,23 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar_no_settings
     variables:
       - name: House Locks
       - navigation_path: /dashboard-kohbo/security
-  
+
   - type: custom:more-info-card
     entity: lock.house_locks
     title: House Locks
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
 
-  # # 
+  # #
   # # House Locks
-  # # 
+  # #
   # - type: custom:decluttering-card
   #   template: horizontal_action_card
   #   variables:
@@ -41,14 +41,14 @@ cards:
 
 
 
-  # 
+  #
   # Front Door Lock
-  # 
+  #
   - !include /config/dashboards/kohbo/security/components/front_door_lock_component.yaml
 
-  # 
+  #
   # Garage Entry Door Lock
-  # 
+  #
   - !include /config/dashboards/kohbo/security/components/garage_entry_door_lock_component.yaml
 
 
@@ -65,4 +65,3 @@ cards:
   - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml
 
   - !include /config/dashboards/templates/includes/navbar.yaml
-  

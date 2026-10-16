@@ -11,11 +11,11 @@ cards:
     template: section_title
     name: Downstairs Laundry
 
-  # 
+  #
   # Downstairs Washer
-  # 
+  #
   - type: custom:stack-in-card
-    cards: 
+    cards:
       - type: custom:button-card
         template: security_overview_header
         entity: input_select.main_level_washer_status
@@ -25,7 +25,7 @@ cards:
         show_name: false
         show_label: true
         layout: icon_name_state
-      
+
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
@@ -45,8 +45,8 @@ cards:
             styles:
               card:
                 - padding-bottom: 0px
-                
-          
+
+
           - type: custom:button-card
             template: kohbo_device_entity_horizontal
             entity: binary_sensor.main_level_washer_door_sensor_status
@@ -58,7 +58,7 @@ cards:
             styles:
               card:
                 - padding-bottom: 0px
-            
+
           - type: entities
             entities:
               - entity: switch.main_level_washing_machine
@@ -68,11 +68,11 @@ cards:
                 secondary_info: last-changed
                 state_color: true
 
-  # 
+  #
   # Downstairs Dryer
-  # 
+  #
   - type: custom:stack-in-card
-    cards: 
+    cards:
       - type: custom:button-card
         template: security_overview_header
         entity: input_select.main_level_dryer_status
@@ -82,7 +82,7 @@ cards:
         show_name: false
         show_label: true
         layout: icon_name_state
-      
+
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
@@ -102,7 +102,7 @@ cards:
             styles:
               card:
                 - padding-bottom: 0px
-            
+
           - type: entities
             entities:
               - entity: switch.main_level_drying_machine
@@ -117,11 +117,11 @@ cards:
     template: section_title
     name: Upstairs Laundry
 
-  # 
+  #
   # Upstairs Washer
-  # 
+  #
   - type: custom:stack-in-card
-    cards: 
+    cards:
       - type: custom:button-card
         template: security_overview_header
         entity: input_select.upstairs_washer_status
@@ -131,7 +131,7 @@ cards:
         show_name: false
         show_label: true
         layout: icon_name_state
-      
+
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
@@ -151,7 +151,7 @@ cards:
             styles:
               card:
                 - padding-bottom: 0px
-                
+
           - type: custom:button-card
             template: kohbo_device_entity_horizontal
             entity: binary_sensor.upstairs_washer_door_sensor_status
@@ -163,7 +163,7 @@ cards:
             styles:
               card:
                 - padding-bottom: 0px
-            
+
           - type: entities
             entities:
               - entity: switch.upstairs_washer
@@ -173,11 +173,11 @@ cards:
                 secondary_info: last-changed
                 state_color: true
 
-  # 
+  #
   # Upstairs Dryer
-  # 
+  #
   - type: custom:stack-in-card
-    cards: 
+    cards:
       - type: custom:button-card
         template: security_overview_header
         entity: input_select.upstairs_dryer_status
@@ -187,7 +187,7 @@ cards:
         show_name: false
         show_label: true
         layout: icon_name_state
-      
+
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
@@ -207,7 +207,7 @@ cards:
             styles:
               card:
                 - padding-bottom: 0px
-            
+
           - type: entities
             entities:
               - entity: switch.upstairs_drying_machine
@@ -218,7 +218,7 @@ cards:
                 state_color: true
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

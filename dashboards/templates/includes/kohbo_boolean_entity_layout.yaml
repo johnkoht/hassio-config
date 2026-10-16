@@ -84,7 +84,7 @@ style:
             .checked [part="thumb"] {
               left: 20px !important;
             }
-          
+
 
   ha-entity-toggle$: |
     ha-switch {

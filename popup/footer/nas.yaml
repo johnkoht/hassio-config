@@ -122,7 +122,7 @@ browser_mod:
                 icon: mdi:memory
 
           - type: custom:hui-horizontal-stack-card
-            cards:  
+            cards:
               - type: custom:button-card
                 name: Serveromstart
                 icon: mdi:reload
