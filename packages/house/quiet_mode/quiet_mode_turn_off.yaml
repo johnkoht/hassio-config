@@ -12,27 +12,33 @@ automation:
       - trigger: state
         entity_id: binary_sensor.everybody_awake
         to: "on"
+      # A bed empties after everybody is already awake
+      - trigger: state
+        entity_id:
+          - binary_sensor.nino_bed_occupied
+          - binary_sensor.gianluca_bed_occupied
+          - binary_sensor.john_bed_occupied
+          - binary_sensor.cristina_bed_occupied
+        to: "off"
     conditions:
-      # Quiet mode is oFF
+      # Quiet mode is ON
       - condition: state
         entity_id: input_boolean.quiet_mode
         state: "on"
+      # Everybody is Awake
+      - condition: state
+        entity_id: binary_sensor.everybody_awake
+        state: "on"
       # No bed is occupied
-      - condition: and
-        conditions:
-          - condition: state
-            entity_id: binary_sensor.nino_bed_occupied
-            state: "off"
-          - condition: state
-            entity_id: binary_sensor.gianluca_bed_occupied
-            state: "off"
-          - condition: state
-            entity_id: binary_sensor.john_bed_occupied
-            state: "off"
-          - condition: state
-            entity_id: binary_sensor.cristina_bed_occupied
-            state: "off"
+      - condition: state
+        entity_id:
+          - binary_sensor.nino_bed_occupied
+          - binary_sensor.gianluca_bed_occupied
+          - binary_sensor.john_bed_occupied
+          - binary_sensor.cristina_bed_occupied
+        state: "off"
     actions:
       # Toggle the input boolean
       - action: input_boolean.turn_off
-        entity_id: input_boolean.quiet_mode
+        target:
+          entity_id: input_boolean.quiet_mode
