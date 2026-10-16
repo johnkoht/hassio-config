@@ -71,7 +71,6 @@ cards:
       - entity: sensor.home_john_distance
         icon: kohbo:kohbo-proximity
         name: Proximity
-        entity: sensor.home_john_distance
         secondary_info: last-changed
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml

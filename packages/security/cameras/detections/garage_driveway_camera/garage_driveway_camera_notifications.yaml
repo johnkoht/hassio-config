@@ -25,6 +25,8 @@ template:
       seconds: '/1'
     sensor:
     - name: Garage Driveway Timer Countdown
+      unique_id: garage_driveway_timer_countdown
+      default_entity_id: sensor.garage_driveway_timer_countdown
       state: >
         {% set end = state_attr('timer.garage_driveway_camera_notifications_snooze_timer', 'finishes_at') %}
         {% if end is not none %}

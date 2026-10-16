@@ -25,6 +25,8 @@ template:
       seconds: '/1'
     sensor:
     - name: Backyard Pool Timer Countdown
+      unique_id: backyard_pool_timer_countdown
+      default_entity_id: sensor.backyard_pool_timer_countdown
       state: >
         {% set end = state_attr('timer.backyard_pool_camera_notifications_snooze_timer', 'finishes_at') %}
         {% if end is not none %}

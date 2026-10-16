@@ -1,6 +1,8 @@
 template:
   - sensor:
       - name: "Weather - Current Precipitation Amount"
+        unique_id: weather_current_precipitation_amount
+        default_entity_id: sensor.weather_current_precipitation_amount
         state: >
           {{ states('sensor.pirateweather_precip_intensity_0h') | float | round(1, default=0) }}
         state_class: measurement

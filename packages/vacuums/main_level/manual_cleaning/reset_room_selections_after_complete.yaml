@@ -1,6 +1,7 @@
 # Automation to reset input booleans when vacuum finishes
 automation:
-  - alias: "Reset Room Selection After Vacuum Finishes"
+  - id: "reset_room_selections_after_complete"
+    alias: "Reset Room Selection After Vacuum Finishes"
     description: "Turns off all room selection booleans when the vacuum completes cleaning"
     trigger:
       - platform: state

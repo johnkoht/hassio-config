@@ -25,6 +25,8 @@ template:
       seconds: '/1'
     sensor:
     - name: Front Door Timer Countdown
+      unique_id: front_door_timer_countdown
+      default_entity_id: sensor.front_door_timer_countdown
       state: >
         {% set end = state_attr('timer.front_door_camera_notifications_snooze_timer', 'finishes_at') %}
         {% if end is not none %}

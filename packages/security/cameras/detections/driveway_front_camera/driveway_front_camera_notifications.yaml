@@ -25,6 +25,8 @@ template:
       seconds: '/1'
     sensor:
     - name: Driveway Front Timer Countdown
+      unique_id: driveway_front_timer_countdown
+      default_entity_id: sensor.driveway_front_timer_countdown
       state: >
         {% set end = state_attr('timer.driveway_front_camera_notifications_snooze_timer', 'finishes_at') %}
         {% if end is not none %}
