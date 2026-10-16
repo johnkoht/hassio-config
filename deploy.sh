@@ -4,9 +4,10 @@
 # Runs yamllint and HA config check locally before deploying.
 # Use --skip-ci for rapid iteration (dashboards, quick fixes).
 #
-# HA_TARGET picks the host: "yellow" (HAOS, ha CLI) or "epicurus" (Docker).
-# On epicurus, reloads use the REST API with a token kept only on the host
-# at $HA_TOKEN_FILE (root-only, never in git).
+# HA_TARGET picks the host: "yellow" (HAOS) or "epicurus" (Docker).
+# Reloads call HA services over REST: on the Yellow through the Supervisor
+# proxy (the SSH add-on provides SUPERVISOR_TOKEN); on epicurus with a token
+# kept only on the host at /root/homeassistant/.deploy_token (never in git).
 #
 # Runtime files (secrets, .storage, custom_components, certs, etc.) are
 # gitignored and never touched by this script.
@@ -18,12 +19,15 @@ case $HA_TARGET in
   yellow)
     HA_HOST="${HA_HOST:-hassio}"
     HA_PATH="/homeassistant"
+    HA_API="http://supervisor/core/api"
+    HA_AUTH='$SUPERVISOR_TOKEN'
     ;;
   epicurus)
     HA_HOST="${HA_HOST:-epicurus}"
     HA_PATH="/root/homeassistant/config"
     HA_CONTAINER="homeassistant"
-    HA_TOKEN_FILE="/root/homeassistant/.deploy_token"
+    HA_API="http://127.0.0.1:8123/api"
+    HA_AUTH='$(cat /root/homeassistant/.deploy_token)'
     ;;
   *) echo "Unknown HA_TARGET: $HA_TARGET (yellow|epicurus)"; exit 1 ;;
 esac
@@ -95,12 +99,12 @@ fi
 
 remote() { ssh "$HA_USER@$HA_HOST" "$@"; }
 
-# Calls an HA service on epicurus via REST, using the host-only token.
+# Calls an HA service over REST on the host. $HA_AUTH expands remotely.
 ha_service() {
   remote "curl -sf -o /dev/null -X POST \
-    -H \"Authorization: Bearer \$(cat $HA_TOKEN_FILE)\" \
-    http://127.0.0.1:8123/api/services/$1/$2" \
-    || { echo "❌ $1.$2 failed (is $HA_TOKEN_FILE present and valid?)"; exit 1; }
+    -H \"Authorization: Bearer $HA_AUTH\" \
+    $HA_API/services/$1/$2" \
+    || { echo "❌ $1.$2 failed"; exit 1; }
 }
 
 echo "==> Pulling latest on $HA_HOST ($HA_TARGET)..."
@@ -131,22 +135,14 @@ if $RESTART; then
   fi
   echo "==> Done. HA is restarting."
 elif $RELOAD; then
-  echo "==> Reloading automations and scripts..."
-  if [ "$HA_TARGET" = epicurus ]; then
-    ha_service automation reload
-    ha_service script reload
-  else
-    remote "ha core reload-automations && ha core reload-scripts"
-  fi
+  echo "==> Reloading automations, scripts and REST commands..."
+  ha_service automation reload
+  ha_service script reload
+  ha_service rest_command reload
   echo "==> Done."
 elif $DASHBOARD; then
-  if [ "$HA_TARGET" = epicurus ]; then
-    echo "==> YAML dashboards are re-read on load — refresh the browser."
-  else
-    echo "==> Reloading dashboards..."
-    remote "ha core reload-lovelace"
-    echo "==> Done."
-  fi
+  # There is no lovelace reload service; YAML dashboards load on refresh.
+  echo "==> Pulled. Refresh the browser to see dashboard changes."
 else
   echo "==> Done. Run './deploy.sh --restart' or '--reload' to apply changes."
 fi
