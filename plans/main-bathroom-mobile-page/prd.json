@@ -11,8 +11,8 @@
         "live_states.json saved to scratchpad",
         "working-memory lists automation IDs, missing entities, plug power result, room: value, door-template table"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
       "attemptCount": 0
     },
     {
@@ -24,8 +24,8 @@
         "member-publishing groups unchanged",
         "own commit touching only the template"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
       "attemptCount": 0
     },
     {
@@ -71,8 +71,8 @@
         "no rooms-gianlucas-bedroom remains",
         "own commit"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
       "attemptCount": 0
     },
     {
@@ -84,8 +84,8 @@
         "kohbo.yaml registration step added",
         "door fallback noted where documented"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
       "attemptCount": 0
     },
     {
@@ -97,15 +97,15 @@
         "yamllint clean on touched files",
         "scratch include/variable/entity check exits 0 or exceptions justified"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
       "attemptCount": 0
     }
   ],
   "metadata": {
     "createdAt": "2026-10-15T23:52:59.320516",
     "totalTasks": 7,
-    "completedTasks": 0,
+    "completedTasks": 7,
     "failedTasks": 0
   }
 }

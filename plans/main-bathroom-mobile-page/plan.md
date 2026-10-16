@@ -1,7 +1,7 @@
 ---
 title: Main Bathroom Mobile Page
 slug: main-bathroom-mobile-page
-status: in-progress
+status: shipped
 created: 2026-10-15
 has_pre_mortem: true
 has_review: true
