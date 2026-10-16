@@ -2,13 +2,13 @@ script:
   clean_selected_rooms:
     alias: Clean Selected Rooms
     description: Clean rooms selected using the input booleans
-    mode: single 
+    mode: single
     sequence:
       # Check if Jr Suite door is open if Jr Suite is selected
       - condition: state
         entity_id: binary_sensor.jr_suite_door_status
         state: "on"
-        
+
       # Get the selected rooms and map them to segment numbers
       - variables:
           room_map:
@@ -42,4 +42,4 @@ script:
           entity_id: vacuum.main_floor_vacuum
         data:
           command: app_segment_clean
-          params: "{{ selected_segments }}" 
+          params: "{{ selected_segments }}"

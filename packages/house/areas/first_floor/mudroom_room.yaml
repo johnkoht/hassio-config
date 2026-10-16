@@ -1,6 +1,6 @@
-# 
+#
 # Mudroom Room Sensor
-# 
+#
 template:
   - sensor:
       - name: "Mudroom"

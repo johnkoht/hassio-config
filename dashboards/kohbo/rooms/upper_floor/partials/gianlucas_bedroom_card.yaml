@@ -1,6 +1,6 @@
-# 
+#
 # Gianluca's Bedroom
-# 
+#
 type: custom:decluttering-card
 template: room_card
 variables:
@@ -17,14 +17,14 @@ variables:
     - type: custom:button-card
       entity: light.gianluca_bedroom_lights
       name: Lights
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-lights
-    
+
     - type: custom:button-card
       entity: binary_sensor.gianlucas_door_sensor_status
       name: Door
       template: kohbo_room_card_device
-    
+
     - type: custom:button-card
       entity: switch.hue_smart_plug_1
       name: Heater

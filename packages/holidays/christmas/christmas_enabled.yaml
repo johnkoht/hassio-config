@@ -28,12 +28,12 @@ automation:
       - action: script.turn_on
         entity_id: script.christmas_enable_automations
 
-  # 
+  #
   # Christmas Manually Enabled
-  # 
+  #
   # If Christmas boolean is manually enabled then we need to activate
   # all of the automations for xmas.
-  # 
+  #
   - id: "christmas_manually_enabled"
     alias: "Christman Manually Enabled"
     mode: "single"

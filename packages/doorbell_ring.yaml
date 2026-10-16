@@ -76,7 +76,7 @@ script:
               40
             {% endif %}
           media_players: >-
-            {% set media_players = [] %}   
+            {% set media_players = [] %}
 
             {# Check which rooms are occupied and if speech notifications are turned #}
             {# on for them. If so, add them to an array of announceable rooms #}

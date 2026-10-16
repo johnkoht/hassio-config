@@ -54,18 +54,18 @@ script:
               - DnD
 
     variables:
-      # 
+      #
       # Determine desired mode and percentage
-      # 
+      #
       # If the AQI is Hazardous, Unhealthy, or Moderate,
       # then set the purifier to Manual mode.
-      # 
+      #
       # If the AQI is Acceptable and the room is set to Bedtime,
       # then set the purifier to Sleep mode.
-      # 
+      #
       # If the AQI is Acceptable and the room is set to Auto,
       # then set the purifier to Auto mode.
-      # 
+      #
       # If the AQI is Acceptable and the room is set to Off,
       # then set the purifier to Off mode.
       set_mode: >-
@@ -79,7 +79,7 @@ script:
           Off
         {% endif %}
 
-      # 
+      #
       # Determine desired speed
       #
       # If the AQI is Hazardous, then set the speed to 100%.

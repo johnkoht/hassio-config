@@ -13,75 +13,75 @@ kiosk_mode:
 #   prevent_default: true
 #   swipe_amount: 60
 #   logger_level: debug
-  
+
 views:
 
-    - !include /config/dashboards/kohbo/home/home.yaml
-    # - !include /config/dashboards/kohbo/rooms/rooms.yaml
-    - !include /config/dashboards/kohbo/climate/climate.yaml
-    - !include /config/dashboards/kohbo/climate/hvac.yaml
-    - !include /config/dashboards/kohbo/climate/air_quality.yaml
-    - !include /config/dashboards/kohbo/climate/legacy.yaml
-    # - !include /config/dashboards/kohbo/media/media.yaml
-    # - !include /config/dashboards/kohbo/devices/devices.yaml
-    # - !include /config/dashboards/kohbo/security/front_door_lock.yaml
+  - !include /config/dashboards/kohbo/home/home.yaml
+  # - !include /config/dashboards/kohbo/rooms/rooms.yaml
+  - !include /config/dashboards/kohbo/climate/climate.yaml
+  - !include /config/dashboards/kohbo/climate/hvac.yaml
+  - !include /config/dashboards/kohbo/climate/air_quality.yaml
+  - !include /config/dashboards/kohbo/climate/legacy.yaml
+  # - !include /config/dashboards/kohbo/media/media.yaml
+  # - !include /config/dashboards/kohbo/devices/devices.yaml
+  # - !include /config/dashboards/kohbo/security/front_door_lock.yaml
 
-    # Security
-    - !include /config/dashboards/kohbo/security/security.yaml
-    - !include /config/dashboards/kohbo/security/pages/house_locks.yaml
-    - !include /config/dashboards/kohbo/security/pages/garage_doors.yaml
-    - !include /config/dashboards/kohbo/security/pages/alarm_panel.yaml
-    - !include /config/dashboards/kohbo/security/pages/exterior_doors.yaml
-    - !include /config/dashboards/kohbo/security/pages/windows.yaml
-    - !include /config/dashboards/kohbo/security/cameras/cameras.yaml
-    - !include /config/dashboards/kohbo/security/pages/leak_sensors.yaml
+  # Security
+  - !include /config/dashboards/kohbo/security/security.yaml
+  - !include /config/dashboards/kohbo/security/pages/house_locks.yaml
+  - !include /config/dashboards/kohbo/security/pages/garage_doors.yaml
+  - !include /config/dashboards/kohbo/security/pages/alarm_panel.yaml
+  - !include /config/dashboards/kohbo/security/pages/exterior_doors.yaml
+  - !include /config/dashboards/kohbo/security/pages/windows.yaml
+  - !include /config/dashboards/kohbo/security/cameras/cameras.yaml
+  - !include /config/dashboards/kohbo/security/pages/leak_sensors.yaml
 
-    # Rooms
-    - !include /config/dashboards/kohbo/rooms/active_rooms.yaml
+  # Rooms
+  - !include /config/dashboards/kohbo/rooms/active_rooms.yaml
 
-    # Main Floor
-    - !include /config/dashboards/kohbo/rooms/main_floor/main_floor_index.yaml
-    - !include /config/dashboards/kohbo/rooms/active_rooms.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/jr_suite.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/dining_room.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/foyer.yaml
-    - !include /config/dashboards/kohbo/rooms/main_floor/mudroom.yaml
-    
-    - !include /config/dashboards/kohbo/rooms/main_floor/vacuum.yaml
-    - !include /config/dashboards/kohbo/rooms/laundry/laundry.yaml
+  # Main Floor
+  - !include /config/dashboards/kohbo/rooms/main_floor/main_floor_index.yaml
+  - !include /config/dashboards/kohbo/rooms/active_rooms.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/office.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/jr_suite.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/dining_room.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/foyer.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/mudroom.yaml
 
-    # Upper Floor
-    - !include /config/dashboards/kohbo/rooms/upper_floor/upper_floor_index.yaml
-    - !include /config/dashboards/kohbo/rooms/upper_floor/main_bedroom.yaml
-    - !include /config/dashboards/kohbo/rooms/upper_floor/ninos_bedroom.yaml
-    - !include /config/dashboards/kohbo/rooms/upper_floor/gianlucas_bedroom.yaml
-    - !include /config/dashboards/kohbo/rooms/upper_floor/upstairs_hallway.yaml
+  - !include /config/dashboards/kohbo/rooms/main_floor/vacuum.yaml
+  - !include /config/dashboards/kohbo/rooms/laundry/laundry.yaml
 
-    # # Lower Floor
-    # - !include /config/dashboards/kohbo/rooms/lower_floor/laundry_room.yaml
-    # - !include /config/dashboards/kohbo/rooms/lower_floor/garage.yaml
-    # - !include /config/dashboards/kohbo/rooms/lower_floor/pool_room.yaml
+  # Upper Floor
+  - !include /config/dashboards/kohbo/rooms/upper_floor/upper_floor_index.yaml
+  - !include /config/dashboards/kohbo/rooms/upper_floor/main_bedroom.yaml
+  - !include /config/dashboards/kohbo/rooms/upper_floor/ninos_bedroom.yaml
+  - !include /config/dashboards/kohbo/rooms/upper_floor/gianlucas_bedroom.yaml
+  - !include /config/dashboards/kohbo/rooms/upper_floor/upstairs_hallway.yaml
 
-    # Exterior
-    - !include /config/dashboards/kohbo/more/exterior_lighting.yaml
-    - !include /config/dashboards/kohbo/more/interior_lights.yaml
+  # # Lower Floor
+  # - !include /config/dashboards/kohbo/rooms/lower_floor/laundry_room.yaml
+  # - !include /config/dashboards/kohbo/rooms/lower_floor/garage.yaml
+  # - !include /config/dashboards/kohbo/rooms/lower_floor/pool_room.yaml
 
-    # More
-    - !include /config/dashboards/kohbo/more/people.yaml
+  # Exterior
+  - !include /config/dashboards/kohbo/more/exterior_lighting.yaml
+  - !include /config/dashboards/kohbo/more/interior_lights.yaml
 
-    # School
-    - !include /config/dashboards/kohbo/school/school.yaml
+  # More
+  - !include /config/dashboards/kohbo/more/people.yaml
 
-    # Chores
-    - !include /config/dashboards/kohbo/chores/chores.yaml
+  # School
+  - !include /config/dashboards/kohbo/school/school.yaml
 
-    - !include /config/dashboards/kohbo/energy/energy.yaml
+  # Chores
+  - !include /config/dashboards/kohbo/chores/chores.yaml
 
-    # Holidays
-    - !include /config/dashboards/kohbo/holidays/holidays.yaml
-    - !include /config/dashboards/kohbo/holidays/christmas.yaml
-    - !include /config/dashboards/kohbo/holidays/halloween.yaml
+  - !include /config/dashboards/kohbo/energy/energy.yaml
+
+  # Holidays
+  - !include /config/dashboards/kohbo/holidays/holidays.yaml
+  - !include /config/dashboards/kohbo/holidays/christmas.yaml
+  - !include /config/dashboards/kohbo/holidays/halloween.yaml

@@ -1,6 +1,6 @@
-# 
+#
 # Nino's Bedroom Sensor
-# 
+#
 template:
   - sensor:
       - name: "Nino's Bedroom"

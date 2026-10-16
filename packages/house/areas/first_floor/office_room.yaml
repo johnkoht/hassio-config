@@ -1,10 +1,10 @@
-# 
+#
 # Office Room Sensor
-# 
+#
 # This sensor provides a unified object representation of the Office
 # with occupancy state and various attributes for use in dashboards,
 # automations, and scripts.
-# 
+#
 template:
   - sensor:
       - name: "Office"
@@ -13,13 +13,13 @@ template:
         attributes:
           # Room mode (Auto, Off, DND, etc.)
           mode: "{{ states('input_select.office') }}"
-          
+
           # Icon (hardcoded for now)
           icon: "kohbo:kohbo-laptop"
-          
+
           # Navigation
           permalink: "/dashboard-kohbo/rooms-office"
-          
+
           # Climate sensors (conditional - only if sensor exists and is available)
           temperature: >
             {% if states('sensor.office_awair_temperature') not in ['unavailable', 'unknown', ''] %}
@@ -39,7 +39,7 @@ template:
             {% else %}
               ""
             {% endif %}
-          
+
           # Occupancy tracking
           last_changed: >
             {% if states.input_boolean.office_occupied.last_changed %}
@@ -59,7 +59,7 @@ template:
             {% else %}
               0
             {% endif %}
-          
+
           # People in room (from existing people list sensor)
           people: "{{ state_attr('sensor.office_people_list', 'people') | default([]) }}"
           people_count: "{{ states('sensor.office_people_list') | int | default(0) }}"

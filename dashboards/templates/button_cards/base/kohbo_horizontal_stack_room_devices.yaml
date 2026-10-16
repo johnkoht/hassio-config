@@ -1,4 +1,4 @@
-style: 
+style:
   .: |
     ha-card {
       background: var(--darker-primary-color);
@@ -22,5 +22,3 @@ style:
       max-width: 25%;
       box-sizing: border-box;
     }
-    
-    

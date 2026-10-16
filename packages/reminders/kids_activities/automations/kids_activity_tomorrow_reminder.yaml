@@ -24,7 +24,7 @@ automation:
     action:
       # Wait for motion in the kitchen or family room
       - wait_template: >-
-          {{ 
+          {{
             is_state('binary_sensor.kitchen_motion_sensor_status', 'on')
             or
             is_state('binary_sensor.family_room_motion_sensor', 'on')
@@ -44,7 +44,7 @@ automation:
             {% set time =  states.calendar.kohbocal.attributes.start_time | as_datetime | as_local %}
             {% set time = time.timestamp() | timestamp_custom('%-I:%M %p') %}
 
-            {{ 
+            {{
               [
                 "Hey fam, quick calendar reminder for tomorrow: " ~ states.calendar.kohbocal.attributes.message ~ " at " ~ time,
                 "Just a quick reminder that " ~ states.calendar.kohbocal.attributes.message ~ " is tomorrow at " ~ time,

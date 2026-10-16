@@ -24,9 +24,9 @@ script:
               - office
 
     variables:
-      # 
+      #
       # Map rooms to the segment ID
-      # 
+      #
       room_map:
         # playroom: 18
         foyer: 20
@@ -40,9 +40,9 @@ script:
         # office: 29
         powder_room: 16
 
-      # 
+      #
       # Get the selected segments for the vacuum
-      # 
+      #
       selected_segments: >
         {% set data = namespace(rooms=[]) %}
         {% for key in rooms %}
@@ -85,4 +85,4 @@ script:
           entity_id: vacuum.main_floor_vacuum
         data:
           command: app_segment_clean
-          params: "{{ selected_segments }}" 
+          params: "{{ selected_segments }}"

@@ -10,17 +10,17 @@ cards:
   #  - windows
   #  - leak sensors
   #  - motion
-  #  - 
+  #  -
 
-  # 
+  #
   # Page Header
-  # 
+  #
   - !include /config/dashboards/templates/includes/security/security_header.yaml
 
 
-  # 
+  #
   # Security Overview
-  # 
+  #
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -60,10 +60,10 @@ cards:
             - font-size: 28px
             - font-weight: 400
             - color: var(--primary-text-color)
-      
-      # 
+
+      #
       # Security Score Gauge
-      # 
+      #
       - type: gauge
         name: Score
         entity: sensor.house_security_score
@@ -291,7 +291,7 @@ cards:
               .value-text {
                 font-size: 35px !important;
               }
-              
+
             .: |
               ha-card {
                 padding-top: 0 !important;
@@ -302,18 +302,18 @@ cards:
                 font-size: 12px !important;
               }
 
-      # 
+      #
       # Security Items
-      # 
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
         cards:
           - type: horizontal-stack
             cards:
-              # 
+              #
               # Alarm
-              # 
+              #
               - type: custom:button-card
                 entity: alarm_control_panel.alarmo
                 name: Alarm
@@ -329,9 +329,9 @@ cards:
                   action: navigate
                   navigation_path: '/dashboard-kohbo/security-alarm-panel'
 
-              # 
+              #
               # Locks
-              # 
+              #
               - type: custom:button-card
                 entity: lock.house_locks
                 name: Locks
@@ -352,9 +352,9 @@ cards:
                   action: navigate
                   navigation_path: '/dashboard-kohbo/security-house-locks'
 
-              # 
+              #
               # Garage Doors
-              # 
+              #
               - type: custom:button-card
                 entity: cover.garage_doors
                 name: Garage
@@ -441,9 +441,9 @@ cards:
 
 
 
-  # 
+  #
   # Latest Motion Detections
-  # 
+  #
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -555,9 +555,9 @@ cards:
   # - type: custom:stack-in-card
   #   mode: horizontal
   #   cards:
-  #     # 
+  #     #
   #     # Security Score Gauge
-  #     # 
+  #     #
   #     - type: 'custom:flex-horseshoe-card'
   #       entities:
   #         - entity: sensor.house_security_score
@@ -597,7 +597,7 @@ cards:
   #         75: 'var(--success-color)'
   #         100: 'var(--success-color)'
 
-          
+
   #     # - type: gauge
   #     #   name: Score
   #     #   entity: sensor.house_security_score
@@ -825,7 +825,7 @@ cards:
   #     #         .value-text {
   #     #           font-size: 35px !important;
   #     #         }
-              
+
   #     #       .: |
   #     #         ha-card {
   #     #           padding-right: 0 !important;
@@ -867,7 +867,7 @@ cards:
   #             - value: 'triggered'
   #               icon: kohbo:kohbo-alarm-triggered
   #               state_display: Alarm Triggered
-          
+
   #         # Locks
   #         - type: custom:button-card
   #           entity: lock.house_locks
@@ -895,8 +895,8 @@ cards:
   #               state_display: >
   #                 [[[
   #                   return entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
-                  
-                  
+
+
   #         # Exterior Doors
   #         - type: custom:button-card
   #           entity: binary_sensor.exterior_doors
@@ -942,9 +942,9 @@ cards:
   #               state_display: Suppressed
   #               color: var(--error-color)
 
-  # # 
+  # #
   # # Security Overview
-  # # 
+  # #
   # - type: custom:button-card
   #   template: kohbo_card_wide
   #   entity: sensor.house_security_status
@@ -986,11 +986,9 @@ cards:
 
 
 
-
-
-  # # 
+  # #
   # # Security Overview
-  # # 
+  # #
   # # - !include /config/dashboards/templates/button_cards/cards/kohbo_security_overview.yaml
   # - type: custom:stack-in-card
   #   card_mod:
@@ -1004,9 +1002,9 @@ cards:
   #     border_radius: true
   #     background: true
   #   cards:
-  #     # 
+  #     #
   #     # Security Status / Overview
-  #     # 
+  #     #
   #     - type: custom:button-card
   #       template: kohbo_stacked_card_top
   #       entity: alarm_control_panel.kohbo
@@ -1048,9 +1046,9 @@ cards:
   #       #           return entity.state === 'Totally Secure' || entity.state === 'Secure' ? '#06D6A0' : '#FFD166';
   #       #         ]]]
 
-  #     # 
+  #     #
   #     # Security Items
-  #     # 
+  #     #
   #     - type: custom:stack-in-card
   #       mode: horizontal
   #       card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_buttons_bg.yaml
@@ -1058,9 +1056,9 @@ cards:
   #         border_radius: true
   #         background: true
   #       cards:
-  #         # 
+  #         #
   #         # Arm Home
-  #         # 
+  #         #
   #         - type: custom:button-card
   #           entity: alarm_control_panel.kohbo
   #           name: Home
@@ -1074,9 +1072,9 @@ cards:
   #           state:
   #             - value: 'armed_home'
 
-  #         # 
+  #         #
   #         # Disarm
-  #         # 
+  #         #
   #         - type: custom:button-card
   #           entity: alarm_control_panel.kohbo
   #           name: Disarm
@@ -1088,9 +1086,9 @@ cards:
   #             data:
   #               entity_id: alarm_control_panel.kohbo
 
-  #         # 
+  #         #
   #         # Arm Away
-  #         # 
+  #         #
   #         - type: custom:button-card
   #           entity: alarm_control_panel.kohbo
   #           name: Away
@@ -1104,9 +1102,9 @@ cards:
 
 
 
-  # 
+  #
   # Alarm Panel
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_action_card
     variables:
@@ -1153,14 +1151,14 @@ cards:
           visibility:
             - condition: state
               entity: alarm_control_panel.alarmo
-              state: 
+              state:
                 - armed_home
                 - armed_away
                 - triggered
                 - armed_custom_bypass
                 - armed_night
                 - armed_vacation
-        
+
         # Alarm panel details
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
@@ -1170,9 +1168,9 @@ cards:
             navigation_path: "/dashboard-kohbo/security-alarm-panel"
 
 
-  # 
+  #
   # Garage Doors
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_action_card
     variables:
@@ -1205,11 +1203,11 @@ cards:
             action: navigate
             navigation_path: "/dashboard-kohbo/security-garage-doors"
 
-  
 
-  # 
+
+  #
   # Locks
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_action_card
     variables:
@@ -1234,7 +1232,7 @@ cards:
             - condition: state
               entity: lock.house_locks
               state: 'unlocked'
-              
+
         # Lock details
         - type: custom:button-card
           template: kohbo_chip_icon_action_card
@@ -1244,28 +1242,28 @@ cards:
             navigation_path: "/dashboard-kohbo/security-house-locks"
 
 
-  
-  # # 
+
+  # #
   # # Locks
-  # # 
+  # #
   # - type: custom:button-card
   #   template: section_title
   #   name: Door Locks
 
-  # # 
+  # #
   # # Front Door Lock
-  # # 
+  # #
   # - !include /config/dashboards/kohbo/security/components/front_door_lock_component.yaml
 
-  # # 
+  # #
   # # Garage Entry Door Lock
-  # # 
+  # #
   # - !include /config/dashboards/kohbo/security/components/garage_entry_door_lock_component.yaml
 
 
-  # 
+  #
   # Exterior Doors
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_action_card
     variables:
@@ -1284,9 +1282,9 @@ cards:
             navigation_path: "/dashboard-kohbo/security-exterior-doors"
 
 
-  # 
+  #
   # Windows
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_action_card
     variables:
@@ -1305,18 +1303,18 @@ cards:
             navigation_path: "/dashboard-kohbo/security-windows"
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
-  # 
+  #
   # Lock popups
-  # 
+  #
   - !include /config/dashboards/kohbo/security/front_door_lock_popup.yaml
   - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml
 
-  # 
+  #
   # Security Settings
-  # 
+  #
   - !include /config/dashboards/kohbo/security/components/security_settings_popup.yaml

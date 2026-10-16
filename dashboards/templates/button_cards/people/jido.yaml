@@ -2,35 +2,35 @@ type: custom:bubble-card
 card_type: pop-up
 hash: '#jido'
 styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    
+
 cards:
-  # 
+  #
   # Profile Picture
-  # 
+  #
   - type: custom:button-card
     entity: person.antoun_koht
     template: people_profile_picture
 
 
-  # 
+  #
   # Heading
-  # 
+  #
   - type: custom:button-card
     name: "Jido"
     template: kohbo_person_heading
     custom_fields:
       location: '[[[ return states["person.antoun_koht"].state == "home" ? "Home" : "Away" ]]]'
-        
 
-  # 
+
+  #
   # Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      # 
+      #
       # Status
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-person-status
         name: Status
@@ -44,9 +44,9 @@ cards:
             var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # 
+      #
       # Room
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-room-occupancy
         name: Room
@@ -60,9 +60,9 @@ cards:
             var(--success-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # 
+      #
       # Unlock Privilege
-      # 
+      #
       - entity: input_boolean.jido_unlock_privilege
         name: Unlock Privilege
         icon: mdi:key
@@ -71,9 +71,9 @@ cards:
         state_color: true
 
 
-  # 
+  #
   # Automations
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Automations

@@ -12,7 +12,7 @@ template:
               + states('sensor.home_energy_meter_2_electric_consumption_w') | float(0)
             ) | round(0)
           }}
-        
+
 
 
   - sensor:

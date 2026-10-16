@@ -24,6 +24,6 @@ automation:
       - if:
           - condition: template
             value_template: "{{ trigger.to_state.context.parent_id == none }}"
-        then:  
+        then:
           - service: input_boolean.turn_on
             entity_id: input_boolean.main_bedroom_lights_manually_toggled

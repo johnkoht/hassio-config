@@ -1,10 +1,10 @@
-# 
+#
 # Jido Person
-# 
+#
 # The Person sensor is way of creating a Person
-# with additional attributes that the standard 
+# with additional attributes that the standard
 # person sensor doesn't have.
-# 
+#
 template:
   - sensor:
       - name: "Jido Person"
@@ -14,5 +14,3 @@ template:
           unlock_privilege: "{{ states.input_boolean.jido_unlock_privilege.state }}"
           avatar: "{{ states.person.antoun_koht.attributes.entity_picture }}"
           room_presence: "{{ states.sensor.antoun_room_presence.state }}"
-
-

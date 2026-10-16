@@ -28,7 +28,7 @@ wifi:
     password: "lZaVPZcDv6Ko"
 
 captive_portal:
-    
+
 sensor:
   - platform: ultrasonic
     trigger_pin: GPIO5

@@ -1,6 +1,6 @@
-# 
+#
 # Notifications Popup
-# 
+#
 type: custom:bubble-card
 card_type: pop-up
 hash: '#notifications'

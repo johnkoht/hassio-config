@@ -1,6 +1,6 @@
 template:
   #
-  # 
+  #
   #
   - trigger:
       - trigger: time_pattern

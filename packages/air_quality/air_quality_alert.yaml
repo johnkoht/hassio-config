@@ -242,7 +242,7 @@ script:
           entity_id: fan.air_purifiers
           percentage: "{{ speed }}"
 
-  # 
+  #
   # Set the air purifier to auto
   #
   air_quality_alert_set_air_purifier_auto:

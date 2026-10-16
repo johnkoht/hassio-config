@@ -3,10 +3,10 @@ cards:
   - type: custom:button-card
     template: kohbo_page_title
     name: Main Floor
-  
-  # 
+
+  #
   # Overview Area for house mode and occupancy
-  # 
+  #
   - type: custom:mod-card
     style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
     card:
@@ -16,7 +16,7 @@ cards:
         - type: custom:button-card
           template: kohbo_chip_card_room_occupancy
           entity: binary_sensor.first_floor_occupied
-        
+
         # Lights
         - type: custom:button-card
           template: kohbo_chip_card
@@ -49,7 +49,7 @@ cards:
       - occupancy: input_boolean.office_occupied
       - room: "office"
       - room_name: Office
-      - navigation_path: '/dashboard-kohbo/office'    
+      - navigation_path: '/dashboard-kohbo/office'
       - icon: kohbo:kohbo-laptop
       - temperature: "[[[ return states['sensor.office_awair_temperature'].state ]]]"
       - humidity: "[[[ return states['sensor.office_awair_humidity'].state ]]]"
@@ -59,7 +59,7 @@ cards:
         - type: custom:button-card
           entity: light.office_ceiling_bulbs
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         # Music
         - type: custom:button-card
@@ -89,9 +89,9 @@ cards:
           template: kohbo_room_card_device
           icon: mdi:air-purifier
 
-  # 
+  #
   # Family Room
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -108,7 +108,7 @@ cards:
         - type: custom:button-card
           entity: light.family_room_main_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
 
         - type: custom:button-card
@@ -138,11 +138,11 @@ cards:
               else
                 return "kohbo:kohbo-door-closed"
             ]]]
-        
-        
-  # 
+
+
+  #
   # Kitchen
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -160,7 +160,7 @@ cards:
         - type: custom:button-card
           entity: light.kitchen_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         # Music
         - type: custom:button-card
@@ -191,9 +191,9 @@ cards:
           icon: mdi:air-purifier
 
 
-  # 
+  #
   # Playroom
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -211,13 +211,13 @@ cards:
         - type: custom:button-card
           entity: light.playroom_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         # Party Lights
         - type: custom:button-card
           entity: switch.christmas_playroom_lights
           name: Party Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-string-light
         # Music
         - type: custom:button-card
@@ -244,7 +244,7 @@ cards:
 
   #
   # Dining Room
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -262,7 +262,7 @@ cards:
         - type: custom:button-card
           entity: light.dining_room_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         # Music
         - type: custom:button-card
@@ -277,7 +277,7 @@ cards:
 
   #
   # Jr. Suite
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -295,7 +295,7 @@ cards:
         - type: custom:button-card
           entity: light.jr_suite_bedroom_main_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         # Door
         - type: custom:button-card
@@ -318,7 +318,7 @@ cards:
 
   #
   # Foyer
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -336,7 +336,7 @@ cards:
         - type: custom:button-card
           entity: light.foyer_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         # Front Door
         - type: custom:button-card
@@ -354,7 +354,7 @@ cards:
         - type: custom:button-card
           entity: lock.front_door
           name: Lock
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: >
             [[[
               if (entity.state == "locked")
@@ -365,7 +365,7 @@ cards:
 
   #
   # Mudroom
-  # 
+  #
   - type: custom:decluttering-card
     template: room_card
     variables:
@@ -382,7 +382,7 @@ cards:
         - type: custom:button-card
           entity: light.mudroom_main_lights
           name: Lights
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: kohbo:kohbo-device-lights
         - type: custom:button-card
           entity: binary_sensor.interior_garage_door
@@ -398,7 +398,7 @@ cards:
         - type: custom:button-card
           entity: lock.garage_entry_door
           name:   Lock
-          template: kohbo_room_card_device                
+          template: kohbo_room_card_device
           icon: >
             [[[
               if (entity.state == "locked")
@@ -406,5 +406,3 @@ cards:
               else
                 return "kohbo:kohbo-lock-unlocked"
             ]]]
-
-  

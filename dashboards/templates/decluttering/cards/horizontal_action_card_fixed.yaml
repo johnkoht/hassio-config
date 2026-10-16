@@ -1,9 +1,9 @@
-# 
+#
 # Horizontal Action Card Fixed
-# 
+#
 # Same as the Horizontal Action Card but fixed to
 # the bottom of the screen
-# 
+#
 horizontal_action_card_fixed:
   default:
     - template: kohbo_horizontal_action_card_entity
@@ -40,7 +40,7 @@ horizontal_action_card_fixed:
             background-color: rgb(41 45 50 / 95%);
             border-radius: 0;
           }
-        
+
     cards:
       - type: custom:button-card
         template: '[[template]]'
@@ -53,7 +53,7 @@ horizontal_action_card_fixed:
 
       - type: custom:mod-card
         card_mod:
-          style: 
+          style:
             hui-horizontal-stack-card$: |
               #root {
                 display: flex;
@@ -64,4 +64,3 @@ horizontal_action_card_fixed:
         card:
           type: horizontal-stack
           cards: '[[action_cards]]'
-            

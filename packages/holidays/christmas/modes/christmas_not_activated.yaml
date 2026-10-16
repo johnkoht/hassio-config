@@ -52,14 +52,14 @@ automation:
           message: Christmas is NO longer activate
 
 
-      # 
+      #
       # Ensure all xmas lights are OFF
       # In case something was turned on without the boolean
       # then turn them off.
-      # 
+      #
       # TODO: probably refactor this so that is a light/swtich is
       # turned on then the boolean turns on.
-      # 
+      #
       - if:
           - condition: state
             entity_id:
@@ -76,4 +76,3 @@ automation:
               - switch.christmas_playroom_lights
           - action: light.turn_off
             entity_id: light.christmas_lights
-              

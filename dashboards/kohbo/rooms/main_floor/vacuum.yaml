@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,9 +15,9 @@ cards:
       - navigation_path: /dashboard-kohbo/home
       - settings_path: '#main_floor_vacuum_settings_popup'
 
-  # 
+  #
   # Quick Actions
-  # 
+  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
     card:
@@ -29,12 +29,12 @@ cards:
         card_margin: 0px
       cards:
         - type: horizontal-stack
-          cards:            
+          cards:
             - type: custom:mushroom-chips-card
               chips:
-                # 
+                #
                 # Pause Cleaning (if running)
-                # 
+                #
                 - type: conditional
                   conditions:
                     - entity: vacuum.main_floor_vacuum
@@ -49,13 +49,13 @@ cards:
                       haptic: medium
                       data:
                         entity_id: vacuum.main_floor_vacuum
-                # 
+                #
                 # Resume Cleaning (if paused)
-                # 
+                #
                 - type: conditional
                   conditions:
                     - entity: vacuum.main_floor_vacuum
-                      state: 
+                      state:
                         - 'paused'
                         - 'idle'
                   chip:
@@ -68,13 +68,13 @@ cards:
                       haptic: medium
                       data:
                         entity_id: vacuum.main_floor_vacuum
-                # 
+                #
                 # Return to Dock (if cleaning)
-                # 
+                #
                 - type: conditional
                   conditions:
                     - entity: vacuum.main_floor_vacuum
-                      state: 
+                      state:
                         - 'cleaning'
                         - 'paused'
                         - 'idle'
@@ -88,10 +88,10 @@ cards:
                       haptic: medium
                       data:
                         entity_id: vacuum.main_floor_vacuum
-                
-                # 
+
+                #
                 # Quick Clean
-                # 
+                #
                 - type: conditional
                   conditions:
                     - entity: vacuum.main_floor_vacuum
@@ -105,9 +105,9 @@ cards:
                       navigation_path: '#main_floor_quick_clean_popup'
                       haptic: medium
 
-                # 
+                #
                 # Clean Kitchen & Family (if docked)
-                # 
+                #
                 - type: conditional
                   conditions:
                     - entity: vacuum.main_floor_vacuum
@@ -121,13 +121,13 @@ cards:
                       perform_action: script.main_level_vacuum_clean_selected_rooms
                       haptic: medium
                       data:
-                        rooms: 
+                        rooms:
                           - kitchen
                           - family_room
 
-                # 
+                #
                 # Clean Main Living (if docked)
-                # 
+                #
                 - type: conditional
                   conditions:
                     - entity: vacuum.main_floor_vacuum
@@ -141,13 +141,13 @@ cards:
                       perform_action: script.main_level_vacuum_clean_selected_rooms
                       haptic: medium
                       data:
-                        rooms: 
+                        rooms:
                           - dining_room
                           - foyer
 
-                # 
+                #
                 # Clean Office (if docked)
-                # 
+                #
                 - type: conditional
                   conditions:
                     - entity: vacuum.main_floor_vacuum
@@ -161,12 +161,12 @@ cards:
                       perform_action: script.main_level_vacuum_clean_selected_rooms
                       haptic: medium
                       data:
-                        rooms: 
+                        rooms:
                           - office
 
-  # 
+  #
   # Vacuum Status
-  # 
+  #
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -266,7 +266,7 @@ cards:
 
   #
   # Vacuum Details
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Sensors
@@ -347,9 +347,9 @@ cards:
 
 
 
-  # # 
+  # #
   # # Vacuum Actions
-  # # 
+  # #
   # - type: custom:button-card
   #   template: section_title
   #   name: Maintenance
@@ -382,27 +382,27 @@ cards:
   #       action_name: Reset
   #       name: Reset Sensors
   #       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_button_styles.yaml
-      
 
-  # 
+
+  #
   # Vacuum Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#main_floor_vacuum_settings_popup'
     close_by_clicking_outside: true
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Vacuum Settings
 
-      # 
+      #
       # Main Vacuum Nightly Cleaning
-      # 
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -422,9 +422,9 @@ cards:
                 secondary_info: last-changed
                 state_color: true
 
-      # 
+      #
       # Main Vacuum Daily Clean When House Empty
-      # 
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -466,7 +466,7 @@ cards:
                   entities:
                     - entity: input_datetime.main_level_vacuum_daily_weekday_timeframe_start
                       name: Start Time
-                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
                     - entity: input_datetime.main_level_vacuum_daily_weekday_timeframe_end
                       name: End Time
                       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
@@ -492,15 +492,15 @@ cards:
                   entities:
                     - entity: input_datetime.main_level_vacuum_daily_weekend_timeframe_start
                       name: Start Time
-                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
                     - entity: input_datetime.main_level_vacuum_daily_weekend_timeframe_end
                       name: End Time
                       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-      
-      #  
+
+      #
       # Main Vacuum Default Daily Clean Backup
-      # 
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -542,12 +542,12 @@ cards:
                   entities:
                     - entity: input_datetime.main_level_vacuum_daily_weekday_timeframe_start_if_not_empty
                       name: Start Time
-                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
 
-      #  
+      #
       # Main Vacuum Daily Weekend Timeframe
-      # 
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -581,7 +581,7 @@ cards:
                   template: kohbo_card_section_title
 
                 - type: custom:button-card
-                  name: The following sets the timeframe for when the vacuum will run an automated evening cleaning. The earliest is the start time and the latest is the end time. 
+                  name: The following sets the timeframe for when the vacuum will run an automated evening cleaning. The earliest is the start time and the latest is the end time.
                   template: kohbo_card_section_description
 
                 - type: entities
@@ -589,16 +589,16 @@ cards:
                   entities:
                     - entity: input_datetime.main_level_vacuum_evening_start_time
                       name: Start Time
-                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml                  
+                      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
                     - entity: input_datetime.main_level_vacuum_evening_end_time
                       name: End Time
                       card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-    
 
-      # 
+
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -628,19 +628,16 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-          
 
 
-
-
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
-  # 
+  #
   # Main Floor Vacuum Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/shared/main_floor_vacuum_popup.yaml
 
 
@@ -659,7 +656,7 @@ cards:
 
 
 # TODO
-#  - add dust bag replacement 
+#  - add dust bag replacement
 #   - button -> marks replaced date
 #   - reminder after 3 months of last date
 #   - button appears again

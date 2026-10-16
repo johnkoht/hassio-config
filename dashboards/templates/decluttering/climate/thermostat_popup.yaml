@@ -5,7 +5,7 @@ thermostat_popup:
     card_type: pop-up
     hash: '[[hash]]'
     close_by_clicking_outside: true
-    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 860px)
     margin_top_desktop: calc(100vh - 860px)
 
@@ -30,9 +30,9 @@ thermostat_popup:
               display: none !important;
             }
 
-      # 
+      #
       # Indoor and outside temperature
-      # 
+      #
       - type: entities
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
         entities:
@@ -50,11 +50,11 @@ thermostat_popup:
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-          
 
-      # 
+
+      #
       # Thermostat Actions
-      # 
+      #
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
@@ -81,9 +81,9 @@ thermostat_popup:
             }
 
         cards:
-          # 
+          #
           # Heat
-          # 
+          #
           - type: custom:button-card
             entity: '[[entity]]'
             name: Heat
@@ -106,9 +106,9 @@ thermostat_popup:
               data:
                 hvac_mode: heat
 
-          # 
+          #
           # Cool
-          # 
+          #
           - type: custom:button-card
             entity: '[[entity]]'
             name: Cool
@@ -130,9 +130,9 @@ thermostat_popup:
               data:
                 hvac_mode: cool
 
-          # 
+          #
           # Heat/Cool
-          # 
+          #
           - type: custom:button-card
             entity: '[[entity]]'
             name: Heat/Cool
@@ -153,9 +153,9 @@ thermostat_popup:
               data:
                 hvac_mode: heat_cool
 
-          # 
+          #
           # Eco
-          # 
+          #
           - type: custom:button-card
             entity: '[[entity]]'
             name: Eco
@@ -175,5 +175,3 @@ thermostat_popup:
                 entity_id: '[[entity]]'
               data:
                 preset_mode: eco
-
-          

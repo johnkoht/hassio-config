@@ -32,7 +32,7 @@ kohbo_aqi_item:
       #   - margin-bottom: 5px
   custom_fields:
     aqi: >
-      [[[  
+      [[[
         if (variables.aqi_status === 'Good') {
           return '<img src="/local/kohbo/images/aqi/good.png" alt="AQI Good" />'
         }
@@ -51,4 +51,3 @@ kohbo_aqi_item:
       [[[
         return variables.unit;
       ]]]
-    

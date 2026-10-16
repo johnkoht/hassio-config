@@ -1,6 +1,6 @@
 #
 # Foyer
-# 
+#
 type: custom:decluttering-card
 template: room_card
 variables:
@@ -18,7 +18,7 @@ variables:
     - type: custom:button-card
       entity: light.foyer_lights
       name: Lights
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-lights
     # Front Door
     - type: custom:button-card
@@ -36,7 +36,7 @@ variables:
     - type: custom:button-card
       entity: lock.front_door
       name: Lock
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: >
         [[[
           if (entity.state == "locked")

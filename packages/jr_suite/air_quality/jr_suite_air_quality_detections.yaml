@@ -33,4 +33,4 @@ automation:
         data:
           purifier: "{{ purifier }}"
           aqi_state: "{{ aqi_state }}"
-          room_state: "{{ room_state }}" 
+          room_state: "{{ room_state }}"

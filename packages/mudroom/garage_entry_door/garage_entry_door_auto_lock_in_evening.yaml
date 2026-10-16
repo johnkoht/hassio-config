@@ -51,9 +51,9 @@ automation:
         entity_id: lock.garage_entry_door
 
 
-# 
+#
 # Garage Entry Door Evening Lock Time
-# 
+#
 input_datetime:
   garage_entry_door_evening_lock_time:
     name: Garage Entry Door Evening Lock Time

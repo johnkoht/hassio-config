@@ -1,6 +1,6 @@
-# 
+#
 # Room Card
-# 
+#
 room_card:
   card:
     type: custom:stack-in-card
@@ -10,9 +10,9 @@ room_card:
           opacity: {{"1" if states['[[occupancy]]'].state == "on" else "0.5"}};
         }
     cards:
-      # 
+      #
       # Room State & Occupancy
-      # 
+      #
       - type: custom:decluttering-card
         template: room_card_occupancy
         variables:
@@ -20,9 +20,9 @@ room_card:
           - occupancy: '[[occupancy]]'
           - room: '[[room]]'
 
-      # 
+      #
       # Room Overview
-      # 
+      #
       - type: custom:button-card
         entity: '[[occupancy]]'
         name: '[[room_name]]'
@@ -38,9 +38,9 @@ room_card:
           navigation_path: '[[navigation_path]]'
           haptic: light
 
-      # 
+      #
       # Room Devices
-      # 
+      #
       - type: custom:stack-in-card
         mode: horizontal
         card_mod: !include /config/dashboards/templates/button_cards/base/kohbo_horizontal_stack_room_devices.yaml

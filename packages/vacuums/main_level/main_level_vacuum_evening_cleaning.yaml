@@ -19,7 +19,7 @@ automation:
       - trigger: state
         entity_id: input_boolean.guest_mode
         to: "off"
-        for: 
+        for:
           minutes: 15
         enabled: true
         id: guest_mode_off
@@ -69,7 +69,7 @@ automation:
           {% set last_run = state_attr('automation.vacuum_clean_dining_and_foyer_at_night', 'last_triggered') %}
           {% set yesterday_start = now().replace(hour=0, minute=0, second=0) - timedelta(days=1) %}
           {% set yesterday_end = now().replace(hour=0, minute=0, second=0) %}
-          {% set entertainment_yesterday = states.input_boolean.entertainment_mode.last_changed.replace(hour=0, minute=0, second=0) >= yesterday_start 
+          {% set entertainment_yesterday = states.input_boolean.entertainment_mode.last_changed.replace(hour=0, minute=0, second=0) >= yesterday_start
              and states.input_boolean.entertainment_mode.last_changed < yesterday_end %}
 
           {% if last_run != None %}
@@ -87,13 +87,12 @@ automation:
       # Only run if Sylvia has been away for more than 24 hours
       - condition: template
         value_template: >
-          {{ states('input_boolean.sylvia_home') == 'off' 
+          {{ states('input_boolean.sylvia_home') == 'off'
              and (now() - states.input_boolean.sylvia_home.last_changed).total_seconds() > 86400 }}
     actions:
       # Clean the selected rooms
       - action: script.main_level_vacuum_clean_selected_rooms
         data:
-          rooms: 
+          rooms:
             - foyer
             - dining_room
-

@@ -27,4 +27,4 @@ template:
             Moderate
           {% else %}
             Acceptable
-          {% endif %} 
+          {% endif %}

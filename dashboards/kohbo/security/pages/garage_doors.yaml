@@ -1,6 +1,6 @@
-# 
+#
 # Garage Doors
-# 
+#
 type: custom:vertical-layout
 title: Garage Doors
 path: security-garage-doors
@@ -8,33 +8,33 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
       - name: Garage Doors
       - navigation_path: /dashboard-kohbo/security
       - settings_path: '#garage_doors_settings_popup'
-  
+
   - type: custom:more-info-card
     entity: cover.garage_doors
     title: Garage Doors
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
 
 
-  # 
+  #
   # Section Title
-  # 
+  #
 
   - type: custom:button-card
     template: section_title
     name: Individual Garage Doors
 
-  # 
+  #
   # Garage Door 1
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_garage_door_card
     variables:
@@ -42,12 +42,12 @@ cards:
       - name: Door 1
       - tap_action: nothing
       - navigation_path: ""
-        
 
 
-  # 
+
+  #
   # Garage Door 1
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_garage_door_card
     variables:
@@ -56,9 +56,9 @@ cards:
       - tap_action: nothing
       - navigation_path: ""
 
-  # 
+  #
   # Garage Door 3
-  # 
+  #
   - type: custom:decluttering-card
     template: horizontal_garage_door_card
     variables:
@@ -77,9 +77,9 @@ cards:
     hours_to_show: 48
     card_mod: !include /config/dashboards/templates/includes/card_mod/logbook_card_mod.yaml
 
-  # 
+  #
   # Garage Doors Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#garage_doors_settings_popup'
@@ -93,9 +93,9 @@ cards:
         template: kohbo_popup_page_title
         name: Garage Doors Settings
 
-      # 
+      #
       # Autoclose if house is empty
-      #         
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -119,9 +119,9 @@ cards:
         name: If enabled, the garage doors will automatically close when the house is empty and the garage is in Away mode.
         template: kohbo_card_section_description
 
-      # 
+      #
       # Lock If Open Too Long Settings
-      # 
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -143,7 +143,7 @@ cards:
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 secondary_info: last-triggered
                 state_color: true
-          
+
           - type: conditional
             conditions:
               - entity: automation.garage_doors_close_when_home
@@ -169,9 +169,9 @@ cards:
             - margin-bottom: 20px
 
 
-      # 
+      #
       # Lock remotes at night
-      #         
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -197,9 +197,7 @@ cards:
 
 
 
-
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
-  

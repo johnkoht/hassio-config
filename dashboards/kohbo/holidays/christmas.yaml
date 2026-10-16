@@ -8,13 +8,12 @@ cards:
   # Christmas Season Active
   # Christmas boolean
   # christmas trees
-  
 
-  
 
-  # 
+
+  #
   # Page Header
-  # 
+  #
   - !include /config/dashboards/templates/includes/holidays/holiday_header.yaml
 
 

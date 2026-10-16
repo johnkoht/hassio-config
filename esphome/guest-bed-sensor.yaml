@@ -96,5 +96,3 @@ number:
     optimistic: true
     initial_value: 2.8
     restore_value: true
-
-    

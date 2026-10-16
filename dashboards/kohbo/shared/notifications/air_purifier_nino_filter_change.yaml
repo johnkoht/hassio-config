@@ -1,6 +1,6 @@
-# 
+#
 # Air Purifier Nino Filter Change
-# 
+#
 type: conditional
 conditions:
   - condition: numeric_state

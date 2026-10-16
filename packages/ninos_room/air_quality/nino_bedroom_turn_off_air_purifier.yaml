@@ -1,8 +1,8 @@
 # Nino's Bedroom - Turn off Air Purifier
-# 
+#
 # Automation logic to handle turning off the
 # air purifier when we don't need it
-# 
+#
 automation:
   - id: "nino_bedroom_turn_off_purifier"
     alias: Nino's Bedroom Air Quality - Turn off Purifier
@@ -14,7 +14,7 @@ automation:
         entity_id: input_boolean.house_occupied
         to: "off"
 
-      # Nino's room becomes unoccupied for 
+      # Nino's room becomes unoccupied for
       - trigger: state
         entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"

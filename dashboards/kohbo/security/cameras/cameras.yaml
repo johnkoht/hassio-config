@@ -4,14 +4,14 @@ path: security-cameras
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - !include /config/dashboards/templates/includes/security/security_header.yaml
 
-  # 
+  #
   # Front Door Camera Card
-  # 
+  #
   - type: custom:decluttering-card
     template: camera_card
     variables:
@@ -20,10 +20,10 @@ cards:
       - stream_id: front_door_low
       - motion_entity: binary_sensor.front_door_camera_motion
 
-  
-  # 
+
+  #
   # Garage Front Camera Card
-  # 
+  #
   - type: custom:decluttering-card
     template: camera_card
     variables:
@@ -33,9 +33,9 @@ cards:
       - motion_entity: binary_sensor.driveway_front_camera_motion
 
 
-  # 
+  #
   # Garage Driveway Camera Card
-  # 
+  #
   - type: custom:decluttering-card
     template: camera_card
     variables:
@@ -43,10 +43,10 @@ cards:
       - name: Garage Driveway
       - stream_id: garage_driveway
       - motion_entity: binary_sensor.garage_driveway_camera_motion
-      
-  # 
+
+  #
   # Backyard South Camera Card
-  # 
+  #
   - type: custom:decluttering-card
     template: camera_card
     variables:
@@ -54,10 +54,10 @@ cards:
       - name: Backyard South
       - stream_id: backyard_south
       - motion_entity: binary_sensor.backyard_south_camera_motion
-      
-  # 
+
+  #
   # Backyard Porch Camera Card
-  # 
+  #
   - type: custom:decluttering-card
     template: camera_card
     variables:
@@ -65,10 +65,10 @@ cards:
       - name: Backyard Porch
       - stream_id: backyard_porch
       - motion_entity: binary_sensor.backyard_porch_motion_2
-  
-  # 
+
+  #
   # Backyard Pool Camera Card
-  # 
+  #
   - type: custom:decluttering-card
     template: camera_card
     variables:
@@ -76,10 +76,10 @@ cards:
       - name: Backyard Pool
       - stream_id: backyard_pool
       - motion_entity: binary_sensor.backyard_pool_motion_2
-      
-  # 
+
+  #
   # Backyard Northwest Camera Card
-  # 
+  #
   - type: custom:decluttering-card
     template: camera_card
     variables:
@@ -89,48 +89,48 @@ cards:
       - motion_entity: binary_sensor.backyard_northwest_motion_2
 
 
-  # 
+  #
   # Front Door Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_front_door_camera_popup.yaml
 
 
-  # 
+  #
   # Driveway Front Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_driveway_front_camera_popup.yaml
 
-  # 
+  #
   # Garage Driveway Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_garage_driveway_camera_popup.yaml
 
-  # 
+  #
   # Backyard South Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_backyard_south_camera_popup.yaml
 
-  # 
+  #
   # Backyard Porch Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_backyard_porch_camera_popup.yaml
 
-  # 
+  #
   # Backyard Pool Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_backyard_pool_camera_popup.yaml
 
-  # 
+  #
   # Backyard Northwest Camera Popup
-  # 
+  #
   - !include /config/dashboards/kohbo/security/cameras/_backyard_northwest_camera_popup.yaml
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
-  # 
+  #
   # Security Settings
-  # 
+  #
   - !include /config/dashboards/kohbo/security/components/security_settings_popup.yaml

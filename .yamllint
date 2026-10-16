@@ -19,7 +19,7 @@ rules:
     max: 3
   indentation:
     spaces: 2
-    indent-sequences: consistent
+    indent-sequences: whatever
   key-duplicates: enable
   line-length: disable
   new-line-at-end-of-file: enable

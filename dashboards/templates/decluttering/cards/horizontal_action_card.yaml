@@ -1,9 +1,9 @@
-# 
+#
 # Horizontal Action Card
-# 
+#
 # This card renders a horizontal card displaying an entity, icon,
 # state, and optional action buttons.
-# 
+#
 horizontal_action_card:
   default:
     - template: kohbo_horizontal_action_card_entity
@@ -30,7 +30,7 @@ horizontal_action_card:
           ha-card {
             padding: 20px !important;
           }
-        
+
     cards:
       - type: custom:button-card
         template: '[[template]]'
@@ -43,7 +43,7 @@ horizontal_action_card:
 
       - type: custom:mod-card
         card_mod:
-          style: 
+          style:
             hui-horizontal-stack-card$: |
               #root {
                 display: flex;
@@ -54,4 +54,3 @@ horizontal_action_card:
         card:
           type: horizontal-stack
           cards: '[[action_cards]]'
-            

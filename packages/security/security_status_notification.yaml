@@ -1,7 +1,7 @@
 # Security Status Notification
-# 
+#
 # Notify me when the house security protocol is activated.
-# 
+#
 # This automation is used to notify me when the house security
 # protocol is activated. It is only triggered when the house
 # goes into bedtime mode or becomes unoccupied.
@@ -65,4 +65,4 @@ automation:
           title: Home Security - Shields Up
           devices: "jk"
           priority: "time-sensitive"
-          tag: "home-security" 
+          tag: "home-security"

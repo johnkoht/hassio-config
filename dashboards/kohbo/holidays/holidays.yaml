@@ -10,11 +10,11 @@ cards:
   #  - windows
   #  - leak sensors
   #  - motion
-  #  - 
+  #  -
 
-  # 
+  #
   # Page Header
-  # 
+  #
   - !include /config/dashboards/templates/includes/holidays/holiday_header.yaml
 
 

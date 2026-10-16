@@ -1,10 +1,10 @@
-# 
-# 
+#
+#
 # Garage Entry Door - Lock If Open Too Long
-# 
+#
 # This automation will lock the garage entry door
 # if it's been unlocked for too long.
-# 
+#
 automation:
   - id: "garage_entry_door_lock_if_open_too_long"
     alias: "Garage Entry Door - Lock If Open Too Long"
@@ -21,15 +21,15 @@ automation:
       - trigger: state
         entity_id: binary_sensor.interior_garage_door
         to: "off"
-        for: 
+        for:
           minutes: "{{ states.input_number.garage_entry_door_auto_lock_timeout.state | int }}"
     conditions:
-      - and: 
+      - and:
           # Garage entry door has been closed for a while
           - condition: state
             entity_id: binary_sensor.interior_garage_door
             state: "off"
-            for: 
+            for:
               minutes: "{{ states.input_number.garage_entry_door_auto_lock_timeout.state | int }}"
           # Garage entry door is unlocked
           - condition: state
@@ -51,9 +51,9 @@ automation:
 
 
 
-# 
+#
 # Garage Entry Door Auto Lock Timeout
-# 
+#
 input_number:
   garage_entry_door_auto_lock_timeout:
     name: Garage Entry Door Auto Lock Timeout
@@ -64,4 +64,3 @@ input_number:
     step: 1
     unit_of_measurement: minutes
     mode: box
-  

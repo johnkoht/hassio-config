@@ -1,9 +1,9 @@
-# 
+#
 # House Sensor
-# 
+#
 # This sensor provides a unified object representation of the House
 # with occupancy state and various attributes based on room sensors.
-# 
+#
 template:
   - sensor:
       - name: "House"
@@ -11,10 +11,10 @@ template:
         state: "{{ states.input_boolean.house_occupied.state }}"
         attributes:
           mode: "{{ states.input_select.house.state }}"
-          
+
           # Room sensor entity IDs
           rooms: >
-            {{ 
+            {{
               expand('group.room_sensors')
               | map(attribute='entity_id')
               | list
@@ -23,7 +23,7 @@ template:
 
           # Occupied room sensor entity IDs
           occupied_rooms: >
-            {{ 
+            {{
               expand('group.room_sensors')
               | selectattr('state', 'eq', 'on')
               | map(attribute='entity_id')
@@ -32,7 +32,7 @@ template:
             }}
 
           occupied_rooms_count: >
-            {{ 
+            {{
               expand('group.room_sensors')
               | selectattr('state', 'eq', 'on')
               | map(attribute='entity_id')
@@ -42,7 +42,7 @@ template:
 
           # Unoccupied room sensor entity IDs
           unoccupied_rooms: >
-            {{ 
+            {{
               expand('group.room_sensors')
               | selectattr('state', 'eq', 'off')
               | map(attribute='entity_id')
@@ -51,7 +51,7 @@ template:
             }}
 
           unoccupied_rooms_count: >
-            {{ 
+            {{
               expand('group.room_sensors')
               | selectattr('state', 'eq', 'off')
               | map(attribute='entity_id')
@@ -59,13 +59,13 @@ template:
               | length
             }}
 
-# 
+#
 # House Areas Group (Legacy - kept for backward compatibility)
-# 
+#
 # This group is maintained for backward compatibility with existing
 # automations and sensors that reference input_boolean entities directly.
 # New code should use group.room_sensors instead.
-# 
+#
 group:
   house_areas:
     name: House Areas

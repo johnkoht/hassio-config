@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,10 +15,10 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-upper-floor
       - settings_path: '#upstairs_hallway_settings_popup'
 
-            
-  # 
+
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
@@ -26,9 +26,9 @@ cards:
       - mode: input_select.upstairs_hallway
       - ble_presence: sensor.upstairs_hallway_people_list
 
-  # 
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -44,7 +44,7 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-  
+
   # Picture Lights
   - type: tile
     entity: light.upstairs_hallway_picture_lights
@@ -68,7 +68,7 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-  
+
   # Nightlight
   - type: tile
     entity: light.upstairs_hallway_nightlight_light
@@ -82,9 +82,9 @@ cards:
     vertical: false
 
 
-  # 
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -118,12 +118,12 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_3_power
-      
 
 
-  # 
+
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -152,11 +152,11 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-  
 
-  # 
+
+  #
   # Upper Floor Thermostat Popup
-  # 
+  #
   - type: custom:decluttering-card
     template: thermostat_popup
     variables:
@@ -168,9 +168,9 @@ cards:
       - outside_temperature_sensor: sensor.tempest_temperature
 
 
-  # 
+  #
   # Upstairs Hallway Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#upstairs_hallway_settings_popup'
@@ -178,18 +178,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 650px)
     margin_top_desktop: calc(100vh - 650px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -211,7 +211,7 @@ cards:
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

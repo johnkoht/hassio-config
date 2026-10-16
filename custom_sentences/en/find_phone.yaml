@@ -1,8 +1,8 @@
-# 
+#
 # Find Phone Custom Sentences
-# 
+#
 # Custom sentences to trigger the Find My Phone feature via voice assistants.
-# 
+#
 
 language: "en"
 intents:

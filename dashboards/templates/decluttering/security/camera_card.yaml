@@ -1,6 +1,6 @@
-# 
+#
 # Camera Card
-# 
+#
 camera_card:
   card:
     type: custom:advanced-camera-card

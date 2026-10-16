@@ -1,12 +1,12 @@
-# 
+#
 # Family Room Sensor
-# 
+#
 # This sensor provides a unified object representation of the Family Room
 # with occupancy state and various attributes for use in dashboards,
 # automations, and scripts.
-# 
+#
 # Note: Named "family_room" (not "family_room_room") since room name already ends in "_room"
-# 
+#
 template:
   - sensor:
       - name: "Family Room"
@@ -15,13 +15,13 @@ template:
         attributes:
           # Room mode (Auto, Off, DND, etc.)
           mode: "{{ states('input_select.family_room') }}"
-          
+
           # Icon (hardcoded for now)
           icon: "kohbo:kohbo-chair"
-          
+
           # Navigation
           permalink: "/dashboard-kohbo/rooms-family-room"
-          
+
           # Climate sensors (conditional - only if sensor exists and is available)
           temperature: >
             {% if states('sensor.kitchen_awair_temperature') not in ['unavailable', 'unknown', ''] %}
@@ -41,7 +41,7 @@ template:
             {% else %}
               ""
             {% endif %}
-          
+
           # Occupancy tracking
           last_changed: >
             {% if states.input_boolean.family_room_occupied.last_changed %}
@@ -61,7 +61,7 @@ template:
             {% else %}
               0
             {% endif %}
-          
+
           # People in room (from existing people list sensor)
           people: "{{ state_attr('sensor.family_room_people_list', 'people') | default([]) }}"
           people_count: "{{ states('sensor.family_room_people_list') | int | default(0) }}"

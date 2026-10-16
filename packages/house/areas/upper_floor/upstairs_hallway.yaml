@@ -1,6 +1,6 @@
-# 
+#
 # Upstairs Hallway Sensor
-# 
+#
 template:
   - sensor:
       - name: "Upstairs Hallway"

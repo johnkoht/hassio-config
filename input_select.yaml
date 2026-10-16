@@ -7,7 +7,7 @@ john_status_dropdown:
     - Away
     - Extended Away
   initial: Home
-  
+
 cristina_status_dropdown:
   name: Cristina
   options:
