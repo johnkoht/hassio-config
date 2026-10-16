@@ -25,6 +25,10 @@ routes:
       - url: /dashboard-kohbo/rooms-main-bedroom
         icon: kohbo:kohbo-bed-king
         label: Main Bedroom
+      # Main Bathroom quick link
+      - url: /dashboard-kohbo/rooms-main-bathroom
+        icon: mdi:shower
+        label: Main Bathroom
       # Nino's Bedroom quick link
       - url: /dashboard-kohbo/rooms-ninos-bedroom
         icon: kohbo:kohbo-bed-single
