@@ -1,0 +1,33 @@
+# Halloween Hue Scene
+#
+# Apply the Halloween colors to the front yard Hue spots when the
+# season starts, and whenever the accent lights come on in season.
+#
+
+automation:
+  - id: "halloween_hue_scene"
+    alias: "Halloween - Front Yard Hue Scene"
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.halloween_season_active
+        to: "on"
+      - trigger: state
+        entity_id: input_boolean.exterior_accent_lights
+        to: "on"
+    conditions:
+      # Halloween season is ACTIVE
+      - condition: state
+        entity_id: input_boolean.halloween_season_active
+        state: "on"
+      # Accent lights are on (a Hue scene turns lights on, so not in daylight)
+      - condition: state
+        entity_id: input_boolean.exterior_accent_lights
+        state: "on"
+    actions:
+      # Let the accent lights turn_on land before the scene
+      - delay:
+          seconds: 5
+      - action: scene.turn_on
+        target:
+          entity_id: scene.front_yard_halloween

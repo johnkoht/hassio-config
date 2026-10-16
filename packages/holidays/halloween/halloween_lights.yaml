@@ -1,34 +1,40 @@
+# Halloween Lights
+#
+# Power the front yard inflatables on in the morning during
+# Halloween season, and off at 10pm or bedtime.
+#
+
 automation:
   # Halloween Lights - TURN ON
   #
   - id: "halloween_lights_turn_on"
     alias: Halloween Lights - Turn On
     mode: "single"
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
       # At 8am
-      - platform: time
+      - trigger: time
         at: "08:00:00"
-    condition:
+    conditions:
       # Halloween season is ACTIVE
       - condition: state
         entity_id: input_boolean.halloween_season_active
         state: "on"
-      # Switch is currently OFF
-      - condition: state
-        entity_id:
-          - switch.front_door_smart_plug_1
-          - switch.front_door_smart_plug_2
-          - switch.front_left_smart_plug_2
-        state: "off"
-    action:
-      # Turn the smart plug switch ON
+      # Any plug is currently OFF
+      - condition: template
+        value_template: >
+          {{ ['switch.front_door_smart_plug', 'switch.front_door_smart_plug_2',
+              'switch.front_left_smart_plug', 'switch.front_left_smart_plug_2']
+             | select('is_state', 'off') | list | count > 0 }}
+    actions:
       - action: switch.turn_on
-        entity_id:
-          - switch.front_door_smart_plug_1
-          - switch.front_door_smart_plug_2
-          - switch.front_left_smart_plug_2
+        target:
+          entity_id:
+            - switch.front_door_smart_plug
+            - switch.front_door_smart_plug_2
+            - switch.front_left_smart_plug
+            - switch.front_left_smart_plug_2
 
   #
   #
@@ -37,28 +43,28 @@ automation:
   - id: "halloween_lights_turn_off"
     alias: Halloween Lights - Turn Off
     mode: "single"
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
       # At 10pm
-      - platform: time
+      - trigger: time
         at: "22:00:00"
       # Bedtime mode is enabled
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
-    condition:
-      # Switch is currently ON
-      - condition: state
-        entity_id:
-          - switch.front_door_smart_plug_1
-          - switch.front_door_smart_plug_2
-          - switch.front_left_smart_plug_2
-        state: "on"
-    action:
-      # Turn the smart plug switch ON
+    conditions:
+      # Any plug is currently ON
+      - condition: template
+        value_template: >
+          {{ ['switch.front_door_smart_plug', 'switch.front_door_smart_plug_2',
+              'switch.front_left_smart_plug', 'switch.front_left_smart_plug_2']
+             | select('is_state', 'on') | list | count > 0 }}
+    actions:
       - action: switch.turn_off
-        entity_id:
-          - switch.front_door_smart_plug_1
-          - switch.front_door_smart_plug_2
-          - switch.front_left_smart_plug_2
+        target:
+          entity_id:
+            - switch.front_door_smart_plug
+            - switch.front_door_smart_plug_2
+            - switch.front_left_smart_plug
+            - switch.front_left_smart_plug_2
