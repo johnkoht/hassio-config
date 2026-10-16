@@ -34,14 +34,37 @@ def test_no_pre_migration_plug_ids():
         assert "switch.front_door_smart_plug_1" not in path.read_text(), path
 
 
+GROUP = "switch.front_yard_holiday_decorations"
+
+
+def test_decorations_group_is_the_four_plugs():
+    content = yaml.safe_load((REPO / "packages/holidays/front_yard_holiday_decorations.yaml").read_text())
+    (group,) = content["switch"]
+    assert sorted(group["entities"]) == sorted(INFLATABLE_PLUGS)
+
+
+def test_plug_ids_only_live_in_the_group():
+    """One place to fix the next rename; the Hue power plugs stay out of holiday files."""
+    for path in (REPO / "packages/holidays").rglob("*.yaml"):
+        text = path.read_text()
+        for plug in HUE_POWER_PLUGS:
+            assert plug not in text, path
+        if path.name != "front_yard_holiday_decorations.yaml":
+            for plug in INFLATABLE_PLUGS:
+                assert f"{plug}\n" not in text and f"{plug} " not in text, (path, plug)
+
+
+def test_christmas_uses_the_group():
+    content = yaml.safe_load((REPO / "packages/holidays/christmas/lights/christmas_lights_group.yaml").read_text())
+    christmas = next(g for g in content["switch"] if g["unique_id"] == "christmas_lights")
+    assert GROUP in christmas["entities"]
+
+
 @pytest.mark.parametrize("auto_id", ["halloween_lights_turn_on", "halloween_lights_turn_off"])
-def test_halloween_lights_target_inflatables_only(auto_id):
+def test_halloween_lights_target_the_group(auto_id):
     auto = automations(HALLOWEEN / "halloween_lights.yaml")[auto_id]
     (action,) = auto["actions"]
-    assert sorted(action["target"]["entity_id"]) == sorted(INFLATABLE_PLUGS)
-    text = yaml.safe_dump(auto)
-    for plug in HUE_POWER_PLUGS:
-        assert plug not in text
+    assert action["target"]["entity_id"] == GROUP
 
 
 def test_halloween_hue_scene_only_when_accent_lights_on():

@@ -21,20 +21,10 @@ automation:
       - condition: state
         entity_id: input_boolean.halloween_season_active
         state: "on"
-      # Any plug is currently OFF
-      - condition: template
-        value_template: >
-          {{ ['switch.front_door_smart_plug', 'switch.front_door_smart_plug_2',
-              'switch.front_left_smart_plug', 'switch.front_left_smart_plug_2']
-             | select('is_state', 'off') | list | count > 0 }}
     actions:
       - action: switch.turn_on
         target:
-          entity_id:
-            - switch.front_door_smart_plug
-            - switch.front_door_smart_plug_2
-            - switch.front_left_smart_plug
-            - switch.front_left_smart_plug_2
+          entity_id: switch.front_yard_holiday_decorations
 
   #
   #
@@ -54,17 +44,11 @@ automation:
         entity_id: input_boolean.bedtime
         to: "on"
     conditions:
-      # Any plug is currently ON
-      - condition: template
-        value_template: >
-          {{ ['switch.front_door_smart_plug', 'switch.front_door_smart_plug_2',
-              'switch.front_left_smart_plug', 'switch.front_left_smart_plug_2']
-             | select('is_state', 'on') | list | count > 0 }}
+      # Any decoration is currently ON
+      - condition: state
+        entity_id: switch.front_yard_holiday_decorations
+        state: "on"
     actions:
       - action: switch.turn_off
         target:
-          entity_id:
-            - switch.front_door_smart_plug
-            - switch.front_door_smart_plug_2
-            - switch.front_left_smart_plug
-            - switch.front_left_smart_plug_2
+          entity_id: switch.front_yard_holiday_decorations
