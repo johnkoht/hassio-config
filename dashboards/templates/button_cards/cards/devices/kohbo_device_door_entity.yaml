@@ -9,8 +9,9 @@ kohbo_device_door_entity:
     ]]]
   state_display: |
     [[[
-      // Get the list of door entities from the group
-      const doorEntities = entity.attributes.entity_id || [];
+      // Group members, or the entity itself for a single door sensor
+      const members = entity.attributes.entity_id;
+      const doorEntities = (Array.isArray(members) && members.length) ? members : [entity.entity_id];
       const totalDoors = doorEntities.length;
 
       // Count how many doors are open
