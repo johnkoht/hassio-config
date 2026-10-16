@@ -1,17 +1,20 @@
+# John is Commuting
+#
+# Flags the commute once John has been at a commute station for 2 minutes.
+#
+
 automation:
   - id: "john_is_commuting"
     alias: "John is Commuting"
     initial_state: on
-    trigger:
-      # Location changes to a train station for 2 mins
-      - platform: state
+    triggers:
+      # Location state changed and held for 2 mins (attribute-only updates ignored)
+      - trigger: state
         entity_id: person.john_koht
-        to:
-          - "Morton Grove Train Station"
-          - "Union Station"
+        to: ~
         for:
           minutes: 2
-    condition:
+    conditions:
       # John is not home
       - condition: state
         entity_id: input_boolean.john_home
@@ -20,10 +23,18 @@ automation:
       - condition: state
         entity_id: input_boolean.john_commuting
         state: "off"
-    action:
+      # At one of the commute stations
+      - condition: zone
+        entity_id: person.john_koht
+        zone:
+          - !secret commute_midway_station_zone
+          - !secret commute_city_station_zone
+    actions:
       # Turn ON the boolean
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.john_commuting
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.john_commuting
       # Turn ON the automation to turn off commuting
-      - service: automation.turn_on
-        entity_id: automation.john_is_not_commuting
+      - action: automation.turn_on
+        target:
+          entity_id: automation.john_is_not_commuting

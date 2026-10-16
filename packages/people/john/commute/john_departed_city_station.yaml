@@ -1,17 +1,18 @@
-# Off by default, should be turned on if I leave
-# the Golf or Glenview train station
+# John Departed City Station
 #
+# Off by default; armed by the morning arrival. Announces the train home.
+#
+
 automation:
-  - id: "john_departed_union_station"
-    alias: "John Departed Union Station"
+  - id: "john_departed_city_station"
+    alias: "John Departed City Station"
     initial_state: off
-    trigger:
-      # Entered the untion station zone
-      - platform: zone
+    triggers:
+      - trigger: zone
         entity_id: person.john_koht
-        zone: zone.union_station
+        zone: !secret commute_city_station_zone
         event: leave
-    condition:
+    conditions:
       # John is not home
       - condition: state
         entity_id: input_boolean.john_home
@@ -23,9 +24,9 @@ automation:
       - condition: state
         entity_id: input_boolean.john_commuting
         state: "on"
-    action:
+    actions:
       # Announcement
-      - service: script.voice_announcement
+      - action: script.voice_announcement
         data:
           media_players: auto
           sound: "arcade"
@@ -33,7 +34,7 @@ automation:
           speech_message: >-
             {{
               [
-                "Attention! Baba just left Union Station.",
+                "Attention! Baba just left " ~ trigger.zone.attributes.friendly_name ~ ".",
                 "Pardon the interruption, but Baba is on the train headed home.",
                 "Just a friendly note that Baba's train has departed."
               ] | random
