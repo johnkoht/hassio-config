@@ -34,3 +34,5 @@ ignore: |
   www/
   esphome/.esphome/
   node_modules/
+  # Agent worktrees are full repo copies
+  .claude/
