@@ -132,8 +132,8 @@ def test_plants_flag_dry_soil_only():
         "sensor.small_plant_soil_moisture": "95",
         "sensor.large_plant_soil_moisture": "17.75",
     })
-    assert "the plant with the moisture sensor is very dry at 8 percent" in out
-    assert "the large plant is getting dry at 18 percent" in out
+    assert "the office plant is very dry at 8 percent" in out
+    assert "the large kitchen plant is getting dry at 18 percent" in out
     assert "small plant" not in out
     assert "dry" not in render(brief_section("PLANTS"), states={
         "sensor.large_plant_soil_moisture": "unavailable"})

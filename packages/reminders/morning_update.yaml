@@ -233,9 +233,9 @@ script:
 
             ### PLANTS
             {% set plants = {
-              'sensor.plant_moisture_sensor_soil_moisture': 'the plant with the moisture sensor',
-              'sensor.small_plant_soil_moisture': 'the small plant',
-              'sensor.large_plant_soil_moisture': 'the large plant'
+              'sensor.plant_moisture_sensor_soil_moisture': 'the office plant',
+              'sensor.small_plant_soil_moisture': 'the small kitchen plant',
+              'sensor.large_plant_soil_moisture': 'the large kitchen plant'
             } %}
             {% for entity, name in plants.items() if has_value(entity) %}
               {% set moisture = states(entity) | float(100) %}
