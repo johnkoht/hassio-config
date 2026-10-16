@@ -80,6 +80,7 @@ The dashboard is organized into the following main sections:
 - **Upper Floor Index** (`rooms/upper_floor/upper_floor_index.yaml`)
   - Upper floor overview
 - **Main Bedroom** (`rooms/upper_floor/main_bedroom.yaml`)
+- **Main Bathroom** (`rooms/upper_floor/main_bathroom.yaml`)
 - **Nino's Bedroom** (`rooms/upper_floor/ninos_bedroom.yaml`)
 - **Gianluca's Bedroom** (`rooms/upper_floor/gianlucas_bedroom.yaml`)
 - **Upstairs Hallway** (`rooms/upper_floor/upstairs_hallway.yaml`)
@@ -191,6 +192,7 @@ kohbo Dashboard
 │   ├── Upper Floor
 │   │   ├── Upper Floor Index
 │   │   ├── Main Bedroom
+│   │   ├── Main Bathroom
 │   │   ├── Nino's Bedroom
 │   │   ├── Gianluca's Bedroom
 │   │   └── Upstairs Hallway
@@ -291,4 +293,4 @@ dashboards/kohbo/
 
 ---
 
-*Last updated: January 24, 2026*
+*Last updated: October 15, 2026*

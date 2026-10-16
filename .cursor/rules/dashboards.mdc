@@ -576,7 +576,7 @@ Use the appropriate device template for consistent styling:
 | `kohbo_device_entity` | Generic devices |
 | `kohbo_device_air_purifier_entity` | Air purifiers |
 | `kohbo_device_smart_plug_entity` | Smart plugs |
-| `kohbo_device_door_entity` | Door sensors |
+| `kohbo_device_door_entity` | Door group or single door sensor |
 | `kohbo_device_window_entity` | Window sensors |
 | `kohbo_device_leak_entity` | Leak sensors |
 | `kohbo_device_lock_entity` | Locks |
