@@ -34,8 +34,8 @@ cards:
 
   #
   # Climate Overview
-  # Temperature and humidity are the bathroom's own. CO2 and VOCs
-  # come from the adjacent main bedroom Awair.
+  # Temperature and humidity are the bathroom's own. CO2, VOCs and
+  # PM2.5 come from the adjacent main bedroom Awair.
   #
   - type: custom:decluttering-card
     template: climate_overview
@@ -44,6 +44,7 @@ cards:
       - humidity_sensor: sensor.main_bathroom_humidity
       - carbon_dioxide_sensor: sensor.main_bedroom_awair_carbon_dioxide
       - vocs_sensor: sensor.main_bedroom_awair_vocs
+      - pm25_sensor: sensor.main_bedroom_awair_pm2_5
       - room_name: Main Bathroom
 
 
@@ -129,7 +130,6 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_12_active_power
-          confirmation: true
 
       # Hair Dryer
       - type: custom:button-card
@@ -138,7 +138,6 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_13_active_power
-          confirmation: true
 
 
   #
@@ -198,73 +197,28 @@ cards:
         name: Automations
       - type: entities
         entities:
-          - entity: automation.main_bathroom_occupied
-            name: Occupied
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_not_occupied
-            name: Not Occupied
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_mode_auto
-            name: Mode Auto
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_mode_bedtime
-            name: Mode Bedtime
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_mode_off
-            name: Mode Off
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
           - entity: automation.main_bathroom_lights_motion_on
-            name: Lights Motion On
+            name: Motion Lights
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
           - entity: automation.main_bathroom_bedtime_motion_on
-            name: Bedtime Motion On
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_lights_off
-            name: Lights Off
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_lights_manually_turned_off
-            name: Lights Manually Turned Off
+            name: Bedtime Night Light
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
           - entity: automation.main_bathroom_shower_occupied
-            name: Shower Occupied
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_shower_not_occupied
-            name: Shower Not Occupied
-            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: automation.main_bathroom_set_initial_humidity
-            name: Set Initial Humidity
+            name: Shower Detection
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
           - entity: automation.main_bathroom_turn_on_outlets
-            name: Turn On Outlets
+            name: Outlets On When Occupied
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
           - entity: automation.main_bathroom_turn_off_outlets
-            name: Turn Off Outlets
+            name: Outlets Off When Empty
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
@@ -305,26 +259,6 @@ cards:
             state_color: true
           - entity: input_boolean.main_bathroom_lights_auto
             name: Lights Auto
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-            secondary_info: last-changed
-            state_color: true
-          - entity: light.main_bathroom_main_lights
-            name: Main Lights
-            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-            secondary_info: last-changed
-            state_color: true
-
-      #
-      # Scripts
-      #
-      - type: custom:button-card
-        template: section_title
-        name: Scripts
-      - type: entities
-        entities:
-          - entity: script.main_bathroom_activate_bedtime_lighting_mode
-            name: Bedtime Lighting
-            icon: mdi:weather-night
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
