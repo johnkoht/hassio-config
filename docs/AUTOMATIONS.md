@@ -54,7 +54,7 @@ Here are some of my favorite and most useful automations:
 
 - **[Announcing when somebody is at the grocery store](https://github.com/johnkoht/hassio-config/blob/master/packages/places/grocery_store_announcement.yaml)**: whenever somebody is at a grocery store, a TTS message will broadcast across the house to let everybody know...in case I need some more Oreos, ya know?
 - **[Reminders](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders)**: Most of our calendars are integrated into HA and used for TTS reminders. For example birthdays, famliy calendar events, garbage day, robot vacuum maintenance, and much more.
-- **[Morning Update for the Family](https://github.com/johnkoht/hassio-config/blob/master/packages/reminders/morning_update.yaml)**: Every morning, a TTS message is broadcast at just the right time (or pretty close). This message contains weather info, school, calendar events, and much more.
+- **[Morning Update for the Family](https://github.com/johnkoht/hassio-config/blob/master/packages/reminders/morning_update.yaml)**: Every morning, a TTS message is broadcast at just the right time (or pretty close). This message contains weather info, school, calendar events, holiday flair from the US holidays calendar, indoor plants that need water, and much more. Lines aimed at one person (umbrella, train, Mother's/Father's Day) only play when that person is home.
 - **[John's Daily Report](https://github.com/johnkoht/hassio-config/blob/master/packages/people/john/daily_report/john_daily_report.yaml)**: every morning when I start my work day, I get a TTS notification in the office that tells me about my day, next meeting, sleep score, and more.
 
 ### Miscellaneous
