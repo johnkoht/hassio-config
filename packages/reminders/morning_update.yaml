@@ -49,6 +49,16 @@ script:
 
     sequence:
       #
+      # Today's holidays drive the brief's tone
+      - action: calendar.get_events
+        continue_on_error: true
+        target:
+          entity_id: calendar.holidays_in_united_states
+        data:
+          start_date_time: "{{ today_at('00:00') }}"
+          end_date_time: "{{ today_at('00:00') + timedelta(days=1) }}"
+        response_variable: holidays
+      #
       # Use ChatGPT to get the daily briefing
       #
       - action: conversation.process
@@ -63,6 +73,7 @@ script:
             - Lunch menu highlights
             - Birthdays (only if there are any)
             - Air quality (only if poor or under alert)
+            - Indoor plants that need water (only if any are listed)
             - Fun holiday flair
 
             Avoid emojis, lists, or symbols like &, #, or similar. Use full sentences only. Keep everything in one single paragraph with no line breaks. 
@@ -72,22 +83,35 @@ script:
             Today's date: {{ now() }}
 
             ### HOLIDAY PERSONALITY
-            {% set today = now().strftime('%m-%d') %}
-            {% if today == '10-31' %}
-              Use a spooky and fun Halloween tone — be playful and mischievous, like a friendly ghost.
-            {% elif today == '12-25' %}
-              Use a cheerful, festive Christmas tone — think Santa vibes with a "Ho ho ho! Merry Christmas, Koht family!"
-            {% elif today == '12-31' %}
-              Use a cheerful, festive New Year's Eve tone — think New Year's Eve vibes with a "Happy New Year, Koht family!"
-            {% elif today == '11-28' %}
-              Use a warm, grateful Thanksgiving tone — mention gratitude and family.
-            {% elif today == '04-01' %}
+            {% set day = now().strftime('%Y-%m-%d') %}
+            {% set events = (holidays | default({})).get('calendar.holidays_in_united_states', {}).get('events', []) %}
+            {% set names = events | selectattr('start', 'search', '^' ~ day) | map(attribute='summary')
+                           | reject('search', 'substitute') | list %}
+            {% if now().strftime('%m-%d') == '04-01' %}
               It's April Fool's Day! Make it funny with one or two playful pranks, like silly weather or "Enderdragon burgers" for Nino's lunch.
-            {% elif today == '05-12' and is_state('input_boolean.cristina_home', 'on') %}
-              It's Mother's Day — be extra sweet and thankful to Cristina.
-            {% elif today == '06-16' and is_state('input_boolean.john_home', 'on') %}
-              It's Father's Day — make John feel like the hero of the day.
             {% endif %}
+            {% for name in names %}
+              {% set n = name | lower %}
+              {% if 'halloween' in n %}
+              Use a spooky and fun Halloween tone — be playful and mischievous, like a friendly ghost.
+              {% elif 'christmas day' in n %}
+              Use a cheerful, festive Christmas tone — think Santa vibes with a "Ho ho ho! Merry Christmas, Koht family!"
+              {% elif "new year's eve" in n %}
+              Use a cheerful, festive New Year's Eve tone — think New Year's Eve vibes with a "Happy New Year, Koht family!"
+              {% elif 'thanksgiving' in n %}
+              Use a warm, grateful Thanksgiving tone — mention gratitude and family.
+              {% elif 'mother' in n %}
+                {% if is_state('input_boolean.cristina_home', 'on') %}
+              It's Mother's Day — be extra sweet and thankful to Cristina.
+                {% endif %}
+              {% elif 'father' in n %}
+                {% if is_state('input_boolean.john_home', 'on') %}
+              It's Father's Day — make John feel like the hero of the day.
+                {% endif %}
+              {% else %}
+              Today is {{ name }} — add a light touch of holiday flair if it fits.
+              {% endif %}
+            {% endfor %}
 
             ---
 
@@ -204,6 +228,23 @@ script:
             {% elif gian_days == 0 %}
             Happy birthday Gianluca! Hope you're ready for cake and fun!
             {% endif %}
+
+            ---
+
+            ### PLANTS
+            {% set plants = {
+              'sensor.plant_moisture_sensor_soil_moisture': 'the plant with the moisture sensor',
+              'sensor.small_plant_soil_moisture': 'the small plant',
+              'sensor.large_plant_soil_moisture': 'the large plant'
+            } %}
+            {% for entity, name in plants.items() if has_value(entity) %}
+              {% set moisture = states(entity) | float(100) %}
+              {% if moisture < 10 %}
+            The soil for {{ name }} is very dry at {{ moisture | round(0) | int }} percent. Say it needs water today.
+              {% elif moisture < 20 %}
+            The soil for {{ name }} is getting dry at {{ moisture | round(0) | int }} percent. Suggest watering it soon.
+              {% endif %}
+            {% endfor %}
 
             ---
 
