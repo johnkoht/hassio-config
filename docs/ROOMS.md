@@ -38,7 +38,7 @@ Rooms become occupied when any of these are detected:
 
 - **Motion sensors** - Primary trigger for most rooms
 - **Presence sensors** - mmWave/PIR sensors that detect stationary presence
-- **BLE room presence** - ESPresense tracking phones/watches
+- **BLE room presence** - Bermuda tracking phones/watches
 - **Door sensors** - Door closed often means occupied (bedrooms)
 - **Bed sensors** - FSR sensors detect bed occupancy
 - **Lights on** - Manual light activation implies presence
@@ -74,7 +74,7 @@ The Office is the most advanced room in my house (mostly because nobody complain
 
 ### A Day in the Life
 
-**8:30 AM - The Office Wakes Up**
+**Morning - The Office Wakes Up**
 
 I walk into the office. The motion sensor triggers, and `input_boolean.office_occupied` turns on. The room is in **Auto** mode, so automations kick in:
 
@@ -82,7 +82,7 @@ I walk into the office. The motion sensor triggers, and `input_boolean.office_oc
 - The Office detects John is present and working → music starts playing softly
 - Adaptive lighting adjusts color temperature for morning focus
 
-**9:15 AM - A Call Comes In**
+**A Call Comes In**
 
 My calendar shows a meeting starting. My laptop camera turns on. The Office detects I'm on a call and transitions to **DnD** mode:
 
@@ -91,7 +91,7 @@ My calendar shows a meeting starting. My laptop camera turns on. The Office dete
 - TTS notifications are disabled → no "John, dinner's ready!" mid-presentation
 - The El Gato camera light turns on (synced with my laptop camera)
 
-**10:00 AM - Back to Work**
+**Back to Work**
 
 The call ends. My laptop camera turns off. The Office transitions back to **Auto** mode:
 
@@ -99,7 +99,7 @@ The call ends. My laptop camera turns off. The Office transitions back to **Auto
 - Music resumes
 - TTS notifications are re-enabled
 
-**12:30 PM - Lunch Break**
+**Lunch Break**
 
 I leave for lunch. After a few minutes with no motion or presence detected, `input_boolean.office_occupied` turns off:
 
@@ -107,7 +107,7 @@ I leave for lunch. After a few minutes with no motion or presence detected, `inp
 - Music stops
 - The room waits patiently for my return
 
-**1:15 PM - Back to Work**
+**Back Again**
 
 Motion detected. Occupied again. The cycle continues.
 
@@ -164,6 +164,7 @@ Room modes respond to house-level changes:
 
 - When `input_boolean.house_occupied` turns off → Rooms transition to Away
 - When everyone is sleeping → Bedrooms transition to Bedtime
+- When the house comes back from Away with a kid still in bed → that kid's bedroom returns to Bedtime
 - When `input_boolean.guest_mode` is on → Some automations are modified
 
 ---

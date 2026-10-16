@@ -27,7 +27,7 @@ My house has in-ceiling speakers throughout the house and some outdoor speakers.
 - [Exterior lights turning on/off](https://github.com/johnkoht/hassio-config/blob/master/packages/outdoor_lighting.yaml)
 - [Announce arrival and departure of family](https://github.com/johnkoht/hassio-config/blob/master/packages/people/announcements/person_announcement_script.yaml)
 - [Washer or Dryer is finished](https://github.com/johnkoht/hassio-config/tree/master/packages/laundry/main_level_washer)
-- [School day announcement, dropoff/pickup reminders](https://github.com/johnkoht/hassio-config/blob/master/packages/school/school_day_reminder.yaml)
+- [School day announcement, five-minute departure warning, dropoff/pickup reminders (skipped when a kid is home sick)](https://github.com/johnkoht/hassio-config/tree/master/packages/school/reminders)
 - [Calendar reminder (upcoming or next day)](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders)
 - [Commuting notifications (arrived at station, heading home, train five mins away)](https://github.com/johnkoht/hassio-config/tree/master/packages/people/john/commute)
 - [Garbage day](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders/garbage_day)
