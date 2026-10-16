@@ -1,0 +1,335 @@
+# Main Bathroom
+#
+# Room page for the main bathroom: climate, lights, devices,
+# quick settings and a settings popup.
+#
+type: custom:vertical-layout
+title: Main Bathroom
+path: rooms-main-bathroom
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  #
+  # Page Header
+  #
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Main Bathroom
+      - navigation_path: /dashboard-kohbo/rooms-upper-floor
+      - settings_path: '#main_bathroom_settings_popup'
+
+
+  #
+  # Room Overview
+  #
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - occupancy: input_boolean.main_bathroom_occupied
+      - mode: input_select.main_bathroom
+      - ble_presence: sensor.main_bathroom_people_list
+
+
+  #
+  # Climate Overview
+  # Temperature and humidity are the bathroom's own. CO2 and VOCs
+  # come from the adjacent main bedroom Awair.
+  #
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.main_bathroom_temperature
+      - humidity_sensor: sensor.main_bathroom_humidity
+      - carbon_dioxide_sensor: sensor.main_bedroom_awair_carbon_dioxide
+      - vocs_sensor: sensor.main_bedroom_awair_vocs
+      - room_name: Main Bathroom
+
+
+  #
+  # Lights
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Vanity Lights
+  - type: tile
+    entity: light.main_bathroom_vanity_lights
+    name: Vanity Lights
+    icon: mdi:vanity-light
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  # Ceiling Lights
+  - type: tile
+    entity: light.main_bathroom_ceiling_lights
+    name: Ceiling Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  # Toilet Light
+  - type: tile
+    entity: light.main_bathroom_toilet_light
+    name: Toilet Light
+    icon: mdi:ceiling-light
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  #
+  # Devices
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.main_bathroom_door_sensor_status
+        name: Door
+        template: kohbo_device_door_entity
+
+      # Shower
+      - type: custom:button-card
+        entity: input_boolean.main_bathroom_shower_occupied
+        name: Shower
+        template: kohbo_device_entity
+        icon: mdi:shower
+
+      # Leak Sensor
+      - type: custom:button-card
+        entity: binary_sensor.main_bathroom_leak_sensor_moisture
+        name: Leak Sensor
+        template: kohbo_device_entity
+        icon: mdi:water-alert
+
+      # Steamer
+      - type: custom:button-card
+        entity: switch.smart_plug_12_switch
+        name: Steamer
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_12_active_power
+          confirmation: true
+
+      # Hair Dryer
+      - type: custom:button-card
+        entity: switch.smart_plug_13_switch
+        name: Hair Dryer
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_13_active_power
+          confirmation: true
+
+
+  #
+  # Quick Settings
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      - entity: input_boolean.main_bathroom_lighting_automations
+        name: Lighting Automations
+        icon: kohbo:kohbo-light-2
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: switch.adaptive_lighting_sleep_mode_main_bathroom
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: switch.adaptive_lighting_sleep_mode_main_bathroom_toilet
+        name: Toilet Adaptive Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+
+  #
+  # Main Bathroom Settings Popup
+  #
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#main_bathroom_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 850px)
+    margin_top_desktop: calc(100vh - 850px)
+
+    cards:
+      #
+      # Title
+      #
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      #
+      # Automations
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          - entity: automation.main_bathroom_occupied
+            name: Occupied
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_not_occupied
+            name: Not Occupied
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_mode_auto
+            name: Mode Auto
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_mode_bedtime
+            name: Mode Bedtime
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_mode_off
+            name: Mode Off
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_lights_motion_on
+            name: Lights Motion On
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_bedtime_motion_on
+            name: Bedtime Motion On
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_lights_off
+            name: Lights Off
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_lights_manually_turned_off
+            name: Lights Manually Turned Off
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_shower_occupied
+            name: Shower Occupied
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_shower_not_occupied
+            name: Shower Not Occupied
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_set_initial_humidity
+            name: Set Initial Humidity
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_turn_on_outlets
+            name: Turn On Outlets
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.main_bathroom_turn_off_outlets
+            name: Turn Off Outlets
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      #
+      # Sensors and Helpers
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Sensors and Helpers
+      - type: entities
+        entities:
+          - entity: binary_sensor.main_bathroom_motion_sensor_occupancy
+            name: Occupancy Sensor
+            icon: kohbo:kohbo-room-occupancy
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: binary_sensor.main_bathroom_presence_sensor_radar_target
+            name: Radar Presence
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: sensor.main_bathroom_motion_sensor_illuminance
+            name: Illuminance
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: sensor.main_bathroom_humidity
+            name: Humidity
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: input_number.main_bathroom_initial_humidity
+            name: Initial Humidity
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: input_boolean.main_bathroom_lights_auto
+            name: Lights Auto
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: light.main_bathroom_main_lights
+            name: Main Lights
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      #
+      # Scripts
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Scripts
+      - type: entities
+        entities:
+          - entity: script.main_bathroom_activate_bedtime_lighting_mode
+            name: Bedtime Lighting
+            icon: mdi:weather-night
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml

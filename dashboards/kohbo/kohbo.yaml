@@ -57,6 +57,7 @@ views:
   # Upper Floor
   - !include /config/dashboards/kohbo/rooms/upper_floor/upper_floor_index.yaml
   - !include /config/dashboards/kohbo/rooms/upper_floor/main_bedroom.yaml
+  - !include /config/dashboards/kohbo/rooms/upper_floor/main_bathroom.yaml
   - !include /config/dashboards/kohbo/rooms/upper_floor/ninos_bedroom.yaml
   - !include /config/dashboards/kohbo/rooms/upper_floor/gianlucas_bedroom.yaml
   - !include /config/dashboards/kohbo/rooms/upper_floor/upstairs_hallway.yaml

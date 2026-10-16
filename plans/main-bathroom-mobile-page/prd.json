@@ -1,0 +1,111 @@
+{
+  "name": "main-bathroom-mobile-page",
+  "branchName": "feature/main-bathroom-mobile-page",
+  "goal": "Main Bathroom page at /dashboard-kohbo/rooms-main-bathroom reachable from all room entry points; door tile shows real state for single sensors.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Live entity verification",
+      "description": "Live entity verification \u2014 see prd.md",
+      "acceptanceCriteria": [
+        "live_states.json saved to scratchpad",
+        "working-memory lists automation IDs, missing entities, plug power result, room: value, door-template table"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Door template fallback",
+      "description": "Door template fallback \u2014 see prd.md",
+      "acceptanceCriteria": [
+        "single binary_sensor shows its own Open/Closed",
+        "member-publishing groups unchanged",
+        "own commit touching only the template"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Page file",
+      "description": "Page file \u2014 see prd.md",
+      "acceptanceCriteria": [
+        "path rooms-main-bathroom, subview true",
+        "3 light tiles, no group tile",
+        "climate_overview: bath temp/humidity + bedroom Awair CO2/VOCs, no pm25",
+        "5 device tiles, plugs confirmation:true",
+        "quick settings 3 live entities",
+        "settings popup #main_bathroom_settings_popup with pinned entities",
+        "navbar last"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "18362dc"
+    },
+    {
+      "id": "task-4",
+      "title": "Registration",
+      "description": "Registration \u2014 see prd.md",
+      "acceptanceCriteria": [
+        "kohbo.yaml views entry",
+        "main_bathroom_card.yaml on room_card with correct navigation_path and verified room:",
+        "upper_floor_index include",
+        "active_rooms conditional",
+        "navbar Rooms shortcut"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "f5a7512"
+    },
+    {
+      "id": "task-5",
+      "title": "Gianluca navbar fix",
+      "description": "Gianluca navbar fix \u2014 see prd.md",
+      "acceptanceCriteria": [
+        "navbar path rooms-gianluca-bedroom",
+        "no rooms-gianlucas-bedroom remains",
+        "own commit"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Docs",
+      "description": "Docs \u2014 see prd.md",
+      "acceptanceCriteria": [
+        "SITEMAP, rooms README, dashboards/CLAUDE.md updated",
+        "kohbo.yaml registration step added",
+        "door fallback noted where documented"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-7",
+      "title": "Validation",
+      "description": "Validation \u2014 see prd.md",
+      "acceptanceCriteria": [
+        "no new tests/run.sh --syntax failures vs baseline",
+        "yamllint clean on touched files",
+        "scratch include/variable/entity check exits 0 or exceptions justified"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-15T23:52:59.320516",
+    "totalTasks": 7,
+    "completedTasks": 7,
+    "failedTasks": 0
+  }
+}

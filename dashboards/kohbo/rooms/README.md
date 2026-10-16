@@ -40,11 +40,13 @@ rooms/
 ├── upper_floor/
 │   ├── upper_floor_index.yaml             # Upper floor room index
 │   ├── main_bedroom.yaml                  # Main bedroom detail page
+│   ├── main_bathroom.yaml                 # Main bathroom detail page
 │   ├── ninos_bedroom.yaml                 # Nino's bedroom detail page
 │   ├── gianlucas_bedroom.yaml             # Gianluca's bedroom detail page
 │   ├── upstairs_hallway.yaml              # Upstairs hallway detail page
 │   └── partials/                          # Room card definitions
 │       ├── main_bedroom_card.yaml
+│       ├── main_bathroom_card.yaml
 │       ├── ninos_bedroom_card.yaml
 │       └── ...
 ├── laundry/
@@ -79,6 +81,7 @@ Rooms appear automatically when occupied:
 - Dining Room
 - Jr. Suite
 - Main Bedroom
+- Main Bathroom
 - Nino's Bedroom
 - Gianluca's Bedroom
 - Foyer
@@ -125,6 +128,7 @@ Shows all upper floor rooms regardless of occupancy status.
 
 **Rooms Displayed:**
 - Main Bedroom
+- Main Bathroom
 - Nino's Bedroom
 - Gianluca's Bedroom
 - Upstairs Hallway
@@ -386,7 +390,7 @@ Quick device buttons use `kohbo_room_card_device` template:
 
 - `kohbo_device_air_purifier_entity` - Air purifier controls
 - `kohbo_device_smart_plug_entity` - Smart plug controls
-- `kohbo_device_door_entity` - Door status
+- `kohbo_device_door_entity` - Door status (a door group, or a single door sensor)
 - `kohbo_device_window_entity` - Window status
 - `kohbo_device_aqi_entity` - AQI sensor display
 
@@ -467,6 +471,8 @@ Create `rooms/{floor}/{room}.yaml` following the standard structure:
 8. Popups (lights, media player, climate, settings)
 
 See [`office.yaml`](./main_floor/office.yaml) as a reference example.
+
+Then register the page in `dashboards/kohbo/kohbo.yaml` under `views:` (floor block). Without it the route doesn't exist. Optionally add a shortcut to the navbar Rooms popup (`templates/includes/navbar.yaml`).
 
 ### Step 5: Required Entities
 

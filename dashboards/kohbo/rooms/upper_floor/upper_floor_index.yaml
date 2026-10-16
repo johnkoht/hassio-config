@@ -56,6 +56,11 @@ cards:
       - !include /config/dashboards/kohbo/rooms/upper_floor/partials/main_bedroom_card.yaml
 
       #
+      # Main Bathroom
+      #
+      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/main_bathroom_card.yaml
+
+      #
       # Nino's Bedroom
       #
       - !include /config/dashboards/kohbo/rooms/upper_floor/partials/ninos_bedroom_card.yaml
