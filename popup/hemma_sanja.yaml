@@ -4,7 +4,7 @@ browser_mod:
   title: Sanja
   style:
     hui-vertical-stack-card:
-      $hui-history-graph-card$ : |
+      $hui-history-graph-card$: |
         .content {
           padding: 0.2em 1em 1.2em 1.7em !important;
         }

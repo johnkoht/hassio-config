@@ -1,7 +1,7 @@
 automation:
-  # 
+  #
   # Security Alarm Triggered
-  # 
+  #
   - id: "security_alarm_trigger"
     alias: "Security Alarm - Triggered"
     mode: "single"
@@ -14,9 +14,9 @@ automation:
       - action: script.security_alarm_alert
         data: {}
 
-  # 
+  #
   # Security Alarm Disabled
-  # 
+  #
   - id: "security_alarm_disabled"
     alias: "Security Alarm - Disabled"
     mode: "single"
@@ -38,13 +38,13 @@ script:
     mode: "single"
     icon: mdi:alert
     sequence:
-      # 
+      #
       # The use of script.turn_on is intentional here as
-      # we don't want to wait for the scripts to finish 
+      # we don't want to wait for the scripts to finish
       # before proceeding, instead, it will call each script
       # and move on to the next.
       # see https://www.home-assistant.io/integrations/script/#waiting-for-script-to-complete
-      # 
+      #
 
       # Notify Noonlight
       - action: switch.turn_on
@@ -54,7 +54,7 @@ script:
       # Sound the sirens!
       - action: switch.turn_on
         target:
-          entity_id: 
+          entity_id:
             - switch.alarm_siren_1
             - switch.alarm_siren_2
 
@@ -101,7 +101,7 @@ script:
       # Turn off the sirens!
       - action: switch.turn_off
         target:
-          entity_id: 
+          entity_id:
             - switch.alarm_siren_1
             - switch.alarm_siren_2
 
@@ -109,7 +109,7 @@ script:
       - action: script.turn_off
         target:
           entity_id: script.alarm_flash_lights
-      
+
       # Notify us
       - action: script.general_notification
         data:

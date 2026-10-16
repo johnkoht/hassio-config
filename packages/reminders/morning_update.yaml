@@ -65,7 +65,7 @@ script:
         data:
           agent_id: conversation.chatgpt
           text: >-
-            You're part of the Koht family's smart home! Every morning, you'll create a single-paragraph spoken briefing to be broadcast throughout the house via text-to-speech. Be warm, playful, and conversational — like a friendly morning host who knows us personally. 
+            You're part of the Koht family's smart home! Every morning, you'll create a single-paragraph spoken briefing to be broadcast throughout the house via text-to-speech. Be warm, playful, and conversational — like a friendly morning host who knows us personally.
 
             Include these details only when relevant:
             - Weather (current, high, low)
@@ -76,7 +76,7 @@ script:
             - Indoor plants that need water (only if any are listed)
             - Fun holiday flair
 
-            Avoid emojis, lists, or symbols like &, #, or similar. Use full sentences only. Keep everything in one single paragraph with no line breaks. 
+            Avoid emojis, lists, or symbols like &, #, or similar. Use full sentences only. Keep everything in one single paragraph with no line breaks.
 
             ---
 
@@ -218,13 +218,13 @@ script:
             {% set gian_days = (gian_birthday - now_utc).days %}
 
             {% if 0 < nino_days <= 14 %}
-            Hey Nino, it's only {{ nino_days }} days until your birthday! 
+            Hey Nino, it's only {{ nino_days }} days until your birthday!
             {% elif nino_days == 0 %}
             Happy birthday Nino! Have the best day ever!
             {% endif %}
 
             {% if 0 < gian_days <= 14 %}
-            Hey Gianluca, it's only {{ gian_days }} days until your birthday! 
+            Hey Gianluca, it's only {{ gian_days }} days until your birthday!
             {% elif gian_days == 0 %}
             Happy birthday Gianluca! Hope you're ready for cake and fun!
             {% endif %}

@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,10 +15,10 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-upper-floor
       - settings_path: '#ninos_bedroom_settings_popup'
 
-            
-  # 
+
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
@@ -27,9 +27,9 @@ cards:
       - ble_presence: sensor.ninos_room_people_list
 
 
-  # 
+  #
   # Climate Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -41,9 +41,9 @@ cards:
       - room_name: Nino's Bedroom
 
 
-  # 
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -62,7 +62,7 @@ cards:
     # tap_action:
     #   action: navigate
     #   navigation_path: '#office_ceiling_lights'
-  
+
   # Nino's Lamp
   - type: tile
     entity: light.nino_bedroom_lamp
@@ -76,9 +76,9 @@ cards:
     vertical: false
 
 
-  # 
+  #
   # Media Player
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Music
@@ -91,9 +91,9 @@ cards:
       - navigation_path: '#ninos_bedroom_media_player'
 
 
-  # 
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -139,23 +139,23 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_2_active_power
-    
+
       # Door
       - type: custom:button-card
         entity: binary_sensor.ninos_door_sensor_status
         name: Door
         template: kohbo_device_door_entity
-      
+
       # Leak sensor
       - type: custom:button-card
         entity: binary_sensor.nino_s_bathroom_leak_sensor_moisture
         name: Bathroom Leak Sensor
         template: kohbo_device_entity
-      
 
-  # 
+
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -177,9 +177,9 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-  # 
+  #
   # Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
@@ -187,9 +187,9 @@ cards:
       - hash: '#ninos_bedroom_media_player'
 
 
-  # 
+  #
   # Nino's Bedroom Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#ninos_bedroom_settings_popup'
@@ -197,18 +197,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 650px)
     margin_top_desktop: calc(100vh - 650px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -246,9 +246,9 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-      # 
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -261,7 +261,7 @@ cards:
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-          
+
           # Bed Sensor LEFT
           - entity: sensor.nino_bed_left_sensor
             icon: mdi:bed
@@ -269,14 +269,14 @@ cards:
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-          
+
           # Bed Trigger Level LEFT
           - entity: number.nino_bed_trigger_level_left
             icon: mdi:arrow-collapse-down
             name: Trigger Left
             secondary_info: last-changed
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-          
+
           # Bed Sensor RIGHT
           - entity: sensor.nino_bed_right_sensor
             icon: mdi:bed
@@ -284,7 +284,7 @@ cards:
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-          
+
           # Bed Trigger Level LEFT
           - entity: number.nino_bed_trigger_level_right
             icon: mdi:arrow-collapse-down
@@ -293,15 +293,15 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml
 
 
-  # 
+  #
   # Ninos Bedroom Thermostat Popup
-  # 
+  #
   - type: custom:decluttering-card
     template: thermostat_radiant_floor_popup
     variables:

@@ -20,7 +20,7 @@ scene_button:
     haptic: light
     tap_action:
       action: call-service
-      service: scene_presets.apply_preset 
+      service: scene_presets.apply_preset
       service_data:
         preset_id: '[[scene_id]]'
         targets:

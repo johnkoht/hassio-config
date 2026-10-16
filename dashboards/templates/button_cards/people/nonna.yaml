@@ -2,35 +2,35 @@ type: custom:bubble-card
 card_type: pop-up
 hash: '#nonna'
 styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    
+
 cards:
-  # 
+  #
   # Profile Picture
-  # 
+  #
   - type: custom:button-card
     entity: person.mary_falbo
     template: people_profile_picture
 
 
-  # 
+  #
   # Heading
-  # 
+  #
   - type: custom:button-card
     name: "Nonna"
     template: kohbo_person_heading
     custom_fields:
       location: '[[[ return states["person.mary_falbo"].state == "home" ? "Home" : "Away" ]]]'
-        
 
-  # 
+
+  #
   # Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      # 
+      #
       # Status
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-person-status
         name: Status
@@ -44,9 +44,9 @@ cards:
             var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # 
+      #
       # Room
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-room-occupancy
         name: Room
@@ -60,20 +60,20 @@ cards:
             var(--success-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # 
+      #
       # Unlock Privilege
-      # 
+      #
       - entity: input_boolean.nonna_unlock_privilege
         name: Unlock Privilege
         icon: mdi:key
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-        
 
-  # 
+
+  #
   # Automations
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Automations

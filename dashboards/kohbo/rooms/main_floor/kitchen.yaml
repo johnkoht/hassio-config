@@ -5,7 +5,7 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
   #
   - type: custom:decluttering-card
@@ -15,20 +15,20 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-main-floor
       - settings_path: '#kitchen_settings_popup'
 
-  # 
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
       - occupancy: input_boolean.kitchen_occupied
       - mode: input_select.kitchen
       - ble_presence: sensor.kitchen_people_list
-      
 
-  # 
+
+  #
   # Climate Overview
-  # 
+  #
 
   - type: custom:decluttering-card
     template: climate_overview
@@ -45,9 +45,9 @@ cards:
           template: empty_column
 
 
-  # 
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -91,16 +91,15 @@ cards:
     features_position: inline
     vertical: false
 
-  
 
 
-  # 
+  #
   # Media Player
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Music
-  
+
   - type: custom:decluttering-card
     template: media_player
     variables:
@@ -109,9 +108,9 @@ cards:
       - navigation_path: '#kitchen_media_player'
 
 
-  # 
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -143,7 +142,7 @@ cards:
         entity: switch.tradfri_smart_plug_4_switch
         name: Toaster Oven
         template: kohbo_device_smart_plug_entity
-    
+
       # Exterior Doors
       - type: custom:button-card
         entity: binary_sensor.kitchen_doors
@@ -170,9 +169,9 @@ cards:
         icon: phu:alexa-logo
 
 
-  # 
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -209,11 +208,11 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-  
 
-  # 
+
+  #
   # Kitchen Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#kitchen_settings_popup'
@@ -221,18 +220,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 825px)
     margin_top_desktop: calc(100vh - 825px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -271,9 +270,9 @@ cards:
             state_color: true
 
 
-      # 
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -286,7 +285,7 @@ cards:
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-            
+
           # Occupancy Sensor
           - entity: binary_sensor.kitchen_motion_sensor_occupancy
             icon: kohbo:kohbo-room-occupancy
@@ -317,18 +316,18 @@ cards:
               {% else %}
                 var(--success-color)
               {% endif %}
-            
 
-  # 
+
+  #
   # Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_kitchen
       - hash: '#kitchen_media_player'
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

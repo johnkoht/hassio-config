@@ -1,6 +1,6 @@
-# 
+#
 # Quick Clean Popup
-# 
+#
 type: custom:bubble-card
 card_type: pop-up
 hash: '#main_floor_quick_clean_popup'
@@ -9,9 +9,9 @@ styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
 margin_top_mobile: calc(100vh - 700px)
 margin_top_desktop: calc(100vh - 700px)
 cards:
-  # 
+  #
   # Title
-  # 
+  #
   - type: custom:button-card
     template: kohbo_popup_page_title
     name: Quick Clean
@@ -48,9 +48,9 @@ cards:
             padding-right: 15px !important;
           }
 
-  # 
+  #
   # Quick Clean Tiles
-  # 
+  #
   - type: grid
     columns: 2
     square: false
@@ -125,14 +125,14 @@ cards:
         state_content: last-changed
         tap_action:
           action: toggle
-  # 
+  #
   # Quick Clean Buttons
-  # 
+  #
   - type: vertical-stack
     cards:
-      # 
+      #
       # Clean Now
-      # 
+      #
       - type: custom:button-card
         name: Clean Now
         show_icon: false
@@ -154,9 +154,9 @@ cards:
               padding: 15px 10px !important;
             }
 
-      # 
+      #
       # Clean When House Is Empty
-      # 
+      #
       - type: custom:button-card
         name: >
           [[[
@@ -184,9 +184,9 @@ cards:
               font-weight: 500 !important;
               padding: 15px 10px !important;
             }
-      # 
+      #
       # Skip Tonight
-      # 
+      #
       - type: custom:button-card
         entity: input_boolean.main_level_vacuum_skip_tonight
         name: >

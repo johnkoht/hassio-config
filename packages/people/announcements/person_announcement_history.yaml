@@ -16,7 +16,7 @@ script:
     mode: queued
     icon: mdi:database
     fields:
-      # 
+      #
       # Person
       # Who we're updating the announcement history for;
       # this needs to match the sensors below
@@ -39,28 +39,28 @@ script:
               - genny
               - shawn
               - katia
-      # 
-      # 
+      #
+      #
       # New message to add to the history
-      # 
+      #
       message:
         name: "Message"
         description: "New announcement message"
         required: true
         example: "Great new, John is back home!"
-    # 
-    # 
+    #
+    #
     sequence:
-      # 
+      #
       # Define the sensor we'll be using to get the
       # person's announcement history
       - variables:
           sensor_id: "sensor.latest_announcements_{{ person }}"
-      # 
+      #
       # Get the latest announcement or set to an empty array
       - variables:
           raw_state: "{{ states(sensor_id) | default('[]') }}"
-      # 
+      #
       # Parse the announcement history
       - variables:
           history: >
@@ -69,12 +69,12 @@ script:
               {% set parsed = raw_state | string | from_json %}
             {% endif %}
             {{ parsed }}
-      # 
+      #
       # Set the MQTT topic and updated data
       - variables:
           updated: "{{ [message] + history[:2] }}"
           topic: "home/announcements/{{ person }}"
-      # 
+      #
       # Publish to MQTT
       - action: mqtt.publish
         data:

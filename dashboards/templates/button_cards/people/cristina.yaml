@@ -2,11 +2,11 @@ type: custom:bubble-card
 card_type: pop-up
 hash: '#cristina'
 styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    
+
 cards:
-  # 
+  #
   # Profile Picture
-  # 
+  #
   - type: custom:button-card
     entity: person.cristina_falbo
     template: people_profile_picture
@@ -18,9 +18,9 @@ cards:
           }
         ]]]
 
-  # 
+  #
   # Heading
-  # 
+  #
   - type: custom:button-card
     name: "Cristina"
     template: kohbo_person_heading
@@ -48,9 +48,9 @@ cards:
           }
         ]]]
 
-  # 
+  #
   # Location Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
@@ -67,7 +67,7 @@ cards:
         secondary_info: last-changed
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-        
+
       - entity: sensor.home_cristina_distance
         icon: kohbo:kohbo-proximity
         name: Proximity
@@ -97,9 +97,9 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
 
 
-  # 
+  #
   # Medications
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
@@ -131,15 +131,15 @@ cards:
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-  # 
+  #
   # Sleep Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      # 
+      #
       # Sleep Status
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-person-status
         name: Status
@@ -153,9 +153,9 @@ cards:
             var(--orange-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # 
+      #
       # Bed Occupancy
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-bed
         name: Bed Occupancy
@@ -170,24 +170,24 @@ cards:
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
-  # 
+  #
   # Device Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      # 
+      #
       # Phone Battery Level
-      # 
+      #
       - entity: sensor.cfalb_iphone_17_battery_level
         # icon: !include /config/dashboards/templates/includes/people/kohbo_person_battery_icon.yaml
         name: Battery
         secondary_info: last-changed
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-      # 
+      #
       # Network Details
-      # 
+      #
       - entity: sensor.cfalb_iphone_17_ssid
         icon: kohbo:kohbo-wifi
         name: Wifi Network
@@ -196,9 +196,9 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
 
-  # 
+  #
   # Automations
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Automations

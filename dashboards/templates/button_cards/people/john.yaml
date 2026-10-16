@@ -2,11 +2,11 @@ type: custom:bubble-card
 card_type: pop-up
 hash: '#john'
 styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    
+
 cards:
-  # 
+  #
   # Profile Picture
-  # 
+  #
   - type: custom:button-card
     entity: person.john_koht
     template: people_profile_picture
@@ -20,9 +20,9 @@ cards:
           }
         ]]]
 
-  # 
+  #
   # Heading
-  # 
+  #
   - type: custom:button-card
     name: "John"
     template: kohbo_person_heading
@@ -48,9 +48,9 @@ cards:
           }
         ]]]
 
-  # 
+  #
   # Location Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
@@ -60,14 +60,14 @@ cards:
         secondary_info: last-changed
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-        
+
       - entity: sensor.john_room_presence
         icon: kohbo:kohbo-room-occupancy
         name: Room
         secondary_info: last-changed
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-        
+
       - entity: sensor.home_john_distance
         icon: kohbo:kohbo-proximity
         name: Proximity
@@ -91,7 +91,7 @@ cards:
 
   #
   # work Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
@@ -110,15 +110,15 @@ cards:
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-  # 
+  #
   # Sleep Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      # 
+      #
       # Sleep Status
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-person-status
         name: Status
@@ -133,9 +133,9 @@ cards:
             var(--orange-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # 
+      #
       # Bed Occupancy
-      # 
+      #
       - type: custom:template-entity-row
         icon: kohbo:kohbo-bed
         name: Bed Occupancy
@@ -149,9 +149,9 @@ cards:
             var(--light-grey-color)
           {% endif %}
         card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
-      # 
+      #
       # Sleep Score
-      # 
+      #
       - entity: sensor.withings_sleep_score
         icon: kohbo:kohbo-moon-2
         name: Sleep Score
@@ -159,32 +159,32 @@ cards:
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
-  # 
+  #
   # Device Details
-  # 
+  #
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
     entities:
-      # 
+      #
       # Phone Battery Level
-      # 
+      #
       - entity: sensor.jk_iphone_14_battery_level
         name: Battery
         secondary_info: last-changed
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-      # 
+      #
       # Watch Battery Level
-      # 
+      #
       - entity: sensor.jk_2_watch_battery
         icon: kohbo:kohbo-watch
         name: Watch Battery
         secondary_info: last-changed
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
-      # 
+      #
       # Network Details
-      # 
+      #
       - entity: sensor.jk_iphone_14_ssid
         icon: kohbo:kohbo-wifi
         name: Wifi Network
@@ -193,9 +193,9 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
 
-  # 
+  #
   # Automations
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Automations

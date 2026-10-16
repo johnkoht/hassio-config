@@ -41,7 +41,7 @@ automation:
             {% else %}
               "normal"
             {% endif %}
-            
+
 
       # Notification for logging
       - service: script.general_notification
@@ -60,4 +60,3 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "tempest-uv-alert"
-      

@@ -19,7 +19,7 @@ style:
       padding: 0px !important;
     }
 
-  
+
 
   hui-generic-entity-row$: |
       state-badge,
@@ -80,7 +80,7 @@ style:
             .checked [part="thumb"] {
               left: 20px !important;
             }
-          
+
 
   ha-entity-toggle$: |
     ha-switch {

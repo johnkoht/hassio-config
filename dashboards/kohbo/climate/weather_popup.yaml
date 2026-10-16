@@ -1,21 +1,21 @@
-# 
+#
 # Weather Popup
-# 
+#
 type: custom:bubble-card
 card_type: pop-up
 hash: '#weather'
 close_by_clicking_outside: false
 styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    
+
 cards:
   # Popup Title
   - type: custom:button-card
     template: kohbo_popup_page_title
     name: Weather
-  
-  # 
+
+  #
   # Current Weather Overview
-  # 
+  #
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -67,9 +67,9 @@ cards:
               margin-right: 6px !important;
             }
 
-      # 
+      #
       # Current Weather Details
-      # 
+      #
       - type: custom:button-card
         name: "[[[ return states['weather.pirateweather'].state.replace('_', ' ') ]]]"
         custom_fields:
@@ -78,7 +78,7 @@ cards:
               const feels_like = Math.ceil(states['sensor.pirateweather_apparent_temperature'].state);
               const day_high = Math.ceil(states['sensor.pirateweather_daytime_high_temperature_0d'].state);
               const night_low = Math.ceil(states['sensor.pirateweather_overnight_low_temperature_0d'].state);
-              
+
               return `Feels Like ${feels_like}° – High ${day_high}° Low ${night_low}°`;
             ]]]
         styles:
@@ -107,9 +107,9 @@ cards:
               - color: var(--secondary-text-color)
 
 
-  # 
+  #
   # Precipitation
-  # 
+  #
   - type: conditional
     conditions:
       - condition: or
@@ -137,9 +137,9 @@ cards:
           styles:
             card:
               - padding-bottom: 0
-        # 
+        #
         # Next Precipitation
-        # 
+        #
         - type: custom:apexcharts-card
           header:
             show: true
@@ -197,9 +197,9 @@ cards:
                   };
                 });
 
-  # 
+  #
   # Weather Forecast
-  # 
+  #
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -253,7 +253,7 @@ cards:
                 forecast_slots: 14
                 card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/climate_forecast_card_styles.yaml
               attributes:
-                label: Hourly 
+                label: Hourly
             # Daily Forecast
             - card:
                 type: weather-forecast
@@ -265,7 +265,7 @@ cards:
                 card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/climate_forecast_card_styles.yaml
               attributes:
                 label: Outlook
- 
+
 
       - type: custom:button-card
         layout: icon_name
@@ -313,9 +313,9 @@ cards:
             - margin-left: 10px !important
 
 
-  # 
+  #
   # Daily Weather
-  # 
+  #
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -390,7 +390,7 @@ cards:
     columns: 2
     square: false
     cards:
-      # AQI 
+      # AQI
       - type: custom:decluttering-card
         template: kohbo_room_temperature_card
         variables:
@@ -403,7 +403,7 @@ cards:
           - value_4: 200
           - value_5: 300
 
-      # AQI 
+      # AQI
       - type: custom:decluttering-card
         template: kohbo_room_temperature_card
         variables:
@@ -416,7 +416,7 @@ cards:
           - value_4: 65
           - value_5: 90
 
-      # AQI 
+      # AQI
       - type: custom:decluttering-card
         template: kohbo_room_temperature_card
         variables:
@@ -429,7 +429,7 @@ cards:
           - value_4: 150
           - value_5: 200
 
-      # AQI 
+      # AQI
       - type: custom:decluttering-card
         template: kohbo_room_temperature_card
         variables:
@@ -444,9 +444,9 @@ cards:
 
 
 
-  # 
+  #
   # Allergies
-  # 
+  #
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -499,9 +499,9 @@ cards:
 
 
 
-  # 
+  #
   # Horizon
-  # 
+  #
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -514,9 +514,9 @@ cards:
         template: kohbo_card_small_header
         name: Horizon
 
-      # 
+      #
       # Sun and moon phase
-      # 
+      #
       - type: custom:horizon-card
         moon: true
         refresh_period: 60
@@ -534,9 +534,8 @@ cards:
               font-size: 16px !important;
               font-weight: 500 !important;
             }
-          
 
-  
+
 
   # PRECIPITATION
   # if it's going to rain,

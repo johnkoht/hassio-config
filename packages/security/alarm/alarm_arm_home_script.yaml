@@ -1,9 +1,9 @@
 # Alarm - Arm Home
-# 
-# This script arms the home security system. Since we're 
+#
+# This script arms the home security system. Since we're
 # arming the house in different automations, this script
 # is used to DRY thing up.
-# 
+#
 script:
   alarm_arm_home:
     alias: Alarm - Arm Home
@@ -40,10 +40,10 @@ script:
         level: 10
         duration: 255
 
-      # 
+      #
       # If the house is occupied, turn on the automation that will
       # disarm the alarm when somebody arrives and the house is occupied
-      # 
+      #
       - if:
           - condition: state
             entity_id: input_boolean.house_occupied
@@ -53,6 +53,3 @@ script:
           # when somebody arrives and the house is occupied
           - action: automation.turn_on
             entity_id: automation.alarm_disarm_when_somebody_arrives_and_house_occupied
-
-
-      

@@ -218,4 +218,3 @@ template:
             {% else %}
               normal
             {% endif %}
-

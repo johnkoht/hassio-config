@@ -1,6 +1,6 @@
-# 
+#
 # Exterior Doors
-# 
+#
 type: custom:vertical-layout
 title: Exterior Doors
 path: security-exterior-doors
@@ -8,20 +8,20 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
       - name: Exterior Doors
       - navigation_path: /dashboard-kohbo/security
       - settings_path: '#exterior_doors_settings_popup'
-  
 
-  # 
+
+  #
   # Doors
-  # 
+  #
 
   - type: custom:button-card
     template: kohbo_device_door_entity_horizontal
@@ -32,7 +32,7 @@ cards:
     template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.interior_garage_door
     name: Interior Garage Door
-    
+
   - type: custom:button-card
     template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.kitchen_patio_door
@@ -57,15 +57,15 @@ cards:
     template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.basement_exterior_door
     name: Basement Exterior Door
-    
+
   - type: custom:button-card
     template: kohbo_device_door_entity_horizontal
     entity: binary_sensor.upstairs_guest_bedroom_door
     name: Upstairs Guest Bedroom Door
-  
-  # 
+
+  #
   # Exterior Doors Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#exterior_doors_settings_popup'
@@ -79,9 +79,9 @@ cards:
         template: kohbo_popup_page_title
         name: Exterior Doors Settings
 
-      # 
+      #
       # Door Left Open Alert
-      #         
+      #
       - type: custom:stack-in-card
         mode: vertical
         card_mod:
@@ -106,7 +106,7 @@ cards:
         template: kohbo_card_section_description
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

@@ -1,6 +1,6 @@
-# 
+#
 # Gianluca's Bedroom Sensor
-# 
+#
 template:
   - sensor:
       - name: "Gianluca's Bedroom"

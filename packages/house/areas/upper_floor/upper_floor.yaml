@@ -22,7 +22,7 @@ binary_sensor:
 
 #
 # Upper Floor Areas Group
-# 
+#
 group:
   upper_floor_areas:
     name: Upper Floor Areas
@@ -33,12 +33,12 @@ group:
       - input_boolean.ninos_bedroom_occupied
       - input_boolean.upstairs_hallway_occupied
 
-# 
+#
 # Upper Floor Sensor
-# 
-# This is a sensor that's acts like an object with various 
+#
+# This is a sensor that's acts like an object with various
 # attributes based on the upper floor areas.
-# 
+#
 template:
   # Upper Floor Room Presence
   #
@@ -80,14 +80,14 @@ template:
           occupancy: "{{ states.binary_sensor.upper_floor_occupancy.state }}"
           presence: "{{ states.binary_sensor.upper_floor_any_room_presence.state }}"
           areas: >
-            {{ 
+            {{
               expand('group.upper_floor_areas')
               | map(attribute='entity_id')
               | list
               | join(', ')
             }}
           occupied_rooms: >
-            {{ 
+            {{
               expand('group.upper_floor_areas')
               | selectattr('state', 'eq', 'on')
               | map(attribute='entity_id')
@@ -95,7 +95,7 @@ template:
               | join(', ')
             }}
           occupied_rooms_count: >
-            {{ 
+            {{
               expand('group.upper_floor_areas')
               | selectattr('state', 'eq', 'on')
               | map(attribute='entity_id')
@@ -103,7 +103,7 @@ template:
               | length
             }}
           unoccupied_rooms: >
-            {{ 
+            {{
               expand('group.upper_floor_areas')
               | selectattr('state', 'eq', 'off')
               | map(attribute='entity_id')
@@ -111,11 +111,10 @@ template:
               | join(', ')
             }}
           unoccupied_rooms_count: >
-            {{ 
+            {{
               expand('group.upper_floor_areas')
               | selectattr('state', 'eq', 'off')
               | map(attribute='entity_id')
               | list
               | length
             }}
-

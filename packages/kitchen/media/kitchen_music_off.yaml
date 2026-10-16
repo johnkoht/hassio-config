@@ -1,6 +1,6 @@
 # Kitchen Music Off
 #
-# Turn off the kitchen music 
+# Turn off the kitchen music
 #
 automation:
   - id: "kitchen_music_off"
@@ -20,10 +20,10 @@ automation:
         entity_id: media_player.sonos_kitchen
         state: "playing"
     actions:
-      # 
+      #
       # If the kitchen speakers are in a group, then unjoin
       # and then pause the music.
-      # 
+      #
       - if:
           - alias: "Speakers are grouped with another room"
             condition: template
@@ -38,11 +38,10 @@ automation:
           - service: media_player.media_pause
             entity_id: media_player.sonos_kitchen
 
-        # 
+        #
         # Otherwise, just pause
-        # 
+        #
         else:
           # Pause the music on the player
           - service: media_player.media_pause
             entity_id: media_player.sonos_kitchen
-          

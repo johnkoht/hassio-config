@@ -1,6 +1,6 @@
-# 
+#
 # Dining Room Sensor
-# 
+#
 template:
   - sensor:
       - name: "Dining Room"

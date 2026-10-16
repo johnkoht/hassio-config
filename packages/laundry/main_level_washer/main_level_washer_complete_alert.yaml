@@ -35,7 +35,7 @@ automation:
         value_template: >
           {% if states.automation.main_level_washer_complete_alert.attributes.last_triggered is not none %}
             {% if as_timestamp(now()) | int - as_timestamp(states.automation.main_level_washer_complete_alert.attributes.last_triggered) | int > 3600 %}
-              true 
+              true
             {% else %}
               false
             {% endif %}

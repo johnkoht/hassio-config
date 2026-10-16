@@ -1,5 +1,5 @@
 # Turn on the outlets when the bathroom is occupied
-# 
+#
 automation:
   - id: "main_bathroom_turn_on_outlets"
     initial_state: on

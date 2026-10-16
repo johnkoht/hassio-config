@@ -1,6 +1,6 @@
-# 
+#
 # Kitchen
-# 
+#
 type: custom:decluttering-card
 template: room_card
 variables:
@@ -18,7 +18,7 @@ variables:
     - type: custom:button-card
       entity: light.kitchen_lights
       name: Lights
-      template: kohbo_room_card_device                
+      template: kohbo_room_card_device
       icon: kohbo:kohbo-device-lights
     # Music
     - type: custom:button-card

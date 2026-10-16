@@ -4,9 +4,9 @@ path: exterior-lighting
 theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: top_toolbar
     variables:
@@ -36,9 +36,9 @@ cards:
             navigation_path: '#exterior_lighting_settings_popup'
 
 
-  # 
+  #
   # Sun & Moon Status
-  # 
+  #
   - type: custom:stack-in-card
     card_mod:
       style: |
@@ -93,7 +93,7 @@ cards:
             if (lux > 1000 && diffSet <= 2 && diffSet > 0) return "The sun is setting 🌇";
             if (lux < 500 && cloudyStates.includes(weather)) return "It's dim and cloudy — lights may help 💡";
             if (lux < 200) return "It's getting dark — lights will turn on soon 💡";
-            
+
             return "It's moderately bright outside";
           ]]]
         show_icon: true
@@ -140,7 +140,7 @@ cards:
             - color: "#CED4DA"
             - justify-self: start
 
-      
+
       - type: custom:stack-in-card
         mode: horizontal
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
@@ -151,7 +151,7 @@ cards:
             # name: Sun Status
             name: >
               [[[
-                if (states['sun.sun'].state === 'below_horizon') 
+                if (states['sun.sun'].state === 'below_horizon')
                   return 'Moon Phase';
                 else
                   return 'Sun Status';
@@ -160,7 +160,7 @@ cards:
             styles:
               icon:
                 - color: >
-                    [[[ 
+                    [[[
                       const sun = states['sun.sun'];
                       if (sun.state === 'below_horizon') return '#a5b3cc'; // moon color
                       const elevation = sun.attributes.elevation;
@@ -203,7 +203,7 @@ cards:
                     if (moonPhase === 'waning_crescent') return 'mdi:moon-waning-crescent';
                   ]]]
                 state_display: >
-                  [[[ 
+                  [[[
                     return states['sensor.moon'].state.split('_')
                     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
                     .join(' ');
@@ -275,8 +275,8 @@ cards:
                     ]]]
 
 
-  
-  # 
+
+  #
   # Exterior House Lights
   #
   - type: custom:decluttering-card
@@ -298,7 +298,7 @@ cards:
             - name: Exterior House Lights
 
 
-  # 
+  #
   # Exterior House Lights
   #
   - type: custom:button-card
@@ -354,10 +354,10 @@ cards:
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 secondary_info: last-changed
                 state_color: true
-    
 
 
-  # 
+
+  #
   # Exterior Flood Lights
   #
   - type: custom:button-card
@@ -401,9 +401,9 @@ cards:
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 secondary_info: last-changed
                 state_color: true
-  
-      
-  # 
+
+
+  #
   # Exterior Accent Lights
   #
   - type: custom:button-card
@@ -430,7 +430,7 @@ cards:
             tap_action:
               action: navigate
               navigation_path: "#accent_light_popup"
-              
+
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
@@ -438,7 +438,7 @@ cards:
           - type: entities
             card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
             entities:
-              - entity: light.exterior_hue_outdoor_spot_1 
+              - entity: light.exterior_hue_outdoor_spot_1
                 name: Outdoor Spot 1
                 icon: hue:lily-xl
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
@@ -470,7 +470,7 @@ cards:
                 state_color: true
               - entity: light.hue_outdoor_spot_6
                 name: Outdoor Spot 6
-                icon: hue:lily   
+                icon: hue:lily
                 card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
                 secondary_info: last-changed
                 state_color: true
@@ -524,9 +524,9 @@ cards:
                 state_color: true
 
 
-  # 
+  #
   # Exterior Lighting Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#exterior_lighting_settings_popup'
@@ -540,9 +540,9 @@ cards:
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -576,9 +576,9 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Utility Automations
@@ -603,16 +603,16 @@ cards:
 
 
 
-  # 
+  #
   # Accent Lights Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: light_popup
     variables:
       - light_entity: light.exterior_accent_lights
       - popup_hash: '#accent_light_popup'
       - popup_title: 'Exterior Accent Lights'
-      - entity_id: 
+      - entity_id:
         - light.exterior_hue_outdoor_spot_1
         - light.exterior_hue_outdoor_spot_2
         - light.exterior_hue_outdoor_spot_3
@@ -629,7 +629,7 @@ cards:
         - light.hue_spot_14_light
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

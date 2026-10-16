@@ -14,7 +14,7 @@ automation:
         entity_id: input_boolean.house_occupied
         to: "off"
 
-      # Gianluca's room becomes unoccupied for 
+      # Gianluca's room becomes unoccupied for
       - trigger: state
         entity_id: input_boolean.gianlucas_room_occupied
         to: "off"

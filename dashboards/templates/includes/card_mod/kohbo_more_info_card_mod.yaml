@@ -1,9 +1,9 @@
-style: 
+style:
   .: |
     ha-card {
       text-align: center !important;
       padding: 40px 20px 20px 20px !important;
-      
+
 
       .card-content {
         padding: 0px !important;
@@ -27,7 +27,7 @@ style:
     ha-state-control-lock-toggle {
       margin-bottom: 0px !important;
     }
-    
+
     .buttons {
       display: none !important;
     }

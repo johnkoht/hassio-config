@@ -1,8 +1,8 @@
-# 
+#
 # Room Sensors Group
-# 
+#
 # Groups all room sensors together for easy reference
-# 
+#
 group:
   room_sensors:
     name: Room Sensors

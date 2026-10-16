@@ -1,6 +1,6 @@
-# 
+#
 # Main Level Vacuum Maintenance - Filter Life
-# 
+#
 type: conditional
 conditions:
   - condition: numeric_state

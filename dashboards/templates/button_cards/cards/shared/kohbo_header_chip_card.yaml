@@ -1,9 +1,9 @@
-# 
+#
 # Header Chip Card
-# 
-# This card is based on the default chip card, but 
+#
+# This card is based on the default chip card, but
 # modified for the fixed header bar.
-# 
+#
 kohbo_header_chip_card:
   template: kohbo_chip_card
   tap_action:

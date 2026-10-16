@@ -9,9 +9,9 @@ cards:
 
   - type: vertical-stack
     cards:
-      # 
+      #
       # Overview Area for the upper floor
-      # 
+      #
       - type: custom:mod-card
         style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
         card:
@@ -21,7 +21,7 @@ cards:
             - type: custom:button-card
               template: kohbo_chip_card_room_occupancy
               entity: binary_sensor.upper_floor_occupied
-            
+
             # Lights
             - type: custom:button-card
               template: kohbo_chip_card
@@ -42,7 +42,7 @@ cards:
               entity: sensor.second_floor_temperature
               icon: mdi:home-thermometer
               color: var(--light-grey-color)
-            
+
             # Motion
             - type: custom:button-card
               template: kohbo_chip_card
@@ -50,46 +50,46 @@ cards:
               show_state: false
 
 
-      # 
+      #
       # Main Bedroom
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/upper_floor/partials/main_bedroom_card.yaml
 
-      # 
+      #
       # Nino's Bedroom
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/upper_floor/partials/ninos_bedroom_card.yaml
 
-      # 
+      #
       # Gianluca's Bedroom
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/upper_floor/partials/gianlucas_bedroom_card.yaml
 
-      # 
+      #
       # Upstairs Hallway
-      # 
+      #
       - !include /config/dashboards/kohbo/rooms/upper_floor/partials/upstairs_hallway_card.yaml
 
 
-  # 
+  #
   # Main Bedroom Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.sonos_main_bedroom
       - hash: '#main_bedroom_media_player'
 
-  # 
+  #
   # Nino's Bedroom Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.ninos_room
       - hash: '#ninos_bedroom_media_player'
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

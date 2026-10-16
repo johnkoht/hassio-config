@@ -42,7 +42,7 @@ kohbo_energy_stat_bar:
         const mode = variables.bar_mode || 'today';
         let pct = 0;
         let color = 'var(--accent-color)';
-        
+
         if (mode === 'realtime') {
           const watts = parseFloat(states['sensor.energy_current_consumption']?.state || 0);
           // Adaptive: average power = expected daily kWh spread over 24h (self-calibrates)
@@ -84,16 +84,16 @@ kohbo_energy_stat_bar:
           // Deviation mode: center baseline, green left (under), red right (over)
           // This mode uses a different rendering approach - handled below
         }
-        
+
         const empty = 'var(--divider-color)';
         let output = '';
-        
+
         if (mode === 'forecast_deviation') {
           // Deviation bar: center (segment 5) is baseline, left=green, right=red
           const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
           const expected = parseFloat(states['sensor.energy_expected_full_day']?.state || 1);
           const deviation = (forecast - expected) / expected; // -1.0 to +1.0 (or more)
-          
+
           // Map deviation to segments: -40% to +40% range, each segment = 8% deviation
           // Segments 1-4: green (under budget)
           // Segment 5: baseline (with visual indicator)
@@ -101,12 +101,12 @@ kohbo_energy_stat_bar:
           const maxDeviation = 0.4; // 40% max deviation for visual scale
           const segmentsUnder = Math.max(0, Math.min(4, Math.round((Math.abs(Math.min(0, deviation)) / maxDeviation) * 4)));
           const segmentsOver = Math.max(0, Math.min(5, Math.round((Math.max(0, deviation) / maxDeviation) * 5)));
-          
+
           // Determine color intensity based on deviation magnitude
           const absDeviation = Math.abs(deviation);
           let greenColor = 'var(--success-color)';
           let redColor = 'var(--error-color)';
-          
+
           if (absDeviation > 0.3) {
             // High deviation - use full intensity
             greenColor = 'var(--success-color)';
@@ -120,13 +120,13 @@ kohbo_energy_stat_bar:
             greenColor = 'var(--success-color)';
             redColor = 'var(--accent-color)';
           }
-          
+
           // Build segments
           let segmentsHtml = '';
           for (let i = 1; i <= 10; i++) {
             let bg = empty;
             let borderStyle = '';
-            
+
             if (i === 5) {
               // Center segment - baseline with visual indicator
               // Use a lighter grey with a border to make it stand out as the baseline
@@ -139,10 +139,10 @@ kohbo_energy_stat_bar:
               // Right side - red (over budget)
               bg = redColor;
             }
-            
+
             segmentsHtml += `<div style="flex:1;height:100%;border-radius:2px;background:${bg};${borderStyle}transition:background 0.3s ease;"></div>`;
           }
-          
+
           // Wrap in container with vertical baseline indicator
           output = `<div style="position:relative;display:flex;gap:3px;width:100%;height:8px;">
             ${segmentsHtml}
@@ -158,6 +158,6 @@ kohbo_energy_stat_bar:
           }
           output += '</div>';
         }
-        
+
         return output;
       ]]]

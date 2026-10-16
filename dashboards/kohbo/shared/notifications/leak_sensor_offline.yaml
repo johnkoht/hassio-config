@@ -1,6 +1,6 @@
-# 
+#
 # Leak Sensor Offline
-# 
+#
 type: conditional
 conditions:
   - condition: state

@@ -62,10 +62,10 @@ automation:
         entity_id: media_player.sonos_office
         state: "playing"
     action:
-      # 
+      #
       # If the office speakers are in a group, then unjoin
       # and then pause the music.
-      # 
+      #
       - if:
           - alias: "Speakers are grouped with another room"
             condition: template
@@ -85,9 +85,9 @@ automation:
           - service: input_boolean.turn_on
             entity_id: input_boolean.office_music_playing
 
-        # 
+        #
         # Otherwise, just pause
-        # 
+        #
         else:
           # Pause the music on the player
           - service: media_player.media_pause

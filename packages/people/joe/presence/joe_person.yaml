@@ -1,10 +1,10 @@
-# 
+#
 # Joe Person
-# 
+#
 # The Person sensor is way of creating a Person
-# with additional attributes that the standard 
+# with additional attributes that the standard
 # person sensor doesn't have.
-# 
+#
 template:
   - sensor:
       - name: "Joe Person"
@@ -14,5 +14,3 @@ template:
           unlock_privilege: "{{ states.input_boolean.joe_unlock_privilege.state }}"
           avatar: "{{ states.person.joe_falbo.attributes.entity_picture }}"
           room_presence: "{{ states.sensor.joe_room_presence.state }}"
-
-

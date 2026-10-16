@@ -1,14 +1,14 @@
 # Alarm - Disarm When Somebody Arrives and House Occupied
-# 
+#
 # This automation will disarm the alarm when somebody arrives and the house is occupied.
-# 
+#
 automation:
   - id: "alarm_disarm_when_somebody_arrives_and_house_occupied"
     alias: "Alarm - Disarm When Somebody Arrives and House Occupied"
     mode: "single"
     triggers:
       # Somebody Arrives
-      # 
+      #
       - trigger: state
         entity_id:
           - sensor.john_person
@@ -32,9 +32,9 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # 
+      #
       # Ensure that the person has entry to the house
-      # 
+      #
       - condition: template
         value_template: >
           {{ state_attr(trigger.entity_id, 'unlock_privilege') == "on" }}

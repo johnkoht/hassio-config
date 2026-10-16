@@ -47,7 +47,7 @@ cards:
             ]]]
           show_divider: true
           bar_mode: realtime
-      
+
       # Current Price
       - type: custom:button-card
         template: kohbo_energy_stat_bar
@@ -193,7 +193,7 @@ cards:
           extremas: false
           in_header: true
           legend_value: true
-      
+
       # Hourly forecast (dynamic - adjusted for today's pace)
       - entity: sensor.energy_hourly_forecast_json
         type: line
@@ -228,7 +228,7 @@ cards:
             data.push([timestamp.getTime(), value]);
           }
           return data;
-      
+
       # Energy price (line on secondary axis)
       - entity: sensor.comed_current_hour_average_price
         type: line

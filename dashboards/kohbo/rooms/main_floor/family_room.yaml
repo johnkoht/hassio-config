@@ -5,9 +5,9 @@ theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  # 
+  #
   # Page Header
-  # 
+  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,9 +15,9 @@ cards:
       - navigation_path: /dashboard-kohbo/rooms-main-floor
       - settings_path: '#family_room_settings_popup'
 
-  # 
+  #
   # Room Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: room_overview
     variables:
@@ -26,9 +26,9 @@ cards:
       - ble_presence: sensor.family_room_people_list
 
 
-  # 
+  #
   # Climate Overview
-  # 
+  #
   - type: custom:decluttering-card
     template: climate_overview
     variables:
@@ -39,9 +39,9 @@ cards:
       - pm25_sensor: sensor.kitchen_awair_pm2_5
       - room_name: Family Room
 
-  # 
+  #
   # Lights
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -58,9 +58,9 @@ cards:
     vertical: false
 
 
-  # 
+  #
   # Media Player
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Music
@@ -73,9 +73,9 @@ cards:
       - navigation_path: '#family_room_media_player'
 
 
-  # 
+  #
   # Devices
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -120,9 +120,9 @@ cards:
         template: kohbo_device_door_entity
 
 
-  # 
+  #
   # Quick Settings
-  # 
+  #
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -158,11 +158,11 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-        
 
-  # 
+
+  #
   # Media Player Pop Up
-  # 
+  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
@@ -170,9 +170,9 @@ cards:
       - hash: '#family_room_media_player'
 
 
-  # 
+  #
   # Family Room Settings Popup
-  # 
+  #
   - type: custom:bubble-card
     card_type: pop-up
     hash: '#family_room_settings_popup'
@@ -180,18 +180,18 @@ cards:
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
     margin_top_mobile: calc(100vh - 650px)
     margin_top_desktop: calc(100vh - 650px)
-        
+
     cards:
-      # 
+      #
       # Title
-      # 
+      #
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: Settings
 
-      # 
+      #
       # Automations
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Automations
@@ -204,7 +204,7 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
-          
+
           # Clean Family Room When Unoccupied
           - entity: input_boolean.vacuum_family_room_when_house_empty
             name: Clean When House Is Empty
@@ -213,9 +213,9 @@ cards:
             secondary_info: last-changed
             state_color: true
 
-      # 
+      #
       # Sensors
-      # 
+      #
       - type: custom:button-card
         template: section_title
         name: Sensors
@@ -230,7 +230,7 @@ cards:
           #   secondary: "{{ states['binary_sensor.kitchen_presence_sensor'].last_changed | relative_time }} ago"
           #   card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
           #   color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
-            
+
           # Occupancy Sensor
           - entity: binary_sensor.family_room_motion_sensor_occupancy
             icon: kohbo:kohbo-room-occupancy
@@ -249,7 +249,7 @@ cards:
 
 
 
-  # 
+  #
   # Navbar
-  # 
+  #
   - !include /config/dashboards/templates/includes/navbar.yaml

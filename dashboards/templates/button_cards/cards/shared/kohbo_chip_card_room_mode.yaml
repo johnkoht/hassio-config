@@ -16,4 +16,3 @@ kohbo_chip_card_room_mode:
     - value: "DnD"
       icon: kohbo:kohbo-dnd-on
       color: var(--error-color)
-    

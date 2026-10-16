@@ -1,4 +1,4 @@
-style: 
+style:
   ha-logbook $ ha-logbook-renderer $: |
     .entry-container .entry {
       padding-left: 0px !important;

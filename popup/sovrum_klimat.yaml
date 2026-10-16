@@ -4,7 +4,7 @@ browser_mod:
   title: Klimat
   style:
     hui-vertical-stack-card:
-      $hui-entities-card$ : |
+      $hui-entities-card$: |
         #states {
           padding-top: 0.5em;
           padding-bottom: 0em;

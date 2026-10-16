@@ -23,7 +23,7 @@ intents:
   #     - sentences:
   #       - "weather please"
   #       - "weather today"
-  
+
   # GetWeather:
   #   data:
   #     - sentences:

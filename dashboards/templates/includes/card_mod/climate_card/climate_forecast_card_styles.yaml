@@ -13,7 +13,7 @@ style: |
   }
 
   .forecast > div {
-    flex: 0 0 75px !important; 
+    flex: 0 0 75px !important;
     background-color: var(--darker-primary-color);
     border-radius: 8px !important;
     padding: 10px 3px !important;

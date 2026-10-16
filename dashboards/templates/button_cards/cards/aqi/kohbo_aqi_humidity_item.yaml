@@ -4,7 +4,7 @@ kohbo_aqi_humidity_item:
   icon: mdi:water-percent
   state_display: |
     [[[
-      var humidity = entity.state.replace("%", "").trim(); 
+      var humidity = entity.state.replace("%", "").trim();
       humidity = Math.round(humidity).toString();
       return humidity;
     ]]]

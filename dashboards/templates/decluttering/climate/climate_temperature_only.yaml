@@ -1,6 +1,6 @@
-# 
+#
 # Climate Overview
-# 
+#
 climate_temperature_only:
   card:
     type: custom:stack-in-card

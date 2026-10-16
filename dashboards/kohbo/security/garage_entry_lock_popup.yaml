@@ -1,6 +1,6 @@
-# 
+#
 # Front Door Lock Popup
-# 
+#
 type: custom:bubble-card
 card_type: pop-up
 hash: '#garage_entry_lock_popup'
@@ -12,17 +12,17 @@ cards:
     template: kohbo_popup_page_title
     name: Garage Entry Lock
 
-  # 
+  #
   # Front Door Lock Status
-  # 
+  #
   - type: custom:more-info-card
     entity: lock.garage_entry_door
     title: Garage Entry Lock
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
 
-  # 
+  #
   # Autolock Settings
-  #         
+  #
   - type: custom:stack-in-card
     mode: vertical
     card_mod:
@@ -46,9 +46,9 @@ cards:
     name: If enabled, the garage entry door will automatically lock at bedtime, when the house is empty, or at the lock time.
     template: kohbo_card_section_description
 
-  # 
+  #
   # Lock the door in the evening
-  # 
+  #
   - type: custom:stack-in-card
     mode: vertical
     card_mod:
@@ -70,7 +70,7 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true
-      
+
       - type: conditional
         conditions:
           - entity: automation.garage_entry_door_lock_auto_lock_in_evening
@@ -92,9 +92,9 @@ cards:
     template: kohbo_card_section_description
 
 
-  # 
+  #
   # Lock If Open Too Long Settings
-  # 
+  #
   - type: custom:stack-in-card
     mode: vertical
     card_mod:
@@ -116,7 +116,7 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-triggered
             state_color: true
-      
+
       - type: conditional
         conditions:
           - entity: automation.garage_entry_door_lock_if_open_too_long
@@ -142,9 +142,9 @@ cards:
         - margin-bottom: 20px
 
 
-  # 
+  #
   # Auto Unlock Settings
-  #         
+  #
   - type: custom:stack-in-card
     mode: vertical
     card_mod:
@@ -180,9 +180,9 @@ cards:
         - margin-bottom: 20px
 
 
-  # 
+  #
   # Signal Strength
-  # 
+  #
   - type: entities
     entities:
       - entity: sensor.garage_entry_door_battery_level
@@ -200,4 +200,3 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         icon: mdi:signal
-

@@ -22,9 +22,9 @@ kohbo_horizontal_action_card_garage_door_entity:
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ");
       }
-  
+
       if (raw_state == "open") {
-        if (entity.attributes.entity_id) 
+        if (entity.attributes.entity_id)
           state = entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
         else
           state = "Open";

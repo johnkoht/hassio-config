@@ -30,7 +30,7 @@ automation:
       - wait_template: "{{ is_state('binary_sensor.john_computer_active', 'on') }}"
         timeout: "02:30:00"
         continue_on_timeout: false
-      
+
       # Delay 2 minutes in case I just got on my computer
       # and I'm hoping on a call
       - delay: "00:02:00"
@@ -71,7 +71,7 @@ script:
             is one single paragraph without any line breaks or bullet points! This is
             important!
 
-            Be short and concise with responses. 
+            Be short and concise with responses.
 
             Here are the details to review:
 
@@ -100,8 +100,8 @@ script:
               - Humidity: {{ states.sensor.tempest_humidity.state }}%
 
             ## Calendar Events Here are the events from my work and personal calendar.
-            No need to read them off. Please share the following:  
-            - The next event: how long from now and what the title is 
+            No need to read them off. Please share the following:
+            - The next event: how long from now and what the title is
             - If there are any personal events like picking up a kid from school, haircut, or appointment, please call those out.
             - I'm John, so anytime you see anything about "John" in a calendar event know that's probably referencing me, so need to say "meeting with john"
             - Here are the calendar Events: {{ states.sensor.john_calendar_events_today.attributes.events }}
@@ -109,9 +109,9 @@ script:
             - If I have a bunch of meetings around lunch time, suggest a time to eat lunch earlier or within a small opening if available
             - Ignore anything on my calendar that starts with OOO or GSD as those are personal blocks
 
-            Please provide an overview in plain text as a single paragraph. Remember: 
-            - Don't list all events, just the next event or any personal tasks/reminders 
-            - Don't list all details, just summarize and provide an overview 
+            Please provide an overview in plain text as a single paragraph. Remember:
+            - Don't list all events, just the next event or any personal tasks/reminders
+            - Don't list all details, just summarize and provide an overview
             - Be short and concise in your response - Be super cheerful and excited.
             - Don't use emojis as this will be a voice-activated TTS message
             - Don't include any dashes, em-dashes, or special characters at all

@@ -313,4 +313,3 @@ template:
           {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
           {% set today = now().strftime('%Y-%m-%d') %}
           {{ date_for == tomorrow or date_for == today }}
-

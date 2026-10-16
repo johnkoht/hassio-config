@@ -1,5 +1,5 @@
 # John DnD Off
-# 
+#
 # If I'm off a call, turn off the DnD boolean
 automation:
   - id: "john_dnd_off"

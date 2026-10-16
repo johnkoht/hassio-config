@@ -1,5 +1,5 @@
 # Announcement Queue - Cleanup on Empty House
-# 
+#
 # This script is used to cleanup the announcement queue when the house
 # is empty. It's called by the announcement_queue_processor script.
 #
@@ -7,7 +7,7 @@
 # - Filtering out expired messages
 # - Maintaining the queue priority order
 # - Triggering the announcement engine
-# 
+#
 automation:
   - id: announcement_queue_cleanup
     alias: "Announcement Queue - Cleanup on Empty House"
@@ -76,4 +76,4 @@ automation:
         data:
           topic: "home/announcement_queue/state"
           payload: "queue"
-          retain: true 
+          retain: true

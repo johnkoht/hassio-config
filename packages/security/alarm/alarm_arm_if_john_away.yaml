@@ -81,9 +81,9 @@ automation:
         entity_id: automation.alarm_arm_if_john_away
 
 
-# 
+#
 # Alarm Arm If John Away Time
-# 
+#
 input_datetime:
   alarm_john_away_arm_time:
     name: Alarm John Away - Arm Time

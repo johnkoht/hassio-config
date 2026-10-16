@@ -1,6 +1,6 @@
-# 
+#
 # Camera Popup
-# 
+#
 camera_popup:
   card:
     type: custom:bubble-card
@@ -15,9 +15,9 @@ camera_popup:
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: '[[name]]'
-      
+
       - type: horizontal-stack
-        cards:            
+        cards:
           - type: custom:mushroom-chips-card
             chips:
               - type: template
@@ -39,9 +39,9 @@ camera_popup:
                 tap_action:
                   action: toggle
 
-              # 
+              #
               # Snooze Timer
-              # 
+              #
               - type: conditional
                 conditions:
                   - condition: state
@@ -62,9 +62,9 @@ camera_popup:
                   tap_action:
                     action: more-info
 
-              # 
+              #
               # Snooze Action
-              # 
+              #
               - type: conditional
                 conditions:
                   - condition: or
@@ -108,7 +108,7 @@ camera_popup:
               show_download_control: false
               show_favorite_control: false
               show_timeline_control: false
-        
+
 
       - type: entities
         card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
@@ -141,4 +141,3 @@ camera_popup:
             secondary_info: last-changed
             state_color: true
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
- 

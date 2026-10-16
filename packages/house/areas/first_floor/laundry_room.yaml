@@ -1,6 +1,6 @@
-# 
+#
 # Laundry Room Sensor
-# 
+#
 template:
   - sensor:
       - name: "Laundry Room"

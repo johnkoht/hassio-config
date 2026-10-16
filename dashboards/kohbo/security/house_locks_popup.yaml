@@ -1,6 +1,6 @@
-# 
+#
 # House Locks Popup
-# 
+#
 type: custom:bubble-card
 card_type: pop-up
 hash: '#house_locks_popup'
@@ -21,12 +21,12 @@ cards:
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_more_info_card_mod.yaml
 
 
-  # 
+  #
   # Front Door Lock
-  # 
+  #
   - !include /config/dashboards/kohbo/security/components/front_door_lock_component.yaml
 
-  # 
+  #
   # Garage Entry Door Lock
-  # 
+  #
   - !include /config/dashboards/kohbo/security/components/garage_entry_door_lock_component.yaml
