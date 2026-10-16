@@ -1,0 +1,15 @@
+# Front Yard Holiday Decorations
+#
+# The four outdoor Z-Wave outlets that power holiday lights and
+# inflatables. Not the Hue power plugs, which stay on.
+#
+
+switch:
+  - platform: group
+    name: "Front Yard Holiday Decorations"
+    unique_id: front_yard_holiday_decorations
+    entities:
+      - switch.front_door_smart_plug
+      - switch.front_door_smart_plug_2
+      - switch.front_left_smart_plug
+      - switch.front_left_smart_plug_2
