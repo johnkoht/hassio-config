@@ -30,7 +30,7 @@ routes:
         icon: kohbo:kohbo-bed-single
         label: Nino's Bedroom
       # Gianluca's Bedroom quick link
-      - url: /dashboard-kohbo/rooms-gianlucas-bedroom
+      - url: /dashboard-kohbo/rooms-gianluca-bedroom
         icon: kohbo:kohbo-bed-single
         label: Gianluca's Bedroom
 
