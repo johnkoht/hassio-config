@@ -51,6 +51,10 @@ Here are some of my favorite and most useful automations:
 - **[Safety Outlets](https://github.com/johnkoht/hassio-config/blob/master/packages/main_bathroom/outlets/main_bathroom_turn_off_outlets.yaml)**: Some outlets around the house will automatically turn off when we're not home or the room is off. The best example is the hair dryer and steamer in our main bathroom. 
 - **[Radio & UPS offline alerts](https://github.com/johnkoht/hassio-config/tree/master/packages/system)**: a push when the Zigbee coordinator, Z-Wave controller or UPS drops offline (re-checked after HA starts), plus a critical push when the UPS goes on battery and another when line power is back.
 
+### Holidays
+
+- **[Holiday decorations](https://github.com/johnkoht/hassio-config/tree/master/packages/holidays)**: in season, the front yard decorations (`switch.front_yard_holiday_decorations`, one group of four outdoor plugs shared by Halloween and Christmas) run on a schedule: Halloween from morning to night, Christmas from evening to bedtime. Also, the Halloween colors (`scene.halloween_front_yard_spots`) go onto the front yard Hue spots when the accent lights come on. The plugs that power the Hue spots are never automated. Notes in [LEARNINGS](../packages/holidays/LEARNINGS.md).
+
 ### Notifications & Reminders
 
 - **[Announcing when somebody is at the grocery store](https://github.com/johnkoht/hassio-config/blob/master/packages/places/grocery_store_announcement.yaml)**: whenever somebody is at a grocery store, a TTS message will broadcast across the house to let everybody know...in case I need some more Oreos, ya know?
