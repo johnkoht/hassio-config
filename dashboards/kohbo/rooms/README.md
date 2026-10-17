@@ -32,12 +32,14 @@ rooms/
 │   ├── foyer.yaml                         # Foyer detail page
 │   ├── mudroom.yaml                       # Mudroom detail page
 │   ├── mudroom_bathroom.yaml              # Mudroom bathroom detail page
+│   ├── powder_room.yaml                   # Powder room detail page
 │   ├── vacuum.yaml                        # Vacuum control page
 │   └── partials/                          # Room card definitions
 │       ├── office_card.yaml
 │       ├── family_room_card.yaml
 │       ├── kitchen_card.yaml
 │       ├── mudroom_bathroom_card.yaml
+│       ├── powder_room_card.yaml
 │       └── ...
 ├── upper_floor/
 │   ├── upper_floor_index.yaml             # Upper floor room index
@@ -89,6 +91,7 @@ Rooms appear automatically when occupied:
 - Foyer
 - Mudroom
 - Mudroom Bathroom
+- Powder Room
 - Upstairs Hallway
 
 
@@ -117,6 +120,7 @@ Shows all main floor rooms regardless of occupancy status.
 - Foyer
 - Mudroom
 - Mudroom Bathroom
+- Powder Room
 
 ### Upper Floor Index
 

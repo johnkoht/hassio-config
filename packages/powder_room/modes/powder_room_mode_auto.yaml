@@ -1,6 +1,5 @@
 automation:
   - id: "powder_room_mode_auto"
-    initial_state: on
     alias: "Powder Room mode Auto"
     triggers:
       # House turn to Auto mode
