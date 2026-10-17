@@ -92,29 +92,6 @@ group:
       - sensor.hue_spots_online
       - sensor.ble_proxies_online
 
-  key_sensors_zigbee_routers:
-    name: Zigbee Routers
-    entities:
-      - switch.smart_plug_1_switch
-      - switch.smart_plug_2_switch
-      - switch.smart_plug_3_switch
-      - switch.smart_plug_4_switch
-      - switch.smart_plug_5_switch
-      - switch.smart_plug_6_switch
-      - switch.smart_plug_7_switch
-      - switch.smart_plug_8_switch
-      - switch.smart_plug_9_switch
-      - switch.smart_plug_10_switch
-      - switch.smart_plug_11_switch
-      - switch.smart_plug_12_switch
-      - switch.smart_plug_13_switch
-      - switch.smart_plug_14_switch
-      - switch.smart_plug_15_switch
-      - switch.smart_plug_16_switch
-      - switch.smart_plug_17_switch
-      - switch.smart_plug_18_switch
-      - switch.gazebo_smart_plug_switch
-
   key_sensors_hue_spots:
     name: Hue Outdoor Spots
     entities:

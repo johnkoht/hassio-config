@@ -22,7 +22,6 @@ The Safety group was picked by John: the smoke detector, both door locks, the th
 | `group.key_sensors_presence` | Occupancy, mmWave, bed sensors |
 | `group.key_sensors_safety` | Smoke, locks, garage covers, gates, garage door and glass break |
 | `group.key_sensors_network` | The 5 Network rows |
-| `group.key_sensors_zigbee_routers` | Mains-powered Zigbee plugs (routers) |
 | `group.key_sensors_hue_spots` | Hue outdoor spots |
 
 **To add a sensor to a room page, add one line to the matching group in `key_sensor_groups.yaml`.** Otherwise the Sensors page won't notice when it goes offline. The groups must stay old-style `group:`, because `expand()` and auto-entities read their `entity_id` attribute.
@@ -38,12 +37,22 @@ The Safety group was picked by John: the smoke detector, both door locks, the th
 | `sensor.key_sensors_network_problems` | network rows that are off, unavailable, or below their `total` | |
 | `binary_sensor.zigbee_coordinator_online` | ZHA config entry is loaded | `summary` |
 | `binary_sensor.zwave_controller_online` | ZWA-2 status is `ready` | `summary` |
-| `sensor.zigbee_routers_online` / `sensor.hue_spots_online` | members not unavailable | `total` (group size), `summary` |
+| `sensor.zigbee_routers_online` | labelled routers whose primary entity isn't `unavailable`/`unknown` | `total` (labelled devices), `summary`, `offline` (names), `routers` (`{primary entity: "<Area> <Device>"}`) |
+| `sensor.hue_spots_online` | members not unavailable | `total` (group size), `summary` |
 | `sensor.ble_proxies_online` | Bermuda active proxies | `total`, `summary` |
 
 **The low-battery threshold** has one home: `variables:` on `sensor.key_sensors_low_battery`. Both its state and its `batteries` attribute read it. The dashboard only reads `batteries`, so changing that one value changes the whole page.
 
 **Battery lookup:** `device_id(sensor)` → that device's `sensor.*` entity with `device_class: battery`. It's guarded for entities with no device.
+
+## Zigbee routers
+
+Routers come from the **`zigbee_router` device label** ("Zigbee Router"), not a group. **A new router needs that label** (Settings → Devices → the device → Labels), or it won't be counted or listed. `sensor.zigbee_routers_online` scans `label_devices('zigbee_router')` once a minute (trigger-based, so plug power readings don't re-render it):
+
+- **Primary entity:** the first enabled switch, light, fan, then sensor, skipping config and diagnostic ones (LQI, RSSI, LED, child lock, Inovelli options). A device with none falls back to its LQI sensor (range extenders), then number/select/update (the UZG router). A labelled device with no enabled entity counts as offline.
+- **Name:** "<Area> <Device>", without the area when the device name already contains it or starts with its first word (Gianluca's room → "Gianluca Ceiling Light 1"). No area, or an area that no longer exists, gives the device name alone.
+
+The Network row opens `#zigbee_routers_popup` (`dashboards/kohbo/sensors/zigbee_routers_popup.yaml`): every router, offline first, then weakest LQI, then name. LQI shows when the device has an enabled `_lqi` sensor (red under 100, amber to 180); otherwise "LQI —". LQI sensors are excluded from the recorder (RSSI is not, so ESPHome Wi-Fi RSSI keeps its history).
 
 ## Device Health score
 

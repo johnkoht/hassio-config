@@ -140,7 +140,7 @@ Tabbed section (Indoor / Outdoor) sharing `plants_header.yaml`. No settings popu
 More → Sensors. Tabbed section (Overview / Offline / Low Battery) sharing `sensors_header.yaml`. Tracks the physical sensors the room pages use (`packages/system/sensor_health/`). No settings popup.
 
 - **Overview** (`sensors/sensors.yaml`, `/dashboard-kohbo/sensors`)
-  - Device Health card (Healthy / Degraded / Down, score ring, and Networks / Sensors / Batteries tiles; the last two open their tabs), 5 Network rows (Zigbee coordinator, routers N of total, Z-Wave, Hue spots, BLE proxies), then online sensors by type, Safety & Security first
+  - Device Health card (Healthy / Degraded / Down, score ring, and Networks / Sensors / Batteries tiles; the last two open their tabs), 5 Network rows (Zigbee coordinator, routers N of total, Z-Wave, Hue spots, BLE proxies; the routers row opens `#zigbee_routers_popup`, every `zigbee_router`-labelled device with Online/Offline and LQI, offline and weakest first), then online sensors by type, Safety & Security first
 - **Offline** (`sensors/offline.yaml`, `/dashboard-kohbo/sensors-offline`)
   - Every tracked sensor that's unavailable or unknown, oldest outage first, with its area; "Known issue"-labelled ones in their own section
 - **Low Battery** (`sensors/low_battery.yaml`, `/dashboard-kohbo/sensors-low-battery`)
@@ -322,7 +322,8 @@ dashboards/kohbo/
 ├── sensors/
 │   ├── sensors.yaml
 │   ├── offline.yaml
-│   └── low_battery.yaml
+│   ├── low_battery.yaml
+│   └── zigbee_routers_popup.yaml
 │
 └── shared/
     ├── [shared popups]
