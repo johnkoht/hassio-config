@@ -109,6 +109,11 @@ routes:
         url: /dashboard-kohbo/plants
         label: Plants
 
+      # Sensors
+      - icon: mdi:access-point-network
+        url: /dashboard-kohbo/sensors
+        label: Sensors
+
 haptic:
   url: true
   tap_action: true
