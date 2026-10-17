@@ -68,6 +68,21 @@ group:
       - binary_sensor.playroom_presence_sensor
       - binary_sensor.screek_human_sensor_l12_73d3d8_presence
 
+  # Locks and garage covers count as offline only when unavailable; their open/closed state lives on the Security page.
+  key_sensors_safety:
+    name: Key Sensors - Safety & Security
+    entities:
+      - binary_sensor.smoke_detector
+      - lock.front_door
+      - lock.garage_entry_door
+      - cover.garage_door_1
+      - cover.garage_door_2
+      - cover.garage_door_3
+      - binary_sensor.pool_main_gate_opening
+      - binary_sensor.backyard_main_entry_gate_opening
+      - binary_sensor.interior_garage_door
+      - binary_sensor.garage_glass_break
+
   key_sensors_network:
     name: Key Sensors - Network
     entities:
