@@ -2,6 +2,7 @@
 #
 # Health of the radios and meshes the key sensors report through: Zigbee, Z-Wave, Hue, BLE.
 # Mesh sensors are counts with a `total` attribute; `summary` is the dashboard row label.
+# Zigbee routers are every device labelled `zigbee_router`, scanned once a minute.
 #
 
 template:
@@ -27,19 +28,6 @@ template:
           summary: "{{ states('sensor.home_assistant_connect_zwa_2_status') | replace('_', ' ') | capitalize }}"
 
   - sensor:
-      - name: Zigbee Routers Online
-        unique_id: zigbee_routers_online
-        default_entity_id: sensor.zigbee_routers_online
-        icon: mdi:power-socket-us
-        state: >-
-          {{ expand('group.key_sensors_zigbee_routers')
-             | rejectattr('state', 'in', ['unavailable', 'unknown']) | list | count }}
-        attributes:
-          total: "{{ state_attr('group.key_sensors_zigbee_routers', 'entity_id') | default([], true) | count }}"
-          summary: >-
-            {% set all = expand('group.key_sensors_zigbee_routers') %}
-            {{ all | rejectattr('state', 'in', ['unavailable', 'unknown']) | list | count }} of {{ all | count }} online
-
       # No Hue config entry check: when the bridge drops, every spot goes unavailable, so the count covers it.
       - name: Hue Spots Online
         unique_id: hue_spots_online
@@ -65,3 +53,61 @@ template:
           summary: >-
             {{ states('sensor.bermuda_global_active_proxy_count') | int(0) }} of
             {{ states('sensor.bermuda_global_total_proxy_count') | int(0) }} active
+
+  # One pass per minute over label_devices('zigbee_router'): each device's primary entity
+  # (first enabled switch/light/fan/sensor that isn't a config or diagnostic one, else its LQI
+  # sensor, else number/select/update) and an "<Area> <Device>" name for the routers popup.
+  - triggers:
+      - trigger: time_pattern
+        minutes: /1
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - variables:
+          scan: >-
+            {% set skip = '_(lqi|rssi|identify|firmware|disable_led|child_lock|led_mode|bulb_mode|local_protection|invert_switch|progress_led|tap_up_enabled|tap_down_enabled|on_off_mode|clear_notifications|sync_level|switch_scenes)(_[0-9]+)?$' %}
+            {% set lqi = '_lqi(_[0-9]+)?$' %}
+            {% set ns = namespace(rows=[], offline=[]) %}
+            {% for d in label_devices('zigbee_router') %}
+              {% set ents = device_entities(d) %}
+              {% set p = namespace(e=none) %}
+              {% for pattern in ['^switch[.]', '^light[.]', '^fan[.]', '^sensor[.]', lqi, '^number[.]', '^select[.]', '^update[.]'] %}
+                {% for e in ents %}
+                  {% if p.e is none and e is search(pattern) and (pattern == lqi or e is not search(skip))
+                        and expand(e) | count > 0 %}
+                    {% set p.e = e %}
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+              {# area_name(device_id) raises on a device whose area was deleted, so resolve the area_id #}
+              {% set device = device_attr(d, 'name_by_user') or device_attr(d, 'name') or d %}
+              {% set area_id = device_attr(d, 'area_id') %}
+              {% set area = (area_name(area_id) if area_id else none) or '' %}
+              {% set dn = device | lower | regex_replace('[^a-z0-9]', '') %}
+              {% set an = area | lower | regex_replace('[^a-z0-9]', '') %}
+              {% set first = area.split(' ')[0] | lower | regex_replace("['’]s$", '') | regex_replace('[^a-z0-9]', '') %}
+              {% set name = device if not area or an in dn or (first | length >= 4 and dn.startswith(first))
+                            else area ~ ' ' ~ device %}
+              {% if p.e is none or states(p.e) in ['unavailable', 'unknown'] %}
+                {% set ns.offline = ns.offline + [name] %}
+              {% endif %}
+              {% if p.e is not none %}
+                {% set ns.rows = ns.rows + [(p.e, name)] %}
+              {% endif %}
+            {% endfor %}
+            {{ {'routers': dict(ns.rows), 'offline': ns.offline | sort,
+                'total': label_devices('zigbee_router') | count} }}
+    sensor:
+      - name: Zigbee Routers Online
+        unique_id: zigbee_routers_online
+        default_entity_id: sensor.zigbee_routers_online
+        icon: mdi:power-socket-us
+        state: "{{ scan.total - scan.offline | count }}"
+        attributes:
+          total: "{{ scan.total }}"
+          summary: "{{ scan.total - scan.offline | count }} of {{ scan.total }} online"
+          offline: "{{ scan.offline }}"
+          # {primary entity_id: "<Area> <Device>"}; the routers popup lists these.
+          routers: "{{ scan.routers }}"
