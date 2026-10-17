@@ -98,6 +98,11 @@ recorder:
       - sensor.*_target_*
       - sensor.*_voltage
       - sensor.*_rms_current
+      # Link quality (ZHA LQI/RSSI incl. _2 duplicates, ESPHome Wi-Fi RSSI). Takes effect on the next HA restart; recorder config isn't reloadable.
+      - sensor.*_lqi
+      - sensor.*_lqi_*
+      - sensor.*_rssi
+      - sensor.*_rssi_*
       - sensor.kohbo_udm_*_utilization*
 
 camera:
