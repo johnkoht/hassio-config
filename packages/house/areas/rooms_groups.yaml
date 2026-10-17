@@ -14,6 +14,7 @@ group:
       - sensor.playroom_room
       - sensor.dining_room
       - sensor.mudroom_room
+      - sensor.mudroom_bathroom_room
       - sensor.foyer_room
       - sensor.jr_suite_room
       - sensor.laundry_room

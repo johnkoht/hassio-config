@@ -5,7 +5,6 @@
 #
 automation:
   - id: "mudroom_bathroom_fan_off"
-    initial_state: on
     alias: "Mudroom Bathroom Fan Off"
     triggers:
       # Mudroom Bathroom Fan is Off
