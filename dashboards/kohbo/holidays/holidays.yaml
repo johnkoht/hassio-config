@@ -1,22 +1,79 @@
+#
+# Holidays — Overview Tab: one card per season with its toggle and a link to its page.
+#
 type: custom:vertical-layout
 title: Holidays
 path: holidays
 theme: kohbo
+subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
-  # SUBPAGES
-  #  - cameras
-  #  - doors
-  #  - windows
-  #  - leak sensors
-  #  - motion
-  #  -
-
   #
-  # Page Header
+  # Page Header (with tab navbar)
   #
   - !include /config/dashboards/templates/includes/holidays/holiday_header.yaml
 
+
+  #
+  # Halloween
+  #
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: input_boolean.halloween_season_active
+      - name: Halloween
+      - template: kohbo_horizontal_action_card_entity
+      - icon: mdi:halloween
+      - tap_action: navigate
+      - navigation_path: /dashboard-kohbo/holidays-halloween
+      - action_cards:
+        # Season toggle
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: input_boolean.halloween_season_active
+
+        # Halloween page
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/holidays-halloween"
+
+
+  #
+  # Christmas
+  #
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: input_boolean.christmas_season_active
+      - name: Christmas
+      - template: kohbo_horizontal_action_card_entity
+      - icon: mdi:pine-tree
+      - tap_action: navigate
+      - navigation_path: /dashboard-kohbo/holidays-christmas
+      - action_cards:
+        # Season toggle
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: input_boolean.christmas_season_active
+
+        # Christmas page
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo/holidays-christmas"
+
+
+  #
+  # Holidays Settings Popup
+  #
+  - !include /config/dashboards/kohbo/holidays/_holidays_settings_popup.yaml
 
   #
   # Navbar
