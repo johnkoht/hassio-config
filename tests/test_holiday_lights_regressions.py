@@ -73,4 +73,11 @@ def test_halloween_hue_scene_only_when_accent_lights_on():
     gated = {(c["entity_id"], c["state"]) for c in auto["conditions"] if c["condition"] == "state"}
     assert ("input_boolean.halloween_season_active", "on") in gated
     assert ("input_boolean.exterior_accent_lights", "on") in gated
-    assert auto["actions"][-1]["target"]["entity_id"] == "scene.front_yard_halloween"
+    assert auto["actions"][-1]["target"]["entity_id"] == "scene.halloween_front_yard_spots"
+
+
+def test_halloween_scene_only_drives_hue_spots():
+    """The scene must never touch the Hue power plugs; they stay on."""
+    scene = yaml.safe_load((REPO / "scenes/holidays/halloween_front_yard_spots.yaml").read_text())
+    assert scene["id"] == "halloween_front_yard_spots"
+    assert all(e.startswith("light.") for e in scene["entities"])

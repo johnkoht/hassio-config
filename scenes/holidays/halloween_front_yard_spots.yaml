@@ -1,0 +1,62 @@
+# Halloween Front Yard Spots
+#
+# Green and orange on the front yard spots, red on spot 7, warm white
+# on spots 11-14. Captured from the live lights on 2026-10-16.
+#
+
+id: "halloween_front_yard_spots"
+name: "Halloween Front Yard Spots"
+icon: mdi:halloween
+entities:
+  light.exterior_hue_outdoor_spot_1:
+    state: "on"
+    brightness: 253
+    xy_color: [0.2715, 0.6238]
+  light.exterior_hue_outdoor_spot_2:
+    state: "on"
+    brightness: 253
+    xy_color: [0.2715, 0.6238]
+  light.exterior_hue_outdoor_spot_3:
+    state: "on"
+    brightness: 253
+    xy_color: [0.2715, 0.6238]
+  light.hue_outdoor_spot_4:
+    state: "on"
+    brightness: 253
+    xy_color: [0.2715, 0.6238]
+  light.hue_outdoor_spot_5:
+    state: "on"
+    brightness: 253
+    xy_color: [0.6004, 0.372]
+  light.hue_outdoor_spot_6:
+    state: "on"
+    brightness: 253
+    xy_color: [0.6004, 0.372]
+  light.hue_outdoor_spot_7:
+    state: "on"
+    brightness: 254
+    xy_color: [0.589, 0.329]
+  light.hue_outdoor_spot_8:
+    state: "on"
+    brightness: 253
+    xy_color: [0.2715, 0.6238]
+  light.hue_outdoor_spot_9:
+    state: "on"
+    brightness: 253
+    xy_color: [0.2715, 0.6238]
+  light.hue_outdoor_spot_10:
+    state: "on"
+    brightness: 253
+    xy_color: [0.6004, 0.372]
+  light.hue_spot_11_light:
+    state: "on"
+    brightness: 254
+    color_temp_kelvin: 2732
+  light.hue_spot_13_light:
+    state: "on"
+    brightness: 254
+    color_temp_kelvin: 2732
+  light.hue_spot_14_light:
+    state: "on"
+    brightness: 254
+    color_temp_kelvin: 2732

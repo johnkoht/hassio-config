@@ -34,4 +34,4 @@ automation:
         state: "on"
       - action: scene.turn_on
         target:
-          entity_id: scene.front_yard_halloween
+          entity_id: scene.halloween_front_yard_spots
