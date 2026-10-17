@@ -5,7 +5,6 @@
 #
 automation:
   - id: "mudroom_bathroom_mode_off"
-    initial_state: on
     alias: "Mudroom Bathroom Mode Off"
     triggers:
       # House becomes unoccupied

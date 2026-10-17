@@ -205,6 +205,17 @@ cards:
           !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_card.yaml
 
       #
+      # Mudroom Bathroom
+      #
+      - type: conditional
+        conditions:
+          - condition: state
+            entity: input_boolean.mudroom_bathroom_occupied
+            state: 'on'
+        card:
+          !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_bathroom_card.yaml
+
+      #
       # Upstairs Hallway
       #
       - type: conditional

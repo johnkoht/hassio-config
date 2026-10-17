@@ -1,6 +1,5 @@
 automation:
   - id: "mudroom_bathroom_mode_auto"
-    initial_state: on
     alias: "Mudroom Bathroom Mode Auto"
     triggers:
       # House turn to Auto mode

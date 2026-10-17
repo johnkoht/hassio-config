@@ -98,6 +98,11 @@ cards:
       #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_card.yaml
 
+      #
+      # Mudroom Bathroom
+      #
+      - !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_bathroom_card.yaml
+
 
   #
   # Navbar

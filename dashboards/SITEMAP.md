@@ -73,6 +73,7 @@ The dashboard is organized into the following main sections:
 - **Dining Room** (`rooms/main_floor/dining_room.yaml`)
 - **Foyer** (`rooms/main_floor/foyer.yaml`)
 - **Mudroom** (`rooms/main_floor/mudroom.yaml`)
+- **Mudroom Bathroom** (`rooms/main_floor/mudroom_bathroom.yaml`)
 - **Vacuum** (`rooms/main_floor/vacuum.yaml`)
   - Main floor vacuum control
 
@@ -187,6 +188,7 @@ kohbo Dashboard
 │   │   ├── Dining Room
 │   │   ├── Foyer
 │   │   ├── Mudroom
+│   │   ├── Mudroom Bathroom
 │   │   └── Vacuum
 │   │
 │   ├── Upper Floor
@@ -293,4 +295,4 @@ dashboards/kohbo/
 
 ---
 
-*Last updated: October 15, 2026*
+*Last updated: October 16, 2026*

@@ -2,7 +2,6 @@
 #
 automation:
   - id: "mudroom_bathroom_occupied"
-    initial_state: on
     alias: "Mudroom Bathroom Occupied"
     triggers:
       # Motion detected

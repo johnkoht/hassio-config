@@ -5,7 +5,6 @@
 #
 automation:
   - id: "mudroom_bathroom_lights_off"
-    initial_state: on
     alias: "Mudroom Bathroom lights off"
     triggers:
       # Mudroom bathroom not occupied

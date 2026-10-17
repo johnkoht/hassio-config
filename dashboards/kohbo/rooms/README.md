@@ -31,11 +31,13 @@ rooms/
 │   ├── jr_suite.yaml                      # Jr. Suite detail page
 │   ├── foyer.yaml                         # Foyer detail page
 │   ├── mudroom.yaml                       # Mudroom detail page
+│   ├── mudroom_bathroom.yaml              # Mudroom bathroom detail page
 │   ├── vacuum.yaml                        # Vacuum control page
 │   └── partials/                          # Room card definitions
 │       ├── office_card.yaml
 │       ├── family_room_card.yaml
 │       ├── kitchen_card.yaml
+│       ├── mudroom_bathroom_card.yaml
 │       └── ...
 ├── upper_floor/
 │   ├── upper_floor_index.yaml             # Upper floor room index
@@ -86,6 +88,7 @@ Rooms appear automatically when occupied:
 - Gianluca's Bedroom
 - Foyer
 - Mudroom
+- Mudroom Bathroom
 - Upstairs Hallway
 
 
@@ -113,6 +116,7 @@ Shows all main floor rooms regardless of occupancy status.
 - Jr. Suite
 - Foyer
 - Mudroom
+- Mudroom Bathroom
 
 ### Upper Floor Index
 
