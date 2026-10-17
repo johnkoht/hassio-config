@@ -1,0 +1,16 @@
+#
+# Soil Sensor Offline Tile: "Offline" when unavailable, "No reading" when stuck at 0, plus its age.
+#
+kohbo_device_soil_offline_entity:
+  template: kohbo_device_entity
+  state_display: >
+    [[[
+      if (entity.state == "unavailable" || entity.state == "unknown") {
+        return `Offline – ${variables.last_changed}`;
+      } else {
+        return `No reading – ${variables.last_changed}`;
+      }
+    ]]]
+  styles:
+    icon:
+      - color: var(--warning-color)

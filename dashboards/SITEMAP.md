@@ -126,6 +126,15 @@ Tabbed section (Overview / Halloween / Christmas) sharing `holiday_header.yaml` 
 - Popups:
   - Holidays Settings Popup (`holidays/_holidays_settings_popup.yaml`, shared by all three tabs)
 
+### 🌱 Plants
+
+Tabbed section (Indoor / Outdoor) sharing `plants_header.yaml`. No settings popup.
+
+- **Indoor** (`plants/indoor.yaml`, `/dashboard-kohbo/plants`)
+  - 3 plant cards: 7-day moisture graph + Moisture / Temperature / Battery row, or an Offline tile
+- **Outdoor** (`plants/outdoor.yaml`, `/dashboard-kohbo/plants-outdoor`)
+  - 12 soil moisture graphs in Lawn / Front Flower Beds / Backyard Flower Beds (dead channels show an Offline / No reading tile), then the Lawn vs Rain chart
+
 ### 🔧 Shared Components
 
 #### Shared Popups
@@ -216,11 +225,15 @@ kohbo Dashboard
 ├── ⚡ Energy
 │   └── [Energy Monitoring & Popups]
 │
-└── 🎉 Holidays
-    ├── Overview
-    ├── Halloween
-    ├── Christmas
-    └── [Holidays Settings Popup]
+├── 🎉 Holidays
+│   ├── Overview
+│   ├── Halloween
+│   ├── Christmas
+│   └── [Holidays Settings Popup]
+│
+└── 🌱 Plants
+    ├── Indoor
+    └── Outdoor
 ```
 
 ---
@@ -284,6 +297,11 @@ dashboards/kohbo/
 │   ├── halloween.yaml
 │   ├── christmas.yaml
 │   └── _holidays_settings_popup.yaml
+│
+├── plants/
+│   ├── README.md
+│   ├── indoor.yaml
+│   └── outdoor.yaml
 │
 └── shared/
     ├── [shared popups]

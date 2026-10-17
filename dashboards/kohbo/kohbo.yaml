@@ -88,3 +88,7 @@ views:
   - !include /config/dashboards/kohbo/holidays/holidays.yaml
   - !include /config/dashboards/kohbo/holidays/christmas.yaml
   - !include /config/dashboards/kohbo/holidays/halloween.yaml
+
+  # Plants
+  - !include /config/dashboards/kohbo/plants/indoor.yaml
+  - !include /config/dashboards/kohbo/plants/outdoor.yaml
