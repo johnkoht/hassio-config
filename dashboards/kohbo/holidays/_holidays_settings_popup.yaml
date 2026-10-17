@@ -1,0 +1,70 @@
+#
+# Holidays Settings Popup — shared by the Overview, Halloween and Christmas tabs.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#holidays_settings_popup'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+margin_top_mobile: calc(100vh - 600px)
+margin_top_desktop: calc(100vh - 600px)
+
+cards:
+  #
+  # Title
+  #
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Settings
+
+  #
+  # Halloween
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Halloween
+  - type: entities
+    entities:
+      - entity: automation.halloween_lights_turn_on
+        name: Decorations On in the Morning
+        icon: mdi:weather-sunset-up
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: automation.halloween_lights_turn_off
+        name: Decorations Off at Night
+        icon: mdi:weather-night
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: automation.halloween_front_yard_hue_scene
+        name: Halloween Colors on the Spots
+        icon: mdi:halloween
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  #
+  # Christmas
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Christmas
+  - type: entities
+    entities:
+      - entity: automation.christmas_activated
+        name: Lights On in the Evening
+        icon: mdi:weather-sunset-down
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: automation.christmas_not_activated
+        name: Lights Off at Bedtime or Away
+        icon: mdi:weather-night
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  - type: custom:button-card
+    name: The season toggle turns these on and off; switch one off to skip it for the rest of the season.
+    template: kohbo_card_section_description

@@ -112,6 +112,7 @@ All of these must be installed for the dashboard to render correctly:
 | [advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card) | Camera feeds |
 | [template-entity-row](https://github.com/thomasloven/lovelace-template-entity-row) | Custom entity rows |
 | [horizon-card](https://github.com/rejuvenate/lovelace-horizon-card) | Sun position display |
+| [hue-like-light-card](https://github.com/Gh61/lovelace-hue-like-light-card) | Hue-style light group card (holiday Outdoor Spots) |
 
 ---
 

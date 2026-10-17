@@ -84,6 +84,10 @@ Horizontal scrolling list of currently occupied rooms:
 | **Exterior Doors** | `binary_sensor.exterior_doors` | Door (open/closed) | `/dashboard-kohbo/security-exterior-doors` |
 | **Windows** | `binary_sensor.windows` | Window (open/closed) | `/dashboard-kohbo/security-windows` |
 | **Main Floor Vacuum** | `vacuum.main_floor_vacuum` | `mdi:robot-vacuum` | `/dashboard-kohbo/main-floor-vacuum` |
+| **Halloween** (in season) | `switch.front_yard_holiday_decorations` | `mdi:halloween` | `/dashboard-kohbo/holidays-halloween` |
+| **Christmas** (in season) | `switch.christmas_lights` | `mdi:pine-tree` | `/dashboard-kohbo/holidays-christmas` |
+
+The two holiday tiles are `conditional` cards on `input_boolean.halloween_season_active` / `input_boolean.christmas_season_active`.
 
 ### Quick Settings
 
@@ -174,6 +178,7 @@ The Home dashboard provides quick navigation to:
 - **Exterior Lighting** - `/dashboard-kohbo/exterior-lighting`
 - **Security Sub-pages** - Exterior doors, windows
 - **Vacuum** - `/dashboard-kohbo/main-floor-vacuum`
+- **Holidays** - `/dashboard-kohbo/holidays-halloween` / `holidays-christmas` (in-season tiles)
 
 Bottom navigation bar provides access to all major sections.
 

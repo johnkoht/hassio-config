@@ -408,6 +408,40 @@ cards:
           navigation_path: '/dashboard-kohbo/main-floor-vacuum'
           haptic: light
 
+      # Halloween (in season only)
+      - type: conditional
+        conditions:
+          - condition: state
+            entity: input_boolean.halloween_season_active
+            state: "on"
+        card:
+          type: custom:button-card
+          entity: switch.front_yard_holiday_decorations
+          name: Halloween
+          template: kohbo_device_entity
+          icon: mdi:halloween
+          tap_action:
+            action: navigate
+            navigation_path: '/dashboard-kohbo/holidays-halloween'
+            haptic: light
+
+      # Christmas (in season only)
+      - type: conditional
+        conditions:
+          - condition: state
+            entity: input_boolean.christmas_season_active
+            state: "on"
+        card:
+          type: custom:button-card
+          entity: switch.christmas_lights
+          name: Christmas
+          template: kohbo_device_entity
+          icon: mdi:pine-tree
+          tap_action:
+            action: navigate
+            navigation_path: '/dashboard-kohbo/holidays-christmas'
+            haptic: light
+
       # # Upstairs Vacuum
       # - type: custom:button-card
       #   entity: vacuum.upstairs_robot_vacuum

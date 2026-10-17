@@ -115,13 +115,16 @@ The dashboard is organized into the following main sections:
 
 ### 🎉 Holidays
 
-#### Holidays Overview
-- **Holidays** (`holidays/holidays.yaml`)
-  - Holiday dashboard overview
+Tabbed section (Overview / Halloween / Christmas) sharing `holiday_header.yaml` and one settings popup.
 
-#### Specific Holidays
-- **Christmas** (`holidays/christmas.yaml`)
-- **Halloween** (`holidays/halloween.yaml`)
+- **Overview** (`holidays/holidays.yaml`, `/dashboard-kohbo/holidays`)
+  - One card per season: season toggle + link to its page
+- **Halloween** (`holidays/halloween.yaml`, `/dashboard-kohbo/holidays-halloween`)
+  - Season toggle, front yard decorations + 4 plugs, Accent Lights, Outdoor Spots, Halloween Colors scene
+- **Christmas** (`holidays/christmas.yaml`, `/dashboard-kohbo/holidays-christmas`)
+  - All Christmas Lights (in season only), season toggle, trees, playroom window lights, front yard, Christmas Colors scene
+- Popups:
+  - Holidays Settings Popup (`holidays/_holidays_settings_popup.yaml`, shared by all three tabs)
 
 ### 🔧 Shared Components
 
@@ -214,9 +217,10 @@ kohbo Dashboard
 │   └── [Energy Monitoring & Popups]
 │
 └── 🎉 Holidays
-    ├── Holidays Overview
+    ├── Overview
+    ├── Halloween
     ├── Christmas
-    └── Halloween
+    └── [Holidays Settings Popup]
 ```
 
 ---
@@ -275,9 +279,11 @@ dashboards/kohbo/
 │       └── [energy popups]
 │
 ├── holidays/
+│   ├── README.md
 │   ├── holidays.yaml
+│   ├── halloween.yaml
 │   ├── christmas.yaml
-│   └── halloween.yaml
+│   └── _holidays_settings_popup.yaml
 │
 └── shared/
     ├── [shared popups]
