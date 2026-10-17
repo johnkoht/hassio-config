@@ -342,3 +342,39 @@ Before the Safety group (60 tracked), the same render gave radios 48.0, sensors 
   - 2 are new: `sensor.device_health_score` and `sensor.device_health_status`.
   - The other 11 are #48's rollups and network sensors. They predate the snapshot, and they render live.
 - PII grep is clean. No hardware-suffixed IDs were added. `binary_sensor.garage_glass_break` is the only real entity new to the repo.
+
+## Zigbee routers modal (2026-10-16)
+
+### Commits
+
+- `7c19d4f` feat(sensor_health): Zigbee routers from the `zigbee_router` device label
+- `a81cc9f` chore(recorder): exclude LQI and RSSI sensors
+- `1b0d05a` feat(dashboards): Zigbee routers popup with names and LQI
+- `48faa89` docs(sensors): label-driven Zigbee routers and the routers popup
+
+### Design
+
+- **Trigger-based, once a minute.** One `scan` variable feeds the state and every attribute. A state-based template would subscribe to every entity it touches (plug power readings), and label changes fire no state event anyway.
+- **Primary entity:** first enabled switch → light → fan → sensor, minus a config/diagnostic name skip list (templates have no `entity_category`), then the LQI sensor (range extenders), then number/select/update (UZG router). Buttons are never chosen: their state is `unknown` until pressed.
+- **Names are resolved in Jinja** by the sensor (`routers` attribute, `{entity: "<Area> <Device>"}`) and passed to the row as `variables.router_name`; the row JS only reads `hass.states[lqi_entity]`.
+- `group.key_sensors_zigbee_routers` is removed. Only the old sensor and the Network row's tap read it; the score reads the sensor, not the group.
+- Recorder excludes `sensor.*_lqi` and `*_lqi_*`; the `*_rssi` globs were dropped by the orchestrator so 7 ESPHome Wi-Fi RSSI sensors keep their history and long-term stats (ZHA RSSI stays disabled, so it needs no exclusion). Originally drafted with `*_rssi`, `*_rssi_*` (the `_2` variants exist, e.g. the second range extender). Nothing in `dashboards/` or `packages/` graphs an LQI/RSSI entity. The glob also catches 7 ESPHome Wi-Fi RSSI sensors (`state_class: measurement`), which lose history and long-term stats. Takes effect on the next restart.
+
+### Live renders (`POST /api/template`, the committed YAML)
+
+- 65 labelled devices, all ZHA (`identifiers` = `zha`). zigbee.db's 66 routers = these 65 + the unlabelled Third Reality device.
+- `sensor.zigbee_routers_online`: **55 of 65 online**. Offline: 5 Tradfri plugs, Smart Plug 1 and 17, Hue Spot 12, Office Night Light, UZG Router.
+- **UZG Router's area is dangling:** `area_id: basement_sum_pump_room` is not in the area registry, and `area_name(device_id)` raised AssertionError on it, which broke the whole render. The template resolves `device_attr(d, 'area_id')` first, so the router renders as "UZG Router". Its only entities are an identify button and `number.*_transmit_power`, both unavailable, so it really is offline.
+- Popup rows: 65, offline first, then LQI ascending. Sample: "Dining Room Tradfri Smart Plug 3" (Offline, LQI —), "Exterior Hue Outdoor Spot 7" (LQI 18), "Driveway Flood" (36), "Family Room Aeotect Range Extender 1" (109), "Office Light 4" (127). Only 7 LQI sensors are enabled today, so the other 58 rows read "LQI —" until they're enabled.
+
+### Tests
+
+- `tests/test_zigbee_routers.py` (6): primary-entity choice (config switches, Inovelli light, LQI and number fallbacks), area-prefix rules, offline/total, popup sort and literal_eval-safe output, the row never toggles, the group is gone.
+- `tests/run.sh`: 288 passed, 9 skipped. `test_device_health_score.py` unchanged and green.
+- yamllint clean. `validate_dash.py`: 6 entity-missing, all sensor_health entities newer than the snapshot; all 5 exist live.
+
+### Post-deploy (John)
+
+1. Developer Tools → YAML → **Template entities** and **Groups** (the group removal). The routers sensor fills on the reload trigger.
+2. Restart HA when convenient for the recorder exclusion; until then, enabled LQI sensors are recorded.
+3. Optional: give UZG Router a real area (its area was deleted).

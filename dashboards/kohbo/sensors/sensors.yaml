@@ -27,8 +27,8 @@ cards:
   #===========================================================================
   # NETWORK
   #
-  # Static rows: the router and Hue rows open their group's more-info, which
-  # lists every plug or spot with its state.
+  # Static rows: the router row opens the routers popup (names and LQI); the
+  # Hue row opens its group's more-info, which lists every spot with its state.
   #===========================================================================
   - type: custom:button-card
     template: section_title
@@ -46,8 +46,8 @@ cards:
         entity: sensor.zigbee_routers_online
         name: Zigbee Routers
         tap_action:
-          action: more-info
-          entity: group.key_sensors_zigbee_routers
+          action: navigate
+          navigation_path: '#zigbee_routers_popup'
 
       - type: custom:button-card
         template: kohbo_device_sensor_health_entity
@@ -191,6 +191,12 @@ cards:
         - state: unknown
     sort:
       method: entity_id
+
+
+  #
+  # Zigbee Routers Popup
+  #
+  - !include /config/dashboards/kohbo/sensors/zigbee_routers_popup.yaml
 
 
   #
