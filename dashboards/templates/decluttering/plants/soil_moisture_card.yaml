@@ -1,0 +1,51 @@
+#
+# Soil Moisture Card: 7-day moisture graph (dry red → wet green); an Offline tile replaces it when there's no reading.
+#
+soil_moisture_card:
+  default:
+    - icon: mdi:flower
+    - value_1: 0
+    - value_2: 40
+    - value_3: 70
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:mini-graph-card
+        name: '[[name]]'
+        icon: '[[icon]]'
+        hours_to_show: 168
+        points_per_hour: 1
+        line_width: 4
+        decimals: 0
+        smoothing: true
+        color_thresholds_transition: hard
+        color_thresholds:
+          # Red
+          - color: "#ED4747"
+            value: '[[value_1]]'
+          # Yellow
+          - color: "#FFD166"
+            value: '[[value_2]]'
+          # Green
+          - color: "#06D6A0"
+            value: '[[value_3]]'
+        entities:
+          - entity: '[[entity]]'
+        card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+        animate: true
+        visibility:
+          - condition: numeric_state
+            entity: '[[entity]]'
+            above: 0
+
+      - type: custom:button-card
+        template: kohbo_device_soil_offline_entity
+        entity: '[[entity]]'
+        name: '[[name]]'
+        icon: '[[icon]]'
+        visibility:
+          - condition: not
+            conditions:
+              - condition: numeric_state
+                entity: '[[entity]]'
+                above: 0
