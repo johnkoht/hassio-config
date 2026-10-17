@@ -161,10 +161,18 @@ def test_known_issue_leaves_both_sides_of_the_ratio():
 
 
 def test_rollups_exclude_known_issues():
-    sensors = yaml.safe_load((PACKAGE.parent / "key_sensor_counts.yaml").read_text())["template"][0]["sensor"]
-    for s in sensors:
-        if s["unique_id"] not in ("key_sensors_offline", "key_sensors_low_battery"):
-            continue
-        for tpl in [s["state"], *s["attributes"].values()]:
-            assert "label_entities('known_issue')" in tpl
-            assert "'group.key_sensors_safety'" in tpl
+    block = yaml.safe_load((PACKAGE.parent / "key_sensor_counts.yaml").read_text())["template"][0]
+    rollup = block["actions"][0]["variables"]["rollup"]
+    assert "label_entities('known_issue')" in rollup
+    assert "'group.key_sensors_safety'" in rollup
+
+
+def test_sensor_health_is_throttled():
+    """Live templates here saturated the Yellow's event loop (2026-10-17): every pass is timed, 5 min or slower."""
+    for f in ["key_sensor_counts.yaml", "network_status.yaml", "device_health_score.yaml"]:
+        for block in yaml.safe_load((PACKAGE.parent / f).read_text())["template"]:
+            for trig in block.get("triggers", []):
+                if trig["trigger"] == "time_pattern":
+                    assert trig["minutes"] == "/5", (f, trig)
+    counts = yaml.safe_load((PACKAGE.parent / "key_sensor_counts.yaml").read_text())["template"]
+    assert len(counts) == 1 and "triggers" in counts[0], "rollups must stay one trigger-based block"

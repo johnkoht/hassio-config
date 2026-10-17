@@ -5,100 +5,76 @@
 #
 
 template:
-  - sensor:
-      # now() re-renders each minute, so adding or removing the label shows up without a state change.
+  # One pass every 5 minutes feeds all three sensors. Kept trigger-based on purpose: as live
+  # templates these walked ~70 devices on every state change of any key or battery sensor and
+  # saturated the Yellow's event loop (2026-10-17).
+  - triggers:
+      - trigger: time_pattern
+        minutes: /5
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - variables:
+          # The low-battery threshold lives here and nowhere else.
+          low_battery_threshold: 20
+          rollup: >-
+            {% set known = label_entities('known_issue') %}
+            {% set members = expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
+                                    'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') %}
+            {% set ns = namespace(offline=[], offline_known=[], low={}, low_known={}) %}
+            {% for s in members %}
+              {% set e = s.entity_id %}
+              {% if s.state in ['unavailable', 'unknown'] %}
+                {% if e in known %}{% set ns.offline_known = ns.offline_known + [e] %}{% else %}{% set ns.offline = ns.offline + [e] %}{% endif %}
+              {% endif %}
+              {% set d = device_id(e) %}
+              {% if d %}
+                {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
+                {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
+                  {% if e in known %}
+                    {% set ns.low_known = dict(ns.low_known, **{e: states(b) | float(0)}) %}
+                  {% else %}
+                    {% set ns.low = dict(ns.low, **{e: states(b) | float(0)}) %}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ {'offline': ns.offline, 'offline_known': ns.offline_known, 'low': ns.low, 'low_known': ns.low_known} | tojson }}
+          network_problems: >-
+            {% set ns = namespace(n=0) %}
+            {% for s in expand('group.key_sensors_network') %}
+              {% set total = s.attributes.total | default(none) %}
+              {% if s.state in ['off', 'unavailable', 'unknown']
+                    or (total is not none and s.state | is_number and s.state | float(0) < total | float(0)) %}
+                {% set ns.n = ns.n + 1 %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.n }}
+    sensor:
       - name: Key Sensors Offline
         unique_id: key_sensors_offline
         default_entity_id: sensor.key_sensors_offline
         icon: mdi:lan-disconnect
-        state: >-
-          {% set known = label_entities('known_issue') if now() else [] %}
-          {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                    'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety')
-             | selectattr('state', 'in', ['unavailable', 'unknown'])
-             | rejectattr('entity_id', 'in', known) | list | count }}
+        state: "{{ rollup.offline | count }}"
         attributes:
-          entities: >-
-            {% set known = label_entities('known_issue') if now() else [] %}
-            {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                      'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety')
-               | selectattr('state', 'in', ['unavailable', 'unknown'])
-               | rejectattr('entity_id', 'in', known)
-               | map(attribute='entity_id') | list }}
-          known_issues: >-
-            {% set known = label_entities('known_issue') if now() else [] %}
-            {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                      'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety')
-               | selectattr('state', 'in', ['unavailable', 'unknown'])
-               | selectattr('entity_id', 'in', known)
-               | map(attribute='entity_id') | list }}
+          entities: "{{ rollup.offline }}"
+          known_issues: "{{ rollup.offline_known }}"
 
-      # The low-battery threshold lives here and nowhere else.
       # `batteries` maps each key sensor whose device battery is low to its level; `known_issues` holds the labelled ones.
       - name: Key Sensors Low Battery
         unique_id: key_sensors_low_battery
         default_entity_id: sensor.key_sensors_low_battery
         icon: mdi:battery-alert
-        variables:
-          low_battery_threshold: 20
-        state: >-
-          {% set known = label_entities('known_issue') if now() else [] %}
-          {% set ns = namespace(n=0) %}
-          {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                             'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') | map(attribute='entity_id')
-                      if e not in known %}
-            {% set d = device_id(e) %}
-            {% if d %}
-              {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
-              {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
-                {% set ns.n = ns.n + 1 %}
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-          {{ ns.n }}
+        state: "{{ rollup.low | count }}"
         attributes:
-          batteries: >-
-            {% set known = label_entities('known_issue') if now() else [] %}
-            {% set ns = namespace(b={}) %}
-            {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                               'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') | map(attribute='entity_id')
-                        if e not in known %}
-              {% set d = device_id(e) %}
-              {% if d %}
-                {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
-                {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
-                  {% set ns.b = dict(ns.b, **{e: states(b) | float(0)}) %}
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-            {{ ns.b | tojson }}
-          known_issues: >-
-            {% set known = label_entities('known_issue') if now() else [] %}
-            {% set ns = namespace(b={}) %}
-            {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                               'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') | map(attribute='entity_id')
-                        if e in known %}
-              {% set d = device_id(e) %}
-              {% if d %}
-                {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
-                {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
-                  {% set ns.b = dict(ns.b, **{e: states(b) | float(0)}) %}
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-            {{ ns.b | tojson }}
+          threshold: "{{ low_battery_threshold }}"
+          batteries: "{{ rollup.low }}"
+          known_issues: "{{ rollup.low_known }}"
 
       - name: Key Sensors Network Problems
         unique_id: key_sensors_network_problems
         default_entity_id: sensor.key_sensors_network_problems
         icon: mdi:access-point-network
-        state: >-
-          {% set ns = namespace(n=0) %}
-          {% for s in expand('group.key_sensors_network') %}
-            {% set total = s.attributes.total | default(none) %}
-            {% if s.state in ['off', 'unavailable', 'unknown']
-                  or (total is not none and s.state | is_number and s.state | float(0) < total | float(0)) %}
-              {% set ns.n = ns.n + 1 %}
-            {% endif %}
-          {% endfor %}
-          {{ ns.n }}
+        state: "{{ network_problems }}"
