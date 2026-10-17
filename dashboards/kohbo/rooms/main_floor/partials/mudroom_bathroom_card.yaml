@@ -1,0 +1,42 @@
+#
+# Mudroom Bathroom
+#
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.mudroom_bathroom
+  - occupancy: input_boolean.mudroom_bathroom_occupied
+  # No HA area of its own, so this never matches a person's room presence
+  - room: "mudroom_bathroom"
+  - room_name: Mudroom Bathroom
+  - navigation_path: '/dashboard-kohbo/rooms-mudroom-bathroom'
+  - temperature: null
+  - humidity: null
+  - aqi: null
+  - icon: mdi:toilet
+  - room_devices:
+      # Light
+      - type: custom:button-card
+        entity: light.mudroom_bathroom_main_lights
+        name: Light
+        template: kohbo_room_card_device
+        icon: kohbo:kohbo-device-lights
+        color: auto
+      # Fan
+      - type: custom:button-card
+        entity: fan.mudroom_bathroom_fan
+        name: Fan
+        template: kohbo_room_card_device
+        icon: mdi:fan
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.mudroom_bathroom_door
+        name: Door
+        template: kohbo_room_card_device
+        icon: >
+          [[[
+            if (entity.state == "on")
+              return "kohbo:kohbo-door-open"
+            else
+              return "kohbo:kohbo-door-closed"
+          ]]]
