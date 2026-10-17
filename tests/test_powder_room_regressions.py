@@ -30,3 +30,13 @@ def test_not_occupied_light_conditions_check_off():
     assert len(light) == 2
     for c in light:
         assert c.get("state") == "off", c
+
+
+def test_lights_off_when_room_empties():
+    """Decision 8: the light turns off when occupancy clears, not only when the room is Off."""
+    auto = automation("packages/powder_room/lights/powder_room_lights_off.yaml")
+    assert any(t.get("trigger") == "state" and t.get("entity_id") == "input_boolean.powder_room_occupied"
+               and t.get("to") == "off" for t in auto["triggers"])
+    gates = {(c.get("entity_id"), c.get("state")) for c in walk_conditions(auto["conditions"])}
+    assert ("input_boolean.powder_room_occupied", "off") in gates
+    assert ("input_select.powder_room", "Off") in gates
