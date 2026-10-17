@@ -1,0 +1,42 @@
+#
+# Powder Room
+#
+type: custom:decluttering-card
+template: room_card
+variables:
+  - mode: input_select.powder_room
+  - occupancy: input_boolean.powder_room_occupied
+  # The room's own HA area
+  - room: "powder_room"
+  - room_name: Powder Room
+  - navigation_path: '/dashboard-kohbo/rooms-powder-room'
+  - temperature: null
+  - humidity: null
+  - aqi: null
+  - icon: mdi:toilet
+  - room_devices:
+      # Light
+      - type: custom:button-card
+        entity: light.powder_room_main_lights
+        name: Light
+        template: kohbo_room_card_device
+        icon: kohbo:kohbo-device-lights
+        color: auto
+      # Fan
+      - type: custom:button-card
+        entity: fan.powder_room_fan
+        name: Fan
+        template: kohbo_room_card_device
+        icon: mdi:fan
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.powder_room_door
+        name: Door
+        template: kohbo_room_card_device
+        icon: >
+          [[[
+            if (entity.state == "on")
+              return "kohbo:kohbo-door-open"
+            else
+              return "kohbo:kohbo-door-closed"
+          ]]]

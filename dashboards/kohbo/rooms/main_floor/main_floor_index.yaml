@@ -103,6 +103,11 @@ cards:
       #
       - !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_bathroom_card.yaml
 
+      #
+      # Powder Room
+      #
+      - !include /config/dashboards/kohbo/rooms/main_floor/partials/powder_room_card.yaml
+
 
   #
   # Navbar

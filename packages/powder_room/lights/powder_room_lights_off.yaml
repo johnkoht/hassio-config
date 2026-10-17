@@ -1,13 +1,15 @@
 # Powder Room Lights Off
 #
-# Automatically turn the lights off based on various
-# triggers like the Powder Room is off/not occupied
+# Turn the lights off when the Powder Room is Off or no longer occupied.
 #
 automation:
   - id: "powder_room_lights_off"
-    initial_state: on
     alias: "Powder Room lights off"
     triggers:
+      # Powder Room not occupied
+      - trigger: state
+        entity_id: input_boolean.powder_room_occupied
+        to: "off"
       # Powder Room is Off
       - trigger: state
         entity_id: input_select.powder_room
@@ -21,10 +23,17 @@ automation:
       - condition: state
         entity_id: light.powder_room_main_lights
         state: "on"
-      # Powder Room is Off
-      - condition: state
-        entity_id: input_select.powder_room
-        state: "Off"
+      - condition: or
+        conditions:
+          # Powder Room is Off
+          - condition: state
+            entity_id: input_select.powder_room
+            state: "Off"
+          # Powder Room not occupied
+          - condition: state
+            entity_id: input_boolean.powder_room_occupied
+            state: "off"
     actions:
       - action: light.turn_off
-        entity_id: light.powder_room_main_lights
+        target:
+          entity_id: light.powder_room_main_lights

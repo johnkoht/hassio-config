@@ -1,6 +1,5 @@
 automation:
   - id: "powder_room_not_occupied"
-    initial_state: on
     alias: "Powder Room Not Occupied"
     triggers:
       # Door is opened
@@ -40,12 +39,12 @@ automation:
               # Lights off
               - condition: state
                 entity_id: light.powder_room_main_lights
-                state: "on"
+                state: "off"
           # OR
           # Door is open for 5 mins OR lights are OFF for 5 mins
           - condition: or
             conditions:
-              # Door closed for 5 mins
+              # Door open for 5 mins
               - condition: state
                 entity_id: binary_sensor.powder_room_door
                 state: "on"
@@ -54,7 +53,7 @@ automation:
               # Lights off for 5 mins
               - condition: state
                 entity_id: light.powder_room_main_lights
-                state: "on"
+                state: "off"
                 for:
                   minutes: 5
     actions:

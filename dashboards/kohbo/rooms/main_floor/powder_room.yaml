@@ -1,0 +1,127 @@
+# Powder Room
+#
+# Room page for the powder room: dimmable light, fan, door and a settings popup.
+#
+type: custom:vertical-layout
+title: Powder Room
+path: rooms-powder-room
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  #
+  # Page Header
+  #
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Powder Room
+      - navigation_path: /dashboard-kohbo/rooms-main-floor
+      - settings_path: '#powder_room_settings_popup'
+
+
+  #
+  # Room Overview
+  #
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - occupancy: input_boolean.powder_room_occupied
+      - mode: input_select.powder_room
+
+
+  #
+  # Lights
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Main Light
+  - type: tile
+    entity: light.powder_room_main_lights
+    name: Main Light
+    icon: mdi:ceiling-light
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  #
+  # Devices
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Fan
+      - type: custom:button-card
+        entity: fan.powder_room_fan
+        name: Fan
+        template: kohbo_device_smart_plug_entity
+        icon: mdi:fan
+        variables:
+          power_sensor: sensor.powder_room_fan_instantaneous_demand
+
+      # Door
+      - type: custom:button-card
+        entity: binary_sensor.powder_room_door
+        name: Door
+        template: kohbo_device_door_entity
+
+
+  #
+  # Powder Room Settings Popup
+  #
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#powder_room_settings_popup'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 425px)
+    margin_top_desktop: calc(100vh - 425px)
+
+    cards:
+      #
+      # Title
+      #
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      #
+      # Automations
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          - entity: automation.powder_room_lights_off
+            name: Lights Off When Empty
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: automation.powder_room_fan_off
+            name: Fan Off When Empty
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: input_boolean.vacuum_powder_room_at_night
+            name: Clean at Night
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml
