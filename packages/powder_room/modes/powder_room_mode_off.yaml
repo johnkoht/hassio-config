@@ -5,7 +5,6 @@
 #
 automation:
   - id: "powder_room_mode_off"
-    initial_state: on
     alias: "Powder Room mode off"
     triggers:
       # House becomes unoccupied
