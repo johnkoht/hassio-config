@@ -1,20 +1,23 @@
 #
 # Sensor Health Summary Item
 #
-# A kohbo_security_item tile for a count sensor: red with the count (plus variables.unit) when
-# above 0, green with variables.zero_label at 0, grey when the sensor has no number.
+# A kohbo_security_item tile for a count sensor: red with the count when above 0, green with
+# variables.zero_label at 0, grey when the sensor has no number. After the count: variables.unit
+# (pluralised, "3 issues") or variables.suffix (as-is, "3 offline").
 #
 kohbo_sensor_health_summary_item:
   template: kohbo_security_item
   variables:
     zero_label: None
     unit: ''
+    suffix: ''
   state_display: |
     [[[
       const n = Number(entity.state);
       if (entity.state === '' || !Number.isFinite(n)) return '—';
       if (n === 0) return variables.zero_label;
-      return variables.unit ? `${n} ${variables.unit}${n === 1 ? '' : 's'}` : `${n}`;
+      if (variables.unit) return `${n} ${variables.unit}${n === 1 ? '' : 's'}`;
+      return variables.suffix ? `${n} ${variables.suffix}` : `${n}`;
     ]]]
   tap_action:
     action: none

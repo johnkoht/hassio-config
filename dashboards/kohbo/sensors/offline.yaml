@@ -1,5 +1,6 @@
 #
-# Sensors — Offline Tab: every room-page sensor that is unavailable or unknown, oldest outage first.
+# Sensors — Offline Tab: every tracked sensor that is unavailable or unknown, oldest outage first.
+# Sensors labelled "Known issue" are listed separately below and left out of the counts.
 #
 type: custom:vertical-layout
 title: Offline Sensors
@@ -46,7 +47,31 @@ cards:
 
         - type: custom:button-card
           template: kohbo_card_section_description
-          name: Every room-page sensor is reporting.
+          name: Every tracked sensor is reporting, apart from any known issues below.
+
+
+  #===========================================================================
+  # KNOWN ISSUES
+  #
+  # Offline sensors labelled "Known issue": not counted, not in the score.
+  # Hidden when there are none.
+  #===========================================================================
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Known issues
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      template: >-
+        {% set ns = namespace(rows=[]) %}
+        {% for e in state_attr('sensor.key_sensors_offline', 'known_issues') or [] %}
+          {% set ns.rows = ns.rows + [{'entity': e, 'type': 'custom:button-card',
+                                       'template': 'kohbo_device_sensor_health_entity'}] %}
+        {% endfor %}
+        {{ ns.rows | tojson }}
+    sort:
+      method: last_changed
 
 
   #

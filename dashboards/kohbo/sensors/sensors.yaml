@@ -1,5 +1,5 @@
 #
-# Sensors — Overview Tab: summary tiles, network health, and the room-page sensors that are online, by type.
+# Sensors — Overview Tab: device health score, network health, and the tracked sensors that are online, by type.
 # Offline and low-battery sensors have their own tabs. Data: packages/system/sensor_health/.
 #
 type: custom:vertical-layout
@@ -16,40 +16,12 @@ cards:
 
 
   #===========================================================================
-  # SUMMARY
+  # DEVICE HEALTH
+  #
+  # Status, score ring and the Networks / Sensors / Batteries counts
+  # (these replace the old summary row).
   #===========================================================================
-  - type: custom:stack-in-card
-    mode: vertical
-    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: custom:button-card
-            template: kohbo_sensor_health_summary_item
-            entity: sensor.key_sensors_offline
-            name: Offline
-            icon: mdi:lan-disconnect
-            tap_action:
-              action: navigate
-              navigation_path: /dashboard-kohbo/sensors-offline
-
-          - type: custom:button-card
-            template: kohbo_sensor_health_summary_item
-            entity: sensor.key_sensors_low_battery
-            name: Low Battery
-            icon: mdi:battery-alert
-            tap_action:
-              action: navigate
-              navigation_path: /dashboard-kohbo/sensors-low-battery
-
-          - type: custom:button-card
-            template: kohbo_sensor_health_summary_item
-            entity: sensor.key_sensors_network_problems
-            name: Network
-            icon: mdi:access-point-network
-            variables:
-              zero_label: OK
-              unit: Issue
+  - !include /config/dashboards/templates/includes/sensors/device_health_overview.yaml
 
 
   #===========================================================================
@@ -102,6 +74,24 @@ cards:
   # Online sensors only: offline ones are on the Offline tab until they
   # recover. A section with nothing online hides, title included.
   #===========================================================================
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Safety & Security
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      include:
+        - group: group.key_sensors_safety
+          options:
+            type: custom:button-card
+            template: kohbo_device_sensor_health_entity
+      exclude:
+        - state: unavailable
+        - state: unknown
+    sort:
+      method: entity_id
+
   - type: custom:auto-entities
     show_empty: false
     card:

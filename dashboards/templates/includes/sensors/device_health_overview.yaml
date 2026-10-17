@@ -1,0 +1,96 @@
+#
+# Device Health Overview: status headline, score ring, and Networks / Sensors / Batteries tiles.
+# A copy of kohbo_security_overview.yaml (a static include, not parameterisable). Data: packages/system/sensor_health/.
+#
+type: custom:stack-in-card
+cards:
+  #
+  # Status / Score
+  #
+  - type: custom:button-card
+    template: security_overview_header
+    entity: sensor.device_health_status
+    label: Device Health
+    icon: "[[[ return entity.attributes.icon ]]]"
+    show_icon: true
+    show_name: false
+    show_label: true
+    layout: icon_name_state
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    styles:
+      icon:
+        - color: "[[[ return entity.attributes.color ]]]"
+    custom_fields:
+      score:
+        card:
+          type: custom:button-card
+          entity: sensor.device_health_score
+          show_icon: false
+          show_state: true
+          show_name: false
+          variables:
+            level_color: "[[[ return states['sensor.device_health_status']?.attributes?.color ?? 'var(--secondary-text-color)' ]]]"
+          styles:
+            card:
+              - width: 42px
+              - height: 42px
+              - padding: 10px 3px !important
+              - border-radius: 25px
+              - align-items: center
+              - display: flex
+              - position: relative
+              - background: >
+                  [[[
+                    const pct = Number(entity.state) || 0;
+                    return `radial-gradient(var(--dark-primary-color) 60%,transparent calc(60% + 1px)), conic-gradient(${variables.level_color} ${pct}% 0%, var(--divider-color) 0% 100%)`;
+                  ]]]
+            state:
+              - font-size: 14px
+              - color: var(--primary-text-color)
+          tap_action:
+            action: none
+          hold_action:
+            action: none
+
+  #
+  # Networks / Sensors / Batteries
+  #
+  - type: custom:stack-in-card
+    mode: horizontal
+    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_sensor_health_summary_item
+        entity: sensor.key_sensors_network_problems
+        name: Networks
+        icon: mdi:access-point-network
+        variables:
+          zero_label: All online
+          unit: issue
+
+      - type: custom:button-card
+        template: kohbo_sensor_health_summary_item
+        entity: sensor.key_sensors_offline
+        name: Sensors
+        icon: mdi:lan-disconnect
+        variables:
+          zero_label: All online
+          suffix: offline
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-kohbo/sensors-offline
+
+      - type: custom:button-card
+        template: kohbo_sensor_health_summary_item
+        entity: sensor.key_sensors_low_battery
+        name: Batteries
+        icon: mdi:battery-alert
+        variables:
+          zero_label: All OK
+          suffix: low
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-kohbo/sensors-low-battery
