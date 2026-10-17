@@ -100,7 +100,7 @@ routes:
       #   label: Media
 
       # Holidays
-      - icon: mdi:holidays
+      - icon: mdi:calendar-star
         url: /dashboard-kohbo/holidays
         label: Holidays
 

@@ -30,14 +30,19 @@ card:
     - type: custom:navbar-card
       routes:
         # Overview
-        - url: /dashboard-kohbo/holidays-christmas
-          icon: mdi:pine-tree
-          label: Christmas
+        - url: /dashboard-kohbo/holidays
+          icon: mdi:calendar-star
+          label: Overview
 
         # Halloween
         - url: /dashboard-kohbo/holidays-halloween
           icon: mdi:halloween
           label: Halloween
+
+        # Christmas
+        - url: /dashboard-kohbo/holidays-christmas
+          icon: mdi:pine-tree
+          label: Christmas
 
       haptic: true
       mobile:

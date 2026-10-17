@@ -1,21 +1,228 @@
+#
+# Holidays — Christmas Tab: season toggle, trees, playroom window lights and the front yard.
+#
 type: custom:vertical-layout
 title: Christmas
 path: holidays-christmas
 theme: kohbo
+subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
 cards:
-
-  # Christmas Season Active
-  # Christmas boolean
-  # christmas trees
-
-
-
   #
-  # Page Header
+  # Page Header (with tab navbar)
   #
   - !include /config/dashboards/templates/includes/holidays/holiday_header.yaml
 
+
+  #
+  # All Christmas Lights (in season only; the group includes the front yard plugs)
+  #
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: input_boolean.christmas_season_active
+        state: "on"
+    card:
+      type: custom:decluttering-card
+      template: horizontal_action_card
+      variables:
+        - entity: switch.christmas_lights
+        - name: All Christmas Lights
+        - template: kohbo_horizontal_action_card_light_entity
+        - icon: mdi:string-lights
+        - tap_action: nothing
+        - navigation_path: ""
+        - action_cards:
+          # Toggle All Christmas Lights
+          - type: custom:decluttering-card
+            template: card_boolean_component
+            variables:
+              - entity: switch.christmas_lights
+
+
+  #
+  # Season
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Season
+
+  - type: entities
+    entities:
+      - entity: input_boolean.christmas_season_active
+        name: Christmas Season
+        icon: mdi:pine-tree
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  - type: custom:button-card
+    name: Turns the nightly Christmas light automations on for the season.
+    template: kohbo_card_section_description
+
+
+  #
+  # Trees
+  #
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: switch.christmas_trees
+      - name: Christmas Trees
+      - template: kohbo_horizontal_action_card_light_entity
+      - icon: mdi:pine-tree
+      - tap_action: nothing
+      - navigation_path: ""
+      - action_cards:
+        # Toggle Trees
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: switch.christmas_trees
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: switch.smart_plug_9_switch
+        name: Main Tree
+        template: kohbo_device_smart_plug_entity
+        icon: mdi:pine-tree
+        variables:
+          power_sensor: sensor.smart_plug_9_active_power
+
+      - type: custom:button-card
+        entity: switch.smart_plug_4_switch
+        name: Small Tree
+        template: kohbo_device_smart_plug_entity
+        icon: mdi:pine-tree
+        variables:
+          power_sensor: sensor.smart_plug_4_family_room_power
+
+
+  #
+  # Playroom
+  #
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: switch.christmas_playroom_lights
+      - name: Playroom Lights
+      - template: kohbo_horizontal_action_card_light_entity
+      - icon: mdi:string-lights
+      - tap_action: nothing
+      - navigation_path: ""
+      - action_cards:
+        # Toggle Playroom Lights
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: switch.christmas_playroom_lights
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: switch.smart_plug_15_switch
+        name: Window Lights 1
+        template: kohbo_device_smart_plug_entity
+        icon: mdi:string-lights
+        variables:
+          power_sensor: sensor.smart_plug_15_power
+
+      # No power sensor on plug 18
+      - type: custom:button-card
+        entity: switch.smart_plug_18_switch
+        name: Window Lights 2 & 3
+        template: kohbo_device_smart_plug_entity
+        icon: mdi:string-lights
+
+      - type: custom:button-card
+        entity: switch.smart_plug_16_switch
+        name: Window Lights 4
+        template: kohbo_device_smart_plug_entity
+        icon: mdi:string-lights
+        variables:
+          power_sensor: sensor.smart_plug_16_power
+
+      - type: custom:button-card
+        entity: switch.smart_plug_17_switch
+        name: Window Lights 5
+        template: kohbo_device_smart_plug_entity
+        icon: mdi:string-lights
+        variables:
+          power_sensor: sensor.smart_plug_17_power
+
+
+  #
+  # Front Yard
+  #
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: switch.front_yard_holiday_decorations
+      - name: Front Yard Decorations
+      - template: kohbo_horizontal_action_card_light_entity
+      - icon: mdi:string-lights
+      - tap_action: nothing
+      - navigation_path: ""
+      - action_cards:
+        # Toggle Decorations
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: switch.front_yard_holiday_decorations
+
+  - type: entities
+    entities:
+      - entity: input_boolean.exterior_accent_lights
+        name: Accent Lights
+        icon: hue:lily-xl
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  - type: custom:hue-like-light-card
+    title: Outdoor Spots
+    entities:
+      - light.exterior_hue_outdoor_spot_1
+      - light.exterior_hue_outdoor_spot_2
+      - light.exterior_hue_outdoor_spot_3
+      - light.hue_outdoor_spot_4
+      - light.hue_outdoor_spot_5
+      - light.hue_outdoor_spot_6
+      - light.hue_outdoor_spot_7
+      - light.hue_outdoor_spot_8
+      - light.hue_outdoor_spot_9
+      - light.hue_outdoor_spot_10
+      - light.hue_spot_11_light
+      - light.hue_spot_12_light
+      - light.hue_spot_13_light
+      - light.hue_spot_14_light
+
+  # Christmas Colors (Hue app scene, spots 1-10 only)
+  - type: tile
+    entity: scene.front_yard_christmas
+    name: Christmas Colors
+    icon: mdi:pine-tree
+    tap_action:
+      action: perform-action
+      perform_action: scene.turn_on
+      target:
+        entity_id: scene.front_yard_christmas
+    icon_tap_action:
+      action: perform-action
+      perform_action: scene.turn_on
+      target:
+        entity_id: scene.front_yard_christmas
+
+
+  #
+  # Holidays Settings Popup
+  #
+  - !include /config/dashboards/kohbo/holidays/_holidays_settings_popup.yaml
 
   #
   # Navbar
