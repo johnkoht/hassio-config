@@ -2,7 +2,6 @@
 
 automation:
   - id: "mudroom_bathroom_not_occupied"
-    initial_state: on
     alias: "Mudroom Bathroom Not Occupied"
     triggers:
       # # Door is opened
