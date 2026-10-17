@@ -109,6 +109,9 @@ ha_service() {
 
 echo "==> Pulling latest on $HA_HOST ($HA_TARGET)..."
 remote "cd $HA_PATH && git pull --ff-only"
+# The kohbo dashboard is YAML mode: HA re-reads it only when the root
+# file's mtime changes, so include-only changes would stay cached.
+remote "touch $HA_PATH/dashboards/kohbo/kohbo.yaml"
 
 # A pull that silently does nothing (diverged checkout, no upstream) has
 # shipped stale config before — fail loudly if the host isn't at our HEAD.
