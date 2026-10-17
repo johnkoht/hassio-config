@@ -1,0 +1,119 @@
+# Key Sensor Groups
+#
+# The physical sensors the room pages use, one entity per device, by type. Leak uses group.leak_sensors.
+# Adding a sensor to a room page? Add it here too. Old-style groups: expand() and auto-entities need entity_id.
+#
+
+group:
+  key_sensors_motion:
+    name: Key Sensors - Motion
+    entities:
+      - binary_sensor.dining_room_north_motion_sensor_motion
+      - binary_sensor.family_room_motion_sensor
+      - binary_sensor.foyer_motion
+      - binary_sensor.kitchen_motion_sensor_main_motion_detection
+      - binary_sensor.kitchen_motion_sensor_table_motion_detection
+      - binary_sensor.main_bedroom_motion_sensor_back_motion
+      - binary_sensor.main_bedroom_motion_sensor_entry_motion
+      - binary_sensor.mudroom_bathroom_motion
+      - binary_sensor.mudroom_motion_sensor_motion_detection
+      - binary_sensor.office_aqara_motion_sensor
+      - binary_sensor.playroom_entry_motion_sensor_motion
+      - binary_sensor.playroom_motion_sensor_motion
+      - binary_sensor.upstairs_hallway_nightlight_motion
+
+  key_sensors_doors:
+    name: Key Sensors - Doors & Windows
+    entities:
+      - binary_sensor.gianlucas_door_sensor_status
+      - binary_sensor.jr_suite_door_status
+      - binary_sensor.kitchen_window_sensor
+      - binary_sensor.kitchen_window_west_middle_sensor
+      - binary_sensor.main_bathroom_door_sensor_status
+      - binary_sensor.main_bedroom_door_sensor_status
+      - binary_sensor.main_level_washer_door_sensor_status
+      - binary_sensor.mudroom_bathroom_door
+      - binary_sensor.ninos_door_sensor_status
+      - binary_sensor.office_door_left_status
+      - binary_sensor.office_door_right_status
+      - binary_sensor.office_window_sensor
+      - binary_sensor.playroom_window_sensor
+      - binary_sensor.playroom_window_west_left_opening
+      - binary_sensor.powder_room_door
+      - binary_sensor.upstairs_washer_door_sensor_status
+
+  key_sensors_climate:
+    name: Key Sensors - Climate & Air
+    entities:
+      - sensor.gianluca_bedroom_awair_temperature
+      - sensor.jr_suite_awair_temperature
+      - sensor.kitchen_awair_temperature
+      - sensor.main_bathroom_temperature
+      - sensor.main_bedroom_awair_temperature
+      - sensor.nino_bedroom_awair_temperature
+      - sensor.nino_room_temperature
+      - sensor.office_awair_temperature
+      - sensor.playroom_temperature
+      - sensor.tempest_temperature
+
+  key_sensors_presence:
+    name: Key Sensors - Presence
+    entities:
+      - binary_sensor.gianluca_bed_occupied
+      - binary_sensor.kitchen_presence_sensor_west
+      - binary_sensor.main_bathroom_motion_sensor_occupancy
+      - binary_sensor.main_bathroom_presence_sensor_radar_target
+      - binary_sensor.main_bedroom_west_presence
+      - binary_sensor.nino_bed_occupied
+      - binary_sensor.playroom_presence_sensor
+      - binary_sensor.screek_human_sensor_l12_73d3d8_presence
+
+  key_sensors_network:
+    name: Key Sensors - Network
+    entities:
+      - binary_sensor.zigbee_coordinator_online
+      - sensor.zigbee_routers_online
+      - binary_sensor.zwave_controller_online
+      - sensor.hue_spots_online
+      - sensor.ble_proxies_online
+
+  key_sensors_zigbee_routers:
+    name: Zigbee Routers
+    entities:
+      - switch.smart_plug_1_switch
+      - switch.smart_plug_2_switch
+      - switch.smart_plug_3_switch
+      - switch.smart_plug_4_switch
+      - switch.smart_plug_5_switch
+      - switch.smart_plug_6_switch
+      - switch.smart_plug_7_switch
+      - switch.smart_plug_8_switch
+      - switch.smart_plug_9_switch
+      - switch.smart_plug_10_switch
+      - switch.smart_plug_11_switch
+      - switch.smart_plug_12_switch
+      - switch.smart_plug_13_switch
+      - switch.smart_plug_14_switch
+      - switch.smart_plug_15_switch
+      - switch.smart_plug_16_switch
+      - switch.smart_plug_17_switch
+      - switch.smart_plug_18_switch
+      - switch.gazebo_smart_plug_switch
+
+  key_sensors_hue_spots:
+    name: Hue Outdoor Spots
+    entities:
+      - light.exterior_hue_outdoor_spot_1
+      - light.exterior_hue_outdoor_spot_2
+      - light.exterior_hue_outdoor_spot_3
+      - light.hue_outdoor_spot_4
+      - light.hue_outdoor_spot_5
+      - light.hue_outdoor_spot_6
+      - light.hue_outdoor_spot_7
+      - light.hue_outdoor_spot_8
+      - light.hue_outdoor_spot_9
+      - light.hue_outdoor_spot_10
+      - light.hue_spot_11_light
+      - light.hue_spot_12_light
+      - light.hue_spot_13_light
+      - light.hue_spot_14_light
