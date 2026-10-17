@@ -151,12 +151,13 @@ def test_battery_penalties_and_floor():
 
 def test_known_issue_leaves_both_sides_of_the_ratio():
     house = healthy_house()
-    broken = GROUPS["group.key_sensors_doors"][0]
-    house["known"] = [broken]
-    # key_sensors_offline already drops known issues; the score must not count the sensor as a missing member either.
+    # Known-issue doors are offline too, but key_sensors_offline drops them; the score must
+    # drop them from the members as well, not count them as online.
+    house["known"] = list(GROUPS["group.key_sensors_doors"])
+    house["attrs"]["sensor.key_sensors_offline"]["entities"] = GROUPS["group.key_sensors_motion"][:4]
     ctx = run(house)
-    assert ctx["sensors_score"] == 35
-    assert (ctx["score"], ctx["status"]) == (100, "Healthy")
+    total = 2 * 10 + 2 * 13 + 13 + 8 + 0.5 * 10  # doors excluded
+    assert ctx["sensors_score"] == round(35 * (total - 4) / total, 1)  # 33.1; counting doors as online gives 33.7
 
 
 def test_rollups_exclude_known_issues():
