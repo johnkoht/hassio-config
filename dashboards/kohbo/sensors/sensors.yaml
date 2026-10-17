@@ -1,0 +1,209 @@
+#
+# Sensors — Overview Tab: summary tiles, network health, and the room-page sensors that are online, by type.
+# Offline and low-battery sensors have their own tabs. Data: packages/system/sensor_health/.
+#
+type: custom:vertical-layout
+title: Sensors
+path: sensors
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/sensors/sensors_header.yaml
+
+
+  #===========================================================================
+  # SUMMARY
+  #===========================================================================
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:button-card
+            template: kohbo_sensor_health_summary_item
+            entity: sensor.key_sensors_offline
+            name: Offline
+            icon: mdi:lan-disconnect
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/sensors-offline
+
+          - type: custom:button-card
+            template: kohbo_sensor_health_summary_item
+            entity: sensor.key_sensors_low_battery
+            name: Low Battery
+            icon: mdi:battery-alert
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/sensors-low-battery
+
+          - type: custom:button-card
+            template: kohbo_sensor_health_summary_item
+            entity: sensor.key_sensors_network_problems
+            name: Network
+            icon: mdi:access-point-network
+            variables:
+              zero_label: OK
+              unit: Issue
+
+
+  #===========================================================================
+  # NETWORK
+  #
+  # Static rows: the router and Hue rows open their group's more-info, which
+  # lists every plug or spot with its state.
+  #===========================================================================
+  - type: custom:button-card
+    template: section_title
+    name: Network
+
+  - type: vertical-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: binary_sensor.zigbee_coordinator_online
+        name: Zigbee Coordinator
+
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: sensor.zigbee_routers_online
+        name: Zigbee Routers
+        tap_action:
+          action: more-info
+          entity: group.key_sensors_zigbee_routers
+
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: binary_sensor.zwave_controller_online
+        name: Z-Wave Controller
+
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: sensor.hue_spots_online
+        name: Hue Spots
+        tap_action:
+          action: more-info
+          entity: group.key_sensors_hue_spots
+
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: sensor.ble_proxies_online
+        name: BLE Proxies
+
+
+  #===========================================================================
+  # TYPE SECTIONS
+  #
+  # Online sensors only: offline ones are on the Offline tab until they
+  # recover. A section with nothing online hides, title included.
+  #===========================================================================
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Motion & Occupancy
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      include:
+        - group: group.key_sensors_motion
+          options:
+            type: custom:button-card
+            template: kohbo_device_sensor_health_entity
+            variables:
+              strip: ' ?(Motion Sensor|Motion Detector|Motion)'
+      exclude:
+        - state: unavailable
+        - state: unknown
+    sort:
+      method: entity_id
+
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Doors & Windows
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      include:
+        - group: group.key_sensors_doors
+          options:
+            type: custom:button-card
+            template: kohbo_device_sensor_health_entity
+            variables:
+              strip: ' Sensor$'
+      exclude:
+        - state: unavailable
+        - state: unknown
+    sort:
+      method: entity_id
+
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Leak
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      include:
+        - group: group.leak_sensors
+          options:
+            type: custom:button-card
+            template: kohbo_device_sensor_health_entity
+            variables:
+              strip: ' ?Leak Sensor( - )?'
+      exclude:
+        - state: unavailable
+        - state: unknown
+    sort:
+      method: entity_id
+
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Climate & Air
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      include:
+        - group: group.key_sensors_climate
+          options:
+            type: custom:button-card
+            template: kohbo_device_sensor_health_entity
+            variables:
+              strip: ' (Climate|Weather Sensor|AQI)$'
+      exclude:
+        - state: unavailable
+        - state: unknown
+    sort:
+      method: entity_id
+
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Presence
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      include:
+        - group: group.key_sensors_presence
+          options:
+            type: custom:button-card
+            template: kohbo_device_sensor_health_entity
+            variables:
+              strip: ' (Presence Sensor|Sensor)$'
+      exclude:
+        - state: unavailable
+        - state: unknown
+    sort:
+      method: entity_id
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml
