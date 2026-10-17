@@ -16,12 +16,18 @@ No build system. Changes are applied by reloading or restarting Home Assistant.
 
 ```bash
 ./deploy.sh --check        # lint + HA config check locally (Docker), no deploy
-./deploy.sh --reload       # pull on the HA host, check, reload automations + scripts
+./deploy.sh --reload       # pull on the HA host, check, reload automations, scripts, rest_command
 ./deploy.sh --restart      # full restart (use sparingly)
 ```
 
 `deploy.sh` pulls from GitHub, so push first. `HA_TARGET` selects the host:
 `yellow` (HAOS, `ha` CLI) or `epicurus` (Docker; `docker exec`/REST reloads).
+
+**Deploy notes:**
+- Pass `--skip-ci` with every deploy, and never run a bare `--check`: its local Docker step can delete the gitignored `secrets.yaml`, which can't be recovered.
+- `--reload` doesn't reload Groups, Template entities or Scenes. Reload those from Developer Tools → YAML, or through the supervisor API.
+- `deploy.sh` touches `dashboards/kohbo/kohbo.yaml` after every pull (#45), because HA caches the YAML dashboard on that file's mtime. After a manual `git pull` on the host, touch it yourself, or the dashboard stays stale.
+- Recorder changes apply only on a restart, and only John restarts HA.
 
 ESPHome devices are compiled/flashed separately:
 ```bash

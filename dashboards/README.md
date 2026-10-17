@@ -53,13 +53,17 @@ The dashboard uses a layered template system:
 ```
 dashboards/
 ├── kohbo/                    # Dashboard views
-│   ├── kohbo.yaml           # Entry point (loads templates)
+│   ├── kohbo.yaml           # Entry point, `mode: yaml` (views + templates)
 │   ├── home/                # Home dashboard
 │   ├── rooms/               # Room views by floor
 │   ├── climate/             # Climate controls
 │   ├── security/            # Security & cameras
 │   ├── energy/              # Energy monitoring
-│   └── more/                # People, settings
+│   ├── holidays/            # Holiday decorations (tabbed)
+│   ├── plants/              # Soil moisture (tabbed)
+│   ├── sensors/             # Sensor and device health (tabbed)
+│   ├── school/ chores/      # Family pages
+│   └── more/                # People, lighting
 │
 └── templates/               # Reusable components
     ├── button_cards/        # Atomic UI templates
@@ -77,6 +81,9 @@ dashboards/
 | 🔒 **Security** | Cameras, locks, doors, windows, leak sensors, and alarm controls | [README](./kohbo/security/README.md) |
 | ⚡ **Energy** | Real-time energy monitoring and usage statistics | [README](./kohbo/energy/README.md) |
 | 👥 **People** | Presence tracking and location for household members | [README](./kohbo/more/PEOPLE_README.md) |
+| 🎉 **Holidays** | Holiday decorations, scenes and season settings | [README](./kohbo/holidays/README.md) |
+| 🌱 **Plants** | Indoor and outdoor soil moisture, Lawn vs Rain | [README](./kohbo/plants/README.md) |
+| 📡 **Sensors** | Offline sensors, low batteries, Device Health, Zigbee routers | [README](./kohbo/sensors/README.md) |
 
 ## Third-Party Components
 
@@ -85,6 +92,7 @@ These custom cards are required (install via [HACS](https://hacs.xyz/)):
 | Component | Purpose |
 |-----------|---------|
 | [apexcharts-card](https://github.com/RomRider/apexcharts-card) | Data visualization charts |
+| [auto-entities](https://github.com/thomasloven/lovelace-auto-entities) | Filtered or templated entity lists (Chores, Security, Sensors) |
 | [advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card) | Camera feeds (optional) |
 | [browser-mod](https://github.com/thomasloven/hass-browser_mod) | Browser control and popups |
 | [bubble-card](https://github.com/Clooos/Bubble-Card) | Popups and slide-up panels |
@@ -92,6 +100,7 @@ These custom cards are required (install via [HACS](https://hacs.xyz/)):
 | [card-mod](https://github.com/thomasloven/lovelace-card-mod) | CSS styling for cards |
 | [decluttering-card](https://github.com/custom-cards/decluttering-card) | Template instantiation with variables |
 | [horizon-card](https://github.com/rejuvenate/lovelace-horizon-card) | Sun position visualization |
+| [hue-like-light-card](https://github.com/Gh61/lovelace-hue-like-light-card) | Hue-style light group card (holiday Outdoor Spots) |
 | [lovelace-layout-card](https://github.com/thomasloven/lovelace-layout-card) | Custom page layouts |
 | [mediocre-media-player](https://github.com/antontanderup/mediocre-hass-media-player-cards) | Media player cards |
 | [mini-graph-card](https://github.com/kalkih/mini-graph-card) | Temperature and sensor graphs |
@@ -119,7 +128,7 @@ Composed components that combine multiple cards with variable substitution. Thes
 
 **Examples:** `room_card`, `climate_overview`, `thermostat_popup`
 
-📖 **Full component documentation:** [templates/README.md](./templates/README.md) *(coming soon)*
+📖 **Template reference:** [CLAUDE.md](./CLAUDE.md#template-types)
 
 ## Theme
 

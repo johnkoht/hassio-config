@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working in the 
 
 ## Overview
 
-The Kohbo dashboard is a custom Lovelace system built on reusable templates with a dark-first design, optimized for mobile and wall-mounted tablets. It is loaded in `yaml` mode (`mode: yaml`) via `configuration.yaml` with the entry point at `dashboards/kohbo/kohbo.yaml`.
+The Kohbo dashboard is a custom Lovelace system built on reusable templates with a dark-first design, optimized for mobile and wall-mounted tablets. It is loaded in `yaml` mode (`mode: yaml`) via `configuration.yaml` with the entry point at `dashboards/kohbo/kohbo.yaml`. HA caches it on that root file's mtime; `deploy.sh` touches it after every pull. Every view and route is in [SITEMAP.md](SITEMAP.md); gotchas are in [LEARNINGS.md](LEARNINGS.md).
 
 ---
 
@@ -31,16 +31,18 @@ Shared Styles / Includes  (templates/includes/)
 ```
 dashboards/
 ├── kohbo/
-│   ├── kohbo.yaml               # Entry point — loads all template files
+│   ├── kohbo.yaml               # Entry point — templates + every view under `views:`
 │   ├── home/                    # Main landing view
 │   ├── rooms/                   # Room views organized by floor
 │   │   ├── main_floor/
 │   │   ├── upper_floor/
-│   │   └── lower_floor/
+│   │   └── laundry/
 │   ├── climate/                 # Thermostat + air quality views
 │   ├── security/                # Cameras, locks, alarm, doors, sensors
 │   ├── energy/                  # Power monitoring
-│   └── more/                    # People, settings
+│   ├── holidays/ plants/ sensors/   # Tabbed More sections
+│   ├── school/ chores/          # Family pages
+│   └── more/                    # People, lighting
 └── templates/
     ├── button_cards/            # Atomic UI components (button-card based)
     ├── decluttering/            # Composed components (decluttering-card based)
