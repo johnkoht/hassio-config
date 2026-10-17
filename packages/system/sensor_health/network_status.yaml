@@ -1,0 +1,67 @@
+# Network Status
+#
+# Health of the radios and meshes the key sensors report through: Zigbee, Z-Wave, Hue, BLE.
+# Mesh sensors are counts with a `total` attribute; `summary` is the dashboard row label.
+#
+
+template:
+  - binary_sensor:
+      # ZHA has no coordinator entity; read the config entry state (same entry as zigbee_coordinator_offline).
+      # now() re-renders each minute, since config entry changes fire no state event.
+      - name: Zigbee Coordinator Online
+        unique_id: zigbee_coordinator_online
+        default_entity_id: binary_sensor.zigbee_coordinator_online
+        device_class: connectivity
+        state: >-
+          {% set s = config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') %}
+          {{ now() is not none and s is not none and s == 'loaded' }}
+        attributes:
+          summary: UZG-01
+
+      - name: Z-Wave Controller Online
+        unique_id: zwave_controller_online
+        default_entity_id: binary_sensor.zwave_controller_online
+        device_class: connectivity
+        state: "{{ is_state('sensor.home_assistant_connect_zwa_2_status', 'ready') }}"
+        attributes:
+          summary: "{{ states('sensor.home_assistant_connect_zwa_2_status') | replace('_', ' ') | capitalize }}"
+
+  - sensor:
+      - name: Zigbee Routers Online
+        unique_id: zigbee_routers_online
+        default_entity_id: sensor.zigbee_routers_online
+        icon: mdi:power-socket-us
+        state: >-
+          {{ expand('group.key_sensors_zigbee_routers')
+             | rejectattr('state', 'in', ['unavailable', 'unknown']) | list | count }}
+        attributes:
+          total: "{{ state_attr('group.key_sensors_zigbee_routers', 'entity_id') | default([], true) | count }}"
+          summary: >-
+            {% set all = expand('group.key_sensors_zigbee_routers') %}
+            {{ all | rejectattr('state', 'in', ['unavailable', 'unknown']) | list | count }} of {{ all | count }} online
+
+      # No Hue config entry check: when the bridge drops, every spot goes unavailable, so the count covers it.
+      - name: Hue Spots Online
+        unique_id: hue_spots_online
+        default_entity_id: sensor.hue_spots_online
+        icon: mdi:spotlight-beam
+        state: >-
+          {{ expand('group.key_sensors_hue_spots')
+             | rejectattr('state', 'in', ['unavailable', 'unknown']) | list | count }}
+        attributes:
+          total: "{{ state_attr('group.key_sensors_hue_spots', 'entity_id') | default([], true) | count }}"
+          summary: >-
+            {% set all = expand('group.key_sensors_hue_spots') %}
+            {{ all | rejectattr('state', 'in', ['unavailable', 'unknown']) | list | count }} of {{ all | count }} online
+
+      - name: BLE Proxies Online
+        unique_id: ble_proxies_online
+        default_entity_id: sensor.ble_proxies_online
+        icon: mdi:bluetooth
+        state: "{{ states('sensor.bermuda_global_active_proxy_count') }}"
+        availability: "{{ states('sensor.bermuda_global_active_proxy_count') | is_number }}"
+        attributes:
+          total: "{{ states('sensor.bermuda_global_total_proxy_count') | int(0) }}"
+          summary: >-
+            {{ states('sensor.bermuda_global_active_proxy_count') | int(0) }} of
+            {{ states('sensor.bermuda_global_total_proxy_count') | int(0) }} active

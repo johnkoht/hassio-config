@@ -1,0 +1,54 @@
+#
+# Sensors — Low Battery Tab: room-page sensors whose device battery is low, lowest first.
+# "Low" is the threshold on sensor.key_sensors_low_battery; this page only reads its `batteries` map.
+#
+type: custom:vertical-layout
+title: Low Battery Sensors
+path: sensors-low-battery
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/sensors/sensors_header.yaml
+
+
+  #===========================================================================
+  # LOW BATTERY
+  #
+  # Rows are full card objects (see the Offline tab). No `sort:`, so the
+  # template's lowest-first order is kept.
+  #===========================================================================
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Low Battery
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      template: >-
+        {% set ns = namespace(rows=[]) %}
+        {% for e, level in (state_attr('sensor.key_sensors_low_battery', 'batteries') or {}) | dictsort(false, 'value') %}
+          {% set ns.rows = ns.rows + [{'entity': e, 'type': 'custom:button-card',
+                                       'template': 'kohbo_device_sensor_health_entity',
+                                       'variables': {'show_battery': 1}}] %}
+        {% endfor %}
+        {{ ns.rows | tojson }}
+    else:
+      type: vertical-stack
+      cards:
+        - type: custom:button-card
+          template: section_title
+          name: Low Battery
+
+        - type: custom:button-card
+          template: kohbo_card_section_description
+          name: No room-page sensor has a low battery.
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml

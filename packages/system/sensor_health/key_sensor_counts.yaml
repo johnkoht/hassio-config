@@ -1,0 +1,73 @@
+# Key Sensor Counts
+#
+# Offline, low-battery and network-problem rollups over the key sensor groups.
+# The dashboard summary and Needs Attention list read these; JK-1094 alerts will too.
+#
+
+template:
+  - sensor:
+      - name: Key Sensors Offline
+        unique_id: key_sensors_offline
+        default_entity_id: sensor.key_sensors_offline
+        icon: mdi:lan-disconnect
+        state: >-
+          {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
+                    'group.key_sensors_climate', 'group.key_sensors_presence')
+             | selectattr('state', 'in', ['unavailable', 'unknown']) | list | count }}
+        attributes:
+          entities: >-
+            {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
+                      'group.key_sensors_climate', 'group.key_sensors_presence')
+               | selectattr('state', 'in', ['unavailable', 'unknown'])
+               | map(attribute='entity_id') | list }}
+
+      # The low-battery threshold lives here and nowhere else.
+      # `batteries` maps each key sensor whose device battery is low to its level.
+      - name: Key Sensors Low Battery
+        unique_id: key_sensors_low_battery
+        default_entity_id: sensor.key_sensors_low_battery
+        icon: mdi:battery-alert
+        variables:
+          low_battery_threshold: 20
+        state: >-
+          {% set ns = namespace(n=0) %}
+          {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
+                             'group.key_sensors_climate', 'group.key_sensors_presence') | map(attribute='entity_id') %}
+            {% set d = device_id(e) %}
+            {% if d %}
+              {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
+              {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
+                {% set ns.n = ns.n + 1 %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.n }}
+        attributes:
+          batteries: >-
+            {% set ns = namespace(b={}) %}
+            {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
+                               'group.key_sensors_climate', 'group.key_sensors_presence') | map(attribute='entity_id') %}
+              {% set d = device_id(e) %}
+              {% if d %}
+                {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
+                {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
+                  {% set ns.b = dict(ns.b, **{e: states(b) | float(0)}) %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.b | tojson }}
+
+      - name: Key Sensors Network Problems
+        unique_id: key_sensors_network_problems
+        default_entity_id: sensor.key_sensors_network_problems
+        icon: mdi:access-point-network
+        state: >-
+          {% set ns = namespace(n=0) %}
+          {% for s in expand('group.key_sensors_network') %}
+            {% set total = s.attributes.total | default(none) %}
+            {% if s.state in ['off', 'unavailable', 'unknown']
+                  or (total is not none and s.state | is_number and s.state | float(0) < total | float(0)) %}
+              {% set ns.n = ns.n + 1 %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.n }}

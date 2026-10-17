@@ -1,0 +1,25 @@
+# auto-entities section: transparent entities card whose title looks like section_title, rows 8px apart.
+# The title lives on the card so auto-entities' show_empty: false hides it with the rows.
+style: |
+  ha-card {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+  }
+  ha-card .card-header {
+    padding: 10px 0 12px 0;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: normal;
+    text-transform: uppercase;
+    color: var(--primary-text-color);
+  }
+  ha-card #states {
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  ha-card #states > div {
+    margin: 0 !important;
+  }

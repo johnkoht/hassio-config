@@ -1,0 +1,79 @@
+#
+# Sensor Health Row
+#
+# One key sensor: device name (minus variables.strip), Online/Offline/N of total/Low battery,
+# and "<area> · changed 3h". Registry lookups are direct key reads; battery comes from
+# sensor.key_sensors_low_battery's `batteries` map, which only holds low sensors.
+# The "Battery N%" label shows only with variables.show_battery (Needs Attention).
+#
+kohbo_device_sensor_health_entity:
+  template: kohbo_device_entity_horizontal
+  show_last_changed: false
+  show_label: true
+  variables:
+    strip: ''
+    show_battery: false
+    health: |
+      [[[
+        const s = entity.state;
+        const offline = s === 'unavailable' || s === 'unknown'
+          || (entity.attributes.device_class === 'connectivity' && s === 'off');
+        const total = entity.attributes.total;
+        const battery = states['sensor.key_sensors_low_battery']?.attributes?.batteries?.[entity.entity_id];
+        if (offline) return { kind: 'offline', text: s === 'unknown' ? 'No data' : 'Offline', battery };
+        if (total !== undefined && Number(s) < Number(total)) return { kind: 'degraded', text: `${s} / ${total}`, battery };
+        if (battery !== undefined) return { kind: 'battery', text: 'Low battery', battery };
+        return { kind: 'online', text: 'Online', battery };
+      ]]]
+  name: |
+    [[[
+      const reg = hass.entities?.[entity.entity_id];
+      const dev = hass.devices?.[reg?.device_id];
+      const raw = dev?.name_by_user ?? dev?.name ?? entity.attributes.friendly_name ?? entity.entity_id;
+      return variables.strip ? raw.replace(new RegExp(variables.strip), '').trim() : raw;
+    ]]]
+  state_display: |
+    [[[ return variables.health.text; ]]]
+  label: |
+    [[[
+      const h = variables.health;
+      const reg = hass.entities?.[entity.entity_id];
+      const dev = hass.devices?.[reg?.device_id];
+      const area = hass.areas?.[reg?.area_id ?? dev?.area_id]?.name ?? '';
+      const where = entity.attributes.summary ?? area;
+
+      const diff = Math.floor((Date.now() - new Date(entity.last_changed)) / 1000);
+      const rel = diff < 3600 ? `${Math.floor(diff / 60)}m`
+        : diff < 86400 ? `${Math.floor(diff / 3600)}h`
+        : `${Math.floor(diff / 86400)}d`;
+
+      const parts = [];
+      if (where) parts.push(where);
+      parts.push(`${h.kind === 'offline' ? 'offline' : 'changed'} ${rel}`);
+      if (variables.show_battery && h.battery !== undefined) parts.push(`Battery ${Math.round(h.battery)}%`);
+      return parts.join(' · ');
+    ]]]
+  tap_action:
+    action: more-info
+  hold_action:
+    action: none
+  styles:
+    grid:
+      - grid-template-columns: 24px auto 90px;
+    state:
+      - text-align: right
+      - color: |
+          [[[
+            const k = variables.health.kind;
+            if (k === 'online') return 'var(--success-color)';
+            if (k === 'battery') return 'var(--error-color)';
+            return 'var(--warning-color)';
+          ]]]
+    icon:
+      - color: |
+          [[[
+            const k = variables.health.kind;
+            if (k === 'online') return 'var(--success-color)';
+            if (k === 'battery') return 'var(--error-color)';
+            return 'var(--warning-color)';
+          ]]]

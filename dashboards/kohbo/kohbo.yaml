@@ -92,3 +92,8 @@ views:
   # Plants
   - !include /config/dashboards/kohbo/plants/indoor.yaml
   - !include /config/dashboards/kohbo/plants/outdoor.yaml
+
+  # Sensors
+  - !include /config/dashboards/kohbo/sensors/sensors.yaml
+  - !include /config/dashboards/kohbo/sensors/offline.yaml
+  - !include /config/dashboards/kohbo/sensors/low_battery.yaml

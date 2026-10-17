@@ -1,0 +1,55 @@
+#
+# Sensors — Offline Tab: every room-page sensor that is unavailable or unknown, oldest outage first.
+#
+type: custom:vertical-layout
+title: Offline Sensors
+path: sensors-offline
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/sensors/sensors_header.yaml
+
+
+  #===========================================================================
+  # OFFLINE
+  #
+  # filter.template output skips auto-entities' `options`, so each row is a
+  # full card object. No JSON true/false in it: HA parses the result with
+  # literal_eval, which would leave it a string.
+  #===========================================================================
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      title: Offline
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      template: >-
+        {% set ns = namespace(rows=[]) %}
+        {% for e in state_attr('sensor.key_sensors_offline', 'entities') or [] %}
+          {% set ns.rows = ns.rows + [{'entity': e, 'type': 'custom:button-card',
+                                       'template': 'kohbo_device_sensor_health_entity'}] %}
+        {% endfor %}
+        {{ ns.rows | tojson }}
+    sort:
+      method: last_changed
+    else:
+      type: vertical-stack
+      cards:
+        - type: custom:button-card
+          template: section_title
+          name: Offline
+
+        - type: custom:button-card
+          template: kohbo_card_section_description
+          name: Every room-page sensor is reporting.
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml

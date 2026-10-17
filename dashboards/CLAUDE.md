@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working in the 
 
 ## Overview
 
-The Kohbo dashboard is a custom Lovelace system built on reusable templates with a dark-first design, optimized for mobile and wall-mounted tablets. It is loaded in `storage` mode via `configuration.yaml` with the entry point at `dashboards/kohbo/kohbo.yaml`.
+The Kohbo dashboard is a custom Lovelace system built on reusable templates with a dark-first design, optimized for mobile and wall-mounted tablets. It is loaded in `yaml` mode (`mode: yaml`) via `configuration.yaml` with the entry point at `dashboards/kohbo/kohbo.yaml`.
 
 ---
 
@@ -110,6 +110,7 @@ All of these must be installed for the dashboard to render correctly:
 | [scene-presets](https://github.com/hypfer/hass-scene_presets) | Hue-like lighting scenes |
 | [mediocre-media-player](https://github.com/antontanderup/mediocre-hass-media-player-cards) | Media player cards |
 | [advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card) | Camera feeds |
+| [auto-entities](https://github.com/thomasloven/lovelace-auto-entities) | Entity lists built from filters or a Jinja template (Chores, Security, Sensors) |
 | [template-entity-row](https://github.com/thomasloven/lovelace-template-entity-row) | Custom entity rows |
 | [horizon-card](https://github.com/rejuvenate/lovelace-horizon-card) | Sun position display |
 | [hue-like-light-card](https://github.com/Gh61/lovelace-hue-like-light-card) | Hue-style light group card (holiday Outdoor Spots) |

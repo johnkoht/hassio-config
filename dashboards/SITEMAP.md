@@ -135,6 +135,17 @@ Tabbed section (Indoor / Outdoor) sharing `plants_header.yaml`. No settings popu
 - **Outdoor** (`plants/outdoor.yaml`, `/dashboard-kohbo/plants-outdoor`)
   - 12 soil moisture graphs in Lawn / Front Flower Beds / Backyard Flower Beds (dead channels show an Offline / No reading tile), then the Lawn vs Rain chart
 
+### 📡 Sensors
+
+More → Sensors. Tabbed section (Overview / Offline / Low Battery) sharing `sensors_header.yaml`. Tracks the physical sensors the room pages use (`packages/system/sensor_health/`). No settings popup.
+
+- **Overview** (`sensors/sensors.yaml`, `/dashboard-kohbo/sensors`)
+  - Offline / Low Battery / Network tiles (the first two open their tabs), 5 Network rows (Zigbee coordinator, routers N of total, Z-Wave, Hue spots, BLE proxies), then online sensors by type
+- **Offline** (`sensors/offline.yaml`, `/dashboard-kohbo/sensors-offline`)
+  - Every tracked sensor that's unavailable or unknown, oldest outage first, with its area
+- **Low Battery** (`sensors/low_battery.yaml`, `/dashboard-kohbo/sensors-low-battery`)
+  - Tracked sensors whose device battery is below the threshold, lowest first, with the battery %
+
 ### 🔧 Shared Components
 
 #### Shared Popups
@@ -231,9 +242,14 @@ kohbo Dashboard
 │   ├── Christmas
 │   └── [Holidays Settings Popup]
 │
-└── 🌱 Plants
-    ├── Indoor
-    └── Outdoor
+├── 🌱 Plants
+│   ├── Indoor
+│   └── Outdoor
+│
+└── 📡 Sensors
+    ├── Overview
+    ├── Offline
+    └── Low Battery
 ```
 
 ---
@@ -302,6 +318,11 @@ dashboards/kohbo/
 │   ├── README.md
 │   ├── indoor.yaml
 │   └── outdoor.yaml
+│
+├── sensors/
+│   ├── sensors.yaml
+│   ├── offline.yaml
+│   └── low_battery.yaml
 │
 └── shared/
     ├── [shared popups]
