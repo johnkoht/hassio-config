@@ -135,6 +135,95 @@ cards:
 
 
   #
+  # Lawn vs Rain — 7 Days (JK-1152)
+  #
+  - type: custom:button-card
+    name: Lawn vs Rain – 7 Days
+    template: section_title
+
+  - type: custom:apexcharts-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/apexcharts/kohbo_apexcharts_transparent.yaml
+    graph_span: 7d
+    span:
+      end: hour
+    header:
+      show: false
+    apex_config:
+      chart:
+        height: 240
+      grid:
+        borderColor: 'rgba(255,255,255,0.05)'
+      legend:
+        show: true
+        position: bottom
+        horizontalAlign: center
+        fontSize: '11px'
+        markers:
+          width: 8
+          height: 8
+      stroke:
+        curve: smooth
+        width: 2
+      xaxis:
+        axisBorder:
+          show: false
+        axisTicks:
+          show: false
+    yaxis:
+      - id: moisture
+        min: 0
+        max: 100
+        decimals: 0
+      - id: rain
+        opposite: true
+        min: 0
+        decimals: 2
+    series:
+      - entity: sensor.ch4_front_lawn_soil_moisture
+        name: Front Lawn
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch4_backyard_north_corner_soil_moisture
+        name: Backyard North Corner
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch7_backyard_swingset_soil_moisture
+        name: Swingset
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch8_backyard_east_soil_moisture
+        name: Behind Pool
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch9_backyard_south_fence_soil_moisture
+        name: South Fence
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.tempest_precipitation_intensity
+        name: Rain (in/h)
+        type: column
+        yaxis_id: rain
+        group_by:
+          func: max
+          duration: 1h
+
+
+  #
   # Navbar
   #
   - !include /config/dashboards/templates/includes/navbar.yaml
