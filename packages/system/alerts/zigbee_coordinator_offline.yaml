@@ -12,7 +12,7 @@ automation:
       - trigger: template
         value_template: >
           {% set s = config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') %}
-          {{ now() is not none and (s is none or s.value != 'loaded') }}
+          {{ now() is not none and (s is none or s != 'loaded') }}
         for:
           minutes: 3
       - trigger: homeassistant
@@ -29,7 +29,7 @@ automation:
         condition: template
         value_template: >
           {% set s = config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') %}
-          {{ s is none or s.value != 'loaded' }}
+          {{ s is none or s != 'loaded' }}
       - action: script.general_notification
         data:
           title: "Zigbee Offline"
