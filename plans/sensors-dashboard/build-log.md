@@ -358,7 +358,7 @@ Before the Safety group (60 tracked), the same render gave radios 48.0, sensors 
 - **Primary entity:** first enabled switch → light → fan → sensor, minus a config/diagnostic name skip list (templates have no `entity_category`), then the LQI sensor (range extenders), then number/select/update (UZG router). Buttons are never chosen: their state is `unknown` until pressed.
 - **Names are resolved in Jinja** by the sensor (`routers` attribute, `{entity: "<Area> <Device>"}`) and passed to the row as `variables.router_name`; the row JS only reads `hass.states[lqi_entity]`.
 - `group.key_sensors_zigbee_routers` is removed. Only the old sensor and the Network row's tap read it; the score reads the sensor, not the group.
-- Recorder excludes `sensor.*_lqi`, `*_lqi_*`, `*_rssi`, `*_rssi_*` (the `_2` variants exist, e.g. the second range extender). Nothing in `dashboards/` or `packages/` graphs an LQI/RSSI entity. The glob also catches 7 ESPHome Wi-Fi RSSI sensors (`state_class: measurement`), which lose history and long-term stats. Takes effect on the next restart.
+- Recorder excludes `sensor.*_lqi` and `*_lqi_*`; the `*_rssi` globs were dropped by the orchestrator so 7 ESPHome Wi-Fi RSSI sensors keep their history and long-term stats (ZHA RSSI stays disabled, so it needs no exclusion). Originally drafted with `*_rssi`, `*_rssi_*` (the `_2` variants exist, e.g. the second range extender). Nothing in `dashboards/` or `packages/` graphs an LQI/RSSI entity. The glob also catches 7 ESPHome Wi-Fi RSSI sensors (`state_class: measurement`), which lose history and long-term stats. Takes effect on the next restart.
 
 ### Live renders (`POST /api/template`, the committed YAML)
 

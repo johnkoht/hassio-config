@@ -52,7 +52,7 @@ Routers come from the **`zigbee_router` device label** ("Zigbee Router"), not a 
 - **Primary entity:** the first enabled switch, light, fan, then sensor, skipping config and diagnostic ones (LQI, RSSI, LED, child lock, Inovelli options). A device with none falls back to its LQI sensor (range extenders), then number/select/update (the UZG router). A labelled device with no enabled entity counts as offline.
 - **Name:** "<Area> <Device>", without the area when the device name already contains it or starts with its first word (Gianluca's room → "Gianluca Ceiling Light 1"). No area, or an area that no longer exists, gives the device name alone.
 
-The Network row opens `#zigbee_routers_popup` (`dashboards/kohbo/sensors/zigbee_routers_popup.yaml`): every router, offline first, then weakest LQI, then name. LQI shows when the device has an enabled `_lqi` sensor (red under 100, amber to 180); otherwise "LQI —". LQI and RSSI are excluded from the recorder.
+The Network row opens `#zigbee_routers_popup` (`dashboards/kohbo/sensors/zigbee_routers_popup.yaml`): every router, offline first, then weakest LQI, then name. LQI shows when the device has an enabled `_lqi` sensor (red under 100, amber to 180); otherwise "LQI —". LQI sensors are excluded from the recorder (RSSI is not, so ESPHome Wi-Fi RSSI keeps its history).
 
 ## Device Health score
 
