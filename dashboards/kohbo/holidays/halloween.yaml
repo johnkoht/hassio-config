@@ -1,0 +1,141 @@
+#
+# Holidays — Halloween Tab: season toggle, front yard decorations and the Hue spots.
+#
+type: custom:vertical-layout
+title: Halloween
+path: holidays-halloween
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/holidays/holiday_header.yaml
+
+
+  #
+  # Season
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Season
+
+  - type: entities
+    entities:
+      - entity: input_boolean.halloween_season_active
+        name: Halloween Season
+        icon: mdi:halloween
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  - type: custom:button-card
+    name: Turns the Halloween decorations and colours on and off with the season.
+    template: kohbo_card_section_description
+
+
+  #
+  # Front Yard Decorations
+  #
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: switch.front_yard_holiday_decorations
+      - name: Front Yard Decorations
+      - template: kohbo_horizontal_action_card_light_entity
+      - icon: mdi:halloween
+      - tap_action: nothing
+      - navigation_path: ""
+      - action_cards:
+        # Toggle Decorations
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: switch.front_yard_holiday_decorations
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: switch.front_door_smart_plug
+        name: Front Door 1
+        template: kohbo_device_smart_plug_entity
+
+      - type: custom:button-card
+        entity: switch.front_door_smart_plug_2
+        name: Front Door 2
+        template: kohbo_device_smart_plug_entity
+
+      - type: custom:button-card
+        entity: switch.front_left_smart_plug
+        name: Front Left 1
+        template: kohbo_device_smart_plug_entity
+
+      - type: custom:button-card
+        entity: switch.front_left_smart_plug_2
+        name: Front Left 2
+        template: kohbo_device_smart_plug_entity
+
+
+  #
+  # Front Yard Spots
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Front Yard Spots
+
+  - type: entities
+    entities:
+      - entity: input_boolean.exterior_accent_lights
+        name: Accent Lights
+        icon: hue:lily-xl
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  - type: custom:hue-like-light-card
+    title: Outdoor Spots
+    entities:
+      - light.exterior_hue_outdoor_spot_1
+      - light.exterior_hue_outdoor_spot_2
+      - light.exterior_hue_outdoor_spot_3
+      - light.hue_outdoor_spot_4
+      - light.hue_outdoor_spot_5
+      - light.hue_outdoor_spot_6
+      - light.hue_outdoor_spot_7
+      - light.hue_outdoor_spot_8
+      - light.hue_outdoor_spot_9
+      - light.hue_outdoor_spot_10
+      - light.hue_spot_11_light
+      - light.hue_spot_12_light
+      - light.hue_spot_13_light
+      - light.hue_spot_14_light
+
+  # Halloween Colors (HA scene, covers spots 1-14)
+  - type: tile
+    entity: scene.halloween_front_yard_spots
+    name: Halloween Colors
+    icon: mdi:halloween
+    tap_action:
+      action: perform-action
+      perform_action: scene.turn_on
+      target:
+        entity_id: scene.halloween_front_yard_spots
+    icon_tap_action:
+      action: perform-action
+      perform_action: scene.turn_on
+      target:
+        entity_id: scene.halloween_front_yard_spots
+
+
+  #
+  # Holidays Settings Popup
+  #
+  - !include /config/dashboards/kohbo/holidays/_holidays_settings_popup.yaml
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml
