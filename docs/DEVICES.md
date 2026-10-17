@@ -126,7 +126,7 @@ The Sonos Amps are super expensive, but I found some _much_ cheaper, lightly use
 | [Bed Occupancy Sensor](https://community.home-assistant.io/t/fsr-the-best-bed-occupancy-sensor/365795) | 3 | ESPHome | [ESPHome](https://www.home-assistant.io/integrations/esphome/) | Force sensitive resistor sensor to detect bed occupancy |
 | [Lafaer Wireless Human Presence Sensor](https://lafaer.co/products/human-presence-sensor-lwr01) | 2 | Matter | [Matter](https://www.home-assistant.io/integrations/matter) | Testing these out |
 
-Which room-page sensors are offline or low on battery: kohbo More → Sensors (`packages/system/sensor_health/`).
+Which room-page and safety sensors are offline or low on battery, plus a Device Health score: kohbo More → Sensors (`packages/system/sensor_health/`).
 
 ## Cameras
 

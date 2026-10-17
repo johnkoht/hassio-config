@@ -265,3 +265,80 @@ The branch was rewritten so that no commit introduces the Konnected device IDs:
 $ git log -p origin/master..HEAD | grep -c -i 'konnected_[0-9a-f]\{6\}'
 0
 ```
+
+## Health score (2026-10-16)
+
+Follow-up on `feature/device-health-score` from origin/master `6357033` (#48). Nothing was pushed, deployed or reloaded. All live numbers come from read-only `POST /api/template` renders on the Yellow (HA 2026.7.4).
+
+### Commits
+
+- `0dfeac3` feat(sensor_health): device health score, Safety & Security group, Known issue exclusion
+- `ed3ac88` feat(dashboards): Device Health card on Sensors Overview, Safety section, Known issues lists
+- docs: Device Health score, Safety group and Known issue label
+- this build log
+
+### Design choice: trigger-based
+
+`sensor.device_health_score` and `sensor.device_health_status` share one trigger-based block. It fires every minute, on start, on `event_template_reloaded`, and on any change (attributes included) to the two controllers, the three mesh sensors and the offline and low-battery rollups. An `actions: - variables:` step computes the components once, so the score, the status and the breakdown attributes can't disagree. The weights and thresholds are named YAML variables at the top. The score only reads rollup attributes and group `entity_id` lists, with no `expand()` and no walk over all states. The minute tick also picks up label changes, which fire no state event.
+
+The rollups (`key_sensors_offline`, `key_sensors_low_battery`) reference `now()` for the same reason: labelling a sensor that's already offline changes no state.
+
+### Live checks
+
+- `label_entities('known_issue')` → `[]` (the label doesn't exist yet). `labels()` lists 20 labels, none of them `known_issue`.
+- Safety members, all present. Batteries found via device:
+  - smoke detector 100;
+  - garage entry lock 23 (not low at the threshold of 20);
+  - pool gate 91;
+  - backyard gate unavailable.
+- The front door lock's device has no battery entity (lock, identify button, signal strength only). `sensor.front_door_battery_level` belongs to the Vivint door sensor's device, so it isn't used.
+- Rollups rendered live, with `group.key_sensors_safety` substituted by its member list because the group isn't deployed:
+  - offline 16, of which 15 were already offline and 1 is the backyard gate;
+  - low battery 1 (the kitchen sink leak sensor at 3.5);
+  - network problems 3.
+- With a known_issue stub of `[backyard gate, garage entry lock, kitchen sink leak]`:
+  - offline drops to 15, with `known_issues: [backyard gate]`;
+  - low battery drops to 0, with `known_issues: {kitchen sink leak: 3.5}`.
+- The Offline and Low Battery filter templates (main and Known issues) render to lists of row objects, with no JSON booleans.
+
+### Today's score (70 tracked: 60 + 10 safety)
+
+| Component | Points | Detail |
+|---|---|---|
+| Radios | 47.4 / 50 | coordinator 15 + Z-Wave 10 + BLE 10×15/17 + routers 10×17/19 + Hue 5×13/14 (BLE flickers 15–16 of 17; at 16 it's 48.0) |
+| Sensors | 25.1 / 35 | weighted total 104, 29.5 offline: doors 8×2, leak 5×2, safety 1×2, motion 1, climate 0.5 |
+| Batteries | 9 / 15 | the kitchen sink leak sensor is low: −6 |
+| **Score** | **82** | **Degraded**: 6 critical (5 leak + backyard gate) offline. 82 is below 85 anyway |
+
+Before the Safety group (60 tracked), the same render gave radios 48.0, sensors 23.5, batteries 9, score 80, Degraded.
+
+### Simulations (live renders with text substitutions)
+
+| Scenario | Radios | Sensors | Batteries | Score | Status |
+|---|---|---|---|---|---|
+| Zigbee coordinator down | 32.4 | 25.1 | 9 | 25 (capped) | Down |
+| Z-Wave controller down | 37.4 | 25.1 | 9 | 25 (capped) | Down |
+| Everything online, no low batteries | 50 | 35 | 15 | 100 | Healthy |
+| known_issue = backyard gate, garage lock, kitchen sink leak | 48.0 | 25.2 | 15 | 88 | Degraded (5 leaks still offline) |
+| Only the backyard gate offline | 50 | 34.3 | 15 | 99 | Degraded (safety rule) |
+
+### Tests
+
+- `tests/test_device_health_score.py` (12 tests): it renders the variable chain with jinja2 and stubbed `states` / `is_state` / `state_attr` / `label_entities`, parsing each step with `literal_eval` like HA. It checks:
+  - weights and caps;
+  - 100 Healthy;
+  - each controller down gives ≤25 and Down;
+  - the mesh ratios;
+  - zero totals;
+  - a leak or safety sensor offline gives Degraded;
+  - the climate weight;
+  - the battery penalties and floor;
+  - known-issue exclusion;
+  - the rollups carry the label and the Safety group.
+- Sabotage: dropping the critical-offline rule turns 2 tests red.
+- `tests/run.sh`: 282 passed, 9 skipped (was 270 + 12 new).
+- yamllint is clean on every touched file.
+- `validate_dash.py` against the 7,130-state snapshot: 13 entity-missing problems, all in the sensors files.
+  - 2 are new: `sensor.device_health_score` and `sensor.device_health_status`.
+  - The other 11 are #48's rollups and network sensors. They predate the snapshot, and they render live.
+- PII grep is clean. No hardware-suffixed IDs were added. `binary_sensor.garage_glass_break` is the only real entity new to the repo.

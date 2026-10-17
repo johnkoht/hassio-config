@@ -3,7 +3,8 @@
 #
 # One key sensor: device name (minus variables.strip), Online/Offline/N of total/Low battery,
 # and "<area> · changed 3h". Registry lookups are direct key reads; battery comes from
-# sensor.key_sensors_low_battery's `batteries` map, which only holds low sensors.
+# sensor.key_sensors_low_battery's `batteries` / `known_issues` maps, which only hold low sensors.
+# Tap is more-info for every domain, so lock and cover rows never toggle.
 # The "Battery N%" label shows only with variables.show_battery (Needs Attention).
 #
 kohbo_device_sensor_health_entity:
@@ -19,7 +20,8 @@ kohbo_device_sensor_health_entity:
         const offline = s === 'unavailable' || s === 'unknown'
           || (entity.attributes.device_class === 'connectivity' && s === 'off');
         const total = entity.attributes.total;
-        const battery = states['sensor.key_sensors_low_battery']?.attributes?.batteries?.[entity.entity_id];
+        const low = states['sensor.key_sensors_low_battery']?.attributes;
+        const battery = low?.batteries?.[entity.entity_id] ?? low?.known_issues?.[entity.entity_id];
         if (offline) return { kind: 'offline', text: s === 'unknown' ? 'No data' : 'Offline', battery };
         if (total !== undefined && Number(s) < Number(total)) return { kind: 'degraded', text: `${s} / ${total}`, battery };
         if (battery !== undefined) return { kind: 'battery', text: 'Low battery', battery };

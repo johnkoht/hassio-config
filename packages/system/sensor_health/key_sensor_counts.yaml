@@ -1,28 +1,40 @@
 # Key Sensor Counts
 #
 # Offline, low-battery and network-problem rollups over the key sensor groups.
-# The dashboard summary and Needs Attention list read these; JK-1094 alerts will too.
+# Sensors labelled "Known issue" (label_entities('known_issue')) are left out of the counts and listed under `known_issues`.
 #
 
 template:
   - sensor:
+      # now() re-renders each minute, so adding or removing the label shows up without a state change.
       - name: Key Sensors Offline
         unique_id: key_sensors_offline
         default_entity_id: sensor.key_sensors_offline
         icon: mdi:lan-disconnect
         state: >-
+          {% set known = label_entities('known_issue') if now() else [] %}
           {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                    'group.key_sensors_climate', 'group.key_sensors_presence')
-             | selectattr('state', 'in', ['unavailable', 'unknown']) | list | count }}
+                    'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety')
+             | selectattr('state', 'in', ['unavailable', 'unknown'])
+             | rejectattr('entity_id', 'in', known) | list | count }}
         attributes:
           entities: >-
+            {% set known = label_entities('known_issue') if now() else [] %}
             {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                      'group.key_sensors_climate', 'group.key_sensors_presence')
+                      'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety')
                | selectattr('state', 'in', ['unavailable', 'unknown'])
+               | rejectattr('entity_id', 'in', known)
+               | map(attribute='entity_id') | list }}
+          known_issues: >-
+            {% set known = label_entities('known_issue') if now() else [] %}
+            {{ expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
+                      'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety')
+               | selectattr('state', 'in', ['unavailable', 'unknown'])
+               | selectattr('entity_id', 'in', known)
                | map(attribute='entity_id') | list }}
 
       # The low-battery threshold lives here and nowhere else.
-      # `batteries` maps each key sensor whose device battery is low to its level.
+      # `batteries` maps each key sensor whose device battery is low to its level; `known_issues` holds the labelled ones.
       - name: Key Sensors Low Battery
         unique_id: key_sensors_low_battery
         default_entity_id: sensor.key_sensors_low_battery
@@ -30,9 +42,11 @@ template:
         variables:
           low_battery_threshold: 20
         state: >-
+          {% set known = label_entities('known_issue') if now() else [] %}
           {% set ns = namespace(n=0) %}
           {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                             'group.key_sensors_climate', 'group.key_sensors_presence') | map(attribute='entity_id') %}
+                             'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') | map(attribute='entity_id')
+                      if e not in known %}
             {% set d = device_id(e) %}
             {% if d %}
               {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
@@ -44,9 +58,26 @@ template:
           {{ ns.n }}
         attributes:
           batteries: >-
+            {% set known = label_entities('known_issue') if now() else [] %}
             {% set ns = namespace(b={}) %}
             {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
-                               'group.key_sensors_climate', 'group.key_sensors_presence') | map(attribute='entity_id') %}
+                               'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') | map(attribute='entity_id')
+                        if e not in known %}
+              {% set d = device_id(e) %}
+              {% if d %}
+                {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
+                {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
+                  {% set ns.b = dict(ns.b, **{e: states(b) | float(0)}) %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.b | tojson }}
+          known_issues: >-
+            {% set known = label_entities('known_issue') if now() else [] %}
+            {% set ns = namespace(b={}) %}
+            {% for e in expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
+                               'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') | map(attribute='entity_id')
+                        if e in known %}
               {% set d = device_id(e) %}
               {% if d %}
                 {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}

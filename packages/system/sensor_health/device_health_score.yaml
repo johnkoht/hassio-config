@@ -1,0 +1,156 @@
+# Device Health Score
+#
+# 0-100 score and Healthy / Degraded / Down status for the radios, key sensors and their batteries.
+# Trigger-based: one pass per minute or rollup change feeds both sensors. Weights and thresholds sit at the top.
+#
+
+template:
+  - triggers:
+      - trigger: time_pattern
+        minutes: /1
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      # No from/to, so attribute changes (which sensor is offline or low) fire too.
+      - trigger: state
+        entity_id:
+          - binary_sensor.zigbee_coordinator_online
+          - binary_sensor.zwave_controller_online
+          - sensor.zigbee_routers_online
+          - sensor.hue_spots_online
+          - sensor.ble_proxies_online
+          - sensor.key_sensors_offline
+          - sensor.key_sensors_low_battery
+    actions:
+      - variables:
+          # ------------------------------------------------------------------
+          # THRESHOLDS
+          # ------------------------------------------------------------------
+          healthy_from: 85       # 85+ is Healthy (unless a leak or safety sensor is offline)
+          down_below: 50         # under 50 is Down; 50-84 is Degraded
+          outage_cap: 25         # score ceiling while the Zigbee coordinator or Z-Wave controller is down
+
+          # ------------------------------------------------------------------
+          # RADIOS (0-50 points)
+          # ------------------------------------------------------------------
+          zigbee_coordinator_points: 15
+          zwave_controller_points: 10
+          ble_proxies_points: 10   # x online / total
+          zigbee_routers_points: 10  # x online / total
+          hue_spots_points: 5      # x online / total
+
+          # ------------------------------------------------------------------
+          # SENSORS (0-35 points): weighted share of tracked sensors online
+          # ------------------------------------------------------------------
+          sensors_points: 35
+          sensor_weights:
+            group.key_sensors_safety: 2
+            group.leak_sensors: 2
+            group.key_sensors_doors: 2
+            group.key_sensors_motion: 1
+            group.key_sensors_presence: 1
+            group.key_sensors_climate: 0.5
+
+          # ------------------------------------------------------------------
+          # BATTERIES (0-15 points): minus 3 per low device, 6 if it's a leak sensor
+          # The low threshold lives on sensor.key_sensors_low_battery only.
+          # ------------------------------------------------------------------
+          batteries_points: 15
+          low_battery_penalty: 3
+          low_battery_leak_penalty: 6
+
+          # ------------------------------------------------------------------
+          # COMPONENTS
+          # ------------------------------------------------------------------
+          outage: >-
+            {{ not (is_state('binary_sensor.zigbee_coordinator_online', 'on')
+                    and is_state('binary_sensor.zwave_controller_online', 'on')) }}
+
+          radios_score: >-
+            {% set ns = namespace(r=0) %}
+            {% if is_state('binary_sensor.zigbee_coordinator_online', 'on') %}
+              {% set ns.r = ns.r + zigbee_coordinator_points %}
+            {% endif %}
+            {% if is_state('binary_sensor.zwave_controller_online', 'on') %}
+              {% set ns.r = ns.r + zwave_controller_points %}
+            {% endif %}
+            {% for entity, points in [('sensor.ble_proxies_online', ble_proxies_points),
+                                      ('sensor.zigbee_routers_online', zigbee_routers_points),
+                                      ('sensor.hue_spots_online', hue_spots_points)] %}
+              {% set total = state_attr(entity, 'total') | float(0) %}
+              {% if total > 0 %}
+                {% set ns.r = ns.r + points * ([states(entity) | float(0), total] | min) / total %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.r | round(1) }}
+
+          # Known-issue sensors leave both sides of the ratio; key_sensors_offline already drops them.
+          sensors_score: >-
+            {% set known = label_entities('known_issue') %}
+            {% set offline = state_attr('sensor.key_sensors_offline', 'entities') or [] %}
+            {% set ns = namespace(total=0, online=0) %}
+            {% for group, weight in sensor_weights.items() %}
+              {% set members = (state_attr(group, 'entity_id') or []) | reject('in', known) | list %}
+              {% set down = members | select('in', offline) | list | count %}
+              {% set ns.total = ns.total + weight * (members | count) %}
+              {% set ns.online = ns.online + weight * ((members | count) - down) %}
+            {% endfor %}
+            {{ (sensors_points * ns.online / ns.total) | round(1) if ns.total > 0 else sensors_points }}
+
+          # `batteries` already leaves out known-issue sensors.
+          batteries_score: >-
+            {% set leaks = state_attr('group.leak_sensors', 'entity_id') or [] %}
+            {% set ns = namespace(p=0) %}
+            {% for entity in (state_attr('sensor.key_sensors_low_battery', 'batteries') or {}) %}
+              {% set ns.p = ns.p + (low_battery_leak_penalty if entity in leaks else low_battery_penalty) %}
+            {% endfor %}
+            {{ [batteries_points - ns.p, 0] | max }}
+
+          # Leak and Safety sensors: any one offline means at least Degraded.
+          critical_offline: >-
+            {% set offline = state_attr('sensor.key_sensors_offline', 'entities') or [] %}
+            {% set critical = (state_attr('group.leak_sensors', 'entity_id') or []) | list
+                              + (state_attr('group.key_sensors_safety', 'entity_id') or []) | list %}
+            {{ critical | select('in', offline) | list | count }}
+
+          # ------------------------------------------------------------------
+          # FINAL SCORE (0-100, capped during an outage) AND STATUS
+          # ------------------------------------------------------------------
+          score: >-
+            {% set s = (radios_score | float(0) + sensors_score | float(0) + batteries_score | float(0)) | round(0) | int(0) %}
+            {% set s = [[s, 0] | max, 100] | min %}
+            {{ [s, outage_cap] | min if outage else s }}
+
+          status: >-
+            {% if outage or score | int(0) < down_below %}
+              Down
+            {% elif score | int(0) < healthy_from or critical_offline | int(0) > 0 %}
+              Degraded
+            {% else %}
+              Healthy
+            {% endif %}
+
+    sensor:
+      - name: Device Health Score
+        unique_id: device_health_score
+        default_entity_id: sensor.device_health_score
+        icon: mdi:heart-pulse
+        state: "{{ score }}"
+        attributes:
+          radios: "{{ radios_score }}"
+          sensors: "{{ sensors_score }}"
+          batteries: "{{ batteries_score }}"
+          outage: "{{ outage }}"
+          critical_offline: "{{ critical_offline }}"
+
+      - name: Device Health Status
+        unique_id: device_health_status
+        default_entity_id: sensor.device_health_status
+        state: "{{ status }}"
+        attributes:
+          icon: >-
+            {{ {'Healthy': 'mdi:check-network', 'Degraded': 'mdi:alert-circle', 'Down': 'mdi:close-network'}[status] | default('mdi:help-network') }}
+          # Same palette as sensor.house_security_status.
+          color: >-
+            {{ {'Healthy': 'var(--success-color)', 'Degraded': 'var(--warning-color)', 'Down': 'var(--error-color)'}[status] | default('var(--secondary-text-color)') }}
