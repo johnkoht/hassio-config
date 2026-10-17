@@ -1,13 +1,13 @@
 # Device Health Score
 #
 # 0-100 score and Healthy / Degraded / Down status for the radios, key sensors and their batteries.
-# Trigger-based: one pass per minute or rollup change feeds both sensors. Weights and thresholds sit at the top.
+# Trigger-based: one pass every 5 minutes or on a rollup change feeds both sensors. Weights and thresholds sit at the top.
 #
 
 template:
   - triggers:
       - trigger: time_pattern
-        minutes: /1
+        minutes: /5
       - trigger: homeassistant
         event: start
       - trigger: event

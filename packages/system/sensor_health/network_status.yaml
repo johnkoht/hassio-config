@@ -2,7 +2,7 @@
 #
 # Health of the radios and meshes the key sensors report through: Zigbee, Z-Wave, Hue, BLE.
 # Mesh sensors are counts with a `total` attribute; `summary` is the dashboard row label.
-# Zigbee routers are every device labelled `zigbee_router`, scanned once a minute.
+# Zigbee routers are every device labelled `zigbee_router`, scanned every 5 minutes.
 #
 
 template:
@@ -54,12 +54,12 @@ template:
             {{ states('sensor.bermuda_global_active_proxy_count') | int(0) }} of
             {{ states('sensor.bermuda_global_total_proxy_count') | int(0) }} active
 
-  # One pass per minute over label_devices('zigbee_router'): each device's primary entity
+  # One pass every 5 minutes over label_devices('zigbee_router'): each device's primary entity
   # (first enabled switch/light/fan/sensor that isn't a config or diagnostic one, else its LQI
   # sensor, else number/select/update) and an "<Area> <Device>" name for the routers popup.
   - triggers:
       - trigger: time_pattern
-        minutes: /1
+        minutes: /5
       - trigger: homeassistant
         event: start
       - trigger: event
