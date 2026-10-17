@@ -2,6 +2,8 @@
 
 > Complete navigation structure of the Kohbo Home Assistant dashboard
 
+Every view below is registered in `kohbo/kohbo.yaml` `views:` and served at `/dashboard-kohbo/<path>`. The bottom navbar (`templates/includes/navbar.yaml`) has Home, Rooms, Climate, Security and More; More opens People, School, Chores, Energy, Holidays, Plants and Sensors.
+
 ## Main Dashboard Views
 
 The dashboard is organized into the following main sections:
@@ -18,6 +20,9 @@ The dashboard is organized into the following main sections:
 ### 🌡️ Climate
 - **Climate** (`climate/climate.yaml`)
   - Climate control overview
+- **HVAC** (`climate/hvac.yaml`, `/dashboard-kohbo/climate-hvac`)
+- **Air Quality** (`climate/air_quality.yaml`, `/dashboard-kohbo/climate-air-quality`)
+- **Climate (Legacy)** (`climate/legacy.yaml`, `/dashboard-kohbo/climate-legacy`)
   - Popups:
     - Main Floor Thermostat Popup
     - Upper Floor Thermostat Popup
@@ -91,7 +96,7 @@ The dashboard is organized into the following main sections:
 - **Laundry** (`rooms/laundry/laundry.yaml`)
 
 #### Media Players
-- **Office Media Player** (`rooms/media_players/office_media_player.yaml`)
+- **Office Media Player** popup (`#office_media_player`), defined inline in `rooms/main_floor/office.yaml`. `rooms/media_players/office_media_player.yaml` is an older copy that nothing includes.
 
 ### 💡 Lighting & More
 
@@ -105,6 +110,12 @@ The dashboard is organized into the following main sections:
 - **People** (`more/people.yaml`)
   - People tracking and presence
 
+#### School
+- **School** (`school/school.yaml`, `/dashboard-kohbo/school`)
+
+#### Chores
+- **Chores** (`chores/chores.yaml`, `/dashboard-kohbo/chores`) — see [chores README](kohbo/chores/README.md)
+
 ### ⚡ Energy
 - **Energy** (`energy/energy.yaml`)
   - Energy monitoring dashboard
@@ -115,7 +126,7 @@ The dashboard is organized into the following main sections:
 
 ### 🎉 Holidays
 
-Tabbed section (Overview / Halloween / Christmas) sharing `holiday_header.yaml` and one settings popup.
+Tabbed section (Overview / Halloween / Christmas) sharing `templates/includes/holidays/holiday_header.yaml` and one settings popup. See the [holidays README](kohbo/holidays/README.md).
 
 - **Overview** (`holidays/holidays.yaml`, `/dashboard-kohbo/holidays`)
   - One card per season: season toggle + link to its page
@@ -128,7 +139,7 @@ Tabbed section (Overview / Halloween / Christmas) sharing `holiday_header.yaml` 
 
 ### 🌱 Plants
 
-Tabbed section (Indoor / Outdoor) sharing `plants_header.yaml`. No settings popup.
+Tabbed section (Indoor / Outdoor) sharing `templates/includes/plants/plants_header.yaml`. No settings popup. See the [plants README](kohbo/plants/README.md).
 
 - **Indoor** (`plants/indoor.yaml`, `/dashboard-kohbo/plants`)
   - 3 plant cards: 7-day moisture graph + Moisture / Temperature / Battery row, or an Offline tile
@@ -137,7 +148,7 @@ Tabbed section (Indoor / Outdoor) sharing `plants_header.yaml`. No settings popu
 
 ### 📡 Sensors
 
-More → Sensors. Tabbed section (Overview / Offline / Low Battery) sharing `sensors_header.yaml`. Tracks the physical sensors the room pages use (`packages/system/sensor_health/`). No settings popup.
+More → Sensors. Tabbed section (Overview / Offline / Low Battery) sharing `templates/includes/sensors/sensors_header.yaml`. Tracks the physical sensors the room pages use. No settings popup. See the [sensors README](kohbo/sensors/README.md) and the [sensor_health README](../packages/system/sensor_health/README.md).
 
 - **Overview** (`sensors/sensors.yaml`, `/dashboard-kohbo/sensors`)
   - Device Health card (Healthy / Degraded / Down, score ring, and Networks / Sensors / Batteries tiles; the last two open their tabs), 5 Network rows (Zigbee coordinator, routers N of total, Z-Wave, Hue spots, BLE proxies; the routers row opens `#zigbee_routers_popup`, every `zigbee_router`-labelled device with Online/Offline and LQI, offline and weakest first), then online sensors by type, Safety & Security first
@@ -186,6 +197,9 @@ kohbo Dashboard
 │   └── [Notifications & Popups]
 │
 ├── 🌡️ Climate
+│   ├── HVAC
+│   ├── Air Quality
+│   ├── Climate (Legacy)
 │   └── [Thermostat & Weather Popups]
 │
 ├── 🔒 Security
@@ -224,32 +238,31 @@ kohbo Dashboard
 │   │   ├── Gianluca's Bedroom
 │   │   └── Upstairs Hallway
 │   │
-│   ├── Laundry
-│   └── Media Players
-│       └── Office Media Player
+│   └── Laundry
 │
-├── 💡 More
+├── 💡 Lighting (no navbar entry; Home links Exterior Lighting)
 │   ├── Exterior Lighting
-│   ├── Interior Lights
-│   └── People
+│   └── Interior Lights
 │
-├── ⚡ Energy
-│   └── [Energy Monitoring & Popups]
-│
-├── 🎉 Holidays
-│   ├── Overview
-│   ├── Halloween
-│   ├── Christmas
-│   └── [Holidays Settings Popup]
-│
-├── 🌱 Plants
-│   ├── Indoor
-│   └── Outdoor
-│
-└── 📡 Sensors
-    ├── Overview
-    ├── Offline
-    └── Low Battery
+└── ⋯ More (navbar popup)
+    ├── People
+    ├── School
+    ├── Chores
+    ├── ⚡ Energy
+    │   └── [Energy Monitoring & Popups]
+    ├── 🎉 Holidays
+    │   ├── Overview
+    │   ├── Halloween
+    │   ├── Christmas
+    │   └── [Holidays Settings Popup]
+    ├── 🌱 Plants
+    │   ├── Indoor
+    │   └── Outdoor
+    └── 📡 Sensors
+        ├── Overview
+        ├── Offline
+        ├── Low Battery
+        └── [Zigbee Routers Popup]
 ```
 
 ---
@@ -266,6 +279,9 @@ dashboards/kohbo/
 │
 ├── climate/
 │   ├── climate.yaml
+│   ├── hvac.yaml
+│   ├── air_quality.yaml
+│   ├── legacy.yaml
 │   └── [thermostat & weather popups]
 │
 ├── security/
@@ -302,6 +318,15 @@ dashboards/kohbo/
 │   ├── interior_lights.yaml
 │   └── people.yaml
 │
+├── school/
+│   ├── school.yaml
+│   └── components/
+│
+├── chores/
+│   ├── README.md
+│   ├── chores.yaml
+│   └── components/
+│
 ├── energy/
 │   ├── energy.yaml
 │   └── partials/
@@ -320,6 +345,7 @@ dashboards/kohbo/
 │   └── outdoor.yaml
 │
 ├── sensors/
+│   ├── README.md
 │   ├── sensors.yaml
 │   ├── offline.yaml
 │   ├── low_battery.yaml
