@@ -59,8 +59,9 @@ jobs:
       - name: Create fake secrets
         run: cp secrets.fake.yaml secrets.yaml
 
-      - uses: frenck/action-home-assistant@v2
-        with:
-          path: "."
-          secrets: "secrets.yaml"
-          version: stable
+      # Same core version as production (.HA_VERSION); frenck/action-home-assistant@v2 doesn't exist.
+      - name: Check config
+        run: |
+          docker run --rm -v "$PWD:/config" \
+            "ghcr.io/home-assistant/home-assistant:$(cat .HA_VERSION)" \
+            python -m homeassistant --config /config --script check_config
