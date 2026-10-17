@@ -1,7 +1,7 @@
 ---
 title: Mudroom Bathroom Mobile Page
 slug: mudroom-bathroom-mobile-page
-status: approved
+status: shipped
 created: 2026-10-16
 has_pre_mortem: false
 has_review: false

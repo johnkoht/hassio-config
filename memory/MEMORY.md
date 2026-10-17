@@ -16,3 +16,8 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-10-14 · [nino-dropoff-by-nonna](entries/2026-10-14_nino-dropoff-by-nonna.md) — Nonna has no GPS, so infer her drop-off from person home→not_home near the bell; trigger on the person, not the flapping ping tracker
 - 2026-10-15 · [quiet-mode-bed-race](entries/2026-10-15_quiet-mode-bed-race.md) — turn-off only fired on everybody_awake, so a bed still occupied at that instant latched quiet mode on; now also triggers on each bed emptying
 - 2026-10-15 · [main-bathroom-mobile-page](entries/2026-10-15_main-bathroom-mobile-page-learnings.md) — hand-built room page + door tile fix (single sensors read "Closed"); live state dump + YAML-walking validator before browser checks
+- 2026-10-16 · [mudroom-bathroom-mobile-page](entries/2026-10-16_mudroom-bathroom-mobile-page-learnings.md) — cloned the main bathroom page; room_card `room:` is an area_id; shared small-bathroom template deferred
+- 2026-10-16 · [powder-room-mobile-page](entries/2026-10-16_powder-room-mobile-page-learnings.md) — page build exposed occupancy stuck on with the door sensor dead; light-off now clears it, sabotage-tested
+- 2026-10-16 · [holiday-dashboard](entries/2026-10-16_holiday-dashboard-learnings.md) — Holidays tabs + in-season Home tiles; pages stayed invisible until kohbo.yaml was touched (#45)
+- 2026-10-16 · [plant-lawn-dashboard](entries/2026-10-16_plant-lawn-dashboard-learnings.md) — Plants tabs + Lawn vs Rain; dead WH51 channels hold `0`, so detect by value
+- 2026-10-16 · [sensors-dashboard](entries/2026-10-16_sensors-dashboard-learnings.md) — Sensors tabs, Device Health score, router label (#47–#50); literal_eval vs JSON true, config_entry_attr is a string, vacuous test caught by sabotage

@@ -169,10 +169,25 @@ Room modes respond to house-level changes:
 
 ---
 
+## Small Bathrooms
+
+The powder room and mudroom bathroom have no climate sensors and simpler state machines than the Office.
+
+| Room | Occupied when | Empty when | When empty |
+|------|---------------|------------|------------|
+| Mudroom Bathroom | Motion, or the light turns on | No motion for a few minutes after the door opens, or the Aqara occupancy sensor clears | Light off; fan off after 5 min |
+| Powder Room | The light turns on, or the door closes (no motion sensor) | The light has been off for 5 min, or the door is open with the light off | Light off; fan off after 5 min |
+
+Both rooms going to **Off** mode also turn the light and fan off. Their automations carry no `initial_state`, so the dashboard toggles survive a restart. While the powder room's door sensor is offline, its occupancy follows the light alone. See `packages/powder_room/` and `packages/mudroom_bathroom/`.
+
+---
+
 ## Dashboard
 
 ![Room Details](../dashboards/kohbo/assets/room-details.jpg)
 
 The Kohbo dashboard provides full visibility and control over room states. Each room has a detail page with climate, lights, music, devices, and quick settings.
+
+A room shows up in Home → Occupied Rooms through its `sensor.{room}_room` template sensor (`packages/house/areas/`), listed in `group.room_sensors`. Every page and route is in the [sitemap](../dashboards/SITEMAP.md).
 
 See [Dashboard Documentation](../dashboards/README.md) for details.

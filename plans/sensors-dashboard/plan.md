@@ -1,7 +1,7 @@
 ---
 title: Sensors Dashboard
 slug: sensors-dashboard
-status: approved
+status: shipped
 created: 2026-10-16
 has_pre_mortem: false
 has_review: true
