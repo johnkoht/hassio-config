@@ -1,0 +1,52 @@
+#
+# Zigbee Router Row
+#
+# One labelled router in the routers popup: variables.router_name ("<Area> <Device>", resolved in
+# Jinja by sensor.zigbee_routers_online), Online/Offline, and the live LQI from variables.lqi_entity.
+# LQI: under 100 red, 100-180 amber. Tap is more-info, so plugs and lights never toggle.
+#
+kohbo_zigbee_router_entity:
+  template: kohbo_device_entity_horizontal
+  show_last_changed: false
+  show_label: true
+  variables:
+    router_name: ''
+    lqi_entity: ''
+    lqi: |
+      [[[
+        const v = Number(hass.states[variables.lqi_entity]?.state);
+        return variables.lqi_entity && Number.isFinite(v) ? v : undefined;
+      ]]]
+    offline: |
+      [[[ return entity.state === 'unavailable' || entity.state === 'unknown'; ]]]
+  name: |
+    [[[ return variables.router_name || entity.attributes.friendly_name || entity.entity_id; ]]]
+  state_display: |
+    [[[ return variables.offline ? 'Offline' : 'Online'; ]]]
+  label: |
+    [[[ return variables.lqi === undefined ? 'LQI —' : `LQI ${Math.round(variables.lqi)}`; ]]]
+  tap_action:
+    action: more-info
+  hold_action:
+    action: none
+  double_tap_action:
+    action: none
+  styles:
+    grid:
+      - grid-template-columns: 24px auto 90px;
+    label:
+      - color: |
+          [[[
+            const q = variables.lqi;
+            if (q === undefined) return 'var(--light-grey-color)';
+            if (q < 100) return 'var(--error-color)';
+            if (q <= 180) return 'var(--warning-color)';
+            return 'var(--light-grey-color)';
+          ]]]
+    state:
+      - text-align: right
+      - color: |
+          [[[ return variables.offline ? 'var(--warning-color)' : 'var(--success-color)'; ]]]
+    icon:
+      - color: |
+          [[[ return variables.offline ? 'var(--warning-color)' : 'var(--success-color)'; ]]]

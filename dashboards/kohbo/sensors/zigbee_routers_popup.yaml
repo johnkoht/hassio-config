@@ -1,0 +1,49 @@
+#
+# Zigbee Routers Popup: every device labelled "Zigbee Router", offline first, then weakest LQI.
+# Names and the router list come from sensor.zigbee_routers_online's `routers` attribute.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#zigbee_routers_popup'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+margin_top_mobile: calc(100vh - 900px)
+margin_top_desktop: calc(100vh - 900px)
+
+cards:
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Zigbee Routers
+
+  - type: custom:button-card
+    template: kohbo_card_section_description
+    entity: sensor.zigbee_routers_online
+    show_icon: false
+    name: |
+      [[[ return `${entity.state} of ${entity.attributes.total} online`; ]]]
+    tap_action:
+      action: none
+
+  # Rows are sorted here: offline, then LQI ascending (no LQI last), then name. No sort: key,
+  # so auto-entities keeps this order. Full row objects, no JSON true/false (see offline.yaml).
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+      card_mod: !include /config/dashboards/templates/includes/card_mod/entities/kohbo_auto_entities_section.yaml
+    filter:
+      template: >-
+        {% set ns = namespace(rows=[]) %}
+        {% for e, name in (state_attr('sensor.zigbee_routers_online', 'routers') or {}).items() %}
+          {% set lqi = device_entities(device_id(e)) | select('search', '_lqi(_[0-9]+)?$') | first | default('') %}
+          {% set q = states(lqi) | int(-1) if lqi else -1 %}
+          {% set ns.rows = ns.rows + [{'off': 1 if states(e) in ['unavailable', 'unknown'] else 2,
+                                       'q': q if q >= 0 else 999, 'name': name, 'entity': e, 'lqi': lqi}] %}
+        {% endfor %}
+        {% set out = namespace(rows=[]) %}
+        {% for r in ns.rows | sort(attribute='off,q,name') %}
+          {% set out.rows = out.rows + [{'entity': r.entity, 'type': 'custom:button-card',
+                                         'template': 'kohbo_zigbee_router_entity',
+                                         'variables': {'router_name': r.name, 'lqi_entity': r.lqi}}] %}
+        {% endfor %}
+        {{ out.rows | tojson }}
