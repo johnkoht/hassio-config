@@ -1,0 +1,140 @@
+#
+# Plants — Outdoor Tab: 7-day soil moisture per zone, grouped Lawn / Front Beds / Backyard Beds.
+#
+type: custom:vertical-layout
+title: Outdoor Plants
+path: plants-outdoor
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/plants/plants_header.yaml
+
+
+  #
+  # Lawn
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Lawn
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Front Lawn
+          - entity: sensor.ch4_front_lawn_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Backyard North Corner
+          - entity: sensor.ch4_backyard_north_corner_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Swingset
+          - entity: sensor.ch7_backyard_swingset_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Behind Pool
+          - entity: sensor.ch8_backyard_east_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: South Fence
+          - entity: sensor.ch9_backyard_south_fence_soil_moisture
+          - icon: mdi:grass
+
+
+  #
+  # Front Flower Beds
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Front Flower Beds
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Round Bed
+          - entity: sensor.ch1_round_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Right Bed
+          - entity: sensor.ch2_right_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Middle Bed
+          - entity: sensor.ch3_front_middle_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Left Bed (by garage)
+          - entity: sensor.ch11_front_left_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+
+  #
+  # Backyard Flower Beds
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Backyard Flower Beds
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: North Bed
+          - entity: sensor.ch6_backyard_north_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Middle Bed
+          - entity: sensor.ch10_backyard_middle_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: South Bed
+          - entity: sensor.ch12_backyard_south_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml
