@@ -104,6 +104,11 @@ routes:
         url: /dashboard-kohbo/holidays
         label: Holidays
 
+      # Plants
+      - icon: mdi:sprout
+        url: /dashboard-kohbo/plants
+        label: Plants
+
 haptic:
   url: true
   tap_action: true

@@ -1,0 +1,58 @@
+#
+# Plants — Indoor Tab: one card per plant with a 7-day moisture graph and its status row.
+#
+type: custom:vertical-layout
+title: Plants
+path: plants
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/plants/plants_header.yaml
+
+
+  #
+  # Office Plant
+  #
+  - type: custom:decluttering-card
+    template: plant_overview
+    variables:
+      - name: Office Plant
+      - moisture_sensor: sensor.plant_moisture_sensor_soil_moisture
+      - temperature_sensor: sensor.plant_moisture_sensor_temperature
+      - battery_sensor: sensor.plant_moisture_sensor_battery
+
+  #
+  # Small Kitchen Plant
+  #
+  - type: custom:decluttering-card
+    template: plant_overview
+    variables:
+      - name: Small Kitchen Plant
+      - moisture_sensor: sensor.small_plant_soil_moisture
+      - temperature_sensor: sensor.small_plant_temperature
+      - battery_sensor: sensor.small_plant_battery
+
+  #
+  # Large Kitchen Plant
+  #
+  - type: custom:decluttering-card
+    template: plant_overview
+    variables:
+      - name: Large Kitchen Plant
+      - moisture_sensor: sensor.large_plant_soil_moisture
+      - temperature_sensor: sensor.large_plant_temperature
+      - battery_sensor: sensor.large_plant_battery
+
+  - type: custom:button-card
+    name: "Yellow below 20%, red below 10%: the same levels the morning briefing uses to say a plant needs water."
+    template: kohbo_card_section_description
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml

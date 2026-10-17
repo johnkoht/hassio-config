@@ -1,0 +1,30 @@
+#
+# Plant Temperature Item: good 60-85 °F, moderate 50-60 / 85-90, poor otherwise.
+#
+kohbo_plant_temperature_item:
+  template: kohbo_aqi_item
+  name: Temperature
+  icon: mdi:thermometer
+  state_display: |
+    [[[
+      var temperature = entity.state.replace("°F", "").trim();
+      temperature = Math.round(temperature).toString();
+      return temperature;
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: >
+      [[[
+        var t = parseFloat(entity.state);
+        if (isNaN(t)) {
+          return null;
+        } else if (t >= 60 && t <= 85) {
+          return 'Good';
+        } else if ((t >= 50 && t < 60) || (t > 85 && t <= 90)) {
+          return 'Moderate';
+        } else {
+          return 'Poor';
+        }
+      ]]]
+  custom_fields:
+    unit: "°F"

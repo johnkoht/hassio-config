@@ -1,0 +1,30 @@
+#
+# Plant Battery Item: good from 30%, moderate 15-30%, poor below 15%.
+#
+kohbo_plant_battery_item:
+  template: kohbo_aqi_item
+  name: Battery
+  icon: mdi:battery
+  state_display: |
+    [[[
+      var battery = entity.state.replace("%", "").trim();
+      battery = Math.round(battery).toString();
+      return battery;
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: >
+      [[[
+        var b = parseFloat(entity.state);
+        if (isNaN(b)) {
+          return null;
+        } else if (b < 15) {
+          return 'Poor';
+        } else if (b < 30) {
+          return 'Moderate';
+        } else {
+          return 'Good';
+        }
+      ]]]
+  custom_fields:
+    unit: "%"

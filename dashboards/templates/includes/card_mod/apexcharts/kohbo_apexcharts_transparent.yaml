@@ -1,0 +1,12 @@
+style: |
+  ha-card {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+  }
+  .apexcharts-legend {
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }

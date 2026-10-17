@@ -1,0 +1,229 @@
+#
+# Plants — Outdoor Tab: 7-day soil moisture per zone, grouped Lawn / Front Beds / Backyard Beds.
+#
+type: custom:vertical-layout
+title: Outdoor Plants
+path: plants-outdoor
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  #
+  # Page Header (with tab navbar)
+  #
+  - !include /config/dashboards/templates/includes/plants/plants_header.yaml
+
+
+  #
+  # Lawn
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Lawn
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Front Lawn
+          - entity: sensor.ch4_front_lawn_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Backyard North Corner
+          - entity: sensor.ch4_backyard_north_corner_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Swingset
+          - entity: sensor.ch7_backyard_swingset_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Behind Pool
+          - entity: sensor.ch8_backyard_east_soil_moisture
+          - icon: mdi:grass
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: South Fence
+          - entity: sensor.ch9_backyard_south_fence_soil_moisture
+          - icon: mdi:grass
+
+
+  #
+  # Front Flower Beds
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Front Flower Beds
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Round Bed
+          - entity: sensor.ch1_round_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Right Bed
+          - entity: sensor.ch2_right_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Middle Bed
+          - entity: sensor.ch3_front_middle_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Left Bed (by garage)
+          - entity: sensor.ch11_front_left_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+
+  #
+  # Backyard Flower Beds
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Backyard Flower Beds
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: North Bed
+          - entity: sensor.ch6_backyard_north_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: Middle Bed
+          - entity: sensor.ch10_backyard_middle_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+      - type: custom:decluttering-card
+        template: soil_moisture_card
+        variables:
+          - name: South Bed
+          - entity: sensor.ch12_backyard_south_flower_bed_soil_moisture
+          - icon: mdi:flower
+
+
+  #
+  # Lawn vs Rain — 7 Days (JK-1152)
+  #
+  - type: custom:button-card
+    name: Lawn vs Rain – 7 Days
+    template: section_title
+
+  - type: custom:apexcharts-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/apexcharts/kohbo_apexcharts_transparent.yaml
+    graph_span: 7d
+    span:
+      end: hour
+    header:
+      show: false
+    apex_config:
+      chart:
+        height: 240
+      grid:
+        borderColor: 'rgba(255,255,255,0.05)'
+      legend:
+        show: true
+        position: bottom
+        horizontalAlign: center
+        fontSize: '11px'
+        markers:
+          width: 8
+          height: 8
+      stroke:
+        curve: smooth
+        width: 2
+      xaxis:
+        axisBorder:
+          show: false
+        axisTicks:
+          show: false
+    yaxis:
+      - id: moisture
+        min: 0
+        max: 100
+        decimals: 0
+      - id: rain
+        opposite: true
+        min: 0
+        decimals: 2
+    series:
+      - entity: sensor.ch4_front_lawn_soil_moisture
+        name: Front Lawn
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch4_backyard_north_corner_soil_moisture
+        name: Backyard North Corner
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch7_backyard_swingset_soil_moisture
+        name: Swingset
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch8_backyard_east_soil_moisture
+        name: Behind Pool
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.ch9_backyard_south_fence_soil_moisture
+        name: South Fence
+        type: line
+        yaxis_id: moisture
+        group_by:
+          func: avg
+          duration: 1h
+      - entity: sensor.tempest_precipitation_intensity
+        name: Rain (in/h)
+        type: column
+        yaxis_id: rain
+        group_by:
+          func: max
+          duration: 1h
+
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/templates/includes/navbar.yaml

@@ -1,0 +1,30 @@
+#
+# Plant Moisture Item: soil moisture with the morning briefing's levels (red < 10, yellow < 20).
+#
+kohbo_plant_moisture_item:
+  template: kohbo_aqi_item
+  name: Moisture
+  icon: mdi:water
+  state_display: |
+    [[[
+      var moisture = entity.state.replace("%", "").trim();
+      moisture = Math.round(moisture).toString();
+      return moisture;
+    ]]]
+  show_state: true
+  variables:
+    aqi_status: >
+      [[[
+        var m = parseFloat(entity.state);
+        if (isNaN(m)) {
+          return null;
+        } else if (m < 10) {
+          return 'Poor';
+        } else if (m < 20) {
+          return 'Moderate';
+        } else {
+          return 'Good';
+        }
+      ]]]
+  custom_fields:
+    unit: "%"
