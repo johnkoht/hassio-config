@@ -46,7 +46,6 @@ automation:
         entity_id:
           - switch.tradfri_smart_plug_1_switch
           - switch.tradfri_smart_plug_2_switch
-          - switch.tradfri_smart_plug_3_switch
           - switch.tradfri_smart_plug_4_switch
         from: "unresponsive"
     actions:
@@ -62,7 +61,6 @@ automation:
                 entity_id:
                   - switch.tradfri_smart_plug_1_switch
                   - switch.tradfri_smart_plug_2_switch
-                  - switch.tradfri_smart_plug_3_switch
                   - switch.tradfri_smart_plug_4_switch
         # ELSE IF xmas is NOT active then turn OFF the lights
         - conditions:
@@ -75,5 +73,4 @@ automation:
                 entity_id:
                   - switch.tradfri_smart_plug_1_switch
                   - switch.tradfri_smart_plug_2_switch
-                  - switch.tradfri_smart_plug_3_switch
                   - switch.tradfri_smart_plug_4_switch

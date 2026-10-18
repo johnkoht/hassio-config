@@ -109,6 +109,14 @@ def test_counts_and_offline():
     assert set(sensor["attributes"]) >= {"total", "summary", "offline", "routers"}
 
 
+def test_unknown_lqi_is_not_offline():
+    # an extender's only primary entity is LQI, which reads unknown until ZHA pushes a value
+    s = scan({**STATES, "sensor.range_extender_1_lqi": "unknown"})
+    assert "Family Room Range Extender 1" not in s["offline"]
+    s = scan({**STATES, "sensor.range_extender_1_lqi": "unavailable"})
+    assert "Family Room Range Extender 1" in s["offline"]
+
+
 def test_popup_sort_offline_then_lqi_then_name():
     s = scan()
     loader = type("L", (yaml.SafeLoader,), {})
