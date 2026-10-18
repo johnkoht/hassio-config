@@ -5,6 +5,3 @@ sequence:
   # Turn off the all powerful boolean for John home
   - service: input_boolean.turn_off
     entity_id: input_boolean.john_home
-  # - service: script.general_announcement
-  #   data:
-  #     speech_message: "Baba just left the house."

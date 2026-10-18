@@ -66,14 +66,14 @@ automation:
       # Check if we should run today based on last run and entertainment history
       - condition: template
         value_template: >
-          {% set last_run = state_attr('automation.vacuum_clean_dining_and_foyer_at_night', 'last_triggered') %}
+          {% set last_run = this.attributes.last_triggered %}
           {% set yesterday_start = now().replace(hour=0, minute=0, second=0) - timedelta(days=1) %}
           {% set yesterday_end = now().replace(hour=0, minute=0, second=0) %}
           {% set entertainment_yesterday = states.input_boolean.entertainment_mode.last_changed.replace(hour=0, minute=0, second=0) >= yesterday_start
              and states.input_boolean.entertainment_mode.last_changed < yesterday_end %}
 
           {% if last_run != None %}
-            {% set days_since_last_run = (now() - last_run).total_seconds() / 108000 %}
+            {% set days_since_last_run = (now().date() - as_local(last_run).date()).days %}
             {% if entertainment_yesterday %}
               {# Run if there was entertainment yesterday, regardless of last run #}
               {{ true }}
