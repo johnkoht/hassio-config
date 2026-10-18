@@ -37,7 +37,7 @@ The Safety group was picked by John: the smoke detector, both door locks, the th
 | `sensor.key_sensors_network_problems` | network rows that are off, unavailable, or below their `total` | |
 | `binary_sensor.zigbee_coordinator_online` | ZHA config entry is loaded | `summary` |
 | `binary_sensor.zwave_controller_online` | ZWA-2 status is `ready` | `summary` |
-| `sensor.zigbee_routers_online` | labelled routers whose primary entity isn't `unavailable`/`unknown` | `total` (labelled devices), `summary`, `offline` (names), `routers` (`{primary entity: "<Area> <Device>"}`) |
+| `sensor.zigbee_routers_online` | labelled routers whose primary entity isn't `unavailable` (`unknown` counts as online: an extender's LQI reads unknown until ZHA pushes a value) | `total` (labelled devices), `summary`, `offline` (names), `routers` (`{primary entity: "<Area> <Device>"}`) |
 | `sensor.hue_spots_online` | members not unavailable | `total` (group size), `summary` |
 | `sensor.ble_proxies_online` | Bermuda active proxies | `total`, `summary` |
 

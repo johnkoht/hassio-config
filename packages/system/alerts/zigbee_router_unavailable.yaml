@@ -28,7 +28,6 @@ automation:
           - switch.tradfri_smart_plug_2_switch
           - switch.tradfri_smart_plug_3_switch
           - switch.tradfri_smart_plug_4_switch
-          - switch.tradfri_smart_plug_5_switch
         to: "unavailable"
         for:
           minutes: 15

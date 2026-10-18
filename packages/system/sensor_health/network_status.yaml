@@ -90,7 +90,8 @@ template:
               {% set first = area.split(' ')[0] | lower | regex_replace("['’]s$", '') | regex_replace('[^a-z0-9]', '') %}
               {% set name = device if not area or an in dn or (first | length >= 4 and dn.startswith(first))
                             else area ~ ' ' ~ device %}
-              {% if p.e is none or states(p.e) in ['unavailable', 'unknown'] %}
+              {# only unavailable: an LQI-only router (range extender) reads unknown until ZHA pushes a value #}
+              {% if p.e is none or states(p.e) == 'unavailable' %}
                 {% set ns.offline = ns.offline + [name] %}
               {% endif %}
               {% if p.e is not none %}
