@@ -55,9 +55,10 @@ template:
               | join(', ')
             }}
 
-  # Binary sensors to track if there is a leak while we're homem or away
+  # Leak while we're away vs home. Unknown occupancy counts as home, so a
+  # glitchy house_occupied can't silence both alerts.
   - binary_sensor:
-      # Leak while detected while we're away!
+      # Leak detected while we're away
       - name: "Leak detected while we are away"
         unique_id: "leak_while_away"
         default_entity_id: binary_sensor.leak_while_away
@@ -69,10 +70,10 @@ template:
         unique_id: "leak_while_home"
         default_entity_id: binary_sensor.leak_while_home
         state: >-
-          {{ is_state('input_boolean.house_occupied','on') and is_state('binary_sensor.leak_sensors','on') }}
+          {{ not is_state('input_boolean.house_occupied','off') and is_state('binary_sensor.leak_sensors','on') }}
 
 #
-# Leak Sensors Binary Sensor
+# Leak Sensors Binary Sensor (keep in sync with group.leak_sensors above)
 #
 binary_sensor:
   # Group of leak/water sensors
@@ -97,7 +98,7 @@ binary_sensor:
 # Alerts
 #
 alert:
-  # If there's an alert while we're home, we'll send push
+  # If there's a leak while we're home, we'll send a push
   # notification as well as announce around the house.
   water_leak_alert_home:
     name: Water leak alert while home
@@ -120,9 +121,9 @@ alert:
 
   # If there's a leak while we're away then send us
   # a push notification.
-  water_leark_alert_away:
+  water_leak_alert_away:
     name: Water leak alert while away
-    entity_id: binary_sensor.flood_while_away
+    entity_id: binary_sensor.leak_while_away
     state: "on"
     repeat:
       - 60

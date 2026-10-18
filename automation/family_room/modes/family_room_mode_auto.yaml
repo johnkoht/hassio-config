@@ -35,12 +35,3 @@ action:
     data:
       entity_id: input_select.family_room
       option: "Auto"
-  # # Turn off the dim motion detectors
-  # - service: automation.turn_off
-  #   entity_id:
-  #     - automation.kitchen_lights_dim_motion_on
-  #     - automation.kitchen_lights_dim_motion_off
-  # # Turn on the generic motion detectors
-  # - service: automation.turn_on
-  #   entity_id:
-  #     - automation.kitchen_lights_motion_on

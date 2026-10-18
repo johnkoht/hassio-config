@@ -38,8 +38,6 @@ automation:
           entity_id: light.main_bedroom_main_lights
         data:
           transition: 5
-      # - service: automation.turn_on
-      #   entity_id: automation.main_bedroom_lights_motion_off
       # Toggle the boolean to flag it was auto
       - action: input_boolean.turn_on
         entity_id: input_boolean.main_bedroom_lights_auto
