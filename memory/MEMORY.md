@@ -21,3 +21,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-10-16 · [holiday-dashboard](entries/2026-10-16_holiday-dashboard-learnings.md) — Holidays tabs + in-season Home tiles; pages stayed invisible until kohbo.yaml was touched (#45)
 - 2026-10-16 · [plant-lawn-dashboard](entries/2026-10-16_plant-lawn-dashboard-learnings.md) — Plants tabs + Lawn vs Rain; dead WH51 channels hold `0`, so detect by value
 - 2026-10-16 · [sensors-dashboard](entries/2026-10-16_sensors-dashboard-learnings.md) — Sensors tabs, Device Health score, router label (#47–#50); literal_eval vs JSON true, config_entry_attr is a string, vacuous test caught by sabotage
+- 2026-10-17 · [yellow-outage-and-zigbee](entries/2026-10-17_yellow-outage-and-zigbee.md) — live device-walking templates pinned the Yellow (#53); routers count only `unavailable`, Halloween restart gate (#54); "Coordinator is disconnected" = per-device stale or link-wide
