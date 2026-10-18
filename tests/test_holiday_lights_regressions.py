@@ -81,3 +81,27 @@ def test_halloween_scene_only_drives_hue_spots():
     scene = yaml.safe_load((REPO / "scenes/holidays/halloween_front_yard_spots.yaml").read_text())
     assert scene["id"] == "halloween_front_yard_spots"
     assert all(e.startswith("light.") for e in scene["entities"])
+
+
+def _startup_gate(auto):
+    """The or-condition that lets non-startup triggers through and gates the startup one."""
+    (gate,) = [c for c in auto["conditions"] if c["condition"] == "or"]
+    first = gate["conditions"][0]
+    assert first == {"condition": "not", "conditions": [{"condition": "trigger", "id": "startup"}]}
+    return gate["conditions"][1:]
+
+
+def test_halloween_restart_respects_time_of_day():
+    """A daytime restart turned the decorations off (2026-10-17); a restart must re-apply, not toggle."""
+    autos = automations(HALLOWEEN / "halloween_lights.yaml")
+    for auto in autos.values():
+        start = [t for t in auto["triggers"] if t["trigger"] == "homeassistant"]
+        assert start and all(t.get("id") == "startup" for t in start)
+
+    off = _startup_gate(autos["halloween_lights_turn_off"])
+    assert {"condition": "time", "after": "22:00:00", "before": "08:00:00"} in off
+    assert {"condition": "state", "entity_id": "input_boolean.bedtime", "state": "on"} in off
+
+    (on,) = _startup_gate(autos["halloween_lights_turn_on"])
+    assert {"condition": "time", "after": "08:00:00", "before": "22:00:00"} in on["conditions"]
+    assert {"condition": "state", "entity_id": "input_boolean.bedtime", "state": "off"} in on["conditions"]
