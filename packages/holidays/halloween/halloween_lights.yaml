@@ -1,7 +1,8 @@
 # Halloween Lights
 #
 # Power the front yard inflatables on in the morning during
-# Halloween season, and off at 10pm or bedtime.
+# Halloween season, and off at 10pm or bedtime. A restart
+# re-applies whichever state the time of day calls for.
 #
 
 automation:
@@ -13,6 +14,7 @@ automation:
     triggers:
       - trigger: homeassistant
         event: start
+        id: startup
       # At 8am
       - trigger: time
         at: "08:00:00"
@@ -21,6 +23,21 @@ automation:
       - condition: state
         entity_id: input_boolean.halloween_season_active
         state: "on"
+      - alias: "A restart only turns them on between 8am and 10pm, outside bedtime"
+        condition: or
+        conditions:
+          - condition: not
+            conditions:
+              - condition: trigger
+                id: startup
+          - condition: and
+            conditions:
+              - condition: time
+                after: "08:00:00"
+                before: "22:00:00"
+              - condition: state
+                entity_id: input_boolean.bedtime
+                state: "off"
     actions:
       - action: switch.turn_on
         target:
@@ -36,6 +53,7 @@ automation:
     triggers:
       - trigger: homeassistant
         event: start
+        id: startup
       # At 10pm
       - trigger: time
         at: "22:00:00"
@@ -48,6 +66,19 @@ automation:
       - condition: state
         entity_id: switch.front_yard_holiday_decorations
         state: "on"
+      - alias: "A restart only turns them off between 10pm and 8am, or at bedtime"
+        condition: or
+        conditions:
+          - condition: not
+            conditions:
+              - condition: trigger
+                id: startup
+          - condition: time
+            after: "22:00:00"
+            before: "08:00:00"
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "on"
     actions:
       - action: switch.turn_off
         target:

@@ -26,7 +26,6 @@ automation:
           - switch.gazebo_smart_plug_switch
           - switch.tradfri_smart_plug_1_switch
           - switch.tradfri_smart_plug_2_switch
-          - switch.tradfri_smart_plug_3_switch
           - switch.tradfri_smart_plug_4_switch
         to: "unavailable"
         for:
