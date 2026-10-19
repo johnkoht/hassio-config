@@ -1,7 +1,7 @@
 # Nino Sleep Music Playing
 #
-# Set when the sleep music automation starts the playlist, so the
-# turn-off automation only stops music it started.
+# Set when sleep music starts at night (by the automation or by hand),
+# so the turn-off automation only stops bedtime music.
 #
 
 input_boolean:
