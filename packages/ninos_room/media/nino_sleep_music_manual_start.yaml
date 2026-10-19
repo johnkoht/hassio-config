@@ -1,0 +1,30 @@
+# Nino Sleep Music Manual Start
+#
+# Set the sleep music flag when the speaker is started by hand at night,
+# so the off automation still stops it when Nino gets up.
+#
+
+automation:
+  - id: "nino_sleep_music_manual_start"
+    alias: "Nino's Bedroom - Sleep Music Manual Start"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: media_player.ninos_room
+        to: "playing"
+        for:
+          minutes: 1
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: time
+        after: "19:00:00"
+        before: "07:00:00"
+      - condition: state
+        entity_id: input_boolean.nino_sleep_music_playing
+        state: "off"
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.nino_sleep_music_playing
