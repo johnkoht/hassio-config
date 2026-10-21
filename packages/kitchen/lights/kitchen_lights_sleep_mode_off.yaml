@@ -5,13 +5,18 @@ automation:
     initial_state: off
     alias: "Kitchen Lights Sleep Mode Off"
     triggers:
-      # 1 hour after sunrise
+      # 15 minutes after sunrise
       - trigger: sun
         event: sunrise
         offset: "00:15:00"
       # Or at 7am
       - trigger: time
         at: "07:00:00"
+      # Or when someone's up (bedtime mode ends)
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to: "off"
+        id: "bedtime_off"
     conditions:
       # Lighting automations must be enabled
       - condition: state
@@ -19,12 +24,27 @@ automation:
         state: "on"
       - condition: or
         conditions:
-          # Sun is up
-          - condition: sun
-            after: sunrise
-          # OR it's after 7am
-          - condition: time
-            after: "07:00:00"
+          # Bedtime mode ended in the morning
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: "bedtime_off"
+              - condition: time
+                after: "05:00:00"
+                before: "12:00:00"
+          # OR sun is up / it's after 7am (not for a night-time bedtime off)
+          - condition: and
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: trigger
+                    id: "bedtime_off"
+              - condition: or
+                conditions:
+                  - condition: sun
+                    after: sunrise
+                  - condition: time
+                    after: "07:00:00"
     actions:
       # Turn off sleep mode
       - action: switch.turn_off
