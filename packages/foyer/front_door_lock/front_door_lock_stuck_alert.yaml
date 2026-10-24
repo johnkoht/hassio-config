@@ -16,6 +16,11 @@ automation:
           - "unlocking"
         for:
           minutes: 2
+    conditions:
+      # The retry script sends its own alert if it gives up
+      - condition: state
+        entity_id: script.front_door_lock_with_retry
+        state: "off"
     actions:
       - action: script.general_notification
         data:

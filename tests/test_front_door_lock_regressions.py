@@ -77,6 +77,8 @@ def test_stuck_lock_alert_triggers_on_transitional_states():
     assert trigger["entity_id"] == "lock.front_door"
     assert set(trigger["to"]) == {"locking", "unlocking"}
     assert trigger.get("for"), "needs a for: so normal 1-2s transitions don't alert"
+    assert {"condition": "state", "entity_id": "script.front_door_lock_with_retry",
+            "state": "off"} in auto["conditions"], "retry script already alerts on failure"
 
 
 @pytest.mark.parametrize("path", sorted((REPO / "esphome").glob("*.yaml")))
