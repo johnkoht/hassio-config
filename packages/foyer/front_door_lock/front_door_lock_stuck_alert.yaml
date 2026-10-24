@@ -1,0 +1,34 @@
+# Front Door Lock Stuck Alert
+#
+# Notify when the lock sits in locking/unlocking for 2 minutes,
+# which means Home Assistant lost its Bluetooth link mid-command.
+#
+
+automation:
+  - id: "front_door_lock_stuck_alert"
+    alias: "Front Door - Lock Stuck Alert"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: lock.front_door
+        to:
+          - "locking"
+          - "unlocking"
+        for:
+          minutes: 2
+    conditions:
+      # The retry script sends its own alert if it gives up
+      - condition: state
+        entity_id: script.front_door_lock_with_retry
+        state: "off"
+    actions:
+      - action: script.general_notification
+        data:
+          title: "Front Door Lock Not Responding"
+          message: >-
+            The front door lock has been {{ trigger.to_state.state }} for
+            2 minutes. Home Assistant can't reach it, so check the door.
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "front-door-lock-failed"
+          url: /dashboard-kohbo/security-house-locks
