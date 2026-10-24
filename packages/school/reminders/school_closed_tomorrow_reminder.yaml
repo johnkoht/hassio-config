@@ -2,7 +2,7 @@
 #
 # Evening heads-up at 19:30 when either kid has no school tomorrow.
 # Gated on binary_sensor.school_year_active so it stays silent over
-# summer/winter break.
+# summer/winter break. Only runs Sun-Thu, so weekends aren't announced.
 #
 
 automation:
@@ -16,6 +16,9 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Tomorrow is a weekday
+      - condition: time
+        weekday: [sun, mon, tue, wed, thu]
       - condition: state
         entity_id: binary_sensor.school_year_active
         state: "on"
