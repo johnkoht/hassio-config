@@ -2,7 +2,7 @@ substitutions:
   name: atom-bluetooth-proxy-aceb64
   friendly_name: Bluetooth Proxy - Family Room
 packages:
-  esphome.bluetooth-proxy: github://esphome/firmware/bluetooth-proxy/m5stack-atom-lite.yaml@main
+  esphome.bluetooth-proxy: github://esphome/bluetooth-proxies/m5stack/m5stack-atom-lite.yaml@main
 esphome:
   name: ${name}
   name_add_mac_suffix: false

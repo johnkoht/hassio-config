@@ -1,0 +1,50 @@
+# Front Door Lock With Retry
+#
+# Lock the front door, retrying up to 3 times over Bluetooth,
+# and notify if it still isn't locked.
+#
+
+script:
+  front_door_lock_with_retry:
+    alias: Front Door Lock With Retry
+    mode: single
+    max_exceeded: silent
+    sequence:
+      - repeat:
+          sequence:
+            # Run each attempt in the background: a Bluetooth timeout isn't a
+            # HomeAssistantError, so continue_on_error can't catch it here.
+            - action: script.turn_on
+              target:
+                entity_id: script.front_door_lock_attempt
+            - wait_template: "{{ is_state('lock.front_door', 'locked') }}"
+              timeout: "00:00:45"
+          until:
+            - condition: template
+              value_template: >-
+                {{ is_state('lock.front_door', 'locked') or repeat.index >= 3 }}
+
+      - if:
+          - alias: "Door still isn't locked"
+            condition: template
+            value_template: "{{ not is_state('lock.front_door', 'locked') }}"
+        then:
+          - action: script.general_notification
+            data:
+              title: "Front Door Not Locked"
+              message: >-
+                I tried to lock the front door 3 times but it's
+                {{ states('lock.front_door') }}. Check the door.
+              devices: "all"
+              priority: "time-sensitive"
+              tag: "front-door-lock-failed"
+              url: /dashboard-kohbo/security-house-locks
+
+  front_door_lock_attempt:
+    alias: Front Door Lock Attempt
+    mode: single
+    max_exceeded: silent
+    sequence:
+      - action: lock.lock
+        target:
+          entity_id: lock.front_door

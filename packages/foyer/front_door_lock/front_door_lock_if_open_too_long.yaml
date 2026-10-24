@@ -37,9 +37,8 @@ automation:
           - condition: time
             after: "22:00:00"
     actions:
-      # Lock the door!
-      - action: lock.lock
-        entity_id: lock.front_door
+      # Lock the door, retrying if Bluetooth times out
+      - action: script.front_door_lock_with_retry
 
 
 input_number:
