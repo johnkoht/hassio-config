@@ -27,3 +27,15 @@ on every restart, so it can't rely on that alone. It checks
 Without that check, any evening out after 22:00 turned `bedtime` on. That
 blocks `house_mode_auto`, so the house stayed in Away when everyone got
 home.
+
+## A stuck room-occupied flag keeps a kid's room Off after Away
+
+Away sets every bedroom to Off, and each room's Mode Auto puts it back when
+the house is occupied again. Mode Auto also needs the room's occupied flag
+to be off. If the flag is still on (door left closed, or Gianluca's door
+sensor offline, which never matched "open"), Auto fails at that moment, and
+its only other trigger is the flag going off, which nobody is home to do.
+
+Both kids' `*_not_occupied` automations now clear the flag when the house
+has been empty for 2 min (bed permitting), and Gianluca's treats an offline
+door sensor as open (2026-10-27).
