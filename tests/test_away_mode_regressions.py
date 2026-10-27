@@ -68,3 +68,27 @@ def test_vacation_bedtime_requires_vacation_mode():
                         Loader=_Loader)
     auto = next(a for a in content["automation"] if a["id"] == "bedtime_mode_vacation_on")
     assert has_state_condition(auto, "input_boolean.vacation_mode", "on")
+
+
+@pytest.mark.parametrize("path,flag", [
+    ("packages/ninos_room/modes/ninos_bedroom_not_occupied.yaml", "ninos_bedroom_occupied"),
+    ("packages/gianluca_room/modes/gianlucas_room_not_occupied.yaml", "gianlucas_room_occupied"),
+])
+def test_kids_room_occupancy_clears_when_house_empties(path, flag):
+    """A stuck room-occupied flag blocks Mode Auto after Away; an empty house must clear it."""
+    auto = automation(path)
+    assert any(t.get("to") == "off" for t in state_triggers(auto, "input_boolean.house_occupied"))
+    (either,) = [c for c in auto["conditions"] if c.get("condition") == "or"]
+    assert any(c.get("entity_id") == "input_boolean.house_occupied" and c.get("state") == "off"
+               for c in either["conditions"])
+    assert auto["actions"][0]["target"]["entity_id"] == f"input_boolean.{flag}"
+
+
+def test_gianluca_offline_door_sensor_counts_as_open():
+    """An unavailable door sensor must not pin Gianluca's room occupied forever."""
+    auto = automation("packages/gianluca_room/modes/gianlucas_room_not_occupied.yaml")
+    (either,) = [c for c in auto["conditions"] if c.get("condition") == "or"]
+    (lights_and_door,) = [c for c in either["conditions"] if c.get("condition") == "and"]
+    (door,) = [c for c in lights_and_door["conditions"]
+               if c.get("entity_id") == "binary_sensor.gianlucas_door_sensor_status"]
+    assert "unavailable" in door["state"]
