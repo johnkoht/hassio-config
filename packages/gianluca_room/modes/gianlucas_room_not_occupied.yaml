@@ -2,7 +2,8 @@
 #
 # Clear occupancy once the door has been open, the ceiling light switch
 # has been off, and the bed has been unoccupied, each for their guard
-# duration.
+# duration. An offline door sensor counts as open, and an empty house
+# clears it outright (bed permitting) so Mode Auto can resume on return.
 #
 # NOTE: The Inovelli VZM31-SN here is in Smart Bulb Mode, so
 # light.gianluca_ceiling_light_switch cannot control the load — but a paddle
@@ -37,26 +38,39 @@ automation:
         to: "off"
         for:
           minutes: 5
+      # House is empty
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: 2
     conditions:
       # Currently occupied
       - condition: state
         entity_id: input_boolean.gianlucas_room_occupied
         state: "on"
-      # Bulbs are OFF and door is OPEN
-      - condition: and
+      # Bed is NOT occupied
+      - condition: state
+        entity_id: binary_sensor.gianluca_bed_occupied
+        state: "off"
+      - condition: or
         conditions:
-          # Door is OPEN
-          - condition: state
-            entity_id: binary_sensor.gianlucas_door_sensor_status
-            state: "on"
-          # Bulbs are OFF
-          - condition: state
-            entity_id: light.gianluca_bedroom_lights
+          - alias: "House is empty"
+            condition: state
+            entity_id: input_boolean.house_occupied
             state: "off"
-          # Bed is NOT occupied
-          - condition: state
-            entity_id: binary_sensor.gianluca_bed_occupied
-            state: "off"
+          - alias: "Bulbs are off and the door is open (or its sensor is offline)"
+            condition: and
+            conditions:
+              - condition: state
+                entity_id: light.gianluca_bedroom_lights
+                state: "off"
+              - condition: state
+                entity_id: binary_sensor.gianlucas_door_sensor_status
+                state:
+                  - "on"
+                  - "unavailable"
+                  - "unknown"
     actions:
       - action: input_boolean.turn_off
         target:
