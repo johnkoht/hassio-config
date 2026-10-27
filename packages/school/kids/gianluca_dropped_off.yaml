@@ -14,7 +14,7 @@ automation:
         value_template: >-
           {{ 'person.john_koht' in (state_attr('zone.parochial_school', 'persons') or [])
              or 'person.cristina_falbo' in (state_attr('zone.parochial_school', 'persons') or []) }}
-        for: "00:02:00"
+        for: "00:01:00"
     conditions:
       - condition: state
         entity_id: binary_sensor.gianluca_school_day
