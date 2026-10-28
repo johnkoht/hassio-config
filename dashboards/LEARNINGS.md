@@ -3,14 +3,10 @@
 ## Loading and validation
 
 - **kohbo is `mode: yaml` and caches on the root file's mtime only (2026-10-16).** HA re-reads the dashboard only when `kohbo/kohbo.yaml` itself changes, so a deploy that touches only included pages stays stale however often you refresh. `deploy.sh` touches `kohbo.yaml` after every pull (#45); by hand: `touch /config/dashboards/kohbo/kohbo.yaml` on the host.
-- **Almost no tests cover Lovelace YAML (2026-10-15; updated 2026-10-27).** Apart from `tests/test_dashboard_popup_regressions.py`, `tests/` only scans `packages/`, and HA's config check ignores dashboards. Before deploy: resolve every `!include`, check decluttering `variables` keys against the template's `[[...]]` tokens, and check entities against a live state dump.
+- **No tests cover Lovelace YAML (2026-10-15).** `tests/` only scans `packages/` and HA's config check ignores dashboards. Before deploy: resolve every `!include`, check decluttering `variables` keys against the template's `[[...]]` tokens, and check entities against a live state dump.
 - **Register new pages in `kohbo/kohbo.yaml` `views:`**, or the route doesn't exist. **Never leave a view include empty (holidays, 2026-10-16):** HA loads a 0-byte include as `{}`, so the view has no path and only exists at its numeric index (`/dashboard-kohbo/42`); links to the path it was meant to have are dead.
 - **Whole-card includes go under `templates/includes/`, not `button_cards/` (device health, 2026-10-16).** `button_cards/` is loaded with `!include_dir_merge_named`, so a card file there (`kohbo_security_overview.yaml`) turns its `type:` and `cards:` keys into two junk button-card templates. `includes/sensors/device_health_overview.yaml` is the right shape.
 - **The frontend never sees `last_reported` (sensors, 2026-10-16).** HA's compressed state feed sends only `lc` and `lu`, and reloads bump `last_updated` on everything, so "offline since" reads `last_changed`.
-
-## Popups
-
-- **A bubble-card pop-up's `margin_top_*` must never go negative (thermostat popups, 2026-10-27).** Bubble sets `.bubble-pop-up { bottom: calc(-56px - var(--custom-height-offset-mobile)) }`, so a negative offset (`calc(100vh - 860px)` on a phone shorter than 860px) lifts the sheet off the screen bottom. Clamp it with `max(0px, ...)`. An `position: absolute` footer anchors to `.bubble-pop-up`, not to the scrolling container, so its `bottom` must add the same offset var. The container's clip-path cuts off anything outside the sheet, and an absolute footer leaves the flow, so give its `:host` a height to keep content scrollable past it.
 
 ## Room pages
 
