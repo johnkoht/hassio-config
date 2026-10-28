@@ -55,6 +55,8 @@ thermostat_radiant_floor_popup:
         card_mod:
           style: |
             :host {
+              display: block;
+              height: 60px;
               --stack-card-gap: 0;
               --vertical-stack-card-gap: 0 !important;
             }
@@ -69,7 +71,7 @@ thermostat_radiant_floor_popup:
               box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
 
               position: absolute;
-              bottom: 70px;
+              bottom: calc(70px + var(--custom-height-offset-mobile, 0px));
               height: 110px;
               width: 100%;
               left: 0;
