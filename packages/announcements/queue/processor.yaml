@@ -118,11 +118,6 @@ automation:
           # This is the next message to be announced.
           #
           next: "{{ queue[0] if queue | length > 0 else {} }}"
-          #
-          # This is the updated queue with the next message removed.
-          #
-          updated: "{{ queue[1:] if queue | length > 1 else [] }}"
-          payload_json: '{{ {"queue": updated} | to_json }}'
 
       #
       # If the queue is not empty then call the announcement engine
@@ -161,6 +156,30 @@ automation:
       # Run the following sequence regardless of whether the
       # announcement engine was called or not.
       #
+
+      #
+      # Re-read the live queue and drop only the played message, so
+      # anything appended during playback survives.
+      #
+      - variables:
+          updated: >-
+            {% set live = state_attr('sensor.announcement_queue', 'queue') %}
+            {% set now_iso = now().isoformat() %}
+            {% set ns = namespace(list=[], dropped=false) %}
+            {% if live is iterable and live is not string %}
+              {% for msg in live if msg is mapping %}
+                {% if not ns.dropped
+                      and msg.get('speech_message') == next.get('speech_message')
+                      and msg.get('sound_file') == next.get('sound_file')
+                      and msg.get('expires_at') == next.get('expires_at') %}
+                  {% set ns.dropped = true %}
+                {% elif not msg.get('expires_at') or msg.get('expires_at') > now_iso %}
+                  {% set ns.list = ns.list + [msg] %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {{ ns.list }}
+          payload_json: '{{ {"queue": updated} | to_json }}'
 
       #
       # Publish trimmed queue back to MQTT
