@@ -41,3 +41,12 @@ def test_thermostat_footer_reserves_flow_space(name):
     """The absolute footer leaves the flow; the host must keep room so content scrolls clear of it."""
     host = re.search(r":host \{([^}]*)\}", footer_style(name)).group(1)
     assert re.search(r"\bheight:\s*\d+px", host)
+
+
+@pytest.mark.parametrize("name", ["thermostat_popup", "thermostat_radiant_floor_popup"])
+def test_thermostat_popup_offset_never_lifts_sheet(name):
+    """A negative margin lifts the sheet off the screen bottom, and its clip-path then cuts off the footer."""
+    template = yaml.load((CLIMATE / f"{name}.yaml").read_text(), Loader=_Loader)
+    card = template[name]["card"]
+    for key in ("margin_top_mobile", "margin_top_desktop"):
+        assert card[key].replace(" ", "").startswith("max(0px,")
