@@ -6,8 +6,8 @@ thermostat_popup:
     hash: '[[hash]]'
     close_by_clicking_outside: true
     styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
-    margin_top_mobile: calc(100vh - 860px)
-    margin_top_desktop: calc(100vh - 860px)
+    margin_top_mobile: max(0px, calc(100vh - 860px))
+    margin_top_desktop: max(0px, calc(100vh - 860px))
 
     cards:
       # Popup Title
