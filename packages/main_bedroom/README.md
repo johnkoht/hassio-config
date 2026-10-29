@@ -3,7 +3,7 @@
 This package manages the Main Bedroom. This includes all of the sensors and automations.
 
 ## Main Bedroom Occupancy
-Just like any room in the house, the Main Bedroom can determine occupancy based on various sensors. At any given time the Main Bedroom is either occupied or not. Occupancy is defined by `input_boolean.main_bedroom`. These automations will simply toggle the input boolean on and off. They will not directly trigger any automations.
+Just like any room in the house, the Main Bedroom can determine occupancy based on various sensors. At any given time the Main Bedroom is either occupied or not. Occupancy is defined by `input_boolean.main_bedroom_occupied`. These automations will simply toggle the input boolean on and off. They will not directly trigger any automations.
 
 ### Main Bedroom is occupied
 This automation will determine if the Main Bedroom is occupied. There are a few triggers and conditions required to validate this. Might move some of this into a Bayesian sensor.
