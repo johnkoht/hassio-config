@@ -86,10 +86,12 @@ The alarm uses the `alarmo` custom integration. Always use `!secret` for the cod
 
 ### Alarm triggered response
 
-When the alarm triggers (`alarm_triggered.yaml`), the standard response is:
-1. Flash lights throughout the house
-2. Play critical TTS announcement
-3. Send push notification
+When the alarm triggers (`alarm_triggered.yaml`), `script.security_alarm_alert` does all of these at once in one `parallel:` block, so the Noonlight cloud call (`continue_on_error: true`) can't hold up the sirens:
+- Notify Noonlight
+- Sound the sirens
+- Play critical TTS announcement
+- Flash lights throughout the house
+- Send push notification
 
 ---
 
@@ -142,9 +144,10 @@ Lock unlock by fingerprint is in `security_unlock_front_door_by_fingerprint.yaml
 
 ## Fire Alarm
 
-`fire_alarm/fire_alarm_triggered.yaml` responds to smoke/CO detector events:
-1. Call `script.critical_announcement` — broadcasts to all rooms immediately
-2. Flash all lights
-3. Send critical push notification
+`fire_alarm/fire_alarm_triggered.yaml` fires on `binary_sensor.smoke_detector` (Vivint) and runs these at once in one `parallel:` block, so a slow Nest call can't delay the alert:
+- Call `script.critical_announcement` — broadcasts to all rooms
+- Flash all lights
+- Send critical push notification
+- Turn off both Nest thermostats (`continue_on_error: true`)
 
-Always use `script.critical_announcement` (not `voice_announcement`) for fire/smoke — it bypasses the queue and quiet mode.
+Always use `script.critical_announcement` (not `voice_announcement`) for fire/smoke. It ignores room occupancy, but it still goes through the announcement queue (at `critical` priority), so the queue processor holds it while `house_occupied` is off or quiet mode is on before 9am. Otherwise quiet mode halves its volume. The lights and push don't depend on the queue.
