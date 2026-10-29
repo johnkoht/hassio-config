@@ -5,22 +5,22 @@ automation:
     triggers:
       # Tempest UV Sensor above 7
       - trigger: numeric_state
-        entity_id: sensor.tempest_uv_index
+        entity_id: sensor.tempest_uv
         above: 7
       # Tempest UV Sensor above 8
       - trigger: numeric_state
-        entity_id: sensor.tempest_uv_index
+        entity_id: sensor.tempest_uv
         above: 8
       # Tempest UV Sensor above 10
       - trigger: numeric_state
-        entity_id: sensor.tempest_uv_index
+        entity_id: sensor.tempest_uv
         above: 10
     actions:
       # Announce to the house
       - action: script.voice_announcement
         data:
           speech_message: >-
-            {% set uv = state_attr('sensor.tempest_uv_index') %}
+            {% set uv = state_attr('sensor.tempest_uv') %}
 
             {% if uv > 10 %}
               "Warning! UV levels are extremely high. Please take precautions and avoid unprotected sun exposure."
@@ -32,7 +32,7 @@ automation:
           sound: "police-whistle"
           media_players: auto
           priority: >-
-            {% set uv = state_attr('sensor.tempest_uv_index') %}
+            {% set uv = state_attr('sensor.tempest_uv') %}
 
             {% if uv > 10 %}
               "critical"
@@ -48,7 +48,7 @@ automation:
         data:
           title: "Outdoor UV Alert!"
           message: >-
-            {% set uv = state_attr('sensor.tempest_uv_index') %}
+            {% set uv = state_attr('sensor.tempest_uv') %}
 
             {% if uv > 10 %}
               "Warning! UV levels are extremely high. Please take precautions and avoid unprotected sun exposure."

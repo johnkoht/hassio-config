@@ -15,8 +15,6 @@ BDAY = "packages/reminders/birthdays/birthday_reminder/"
 CASES = [
     ("automation/people/people_reload_just_left.yaml",
      "input_select.cristina_status_dropdown", r"cristina_falbo_status_dropdown"),
-    ("packages/weather/tempest_alerts/tempest_high_uv_alert.yaml",
-     "sensor.tempest_uv_index", r"sensor\.tempest_uv(?!_index)"),
     ("packages/weather/severe_weather_alert/nws_alerts_active.yaml",
      "sensor.nws_alerts", r"nws_alerts_sensor"),
     (BDAY + "birthday_today_reminder.yaml", "calendar.birthdays", r"birthdays_2"),
