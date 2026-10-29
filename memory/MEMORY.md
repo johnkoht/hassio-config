@@ -26,3 +26,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-10-18 · [nino-manual-sleep-music](entries/2026-10-18_nino-manual-sleep-music.md) — manually started bedtime music now sets the sleep-music flag so it stops when Nino gets up (#58)
 - 2026-10-28 · [announcement-queue-race](entries/2026-10-28_announcement-queue-race.md) — processor overwrote the queue with a pre-playback snapshot, dropping the morning brief on school days (#69)
 - 2026-10-28 · [linear-batch-house-modes-security](entries/2026-10-28_linear-batch-house-modes-security.md) — departure no longer starts bedtime (#71); fire alarm watched a nonexistent sensor (#72); kitchen flag reset on Off (#73); 4 plans drafted
+- 2026-10-29 · [overnight-hotfixes](entries/2026-10-29_overnight-hotfixes.md) — critical auto announcements skipped the main bedroom (nonexistent boolean); entity-reference test skips without a registry snapshot
