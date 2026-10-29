@@ -67,3 +67,28 @@ def test_intruder_alert_sirens_do_not_wait_on_noonlight():
     find_branch(branches, "script.turn_on", "script.alarm_flash_lights")
     find_branch(branches, "script.turn_on", "script.general_notification")
     assert find_branch(branches, "switch.turn_on", "switch.noonlight_alarm").get("continue_on_error") is True
+
+
+def test_flash_lights_snapshots_each_light_not_the_group():
+    """A group snapshot restores every member to the group's any-on state."""
+    script = load("packages/security/fire_alarm/alarm_flash_lights.yaml")["script"]["alarm_flash_lights"]
+    snapshot = script["sequence"][0]
+    assert snapshot["action"] == "scene.create"
+    entities = snapshot["data"]["snapshot_entities"]
+    assert entities != "light.emergency_light_group"
+    assert "expand('light.emergency_light_group')" in entities
+    # restart would let a second call snapshot the flashing lights
+    assert script["mode"] == "single"
+
+
+def test_alarm_disabled_restores_lights_when_flash_cut_short():
+    """Stopping the flash mid-run skips its restore step."""
+    script = load("packages/security/alarm/alarm_triggered.yaml")["script"]["security_alarm_disabled"]
+    (stop,) = [s for s in script["sequence"] if "if" in s]
+    assert stop["if"][0]["entity_id"] == "script.alarm_flash_lights"
+    actions = [a["action"] for a in stop["then"]]
+    assert actions == ["script.turn_off", "scene.turn_on"]
+    restore = stop["then"][1]
+    assert restore["target"]["entity_id"] == "scene.alarm_flash_lights_initial_state"
+    # the snapshot may not exist yet; a failed restore must not skip the notification
+    assert restore.get("continue_on_error") is True
