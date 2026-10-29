@@ -60,9 +60,15 @@ automation:
           #   state: "off"
     actions:
       - action: input_select.select_option
-        data:
+        target:
           entity_id: input_select.kitchen
+        data:
           option: "Off"
       # Make the kitchen as unoccupied
       - action: input_boolean.turn_off
-        entity_id: input_boolean.kitchen_occupied
+        target:
+          entity_id: input_boolean.kitchen_occupied
+      # Reset the manual-override latch; kitchen_not_occupied can't once occupancy is forced off
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.kitchen_lighting_automations
