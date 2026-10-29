@@ -175,16 +175,17 @@ cards:
 
 
       - type: custom:button-card
-        name: Turn Off the House
+        name: |
+          [[[ return entity.state === 'off' ? 'Turn On the House' : 'Turn Off the House' ]]]
         show_icon: false
         entity: input_boolean.house_occupied
         tap_action:
-          action: perform-action
-          perform_action: input_boolean.turn_off
-          target:
-            entity_id: input_boolean.house_occupied
+          action: toggle
         confirmation:
-          text: "Turn off the house? It goes to Away and the alarm arms in about a minute, even if people are home. After that, opening a door can sound the sirens and call monitoring. To undo, turn House Occupied back on."
+          text: |
+            [[[ return entity.state === 'off'
+              ? 'Turn the house back on? The alarm disarms and the house returns to its normal mode.'
+              : 'Turn off the house? It goes to Away and the alarm arms in about a minute, even if people are home. After that, opening a door can sound the sirens and call monitoring.'; ]]]
         card_mod:
           style: |
             :host {

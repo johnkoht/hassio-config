@@ -25,8 +25,8 @@ def walk(node):
 
 def test_turn_off_the_house_targets_house_occupied():
     data = yaml.load(POPUP.read_text(), Loader=HomeAssistantLoader)
-    button = next(n for n in walk(data) if n.get("name") == "Turn Off the House")
-    tap = button["tap_action"]
-    assert tap["perform_action"] == "input_boolean.turn_off"
-    assert tap["target"]["entity_id"] == button["entity"] == "input_boolean.house_occupied"
-    assert button["confirmation"]["text"]
+    button = next(n for n in walk(data) if "Turn Off the House" in str(n.get("name", "")))
+    # Toggle, so the same button undoes it; it used to turn off john_dnd
+    assert button["entity"] == "input_boolean.house_occupied"
+    assert button["tap_action"] == {"action": "toggle"}
+    assert "monitoring" in button["confirmation"]["text"]
