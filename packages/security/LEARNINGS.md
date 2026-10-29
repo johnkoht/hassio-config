@@ -35,3 +35,11 @@ A state trigger on a nonexistent entity never errors, it just never fires. `door
 ## Event triggers have no `trigger.from_state`
 
 `door_left_open` also fires on a `timer.finished` event (the re-alert after a snooze). Its messages used `trigger.from_state`, so the run errored and the re-alert never spoke or pushed. They now name the open doors from the `open_doors` variable. Templates shared across state and event triggers can't use `from_state` (2026-10-29).
+
+## Camera alerts mute on activity, not a clock
+
+`camera_notifications_deactivate` used to mute alerts at sunrise+15 and after
+30 min in Auto, so a quiet morning with nobody outside had no camera alerts.
+Since 2026-10-29 (JK-1123) only an exterior door, the garage, an arrival or
+the house becoming occupied mutes them; the activate side (Away, sunset, 22:00,
+bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
