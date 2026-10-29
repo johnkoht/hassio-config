@@ -150,4 +150,4 @@ Lock unlock by fingerprint is in `security_unlock_front_door_by_fingerprint.yaml
 - Send critical push notification
 - Turn off both Nest thermostats (`continue_on_error: true`)
 
-Always use `script.critical_announcement` (not `voice_announcement`) for fire/smoke. It ignores room occupancy, but it still goes through the announcement queue (at `critical` priority) and quiet mode halves its volume.
+Always use `script.critical_announcement` (not `voice_announcement`) for fire/smoke. It ignores room occupancy, but it still goes through the announcement queue (at `critical` priority), so the queue processor holds it while `house_occupied` is off or quiet mode is on before 9am. Otherwise quiet mode halves its volume. The sirens and push don't depend on the queue.
