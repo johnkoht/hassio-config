@@ -103,7 +103,7 @@ Everything that triggers on `input_select.house` transitions, and what the resol
 | Consumer | Today | After |
 |---|---|---|
 | 11 room `*_mode_auto` (listed above) | blocked unless house == Auto | accept Quiet (Task 5) |
-| `camera_notifications_deactivate` (→ Auto for 30 min) | fires after Bedtime → Auto | waits for Quiet → Auto; its sunrise, door and arrival triggers still apply (they check bedtime off). Accept. |
+| `camera_notifications_deactivate` | no longer keyed on the house mode (JK-1123 dropped its Auto-30 min and sunrise triggers, 2026-10-29) | unaffected; door, garage and arrival triggers still apply. |
 | `christmas_activated` (→ Auto) | | Quiet delays this trigger only; its other triggers and time window cover it. Accept. |
 | Bedtime-keyed consumers during vacation (`garage_mode_off`, `office_mode_off`, `mudroom_mode_night_motion`, `upstairs_hallway_mode_bedtime`, `christmas_not_activated`) | fired nightly because Bedtime overwrote Vacation | no longer fire from the select during vacation. All but `garage_mode_off` also trigger on the `bedtime` boolean; garage is already Away/Off with the house empty. Accept. |
 | Away-keyed consumers on arrival-with-bedtime | select stuck at Away while home | select leaves Away correctly |
