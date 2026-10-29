@@ -5,7 +5,7 @@ automation:
     triggers:
       - trigger: state
         entity_id: input_select.house
-        to: "bedtime"
+        to: "Bedtime"
       # Bedtime is turned on
       - trigger: state
         entity_id: input_boolean.bedtime
