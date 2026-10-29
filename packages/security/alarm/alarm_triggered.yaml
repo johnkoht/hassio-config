@@ -39,53 +39,53 @@ script:
     icon: mdi:alert
     sequence:
       #
-      # The use of script.turn_on is intentional here as
-      # we don't want to wait for the scripts to finish
-      # before proceeding, instead, it will call each script
-      # and move on to the next.
-      # see https://www.home-assistant.io/integrations/script/#waiting-for-script-to-complete
+      # Branches run in parallel so the Noonlight cloud call can't
+      # hold up or abort the sirens. script.turn_on doesn't wait for
+      # the called script to finish.
+      # see https://www.home-assistant.io/docs/scripts/#parallelizing-actions
       #
+      - parallel:
+          # Notify Noonlight
+          - action: switch.turn_on
+            continue_on_error: true
+            target:
+              entity_id: switch.noonlight_alarm
 
-      # Notify Noonlight
-      - action: switch.turn_on
-        target:
-          entity_id: switch.noonlight_alarm
+          # Sound the sirens!
+          - action: switch.turn_on
+            target:
+              entity_id:
+                - switch.alarm_siren_1
+                - switch.alarm_siren_2
 
-      # Sound the sirens!
-      - action: switch.turn_on
-        target:
-          entity_id:
-            - switch.alarm_siren_1
-            - switch.alarm_siren_2
+          # Trigger a critical announcement
+          - action: script.turn_on
+            target:
+              entity_id: script.critical_announcement
+            data:
+              variables:
+                media_players: all
+                sound: "nuclear"
+                speech_message: Alert! The security alarm has been triggered. Get to safety immediately!
 
-      # Trigger a critical announcement
-      - action: script.turn_on
-        target:
-          entity_id: script.critical_announcement
-        data:
-          variables:
-            media_players: all
-            sound: "nuclear"
-            speech_message: Alert! The security alarm has been triggered. Get to safety immediately!
+          # Flash the lights
+          - action: script.turn_on
+            target:
+              entity_id: script.alarm_flash_lights
+            data: {}
 
-      # Flash the lights
-      - action: script.turn_on
-        target:
-          entity_id: script.alarm_flash_lights
-        data: {}
-
-      # Send a push notification
-      - action: script.turn_on
-        target:
-          entity_id: script.general_notification
-        data:
-          variables:
-            message: The security alarm has been triggered. Please get to safety immediately!
-            title: Security Alarm
-            devices: "all"
-            priority: "critical"
-            tag: "home-security-alarm"
-            url: /dashboard-kohbo/security
+          # Send a push notification
+          - action: script.turn_on
+            target:
+              entity_id: script.general_notification
+            data:
+              variables:
+                message: The security alarm has been triggered. Please get to safety immediately!
+                title: Security Alarm
+                devices: "all"
+                priority: "critical"
+                tag: "home-security-alarm"
+                url: /dashboard-kohbo/security
 
 
   security_alarm_disabled:
