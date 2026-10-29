@@ -12,6 +12,8 @@ related: JK-1186
 
 # Service Mode
 
+> **Parked 2026-10-28 by John (not a priority).** Status stays `draft` until it's picked up again. The JK-1186 button fix (PR 1) can still be pulled out on its own if wanted.
+
 ## Problem
 
 When the family is away and someone comes to look after the dog, John lets them in by hand: he turns `input_boolean.house_occupied` on, turns `input_boolean.guest_mode` on, then unlocks the front door or opens a garage door. The front lock (Level, HomeKit over Bluetooth) is unreliable, so it is usually the garage. That takes several taps across different screens, and it isn't safe.
