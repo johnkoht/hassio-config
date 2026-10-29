@@ -24,3 +24,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-10-17 · [yellow-outage-and-zigbee](entries/2026-10-17_yellow-outage-and-zigbee.md) — live device-walking templates pinned the Yellow (#53); routers count only `unavailable`, Halloween restart gate (#54); "Coordinator is disconnected" = per-device stale or link-wide
 - 2026-10-17 · [registry-orphans-leak-vacuum-hotfix](entries/2026-10-17_registry-orphans-leak-vacuum-hotfix.md) — 520 orphans removed; away leak alert watched a nonexistent sensor; vacuum ran nightly off a renamed automation (#57)
 - 2026-10-18 · [nino-manual-sleep-music](entries/2026-10-18_nino-manual-sleep-music.md) — manually started bedtime music now sets the sleep-music flag so it stops when Nino gets up (#58)
+- 2026-10-28 · [announcement-queue-race](entries/2026-10-28_announcement-queue-race.md) — processor overwrote the queue with a pre-playback snapshot, dropping the morning brief on school days (#69)
