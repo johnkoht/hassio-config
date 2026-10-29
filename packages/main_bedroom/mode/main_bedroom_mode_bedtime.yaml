@@ -41,6 +41,15 @@ automation:
       - condition: state
         entity_id: light.main_bedroom_main_lights
         state: "off"
+      # A light-off alone only counts if somebody is actually going to bed
+      - alias: "Light-off trigger needs someone in bed or laying down"
+        condition: template
+        value_template: >-
+          {{ trigger.entity_id != 'light.main_bedroom_main_lights'
+             or is_state('input_boolean.john_is_in_bed', 'on')
+             or is_state('input_boolean.cristina_in_bed', 'on')
+             or is_state('input_select.john_sleep_state', 'Just Laid Down')
+             or is_state('input_select.cristina_sleep_state', 'Just Laid Down') }}
       # Bedtime is enabled
       # OR somebody is in bed
       # OR lights are off door is closed and somebody detected via BLE
