@@ -6,7 +6,7 @@ Which of the tracked sensors are offline or low on battery, the Device Health sc
 
 A tabbed group of three views (the Plants and Holidays pattern):
 
-- **Overview** - Device Health card (status, score ring, Networks / Sensors / Batteries tiles), 5 Network rows, then online sensors by type, Safety & Security first
+- **Overview** - Device Health card (status, score ring, Networks / Sensors / Batteries tiles), 5 Network rows, 4 Power rows (UPS status, charge, runtime, load), then online sensors by type, Safety & Security first
 - **Offline** - Tracked sensors that are unavailable or unknown, oldest outage first; "Known issue" ones in their own section
 - **Low Battery** - Tracked sensors below the battery threshold, lowest first; "Known issue" ones in their own section
 - **Zigbee Routers popup** - Opened from the routers row: every `zigbee_router`-labelled device, offline first, then weakest LQI

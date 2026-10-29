@@ -1,5 +1,5 @@
 #
-# Sensors — Overview Tab: device health score, network health, and the tracked sensors that are online, by type.
+# Sensors — Overview Tab: device health score, network health, UPS power, and the tracked sensors that are online, by type.
 # Offline and low-battery sensors have their own tabs. Data: packages/system/sensor_health/.
 #
 type: custom:vertical-layout
@@ -66,6 +66,76 @@ cards:
         template: kohbo_device_sensor_health_entity
         entity: sensor.ble_proxies_online
         name: BLE Proxies
+
+
+  #===========================================================================
+  # POWER
+  #
+  # The APC UPS over NUT: status (human-readable, e.g. "Online", "On Battery"),
+  # charge, runtime left and load. Alerts live in packages/system/ups/.
+  #===========================================================================
+  - type: custom:button-card
+    template: section_title
+    name: Power
+
+  - type: vertical-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_device_entity_horizontal
+        entity: sensor.apc_ups_status
+        name: UPS
+        icon: mdi:power-plug-battery
+        variables:
+          # NUT status is compound ("OL CHRG"); green when on line power with no fault flag
+          ups_ok: |
+            [[[
+              const t = (states['sensor.apc_ups_status_data']?.state ?? '').split(' ');
+              return t.includes('OL') && !t.some(f => ['RB', 'OVER', 'BYPASS'].includes(f));
+            ]]]
+        state_display: |
+          [[[ return entity.state; ]]]
+        show_label: true
+        label: |
+          [[[ return `Input ${states['sensor.apc_ups_input_voltage']?.state ?? '?'} V`; ]]]
+        styles:
+          grid:
+            - grid-template-columns: 24px auto 100px;
+          state:
+            - color: |
+                [[[ return variables.ups_ok ? 'var(--success-color)' : 'var(--warning-color)'; ]]]
+          icon:
+            - color: |
+                [[[ return variables.ups_ok ? 'var(--success-color)' : 'var(--warning-color)'; ]]]
+
+      - type: custom:button-card
+        template: kohbo_device_entity_horizontal
+        entity: sensor.apc_ups_battery_charge
+        name: Battery
+        icon: mdi:battery
+        show_last_changed: false
+        state_display: |
+          [[[ const n = Number(entity.state); return isNaN(n) ? 'Offline' : `${Math.round(n)}%`; ]]]
+
+      - type: custom:button-card
+        template: kohbo_device_entity_horizontal
+        entity: sensor.apc_ups_battery_runtime
+        name: Runtime Left
+        icon: mdi:timer-outline
+        show_last_changed: false
+        state_display: |
+          [[[ const n = Number(entity.state); return isNaN(n) ? 'Offline' : `${Math.round(n / 60)} min`; ]]]
+
+      - type: custom:button-card
+        template: kohbo_device_entity_horizontal
+        entity: sensor.apc_ups_load
+        name: Load
+        icon: mdi:gauge
+        show_last_changed: false
+        show_label: true
+        label: |
+          [[[ return `${states['sensor.apc_ups_real_power']?.state ?? '?'} W`; ]]]
+        state_display: |
+          [[[ const n = Number(entity.state); return isNaN(n) ? 'Offline' : `${Math.round(n)}%`; ]]]
 
 
   #===========================================================================
