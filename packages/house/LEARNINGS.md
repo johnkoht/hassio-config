@@ -55,4 +55,6 @@ adult who isn't in bed gets home, and `house_mode_auto` then selects Auto. Both
 skip `unknown`/`unavailable` so a restart can't end bedtime. A night-time
 bedtime off also arms `alarm_disarm_in_morning` (its "after 05:00" holds until
 midnight), which disarms on first-floor occupancy, the same thing the arrival
-disarm already did.
+disarm already did. It checks `armed_home` only before its 2.5 h
+wait, so a run started this way could disarm a re-armed house if nobody hits
+the first floor until after bed (unlikely; backlog).
