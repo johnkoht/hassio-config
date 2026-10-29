@@ -1,25 +1,38 @@
 # Bedtime Mode On
 #
-# If everybody is in bed then we'll turn
-# bedtime mode on to shut down unused areas
+# When the last person home gets into bed, turn bedtime
+# mode on to shut down unused areas.
 #
 automation:
   - id: "bedtime_mode_on"
     initial_state: on
     alias: "Bedtime Mode - On"
     triggers:
-      # Everybody in bed turned on
+      # Someone got into bed (not a departure flipping the aggregates)
       - trigger: state
-        entity_id: binary_sensor.everybody_in_bed
+        entity_id:
+          - input_boolean.john_is_in_bed
+          - input_boolean.cristina_in_bed
+          - input_boolean.gianluca_in_bed
+          - input_boolean.nino_in_bed
         to: "on"
-      - trigger: state
-        entity_id: binary_sensor.adults_in_bed
-        to: "on"
+        for:
+          seconds: 10
     conditions:
       # House is occupied
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Everybody home is in bed, or the adults are
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.everybody_in_bed
+            state: "on"
+          - condition: state
+            entity_id: binary_sensor.adults_in_bed
+            state: "on"
     actions:
       - action: input_boolean.turn_on
-        entity_id: input_boolean.bedtime
+        target:
+          entity_id: input_boolean.bedtime
