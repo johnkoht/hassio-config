@@ -20,21 +20,21 @@ automation:
       - trigger: state
         entity_id:
           - binary_sensor.interior_garage_door
-          - binary_sensor.front_door_status
+          - binary_sensor.front_door
         to: "on"
         for:
           minutes: 5
       - trigger: state
         entity_id:
           - binary_sensor.interior_garage_door
-          - binary_sensor.front_door_status
+          - binary_sensor.front_door
         to: "on"
         for:
           minutes: 10
       - trigger: state
         entity_id:
           - binary_sensor.interior_garage_door
-          - binary_sensor.front_door_status
+          - binary_sensor.front_door
         to: "on"
         for:
           minutes: 15
@@ -55,7 +55,7 @@ automation:
             entity_id: binary_sensor.interior_garage_door
             state: "on"
           - condition: state
-            entity_id: binary_sensor.front_door_status
+            entity_id: binary_sensor.front_door
             state: "on"
     actions:
     #
@@ -105,4 +105,5 @@ automation:
             value_template: "{{ wait.trigger.event.data.action == action_snooze }}"
         then:
           - action: timer.start
-            entity_id: timer.snooze_door_left_open_automation
+            target:
+              entity_id: timer.snooze_door_left_open_automation
