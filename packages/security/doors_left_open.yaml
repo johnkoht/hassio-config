@@ -63,6 +63,10 @@ automation:
       #
       - variables:
           action_snooze: "{{ 'SNOOZE_' ~ context.id }}"
+          # timer.finished has no trigger.from_state, so name the doors open now
+          open_doors: >-
+            {{ expand('binary_sensor.interior_garage_door', 'binary_sensor.front_door')
+               | selectattr('state', 'eq', 'on') | map(attribute='name') | list | join(' and ') }}
 
       # Call the announcement engine
       # Announcement
@@ -71,7 +75,7 @@ automation:
           media_players: auto
           sound: "police-whistle"
           priority: high
-          speech_message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
+          speech_message: "{{ open_doors }} has been open for too long, please close the door!"
 
       #
       # Send a notification and let us snooze the automation
@@ -79,7 +83,7 @@ automation:
       - action: script.general_notification
         data:
           title: Exterior House Doors
-          message: "{{ trigger.from_state.attributes.friendly_name }} has been open for too long, please close the door!"
+          message: "{{ open_doors }} has been open for too long, please close the door!"
           devices: "all"
           priority: "time-sensitive"
           tag: "door-open"
