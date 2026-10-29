@@ -322,6 +322,12 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # Rain only: snow depth can trip the accumulation threshold
+      - alias: "Precipitation is not snow or sleet"
+        condition: template
+        value_template: >-
+          {% set hour = trigger.entity_id.split('_')[-1] %}
+          {{ states('sensor.pirateweather_precip_' ~ hour) not in ['snow', 'sleet'] }}
     actions:
       #
       # Push Notification
