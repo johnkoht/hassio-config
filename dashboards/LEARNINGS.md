@@ -24,3 +24,10 @@
 - **auto-entities `options` don't apply to `filter.template` output (2026-10-16).** Template items are used as-is, so emit full row objects (`entity`, `type`, `template`) through `| tojson`. Keep JSON `true`/`false`/`null` out of them: HA parses template results with `literal_eval`, which rejects those and hands auto-entities a string that it splits on whitespace. Use `1`/`0`.
 - **Group membership reads the `entity_id` attribute (2026-10-16; updated 2026-10-17).** auto-entities' `group:` filter and `expand()` both read it. Before HA 2026.7, `platform: group` entities didn't publish it, so these groups were built old-style. On 2026.7.4 they do (`cover.garage_doors`, `binary_sensor.leak_sensors` both expand), so either style works now. The Sensors page groups (`packages/system/sensor_health/key_sensor_groups.yaml`) were derived from `kohbo/rooms/**`, one entity per device: when you add a sensor to a room page, add it to the matching group too, or the Sensors page won't see it go offline.
 - **Prefer a device label to a hand-kept group for "every X" membership (zigbee routers, 2026-10-16).** The 19-plug group had drifted to under a third of the 65 routers. `label_devices()` + `device_entities()` picks it up from the registry, but templates have no entity_category, so the primary entity is chosen by domain order plus a config-name skip list. Gotchas: `device_entities()` omits disabled entities; `area_name(device_id)` raises (AssertionError) on a device whose area was deleted, so resolve `device_attr(d, 'area_id')` first; label changes fire no state event, so scan on a time trigger.
+
+## NUT UPS status is compound
+
+`sensor.apc_ups_status` is human-readable and compound ("Online Charging" after
+an outage), so don't colour on `=== 'Online'`. Split `sensor.apc_ups_status_data`
+on spaces and look for `OL` (plus no `RB`/`OVER`/`BYPASS`), as the UPS
+automations do. Sensors page Power section, 2026-10-29.
