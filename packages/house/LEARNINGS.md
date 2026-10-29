@@ -39,3 +39,11 @@ its only other trigger is the flag going off, which nobody is home to do.
 Both kids' `*_not_occupied` automations now clear the flag when the house
 has been empty for 2 min (bed permitting), and Gianluca's treats an offline
 door sensor as open (2026-10-27).
+
+## Home-filtered aggregate sensors flip on departure
+
+`everybody_in_bed` and `adults_in_bed` count only adults who are home, so
+one adult leaving while the other is in bed turns them on. Home-filtered
+aggregate sensors flip on departure, so don't trigger mode changes off
+them. `bedtime_mode_on` triggers on the per-person in-bed booleans and
+checks the aggregates as conditions (2026-10-28).
