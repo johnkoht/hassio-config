@@ -73,9 +73,32 @@ Rejected: a second `time` trigger at the floor plus a gate condition (needs a no
 2. **What "snooze 30" covers.** Default: all of it, via one variable (re-prompt timer, Snooze button, wait timeout, button title), because the timer is one thing in the package. Alternative: only the Snooze button restart, leaving the unanswered re-prompt at 15. Cheaper to say, but the button label and the timer would disagree.
 3. **Which doses.** Default: 30 minute snooze on both doses on no-school days (one variable, no per-dose branch). Alternative: dose 1 only.
 4. **Floor helper default.** Default: no `initial:`, template falls back to 08:00 when unset. Alternative: `initial: "08:00:00"`, simpler but reverts dashboard edits on every restart.
-5. **Summer and breaks count as no school.** `nino_school_day` is off all summer, so dose 1 starts at 08:00 for the whole summer. Default: accept, since it is the same signal John described. Alternative: restrict to weekends plus closures, which needs a second signal and is not recommended.
+5. ~~Summer and breaks count as no school.~~ **Resolved (John, 2026-10-29): summer counts as no school.** `nino_school_day` is off all summer, so dose 1 starts at 08:00 for the whole summer, which is what John wants. Summer camps are a separate, deferred question (next section).
 6. **Escalation moves with the delay.** Default: dose 1 escalates at effective time + 2 hours (10:00 on a default weekend). Alternative: leave it at 09:30, which would fire before the dose is even 90 minutes late. Not recommended.
 7. **Dashboard Snooze button.** The popup cards `nino_med_reminder_1.yaml` and `_2.yaml` call `timer.start` with no duration, so they stay at 15 minutes on no-school days. Default: leave them (not in the issue) and call it out. Fix is extra B below.
+
+## Deferred: summer camp tracking (revisit spring 2027)
+
+**Status: flagged, not designed, not in v1.** Nothing in this plan depends on it.
+
+John: "summer: yes, counts as no school. But we do have summer camps. We usually add these to the calendar. We probably need a way to track this like we do school. Flag this and we can revisit in the spring."
+
+What it is: camp days arrive on the family calendar and should be tracked the way school days are, so the house knows "camp today" the way it knows "school today". That would eventually let camp days behave differently from a plain no-school day (for example an earlier dose 1 on a camp morning), but that is a later decision, not a requirement here.
+
+How school days are tracked today, as the starting point for the spring discussion (all under `packages/school/`):
+
+- **Calendar in, sensor out.** `primary_school_calendar_sensors.yaml` is a trigger-based template that runs hourly, at start and on template reload, calls `calendar.get_events` on the school's calendar (`continue_on_error: true`, one file per calendar because the service raises if its target resolves to zero entities), and classifies today's and tomorrow's events into closures and informational items.
+- **Day sensor.** `kids/nino_school.yaml` defines `binary_sensor.nino_school_day` as `binary_sensor.primary_school_in_session_today`, which folds in weekends, closures, `school_year_active` (`school_year.yaml`) and the `school_overrides.yaml` holiday toggle.
+- **Consumers read the day sensor**, never the calendar, so a new "camp day" signal would slot in beside it rather than inside it.
+
+Questions for the spring, none answered or designed:
+
+- Which calendar carries camps, and how is a camp event recognised (title convention, a dedicated calendar, a keyword)? Camps differ week to week, so this is per-event, not a fixed schedule.
+- Is it one boolean ("camp today"), or does it need start and pickup times like the bell-schedule sensors?
+- Does it change medication timing at all, or only feed the morning brief and reminders?
+- Camp is a place and a routine tied to the child, so per the repo's privacy rules the entities stay generic and no camp name, location or schedule goes in the repo.
+
+Until then, summer camp days behave as no-school days: dose 1 at 08:00 (or the floor), 30 minute snooze.
 
 ## Itemised extras (not in v1)
 
@@ -89,7 +112,7 @@ Rejected: a second `time` trigger at the floor plus a gate condition (needs a no
 - **Time trigger on a derived sensor**: if the sensor is unavailable at 08:00, nothing fires and the wake-up trigger or escalation is the only net. Same failure direction as today's unavailable helper; availability tracks the dose 1 helper only. Verify on the host that the trigger resolves to 08:00 on a no-school day.
 - **Reload after the floor time**: a `time` trigger on a timestamp sensor that is reloaded after its time skips today (`packages/school/LEARNINGS.md`). The wake-up trigger and the escalation still cover it, but a reload between 08:00 and his waking would lose the 08:00 prompt. John only reloads on request, so accepted.
 - **Toggling `school_day_override_off` mid-morning**: the sensor re-renders and the trigger reschedules. If the override is turned on after 07:30 on a school day, the 07:30 reminder has already fired; it does not retract. Accepted.
-- **Summer starts at 08:00** (decision 5). Intentional, flagged.
+- **Summer starts at 08:00** (decision 5, resolved). Intentional. A summer camp day with an early start is the same failure mode as extra A until the deferred camp tracking exists.
 - **Dashboard Snooze stays 15** on no-school days until extra B (decision 7).
 - **Privacy**: nothing here names a medication, dose, or any new personal detail; all times are already in the repo.
 

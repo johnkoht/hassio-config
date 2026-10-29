@@ -10,13 +10,25 @@ has_prd: false
 
 # Medication Refill Tracking
 
+Linear: JK-1196 (High), JK-1212 (High, HACS evaluation). Revised 2026-10-29 with John's answers (see "John's answers" below).
+
 ## Problem
 
 Nothing in the house knows how many pills are left. The reminders (Nino's two doses, Cristina's daily and Friday doses) only know "given today or not", so a refill gets noticed when the bottle is empty. Linear asks for pill-count tracking with a low-stock reminder (JK-1196, High) and points at a HACS integration as one way to get it (JK-1212, High).
 
+## John's answers (2026-10-29)
+
+Asked how we will know how many are left, John said: "maybe there is a UI where I input count on hand and then when it goes less than one week a reminder is set? Notifying us in the morning brief would be useful as well." That settles the design:
+
+- **Doses on hand is a number John types in from the dashboard**, one `input_number` per medication. Nothing is inferred from bottles or fills.
+- **Each confirmed dose subtracts one** (unchanged: the taken boolean is the shared confirm signal).
+- **Alert threshold is one week of supply**, derived as doses per day x 7, not a count of pills. This resolves the old threshold-unit question.
+- **A line in the morning brief** lists any medication that is low.
+- The dashboard rows are now v1, not an extra (old E1 and E2 are promoted).
+
 ## Goal
 
-Each tracked medication has a pill count that drops by one each time a dose is marked given, a derived days-remaining figure, one push when days remaining falls below a threshold (with a daily repeat until refilled), and a one-tap refill action from that push. Refer to them generically throughout: "Nino's medication", "Cristina's daily medication", "Cristina's Friday medication". Nothing else in v1.
+Each tracked medication has a "doses on hand" number that John sets from the dashboard and that drops by one each time a dose is marked given, a derived days-remaining figure, a push when supply falls below one week (re-sent each morning until refilled), a line in the morning brief, and a one-tap refill action. Refer to them generically throughout: "Nino's medication", "Cristina's daily medication", "Cristina's Friday medication". Nothing else in v1.
 
 ## Findings (what exists today)
 
@@ -57,14 +69,18 @@ Recommendation: Option A. JK-1212 is then answered as "evaluated, not adopted, r
 
 ### Design (Option A)
 
-- **Stock:** `input_number.<med>_stock`, min 0, step 1, mode box, **no `initial:`** (it would reset the count on every restart). John seeds the current counts once after deploy.
+- **Stock ("doses on hand"):** `input_number.<med>_stock`, unit "doses", min 0, max 365, step 1, mode box, **no `initial:`** (it would reset the count on every restart and revert dashboard edits). John seeds the current counts from the dashboard rows after deploy; an unseeded helper reads 0, which the alert would read as out of stock (see Risks).
 - **Decrement:** one automation per taken boolean (four files, one job each, ids match filenames), `trigger: state`, `from: "off"`, `to: "on"`, action `input_number.set_value` to `max(0, stock - 1)`. Placed beside each person's existing medication package, not inside the reminder files. `from: "off"` means the 03:00 reset (`to: off`) and a restart restore do not count.
 - **Days remaining:** `sensor.<med>_days_remaining`, template sensor, state `stock / pills_per_day` rounded down, `unavailable` when the stock is unavailable (never 0, so a bad read cannot fire a false alert). Pills-per-day is a constant in the template, not a helper.
-- **Threshold:** one shared `input_number.medication_refill_threshold_days`, no `initial:`; John sets it after deploy (suggest 7, matching the integration's default).
-- **Alert:** one automation, `medication_refill_low_stock_alert`. Triggers: `numeric_state` on each days-remaining sensor `below` the threshold (fires once on crossing, not on restart), plus a daily time trigger (09:00) for the repeat. Action: for each sensor currently below the threshold (just the triggering one on a crossing, all low ones on the daily repeat), `script.general_notification` with `devices: "all"`, `priority: "time-sensitive"`, a per-medication `tag` (so a repeat replaces the old push), and a Refilled action id `MEDICATION_REFILLED_<med>`. It uses the shared notification helper, so it respects `notification_level` (this is a reminder, not a safety backstop like the escalation). Message text is generic ("Nino's medication is running low: about N days left"). The time trigger has no `trigger.entity_id` (the lesson from the door re-alert bug), so the message is built from the loop item, never from `trigger`.
+- **Threshold:** one week of supply, derived. The days-remaining sensor already divides by doses per day, so "below one week" is `days_remaining < 7`, which equals stock below doses per day x 7 (Nino 14 doses, Cristina daily 7). Kept as a shared `input_number.medication_refill_threshold_days`, no `initial:`, John sets it to 7 once; this lets him widen it without a code change. The weekly medication needs a different lead time (open decision 3).
+- **Alert:** one automation, `medication_refill_low_stock_alert`. Triggers: `numeric_state` on each days-remaining sensor `below` the threshold (fires once on crossing, not on restart), plus a daily time trigger (09:00) for the repeat. The daily repeat is the recommended answer to "re-fire daily or snooze-able": it needs no state, and a snooze (extra E8) only adds a timer per medication for little gain once the morning brief also mentions it. Action: for each sensor currently below the threshold (just the triggering one on a crossing, all low ones on the daily repeat), `script.general_notification` with `devices: "all"`, `priority: "time-sensitive"`, a per-medication `tag` (so a repeat replaces the old push), and a Refilled action id `MEDICATION_REFILLED_<med>`. It uses the shared notification helper, so it respects `notification_level` (this is a reminder, not a safety backstop like the escalation). Message text is generic ("Nino's medication is running low: about N days left"). The time trigger has no `trigger.entity_id` (the lesson from the door re-alert bug), so the message is built from the loop item, never from `trigger`.
 - **Refill:** `script.medication_refilled` with fields `medication` and `quantity`; adds `quantity` to stock (capped at the helper max). A separate small automation, `medication_refill_push_action`, listens for `mobile_app_notification_action` with the fixed `MEDICATION_REFILLED_<med>` ids and calls the script with that medication's `input_number.<med>_refill_quantity`. It is a standalone event automation, not a `wait_for_trigger`, because the push is answered days later and a wait would not survive a restart (the two-dose plan's lesson).
-- **Drift correction:** John can edit any stock `input_number` directly (Settings, Entities, or a dashboard row once added). No separate "adjust" feature.
-- **Where it shows:** v1 shows only in the push text and the HA entity list; dashboard rows are Extra E1/E2.
+- **Drift correction:** John edits the stock `input_number` directly from the dashboard row. No separate "adjust" feature.
+- **Morning brief line:** `script.morning_update_announcement` in `packages/reminders/morning_update.yaml` builds a ChatGPT prompt with `### SECTION` blocks (weather, school, train, birthdays). Add a `### MEDICATION REFILLS` block that loops the three days-remaining sensors and, for each one below the threshold, emits a generic line ("Nino's medication is running low, about N days left"). Like the train block, it says "Only mention this if a line appears below; otherwise say nothing", so a normal morning is unchanged. The brief is spoken aloud on the house speakers; whether a medication line should be spoken at all is open decision 9.
+- **Where it shows (v1):** dashboard rows, the push, and the morning brief.
+  - **Nino:** a new "Medication Supply" block in the Nino popup, `dashboards/templates/button_cards/people/nino.yaml` (hash `#nino`), directly under the "Medication Reminder Time" section (~line 118). Doses-on-hand is an editable `input_number` row (`entity_no_icon.yaml` style like the dose time rows); days remaining is a read-only `template-entity-row` (`kohbo_entity_item_layout.yaml`); a Refill button row calls `script.medication_refilled`.
+  - **Cristina:** the Medications `entities` card in `dashboards/templates/button_cards/people/cristina.yaml` (hash `#cristina`, ~lines 98-130) gets the same three rows per medication (daily, Friday).
+  - Both live in the Kohbo people popups, so no new view. Touch `dashboards/kohbo/kohbo.yaml` on deploy and add the rows to `dashboards/SITEMAP.md`.
 
 ## Tasks
 
@@ -72,9 +88,10 @@ Recommendation: Option A. JK-1212 is then answered as "evaluated, not adopted, r
 2. Decrement automations — four files, one per existing taken boolean, `from: off to: on`, floor at 0.
 3. Low-stock alert — one automation, crossing trigger plus daily repeat, via `script.general_notification`.
 4. Refill script and push-action automation — `script.medication_refilled` and `medication_refill_push_action`.
-5. Tests — `tests/test_medication_refill.py` (below).
-6. Docs — add a short "Medication stock" section to `docs/PEOPLE.md` (it has no medication section today) listing entities and the decrement/refill flow; one line in `docs/AUTOMATIONS.md`; header comments per `packages/CLAUDE.md` (title plus 1-3 lines, reasoning in the commit). Memory entry at wrap.
-7. Handoff for John (post-deploy, not done by an agent) — seed the three stock counts, set the threshold and refill quantities, reload automations, scripts, and template entities (`--reload` does not reload template entities; new `input_number` helpers need a restart, which only John does). Close JK-1212 with the rationale; close JK-1196 after the live check.
+5. Dashboard rows and morning brief — doses-on-hand, days-remaining and Refill rows in the Nino and Cristina popups; the `### MEDICATION REFILLS` block in `morning_update.yaml`.
+6. Tests — `tests/test_medication_refill.py` (below).
+7. Docs — add a short "Medication stock" section to `docs/PEOPLE.md` (it has no medication section today) listing entities and the decrement/refill flow; one line in `docs/AUTOMATIONS.md`; header comments per `packages/CLAUDE.md` (title plus 1-3 lines, reasoning in the commit). Memory entry at wrap.
+8. Handoff for John (post-deploy, not done by an agent) — seed the three doses-on-hand counts from the dashboard, set the threshold (7) and refill quantities, reload automations, scripts, and template entities (`--reload` does not reload template entities; new `input_number` helpers need a restart, which only John does). Close JK-1212 with the rationale; close JK-1196 after the live check.
 
 ## Tests
 
@@ -86,35 +103,39 @@ Style of `tests/test_door_left_open_realert.py`: load the package YAML, render t
 - Alert message renders for both a `numeric_state` trigger and a bare time trigger (the door re-alert regression), and never references `trigger.from_state` or `trigger.entity_id` on the time path.
 - Alert builds the repeat list correctly: with two of three sensors low it names exactly those two; with none low it sends nothing.
 - Refill: script adds quantity and caps at max; the action automation only matches `MEDICATION_REFILLED_<med>` ids and maps each id to its own medication and quantity helper.
+- Morning brief block: with two of three medications below the threshold the rendered prompt names exactly those two; with none low it renders the "say nothing" instruction and no medication line; an `unavailable` days sensor is never named.
 - Existing suites still pass: entity references, duplicates (basename collisions), modern syntax, naming.
 - Sabotage check at review: drop `from: "off"` and confirm the 03:00 reset test goes red.
 
 ## Open decisions
 
 1. **Native helpers or the HACS integration.** Default: native (Option A). Price of B: a restart, an external dependency with no releases, and we still write the same trigger wiring.
-2. **Threshold unit.** Default: days (matches the integration and gives a consistent alert across daily and weekly medications). JK-1196 says "number of pills"; switching is structurally trivial (compare stock, not days) but a shared pill threshold alerts far too early or too late for the weekly medication.
-3. **One shared threshold or one per medication.** Default: shared. Per-medication is +2 `input_number`s and a template change.
-4. **Daily repeat.** Default: include, daily at 09:00 while still low, because a single swiped-away push is how the bottle still ends up empty (protection, not polish). Dropping it removes one trigger and one test.
+2. ~~Threshold unit.~~ **Resolved:** one week of supply, in days (John, 2026-10-29).
+3. **Weekly medication lead time.** One week of supply for a once-a-week dose means "alert when fewer than one dose is left", i.e. only when the bottle is empty. Recommend a longer lead for that one, e.g. 21 days (three doses), via a per-medication lead-days constant in the template (the shared helper stays 7 for the two daily medications). Needs John's call on how long a refill takes.
+4. ~~Daily repeat.~~ **Resolved:** daily at 09:00 while still low, no snooze in v1 (recommendation accepted by default; see Approach). Say so if a snooze is wanted (E8).
 5. **Refill adds or resets.** Default: add the fill quantity to the current count so leftover pills are not lost; "reset to quantity" is a one-line change if John prefers the literal wording.
 6. **Un-toggling a taken boolean.** Default: no re-increment, so a dashboard flip off and on (correcting a mistake) over-counts by one; fix by editing stock. Auto-increment is Extra E5.
 7. **Who gets the push.** Default: everyone (`devices: "all"`, same as Nino's reminder). `"jk"` only is a one-word change.
 8. **Quantity per dose.** Default: one pill per dose, hard-coded. If any medication differs, tell me before build; a helper is Extra E4.
+9. **Spoken in the morning brief?** The brief is read out on the house speakers, so guests and kids hear it. Default: include a generic "running low" line (no names of medications or doses). Alternative: push-only, brief line left out. John asked for the brief, so default is to include it.
+10. **Seed values.** Someone has to type the current counts once. Until John does, the days sensors read `unavailable` and the alert stays silent. Confirm that is the behaviour wanted rather than an alert on first deploy.
 
 ## Extras (itemised, not in v1)
 
 All of this is beyond the ask. Each is cheap alone; none is needed for the count, the alert, or the refill to work.
 
-- **E1 Dashboard stock rows.** Stock and days-remaining rows on the Nino and Cristina person cards (`dashboards/templates/button_cards/people/nino.yaml` and `cristina.yaml`; editable rows use `kohbo_boolean_entity_layout.yaml`'s style, read-only rows `kohbo_entity_item_layout.yaml`). About 6 rows across 2 files. Without it, stock is visible only in the HA entity list and the push text.
-- **E2 Dashboard Refill button.** A button row calling `script.medication_refilled`. About 3 rows. Without it, refill is the push action, or the script from Developer Tools.
+- **E1, E2** Dashboard stock rows and the Refill button: promoted into v1 (John wants to enter counts from the UI). See Approach.
 - **E3 Deliberate "skip today" button.** Silences that day's reminder and escalation without deducting. It adds a gate to each reminder flow, so it is the highest-risk item here; those flows were already hard to get right (see the two-dose plan).
 - **E4 Pills-per-dose helper.** One `input_number` per medication feeding both the decrement and the days sensor. +3 helpers; only needed if a dose is not one pill.
 - **E5 Re-increment on manual un-toggle.** Needs a guard so the 03:00 reset does not count as an un-toggle. +1 condition per boolean; fragile around the reset.
 - **E6 Alexa refill phrase.** Nabu Casa scene exposure plus an Alexa Routine that John builds himself (same pattern as the "took his meds" routine). Almost no repo lines, but it needs a fixed default quantity.
+- **E8 Snooze on the refill push.** A "Remind me in 3 days" action backed by a per-medication timer. Not needed while the alert repeats daily and the brief mentions it.
 - **E7 Out-of-stock critical escalation.** Stock reaches 0 while doses are still due. Another automation; the days alert plus its daily repeat already cover the same window.
 
 ## Risks
 
 - **Count drift.** A double toggle, a forgotten toggle, or a dose from a different bottle leaves the count wrong. Mitigation: stock is directly editable; the alert is a nudge, not a hard dependency. Accepted.
+- **Unseeded counts.** A fresh `input_number` without `initial:` reads its minimum, 0, which looks like "out of stock". Mitigation: John seeds the counts before the alert automation is reloaded (handoff step 8); whether the days sensor can also detect a never-set helper is unknown and is a build-time question, to be tested.
 - **Alert on bad data.** A restart or a read returning 0 or `unavailable` could look like out of stock. Mitigation: the days sensor is `unavailable` rather than 0 when stock is unavailable, `numeric_state` ignores non-numeric states, and it is tested.
 - **Helpers not loaded.** New `input_number` helpers need a restart (John-only) and template sensors a template reload; a deploy that only reloads automations leaves triggers pointing at nothing. Mitigation: handoff step 7 and the entity-reference test.
 - **Entity-id slugs.** Template sensor ids derive from `name:`, not `unique_id`; check the planned ids against the live registry before build (a stale `_2` suffix from an orphan registry entry is the known failure).
