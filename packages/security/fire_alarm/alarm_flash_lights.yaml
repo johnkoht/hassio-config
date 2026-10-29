@@ -21,17 +21,21 @@ light:
 script:
   alarm_flash_lights:
     alias: "Alarm - Flash Lights"
-    mode: "restart"
+    # single: a second call mid-flash would snapshot the flashing lights.
+    mode: "single"
     icon: mdi:alert
     sequence:
-      # Create a scene to save the current state of the lights
+      # Snapshot each leaf light; a group snapshot restores every member on
       - action: scene.create
         data:
           scene_id: alarm_flash_lights_initial_state
-          snapshot_entities: light.emergency_light_group
+          snapshot_entities: >-
+            {{ expand('light.emergency_light_group')
+               | map(attribute='entity_id') | list }}
       # Turn ON the lights
       - action: light.turn_on
-        entity_id: light.emergency_light_group
+        target:
+          entity_id: light.emergency_light_group
       # Flash the lights
       - alias: "Flash the lights 10 times"
         repeat:
@@ -39,6 +43,7 @@ script:
           sequence:
             - delay: 1
             - action: light.toggle
-              entity_id: light.emergency_light_group
+              target:
+                entity_id: light.emergency_light_group
       # Restore lights to original state
       - scene: scene.alarm_flash_lights_initial_state

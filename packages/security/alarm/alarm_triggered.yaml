@@ -105,10 +105,20 @@ script:
             - switch.alarm_siren_1
             - switch.alarm_siren_2
 
-      # Turn off the flash lights
-      - action: script.turn_off
-        target:
-          entity_id: script.alarm_flash_lights
+      # Stop the flash; if it was cut short, restore the lights it snapshotted
+      - if:
+          - condition: state
+            entity_id: script.alarm_flash_lights
+            state: "on"
+        then:
+          - action: script.turn_off
+            target:
+              entity_id: script.alarm_flash_lights
+          # The snapshot may not exist yet; never block the notification
+          - action: scene.turn_on
+            continue_on_error: true
+            target:
+              entity_id: scene.alarm_flash_lights_initial_state
 
       # Notify us
       - action: script.general_notification

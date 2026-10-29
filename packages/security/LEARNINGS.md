@@ -21,3 +21,9 @@ It enqueues at `critical` priority. `announcements/queue/processor.yaml`
 holds the whole queue while `house_occupied` is off or quiet mode is on
 before 9am, and critical messages are held too. Never rely on TTS alone
 for an emergency.
+
+## Snapshot the leaf lights, not the light group
+
+`scene.create` with `snapshot_entities: light.<group>` saves the group's
+single state, which is "on" if any member is on, so the restore turns every
+member on. Snapshot `expand('light.<group>')` instead (2026-10-29).
