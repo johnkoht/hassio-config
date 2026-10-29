@@ -184,7 +184,7 @@ cards:
           target:
             entity_id: input_boolean.house_occupied
         confirmation:
-          text: "Turn off the house? It goes to Away and the alarm arms in about a minute, even if people are home. It turns back on when someone arrives."
+          text: "Turn off the house? It goes to Away and the alarm arms in about a minute, even if people are home. After that, opening a door can sound the sirens and call monitoring. To undo, turn House Occupied back on."
         card_mod:
           style: |
             :host {
