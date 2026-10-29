@@ -4,9 +4,9 @@ template:
         unique_id: nws_alerts_are_active
         default_entity_id: binary_sensor.nws_alerts_are_active
         state: >
-          {{ states('sensor.nws_alerts_sensor') | int(0) > 0 }}
+          {{ states('sensor.nws_alerts') | int(0) > 0 }}
         icon: >-
-          {% if states('sensor.nws_alerts_sensor') | int(0) > 0 %}
+          {% if states('sensor.nws_alerts') | int(0) > 0 %}
             mdi:weather-lightning
           {% else %}
             mdi:weather-sunny

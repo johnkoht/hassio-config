@@ -16,7 +16,7 @@ automation:
         state: "on"
       # Birthday calendar is ON
       - condition: state
-        entity_id: calendar.birthdays_2
+        entity_id: calendar.birthdays
         state: "on"
     actions:
       # Wait for motion in the kitchen or family room
@@ -40,15 +40,15 @@ automation:
           speech_message: >-
             {{
               [
-                "Hey fam, just wanted to remind you that today is " ~ states.calendar.birthdays_2.attributes.message,
-                "Just a quick reminder that it's " ~ states.calendar.birthdays_2.attributes.message ~ " today!",
-                "Pardon the interruption, don't forget that today is " ~ states.calendar.birthdays_2.attributes.message
+                "Hey fam, just wanted to remind you that today is " ~ states.calendar.birthdays.attributes.message,
+                "Just a quick reminder that it's " ~ states.calendar.birthdays.attributes.message ~ " today!",
+                "Pardon the interruption, don't forget that today is " ~ states.calendar.birthdays.attributes.message
               ] | random
             }}
 
       - action: script.general_notification
         data:
-          message: "Today is {{states.calendar.birthdays_2.attributes.message}}"
+          message: "Today is {{states.calendar.birthdays.attributes.message}}"
           title: "Birthday Reminder"
           devices: "jk"
           priority: "active"
