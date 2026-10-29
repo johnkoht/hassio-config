@@ -27,3 +27,7 @@ for an emergency.
 `scene.create` with `snapshot_entities: light.<group>` saves the group's
 single state, which is "on" if any member is on, so the restore turns every
 member on. Snapshot `expand('light.<group>')` instead (2026-10-29).
+
+## Dead entity IDs fail silently
+
+A state trigger on a nonexistent entity never errors, it just never fires. `door_left_open` watched `front_door_status` and the porch detections watched `backyard_porch_camera_*_detected` (live: `front_door`, `backyard_porch_*_detected`). Copy IDs from the working sibling camera and check them against the registry. Backlog: the `timer.finished` trigger in `doors_left_open.yaml` has no `trigger.from_state`, so the re-alert after a snooze errors in its message templates (2026-10-29).
