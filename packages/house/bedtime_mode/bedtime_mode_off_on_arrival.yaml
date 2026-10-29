@@ -1,0 +1,40 @@
+# Bedtime Mode Off on Arrival
+#
+# An adult who isn't in bed arrives during bedtime: end it so
+# the house returns to Auto. Their getting into bed restarts it.
+#
+automation:
+  - id: "bedtime_mode_off_on_arrival"
+    alias: "Bedtime Mode - Off on Arrival"
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: person.john_koht
+        to: "home"
+        not_from:
+          - "unknown"
+          - "unavailable"
+        id: "john"
+      - trigger: state
+        entity_id: person.cristina_falbo
+        to: "home"
+        not_from:
+          - "unknown"
+          - "unavailable"
+        id: "cristina"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "on"
+      - alias: "The arriving adult isn't in bed"
+        condition: template
+        value_template: >-
+          {% set in_bed = {
+            'john': 'input_boolean.john_is_in_bed',
+            'cristina': 'input_boolean.cristina_in_bed'
+          } %}
+          {{ is_state(in_bed[trigger.id], 'off') }}
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.bedtime

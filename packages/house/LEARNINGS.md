@@ -47,3 +47,12 @@ one adult leaving while the other is in bed turns them on. Home-filtered
 aggregate sensors flip on departure, so don't trigger mode changes off
 them. `bedtime_mode_on` triggers on the per-person in-bed booleans and
 checks the aggregates as conditions (2026-10-28).
+
+John's ruling (2026-10-29): an adult leaving while everybody else home is in
+bed *should* start bedtime and arm. So `bedtime_mode_on` also triggers on
+`person.*` leaving home (2 min). `bedtime_mode_off_on_arrival` ends it when an
+adult who isn't in bed gets home, and `house_mode_auto` then selects Auto. Both
+skip `unknown`/`unavailable` so a restart can't end bedtime. A night-time
+bedtime off also arms `alarm_disarm_in_morning` (its "after 05:00" holds until
+midnight), which disarms on first-floor occupancy, the same thing the arrival
+disarm already did.
