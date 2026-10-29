@@ -1,8 +1,7 @@
 # Camera Notifications - Deactivate
 #
-# This automation listens to a few sensors and
-# when triggered, simply turns OFF a boolean that
-# disables camera notifications
+# Mute camera notifications when somebody is actually
+# around outside (doors, garage, arrivals), not on a clock.
 #
 automation:
   - id: "camera_notifications_deactivate"
@@ -16,16 +15,6 @@ automation:
         to: "on"
         for:
           minutes: 15
-      # House goes into Auto mode for 30 mins
-      - trigger: state
-        entity_id: input_select.house
-        to: "Auto"
-        for:
-          minutes: 30
-      # 15 mins after sunrise
-      - trigger: sun
-        event: sunrise
-        offset: "00:15:00"
       # Exterior doors are opened
       - trigger: state
         entity_id: binary_sensor.exterior_doors
@@ -76,5 +65,5 @@ automation:
           title: Security Cameras
           message: "Camera detections have been disabled to cut down on notification overload."
           devices: "all"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "camera-notifications"

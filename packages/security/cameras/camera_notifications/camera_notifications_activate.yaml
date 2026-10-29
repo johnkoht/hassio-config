@@ -47,5 +47,5 @@ automation:
           title: Security Cameras
           message: "Camera detections have been enabled."
           devices: "all"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "camera-notifications"
