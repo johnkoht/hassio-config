@@ -165,7 +165,7 @@ automation:
                 entity_id: group.family
                 state: "home"
               - condition: template
-                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.group.familiy.last_updated)) | int < 300 }}"
+                value_template: "{{ (as_timestamp(now()) - as_timestamp(states.group.family.last_updated)) | int < 300 }}"
               # Person state is Just Arrived
               - condition: state
                 entity_id:

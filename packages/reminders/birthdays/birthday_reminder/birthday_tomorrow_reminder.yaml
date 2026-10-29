@@ -43,15 +43,15 @@ automation:
           speech_message: >-
             {{
               [
-                "Hey fam, just wanted to remind you that tomorrow is " ~ states.calendar.birthdays_2.attributes.message,
-                "Just a quick reminder that " ~ states.calendar.birthdays_2.attributes.message ~ " is tomorrow.",
-                "Pardon the interruption, don't forget that tomorrow is " ~ states.calendar.birthdays_2.attributes.message
+                "Hey fam, just wanted to remind you that tomorrow is " ~ states.calendar.birthdays.attributes.message,
+                "Just a quick reminder that " ~ states.calendar.birthdays.attributes.message ~ " is tomorrow.",
+                "Pardon the interruption, don't forget that tomorrow is " ~ states.calendar.birthdays.attributes.message
               ] | random
             }}
 
       - action: script.general_notification
         data:
-          message: "Tomorrow is {{states.calendar.birthdays_2.attributes.message}}"
+          message: "Tomorrow is {{states.calendar.birthdays.attributes.message}}"
           title: "Birthday Reminder"
           devices: "jk"
           priority: "active"
