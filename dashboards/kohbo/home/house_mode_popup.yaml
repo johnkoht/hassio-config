@@ -181,10 +181,10 @@ cards:
         tap_action:
           action: perform-action
           perform_action: input_boolean.turn_off
-          data:
-            entity_id: input_boolean.john_dnd
+          target:
+            entity_id: input_boolean.house_occupied
         confirmation:
-          text: "Are you sure you want to turn off the house?"
+          text: "Turn off the house? It goes to Away and the alarm arms in about a minute, even if people are home. It turns back on when someone arrives."
         card_mod:
           style: |
             :host {

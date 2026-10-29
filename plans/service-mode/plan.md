@@ -12,7 +12,7 @@ related: JK-1186
 
 # Service Mode
 
-> **Parked 2026-10-28 by John (not a priority).** Status stays `draft` until it's picked up again. The JK-1186 button fix (PR 1) can still be pulled out on its own if wanted.
+> **Parked 2026-10-28 by John (not a priority).** Status stays `draft` until it's picked up again. The JK-1186 button fix (PR 1) shipped on its own on 2026-10-29 after John confirmed the button should turn the house off.
 
 ## Problem
 
