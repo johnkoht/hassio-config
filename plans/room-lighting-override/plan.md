@@ -21,7 +21,7 @@ Rooms use two conflicting models for "someone took manual control of the lights"
 
 Concrete bugs that follow:
 
-- **Kitchen stuck flag.** `kitchen_mode_off` forces `kitchen_occupied` off, and `kitchen_not_occupied` requires occupied = on, so after a room Off the flag never resets. A hotfix in flight adds a flag reset to `kitchen_mode_off`; this plan supersedes it.
+- **Kitchen stuck flag.** `kitchen_mode_off` forces `kitchen_occupied` off, and `kitchen_not_occupied` requires occupied = on, so after a room Off the flag never resets. Hotfix #73 (shipped 10-28) added a flag reset to `kitchen_mode_off`; this plan supersedes it. The #73 reviewer found a second gap: if the flag is off and the kitchen is already empty when it goes Off, `kitchen_lights_to_off` doesn't run, so lights someone turned on by hand stay on.
 - **Garage flapping.** `garage_lights_turned_off` has no context check, so every automation-driven off (motion off, room Off) disables garage lighting automations. Live, it flaps all day.
 - **Office.** Manual-off detection is disabled (`initial_state: off`), and two disabled automations (`office_lighting_automation_on/off`) still write the flag.
 - **`initial: on` on every lighting flag** re-applies at each restart, silently undoing a hand-disable (see memory: `initial:` disables restore).
@@ -31,7 +31,7 @@ Live impact is moderate. At bedtime the common rooms cleared on their own sensor
 
 ## Goal
 
-Every migrated room has the same two flags with clear jobs: a hand-only `<room>_lighting_automations` that gates all lighting automations, and a `<room>_lights_manually_toggled` latch that is set by any manual change and is always cleared, by one dedicated reset automation, when the room goes Off or unoccupied. A room's Off forces its occupancy off, without bouncing the room back to Auto or stranding a flag.
+Every room that has a mode `input_select` follows one pattern (decided by John, 10-28: all rooms with state, not a subset). Every room with lighting automations has the same two flags with clear jobs: a hand-only `<room>_lighting_automations` that gates all lighting automations, and a `<room>_lights_manually_toggled` latch that is set by any manual change and is always cleared, by one dedicated reset automation, when the room goes Off or unoccupied. A room's Off forces its occupancy off and turns its lights off regardless of either flag, without bouncing the room back to Auto or stranding a flag.
 
 ## Approach
 
@@ -48,6 +48,7 @@ Converge on the main bedroom model, generalized into a small per-room kit, and r
 - **`<room>_lights_manual_change`** (new, or the existing `*_turned_off` / `*_manually_turned_on` files folded into one). Triggers on the room's main light going `on`, going `off`, and `attribute: brightness` (no `from`/`to`, or attribute changes won't fire; see memory). Condition: `trigger.to_state.context.parent_id == none` and the context isn't Adaptive Lighting's. Action: turn the manual flag on, clear `lights_auto`.
 - **`<room>_lights_reset_manual_toggle`** (existing in main bedroom, generalized). Triggers: `<room>_occupied` → off for 30s, `input_select.<room>` → Off, `input_boolean.house_occupied` → off. Ungated on purpose: no lighting-flag or mode conditions.
 - **Every on-type lighting automation** (motion on, day on, lights on) checks, in the order global → room → feature: `lighting_automations`, `<room>_lighting_automations`, `<room>_lights_manually_toggled` off, room mode.
+- **Room Off turns the lights off unconditionally.** The `<room>_lights_to_off` path for the Off transition checks only the global `lighting_automations`, never the room flag or the latch. This closes the #73 gap, where an empty room going Off with the flag off left manually-on lights burning.
 - **`<room>_not_occupied`** stops touching the lighting flag. **`<room>_mode_off`** forces `<room>_occupied` off (JK-1219), but only in the same change that lands the reset automation for that room.
 - **Auto bounce guard.** Every `<room>_mode_auto` that triggers on its occupancy going off gets `house_occupied` on plus `input_select.house` not in Away/Vacation. That deliberately doesn't require house == Auto, so it holds if `house-mode-resolver` makes the house Quiet after bedtime. The existing Auto automations that do require house == Auto are left alone here, and that dependency is flagged in the resolver plan.
 
@@ -55,7 +56,14 @@ Converge on the main bedroom model, generalized into a small per-room kit, and r
 
 **Ordering rule (the one thing that must be right).** In any room, the reset automation lands, in the same PR or earlier, before `mode_off` forces occupancy off. Otherwise the kitchen's stuck-flag bug spreads to every room. A regression test enforces it.
 
-**Scope.** v1 is protection: main bedroom (pilot), kitchen (supersedes the hotfix), garage (live flapping). Everything else is itemized under v2. Protection items (stuck or flapping flags) are kept separate from polish (consistency, dashboards, cleanup).
+**Scope: every room with a mode select** (John, 10-28). Pilot first, then one room per small PR:
+
+- **Pilot and early rooms (protection):** main bedroom, kitchen (supersedes #73), garage (live flapping).
+- **Rooms with motion or day lighting:** the full kit (both flags, manual-change detection, reset automation, Off forces occupancy off, Off turns lights off).
+- **Rooms with a mode but no lighting automations** (basement, jr_suite, powder_room, mudroom_bathroom, sunroom, foyer, Nino's and Gianluca's rooms): only Off forces occupancy off, plus the Auto-bounce guard. No flags are added where nothing would read them.
+- **family_room and mudroom:** now in scope. They first get a migration phase (modern syntax, `packages/` layout, fix the invalid `On`/`Dim` options), then the kit.
+
+Protection items (stuck or flapping flags) are still labelled separately from polish (consistency, dashboards, cleanup).
 
 ## Tasks
 
@@ -77,6 +85,7 @@ Converge on the main bedroom model, generalized into a small per-room kit, and r
 
 9. **Add `kitchen_lights_manually_toggled`** (`initial: off`) and `kitchen_lights_reset_manual_toggle`.
 10. **Fold detection** — `kitchen_lights_manually_turned_on` + `kitchen_lights_manually_turned_off` become `kitchen_lights_manual_change`, setting the manual flag instead of turning the lighting flag off. Drop the passive debug notification, or keep it behind the manual flag only (polish, John's call).
+11a. **Off turns the lights off regardless** — on the Off transition, `kitchen_lights_to_off` checks only `lighting_automations` (closes the #73 gap). Add a test.
 11. **Stop automations writing `kitchen_lighting_automations`** — remove the turn_on from `kitchen_not_occupied`, and remove the hotfix's reset line from `kitchen_mode_off` (the reset automation owns it now). `kitchen_mode_off` keeps forcing occupancy off.
 12. **Gate** `kitchen_lights_motion_on`, `kitchen_lights_day_on` and the Dim-mode pendant path on the manual flag. Drop `initial: on` from the lighting flag.
 13. **Side-effect check** — list the listeners of `kitchen_occupied` → off (music off, air purifier, announcement routing) and confirm firing them at bedtime Off is wanted. Already true today, so it's documentation only.
@@ -89,7 +98,7 @@ Converge on the main bedroom model, generalized into a small per-room kit, and r
 17. **JK-1219 for the garage** — `garage_mode_off` (house → Bedtime) forces `garage_occupied` off. Check `garage_mode_auto`, which triggers on occupancy *on*, so it doesn't bounce.
 18. **Tests + deploy + live check.**
 
-### Phase 4 — v2 rollout (itemized; each room is its own small PR, same kit, same tests)
+### Phase 4 — Rollout to every remaining room with a mode (each room is its own small PR, same kit, same tests)
 
 Protection (a flag that sticks or misfires today):
 
@@ -97,7 +106,7 @@ Protection (a flag that sticks or misfires today):
 20. **Upstairs hallway** — latch room. Migrate; `upstairs_hallway_mode_off` triggers only on house empty/restart, so JK-1219 there is low-risk.
 21. **Office** — migrate, re-enable manual detection, and delete `office_lighting_automation_on` / `office_lighting_automations_off` (disabled, but they write the flag). Office DnD keeps lights on: confirm `office_lights_on` treats DnD like Auto for the manual flag.
 22. **Main bathroom** — no manual detection today. Add the kit, and add the bounce guard to `main_bathroom_mode_auto`, which triggers on occupancy off and has no `house_occupied` check. JK-1219 on `main_bathroom_mode_off`.
-23. **JK-1219 for rooms with no lighting latch** — basement, jr_suite, Nino's and Gianluca's rooms, mudroom_bathroom: force occupancy off in `mode_off`. The kids' Auto automations already check `house_occupied`; add the house-not-Away/Vacation check. Audit occupancy-off side effects per room (heaters, sleep music, TTS routing) before each one.
+23. **JK-1219 for rooms with no lighting automations** — basement, jr_suite, powder_room, mudroom_bathroom, sunroom, foyer, Nino's and Gianluca's rooms: force occupancy off in `mode_off`. The kids' Auto automations already check `house_occupied`; add the house-not-Away/Vacation check. Audit occupancy-off side effects per room (heaters, sleep music, TTS routing) before each one.
 
 Polish (consistency and cleanup):
 
@@ -106,7 +115,12 @@ Polish (consistency and cleanup):
 26. **Dashboards** — the existing "Lighting Automations" rows (kitchen, main bedroom, main bathroom, playroom, office, upstairs hallway, dining room) keep working and become hand-only. Add a "Manual override" row per migrated room showing `<room>_lights_manually_toggled` (tap to clear). Remove the dining row (task 25).
 27. **Docs** — `docs/ROOMS.md` entity table, the room-package section in `packages/CLAUDE.md`, and any room README: describe the two flags and the reset rule in a few lines.
 
-Out of scope: **family_room and mudroom.** They live in legacy `automation/` with old syntax and invalid input_select options ("On"/"Dim"). Migrating them is a separate plan. This plan only checks that nothing here references their flags.
+### Phase 5 — family_room and mudroom (migrate, then adopt)
+
+28. **Migrate family_room** — move its automations from legacy `automation/` into `packages/family_room/` with modern syntax (one automation per file; keep aliases where `automation.<slug>` is referenced). Fix `family_room_mode_on` and `familiy_room_arrival`, which select "On"/"Dim", neither of which is an option in `input_select/rooms/family_room.yaml`: either add the options or point them at existing ones (decide from what the rooms actually do). Behaviour-neutral PR, with tests asserting every selected option exists.
+29. **Migrate mudroom** — same treatment.
+30. **Adopt the kit** in both rooms, as in Phase 4.
+31. **Repo-wide option test** — every `input_select.select_option` targeting a room select uses an option that select defines. This would have caught the family room bug and the foyer's lowercase "bedtime".
 
 ### Tests (`tests/test_room_lighting_override_regressions.py`)
 
@@ -117,6 +131,7 @@ Static YAML checks in the style of `tests/test_away_mode_regressions.py`, parame
 - The reset automation exists, triggers on occupancy off, room Off and house unoccupied, and has no conditions that could block it.
 - The manual-change automation has a `parent_id` context condition and a brightness trigger with `attribute:` and no `from`/`to`/`not_from`/`not_to`.
 - Every on-type lighting automation in the room checks both flags.
+- The Off-transition lights-off path doesn't check the room flag or the latch.
 - **Ordering invariant (repo-wide, not just migrated rooms):** if `<room>_mode_off` turns `<room>_occupied` off, then either the room has a reset automation or nothing resets its lighting flag from `<room>_not_occupied`.
 - Every `*_mode_auto` with an occupancy → off trigger checks `house_occupied` on.
 - Garage: the manual-change automation has the context check (regression for the flapping).
@@ -140,7 +155,7 @@ Reuse the shape of the investigation's q4/q5/q6 queries. Results go in the PR de
 4. **Drop `initial:` on the lighting flags?** Recommend **yes**, and keep `initial: off` on the manual flags so a restart always starts clean.
 5. **Dining room:** recommend **removing** the unused flag (and `dining_room_lights_auto`) rather than migrating it.
 6. **Does the manual flag block the vacancy-off automations (`*_lights_to_off` / `*_lights_off`)?** Recommend **no**. The latch blocks on-type automations only, and the off-when-empty path obeys only the hand flag. Otherwise a manually-on light stays on after everyone leaves, because the reset fires after the off trigger has passed. This matches the main bedroom today.
-7. **v1 scope:** recommend **main bedroom + kitchen + garage** (the three with live protection value), with everything in Phase 4 as follow-ups John can pick off.
+7. **Scope:** **decided 10-28 (John): every room with a mode select.** Main bedroom, kitchen and garage go first as pilots; then Phase 4; then Phase 5 for family_room and mudroom. Open: do Phase 4 rooms ship one per PR (recommended) or batched by floor?
 8. **Alias stability:** recommend **keeping existing aliases** on renamed or folded automations wherever `automation.<slug>` is referenced (dashboards, `automation.turn_on/off`), and choosing new aliases whose slug matches the id.
 
 ## Risks
