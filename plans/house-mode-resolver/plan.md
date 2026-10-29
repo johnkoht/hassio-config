@@ -16,7 +16,7 @@ Linear: JK-1118 (follow-up to PR #71). Sibling plan: `room-lighting-override` (r
 
 `input_select.house` (Auto / Away / Vacation / Bedtime / Quiet / Entertainment) is written by six edge-triggered automations in `automation/house/modes/` (legacy syntax). Each one hard-codes the option it selects, from `house_occupied`, `bedtime`, `vacation_mode` and `quiet_mode`. Nothing ever recomputes the mode from current state, so whichever edge fired last wins, even when it contradicts the booleans.
 
-PR #71 fixed one case: a departure no longer starts bedtime. Still broken:
+PR #71 stopped a departure from starting bedtime; John reversed that on 2026-10-29 (departure → Bedtime + arm, arrival ends it; see OD-1). Still broken:
 
 1. **An arrival never re-evaluates bedtime or quiet.** `house_mode_auto` runs on `house_occupied → on` but is blocked while `bedtime` is on, so arriving into a house with bedtime on leaves the select at **Away** while people are home. Arriving with `quiet_mode` on goes to Auto.
 2. **Bedtime ending goes to Auto even with quiet mode on.** `house_mode_auto` never checks `quiet_mode`, so speech notifications come back on and the doorbell reads WELCOME while people are still asleep. The recorder confirms this on three recent mornings.
@@ -148,7 +148,7 @@ Patch in place: add a quiet check to `house_mode_auto`, vacation guards to `hous
 
 Each has a recommended default. The plan above assumes the defaults.
 
-- **OD-1. The last awake adult leaves at night (others in bed).** Default: **stay Quiet.** This is already the behaviour after #71: bedtime doesn't start on a departure, quiet stays on, and the resolver keeps Quiet.
+- **OD-1. The last awake adult leaves at night (others in bed).** **Decided by John 2026-10-29: Bedtime, and arm.** Shipped as a hotfix: `bedtime_mode_on` triggers on `person.*` leaving home again, and `bedtime_mode_off_on_arrival` (Task 6) already exists, so this plan only adjusts its landing state (Quiet vs Auto, OD-2) and scope (OD-8).
 - **OD-2. Bedtime ends while quiet mode is still on.** Default: **Quiet.** This needs Task 5, or the common rooms stay Off.
 - **OD-3. The "house becomes occupied → Auto" trigger.** Default: **replace it with the resolver.** Arrival selects whatever the state says (Bedtime, Quiet or Auto), never a hard-coded Auto.
 - **OD-4. Does one adult getting up end bedtime?** Default: **yes, but only before noon.** One home adult awake is enough, and a no-adult-home fallback is kept. This matches today's effective OR, now bounded and without the away loophole.
