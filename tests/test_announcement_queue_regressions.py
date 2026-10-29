@@ -87,3 +87,35 @@ def test_played_message_already_cleared_leaves_queue_alone():
 def test_empty_or_missing_queue():
     assert render_updated([], {}) == []
     assert render_updated(None, REMINDER) == []
+
+
+class _Entity:
+    def __init__(self, state):
+        self.state = state
+
+
+class _Domain:
+    """Mimics HA's `states.<domain>`: an unknown entity is None, not an error."""
+    def __init__(self, entities):
+        self._entities = entities
+
+    def __getattr__(self, name):
+        return self._entities.get(name)
+
+
+def critical_auto_players(occupied_booleans):
+    """Render critical_announcement's media_players for `auto` with the given rooms occupied."""
+    script = yaml.safe_load(
+        (REPO / "packages/announcements/critical_announcement.yaml").read_text()
+    )["script"]["critical_announcement"]
+    template = script["sequence"][0]["data"]["media_players"]
+    states = type("States", (), {"input_boolean": _Domain(
+        {name: _Entity("on") for name in occupied_booleans})})()
+    return Environment().from_string(template).render(media_players="auto", states=states)
+
+
+def test_critical_auto_reaches_occupied_main_bedroom():
+    """The auto branch read the nonexistent input_boolean.main_bedroom, so the main
+    bedroom never heard a critical announcement (e.g. the leak voice alert)."""
+    assert "media_player.sonos_main_bedroom" in critical_auto_players(["main_bedroom_occupied"])
+    assert "media_player.sonos_main_bedroom" not in critical_auto_players([])
