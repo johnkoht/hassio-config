@@ -13,9 +13,10 @@ action:
           entity_id: input_select.cristina_status_dropdown
           state: "Just Left"
       sequence:
-        - service: input_select.select_option
+        - action: input_select.select_option
+          target:
+            entity_id: input_select.cristina_status_dropdown
           data:
-            entity_id: input_select.cristina_falbo_status_dropdown
             option: "Away"
   - choose:
       conditions:
