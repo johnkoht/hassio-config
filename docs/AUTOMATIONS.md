@@ -44,7 +44,7 @@ Here are some of my favorite and most useful automations:
 ### House Modes
 
 - **[Entertainment Mode](https://github.com/johnkoht/hassio-config/tree/master/packages/house/entertainment)**: my wife doesn't love automations and TTS messages when we are entertaining during holidays. I can either toggle this manually or it's automatically triggered when the house detects a bunch of BLE devices. This will stop TTS messages, adapative lighting, and other automations that might otherwise upset my wife. Gotta keep the WAF as high as possible.
-- **[Bedtime Mode](https://github.com/johnkoht/hassio-config/tree/master/packages/house/bedtime_mode)**: When everybody is in bed, the house goes into Bedtime mode. This means that all of the rooms, expect bedrooms, essentially turn off. No automations will run, etc. The bedrooms all enter a Bedtime mode as well where automations vary depending on the room. But mostly it's low lighting, no TTS, etc. This will also arm the alarm panel, ensure the doors are locked, and more.
+- **[Bedtime Mode](https://github.com/johnkoht/hassio-config/tree/master/packages/house/bedtime_mode)**: When someone gets into bed and every adult at home is in bed, the house goes into Bedtime mode (an adult leaving doesn't count). This means that all of the rooms, expect bedrooms, essentially turn off. No automations will run, etc. The bedrooms all enter a Bedtime mode as well where automations vary depending on the room. But mostly it's low lighting, no TTS, etc. This will also arm the alarm panel, ensure the doors are locked, and more.
 
 ### Safety & Utilities
 
