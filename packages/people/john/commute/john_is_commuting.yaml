@@ -1,6 +1,6 @@
 # John is Commuting
 #
-# Flags the commute once John has been at a commute station for 2 minutes.
+# Flags the commute once John has been at a commute station for 90 seconds.
 #
 
 automation:
@@ -8,12 +8,12 @@ automation:
     alias: "John is Commuting"
     initial_state: on
     triggers:
-      # Location state changed and held for 2 mins (attribute-only updates ignored)
+      # Location state changed and held for 90s (attribute-only updates ignored)
       - trigger: state
         entity_id: person.john_koht
         to: ~
         for:
-          minutes: 2
+          seconds: 90
     conditions:
       # John is not home
       - condition: state
