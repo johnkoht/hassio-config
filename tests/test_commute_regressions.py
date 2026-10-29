@@ -72,3 +72,11 @@ def test_automation_references_resolve():
                 targets = (node.get("target") or {}).get("entity_id", node.get("entity_id"))
                 for t in targets if isinstance(targets, list) else [targets]:
                     assert t in entity_ids, f"{path.name}: {t} matches no commute automation alias"
+
+
+@pytest.mark.parametrize("person", ["john", "cristina"])
+def test_commute_flag_dwell_is_90_seconds(person):
+    """JK-1134: 2 minutes at a station was too long before the commute flag set."""
+    path = REPO / f"packages/people/{person}/commute/{person}_is_commuting.yaml"
+    auto = yaml.load(path.read_text(), Loader=HomeAssistantLoader)["automation"][0]
+    assert auto["triggers"][0]["for"] == {"seconds": 90}
