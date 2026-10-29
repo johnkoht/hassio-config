@@ -7,7 +7,7 @@ has_pre_mortem: false
 has_review: false
 has_prd: false
 issues: [JK-1149, JK-1165]
-depends_on: alarm/fire parallel-alert hotfix (JK-1165 part 1, assumed landed)
+depends_on: JK-1165 hotfixes #72 (fire trigger + parallel alerts) and #75 (flash restore), both shipped 2026-10-28/29
 ---
 
 # Emergency Mode
@@ -78,8 +78,8 @@ Size: S = one or two files and a small diff; M = several files or a behaviour ch
 | P10 | `security_alarm_disabled` fires on any exit from `triggered` | Protection | S | sirens and flashing stop on disarm or trigger-time expiry |
 | P11 | Panic → alarmo `alarm_control_panel.alarm_trigger` | Protection | M | needs live verification that alarmo triggers from disarmed; hardware precondition |
 | X1 | Sirens on fire | Polish/policy | S | John's call |
-| X2 | Noonlight on fire | Policy | S | John's call; test mode must cover it |
-| X3 | Lights stay on after flashing (skip scene restore) | Polish | S | |
+| P12 | Noonlight on fire | Protection | S | decided 10-28 (John: yes); its own `continue_on_error` branch, respects test mode |
+| X3 | Intruder alarm: keep lights on until disarm instead of restoring | Polish | S | restore is now the default and works (#75) |
 | X4 | Critical pre-empts a playing message (`media_stop` on targets) | Polish | M | Sonos announce behaviour needs testing |
 | X5 | Real playback length (wait on Sonos state, not an estimate) | Polish | M/L | announce mode doesn't reliably change state; P5 is the pragmatic version |
 | X6 | Hazardous air → critical | Polish | S | not recommended |
@@ -90,39 +90,41 @@ Size: S = one or two files and a small diff; M = several files or a behaviour ch
 
 - **PR 1, audio gate (P1–P5).** JK-1149 core. Testable without any alarm entity: turn on `input_boolean.emergency_mode`, ring a test chime or enqueue a low message, confirm it's deferred, then call `script.critical_announcement` directly with a test message and confirm it plays overnight in quiet mode.
 - **PR 2, critical delivery (P6–P8).** Push and tornado paths. Testable with a test push and a direct critical_announcement call.
-- **PR 3, alarm lifecycle (P9–P11).** Test mode lands first in the PR, and no E2E run happens without it on. Panic is gated on the button working again.
-- **PR 4, polish (X1–X4 as decided).** Optional. Can wait until v1 has lived through a real test.
+- **PR 3, alarm lifecycle (P9–P12).** Test mode lands first in the PR, and no E2E run happens without it on. Panic is gated on the button working again.
+- **PR 4, polish (X1, X3, X4 as decided).** Optional. Can wait until v1 has lived through a real test.
 
 ## Tasks
 
 1. **PR 1: emergency sensor.** New `packages/security/emergency/` (or `packages/house/emergency/`, see the open decisions). It holds `input_boolean.emergency_mode` (no `initial:`), the template `binary_sensor.emergency_active` (alarmo `triggered` OR `binary_sensor.smoke_detector` on OR the boolean on), and an `emergency_mode_auto_off` automation: boolean on for 10 min, and `homeassistant` start → off. One automation per file, header comments, modern syntax.
 2. **PR 1: engine gate.** `announcement_engine.yaml`: add a `priority` field (default `normal`). First step: `condition: template`, `not is_state('binary_sensor.emergency_active','on') or priority == 'critical'`. Replace the TTS wait with a conservative formula, for example `len/14 + 3` (see the open decisions).
 3. **PR 1: critical direct path.** `critical_announcement.yaml`: call `script.announcement_engine` (blocking) with `priority: critical` instead of `announcement_queue_enqueue`. Keep the volume and quiet-halving logic. Keep saving `input_text.latest_voice_announcement`. Fix the `auto` branch, which reads `input_boolean.main_bedroom` instead of `main_bedroom_occupied` (only if it's in scope; flag it otherwise).
-4. **PR 1: processor deferral.** `processor.yaml`: pass `priority: "{{ next.priority }}"` to the engine. Add a condition that `emergency_active` is off or `q[0].priority == 'critical'`. Add a trigger on `binary_sensor.emergency_active` → `off`. Leave the existing house_occupied and quiet gates in place for non-critical messages.
+4. **PR 1: processor hold.** `processor.yaml`: pass `priority: "{{ next.priority }}"` to the engine. Add a condition that `emergency_active` is off or `q[0].priority == 'critical'`, so nothing non-critical is dequeued during an emergency. Add a trigger on `binary_sensor.emergency_active` → `off`; on that run, drop expired items (the normal expiry check) and drop `low` priority items outright before playing anything. Leave the existing house_occupied and quiet gates in place for non-critical messages. This replaces `append.yaml`'s critical-append purge (`[new_item] + critical_msgs`), which stops running once P3 sends critical messages straight to the engine; leave that purge in place for any critical item that still arrives through the queue, and add a test that both paths agree.
 5. **PR 1: tests and docs.** Extend `tests/test_announcement_queue_regressions.py` (or add `test_emergency_mode_regressions.py`): the engine gate is the first step; critical_announcement doesn't call enqueue; the processor passes priority; doorbell and dong still go through the engine. Update `packages/announcements/CLAUDE.md`, `README.md` and `LEARNINGS.md`, and `docs/ANNOUNCEMENTS.md` (the critical path no longer uses the queue, the emergency gate, the corrected "clears the queue" claim). Update `packages/security/CLAUDE.md`, whose hotfix text says critical "still goes through the queue".
 6. **PR 2: critical push.** `general_notifications.yaml`: let `priority == 'critical'` through regardless of `notification_level`, and change to `mode: parallel` with `max: 25`. `fire_alarm_triggered.yaml`: push to `devices: "all"`. `severe_weather_warning.yaml`: the tornado branch calls `script.critical_announcement` with `media_players: all`. Add regression tests, and update `docs/` and the security CLAUDE.md.
 7. **PR 3: alarm test mode.** `input_boolean.alarm_test_mode` with `initial: false`, which is deliberate here: it must come back off after a restart, unlike the user-editable helpers in the `initial:` memory entry. Auto-off after 30 min, plus a persistent notification while it's on. In `security_alarm_alert`, wrap the Noonlight branch so it runs unless test mode is `on`; unknown or unavailable still dispatches. Add a regression test that the Noonlight branch carries the condition and that an absent boolean doesn't block dispatch.
 8. **PR 3: disarm off-path.** `security_alarm_disabled` triggers on `from: "triggered"` to any state except `unavailable`/`unknown`. Add a test.
-9. **PR 3: panic via alarmo.** First, have the `homelab` agent read the live alarmo version and code (read-only) to confirm `alarm_control_panel.alarm_trigger` works from `disarmed`, what state alarmo goes to after trigger time, and whether it needs a code (if so, `!secret alarmo_code`). Then `panic_button.yaml` calls `alarm_control_panel.alarm_trigger` on `alarm_control_panel.alarmo` instead of the alert script. Verify only after the button is repaired, and only with test mode on.
-10. **PR 4 (optional): polish.** X1/X2 per John's decision. X3: drop the `scene` restore at the end of `alarm_flash_lights`, or make it conditional on the trigger. X4 only if a real test shows a pre-emption problem.
+9. **PR 3: Noonlight on fire (P12).** `fire_alarm_alert` gets a Noonlight branch with `continue_on_error: true`, gated by test mode exactly like the intruder branch. Before building, read the Noonlight component (on the host, read-only) and Noonlight's docs for how a false alarm is cancelled. The component's switch-off doesn't cancel, so the cancel path is Noonlight's own (app or callback). Put that cancel path in the fire push text so whoever gets it knows how to stand the dispatch down. Add a regression test for the branch and its gate.
+10. **PR 3: panic via alarmo.** First, have the `homelab` agent read the live alarmo version and code (read-only) to confirm `alarm_control_panel.alarm_trigger` works from `disarmed`, what state alarmo goes to after trigger time, and whether it needs a code (if so, `!secret alarmo_code`). Then `panic_button.yaml` calls `alarm_control_panel.alarm_trigger` on `alarm_control_panel.alarmo` instead of the alert script. Verify only after the button is repaired, and only with test mode on.
+11. **PR 4 (optional): polish.** X1 per John's decision. X3, if chosen: the intruder path passes a flag so `alarm_flash_lights` skips its restore, and `security_alarm_disabled` restores the snapshot on disarm (the fire path keeps restoring right away). X4 only if a real test shows a pre-emption problem.
 
 ## Open decisions
 
 1. **New flag, or reuse `alert_mode`?** Recommended: **new `input_boolean.emergency_mode`**, as only a manual/test override, with the real gate being the derived `binary_sensor.emergency_active`. `alert_mode` means "bypass quiet once" to the legacy Alexa script, which clears it after each use.
 2. **Derived sensor, or the investigation's latched boolean + timer?** Recommended: **derived sensor**. It can't stick and needs no wiring in the alert scripts. Trade-off: the gate lifts the moment the alarm is disarmed or the smoke clears, with no grace period. If John wants a tail, add `delay_off: 60s` to the template sensor.
-3. **Drop or defer non-critical announcements during an emergency?** Recommended: **defer**. They stay queued and play afterwards, if they haven't expired (low 3 min, normal 10 min, high never). Direct engine callers (doorbell, dong) are dropped, not deferred; that's fine for a chime. Note that a critical *append* used to wipe the queue; with P3, critical no longer appends, so that wipe stops happening.
+3. **Drop or defer non-critical announcements during an emergency?** **Decided 10-28: hold, don't clear.** John asked whether to clear the queue or hold announcements until `emergency_active` is off. Hold: nothing non-critical is dequeued while the emergency is on, and direct engine callers (doorbell, dong) are dropped, not queued. When it clears, expired items are dropped (low 3 min, normal 10 min) and so is anything `low`, since stale chit-chat after an alarm is noise; normal and high reminders that are still valid then play. Clearing the whole queue at the start was rejected because a time-sensitive normal reminder can still matter once the emergency ends. The hold replaces the old critical-append purge, which no longer runs once critical skips the queue (task 4).
 4. **Auto-clear?** Recommended: the manual boolean auto-clears at **10 min** and at HA start. The derived sensor clears on disarm, trigger-time expiry, or smoke clearing.
 5. **Critical bypasses the MQTT queue?** Recommended: **yes** (P3). Alternative: keep critical in the queue and patch each processor gate plus the append race. That's more edits and still leaves the MQTT round-trip in the critical path.
 6. **Panic through alarmo?** Recommended: **yes**, provided alarmo triggers from disarmed (task 9 verifies). If it doesn't, fallback: panic turns on `input_boolean.emergency_mode` and calls the alert script, and disarming the boolean runs `security_alarm_disabled`.
 7. **Sirens on fire?** Recommended: **yes**. Smoke detectors sound locally, but the sirens reach the whole house.
-8. **Noonlight on fire?** **John's call.** There's no recommendation, because false smoke alarms (cooking) would dispatch. If yes, it rides in a `continue_on_error` branch and respects test mode.
-9. **Lights stay on after flashing?** Recommended: **yes**. Skip the scene restore. Room lights-off automations may still turn rooms off later; accept that in v1 (X7 if not).
+8. **Noonlight on fire?** **Decided 10-28 (John): yes.** See P12 and task 9. The false-alarm risk (cooking) is handled by Noonlight's own cancel path, which goes in the fire push.
+9. **Lights after flashing.** Reframed 10-29. John expects his scene back, and the restore was broken (it snapshotted the light group, so every light came on); #75 fixed it, so **restore is the default**. Open: for an intruder alarm only, keep the lights on until disarm (X3)? Recommended: **restore on fire and tests, keep lights on until disarm for an intruder.**
 10. **Tornado and hazardous air?** Recommended: move **tornado only** to critical_announcement; leave hazardous air on voice_announcement.
 11. **TTS wait formula.** Recommended: **`len/14 + 3` s for every priority**. Simple, and it fixes clipping at the cost of slightly longer gaps between queued messages. Alternative: lengthen the wait only for critical.
 12. **Package location.** Recommended: `packages/security/emergency/`, since alarm and fire own the trigger states. Alternative: `packages/house/`, next to the other house modes.
 
 ## Risks
 
+- **Noonlight on fire dispatches on a cooking false alarm.** Mitigation: the smoke detector is the only fire trigger, the cancel path is in the push (task 9), and test mode covers every fire test.
 - **A real Noonlight dispatch during testing.** Mitigation: never run `security_alarm_alert`, the panic button or alarmo trigger until P9 test mode is merged, deployed and visibly on. Verify PR 1 and PR 2 only by calling `script.critical_announcement`, turning on `input_boolean.emergency_mode`, and sending test pushes. Static regression tests check the alert scripts' structure without running them.
 - **Test mode left on during a real event.** Mitigation: `initial: false`, 30-min auto-off, a persistent notification, and the condition fails safe (only an explicit `on` skips Noonlight).
 - **The engine gate silently blocks something important.** Every non-critical caller is blocked while `emergency_active` is on. If the template errors to `unavailable`, `not is_state(...,'on')` passes everything, so it fails open, which is the right direction for chatter. Mitigation: a test that the gate expression is fail-open.
