@@ -28,3 +28,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-10-28 · [linear-batch-house-modes-security](entries/2026-10-28_linear-batch-house-modes-security.md) — departure no longer starts bedtime (#71); fire alarm watched a nonexistent sensor (#72); kitchen flag reset on Off (#73); 4 plans drafted
 - 2026-10-29 · [overnight-hotfixes](entries/2026-10-29_overnight-hotfixes.md) — critical auto announcements skipped the main bedroom (nonexistent boolean); entity-reference test skips without a registry snapshot
 - 2026-10-29 · [board-pass-answers](entries/2026-10-29_board-pass-answers.md) — hotfixes from John's answers: commute dwell, camera alert muting, house-off button
+- 2026-10-30 · [emergency-mode-learnings](entries/2026-10-30_emergency-mode-learnings.md) — PR 1 of 4: emergency_active gates engine + processor, critical skips the queue (JK-1149); review caught blocking-call/quiet-volume/max faults

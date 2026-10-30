@@ -15,12 +15,9 @@ can't cancel the sirens. It only marks the run as errored.
 The fire trigger is `binary_sensor.smoke_detector` (Vivint). It used to
 point at a nonexistent `_2` entity, so it could never fire.
 
-## critical_announcement is still queue-gated
+## critical_announcement skips the queue (JK-1149)
 
-It enqueues at `critical` priority. `announcements/queue/processor.yaml`
-holds the whole queue while `house_occupied` is off or quiet mode is on
-before 9am, and critical messages are held too. Never rely on TTS alone
-for an emergency.
+Since the emergency-mode work (2026-10-30) it starts the engine directly, so `house_occupied` and quiet-before-9am no longer hold a fire or alarm voice message; before that, an overnight fire produced no voice until 9 am. It still relies on Sonos being reachable, so never rely on TTS alone for an emergency.
 
 ## Snapshot the leaf lights, not the light group
 
