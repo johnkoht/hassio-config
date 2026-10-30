@@ -1,7 +1,7 @@
 ---
 title: Room Lighting Override
 slug: room-lighting-override
-status: in-progress
+status: shipped
 created: 2026-10-28
 issues: [JK-1145, JK-1102, JK-1219]
 related: [house-mode-resolver]

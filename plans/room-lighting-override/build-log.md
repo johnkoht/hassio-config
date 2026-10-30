@@ -353,3 +353,7 @@ Family room (mode-only).
 | lights_to_on revived (initial_state on) | test_family_room_disabled_automations_stay_disabled |
 | mode_on revived | test_family_room_disabled_automations_stay_disabled |
 | hand flag helper added | test_mode_only_room_has_no_override_kit[family_room] |
+
+## PR 6 review loop and finalize
+- Final reviewer (sonnet) at 7797e54: ITERATE, one minor DEFECT (memory entry said the plan was stamped shipped before the stamp; PR numbers guessed). Fixed; the stamp is now real (Phase 5.5): plan.md `status: shipped`, prd.json reconciled (10/10 complete).
+- COMPLETE: six PRs, 901 tests.
