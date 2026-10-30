@@ -40,12 +40,3 @@ automation:
       # Turn OFF this automation
       - action: automation.turn_off
         entity_id: automation.nearly_home_turn_off
-
-      # Notification for logging
-      - action: script.general_notification
-        data:
-          title: Nearly Home Off
-          message: Nearly Home turned off since you're home
-          devices: "jk"
-          priority: "passive"
-          tag: "nearly-home"

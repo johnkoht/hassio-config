@@ -78,9 +78,46 @@ script:
                   message: "{{message}}"
                   image_path: "/config/www/images/{{ local_image_name }}.jpg"
 
+      # Vehicle: passive push only, whoever is home or away
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ detection_type == 'vehicle' }}"
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.house_occupied
+                    state: "on"
+                  - condition: state
+                    entity_id: group.family
+                    state: "not_home"
+            sequence:
+              - action: notify.ios_family
+                metadata: {}
+                data:
+                  title: "{{title}}"
+                  message: "{{message}}"
+                  data:
+                    image: "{{image_path}}"
+                    entity_id: "{{ proxy_camera }}"
+                    push:
+                      interruption-level: passive
+                    url: "{{ camera_link }}"
+                    clickAction: "{{ camera_link }}"
+                    actions:
+                      - action: "SNOOZE_{{ snooze_timer }}"
+                        title: "Snooze 15 min"
+                      - action: "PAUSE_{{ notifications_boolean }}"
+                        title: "Pause notifications"
+                      - action: "PAUSE_ALL_CAMERA_NOTIFICATIONS"
+                        title: "Pause ALL camera notifications"
+
       # House occupied + bedtime: send critical push
       - choose:
           - conditions:
+              - condition: template
+                alias: "Not a vehicle (vehicles get the passive push below)"
+                value_template: "{{ detection_type != 'vehicle' }}"
               - condition: state
                 entity_id: input_boolean.house_occupied
                 state: "on"
@@ -116,6 +153,9 @@ script:
       # House occupied + not bedtime: send active push
       - choose:
           - conditions:
+              - condition: template
+                alias: "Not a vehicle (vehicles get the passive push below)"
+                value_template: "{{ detection_type != 'vehicle' }}"
               - condition: state
                 entity_id: input_boolean.house_occupied
                 state: "on"
@@ -148,6 +188,9 @@ script:
       # Family away: send time-sensitive push
       - choose:
           - conditions:
+              - condition: template
+                alias: "Not a vehicle (vehicles get the passive push below)"
+                value_template: "{{ detection_type != 'vehicle' }}"
               - condition: state
                 entity_id: group.family
                 state: "not_home"

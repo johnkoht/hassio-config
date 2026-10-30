@@ -28,11 +28,3 @@ automation:
       # Turn OFF the boolean
       - action: input_boolean.turn_off
         entity_id: input_boolean.john_personal_time
-      # Notification for logging
-      - action: script.general_notification
-        data:
-          message: "John personal time turned OFF"
-          title: "John Personal Time"
-          devices: "jk"
-          priority: "passive"
-          tag: "john-personal-time"

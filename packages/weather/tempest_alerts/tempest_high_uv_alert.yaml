@@ -58,6 +58,6 @@ automation:
               "Attention! UV levels are elevated today, please take precautions."
             {% endif %}
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "tempest-uv-alert"
           url: "/dashboard-kohbo/climate#weather"

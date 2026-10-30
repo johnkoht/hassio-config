@@ -51,5 +51,7 @@ automation:
           title: Garage Door 2
           message: Garage door three is opening upon somebody's arrival
           data:
+            push:
+              interruption-level: passive
             url: /dashboard-kohbo/security-garage-doors
             clickAction: /dashboard-kohbo/security-garage-doors

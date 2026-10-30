@@ -80,7 +80,7 @@ automation:
         data:
           message: Home is now disarmed!
           title: Security System
-          devices: "all"
-          priority: "active"
+          devices: "jk"
+          priority: "passive"
           tag: "home-security"
           url: /dashboard-kohbo/security

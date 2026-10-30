@@ -299,7 +299,7 @@ script:
           title: "Daily Update!"
           message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "daily-update"
       #
       # Voice Announcement

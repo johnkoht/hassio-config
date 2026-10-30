@@ -42,6 +42,6 @@ automation:
           message: Home is now disarmed upon the arrival of somebody.
           title: Home Security System
           devices: "jk"
-          priority: "active"
+          priority: "passive"
           tag: "home-security"
           url: /dashboard-kohbo/security

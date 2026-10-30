@@ -46,7 +46,7 @@ automation:
         data:
           title: Security Cameras
           message: "Camera detections have been enabled."
-          devices: "all"
+          devices: "jk"
           priority: "passive"
           tag: "camera-notifications"
           url: /dashboard-kohbo/security-cameras
