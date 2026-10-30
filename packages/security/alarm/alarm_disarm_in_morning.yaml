@@ -1,3 +1,8 @@
+# Alarm - Disarm in Morning
+#
+# Disarm once bedtime ends and the first floor is in use. Morning only,
+# and re-checked after the wait so a re-armed house stays armed.
+#
 automation:
   - id: "alarm_disarm_in_morning"
     alias: "Alarm - Disarm in Morning"
@@ -24,9 +29,10 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
-      # After 5am
+      # Morning only, so a night-time bedtime end can't disarm
       - condition: time
         after: "05:00:00"
+        before: "12:00:00"
     actions:
       # First floor has been occupied for more than 3 minutes
       - wait_template: >-
@@ -37,6 +43,20 @@ automation:
 
         timeout: "02:30:00"
         continue_on_timeout: false
+
+      # Re-check: the wait can last hours, and bedtime may have restarted
+      - alias: "Bedtime is still off"
+        condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      - alias: "Alarm is still armed_home"
+        condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "armed_home"
+      - alias: "House is still occupied"
+        condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
 
       # Disarm the alarm
       # - action: alarm_control_panel.alarm_disarm
