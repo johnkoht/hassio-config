@@ -22,7 +22,7 @@
 # - active: general notification default
 # - passive: logging purposes
 # - time-sensitive: time sensitive
-# - critical: critical iOS alert
+# - critical: critical iOS alert (always sent, even when notification_level is None)
 #
 
 input_select:
@@ -64,7 +64,9 @@ script:
   #
   general_notification:
     alias: General Notification
-    mode: "queued"
+    # Parallel so a burst of camera pushes can't queue (and drop) a critical alert
+    mode: "parallel"
+    max: 25
     icon: mdi:message-alert
 
     fields:
@@ -202,12 +204,17 @@ script:
               "active"
             {% endif %}
 
-      # Make sure notifications are not disabled
-      - condition: template
-        value_template: "{{ states.input_select.notification_level.state != 'None' }}"
+      # Make sure notifications are not disabled. A critical push always goes
+      # out: an alarm or fire must reach everyone whatever the level is.
+      - alias: "Notifications are on, or the push is critical"
+        condition: template
+        value_template: "{{ priority == 'critical' or states.input_select.notification_level.state != 'None' }}"
 
       - condition: or
         conditions:
+          # Critical always passes
+          - condition: template
+            value_template: "{{ priority == 'critical' }}"
           # If notification level is all
           - condition: state
             entity_id: input_select.notification_level

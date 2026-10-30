@@ -127,3 +127,12 @@ Categories: reimplementation/compat, test complexity, integration, documentation
 CRITICAL risks (must address before proceeding): none
 
 Rollback safety: every PR 1 change is config-only and revertable with a git revert plus the same reloads. Deploy order is safe either way because the gate fails open when the new entity doesn't exist yet.
+
+---
+
+## PR 2 refresh (critical delivery), 2026-10-30
+
+- **Parallel mode reorders same-tag pushes (MEDIUM).** Caller audit of every `tag:` in `packages/`: the only cross-script pair is `home-security-alarm` (alarm triggered, then alarm disabled), which is meant to replace the first. Other repeats are exclusive branches. Mitigation: accepted and documented in `packages/security/CLAUDE.md`.
+- **Tornado still reaching `append.yaml`'s purge (MEDIUM).** Fixed by calling `critical_announcement` (skips the queue). Severe thunderstorm warning and extreme heat warning remain queue-path criticals and still purge; hazardous air unchanged by decision 10. Reported to the owner.
+- **`max: 25` on a parallel script (LOW).** Over 25 concurrent runs are dropped with a warning; a camera burst would need to exceed that before a critical push is lost.
+- No CRITICAL risks. Nothing in PR 2 touches the alert scripts' structure, Noonlight, sirens, alarmo or panic.

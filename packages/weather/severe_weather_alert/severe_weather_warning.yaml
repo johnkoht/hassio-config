@@ -50,13 +50,13 @@ automation:
                     {{ ns_dict.events_dict[repeat.index - 1].event == 'Tornado Warning' and ns_dict.events_dict[repeat.index - 1].id not in history_id_list }}
               then:
                 #
-                # Voice Announcement
+                # Voice Announcement: every speaker, at any hour. critical_announcement
+                # skips the queue, so it also skips append.yaml's critical purge.
                 #
-                - action: script.voice_announcement
+                - action: script.critical_announcement
                   data:
-                    media_players: "auto"
+                    media_players: "all"
                     sound: "nuclear"
-                    priority: critical
                     speech_message: "Attention!!,,,Attention!!,,,The National Weather Service Has issued a tornado warning for our area!"
                 #
                 # Update the sensor

@@ -74,7 +74,7 @@ script:
         selector:
           number:
             min: 10
-            max: 80
+            max: 75
       #
       #
       # Speech Message Details
@@ -95,7 +95,7 @@ script:
         selector:
           number:
             min: 10
-            max: 80
+            max: 75
       #
       #
       # Media Player

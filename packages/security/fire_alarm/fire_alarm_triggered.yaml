@@ -49,7 +49,7 @@ script:
               variables:
                 message: The smoke detector has activated, I'm turning off the HVAC. Please get to safety!
                 title: Fire & Smoke Alarm
-                devices: "jk"
+                devices: "all"
                 priority: "critical"
                 tag: "home-fire-alarm"
 
