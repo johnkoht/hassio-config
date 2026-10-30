@@ -210,8 +210,23 @@ ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_ligh
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"]}
 
 
+# Other lights whose hand changes must also latch the override (Dim pendants).
+EXTRA_LIGHTS = {"kitchen": ["light.kitchen_island_pendants"]}
+
+
 def _main_light(room):
     return MAIN_LIGHT[room]
+
+
+@pytest.mark.parametrize("room,light", [(r, l) for r, ls in EXTRA_LIGHTS.items() for l in ls])
+def test_manual_change_also_watches_extra_lights(room, light):
+    """A hand change to the Dim pendants must latch too, else Dim motion re-applies over it."""
+    trig = as_list(_manual(room)["triggers"])
+    for to in ("on", "off"):
+        assert any(t.get("entity_id") == light and t.get("to") == to
+                   and "attribute" not in t for t in trig), to
+    assert any(t.get("entity_id") == light and t.get("attribute") == "brightness"
+               and not {"from", "to", "not_from", "not_to"} & set(t) for t in trig)
 
 
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
