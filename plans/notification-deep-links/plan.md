@@ -175,7 +175,7 @@ All resolved by the plan's recommended default (John, 2026-10-30, written author
 
 ## Push pruning (JK-1068 follow-up, John 2026-10-30)
 
-**PROPOSAL, needs John's pick.** Pruning is NOT approved; only the deep-links work above is. John asked: "can we maybe clean up some of these push notifications too? I get a lot and it's annoying. Can you propose a list to cut/turn off for now?"
+**APPROVED by John 2026-10-30, all rows except 7** ("keep the animal detected, useful if the dog gets out": animal camera detections are unchanged). Applied in the push-pruning PR; see "Applied" below. Original ask: "can we maybe clean up some of these push notifications too? I get a lot and it's annoying. Can you propose a list to cut/turn off for now?"
 
 Basis: the audit above (about 108 push call sites) plus a fresh grep of `packages/`, `automation/` and `scripts/` for `script.general_notification` and `notify.` (95 files). Frequency is judged from the trigger (a state flip or occupancy edge fires many times a day; an alarm or fault fires rarely), not from live counts; the `homelab` agent can pull a real count per tag from the recorder if John wants numbers before choosing. Note two files (`upstairs_dryer_complete.yml`, `today_is_full_moon.yml`) are `.yml`, which HA never loads, so they send nothing today and need no decision.
 
@@ -212,7 +212,7 @@ Actions: **Cut** = delete the push (the automation keeps doing its other job). *
 
 **Overlaps with the approved plans, none blocking:** row 2 overlaps `room-lighting-override`; rows 5 and 18 touch the "passive loggers" exempt list above; rows in `packages/security/alarm/` overlap the emergency-mode PRs only through shared files (merge order, not logic).
 
-**John's pick needed:** which rows (or all), and whether passive means "no banner" (as above) or "cut" for rows 8 to 15. Once picked, it ships as its own PR; it is independent of the deep-links PRs and touches only automation files, so it waits for John's go-ahead before merge and deploy.
+**John's pick (resolved):** which rows (or all), and whether passive means "no banner" (as above) or "cut" for rows 8 to 15. Once picked, it ships as its own PR; it is independent of the deep-links PRs and touches only automation files, so it waits for John's go-ahead before merge and deploy.
 
 ## Risks
 
@@ -224,3 +224,10 @@ Actions: **Cut** = delete the push (the automation keeps doing its other job). *
 - Privacy. Notification text and the reminders are family routine. This plan paraphrases them, and the PRs must keep titles generic.
 
 On approval → /approve → /ship notification-deep-links
+
+### Applied (push-pruning PR)
+
+- **Cut (push deleted, automation kept):** rows 1, 3, 4, 5 (all three), 6 (`scripts/house/house_away.yaml` only; the passive `house_mode_away_notification` stays), 18 (`packages/today_is_a_full_moon.yaml`, the file that loads; the `.yml` copy never loads, and the announcement stays; plus the Christmas mode echo), 19. No automation was push-only, so no file was deleted.
+- **Passive:** rows 8 (vehicle detections get their own passive-push branch in `camera_detection_alert.yaml`; person and animal branches are unchanged), 9, 10, 11, 12, 13, 14, 15, 17, 20. Direct `notify.*` pushes (garage door 2, fingerprint) use `push.interruption-level: passive`.
+- **John-only:** row 10 `alarm_disarm_in_morning` and row 16 camera toggles now use `devices: "jk"`.
+- **Skipped:** row 2 (kitchen, playroom and hallway light pushes are already gone from the repo) and row 7 (John kept the animal detections).

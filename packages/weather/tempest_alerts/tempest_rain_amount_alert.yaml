@@ -54,6 +54,6 @@ automation:
               "Attention! There's quite a bit of rain so make sure to keep an eye on the basement."
             {% endif %}
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "tempest-rain-alert"
           url: "/dashboard-kohbo/climate#weather"

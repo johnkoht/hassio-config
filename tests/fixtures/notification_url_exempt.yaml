@@ -4,39 +4,9 @@
 # (the file's pushes now all carry a link, or it no longer sends one).
 
 # Passive logger: a status echo with nothing to open
-- path: packages/family_room/occupancy/family_room_not_occupied.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/family_room/occupancy/family_room_occupied.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/john/do_not_disturb/automations/john_dnd_on.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/john/do_not_disturb/automations/john_personal_time_off.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/john/do_not_disturb/automations/john_personal_time_on.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/john/do_not_disturb/automations/john_work_call_off.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/john/do_not_disturb/automations/john_work_call_on.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/nearly_home/nearly_home_off.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/nearly_home/nearly_home_on.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/people/announcements/person_announcement_script.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: automation/people/returned_home.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: automation/people/cristina/cristina_arrived_work.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/playroom/party_time/playroom_activate_party_time.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/playroom/party_time/playroom_deactivate_party_time.yaml
-  reason: "Passive logger: a status echo with nothing to open"
 - path: automation/guests/guest_announce_arrival.yaml
   reason: "Passive logger: a status echo with nothing to open"
 - path: automation/guests/guest_announce_departure.yaml
-  reason: "Passive logger: a status echo with nothing to open"
-- path: packages/today_is_a_full_moon.yaml
   reason: "Passive logger: a status echo with nothing to open"
 
 # Reminder with no screen to open

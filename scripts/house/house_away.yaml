@@ -23,11 +23,3 @@ sequence:
   # - service: script.tvs_off
   #   data: {}
   # Garage doors - handled via garage_doors_close_when_empty_house.yaml
-  - service: script.general_notification
-    data:
-      title: Away Mode
-      message: Nobody is home so away mode has been activated!
-      devices: "jk"
-      priority: "active"
-      tag: "house-mode-away"
-      url: /dashboard-kohbo/home#house_mode

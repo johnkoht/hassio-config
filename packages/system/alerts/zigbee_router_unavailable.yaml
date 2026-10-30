@@ -36,6 +36,6 @@ automation:
           title: "Zigbee System Issue"
           message: "There is an issue with the following Zigbee routers: {{ trigger.to_state.attributes.friendly_name }}"
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "d"
           url: /dashboard-kohbo/sensors#zigbee_routers_popup

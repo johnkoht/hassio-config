@@ -44,11 +44,3 @@ automation:
       # the input boolean once we're home
       - action: automation.turn_on
         entity_id: automation.nearly_home_turn_off
-
-      - action: script.general_notification
-        data:
-          title: Nearly Home On
-          message: Nearly home automation turned on
-          devices: "jk"
-          priority: "passive"
-          tag: "nearly-home"

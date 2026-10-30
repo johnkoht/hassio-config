@@ -74,11 +74,3 @@ automation:
       - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.family_room_occupied
-      # Notification for logging
-      - action: script.general_notification
-        data:
-          title: "Family Room Logger"
-          message: "The family room is NO LONGER occupied"
-          devices: "jk"
-          priority: "passive"
-          tag: "family-room-not-occupied"
