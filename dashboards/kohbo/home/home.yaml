@@ -38,6 +38,12 @@ cards:
 
 
   #
+  # Safety Device Needs Attention
+  # Shown only while a leak sensor or safety device is offline or low on battery
+  #
+  - !include /config/dashboards/kohbo/home/_safety_device_notification.yaml
+
+  #
   # Quick Overview
   # House mode, energy usage, and people in the room
   #

@@ -1,0 +1,27 @@
+# Safety Device Watcher Down
+#
+# Push when sensor.safety_devices_attention is unavailable, missing or has not refreshed for 20 minutes.
+# A render error inside the sensor's trigger leaves it stale rather than unavailable, so freshness is checked too.
+# now() makes the template re-check each minute.
+#
+
+automation:
+  - id: "safety_device_watcher_down"
+    alias: "Safety - Device Watcher Down"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: >-
+          {% set s = states.sensor.safety_devices_attention %}
+          {{ now() is not none and (s is none or s.state in ['unavailable', 'unknown']
+             or (now() - s.last_reported).total_seconds() > 1200) }}
+        for:
+          minutes: 5
+    actions:
+      - action: script.general_notification
+        data:
+          title: "Safety alerts are not running"
+          message: "The safety device watcher has stopped refreshing, so offline leak sensors and other safety devices would go unreported. Check the Template entities."
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "safety-device-watcher"

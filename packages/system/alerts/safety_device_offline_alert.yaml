@@ -1,0 +1,93 @@
+# Safety Device Offline Alert
+#
+# Push to John when a leak sensor or safety device has been offline for an hour or its battery is under 30%.
+# Daily at 09:00 while unlabelled ones remain, Mondays only when all are labelled "Known issue". A first alert at night waits for 09:00.
+# No house_occupied condition on purpose: a dead leak sensor matters most when nobody is home.
+#
+
+automation:
+  - id: "safety_device_offline_alert"
+    alias: "Safety - Device Offline Alert"
+    # queued: a state change and the 09:00 run can overlap; the shared tag makes a double push harmless
+    mode: queued
+    max: 5
+    triggers:
+      - trigger: state
+        entity_id: sensor.safety_devices_attention
+        id: "attention"
+      - trigger: time
+        at: "09:00:00"
+        id: "morning"
+      - trigger: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.safety_device_alert_snooze
+        id: "snooze_end"
+    conditions:
+      - alias: "Something needs attention"
+        condition: template
+        value_template: "{{ states('sensor.safety_devices_attention') | int(0) > 0 }}"
+      - alias: "Not snoozed"
+        condition: state
+        entity_id: timer.safety_device_alert_snooze
+        state: "idle"
+      - alias: "09:00 always runs; the other triggers wait for daytime and a non-quiet house"
+        condition: or
+        conditions:
+          - condition: trigger
+            id: "morning"
+          - condition: and
+            conditions:
+              - condition: time
+                after: "07:00:00"
+                before: "21:00:00"
+              - condition: state
+                entity_id: input_boolean.quiet_mode
+                state: "off"
+      - alias: "A state change only counts when a device is newly listed"
+        condition: or
+        conditions:
+          - condition: trigger
+            id:
+              - "morning"
+              - "snooze_end"
+          - condition: template
+            value_template: >-
+              {% set cur = trigger.to_state.attributes %}
+              {% set old = trigger.from_state.attributes if trigger.from_state is not none else {} %}
+              {% set now_ids = (cur.offline | default([])) + (cur.low_battery | default({}) | list) %}
+              {% set was_ids = (old.offline | default([])) + (old.low_battery | default({}) | list) %}
+              {{ now_ids | reject('in', was_ids) | list | count > 0 }}
+      - alias: "Daily while unlabelled devices remain; known issues only on Mondays"
+        condition: or
+        conditions:
+          - condition: trigger
+            id: "attention"
+          - condition: template
+            value_template: >-
+              {% set a = state_attr('sensor.safety_devices_attention', 'offline') or [] %}
+              {% set b = state_attr('sensor.safety_devices_attention', 'low_battery') or {} %}
+              {{ (a | count) + (b | count) > 0 or now().isoweekday() == 1 }}
+    actions:
+      # Built from the sensor, never from trigger.entity_id: the 09:00 and timer triggers have none.
+      - variables:
+          offline_names: "{{ state_attr('sensor.safety_devices_attention', 'offline_names') or [] }}"
+          low_battery_names: "{{ state_attr('sensor.safety_devices_attention', 'low_battery_names') or [] }}"
+      - action: script.general_notification
+        data:
+          title: >-
+            {{ 'Safety device offline' if offline_names | count > 0 else 'Safety device battery low' }}
+          message: >-
+            {% set parts = [] %}
+            {% if offline_names | count > 0 %}{% set parts = parts + ['Offline: ' ~ (offline_names | join(', '))] %}{% endif %}
+            {% if low_battery_names | count > 0 %}{% set parts = parts + ['Low battery: ' ~ (low_battery_names | join(', '))] %}{% endif %}
+            {{ parts | join('. ') }}.
+          devices: "jk"
+          priority: "time-sensitive"
+          tag: "safety-device-offline"
+          url: /dashboard-kohbo/sensors-offline
+          actions:
+            - action: "SAFETY_ALERT_SNOOZE_DAY"
+              title: "Snooze 1 day"
+            - action: "SAFETY_ALERT_SNOOZE_WEEK"
+              title: "Snooze 1 week"
