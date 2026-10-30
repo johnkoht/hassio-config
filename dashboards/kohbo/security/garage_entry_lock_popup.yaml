@@ -93,6 +93,51 @@ cards:
 
 
   #
+  # Evening Lock If Open Too Long (after sunset, with a warning push)
+  #
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+        ha-card {
+          margin-top: 20px !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          - entity: input_boolean.garage_entry_door_evening_auto_lock
+            name: Evening Lock If Open Too Long
+            icon: kohbo:kohbo-lock-locked
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.garage_entry_door_evening_auto_lock
+            state: 'on'
+        card:
+          type: custom:stack-in-card
+          mode: vertical
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+          cards:
+            - type: entities
+              card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+              entities:
+                - entity: input_number.garage_entry_door_auto_lock_timeout
+                  name: Lock Timeout
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  - type: custom:button-card
+    name: If enabled, after sunset the garage entry door locks once it has been unlocked longer than the timeout, with a 2 minute warning push you can snooze. It waits while someone is on the driveway, in the back yard or in the garage, and skips guest and entertainment mode.
+    template: kohbo_card_section_description
+
+
+  #
   # Lock If Open Too Long Settings
   #
   - type: custom:stack-in-card
