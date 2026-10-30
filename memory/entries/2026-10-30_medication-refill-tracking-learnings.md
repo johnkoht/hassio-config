@@ -2,7 +2,7 @@
 
 **What:** Nino's medication has a supply count. Stock is stored in doses (twice daily), everything shown or typed is days (doses / 2). Each confirmed dose subtracts one; under 7 days a time-sensitive push repeats daily at 09:00, under 3 days it is a critical phone push, and the morning announcement gets a line. The push has +15 and +30 day buttons; the Nino popup has "Days to enter", "Add days to supply", "Set days left" and the two thresholds. JK-1212 answered: native helpers, HACS integration not adopted. Cristina deferred. One PR, 7 tasks.
 
-**Metrics:** 7 tasks, 51 new tests (full suite 1057 passing), 8 sabotage checks all red.
+**Metrics:** 7 tasks, 51 new tests (full suite 1057 passing), 9 sabotage checks all red, plus 10 by the final reviewer (one found a test gap: the push-clear tag was not asserted).
 
 **Pre-mortem vs reality:** the pre-mortem's live read found `input_number.reload` exists, so no restart is needed, and settled the plan's open question about unseeded helpers (a helper with no `initial:` reads its minimum, so stock got `min: -1` as "not set"). The review caught two real faults: the plan had John typing doses on the dashboard, against "days only", and a Refill with 0 days on an unseeded stock would turn -1 into 0 and fire a critical push.
 
