@@ -92,3 +92,17 @@ Categories: context gaps, backward compatibility, test complexity, integration, 
 CRITICAL risks (must address before proceeding): none. Risk 1 is HIGH and gated by the Phase 0 spike before any brightness trigger is written.
 
 **Ready to proceed with these mitigations?** Yes: no structural blocker inside the approved plan.
+
+---
+
+## PR 2 addendum (kitchen), 2026-10-30
+
+Plan-level pre-mortem and review stand. Kitchen-specific risks, from reading master after PR 1 (#100) merged:
+
+- **#73 intent must survive (HIGH).** A manual toggle must never leave kitchen motion lights dead after Off or Away. The hotfix did it by writing the lighting flag from `kitchen_mode_off`; PR 2 moves that to the ungated reset automation (triggers: unoccupied 30 s, kitchen Off, house empty). The old `test_kitchen_mode_off_resets_lighting_automations` is replaced by a test of the new reset triggers, so the intent stays enforced. Away/bedtime reach the reset through the house-empty and Off triggers; if the kitchen is already Off the house-empty and occupancy triggers still fire.
+- **New helper (MEDIUM).** `kitchen_lights_manually_toggled` does not exist yet: needs an input_boolean reload to create it, before the automations reload or the new automations will read an unknown entity for a moment. Deploy order: input_boolean reload first, then automations. Live state of the hand flag is read before and after.
+- **Light-group context (MEDIUM).** `light.kitchen_ceiling_lights` is a light group; the spike showed its changes carry the member's automation parent, but 6 of about 24 attribute-only rows had none. Same stateless debounce as PR 1; `from_state` unavailable/unknown guarded (group members drop out on reconnect).
+- **Vacancy-off behaviour change (MEDIUM).** Today the kitchen flag doubles as a latch, so "flag off + occupancy off" still turns lights off. After PR 2 the flag is hand-only: hand flag off means no vacancy-off, Off always turns lights off (closes the #73 reviewer's gap: empty kitchen already at flag off, set Off, lights stay on).
+- **Other readers of the flag (LOW).** `kitchen_lights_day_off` and `kitchen_mode_dim` read `kitchen_lighting_automations`; they keep reading it as the hand flag. The Dim pendant path lives inside `kitchen_lights_motion_on`, so the latch gate on that file covers it.
+- **Two files folded into one, ids change (LOW).** `kitchen_lights_manually_turned_on` and `kitchen_lights_manually_turned_off` become `kitchen_lights_manual_change` (two registry ghosts). Nothing references them; the debug notification is dropped.
+- **Bounce guard (LOW).** `kitchen_mode_auto` has no occupancy-off trigger, so there is nothing to bounce; the test asserts that instead of the guard.

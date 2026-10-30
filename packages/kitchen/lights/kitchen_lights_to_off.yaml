@@ -1,78 +1,62 @@
-# Kitchen Lights to Off"
+# Kitchen Lights to Off
 #
+# Room Off always turns the lights off. Vacancy only does so while the hand flag is on.
+#
+
 automation:
   - id: "kitchen_lights_to_off"
     initial_state: on
     alias: "Kitchen Lights to off"
     triggers:
-      # Kitchen turns to Off Mode
+      # Kitchen turns to Off mode
       - trigger: state
         entity_id: input_select.kitchen
         to: "Off"
+        id: "room_off"
       # Kitchen is not occupied
       - trigger: state
         entity_id: input_boolean.kitchen_occupied
         to: "off"
-      # Kitchen is not occupied for 2 mins
-      # This helps handle some lag when the lighting automation
-      # is turned off
+        id: "vacancy"
+      # Not occupied for 2 mins; covers lag when the flag changes
       - trigger: state
         entity_id: input_boolean.kitchen_occupied
         to: "off"
         for:
           minutes: 2
-      # Lighting automations turn on
+        id: "vacancy_2min"
+      # House lighting automations turn on
       - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
+        id: "house_flag_on"
     conditions:
       # Lighting automations enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      #
-      # If kitchen lighting automation enabled
-      # OR
-      # If kitchen lighting automation NOT enabled
-      # AND trigger was kitchen not occupied
-      - condition: or
-        conditions:
-          # Kitchen lighting automations enabled
-          - condition: state
-            entity_id: input_boolean.kitchen_lighting_automations
-            state: "on"
-          - condition: and
-            conditions:
-              # Kitchen lighting automations enabled
-              - condition: state
-                entity_id: input_boolean.kitchen_lighting_automations
-                state: "off"
-              # Trigger was kitchen occupied OFF
-              - condition: template
-                value_template: "{{ trigger.entity_id == 'input_boolean.kitchen_occupied' }}"
-      # Kitchen is Off or the kitchen is no longer occupied
-      - condition: or
-        conditions:
-          # Kitchen is turned to Off mode
-          - condition: state
-            entity_id: input_select.kitchen
-            state: "Off"
-          # Kitchen is no longer occupied
-          - condition: state
-            entity_id: input_boolean.kitchen_occupied
-            state: "off"
-      # Kitchen is not in Dim Mode
-      # - condition: template
-      #   value_template: "{{ not is_state('input_select.kitchen','Dim') }}"
       # Lights are currently on
       - condition: state
         entity_id: light.kitchen_lights
         state: "on"
+      - condition: or
+        conditions:
+          # Room Off always wins
+          - condition: trigger
+            id: "room_off"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.kitchen_lighting_automations
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.kitchen_occupied
+                state: "off"
     actions:
-      # Turn OFF the lights
       - action: light.turn_off
-        entity_id: light.kitchen_lights
-      # Turn OFF the boolean that identifies lights
-      # automatically turned on
+        target:
+          entity_id: light.kitchen_lights
+      # Lights are no longer auto-on
       - action: input_boolean.turn_off
-        entity_id: input_boolean.kitchen_lights_auto
+        target:
+          entity_id: input_boolean.kitchen_lights_auto
