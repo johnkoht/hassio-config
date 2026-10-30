@@ -1,0 +1,32 @@
+#
+# Safety Devices Attention
+#
+# Shown while any leak sensor or safety device is offline or low on battery; the Home header shows a red shield too.
+# Conditional cards reject condition: template, so it reads a template binary sensor.
+#
+type: conditional
+conditions:
+  - condition: state
+    entity: binary_sensor.safety_devices_need_attention
+    state: "on"
+card:
+  type: custom:bubble-card
+  card_type: button
+  button_type: switch
+  entity: binary_sensor.safety_devices_need_attention
+  name: Safety Device Needs Attention
+  icon: mdi:shield-alert
+  button_action:
+    tap_action:
+      action: navigate
+      navigation_path: '/dashboard-kohbo/sensors-offline'
+  tap_action:
+    action: navigate
+    navigation_path: '/dashboard-kohbo/sensors-offline'
+  styles: >
+    .bubble-background {
+      background-color: var(--error-color) !important;
+    }
+    .bubble-icon {
+      color: var(--error-color) !important;
+    }
