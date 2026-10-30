@@ -9,6 +9,7 @@ automation:
       - trigger: state
         entity_id: input_boolean.ninos_bedroom_occupied
         to: "off"
+        id: "ninos_bedroom_unoccupied"
       # House turn to Auto mode
       - trigger: state
         entity_id: input_select.house
@@ -49,7 +50,31 @@ automation:
         entity_id: input_boolean.nino_in_bed
         state: "off"
     actions:
-      - action: input_select.select_option
-        data:
-          entity_id: input_select.ninos_bedroom
-          option: "Auto"
+      - choose:
+          # Room emptied: only go to Auto while the house is occupied, so a room that
+          # Off just cleared doesn't bounce back to Auto after Away
+          - conditions:
+              - condition: trigger
+                id: "ninos_bedroom_unoccupied"
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.house_occupied
+                    state: "on"
+                  - condition: not
+                    conditions:
+                      - condition: state
+                        entity_id: input_select.house
+                        state:
+                          - "Away"
+                          - "Vacation"
+                then:
+                  - action: input_select.select_option
+                    data:
+                      entity_id: input_select.ninos_bedroom
+                      option: "Auto"
+        default:
+          - action: input_select.select_option
+            data:
+              entity_id: input_select.ninos_bedroom
+              option: "Auto"

@@ -31,3 +31,8 @@
 an outage), so don't colour on `=== 'Online'`. Split `sensor.apc_ups_status_data`
 on spaces and look for `OL` (plus no `RB`/`OVER`/`BYPASS`), as the UPS
 automations do. Sensors page Power section, 2026-10-29.
+
+## Manual Override rows (2026-10-30)
+
+- Each migrated room's page has a `Manual Override` entity row (`<room>_lights_manually_toggled`) under its `Lighting Automations` row. The latter is hand-only now; the former is set by a hand change to the lights and cleared by tapping it or by the room's reset automation. Garage and laundry have no such row on their pages, so they have none. The new latches only exist after an input_boolean reload.
+

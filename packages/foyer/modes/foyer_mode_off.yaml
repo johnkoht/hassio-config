@@ -20,3 +20,7 @@ automation:
         data:
           entity_id: input_select.foyer
           option: "Off"
+      # Mark the Foyer as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.foyer_occupied

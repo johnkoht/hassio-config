@@ -47,3 +47,7 @@ automation:
         data:
           entity_id: input_select.powder_room
           option: "Off"
+      # Mark the Powder Room as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.powder_room_occupied

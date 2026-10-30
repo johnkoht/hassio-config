@@ -70,11 +70,5 @@ automation:
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'dining_room')|map(attribute='name')|list | length == 0 }}"
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.dining_room_occupied
-
-      - alias: "Wait 2 seconds"
-        delay: 02
-
-      # Enable Dining Room lighting automations
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.dining_room_lighting_automations
+        target:
+          entity_id: input_boolean.dining_room_occupied

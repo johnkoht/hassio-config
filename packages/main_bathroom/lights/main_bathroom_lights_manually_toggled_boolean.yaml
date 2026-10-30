@@ -1,0 +1,5 @@
+input_boolean:
+  main_bathroom_lights_manually_toggled:
+    name: Main Bathroom Lights Manually Toggled
+    icon: mdi:lightbulb-auto
+    initial: off

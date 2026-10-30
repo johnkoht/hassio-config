@@ -17,7 +17,8 @@ from jinja2 import Environment
 REPO = Path(__file__).resolve().parent.parent
 
 # Later PRs append rooms here.
-MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage"]
+MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway", "office",
+                  "main_bathroom", "laundry_room"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -134,8 +135,13 @@ def cond_index(conds, entity, state):
     return None
 
 
+# Rooms whose package directory is not named after the room (laundry_room lives in packages/laundry).
+PACKAGE_DIR = {"laundry_room": "laundry", "ninos_bedroom": "ninos_room",
+               "gianlucas_room": "gianluca_room"}
+
+
 def room_files(room):
-    return sorted((REPO / "packages" / room).rglob("*.yaml"))
+    return sorted((REPO / "packages" / PACKAGE_DIR.get(room, room)).rglob("*.yaml"))
 
 
 def flag(room):
@@ -205,16 +211,36 @@ def _manual(room):
 
 MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
               "kitchen": "light.kitchen_ceiling_lights",
-              "garage": "light.garage_lights"}
+              "garage": "light.garage_lights",
+              "playroom": "light.playroom_lights",
+              "upstairs_hallway": "light.upstairs_hallway",
+              # The wall switch (what the old detection watched); the bulbs are in EXTRA_LIGHTS.
+              "office": "light.office_light_switch",
+              "main_bathroom": "light.main_bathroom_main_lights",
+              "laundry_room": "light.laundry_room_main_lights"}
 OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
-            "garage": "garage_lights_off"}
+            "garage": "garage_lights_off", "playroom": "playroom_lights_to_off",
+            "upstairs_hallway": "upstairs_hallway_lights_to_off",
+            "office": "office_lights_off", "main_bathroom": "main_bathroom_lights_off",
+            "laundry_room": "laundry_room_lights_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
-            "garage": ["garage_lights_motion_on"]}
+            "garage": ["garage_lights_motion_on"],
+            "playroom": ["playroom_lights_motion_on", "playroom_lights_day_on"],
+            "upstairs_hallway": ["upstairs_hallway_lights_motion_on"],
+            "office": ["office_lights_motion_on", "office_lights_day_on", "office_lights_on"],
+            # bedtime_motion_on is the night light: on-type, so the latch gates it too.
+            "main_bathroom": ["main_bathroom_lights_motion_on", "main_bathroom_bedtime_motion_on"],
+            "laundry_room": ["laundry_room_lights_motion_on"]}
+
+# The hallway's motion-on never had a mode condition (the room has no Dim/DnD split); adding one
+# would change behaviour, so its gate is checked as house flag, room flag, latch only.
+NO_MODE_CONDITION = ("upstairs_hallway",)
 
 
 # Other lights whose hand changes must also latch the override (Dim pendants).
-EXTRA_LIGHTS = {"kitchen": ["light.kitchen_island_pendants"]}
+EXTRA_LIGHTS = {"kitchen": ["light.kitchen_island_pendants"],
+                "office": ["light.office_ceiling_bulbs"]}
 
 
 def _main_light(room):
@@ -320,8 +346,9 @@ def test_on_automations_gated_by_flags_and_latch_before_mode(room, auto_id):
     """On-type lighting automations check house flag, room flag, latch=off, in that order, before the mode."""
     conds = conds_for(auto(auto_id))
     idx = [cond_index(conds, HOUSE_FLAG, "on"), cond_index(conds, flag(room), "on"),
-           cond_index(conds, latch(room), "off"),
-           next((i for i, c in enumerate(conds) if f"input_select.{room}" in str(c)), None)]
+           cond_index(conds, latch(room), "off")]
+    if room not in NO_MODE_CONDITION:
+        idx.append(next((i for i, c in enumerate(conds) if f"input_select.{room}" in str(c)), None))
     assert None not in idx, idx
     assert idx == sorted(idx), idx
 
@@ -383,6 +410,10 @@ def test_mode_off_ordering_invariant(room):
 
 
 # 8 ---------------------------------------------------------------------------
+NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom", "upstairs_hallway", "office",
+                       "laundry_room")
+
+
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
 def test_mode_auto_bounce_guard(room):
     """Where mode_auto turns on occupancy-off: needs house_occupied on, house not Away/Vacation, no
@@ -391,9 +422,22 @@ def test_mode_auto_bounce_guard(room):
     occ_off = [t for t in as_list(a["triggers"])
                if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
     if not occ_off:
-        # Kitchen/garage: mode_auto has no occupancy-off trigger, so there is nothing to bounce.
-        assert room in ("kitchen", "garage"), f"{room} lost its occupancy-off trigger"
+        # These rooms' mode_auto has no occupancy-off trigger, so there is nothing to bounce.
+        assert room in NO_OCC_OFF_TRIGGER, f"{room} lost its occupancy-off trigger"
         return
+    _assert_bounce_guard(a, room, occ_off)
+
+
+def _selects_auto(steps):
+    """Any step that puts the room in Auto: a select_option Auto, or its turn_on_auto script."""
+    return any((s.get("action") == "input_select.select_option"
+                and (s.get("data") or {}).get("option") == "Auto")
+               or "turn_on_auto" in str(s.get("action", "")) for s in steps if isinstance(s, dict))
+
+
+def _assert_bounce_guard(a, room, occ_off):
+    # The branch is selected by trigger id: the occupancy-off trigger must carry it.
+    assert all(t.get("id") == f"{room}_unoccupied" for t in occ_off), occ_off
     branch = next(o for o in a["actions"][0]["choose"]
                   if any(c.get("condition") == "trigger" and c.get("id") == f"{room}_unoccupied"
                          for c in o["conditions"]))
@@ -405,6 +449,11 @@ def test_mode_auto_bounce_guard(room):
     assert any("Away" in as_list(n["conditions"][0].get("state"))
                and "Vacation" in as_list(n["conditions"][0].get("state"))
                and n["conditions"][0].get("entity_id") == "input_select.house" for n in nots)
+    # The other triggers still return the room to Auto: the choose keeps a real default.
+    choose = a["actions"][0]
+    assert choose.get("default"), "choose lost its default path"
+    assert _selects_auto(list(walk(choose["default"]))), "default no longer selects Auto"
+    assert _selects_auto(list(walk(branch["sequence"]))), "guarded branch no longer selects Auto"
     scanned = {k: v for k, v in a.items() if k not in ("triggers", "trigger")}
     for d in walk(scanned):
         if d.get("condition") == "state" and "input_select.house" in as_list(d.get("entity_id")):
@@ -446,3 +495,259 @@ def test_garage_motion_off_obeys_hand_flag_not_latch():
     path, a = ALL["garage_lights_motion_off"]
     assert cond_index(conds_for(a), flag("garage"), "on") == 0
     assert latch("garage") not in path.read_text()
+
+
+# 11 playroom ----------------------------------------------------------------
+def test_playroom_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: Off at Away/bedtime/house-empty also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("playroom_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.playroom_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_playroom_not_occupied_only_clears_occupancy():
+    """not_occupied no longer re-enables the hand flag after a delay."""
+    body = action_body(auto("playroom_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+    assert not any("delay" in s for s in body)
+
+
+def test_playroom_old_detection_is_gone():
+    assert "playroom_lights_manually_turned_off" not in ALL
+
+
+# 12 upstairs hallway --------------------------------------------------------
+def test_upstairs_hallway_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: house-empty/restart Off also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("upstairs_hallway_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.upstairs_hallway_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_upstairs_hallway_not_occupied_only_clears_occupancy():
+    """not_occupied no longer re-enables the hand flag after a delay."""
+    body = action_body(auto("upstairs_hallway_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+def test_upstairs_hallway_sleep_mode_automations_do_not_touch_flags():
+    for aid in ("upstairs_hallway_lights_sleep_mode_on", "upstairs_hallway_lights_sleep_mode_off"):
+        text = str(auto(aid))
+        assert latch("upstairs_hallway") not in text and flag("upstairs_hallway") not in text
+
+
+def test_upstairs_hallway_old_detection_is_gone():
+    assert "upstairs_hallway_lights_manually_turned_off" not in ALL
+
+
+# 13 office ------------------------------------------------------------------
+def test_office_lights_on_latch_gate_before_mode_and_dnd_still_passes():
+    """DnD keeps the lights on: office_lights_on passes Auto and DnD (only), and the latch sits ahead of that."""
+    conds = conds_for(auto("office_lights_on"))
+    mode_i = next(i for i, c in enumerate(conds) if "input_select.office" in str(c))
+    assert cond_index(conds, latch("office"), "off") < mode_i
+    modes = conds[mode_i]
+    assert modes["condition"] == "or"
+    passing = sorted(str(s) for c in modes["conditions"] for s in as_list(c["state"]))
+    assert passing == ["Auto", "DnD"]
+
+
+def test_office_day_on_still_passes_dnd_and_motion_on_only_auto():
+    day = next(c for c in conds_for(auto("office_lights_day_on"))
+               if c.get("condition") == "or" and "input_select.office" in str(c))
+    assert sorted(str(s) for c in day["conditions"] for s in as_list(c["state"])) == ["Auto", "DnD"]
+    assert cond_index(conds_for(auto("office_lights_motion_on")), "input_select.office", "Auto") is not None
+
+
+@pytest.mark.parametrize("aid", [
+    "office_lights_scene_toggle", "office_lights_sync_bulbs_from_switch",
+    "office_lights_sync_switch_state", "office_camera_light_on", "office_dnd_light_on",
+    "office_shelf_lights_turn_on_deep_work_lighting"])
+def test_office_user_driven_light_automations_are_not_latch_gated(aid):
+    """Scene toggles, switch/bulb syncs and the DnD/camera/deep-work lights follow the user, not occupancy."""
+    path, _ = ALL[aid]
+    assert latch("office") not in path.read_text()
+
+
+def test_office_old_detection_and_dead_flag_writers_are_gone():
+    for aid in ("office_lights_manually_turned_off", "office_lighting_automation_on",
+                "office_lighting_automation_off"):
+        assert aid not in ALL
+
+
+def test_office_motion_off_obeys_hand_flag_not_latch():
+    path, a = ALL["office_lights_motion_off"]
+    assert cond_index(conds_for(a), flag("office"), "on") == 0
+    assert latch("office") not in path.read_text()
+
+
+def test_office_manual_change_ignores_sync_driven_changes():
+    """A bulb/switch change made by the sync automations carries a parent and no user."""
+    sync = _trigger("0", _st("off", _ctx("p"), T0), _st("on", _ctx("s", parent="par"), T0))
+    assert _passes("office", sync) is False
+
+
+def test_office_mode_off_leaves_occupancy_alone():
+    """JK-1219 deliberately not applied to the office (see packages/office/LEARNINGS.md); the latch is
+    still cleared by the reset automation on room Off."""
+    mode_off = load_yaml(_mode_off_rooms()["office"])["automation"][0]
+    assert not any(e == "input_boolean.office_occupied"
+                   for _, e, _ in turn_calls(mode_off["actions"]))
+    assert "office_lights_reset_manual_toggle" in ALL
+
+
+# 14 main bathroom -----------------------------------------------------------
+def test_main_bathroom_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: Off at Away/house-empty/restart also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("main_bathroom_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.main_bathroom_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_main_bathroom_not_occupied_only_clears_occupancy():
+    """not_occupied no longer re-enables the hand flag after a delay."""
+    body = action_body(auto("main_bathroom_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+def test_main_bathroom_mode_auto_guard_covers_the_occupancy_trigger_and_sets_auto():
+    """The room has an occupancy-off trigger, so it must NOT be in NO_OCC_OFF_TRIGGER; both the
+    guarded branch and the default go through the one script that selects Auto."""
+    assert "main_bathroom" not in NO_OCC_OFF_TRIGGER
+    a = auto("main_bathroom_mode_auto")
+    choose = a["actions"][0]
+    assert all(s["action"] == "script.main_bathroom_mode_turn_on_auto"
+               for s in walk(choose.get("default")) if "action" in s)
+    script = auto("script.main_bathroom_mode_turn_on_auto")
+    text = str(script)
+    assert _selects_auto([x for x in walk(script) if isinstance(x, dict)]), "script no longer selects Auto"
+    assert "automation.main_bathroom_bedtime_motion_on" in text
+    assert "automation.main_bathroom_lights_motion_on" in text
+
+
+def test_main_bathroom_lights_off_clears_lights_auto():
+    """The dashboard shows main_bathroom_lights_auto; the deleted detection used to clear it."""
+    steps = action_body(auto("main_bathroom_lights_off"))
+    assert any(s.get("action") == "input_boolean.turn_off"
+               and s.get("target", {}).get("entity_id") == "input_boolean.main_bathroom_lights_auto"
+               for s in steps)
+
+
+def test_main_bathroom_old_detection_is_gone():
+    assert "main_bathroom_lights_turned_off" not in ALL
+
+
+# 15 laundry room ------------------------------------------------------------
+def test_laundry_motion_on_reads_its_room_flag():
+    """Regression: the laundry toggle did nothing because motion_on never checked it."""
+    assert cond_index(conds_for(auto("laundry_room_lights_motion_on")), flag("laundry_room"), "on") is not None
+
+
+def test_laundry_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: Off at Away/bedtime/house-empty/restart also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("laundry_room_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.laundry_room_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_laundry_not_occupied_only_clears_occupancy():
+    body = action_body(auto("laundry_room_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+# 16 mode-only rooms (no lighting automations: no flags, no latch) ------------
+# Only `<room>_mode_off` forcing `<room>_occupied` off (JK-1219), plus the bounce guard where
+# mode_auto has an occupancy-off trigger. Not in MIGRATED_ROOMS.
+# Gianluca's mode automations are named gianlucas_bedroom_* while his helpers are gianlucas_room_*.
+MODE_ID = {"gianlucas_room": "gianlucas_bedroom"}
+MODE_ONLY_ROOMS = ["dining_room", "basement", "jr_suite", "powder_room", "mudroom_bathroom", "sunroom", "foyer",
+                  "ninos_bedroom", "gianlucas_room"]
+
+
+@pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
+def test_mode_only_room_mode_off_forces_occupancy_off_with_target(room):
+    """JK-1219: Off also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto(f"{MODE_ID.get(room, room)}_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == f"input_boolean.{room}_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+@pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
+def test_mode_only_room_mode_auto_guard(room):
+    """Where mode_auto triggers on occupancy off it needs the bounce guard; otherwise there is
+    nothing to bounce and the trigger must stay absent."""
+    a = auto(f"{MODE_ID.get(room, room)}_mode_auto")
+    occ_off = [t for t in as_list(a["triggers"])
+               if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
+    if occ_off:
+        _assert_bounce_guard(a, room, occ_off)
+
+
+@pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
+def test_mode_only_room_has_no_override_kit(room):
+    assert not helper_exists(room, f"{room}_lighting_automations")
+    assert not helper_exists(room, f"{room}_lights_manually_toggled")
+
+
+def helper_exists(room, name):
+    for f in room_files(room):
+        doc = load_yaml(f)
+        if isinstance(doc, dict) and name in (doc.get("input_boolean") or {}):
+            return True
+    return False
+
+
+# 17 dining room -------------------------------------------------------------
+REMOVED_DINING = ("dining_room_lighting_automations", "dining_room_lights_auto")
+
+
+def test_dining_room_dead_helpers_are_gone_from_config():
+    """The dining room has no lights-on automation: its hand flag and lights_auto helper were removed
+    (dashboards are checked separately by the dashboard owner)."""
+    hits = []
+    roots = [REPO / "packages", REPO / "automation", REPO / "scripts"]
+    files = [f for r in roots if r.exists() for f in r.rglob("*") if f.is_file()]
+    files += [REPO / n for n in ("automations.yaml", "scripts.yaml", "scenes.yaml") if (REPO / n).exists()]
+    for f in files:
+        try:
+            text = f.read_text()
+        except UnicodeDecodeError:
+            continue
+        hits += [f"{f.relative_to(REPO)}: {n}" for n in REMOVED_DINING if n in text]
+    assert not hits, hits
+
+
+def test_dining_room_not_occupied_only_clears_occupancy():
+    body = action_body(auto("dining_room_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+# 18 kids' rooms: mode_off clears occupancy only when nobody is home and the bed is empty -------
+KIDS_BED = {"ninos_bedroom": "binary_sensor.nino_bed_occupied",
+            "gianlucas_room": "binary_sensor.gianluca_bed_occupied"}
+
+
+@pytest.mark.parametrize("room", sorted(KIDS_BED))
+def test_kids_mode_off_only_clears_occupancy_with_empty_bed(room):
+    """Off fires at house empty / Away / restart only, and a kid still in bed keeps the room
+    occupied (same rule as not_occupied; the occupied automation will not re-fire on an unchanged
+    bed sensor). Pins the bed guard and the house-empty-or-Away gate."""
+    a = auto(f"{MODE_ID.get(room, room)}_mode_off")
+    gate = next(c for c in as_list(a["conditions"]) if c.get("condition") == "or")
+    gated = {(c["entity_id"], str(c["state"])) for c in gate["conditions"]}
+    assert gated == {("input_boolean.house_occupied", "off"), ("input_select.house", "Away")}
+    clears = [s for s in walk(a["actions"]) if s.get("action") == "input_boolean.turn_off"
+              and s.get("target", {}).get("entity_id") == f"input_boolean.{room}_occupied"]
+    assert len(clears) == 1
+    guarded = [s for s in walk(a["actions"]) if "if" in s and clears[0] in as_list(s.get("then"))]
+    assert guarded and cond_index(guarded[0]["if"], KIDS_BED[room], "off") is not None

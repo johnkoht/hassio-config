@@ -37,3 +37,14 @@ automation:
         data:
           entity_id: input_select.gianlucas_bedroom
           option: "Off"
+      # Mark Gianluca's Bedroom as unoccupied, bed permitting (same rule as its Not Occupied
+      # automation: a kid still in bed keeps the room occupied)
+      - if:
+          - alias: "Bed is empty"
+            condition: state
+            entity_id: binary_sensor.gianluca_bed_occupied
+            state: "off"
+        then:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.gianlucas_room_occupied

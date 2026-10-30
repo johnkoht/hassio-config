@@ -71,11 +71,5 @@ automation:
 
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.office_occupied
-
-      - alias: "Wait 2 seconds"
-        delay: 02
-
-      # Enable office lighting automations
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.office_lighting_automations
+        target:
+          entity_id: input_boolean.office_occupied

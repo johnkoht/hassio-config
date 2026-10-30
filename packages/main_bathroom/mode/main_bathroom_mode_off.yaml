@@ -37,3 +37,7 @@ automation:
         data:
           entity_id: input_select.main_bathroom
           option: "Off"
+      # Mark the bathroom as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.main_bathroom_occupied

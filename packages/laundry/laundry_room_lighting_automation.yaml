@@ -1,5 +1,5 @@
+# Hand-only master switch for laundry room lighting automations. Never written by automations.
 input_boolean:
   laundry_room_lighting_automations:
     name: Laundry Room Lighting Automations
     icon: mdi:motion-sensor
-    initial: on

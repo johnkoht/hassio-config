@@ -64,3 +64,7 @@ automation:
         data:
           entity_id: input_select.playroom
           option: "Off"
+      # Mark the playroom as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.playroom_occupied
