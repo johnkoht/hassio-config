@@ -1,7 +1,7 @@
 ---
 title: Freezing Night Car Reminder
 slug: freezing-night-car-reminder
-status: draft
+status: approved
 created: 2026-10-29
 has_pre_mortem: false
 has_review: false
@@ -9,6 +9,8 @@ has_prd: false
 ---
 
 # Freezing Night Car Reminder
+
+> Approved by John 2026-10-30 (written authorization to approve the batch; answers folded in below).
 
 Linear JK-1083 (High): "Reminder to put car in garage if it's cold and overnight will be freezing."
 
@@ -29,7 +31,7 @@ On an evening when the overnight low is at or below a tunable threshold and a ca
 - Garage doors: `cover.garage_door_1`, `_2`, `_3` and the group `cover.garage_doors` (all closed). `binary_sensor.garage_ble_occupancy` is people, not cars. There is no bay sensor and no car-in-bay camera zone.
 - No vehicle integration, no car `device_tracker`. The only trackers are network devices and `person.*`.
 
-**Proxy proposed:** invert the question. Detect "a car is outside" with the driveway camera car-occupancy sensors (any on, sustained), optionally OR'd with the BLE legs once proven. Failure modes: a visitor's or neighbor's car trips it (a false reminder, harmless), a parked car the camera misses at night (a silent miss), and BLE sensors that go stale and say `not_home` (a silent miss, so never use "not in garage" as the trigger).
+**Proxy accepted (John, 2026-10-30):** John accepts the camera-only signal and the risk of an occasional miss ("the cameras are pretty good at seeing the cars"). Invert the question. Detect "a car is outside" with the driveway camera car-occupancy sensors (any on, sustained), optionally OR'd with the BLE legs once proven. Failure modes: a visitor's or neighbor's car trips it (a false reminder, harmless), a parked car the camera misses at night (a silent miss), and BLE sensors that go stale and say `not_home` (a silent miss, so never use "not in garage" as the trigger).
 
 **Forecast sources:**
 
@@ -60,7 +62,7 @@ Lighter version considered and rejected: one automation that fetches the forecas
 
 ## Tasks
 
-1. Spike, read-only, no repo edits — confirm the signals: from the host logbook or a Frigate view, check that the driveway car-occupancy sensors actually turn on when a car is parked outside overnight, and whether the Audi/BMW BLE presence sensors report real values (an hour's worth of readings while a car is in the garage). Write the result into the PR for the build, and decide the BLE open decision.
+1. Spike, read-only, no repo edits — confirm the signal: from the host logbook or a Frigate view, check that the driveway car-occupancy sensors actually turn on when a car is parked outside overnight. The BLE sensors are out of v1 (John, 2026-10-30), so they need no check. Write the result into the PR for the build.
 2. Forecast sensors — `freezing_car_forecast.yaml` with `sensor.overnight_low_forecast` and `binary_sensor.freezing_night_expected`, trigger-based, primary pirateweather, fallback kpwk.
 3. Car-outside sensor — `car_outside.yaml` with `delay_on: 10 minutes`.
 4. Helpers — `freezing_car_helpers.yaml` as above. After deploy, John sets the threshold and the reminder time once in the UI.
@@ -79,17 +81,19 @@ Lighter version considered and rejected: one automation that fetches the forecas
 
 ## Open decisions
 
-1. **Car-outside signal.** Default: driveway camera car-occupancy only. Alternatives: add the BLE legs (`audi_location` or `bmw_location` equal to Driveway), or both. Switch to adding BLE only if Task 1 shows those sensors are alive; it would also let the message name the car.
-2. **Reminder channel.** Default: push only. Alternative: add a low-priority `script.voice_announcement` into occupied rooms, gated by `speech_notifications` and `quiet_mode`. Push is enough for a nudge and keeps the first version quiet.
-3. **Trigger shape.** Default: one fixed evening time (20:00) plus "car appears outside" (10 minutes sustained), one reminder per night. Alternative: a second nudge after a snooze action. Skipped in v1 as polish.
-4. **Threshold.** Default: 34 degF (set via the helper after deploy; helper minimum 28 if left unset). Alternative: 32 exactly. 34 allows for forecast error and frost on glass.
-5. **Forecast window.** Default: hourly minimum from now until 08:00 local. Alternative: the daily low for tomorrow, simpler but its day boundary is wrong for an overnight check.
-6. **Recipients.** Default: `devices: all`. Alternative: only people who are home. Skipped; both adults can move a car.
-7. **Fallback source.** Default: `weather.kpwk` hourly. Alternative: `weather.tomorrow_io_home_daily`.
+All resolved (John, 2026-10-30). John's answer: "I'm okay with the risk of missing it, but the cameras are pretty good at seeing the cars." That accepts decision 1's camera-only signal; the rest take the plan's defaults.
+
+1. **Car-outside signal.** **Resolved (John, 2026-10-30):** driveway camera car-occupancy only. The BLE legs are out of v1; John accepts the risk of a missed reminder. The message stays generic ("A car is parked outside").
+2. **Reminder channel.** **Resolved (John, 2026-10-30), by default:** push only.
+3. **Trigger shape.** **Resolved (John, 2026-10-30), by default:** one fixed evening time (20:00) plus "car appears outside" (10 minutes sustained), one reminder per night; no snooze second nudge.
+4. **Threshold.** **Resolved (John, 2026-10-30), by default:** 34 degF, set via the helper after deploy (the helper minimum is 28 if left unset).
+5. **Forecast window.** **Resolved (John, 2026-10-30), by default:** hourly minimum from now until 08:00 local.
+6. **Recipients.** **Resolved (John, 2026-10-30), by default:** `devices: all`.
+7. **Fallback source.** **Resolved (John, 2026-10-30), by default:** `weather.kpwk` hourly.
 
 ## Risks
 
-- **No true "in garage" signal.** The reminder fires on "a car is outside", so a missed detection means a silent miss. Mitigation: Task 1 spike; BLE is an additive leg, never an exclusion; the feature is protection-adjacent, not safety-critical.
+- **No true "in garage" signal.** The reminder fires on "a car is outside", so a missed detection means a silent miss. Mitigation: Task 1 spike; BLE is out of v1 and was never an exclusion; John accepted the camera-only risk (2026-10-30). The feature is protection-adjacent, not safety-critical.
 - **False positives from visitor or neighbor cars.** Mitigation: 10 minute `delay_on` and one reminder per night; accept the rest.
 - **Forecast failure.** Mitigation: `continue_on_error`, fallback entity, and unavailable (not on) when nothing comes back, so a broken API never produces a false alarm or a stuck "freezing" state.
 - **Unset helpers after first deploy.** Mitigation: defaults err toward quiet; Task 4 sets them once. No `initial:` so the values survive restarts.
