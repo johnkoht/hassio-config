@@ -6,9 +6,9 @@ automation:
     initial_state: on
     alias: "Office Camera Light Off"
     triggers:
-      # Laptop camera goes off
+      # Mac camera goes off
       - trigger: state
-        entity_id: binary_sensor.john_laptop_camera_active
+        entity_id: binary_sensor.johns_mbp_2026_camera_in_use
         to: "off"
         for:
           seconds: 4
@@ -21,10 +21,12 @@ automation:
         entity_id: binary_sensor.john_computer_active
         to: "off"
     conditions:
-      # Laptop camera is off
-      - condition: state
-        entity_id: binary_sensor.john_laptop_camera_active
-        state: "off"
+      # Mac camera is not on (unavailable counts as off)
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.johns_mbp_2026_camera_in_use
+            state: "on"
       # Camera light is ON
       - condition: state
         entity_id: light.office_el_gato_light
