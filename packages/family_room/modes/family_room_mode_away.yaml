@@ -1,0 +1,36 @@
+# Family Room Mode Away
+#
+# Selects Away when the room is unoccupied and the house is empty.
+# Disabled (initial_state off); its option is valid, it just stays off.
+#
+
+automation:
+  - id: "family_room_mode_away"
+    initial_state: "off"
+    alias: "Family room mode away"
+    triggers:
+      # Family room is not occupied
+      - trigger: state
+        entity_id: input_boolean.family_room_occupied
+        to: "off"
+      # Or it's been unoccupied for 10 minutes
+      - trigger: state
+        entity_id: input_boolean.family_room_occupied
+        to: "off"
+        for:
+          minutes: 10
+      # Or the house is not occupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    conditions:
+      # House is not occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.family_room
+        data:
+          option: "Away"

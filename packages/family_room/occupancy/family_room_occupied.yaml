@@ -1,0 +1,56 @@
+# Family Room Occupied
+#
+# Sets occupancy on from Aqara occupancy, motion, the TV or Sonos playing.
+#
+
+automation:
+  - id: "family_room_occupied"
+    initial_state: "on"
+    alias: "Family room occupied"
+    triggers:
+      # Aqara occupancy detected
+      - trigger: state
+        entity_id: binary_sensor.family_room_motion_sensor_occupancy
+        to: "on"
+      # Motion detected
+      - trigger: state
+        entity_id: binary_sensor.family_room_motion_sensor
+        to: "on"
+      # If the TV is on
+      - trigger: state
+        entity_id: device_tracker.family_room_tv
+        to: "home"
+      - trigger: state
+        entity_id: media_player.sony_bravia_tv
+        to: "playing"
+      - trigger: state
+        entity_id: media_player.sonos_family_room
+        to: "playing"
+    conditions:
+      # Family room is not occupied
+      - condition: state
+        entity_id: input_boolean.family_room_occupied
+        state: "off"
+      # Either Bluetooth detects people or motion does
+      - condition: or
+        conditions:
+          # Bluetooth detects somebody
+          - condition: state
+            entity_id: binary_sensor.family_room_ble_occupancy
+            state: "on"
+          # Aqara occupancy detected
+          - condition: state
+            entity_id: binary_sensor.family_room_motion_sensor_occupancy
+            state: "on"
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.family_room_occupied
+      # Notification for logging
+      - action: script.general_notification
+        data:
+          title: "Family Room Logger"
+          message: "The family room is occupied"
+          devices: "jk"
+          priority: "passive"
+          tag: "family-room-occupied"

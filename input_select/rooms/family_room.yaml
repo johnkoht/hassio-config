@@ -1,9 +1,0 @@
-name: Family room
-options:
-  # Auto
-  - "Auto"
-  # Dim the lights to be a nightlight
-  # - "Dim"
-  - "Away"
-  # - "On"
-  - "Off"

@@ -347,7 +347,7 @@ ROOM_AUTOS = [
     "packages/pool/modes/pool_mode_auto.yaml",
     "packages/powder_room/modes/powder_room_mode_auto.yaml",
     "packages/sunroom/modes/sunroom_mode_auto.yaml",
-    "automation/family_room/modes/family_room_mode_auto.yaml",
+    "packages/family_room/modes/family_room_mode_auto.yaml",
 ]
 
 

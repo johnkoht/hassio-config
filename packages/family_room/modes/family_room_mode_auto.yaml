@@ -1,0 +1,48 @@
+# Family Room Mode Auto
+#
+# Returns the room to Auto when it is occupied and the house is in Auto or Quiet.
+#
+
+automation:
+  - id: "family_room_mode_auto"
+    initial_state: on
+    alias: "Family Room Mode Auto"
+    triggers:
+      # Family Room is occupied
+      - trigger: state
+        entity_id: input_boolean.family_room_occupied
+        to: "on"
+      # House turns to Auto (or Quiet) mode
+      - trigger: state
+        entity_id: input_select.house
+        to:
+          - "Auto"
+          - "Quiet"
+      # House becomes occupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # Family Room is not already Auto
+      - condition: template
+        value_template: "{{ not is_state('input_select.family_room','Auto') }}"
+      # It's not bedtime mode
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      # House is in Auto or Quiet mode
+      - condition: state
+        entity_id: input_select.house
+        state:
+          - "Auto"
+          - "Quiet"
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.family_room
+        data:
+          option: "Auto"

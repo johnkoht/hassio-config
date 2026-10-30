@@ -1,0 +1,7 @@
+input_select:
+  family_room:
+    name: Family room
+    options:
+      - "Auto"
+      - "Away"
+      - "Off"
