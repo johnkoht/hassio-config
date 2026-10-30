@@ -131,3 +131,16 @@ Plan-level pre-mortem and review stand. Kitchen-specific risks, from reading mas
 - **Laundry's toggle did nothing** (`laundry_room_lights_motion_on` never checked its flag). Adding the gate is a behaviour change for the flag's owner: with the flag on (live), nothing changes.
 - **Dashboard rows.** A "Manual override" row per migrated room that has a "Lighting Automations" row (kitchen, main bedroom, main bathroom, playroom, office, upstairs hallway); the dining row goes. Garage and laundry have no such row on their pages and are not given one. Dashboard changes follow dashboards/CLAUDE.md (card_mod include, same row shape) and carry the `kohbo.yaml` touch note for deploy.
 - **New helpers need an input_boolean reload before the automation reload** (five new latches).
+
+---
+
+## PR 5 addendum (Phase 5 migration, family room and mudroom), 2026-10-30
+
+Phase 5 splits in two: **PR 5 is the behaviour-neutral migration** (this one), **PR 6 adopts the kit** after PR 5 is deployed. Plan stamping (`shipped`, prd.json reconcile) happens on PR 6.
+
+- **Live selects read (read-only).** `input_select.family_room` is `Off` with options `Auto, Away, Off`. `input_select.mudroom` is `Night Motion` with options `On, Motion, Away, Night Motion`. Both are YAML-owned (`editable: false`). The family room has no `On` or `Dim` option.
+- **Decision: no select option changes.** Reloading input_select with changed options can reset a select's value, so PR 5 keeps both option lists exactly as they are (a test pins them) and fixes the invalid option calls by pointing them at existing options. The only automations that select `On`/`Dim` on the family room (`family_room_mode_on`, `family_room_arrival`) are **disabled live** (`initial_state: off`, last run 2022), as are `family_room_lights_to_on` and `family_room_mode_away`. They stay disabled, so the migration is neutral; reviving them is John's call. Moving the select definitions into the packages changes no running state and needs no input_select reload (identical definitions; a file move takes effect at the next restart anyway).
+- **Moved automations keep their `id`** (the registry key), alias and `initial_state`; entity ids don't change. The mudroom one with id `mudroom_lights_to_on` is live as `automation.mudroom_mode_on_2` (clone-derived registry id): its id and alias must not change. A manifest test pins id, alias and `initial_state` for all 19.
+- **Family room has no enabled lights-on automation** (`family_room_lights_to_on` is disabled). In PR 6 it is a mode-only room (JK-1219 + audit), not a kit room, unless John revives it. **Mudroom has no Off option and no Auto**: its lights run on the mode select (`On`, `Motion`, `Night Motion`) plus the global flag. PR 6 must decide how the kit maps onto it; flagged for the lead.
+- **Repo-wide option test** lands in PR 5. Pre-existing violations elsewhere go into a ratchet allowlist (new violations fail), reported rather than fixed here.
+- **Deploy (PR 5):** pull, then reload automations only. No input_select, input_boolean or script reload. Check afterwards that the four disabled family room automations are still off and the 19 ids are unique.
