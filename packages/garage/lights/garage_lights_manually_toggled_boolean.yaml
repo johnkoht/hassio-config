@@ -1,0 +1,5 @@
+input_boolean:
+  garage_lights_manually_toggled:
+    name: Garage Lights Manually Toggled
+    icon: mdi:lightbulb-auto
+    initial: off

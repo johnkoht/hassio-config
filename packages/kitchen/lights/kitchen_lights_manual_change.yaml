@@ -1,6 +1,7 @@
 # Kitchen Lights Manual Change
 #
-# A hand change (wall, app, dashboard) sets the manual latch and clears the auto flag.
+# A hand change (wall, app, dashboard) to the ceiling lights or the Dim pendants sets the
+# manual latch and clears the auto flag.
 # Automation and Adaptive Lighting changes are ignored.
 #
 
@@ -17,6 +18,17 @@ automation:
         to: "off"
       - trigger: state
         entity_id: light.kitchen_ceiling_lights
+        attribute: brightness
+        id: brightness
+      # Dim-mode pendants are a separate light; same rules
+      - trigger: state
+        entity_id: light.kitchen_island_pendants
+        to: "on"
+      - trigger: state
+        entity_id: light.kitchen_island_pendants
+        to: "off"
+      - trigger: state
+        entity_id: light.kitchen_island_pendants
         attribute: brightness
         id: brightness
     conditions:

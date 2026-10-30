@@ -33,3 +33,9 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - `kitchen_lights_motion_on` mode check is an `or` (Auto/Dim), so the on-gate test finds the mode by "first condition mentioning input_select.<room>", not by state Auto.
 - Kitchen test fixtures differ per room: main light `light.kitchen_ceiling_lights`, off automation `kitchen_lights_to_off`; kept in MAIN_LIGHT / OFF_AUTO / ON_AUTOS dicts in the regression test.
 - Deploy order: input_boolean reload before automations (new helper `kitchen_lights_manually_toggled`).
+
+## PR 3 (garage) notes
+- Garage `mode_off` never turns occupancy off, so the generic ordering-invariant test does not collect it; `test_garage_mode_off_never_forces_occupancy_off` covers it instead.
+- `garage_lights_off` had no lights-on condition before and still has none; Off and Away share the `room_off` trigger id.
+- Deploy order: input_boolean reload before automations (new helper `garage_lights_manually_toggled`); read the hand flag before and after the reload (initial removed).
+- Ghost: `garage_lights_turned_off` entity is retired by the delete; reset flag state is whatever HA restores.

@@ -106,3 +106,15 @@ Plan-level pre-mortem and review stand. Kitchen-specific risks, from reading mas
 - **Other readers of the flag (LOW).** `kitchen_lights_day_off` and `kitchen_mode_dim` read `kitchen_lighting_automations`; they keep reading it as the hand flag. The Dim pendant path lives inside `kitchen_lights_motion_on`, so the latch gate on that file covers it.
 - **Two files folded into one, ids change (LOW).** `kitchen_lights_manually_turned_on` and `kitchen_lights_manually_turned_off` become `kitchen_lights_manual_change` (two registry ghosts). Nothing references them; the debug notification is dropped.
 - **Bounce guard (LOW).** `kitchen_mode_auto` has no occupancy-off trigger, so there is nothing to bounce; the test asserts that instead of the guard.
+
+---
+
+## PR 3 addendum (garage), 2026-10-30
+
+- **Plan task 17 re-derived from the live code.** `garage_mode_off` triggers on house Bedtime and only runs while `garage_occupied` is already off, so it never forces occupancy off and the Off option is entered only for an empty garage. JK-1219 therefore needs no change to `garage_mode_off`; forcing occupancy off there would fight the sensors. `garage_mode_auto` triggers on occupancy ON, so nothing can bounce it. The ordering invariant does not apply to the garage (its `mode_off` never turns occupancy off); the reset lands anyway because `garage_not_occupied` currently writes the hand flag after a 30 s delay, and that write is removed.
+- **The flapping is two automations.** Live baseline (7 days, read-only): `garage_lighting_automations` changed 127 times, all automation-context, about 18 a day, alternating between `garage_lights_turned_off` (no context check, so every automation-driven off, 63 times, disables the flag) and `garage_not_occupied` (turns it back on, 63 times). Light changes: 179, 177 with an automation parent, 0 from a user, 2 with neither. No attribute-only rows on the dimmer.
+- **Entity is a Lutron Caseta dimmer** (`light.garage_lights`, brightness only, not a group), like the main bedroom. Same detection template.
+- **Behaviour changes (MEDIUM).** (a) `garage_lights_off` gains the house-wide `lighting_automations` check it never had, and the vacancy branch now needs the hand flag, as in the other rooms. (b) `garage_lights_motion_off` (turn lights off 2 min after motion stops while empty) is a vacancy path, so by Open decision 6 it obeys the hand flag too. Hand flag defaults on; John only sees a difference if he switches it off.
+- **Hand flag stranded off (LOW).** Live it is on; the flapping left it on at last read. Removing `initial: on` takes effect on an input_boolean reload, and HA restores the last state. Read it before and after the reload.
+- **Ghost entity ids.** The two flapping automations have `_2` clone-derived entity ids live (`main_bedroom_lights_manually_turned_off_2`, `playroom_not_occupied_2`). Renaming the garage detection automation retires the first; nothing in the repo references either.
+- **Garage Away.** Select options are Auto/Off/Away. Away turns lights off today; kept (both Off and Away use the `room_off` trigger id).
