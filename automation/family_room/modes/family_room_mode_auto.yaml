@@ -1,20 +1,22 @@
 id: "family_room_mode_auto"
 initial_state: on
 alias: "Family Room Mode Auto"
-trigger:
+triggers:
   # Family Room is occupied
-  - platform: state
+  - trigger: state
     entity_id: input_boolean.family_room_occupied
     to: "on"
-  # House turn to Auto mode
-  - platform: state
+  # House turns to Auto (or Quiet) mode
+  - trigger: state
     entity_id: input_select.house
-    to: "Auto"
+    to:
+      - "Auto"
+      - "Quiet"
   # House becomes occupied
-  - platform: state
+  - trigger: state
     entity_id: input_boolean.house_occupied
     to: "on"
-condition:
+conditions:
   # House is occupied
   - condition: state
     entity_id: input_boolean.house_occupied
@@ -26,12 +28,15 @@ condition:
   - condition: state
     entity_id: input_boolean.bedtime
     state: "off"
-  # House is in Auto mode
+  # House is in Auto or Quiet mode
   - condition: state
     entity_id: input_select.house
-    state: "Auto"
-action:
-  - service: input_select.select_option
-    data:
+    state:
+      - "Auto"
+      - "Quiet"
+actions:
+  - action: input_select.select_option
+    target:
       entity_id: input_select.family_room
+    data:
       option: "Auto"

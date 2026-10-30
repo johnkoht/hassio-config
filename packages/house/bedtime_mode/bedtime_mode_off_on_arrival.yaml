@@ -1,7 +1,7 @@
 # Bedtime Mode Off on Arrival
 #
-# An adult who isn't in bed arrives during bedtime: end it so
-# the house returns to Auto. Their getting into bed restarts it.
+# An adult who isn't in bed arrives during bedtime: end it. The house
+# mode resolver then lands on Quiet or Auto. Getting into bed restarts it.
 #
 automation:
   - id: "bedtime_mode_off_on_arrival"

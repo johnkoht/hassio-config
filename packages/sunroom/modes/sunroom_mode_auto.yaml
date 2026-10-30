@@ -9,10 +9,12 @@ automation:
       - trigger: state
         entity_id: input_boolean.sunroom_occupied
         to: "on"
-      # House turn to Auto mode
+      # House turns to Auto (or Quiet) mode
       - trigger: state
         entity_id: input_select.house
-        to: "Auto"
+        to:
+          - "Auto"
+          - "Quiet"
       # House becomes occupied
       - trigger: state
         entity_id: input_boolean.house_occupied
@@ -29,10 +31,12 @@ automation:
       - condition: state
         entity_id: input_boolean.bedtime
         state: "off"
-      # House is in Auto mode
+      # House is in Auto or Quiet mode
       - condition: state
         entity_id: input_select.house
-        state: "Auto"
+        state:
+          - "Auto"
+          - "Quiet"
     actions:
       - action: input_select.select_option
         data:

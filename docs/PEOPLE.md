@@ -65,7 +65,7 @@ This triggers a cascade:
 - Lights gradually brighten (sunrise simulation)
 - After a few minutes, the bedroom returns to **Auto** mode
 
-Meanwhile, the house checks: *Is everybody awake?* If my wife is also up, `sensor.everybody_awake` becomes true, and the house exits **Bedtime** mode.
+Meanwhile, the house checks whether an adult at home is awake. One is enough (before noon): bedtime ends, and the house goes to **Quiet** if the kids are still asleep, otherwise **Auto**.
 
 ### Leaving for Work
 
@@ -129,7 +129,7 @@ The main bedroom transitions to **Bedtime** mode:
 - Motion automations adjusted for nighttime
 
 The house checks: *Is everybody sleeping?* When my wife also goes to bed, `sensor.everybody_sleeping` becomes true:
-- House enters **Bedtime** mode
+- House enters **Bedtime** mode (the house mode is derived from state by one resolver, `packages/house/modes/house_mode_resolve.yaml`)
 - All non-bedroom rooms turn off
 - Alarm panel arms (night mode)
 - Doors verified locked
