@@ -94,10 +94,15 @@ def test_gianluca_offline_door_sensor_counts_as_open():
     assert "unavailable" in door["state"]
 
 
-def test_kitchen_mode_off_resets_lighting_automations():
-    """A manual-override latch must not survive bedtime/Away; kitchen_not_occupied can't reset it."""
-    auto = automation("packages/kitchen/modes/kitchen_mode_off.yaml")
-    steps = [(a.get("action"), a.get("target", {}).get("entity_id")) for a in auto["actions"]]
-    occupied_off = steps.index(("input_boolean.turn_off", "input_boolean.kitchen_occupied"))
-    latch_on = steps.index(("input_boolean.turn_on", "input_boolean.kitchen_lighting_automations"))
-    assert latch_on > occupied_off
+def test_kitchen_override_latch_cannot_survive_away_bedtime_off():
+    """#73 intent: a manual override must not outlive Away/bedtime/Off, so kitchen motion lights
+    never stay dead. Now done by the ungated reset automation, not by mode_off writing the hand flag."""
+    reset = automation("packages/kitchen/lights/kitchen_lights_reset_manual_toggle.yaml")
+    trig = {(t["entity_id"], t["to"]) for t in reset["triggers"]}
+    assert ("input_select.kitchen", "Off") in trig
+    assert ("input_boolean.house_occupied", "off") in trig
+    assert ("input_boolean.kitchen_occupied", "off") in trig
+    assert not reset.get("conditions")
+    off = automation("packages/kitchen/modes/kitchen_mode_off.yaml")
+    written = [a.get("target", {}).get("entity_id") for a in off["actions"]]
+    assert "input_boolean.kitchen_lighting_automations" not in written

@@ -42,3 +42,23 @@ Two first attempts were bad sabotage (edit landed in the wrong block, or kept th
 
 ## PR 1 review loop
 - Final reviewer (sonnet) at 43b3ae2: ITERATE, one DEFECT (two template clauses had no failing test). Fixed: added script-run-by-user, brightness off-to-on and on-to-off cases (24 tests in the file); re-sabotaged both clauses, both red. Also `mode: queued` on manual_change and wording fixes (Off still obeys the house-wide switch).
+
+## PR 2 sabotage
+
+Each production line broken in place, suite run with `-x`, then restored. Baseline 623 passed, 9 skipped.
+
+| Sabotage | First red test |
+|---|---|
+| hand flag `initial: on` restored | test_flag_has_no_initial_and_latch_initial_off[kitchen] |
+| latch `initial: on` | test_flag_has_no_initial_and_latch_initial_off[kitchen] |
+| reset loses Off trigger | test_kitchen_override_latch_cannot_survive_away_bedtime_off |
+| reset loses house_occupied trigger | test_kitchen_override_latch_cannot_survive_away_bedtime_off |
+| reset gains a condition | test_kitchen_override_latch_cannot_survive_away_bedtime_off |
+| kitchen_mode_off writes hand flag | test_kitchen_override_latch_cannot_survive_away_bedtime_off |
+| kitchen_not_occupied writes hand flag | test_nothing_writes_the_hand_flag[kitchen] |
+| to_off mentions latch id | test_off_path_ignores_flag_and_latch_on_room_off[kitchen] |
+| to_off room_off branch gains flag | test_off_path_ignores_flag_and_latch_on_room_off[kitchen] |
+| motion_on latch check removed | test_on_automations_gated_by_flags_and_latch_before_mode[kitchen-kitchen_lights_motion_on] |
+| day_on latch check removed | test_on_automations_gated_by_flags_and_latch_before_mode[kitchen-kitchen_lights_day_on] |
+| manual_change loses unavailable guard | test_manual_change_conditions_guard_context_and_unavailable[kitchen] |
+| kitchen_mode_auto gains occupancy-off trigger | test_mode_auto_bounce_guard[kitchen] |
