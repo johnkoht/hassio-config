@@ -147,3 +147,28 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | manual_change stops watching the bulbs | test_manual_change_also_watches_extra_lights[office-light.office_ceiling_bulbs] |
 | manual_change stops watching the switch off | test_manual_change_triggers_and_alias[office] |
 | office_mode_off turns occupancy off | test_office_mode_off_leaves_occupancy_alone |
+
+### main_bathroom (753 passed, 9 skipped)
+
+| Sabotage | First red test |
+|---|---|
+| hand flag `initial: on` back | test_flag_has_no_initial_and_latch_initial_off[main_bathroom] |
+| latch `initial: on` | test_flag_has_no_initial_and_latch_initial_off[main_bathroom] |
+| reset loses Off trigger | test_reset_automation_shape[main_bathroom] |
+| reset gains a condition | test_reset_automation_shape[main_bathroom] |
+| not_occupied writes hand flag | test_nothing_writes_the_hand_flag[main_bathroom] |
+| lights_off mentions latch id | test_off_path_ignores_flag_and_latch_on_room_off[main_bathroom] |
+| lights_off room_off branch gains flag | test_off_path_ignores_flag_and_latch_on_room_off[main_bathroom] |
+| lights_off vacancy branch loses hand flag | test_off_path_ignores_flag_and_latch_on_room_off[main_bathroom] |
+| motion_on latch check removed | test_on_automations_gated_by_flags_and_latch_before_mode[main_bathroom-main_bathroom_lights_motion_on] |
+| bedtime_motion_on latch check removed | test_on_automations_gated_by_flags_and_latch_before_mode[main_bathroom-main_bathroom_bedtime_motion_on] |
+| manual_change loses unavailable guard | test_manual_change_conditions_guard_context_and_unavailable[main_bathroom] |
+| manual_change loses parent/user clause | test_manual_change_templates_render[automation-...-main_bathroom] |
+| mode_off loses occupancy-off | test_main_bathroom_mode_off_forces_occupancy_off_with_target |
+| mode_off occupancy-off uses root entity_id | test_main_bathroom_mode_off_forces_occupancy_off_with_target |
+| not_occupied regains delay | test_main_bathroom_not_occupied_only_clears_occupancy |
+| mode_auto guard drops house_occupied | test_mode_auto_bounce_guard[main_bathroom] |
+| mode_auto guard drops Vacation | test_mode_auto_bounce_guard[main_bathroom] |
+| mode_auto guard uses house == Auto | test_mode_auto_bounce_guard[main_bathroom] |
+| mode_auto unoccupied trigger id removed | test_mode_auto_bounce_guard[main_bathroom] (after adding the id assert) |
+| mode_auto default bypasses the script | test_main_bathroom_mode_auto_guard_covers_the_occupancy_trigger_and_sets_auto |

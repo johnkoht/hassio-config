@@ -17,7 +17,8 @@ from jinja2 import Environment
 REPO = Path(__file__).resolve().parent.parent
 
 # Later PRs append rooms here.
-MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway", "office"]
+MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway", "office",
+                  "main_bathroom"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -209,17 +210,20 @@ MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
               "playroom": "light.playroom_lights",
               "upstairs_hallway": "light.upstairs_hallway",
               # The wall switch (what the old detection watched); the bulbs are in EXTRA_LIGHTS.
-              "office": "light.office_light_switch"}
+              "office": "light.office_light_switch",
+              "main_bathroom": "light.main_bathroom_main_lights"}
 OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
             "garage": "garage_lights_off", "playroom": "playroom_lights_to_off",
             "upstairs_hallway": "upstairs_hallway_lights_to_off",
-            "office": "office_lights_off"}
+            "office": "office_lights_off", "main_bathroom": "main_bathroom_lights_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
             "garage": ["garage_lights_motion_on"],
             "playroom": ["playroom_lights_motion_on", "playroom_lights_day_on"],
             "upstairs_hallway": ["upstairs_hallway_lights_motion_on"],
-            "office": ["office_lights_motion_on", "office_lights_day_on", "office_lights_on"]}
+            "office": ["office_lights_motion_on", "office_lights_day_on", "office_lights_on"],
+            # bedtime_motion_on is the night light: on-type, so the latch gates it too.
+            "main_bathroom": ["main_bathroom_lights_motion_on", "main_bathroom_bedtime_motion_on"]}
 
 # The hallway's motion-on never had a mode condition (the room has no Dim/DnD split); adding one
 # would change behaviour, so its gate is checked as house flag, room flag, latch only.
@@ -412,6 +416,8 @@ def test_mode_auto_bounce_guard(room):
         # These rooms' mode_auto has no occupancy-off trigger, so there is nothing to bounce.
         assert room in NO_OCC_OFF_TRIGGER, f"{room} lost its occupancy-off trigger"
         return
+    # The branch is selected by trigger id: the occupancy-off trigger must carry it.
+    assert all(t.get("id") == f"{room}_unoccupied" for t in occ_off), occ_off
     branch = next(o for o in a["actions"][0]["choose"]
                   if any(c.get("condition") == "trigger" and c.get("id") == f"{room}_unoccupied"
                          for c in o["conditions"]))
@@ -567,3 +573,34 @@ def test_office_mode_off_leaves_occupancy_alone():
     assert not any(e == "input_boolean.office_occupied"
                    for _, e, _ in turn_calls(mode_off["actions"]))
     assert "office_lights_reset_manual_toggle" in ALL
+
+
+# 14 main bathroom -----------------------------------------------------------
+def test_main_bathroom_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: Off at Away/house-empty/restart also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("main_bathroom_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.main_bathroom_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_main_bathroom_not_occupied_only_clears_occupancy():
+    """not_occupied no longer re-enables the hand flag after a delay."""
+    body = action_body(auto("main_bathroom_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+def test_main_bathroom_mode_auto_guard_covers_the_occupancy_trigger_and_sets_auto():
+    """The room has an occupancy-off trigger, so it must NOT be in NO_OCC_OFF_TRIGGER; both the
+    guarded branch and the default go through the one script that selects Auto."""
+    assert "main_bathroom" not in NO_OCC_OFF_TRIGGER
+    a = auto("main_bathroom_mode_auto")
+    choose = a["actions"][0]
+    assert all(s["action"] == "script.main_bathroom_mode_turn_on_auto"
+               for s in walk(choose.get("default")) if "action" in s)
+    assert auto("script.main_bathroom_mode_turn_on_auto")
+
+
+def test_main_bathroom_old_detection_is_gone():
+    assert "main_bathroom_lights_turned_off" not in ALL

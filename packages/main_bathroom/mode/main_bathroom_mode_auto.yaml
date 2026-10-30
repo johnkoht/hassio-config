@@ -13,6 +13,7 @@ automation:
       - trigger: state
         entity_id: input_boolean.main_bathroom_occupied
         to: "off"
+        id: "main_bathroom_unoccupied"
       # Bathroom is Wake for 15 minutes
       - trigger: state
         entity_id: input_select.main_bathroom
@@ -50,21 +51,52 @@ automation:
       - condition: template
         value_template: "{{ not is_state('input_select.main_bedroom','Bedtime') }}"
     actions:
+      - choose:
+          # Bathroom emptied: only go to Auto while the house is occupied, so a room
+          # that Off just cleared doesn't bounce back to Auto on the way out the door
+          - conditions:
+              - condition: trigger
+                id: "main_bathroom_unoccupied"
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.house_occupied
+                    state: "on"
+                  - condition: not
+                    conditions:
+                      - condition: state
+                        entity_id: input_select.house
+                        state:
+                          - "Away"
+                          - "Vacation"
+                then:
+                  - action: script.main_bathroom_mode_turn_on_auto
+        default:
+          - action: script.main_bathroom_mode_turn_on_auto
+
+script:
+  main_bathroom_mode_turn_on_auto:
+    alias: "Main Bathroom mode turn on auto"
+    sequence:
       - action: input_select.select_option
-        data:
+        target:
           entity_id: input_select.main_bathroom
+        data:
           option: "Auto"
 
       # Turn off the bedtime motion
       - action: automation.turn_off
-        entity_id: automation.main_bathroom_bedtime_motion_on
+        target:
+          entity_id: automation.main_bathroom_bedtime_motion_on
 
       # Turn on the regular motion automation
       - action: automation.turn_on
-        entity_id: automation.main_bathroom_lights_motion_on
+        target:
+          entity_id: automation.main_bathroom_lights_motion_on
 
       # Turn OFF sleep mode
       - action: switch.turn_off
-        entity_id:
-          - switch.adaptive_lighting_sleep_mode_main_bathroom
-          - switch.adaptive_lighting_sleep_mode_main_bathroom_toilet
+        target:
+          entity_id:
+            - switch.adaptive_lighting_sleep_mode_main_bathroom
+            - switch.adaptive_lighting_sleep_mode_main_bathroom_toilet

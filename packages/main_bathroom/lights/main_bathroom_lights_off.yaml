@@ -1,3 +1,8 @@
+# Main Bathroom Lights Off
+#
+# Room Off always turns the lights off. Vacancy only does so while the hand flag is on.
+#
+
 automation:
   - id: "main_bathroom_lights_off"
     initial_state: on
@@ -7,27 +12,35 @@ automation:
       - trigger: state
         entity_id: input_select.main_bathroom
         to: "Off"
+        id: "room_off"
       # Bathroom is no longer occupied
       - trigger: state
         entity_id: input_boolean.main_bathroom_occupied
         to: "off"
+        id: "vacancy"
     conditions:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # And lighting automations for the bathroom are enabled
-      - condition: state
-        entity_id: input_boolean.main_bathroom_lighting_automations
-        state: "on"
-      # Main bathroom is not occupied
-      - condition: state
-        entity_id: input_boolean.main_bathroom_occupied
-        state: "off"
       # Bathroom lights are on
       - condition: state
         entity_id: light.main_bathroom_lights
         state: "on"
+      - condition: or
+        conditions:
+          # Room Off always wins
+          - condition: trigger
+            id: "room_off"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.main_bathroom_lighting_automations
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.main_bathroom_occupied
+                state: "off"
     actions:
       - action: light.turn_off
-        entity_id: light.main_bathroom_lights
+        target:
+          entity_id: light.main_bathroom_lights

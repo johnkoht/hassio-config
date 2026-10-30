@@ -46,12 +46,5 @@ automation:
         state: "off"
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.main_bathroom_occupied
-
-      # Wati 2 seconds to activate lighting automations
-      - alias: "Wait 2 seconds"
-        delay: 02
-
-      # Enable bedroom lighting automations
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.main_bathroom_lighting_automations
+        target:
+          entity_id: input_boolean.main_bathroom_occupied
