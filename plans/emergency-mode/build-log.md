@@ -8,3 +8,5 @@ Branch: worktree-emergency-mode-pr1 (pushed as feature/emergency-mode-pr1). Work
 - Phase 1.2: pre-mortem written (11 risks, none CRITICAL) -> pre-mortem.md
 - Phase 1.3: independent review (sonnet reviewer): Revise, no blockers; D1-D7 folded into PRD -> review.md
 - Phase 2: prd.md / prd.json (11 tasks over 4 PRs; PR 1 = task-1..task-5), working-memory.md
+- Phase 4 (PR 1, tasks 1-5): built in commit d5c6e86 (+ docs commit). Tests 445 passed (+46).
+- Sabotage (revert -> red): gate always-true (red); drop default('normal') (red only after StrictUndefined added to test env); critical back to enqueue (red); old TTS wait (red); no low purge (red); hold condition removed (red); sensor drops smoke (red); quiet halving during emergency (red).

@@ -42,6 +42,7 @@ packages/security/
 │   └── house_locks.yaml
 ├── lighting/                         # Security lighting (garage flood, etc.)
 ├── fire_alarm/                       # Smoke/fire detection and response
+├── emergency/                        # emergency_active sensor + manual override
 ├── doors_left_open.yaml
 ├── windows_left_open.yaml
 ├── security_unlock_front_door_by_fingerprint.yaml
@@ -150,4 +151,8 @@ Lock unlock by fingerprint is in `security_unlock_front_door_by_fingerprint.yaml
 - Send critical push notification
 - Turn off both Nest thermostats (`continue_on_error: true`)
 
-Always use `script.critical_announcement` (not `voice_announcement`) for fire/smoke. It ignores room occupancy, but it still goes through the announcement queue (at `critical` priority), so the queue processor holds it while `house_occupied` is off or quiet mode is on before 9am. Otherwise quiet mode halves its volume. The lights and push don't depend on the queue.
+Always use `script.critical_announcement` (not `voice_announcement`) for fire/smoke. It ignores room occupancy and skips the announcement queue: it starts the engine directly at `critical` priority, so it plays overnight and with the house empty. Quiet mode doesn't halve its volume while `binary_sensor.emergency_active` is on.
+
+### Emergency mode
+
+`emergency/` holds `binary_sensor.emergency_active` (on while alarmo is `triggered`, `binary_sensor.smoke_detector` is on, or `input_boolean.emergency_mode` is on), the manual override boolean (auto-off after 10 min, at HA start and on automation reload) and its auto-off automation. While it is on, the announcement engine plays only critical messages and the queue holds the rest. See `packages/announcements/CLAUDE.md`. To test, turn on `input_boolean.emergency_mode` and call `script.critical_announcement`; never trigger the alert scripts, panic or Noonlight.
