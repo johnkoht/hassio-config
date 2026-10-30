@@ -230,7 +230,8 @@ def test_fire_sounds_the_sirens_and_clears_them():
     auto = load(REPO / "packages/security/fire_alarm/fire_alarm_cleared.yaml")["automation"][0]
     assert auto["id"] == "fire_alarm_cleared"
     (trig,) = auto["triggers"]
-    assert trig["entity_id"] == "binary_sensor.smoke_detector" and trig["from"] == "on" and trig["to"] == "off"
+    assert trig["entity_id"] == "binary_sensor.smoke_detector" and trig["to"] == "off"
+    assert "from" not in trig  # unavailable -> off must also clear the sirens
     assert trig["for"] == {"minutes": 1}
     # the intruder alarm owns the sirens while it is triggered
     assert "alarm_control_panel.alarmo" in str(auto["conditions"]) and "triggered" in str(auto["conditions"])
@@ -256,3 +257,12 @@ def test_noonlight_is_mentioned_nowhere_else_in_the_config():
                 if "noonlight" in f.read_text(errors="ignore").lower():
                     offenders.append(str(f.relative_to(REPO)))
     assert offenders == []
+
+
+def test_disarm_keeps_the_sirens_while_smoke_is_detected():
+    seq = load(ALARM)["script"]["security_alarm_disabled"]["sequence"]
+    step = next(s for s in seq if "if" in s and "switch.alarm_siren_1" in str(s["then"]))
+    assert "binary_sensor.smoke_detector" in str(step["if"]) and "not" in str(step["if"])
+    assert step["then"][0]["action"] == "switch.turn_off"
+    # nothing else in the script turns the sirens off unconditionally
+    assert str(seq).count("switch.alarm_siren_1") == 1

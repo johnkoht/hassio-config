@@ -88,7 +88,7 @@ def test_alarm_disabled_stops_the_flash_and_restores_the_lights():
     back the snapshot the flash took. The snapshot may be missing (restart)."""
     script = load("packages/security/alarm/alarm_triggered.yaml")["script"]["security_alarm_disabled"]
     seq = script["sequence"]
-    (stop,) = [s for s in seq if "if" in s]
+    (stop,) = [s for s in seq if "if" in s and "script.alarm_flash_lights" in str(s["if"])]
     assert stop["if"][0]["entity_id"] == "script.alarm_flash_lights"
     assert [a["action"] for a in stop["then"]] == ["script.turn_off"]
     restore = next(s for s in seq if s.get("action") == "scene.turn_on")

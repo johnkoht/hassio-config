@@ -115,12 +115,20 @@ script:
         target:
           entity_id: switch.noonlight_alarm
 
-      # Turn off the sirens!
-      - action: switch.turn_off
-        target:
-          entity_id:
-            - switch.alarm_siren_1
-            - switch.alarm_siren_2
+      # Turn off the sirens! Not while the smoke detector is still on: a fire
+      # during the intruder alarm keeps its sirens until fire_alarm_cleared.
+      - if:
+          - condition: not
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.smoke_detector
+                state: "on"
+        then:
+          - action: switch.turn_off
+            target:
+              entity_id:
+                - switch.alarm_siren_1
+                - switch.alarm_siren_2
 
       # Stop the flash if it is still running
       - if:

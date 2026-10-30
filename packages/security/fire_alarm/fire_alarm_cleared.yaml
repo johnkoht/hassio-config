@@ -1,6 +1,7 @@
 # Fire Alarm - Cleared
 #
-# Stop the fire sirens one minute after the smoke detector clears. Skipped
+# Stop the fire sirens one minute after the smoke detector reads off (also
+# from unavailable, so a dropout can't leave them on). Skipped
 # while the intruder alarm is triggered, which owns the sirens then.
 #
 
@@ -11,7 +12,6 @@ automation:
     triggers:
       - trigger: state
         entity_id: binary_sensor.smoke_detector
-        from: "on"
         to: "off"
         for:
           minutes: 1
