@@ -102,18 +102,18 @@ After ~5 minutes:
 
 ### Evening - Do Not Disturb
 
-I hop on a video call in the office. My laptop camera turns on, and my calendar shows a meeting:
+I hop on a video call in the office. My camera or mic turns on (the work laptop sets `input_boolean.john_dnd`; the personal Mac reports its own camera/mic sensors):
 
-`input_boolean.john_dnd` → **on**
+`binary_sensor.john_dnd_active` → **on**
 
 The Office responds by entering **DnD** mode:
 - Music stops
 - Red light turns on outside the office
 - TTS messages are blocked to office speakers
 
-When the call ends and my camera turns off:
+When the call ends and the camera and mic turn off:
 
-`input_boolean.john_dnd` → **off**
+`binary_sensor.john_dnd_active` → **off**
 
 The Office returns to **Auto** mode.
 
@@ -178,7 +178,7 @@ packages/people/john/
 │   └── john_arrived_work.yaml     # Arrived at work notification
 └── input_boolean/
     ├── john_home_boolean.yaml     # Simple home/away flag
-    └── john_dnd.yaml              # Do Not Disturb toggle
+    └── john_dnd.yaml              # Do Not Disturb toggle (manual / work laptop); binary_sensor.john_dnd_active is the derived sensor
 ```
 
 ---

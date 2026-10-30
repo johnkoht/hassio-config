@@ -170,7 +170,7 @@ cards:
                     [[[
                       if (states['input_select.john_sleep_state'].state == "Sleep") {
                         return "sleeping";
-                      } else if (states['input_boolean.john_dnd'].state == "on") {
+                      } else if (states['binary_sensor.john_dnd_active'].state == "on") {
                         return "dnd";
                       }
                     ]]]

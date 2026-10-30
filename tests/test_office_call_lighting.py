@@ -127,7 +127,7 @@ def test_start_triggers_exact():
     ("input_boolean.office_lights_manually_toggled", "off"),
     ("input_boolean.office_occupied", "on"),
     ("input_select.office", "DnD"),
-    ("input_boolean.john_dnd", "on"),
+    ("binary_sensor.john_dnd_active", "on"),
     ("input_boolean.entertainment_mode", "off"),
     ("input_boolean.office_call_lighting", "on"),
     (FLAG, "off"),

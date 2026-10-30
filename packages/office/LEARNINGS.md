@@ -14,7 +14,7 @@ Decisions per automation:
 | `office_lights_off` | room Off bypasses both flags; vacancy needs the hand flag (house flag added) |
 | `office_lights_day_off`, `office_lights_motion_off` | off-type: hand flag only (motion_off gained it) |
 | `office_lights_sync_*`, `office_lights_scene_toggle` | mirror or follow the user's switch/button: not gated |
-| `office_dnd_light_*`, `office_camera_light_*`, deep-work shelf lights | follow DnD, the laptop camera or focus mode, not occupancy: not gated |
+| `office_dnd_light_*`, `office_camera_light_*`, deep-work shelf lights | follow DnD, the Mac camera or focus mode, not occupancy: not gated |
 
 DnD keeps the lights on: `office_lights_on` and `office_lights_day_on` pass Auto and DnD; `office_lights_motion_on` only Auto. The latch gate sits ahead of that mode block and passes the same modes.
 
@@ -32,3 +32,9 @@ DnD keeps the lights on: `office_lights_on` and `office_lights_day_on` pass Auto
 - End and reset call `switch.turn_on` only when `entertainment_mode` is off, and always clear the flag.
 - Accepted cases: entertainment ending mid-call turns AL on for the rest of that call; a manual AL off mid-call is overridden at call end; reset on HA start/reload is best effort (3 h when not in DnD, 12 h hard cap are the guarantee).
 - The numbers and flags have no `initial:`, so they start off / at min. The feature switch gates everything until John seeds 3000 / 100.
+
+## DnD source
+
+- DnD comes only from camera/mic: `binary_sensor.john_dnd_active` = `input_boolean.john_dnd` (manual toggle, or an external work-laptop writer) or the personal Mac camera/mic sensors. 5 s `delay_on`, no `delay_off`; `office_dnd_off` waits 2 min.
+- Mac sensors go unavailable when it sleeps, so camera-light off conditions use `not ... on`.
+- The calendar DnD pieces (work call, personal time, Bayesian sensor) were deleted; their registry entries are ghosts.
