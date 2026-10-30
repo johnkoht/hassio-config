@@ -222,6 +222,10 @@ def test_push_finder_sees_every_kind():
     kinds = {k for _, k, _ in CALLS}
     assert {"script", "direct", "alert"} <= kinds
     assert len(CALLS) > 80
+    # service_template callers are real pushes (this one sends through a templated service name)
+    assert any(f.endswith("upstairs_washer_complete_alert.yaml") for f, _, _ in CALLS)
+    # the transport script's own notify templates are not callers
+    assert not any(f.startswith("packages/general_notifications.yaml") for f, _, _ in CALLS)
 
 
 @pytest.mark.parametrize("file,kind,urls", LINKED, ids=[f"{f}:{k}" for f, k, _ in LINKED])
