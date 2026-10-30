@@ -22,7 +22,7 @@ ALERT = ALERTS / "safety_device_offline_alert.yaml"
 SNOOZE = ALERTS / "safety_device_alert_snooze_action.yaml"
 TIMER = ALERTS / "safety_device_alert_snooze_timer.yaml"
 WATCHER = ALERTS / "safety_device_watcher_down.yaml"
-CARD = REPO / "dashboards/kohbo/home/_safety_device_notification.yaml"
+CARD = REPO / "dashboards/kohbo/shared/notifications/safety_devices_attention.yaml"
 
 NOW = datetime(2026, 11, 2, 12, 0, tzinfo=timezone.utc)  # a Monday
 SAT = "sensor.safety_devices_attention"
@@ -393,4 +393,7 @@ def test_home_card_is_a_state_conditional():
     assert all(x["condition"] == "state" for x in c["conditions"])
     assert c["conditions"][0]["entity"] == "binary_sensor.safety_devices_need_attention"
     assert c["conditions"][0]["state"] == "on"
-    assert "safety_device_notification" in (REPO / "dashboards/kohbo/home/home.yaml").read_text()
+    assert "safety_devices_attention" in (REPO / "dashboards/kohbo/shared/kohbo_notification_popup.yaml").read_text()
+    home = (REPO / "dashboards/kohbo/home/home.yaml").read_text()
+    assert "binary_sensor.safety_devices_need_attention" in home  # header shield
+    assert "safety_device_notification" not in home
