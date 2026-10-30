@@ -1,0 +1,46 @@
+# Mudroom Lights To Away
+#
+# Turns the lights off when the room or house goes Away.
+#
+
+automation:
+  - id: "mudroom_lights_to_away"
+    initial_state: "on"
+    alias: "Mudroom lights to away"
+    triggers:
+      # Mudroom is set to away
+      - trigger: state
+        entity_id: input_select.mudroom
+        to: "Away"
+      # House is set to away
+      - trigger: state
+        entity_id: input_select.house
+        to: "Away"
+    conditions:
+      # Lighting automations are on
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: or
+        conditions:
+          # Mudroom is away
+          - condition: state
+            entity_id: input_select.mudroom
+            state: "Away"
+          # OR mudroom is auto or house is set to away
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_select.mudroom
+                state: "Auto"
+              - condition: state
+                entity_id: input_select.house
+                state: "Away"
+      # Lights are on
+      - condition: state
+        entity_id: light.mudroom_main_lights
+        state: "on"
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id: light.mudroom_main_lights

@@ -1,0 +1,31 @@
+# Mudroom Mode On
+#
+# Selects On when somebody arrives or the house becomes occupied.
+#
+
+automation:
+  - id: "mudroom_mode_on"
+    initial_state: "on"
+    alias: "Mudroom mode on"
+    triggers:
+      # When we arrive
+      - trigger: state
+        to: "Just Arrived"
+        entity_id:
+          - input_select.john_status
+          - input_select.cristina_status_dropdown
+      # House is occupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+    conditions:
+      # Make sure the house is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.mudroom
+        data:
+          option: "On"

@@ -1,0 +1,29 @@
+# Mudroom Mode Away
+#
+# Selects Away when the house is not occupied.
+#
+
+automation:
+  - id: "mudroom_mode_away"
+    initial_state: "on"
+    alias: "Mudroom mode away"
+    triggers:
+      # House is not occupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    conditions:
+      # Mudroom isn't already set to away
+      - condition: template
+        value_template: "{{ not is_state('input_select.mudroom','Away') }}"
+      # House is not occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+    actions:
+      # Turn the mudroom to away.
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.mudroom
+        data:
+          option: "Away"
