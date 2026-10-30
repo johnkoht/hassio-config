@@ -60,3 +60,21 @@ def test_evening_vacuum_reads_its_own_last_run():
     text = yaml.dump(auto["conditions"])
     assert "this.attributes.last_triggered" in text
     assert "state_attr('automation." not in text
+
+
+LEAK_LINK = "/dashboard-kohbo/security-leak-sensors"
+
+
+@pytest.mark.parametrize("name", sorted(LEAK["alert"]))
+def test_leak_pushes_open_the_leak_sensors_page(name):
+    """Both alerts carry the link on the iOS and Android keys, and it opens a real view."""
+    from test_notification_deep_links import VIEWS, link_problem
+    data = LEAK["alert"][name]["data"]
+    assert data == {"url": LEAK_LINK, "clickAction": LEAK_LINK}
+    assert link_problem(LEAK_LINK, VIEWS) is None
+
+
+def test_leak_alerts_still_notify_phones_and_the_voice_path():
+    """The link rides on data:; the notifier lists (a safety path) must not change."""
+    assert LEAK["alert"]["water_leak_alert_home"]["notifiers"] == ["ios_family", "leak_voice_announcement"]
+    assert LEAK["alert"]["water_leak_alert_away"]["notifiers"] == ["ios_family"]
