@@ -684,7 +684,7 @@ def test_laundry_not_occupied_only_clears_occupancy():
 # Gianluca's mode automations are named gianlucas_bedroom_* while his helpers are gianlucas_room_*.
 MODE_ID = {"gianlucas_room": "gianlucas_bedroom"}
 MODE_ONLY_ROOMS = ["dining_room", "basement", "jr_suite", "powder_room", "mudroom_bathroom", "sunroom", "foyer",
-                  "ninos_bedroom", "gianlucas_room"]
+                  "ninos_bedroom", "gianlucas_room", "family_room"]
 
 
 @pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
@@ -826,3 +826,25 @@ def test_mudroom_vacancy_triggers_carry_the_vacancy_id():
     vac = {t["entity_id"] for t in trig if t.get("id") == "vacancy"}
     assert vac == {"binary_sensor.mudroom_motion_sensor_motion_detection",
                    "input_boolean.mudroom_occupied"}
+
+
+# 20 family room: mode-only (its four lights-on/mode automations stay disabled) --------
+def test_family_room_mode_auto_has_no_occupancy_off_trigger():
+    """Nothing to bounce: mode_auto fires on occupancy ON only, so clearing it at Off can't re-Auto."""
+    for t in as_list(auto("family_room_mode_auto")["triggers"]):
+        assert not (t.get("entity_id") == "input_boolean.family_room_occupied"
+                    and t.get("to") in ("off", False)), t
+
+
+def test_family_room_disabled_automations_stay_disabled():
+    for aid in ("family_room_lights_to_on", "family_room_mode_on", "family_room_arrival",
+                "family_room_mode_away"):
+        assert auto(aid).get("initial_state") in ("off", False), aid
+
+
+def test_family_room_mode_off_clears_occupancy_after_selecting_off():
+    """Off at house-empty/Away/bedtime/restart clears occupancy; the not-already-Off condition stays."""
+    a = auto("family_room_mode_off")
+    acts = [s.get("action") for s in as_list(a["actions"])]
+    assert acts == ["input_select.select_option", "input_boolean.turn_off"]
+    assert "is_state('input_select.family_room','Off')" in str(a["conditions"])
