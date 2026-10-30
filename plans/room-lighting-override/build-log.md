@@ -314,3 +314,30 @@ Production line broken in place (or a temp file added), the new test file run wi
 The first run left an empty `automation/family_room/` after the "legacy dir" row, which made the later rows red for the wrong reason; the directory was removed and those rows rerun.
 
 Semantic diff (old vs new, keys normalised): 18 automations (10 family room, 8 mudroom; the brief said 9 mudroom, the legacy tree has 8) differ only in the three intended action edits. Option test found no violations elsewhere (113 literal calls, 49 selects).
+
+## PR 6 sabotage
+
+Mudroom (Away is its Off). Each row: break the production line in place, confirm red, restore.
+
+| Sabotage | First red test |
+|---|---|
+| to_on: latch condition flipped to `on` | test_on_automations_gated_by_flags_and_latch_before_mode[mudroom_lights_to_on] |
+| to_dim: hand flag swapped for the house flag | test_on_automations_gated_by_flags_and_latch_before_mode[mudroom_lights_to_dim] |
+| to_off: `room_off` id dropped from the Away trigger | test_off_path_ignores_flag_and_latch_on_room_off[mudroom] |
+| to_off: latch id appears in the file | test_off_path_ignores_flag_and_latch_on_room_off[mudroom] |
+| to_off: hand flag dropped from the vacancy branch | test_off_path_ignores_flag_and_latch_on_room_off[mudroom] |
+| to_off: `vacancy` id removed from the occupied trigger | test_mudroom_vacancy_triggers_carry_the_vacancy_id |
+| reset: select trigger back to `Off` | test_reset_automation_shape[mudroom] |
+| reset: `for:` debounce removed | test_reset_automation_shape[mudroom] |
+| reset: root-level `entity_id` instead of `target:` | test_reset_automation_shape[mudroom] |
+| manual_change: parent_id guard removed | test_manual_change_templates_render[mudroom-automation] |
+| manual_change: brightness trigger lost | test_manual_change_triggers_and_alias[mudroom] |
+| manual_change: watches the wrong light | test_manual_change_triggers_and_alias[mudroom] |
+| mode_away: occupancy clear turned into turn_on | test_mudroom_mode_away_clears_occupancy_with_target |
+| mode_away: root-level `entity_id` | test_mudroom_mode_away_clears_occupancy_with_target |
+| mode_motion: trigger on `mudroom_occupied` off | test_mudroom_no_mode_automation_triggers_on_occupancy_off |
+| lights_to_away: mentions the hand flag | test_mudroom_lights_to_away_ignores_both_flags |
+| flag: `initial:` added | test_flag_has_no_initial_and_latch_initial_off[mudroom] |
+| latch: `initial: off` removed | test_flag_has_no_initial_and_latch_initial_off[mudroom] |
+| lights_to_on alias changed | test_mudroom_live_entity_identity_unchanged |
+| not_occupied writes the hand flag | test_nothing_writes_the_hand_flag[mudroom] |

@@ -1,0 +1,24 @@
+# Mudroom Lights Reset Manual Toggle
+#
+# Clears the manual latch when the mudroom empties or goes Away (its Off), or the house empties.
+#
+
+automation:
+  - id: "mudroom_lights_reset_manual_toggle"
+    alias: "Mudroom Lights - Reset Manual Toggle"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.mudroom_occupied
+        to: "off"
+        for:
+          seconds: 30
+      - trigger: state
+        entity_id: input_select.mudroom
+        to: "Away"
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.mudroom_lights_manually_toggled

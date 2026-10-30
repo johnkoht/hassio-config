@@ -1,6 +1,6 @@
 # Mudroom Mode Away
 #
-# Selects Away when the house is not occupied.
+# Selects Away when the house is not occupied, and clears occupancy (Away is the mudroom's Off).
 #
 
 automation:
@@ -27,3 +27,7 @@ automation:
           entity_id: input_select.mudroom
         data:
           option: "Away"
+      # Away is the mudroom's Off: clear occupancy
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.mudroom_occupied
