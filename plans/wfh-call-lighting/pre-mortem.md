@@ -36,7 +36,7 @@ Run 2026-10-30 against `plan.md` including its ship addendum (live reads).
 
 **Problem**: Flag set and AL off, then the end condition never fires (DnD to Auto to Off re-arm, HA restart during a call, `for:` timers lost on automation reload).
 
-**Mitigation**: Start sets the flag first, then turns AL off (a failure between leaves AL on and a stale flag, which is harmless). End triggers on `Auto` or `Off` for 3 minutes (both targets, so a hop re-arms) and on occupancy off. Reset: flag on for 3 hours, at HA start with the room not in DnD, and on automation reload with the room not in DnD. Reset and end both respect entertainment mode (do not turn AL on while it is on), but always clear the flag.
+**Mitigation**: Start sets the flag first, then turns AL off (a failure between leaves AL on and a stale flag, which is harmless). End triggers on `Auto` or `Off` for 3 minutes (both targets, so a hop re-arms) and on occupancy off. Reset: flag on for 3 hours (only when the room is not in DnD), flag on for 12 hours (unconditional), at HA start and on automation reload (both only when the room is not in DnD; best effort). Reset and end both respect entertainment mode (do not turn AL on while it is on), but always clear the flag.
 
 **Verification**: Structure tests on all three files; a test that the two resume paths guard on `input_boolean.entertainment_mode`; sabotage by removing the flag condition on end.
 

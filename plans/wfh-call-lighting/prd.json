@@ -44,7 +44,7 @@
     {
       "id": "task-4",
       "title": "Dashboard and docs",
-      "description": "- AC: `dashboards/kohbo/rooms/main_floor/office.yaml` Quick Settings gains rows for `input_boolean.office_call_lighting` (boolean layout) and the two `input_number`s, under the Adaptive Lighting rows.",
+      "description": "",
       "acceptanceCriteria": [
         "`dashboards/kohbo/rooms/main_floor/office.yaml` Quick Settings gains rows for `input_boolean.office_call_lighting` (boolean layout) and the two `input_number`s, under the Adaptive Lighting rows.",
         "`packages/office/README.md` gets a short \"Call lighting\" section; `docs/ROOMS.md` one line; `packages/office/LEARNINGS.md` a section (including the residual late-Hue-report latch risk and its logbook check) covering the gate, the lamp being onoff, the entertainment guard, the accepted mid-call entertainment case and the latch reasoning."
