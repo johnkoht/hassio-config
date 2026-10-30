@@ -18,7 +18,7 @@ REPO = Path(__file__).resolve().parent.parent
 
 # Later PRs append rooms here.
 MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway", "office",
-                  "main_bathroom"]
+                  "main_bathroom", "laundry_room"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -135,8 +135,12 @@ def cond_index(conds, entity, state):
     return None
 
 
+# Rooms whose package directory is not named after the room (laundry_room lives in packages/laundry).
+PACKAGE_DIR = {"laundry_room": "laundry"}
+
+
 def room_files(room):
-    return sorted((REPO / "packages" / room).rglob("*.yaml"))
+    return sorted((REPO / "packages" / PACKAGE_DIR.get(room, room)).rglob("*.yaml"))
 
 
 def flag(room):
@@ -211,11 +215,13 @@ MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
               "upstairs_hallway": "light.upstairs_hallway",
               # The wall switch (what the old detection watched); the bulbs are in EXTRA_LIGHTS.
               "office": "light.office_light_switch",
-              "main_bathroom": "light.main_bathroom_main_lights"}
+              "main_bathroom": "light.main_bathroom_main_lights",
+              "laundry_room": "light.laundry_room_main_lights"}
 OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
             "garage": "garage_lights_off", "playroom": "playroom_lights_to_off",
             "upstairs_hallway": "upstairs_hallway_lights_to_off",
-            "office": "office_lights_off", "main_bathroom": "main_bathroom_lights_off"}
+            "office": "office_lights_off", "main_bathroom": "main_bathroom_lights_off",
+            "laundry_room": "laundry_room_lights_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
             "garage": ["garage_lights_motion_on"],
@@ -223,7 +229,8 @@ ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_ligh
             "upstairs_hallway": ["upstairs_hallway_lights_motion_on"],
             "office": ["office_lights_motion_on", "office_lights_day_on", "office_lights_on"],
             # bedtime_motion_on is the night light: on-type, so the latch gates it too.
-            "main_bathroom": ["main_bathroom_lights_motion_on", "main_bathroom_bedtime_motion_on"]}
+            "main_bathroom": ["main_bathroom_lights_motion_on", "main_bathroom_bedtime_motion_on"],
+            "laundry_room": ["laundry_room_lights_motion_on"]}
 
 # The hallway's motion-on never had a mode condition (the room has no Dim/DnD split); adding one
 # would change behaviour, so its gate is checked as house flag, room flag, latch only.
@@ -402,7 +409,8 @@ def test_mode_off_ordering_invariant(room):
 
 
 # 8 ---------------------------------------------------------------------------
-NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom", "upstairs_hallway", "office")
+NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom", "upstairs_hallway", "office",
+                       "laundry_room")
 
 
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
@@ -604,3 +612,23 @@ def test_main_bathroom_mode_auto_guard_covers_the_occupancy_trigger_and_sets_aut
 
 def test_main_bathroom_old_detection_is_gone():
     assert "main_bathroom_lights_turned_off" not in ALL
+
+
+# 15 laundry room ------------------------------------------------------------
+def test_laundry_motion_on_reads_its_room_flag():
+    """Regression: the laundry toggle did nothing because motion_on never checked it."""
+    assert cond_index(conds_for(auto("laundry_room_lights_motion_on")), flag("laundry_room"), "on") is not None
+
+
+def test_laundry_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: Off at Away/bedtime/house-empty/restart also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("laundry_room_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.laundry_room_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_laundry_not_occupied_only_clears_occupancy():
+    body = action_body(auto("laundry_room_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
