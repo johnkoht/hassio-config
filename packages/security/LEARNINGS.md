@@ -49,7 +49,7 @@ bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
 
 **Gate on `state`, not a template.** The Noonlight branch is `if: state alarm_test_mode on` / `then: log` / `else: dispatch`. A state condition on a missing or unavailable helper is false and never raises, so the dispatch runs. A template condition that errors would be treated as false and could skip the dispatch.
 
-**Noonlight sends police only.** The switch always requests `police`, even for the fire branch; the `noonlight.create_alarm` service can request `fire`. Left as is (decision 8 said "Noonlight on fire", not which service); the dispatcher decides after calling. Noonlight cancel isn't in the component.
+**Smoke requests fire, intruder requests police.** `switch.noonlight_alarm` always requests `police`, so the fire branch calls `noonlight.create_alarm` with `service: fire` (no-ops if an alarm is already active; the switch still turns on via the created event, so the turn_off path works). Noonlight cancel isn't in the component.
 
 **Alarmo leaves `triggered` for an armed state when the trigger time ends** (`disarm_after_trigger` is off), so `security_alarm_disabled` watches `from: triggered`, not `to: disarmed`. A trigger from `disarmed` ends in `disarmed` (3600 s).
 
