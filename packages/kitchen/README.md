@@ -48,3 +48,9 @@ In the evening, after the kids go to sleep, we're mostly in the family room or J
 
 - Dim Mode lights can be manually overridden
 - Dim Mode lighting will return to the default dimmed state after the Kitchen is no longer occupied again.
+
+## Lighting automations and the manual override
+- `kitchen_lighting_automations` is the hand-only master switch (dashboard). No `initial:`, and no automation writes it.
+- `kitchen_lights_manually_toggled` is the override latch. `kitchen_lights_manual_change` sets it on a hand change of `light.kitchen_ceiling_lights` (wall, app, dashboard; automation and Adaptive Lighting changes are ignored). `kitchen_lights_reset_manual_toggle` clears it when the kitchen is unoccupied 30 s, goes Off, or the house empties.
+- Motion on and day on need the master switch on and the latch off. Room Off turns the lights off whatever either flag says (the house-wide switch still applies); vacancy only does so while the master switch is on.
+
