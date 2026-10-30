@@ -47,14 +47,19 @@ def gated_noonlight(branches):
 SCRIPTS = [(ALARM, "security_alarm_alert"), (FIRE, "fire_alarm_alert")]
 
 
+def is_noonlight_call(a):
+    """Either dispatch form: the police switch or noonlight.create_alarm."""
+    return ((a.get("action") == "switch.turn_on" and a["target"]["entity_id"] == NOONLIGHT)
+            or a.get("action") == "noonlight.create_alarm")
+
+
 def dispatches(branch, test_mode_state):
     """Evaluate the guard the way HA would: a state condition on a missing or
     non-`on` helper is false, so the `else` (the dispatch) runs."""
     (cond,) = branch["if"]
     assert cond == {"condition": "state", "entity_id": TEST_MODE, "state": "on"}
     chosen = branch["then"] if test_mode_state == "on" else branch["else"]
-    return any(a.get("action") == "switch.turn_on" and a["target"]["entity_id"] == NOONLIGHT
-               for a in chosen)
+    return any(is_noonlight_call(a) for a in chosen)
 
 
 @pytest.mark.parametrize("path,script", SCRIPTS)
@@ -75,6 +80,19 @@ def test_noonlight_branch_cannot_hold_up_the_alert(path, script):
     assert "script.critical_announcement" in entities
     assert "script.alarm_flash_lights" in entities
     assert "script.general_notification" in entities
+
+
+def test_fire_requests_fire_and_never_police():
+    """Smoke must dispatch via noonlight.create_alarm(service: fire); the
+    switch always requests police. The intruder branch stays on the switch."""
+    (fire,) = gated_noonlight(parallel(FIRE, "fire_alarm_alert"))["else"]
+    assert fire["action"] == "noonlight.create_alarm"
+    assert fire["data"] == {"service": "fire"}
+    assert fire["continue_on_error"] is True
+    assert NOONLIGHT not in str(parallel(FIRE, "fire_alarm_alert"))
+    (intruder,) = gated_noonlight(parallel(ALARM, "security_alarm_alert"))["else"]
+    assert intruder["action"] == "switch.turn_on"
+    assert intruder["target"]["entity_id"] == NOONLIGHT
 
 
 def test_noonlight_is_only_ever_called_from_the_two_gated_else_branches():
