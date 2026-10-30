@@ -23,3 +23,8 @@ The full kit, with **Away standing in for Off**: `mudroom_lights_reset_manual_to
 **JK-1219 listener audit** (`mudroom_occupied` going off): only `mudroom_lights_to_off` (vacancy branch) reads it; `first_floor_*` sensors and groups just aggregate it; the garage entry door package, announcements and vacuums don't reference it. So `mudroom_mode_away` also turns it off. No mode automation triggers on it going off, so nothing bounces (test pins that).
 
 Backlog: `mudroom_mode_motion` triggers on house `Auto` only, not `Quiet`. Out of scope here.
+
+## Arrival scenes bypass the gates
+
+`scenes/house/returned_home*.yaml` turn `light.mudroom_main_lights` on without the flag or latch. A scene is an arrival action, and `mudroom_lights_manual_change` ignores it (the call has a parent id), so it never latches. Same as the other migrated rooms.
+
