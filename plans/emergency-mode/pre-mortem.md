@@ -136,3 +136,19 @@ Rollback safety: every PR 1 change is config-only and revertable with a git reve
 - **Tornado still reaching `append.yaml`'s purge (MEDIUM).** Fixed by calling `critical_announcement` (skips the queue). Severe thunderstorm warning and extreme heat warning remain queue-path criticals and still purge; hazardous air unchanged by decision 10. Reported to the owner.
 - **`max: 25` on a parallel script (LOW).** Over 25 concurrent runs are dropped with a warning; a camera burst would need to exceed that before a critical push is lost.
 - No CRITICAL risks. Nothing in PR 2 touches the alert scripts' structure, Noonlight, sirens, alarmo or panic.
+
+---
+
+## PR 3 refresh (alarm lifecycle), 2026-10-30
+
+Read-only host facts (homelab agent; no service calls): Noonlight component 1.2.0 sends `police` only; `switch.turn_off` does not cancel; the live config entry uses the production endpoint; no sandbox/test flag, so the gate lives in HA. alarmo 1.10.18: `alarm_trigger` is honoured from `disarmed`, needs no code, ends `triggered -> disarmed` after 3600 s (to the armed mode if it was armed); `code_disarm_required` is true.
+
+- **A gate that errors skips a real dispatch (HIGH).** Mitigation: a `state` condition (never raises; missing/unavailable helper is false) with the dispatch in `else`. Test evaluates on/off/unknown/unavailable/missing.
+- **Noonlight called from somewhere ungated (HIGH).** Test walks every package file: the only Noonlight calls are the two gated `else` branches.
+- **Test mode left on in a real event (MEDIUM).** `initial: false`, 30 min auto-off, start/reload resets, persistent notification, Noonlight-skipped log, push text says so.
+- **Fire push claims Noonlight was notified when the call failed (LOW).** Accepted; the call is `continue_on_error`.
+- **Noonlight on fire sends police, not fire (MEDIUM, flagged to owner).** The switch is the plan's mechanism; `noonlight.create_alarm service: fire` is an alternative that needs a decision.
+- **Panic unverified (MEDIUM).** Hardware dead (JK-1230). Static tests + source read only; fallback to the alert script if alarmo is unavailable; device trigger id pinned by a test.
+- **`from: triggered` also fires on trigger-time expiry back to armed (LOW).** Intended: sirens and flash stop. Push text reworded.
+- **Runtime volume clamp changes types (LOW).** Output is an int; unparseable input falls back to 30, not 0 (a silent chime).
+No CRITICAL risks. No test or build step runs any of these paths.
