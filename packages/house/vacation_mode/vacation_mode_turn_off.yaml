@@ -49,6 +49,6 @@ automation:
           title: "Vacation Mode Turned Off"
           message: "Vacation mode has been turned OFF"
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "vacation-mode-activated"
           url: /dashboard-kohbo/home#house_mode

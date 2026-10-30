@@ -27,7 +27,7 @@ automation:
           message: Home is ARMED for stay since John's not home.
           title: Security System
           devices: "cfalb"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "home-security"
           url: /dashboard-kohbo/security
 

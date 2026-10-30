@@ -30,6 +30,6 @@ automation:
           message: "Energy prices are negative at {{ states.sensor.energy_price.state }}. Turn on everything!!!"
           title: "Energy Prices Are Negative"
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "energy_prices_are_negative"
           url: /dashboard-kohbo/energy

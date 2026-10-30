@@ -44,11 +44,3 @@ automation:
       # Turn ON the dnd boolean
       - action: input_boolean.turn_on
         entity_id: input_boolean.john_dnd
-      # Notification for logging
-      - action: script.general_notification
-        data:
-          message: "John's DnD mode has been turned on"
-          title: "John DnD On!"
-          devices: "jk"
-          priority: "passive"
-          tag: "john-dnd"

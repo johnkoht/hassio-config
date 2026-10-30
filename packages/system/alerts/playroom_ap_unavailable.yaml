@@ -43,6 +43,6 @@ automation:
           title: "UniFi AP Issue"
           message: "The Playroom AP became disconnected. Automatically power cycling the PoE port to restore connectivity."
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "playroom-ap-disconnected"
           url: /dashboard-kohbo/sensors-offline

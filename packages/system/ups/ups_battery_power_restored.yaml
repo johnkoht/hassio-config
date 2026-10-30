@@ -23,5 +23,5 @@ automation:
           title: "UPS Power Restored!"
           message: "The UPS is now back on AC power."
           devices: "jk"
-          priority: "time-sensitive"
+          priority: "passive"
           tag: "ups-power-restored"

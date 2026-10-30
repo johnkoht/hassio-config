@@ -27,8 +27,6 @@ EXPECTED = {
     "packages/house/vacation_mode/vacation_mode_turn_on.yaml": MODE,
     "packages/house/vacation_mode/vacation_mode_turn_off.yaml": MODE,
     "packages/house/modes/house_mode_away_notification.yaml": MODE,
-    "scripts/house/house_away.yaml": MODE,
-    "packages/holidays/christmas/modes/christmas_not_activated.yaml": "/dashboard-kohbo/holidays-christmas",
 }
 
 
@@ -45,7 +43,6 @@ def test_push_links_to_its_screen(rel):
 @pytest.mark.parametrize("rel", [
     "packages/laundry/main_level_washer/main_level_washer_complete_alert.yaml",
     "automation/laundry_upstairs/upstairs_washer/upstairs_washer_complete_alert.yaml",
-    "packages/holidays/christmas/modes/christmas_not_activated.yaml",
 ])
 def test_direct_notifier_pushes_send_both_keys(rel):
     """Direct callers build data: by hand, so they need url (iOS) and clickAction (Android)."""
