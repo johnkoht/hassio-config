@@ -107,3 +107,45 @@ def test_tornado_no_longer_reaches_the_queue_purge_path():
 def test_hazardous_air_stays_on_voice_announcement():
     assert "script.voice_announcement" in AIR.read_text()
     assert "critical_announcement" not in AIR.read_text()
+
+
+# ---- Volume ceiling (owner rule, 2026-10-30): no announcement sets a Sonos
+# volume above 75. The speakers are in-ceiling on amps. Emergency mode only
+# skips the quiet-mode halving; it never raises the level.
+VOLUME_CEILING = 75
+ANNOUNCEMENTS = REPO / "packages/announcements"
+
+
+def test_engine_volume_selectors_and_defaults_stay_at_or_under_the_ceiling():
+    fields = load(ANNOUNCEMENTS / "announcement_engine.yaml")["script"]["announcement_engine"]["fields"]
+    for name in ("sound_volume", "speech_volume"):
+        assert fields[name]["selector"]["number"]["max"] <= VOLUME_CEILING, name
+        assert fields[name]["default"] <= VOLUME_CEILING, name
+
+
+def test_queue_volume_defaults_stay_at_or_under_the_ceiling():
+    fields = load(ANNOUNCEMENTS / "queue/enqueue.yaml")["script"]["announcement_queue_enqueue"]["fields"]
+    for name in ("sound_volume", "speech_volume"):
+        assert fields[name]["default"] <= VOLUME_CEILING, name
+
+
+def test_every_base_volume_literal_is_at_or_under_the_ceiling():
+    """`{% set vol = N %}` bases in announcements/, plus the bare numbers the
+    doorbell and hourly dong render as their chime volume."""
+    import re
+    found = []
+    for path in ANNOUNCEMENTS.rglob("*.yaml"):
+        found += [(path.name, int(n)) for n in re.findall(r"set vol = (\d+)", path.read_text())]
+    for rel in ("packages/doorbell_ring.yaml", "packages/hourly_dong.yaml"):
+        text = (REPO / rel).read_text()
+        block = text[text.index("sound_file_volume: >-"):]
+        block = block[:block.index("{% endif %}")]
+        found += [(rel, int(n)) for n in re.findall(r"^\s+(\d+)\s*$", block, re.M)]
+    assert len(found) >= 8, found  # the scan really found the volume bases
+    assert [f for f in found if f[1] > VOLUME_CEILING] == []
+
+
+def test_critical_volume_is_still_40():
+    cfg = load(ANNOUNCEMENTS / "critical_announcement.yaml")["script"]["critical_announcement"]["variables"]
+    for key in ("sound_file_volume", "speech_volume"):
+        assert "set vol = 40" in cfg[key]

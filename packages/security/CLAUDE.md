@@ -159,4 +159,8 @@ Always use `script.critical_announcement` (not `voice_announcement`) for fire/sm
 
 ### Critical pushes
 
-`script.general_notification` always sends `priority: critical`, even when `input_select.notification_level` is `None` (every other priority still respects the level). It is `mode: parallel`, `max: 25`, so a burst of camera pushes can't queue and drop the alarm or fire push. Pushes that share a `tag` replace each other; in parallel mode a quick "alarm disabled" push could land before the "alarm triggered" one and be replaced by it.
+`script.general_notification` always sends `priority: critical`, even when `input_select.notification_level` is `None` (every other priority still respects the level). It is `mode: parallel`, `max: 25`, so a burst of camera pushes can't queue and drop the alarm or fire push. Pushes that share a `tag` replace each other; in parallel mode a quick "alarm disabled" push could land before the "alarm triggered" one and be replaced by it. Other `critical` pushes (the UPS outage alert, the find-my-phone alert) also bypass the level now.
+
+### Volume ceiling
+
+No announcement may set a Sonos volume above 75 (in-ceiling speakers on amps); `critical_announcement` stays at 40. Emergency mode only skips the quiet-mode halving, it never raises the level. `tests/test_emergency_delivery_regressions.py` enforces the ceiling.
