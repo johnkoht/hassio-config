@@ -16,8 +16,8 @@ from jinja2 import Environment
 
 REPO = Path(__file__).resolve().parent.parent
 
-# Later PRs append rooms here (kitchen, garage, ...).
-MIGRATED_ROOMS = ["main_bedroom"]
+# Later PRs append rooms here (garage, ...).
+MIGRATED_ROOMS = ["main_bedroom", "kitchen"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -203,8 +203,15 @@ def _manual(room):
     return auto(f"{room}_lights_manual_change")
 
 
+MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
+              "kitchen": "light.kitchen_ceiling_lights"}
+OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off"}
+ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
+            "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"]}
+
+
 def _main_light(room):
-    return f"light.{room}_main_lights"
+    return MAIN_LIGHT[room]
 
 
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
@@ -290,13 +297,13 @@ def test_manual_change_templates_render(room, name, trigger, expected):
 
 
 # 5 ---------------------------------------------------------------------------
-@pytest.mark.parametrize("auto_name", ["lights_motion_on", "lights_day_on"])
-@pytest.mark.parametrize("room", MIGRATED_ROOMS)
-def test_on_automations_gated_by_flags_and_latch_before_mode(room, auto_name):
+@pytest.mark.parametrize("room,auto_id", [(r, a) for r in MIGRATED_ROOMS for a in ON_AUTOS[r]])
+def test_on_automations_gated_by_flags_and_latch_before_mode(room, auto_id):
     """On-type lighting automations check house flag, room flag, latch=off, in that order, before the mode."""
-    conds = conds_for(auto(f"{room}_{auto_name}"))
+    conds = conds_for(auto(auto_id))
     idx = [cond_index(conds, HOUSE_FLAG, "on"), cond_index(conds, flag(room), "on"),
-           cond_index(conds, latch(room), "off"), cond_index(conds, f"input_select.{room}", "Auto")]
+           cond_index(conds, latch(room), "off"),
+           next((i for i, c in enumerate(conds) if f"input_select.{room}" in str(c)), None)]
     assert None not in idx, idx
     assert idx == sorted(idx), idx
 
@@ -305,7 +312,7 @@ def test_on_automations_gated_by_flags_and_latch_before_mode(room, auto_name):
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
 def test_off_path_ignores_flag_and_latch_on_room_off(room):
     """Room Off turns lights off regardless of flag and latch; only the vacancy branch reads the hand flag."""
-    path, a = ALL[f"{room}_lights_off"]
+    path, a = ALL[OFF_AUTO[room]]
     assert any(t.get("id") == "room_off" and t.get("to") == "Off" for t in as_list(a["triggers"]))
     assert latch(room) not in path.read_text()
     conds = conds_for(a)
@@ -360,8 +367,15 @@ def test_mode_off_ordering_invariant(room):
 # 8 ---------------------------------------------------------------------------
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
 def test_mode_auto_bounce_guard(room):
-    """The occupancy-off branch needs house_occupied on and house not Away/Vacation; no house == Auto condition."""
+    """Where mode_auto turns on occupancy-off: needs house_occupied on, house not Away/Vacation, no
+    house == Auto condition. Kitchen has no such trigger, so it asserts that instead."""
     a = auto(f"{room}_mode_auto")
+    occ_off = [t for t in as_list(a["triggers"])
+               if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
+    if not occ_off:
+        # Kitchen: mode_auto has no occupancy-off trigger, so there is nothing to bounce.
+        assert room == "kitchen", f"{room} lost its occupancy-off trigger"
+        return
     branch = next(o for o in a["actions"][0]["choose"]
                   if any(c.get("condition") == "trigger" and c.get("id") == f"{room}_unoccupied"
                          for c in o["conditions"]))

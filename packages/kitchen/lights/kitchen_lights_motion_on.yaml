@@ -13,10 +13,14 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # And lighting automations for the bedroom are enabled
+      # And lighting automations for the kitchen are enabled
       - condition: state
         entity_id: input_boolean.kitchen_lighting_automations
         state: "on"
+      # No hand override in effect
+      - condition: state
+        entity_id: input_boolean.kitchen_lights_manually_toggled
+        state: "off"
       # Kitchen is Auto or Dim
       - condition: or
         conditions:
@@ -52,7 +56,8 @@ automation:
                 state: "Auto"
             sequence:
               - action: light.turn_on
-                entity_id: light.kitchen_ceiling_lights
+                target:
+                  entity_id: light.kitchen_ceiling_lights
                 data:
                   transition: 5
           # Kitchen is in Dim mode
@@ -62,13 +67,12 @@ automation:
                 state: "Dim"
             sequence:
               - action: light.turn_on
-                entity_id: light.kitchen_island_pendants
+                target:
+                  entity_id: light.kitchen_island_pendants
                 data:
                   brightness_pct: 35
                   transition: 1
-      #
-      # - service: automation.turn_on
-      #   entity_id: automation.kitchen_lights_motion_off
       # Toggle the boolean to flag it was auto
       - action: input_boolean.turn_on
-        entity_id: input_boolean.kitchen_lights_auto
+        target:
+          entity_id: input_boolean.kitchen_lights_auto
