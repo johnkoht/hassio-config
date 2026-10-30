@@ -92,7 +92,7 @@ When the alarm triggers (`alarm_triggered.yaml`), `script.security_alarm_alert` 
 - Sound the sirens
 - Play critical TTS announcement
 - Flash lights throughout the house
-- Send push notification
+- Send push notification (`general_notification` at `critical` priority, to everyone)
 
 ---
 
@@ -148,7 +148,7 @@ Lock unlock by fingerprint is in `security_unlock_front_door_by_fingerprint.yaml
 `fire_alarm/fire_alarm_triggered.yaml` fires on `binary_sensor.smoke_detector` (Vivint) and runs these at once in one `parallel:` block, so a slow Nest call can't delay the alert:
 - Call `script.critical_announcement` — broadcasts to all rooms
 - Flash all lights
-- Send critical push notification
+- Send critical push notification to `devices: "all"`
 - Turn off both Nest thermostats (`continue_on_error: true`)
 
 Always use `script.critical_announcement` (not `voice_announcement`) for fire/smoke. It ignores room occupancy and skips the announcement queue: it starts the engine directly at `critical` priority, so it plays overnight and with the house empty. Quiet mode doesn't halve its volume while `binary_sensor.emergency_active` is on.
@@ -156,3 +156,7 @@ Always use `script.critical_announcement` (not `voice_announcement`) for fire/sm
 ### Emergency mode
 
 `emergency/` holds `binary_sensor.emergency_active` (on while alarmo is `triggered`, `binary_sensor.smoke_detector` is on, or `input_boolean.emergency_mode` is on), the manual override boolean (auto-off after 10 min, at HA start and on automation reload) and its auto-off automation. While it is on, the announcement engine plays only critical messages and the queue holds the rest. See `packages/announcements/CLAUDE.md`. To test, turn on `input_boolean.emergency_mode` and call `script.critical_announcement`; never trigger the alert scripts, panic or Noonlight.
+
+### Critical pushes
+
+`script.general_notification` always sends `priority: critical`, even when `input_select.notification_level` is `None` (every other priority still respects the level). It is `mode: parallel`, `max: 25`, so a burst of camera pushes can't queue and drop the alarm or fire push. Pushes that share a `tag` replace each other; in parallel mode a quick "alarm disabled" push could land before the "alarm triggered" one and be replaced by it.

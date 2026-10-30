@@ -107,7 +107,7 @@ For emergencies only. Broadcasts to **all rooms**. It starts `script.announcemen
 
 | Priority | Expires | Behavior |
 |---|---|---|
-| `critical` | Never | Skips the queue via `critical_announcement`. A critical item that still arrives through the queue goes first and `append.yaml` drops the other queued items |
+| `critical` | Never | Skips the queue via `critical_announcement`. A critical item that still arrives through the queue (severe thunderstorm warning, extreme heat warning, hazardous air; not the tornado warning, which calls `critical_announcement`) goes first and `append.yaml` drops the other queued items |
 | `high` | Never | Plays before normal/low |
 | `normal` | 10 min | Discarded after 10 min if unplayed |
 | `low` | 3 min | Discarded after 3 min; skips rooms with active music |
