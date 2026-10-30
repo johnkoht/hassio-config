@@ -1,0 +1,38 @@
+# Nino Medication Stock
+#
+# Doses left on hand and the refill amount, plus days remaining
+# (stock / 2 doses a day). Stock of -1 means not set yet.
+#
+
+input_number:
+  nino_medication_stock:
+    name: Nino Medication Stock
+    # -1 = not set yet, shown as "Not set"
+    min: -1
+    max: 365
+    step: 1
+    mode: box
+    unit_of_measurement: doses
+    icon: mdi:pill
+  nino_medication_refill_days:
+    name: Nino Medication Refill Days
+    min: 0
+    max: 90
+    step: 1
+    mode: box
+    unit_of_measurement: days
+    icon: mdi:calendar-plus
+
+template:
+  - sensor:
+      - name: "Nino Medication Days Remaining"
+        unique_id: nino_medication_days_remaining
+        unit_of_measurement: days
+        icon: mdi:calendar-clock
+        # Unavailable until the stock has been set (-1) or if it is not a number
+        availability: >-
+          {{ states('input_number.nino_medication_stock') | is_number
+             and states('input_number.nino_medication_stock') | float(-1) >= 0 }}
+        state: >-
+          {% set doses_per_day = 2 %}
+          {{ (states('input_number.nino_medication_stock') | float(0) / doses_per_day) | int }}

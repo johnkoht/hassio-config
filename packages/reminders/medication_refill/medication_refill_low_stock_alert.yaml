@@ -1,0 +1,66 @@
+# Medication Refill Low Stock Alert
+#
+# Push when days of medication left drop below the threshold, and again
+# at 09:00 daily while low. Below the critical level it is time-critical.
+#
+
+automation:
+  - id: "medication_refill_low_stock_alert"
+    alias: "Medication Refill Low Stock Alert"
+    mode: queued
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.nino_medication_days_remaining
+        below: input_number.medication_refill_threshold_days
+        id: "low"
+      - trigger: numeric_state
+        entity_id: sensor.nino_medication_days_remaining
+        below: input_number.medication_refill_critical_days
+        id: "critical"
+      - trigger: time
+        at: "09:00:00"
+        id: "daily"
+    conditions: []
+    actions:
+      # Add another person here as one more list item
+      - variables:
+          medications:
+            - key: nino
+              sensor: sensor.nino_medication_days_remaining
+              label: "Nino's medication"
+              tag: medication-refill-nino
+              action_prefix: NINO
+      - repeat:
+          for_each: "{{ medications }}"
+          sequence:
+            - variables:
+                has_days: "{{ has_value(repeat.item.sensor) }}"
+                days: "{{ states(repeat.item.sensor) | int(-1) }}"
+                threshold: "{{ states('input_number.medication_refill_threshold_days') | float(0) }}"
+                critical: "{{ states('input_number.medication_refill_critical_days') | float(0) }}"
+                low: "{{ has_days and days >= 0 and threshold > 0 and days < threshold }}"
+                is_critical: "{{ critical > 0 and days < critical }}"
+            - alias: "Low on stock"
+              if:
+                - condition: template
+                  value_template: "{{ low }}"
+              then:
+                - action: script.general_notification
+                  data:
+                    devices: "all"
+                    title: "Nino's Medication Refill"
+                    message: >-
+                      {%- if days == 0 -%}
+                        {{ repeat.item.label }} is almost out.
+                      {%- elif days == 1 -%}
+                        {{ repeat.item.label }} is running low: about 1 day left.
+                      {%- else -%}
+                        {{ repeat.item.label }} is running low: about {{ days }} days left.
+                      {%- endif -%}
+                    priority: "{{ 'critical' if is_critical else 'time-sensitive' }}"
+                    tag: "{{ repeat.item.tag }}"
+                    actions:
+                      - action: "MEDICATION_REFILLED_{{ repeat.item.action_prefix }}_15"
+                        title: "+15 days"
+                      - action: "MEDICATION_REFILLED_{{ repeat.item.action_prefix }}_30"
+                        title: "+30 days"

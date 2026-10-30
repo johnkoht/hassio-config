@@ -1,0 +1,22 @@
+# Nino Medication 1 Stock Decrement
+#
+# Take one dose off the stock when dose 1 is marked taken.
+#
+
+automation:
+  - id: "nino_medication_1_stock_decrement"
+    alias: "Nino Medication 1 Stock Decrement"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.nino_medication_1_taken
+        from: "off"
+        to: "on"
+    conditions:
+      - condition: numeric_state
+        entity_id: input_number.nino_medication_stock
+        above: 0
+    actions:
+      - action: input_number.decrement
+        target:
+          entity_id: input_number.nino_medication_stock
