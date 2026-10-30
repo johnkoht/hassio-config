@@ -32,12 +32,5 @@ automation:
         value_template: "{{ expand('group.room_presence_devices')|selectattr('state', 'eq', 'mudroom')|map(attribute='name')|list | length == 0 }}"
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.laundry_room_occupied
-
-      # Wait 2 seconds
-      - alias: "Wait 2 seconds"
-        delay: 02
-
-      # Enable laundry room lighting automations
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.laundry_room_lighting_automations
+        target:
+          entity_id: input_boolean.laundry_room_occupied

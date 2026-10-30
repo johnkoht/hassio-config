@@ -1,0 +1,24 @@
+# Laundry Room Lights Reset Manual Toggle
+#
+# Clears the manual latch when the room empties or goes Off, or the house empties.
+#
+
+automation:
+  - id: "laundry_room_lights_reset_manual_toggle"
+    alias: "Laundry Room Lights - Reset Manual Toggle"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.laundry_room_occupied
+        to: "off"
+        for:
+          seconds: 30
+      - trigger: state
+        entity_id: input_select.laundry_room
+        to: "Off"
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.laundry_room_lights_manually_toggled
