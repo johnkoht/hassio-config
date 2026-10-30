@@ -645,7 +645,7 @@ def test_laundry_not_occupied_only_clears_occupancy():
 # Gianluca's mode automations are named gianlucas_bedroom_* while his helpers are gianlucas_room_*.
 MODE_ID = {"gianlucas_room": "gianlucas_bedroom"}
 MODE_ONLY_ROOMS = ["dining_room", "basement", "jr_suite", "powder_room", "mudroom_bathroom", "sunroom", "foyer",
-                  "ninos_bedroom"]
+                  "ninos_bedroom", "gianlucas_room"]
 
 
 @pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
@@ -709,7 +709,8 @@ def test_dining_room_not_occupied_only_clears_occupancy():
 
 
 # 18 kids' rooms: mode_off clears occupancy only when nobody is home and the bed is empty -------
-KIDS_BED = {"ninos_bedroom": "binary_sensor.nino_bed_occupied"}
+KIDS_BED = {"ninos_bedroom": "binary_sensor.nino_bed_occupied",
+            "gianlucas_room": "binary_sensor.gianluca_bed_occupied"}
 
 
 @pytest.mark.parametrize("room", sorted(KIDS_BED))

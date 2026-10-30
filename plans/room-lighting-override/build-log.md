@@ -264,3 +264,15 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | mode_auto guard loses house_occupied | test_mode_only_room_mode_auto_guard[ninos_bedroom] |
 | mode_auto guard loses Vacation | test_mode_only_room_mode_auto_guard[ninos_bedroom] |
 | mode_auto occupancy-off trigger loses its id | test_mode_only_room_mode_auto_guard[ninos_bedroom] |
+
+### gianlucas_room (816 passed, 9 skipped)
+
+| Sabotage | First red test |
+|---|---|
+| mode_off occupancy-off becomes turn_on | test_mode_only_room_mode_off_forces_occupancy_off_with_target[gianlucas_room] |
+| mode_off occupancy-off uses root entity_id | test_mode_only_room_mode_off_forces_occupancy_off_with_target[gianlucas_room] |
+| mode_off bed guard flipped to bed occupied | test_kids_mode_off_only_clears_occupancy_with_empty_bed[gianlucas_room] |
+| mode_off Away gate changed | test_kids_mode_off_only_clears_occupancy_with_empty_bed[gianlucas_room] |
+| mode_auto guard loses house_occupied | test_mode_only_room_mode_auto_guard[gianlucas_room] |
+| mode_auto guard loses Vacation | test_mode_only_room_mode_auto_guard[gianlucas_room] |
+| mode_auto occupancy-off trigger loses its id | test_mode_only_room_mode_auto_guard[gianlucas_room] |
