@@ -37,3 +37,11 @@ Kit rooms: playroom, upstairs hallway, office, main bathroom, laundry (also gain
 - Per-room generalisation needs name maps (`PACKAGE_DIR`, `MODE_ID`): package dirs, helper ids and automation ids disagree for laundry, Nino's and Gianluca's rooms.
 - Listener audits are what make JK-1219 safe: three outcomes (apply, apply behind a condition, defer).
 
+## PR 5 of 6: family room and mudroom migration (behaviour-neutral)
+
+Phase 5 split in two: this migration, then the kit. 10 family room and 8 mudroom automations moved from the legacy `automation/` dir into `packages/` in modern syntax (ids, aliases and `initial_state` pinned by a manifest test); both selects and the family room occupancy boolean moved with identical definitions (no option changes, so no input_select reload). The invalid `On`/`Dim` option calls sit in automations that are disabled live (last run 2022); they were repointed at `Auto` and stay disabled. A repo-wide test now checks every literal `select_option` against the select's defined options (113 calls, 49 selects, zero violations, empty ratchet allowlist). 863 tests, 31 sabotage rows.
+
+- Preview the live facts before a "behaviour-neutral" migration: the four disabled automations, the `_2` registry entity id and the missing Off/Auto options on the mudroom all changed what neutral meant.
+- Only `.yaml` counts as a definition: HA never loads `.yml`, so a parked select must not hide a bad call.
+- A migrated file keeps its `id` (the registry key), not its old filename; renaming files is free, renaming ids is not.
+
