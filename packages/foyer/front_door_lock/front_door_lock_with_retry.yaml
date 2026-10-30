@@ -38,7 +38,7 @@ script:
               devices: "all"
               priority: "time-sensitive"
               tag: "front-door-lock-failed"
-              url: /dashboard-kohbo/security-house-locks
+              url: /dashboard-kohbo/security-house-locks#front_door_lock_popup
 
   front_door_lock_attempt:
     alias: Front Door Lock Attempt
