@@ -149,7 +149,7 @@ automation:
           actions:
             - action: "{{ action_snooze }}"
               title: "Snooze 1 hour"
-          url: /dashboard-kohbo/security-house-locks
+          url: /dashboard-kohbo/security-house-locks#garage_entry_lock_popup
 
       - alias: "Wait 2 minutes for a snooze"
         wait_for_trigger:
@@ -261,7 +261,7 @@ automation:
                 - action: "GARAGE_EVENING_LOCK_UNLOCK"
                   title: "Unlock"
                   authenticationRequired: true
-              url: /dashboard-kohbo/security-house-locks
+              url: /dashboard-kohbo/security-house-locks#garage_entry_lock_popup
         else:
           - action: script.general_notification
             data:
@@ -270,7 +270,7 @@ automation:
               devices: "all"
               priority: "time-sensitive"
               tag: "garage-entry-evening-lock"
-              url: /dashboard-kohbo/security-house-locks
+              url: /dashboard-kohbo/security-house-locks#garage_entry_lock_popup
 
 
 #

@@ -282,6 +282,30 @@ def test_exempt_entries_are_not_stale():
     assert not stale, "\n".join(stale)
 
 
+def test_lock_and_garage_pushes_open_their_popups():
+    """Door and lock pushes land on the popup that has the controls, not just the view."""
+    want = {
+        "packages/foyer/front_door_lock/front_door_lock_stuck_alert.yaml":
+            "/dashboard-kohbo/security-house-locks#front_door_lock_popup",
+        "packages/security/security_unlock_front_door_by_fingerprint.yaml":
+            "/dashboard-kohbo/security-house-locks#front_door_lock_popup",
+        "packages/mudroom/garage_entry_door/garage_entry_door_evening_auto_lock.yaml":
+            "/dashboard-kohbo/security-house-locks#garage_entry_lock_popup",
+        "packages/garage/doors/door_2/garage_door_2_open_upon_arrival.yaml":
+            "/dashboard-kohbo/security-garage-doors",
+        "packages/garage/doors/door_3/garage_door_3_open_upon_arrival.yaml":
+            "/dashboard-kohbo/security-garage-doors",
+    }
+    for file, url in want.items():
+        urls = {u for f, _, us in CALLS if f == file for u in us}
+        assert urls == {url}, f"{file}: {urls}"
+
+
+def test_nino_escape_push_stays_removed():
+    """John dropped the escape alert (decision 6); nothing may re-add a push under that package."""
+    assert not (REPO / "packages" / "ninos_room" / "nino_escaping").exists()
+
+
 # --- script.general_notification transport ---------------------------------
 def _script():
     return load_plain(REPO / "packages" / "general_notifications.yaml")["script"]["general_notification"]
