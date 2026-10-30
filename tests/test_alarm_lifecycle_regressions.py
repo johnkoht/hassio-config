@@ -262,7 +262,9 @@ def test_noonlight_is_mentioned_nowhere_else_in_the_config():
 def test_disarm_keeps_the_sirens_while_smoke_is_detected():
     seq = load(ALARM)["script"]["security_alarm_disabled"]["sequence"]
     step = next(s for s in seq if "if" in s and "switch.alarm_siren_1" in str(s["then"]))
-    assert "binary_sensor.smoke_detector" in str(step["if"]) and "not" in str(step["if"])
+    (cond,) = step["if"]
+    assert cond["condition"] == "not"
+    assert cond["conditions"] == [{"condition": "state", "entity_id": "binary_sensor.smoke_detector", "state": "on"}]
     assert step["then"][0]["action"] == "switch.turn_off"
     # nothing else in the script turns the sirens off unconditionally
     assert str(seq).count("switch.alarm_siren_1") == 1
