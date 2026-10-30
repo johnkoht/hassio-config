@@ -50,6 +50,6 @@ automation:
           title: "Garage Door 3"
           message: Garage door three is opening upon somebody's arrival
           devices: "jk"
-          priority: "active"
+          priority: "passive"
           tag: "garage-door-3-automation"
           url: /dashboard-kohbo/security-garage-doors

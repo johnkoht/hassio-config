@@ -23,12 +23,3 @@ automation:
       # Turn OFF the boolean
       - action: input_boolean.turn_off
         entity_id: input_boolean.john_work_call
-
-      # Notification for logging
-      - action: script.general_notification
-        data:
-          message: "John's work call has been turned OFF"
-          title: "John Work Call OFF"
-          devices: "jk"
-          priority: "passive"
-          tag: "john-work-call"

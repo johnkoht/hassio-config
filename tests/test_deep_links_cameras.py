@@ -45,10 +45,10 @@ def test_each_camera_links_to_its_own_popup(boolean):
     assert link_problem(url, VIEWS) is None
 
 
-def test_all_three_pushes_carry_the_same_link_on_both_keys():
+def test_all_four_pushes_carry_the_same_link_on_both_keys():
     text = (REPO / ALERT).read_text()
-    assert text.count('url: "{{ camera_link }}"') == 3
-    assert text.count('clickAction: "{{ camera_link }}"') == 3
+    assert text.count('url: "{{ camera_link }}"') == 4
+    assert text.count('clickAction: "{{ camera_link }}"') == 4
 
 
 def test_camera_toggle_pushes_open_the_cameras_page():

@@ -36,11 +36,3 @@ automation:
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.playroom_party_time_boolean
-      # Notification for debugging
-      - action: script.general_notification
-        data:
-          title: "Playroom Party Time Off"
-          message: "Playroom party time has been turned OFF!"
-          devices: "jk"
-          priority: "time-sensitive"
-          tag: "playroom-party-time"

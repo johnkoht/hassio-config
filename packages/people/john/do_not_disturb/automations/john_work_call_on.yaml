@@ -25,15 +25,6 @@ automation:
       - action: input_boolean.turn_on
         entity_id: input_boolean.john_work_call
 
-      # Notification for logging
-      - action: script.general_notification
-        data:
-          message: "John's work call has been turned ON"
-          title: "John Work Call ON"
-          devices: "jk"
-          priority: "passive"
-          tag: "john-work-call"
-
       # Turn the Work call off automation temporarily OFF
       - action: automation.turn_off
         entity_id: automation.john_work_call_off

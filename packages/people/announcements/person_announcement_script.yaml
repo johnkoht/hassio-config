@@ -220,17 +220,6 @@ script:
           priority: low
 
       #
-      # Push Notification
-      #
-      - action: script.general_notification
-        data:
-          title: "Somebody's here! {{sound}}"
-          message: '{{chatgpt.response.speech.plain.speech | trim | replace(''"'','''')}}'
-          devices: "jk"
-          priority: "passive"
-          tag: "person-announcement"
-
-      #
       # Save the message in the person's announcement history
       #
       - action: script.update_person_announcement_history

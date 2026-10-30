@@ -46,14 +46,6 @@ automation:
       - action: input_boolean.turn_off
         entity_id: input_boolean.christmas_active
 
-      - action: notify.mobile_app_jk_2
-        data:
-          title: Holidays
-          message: Christmas is NO longer activate
-          data:
-            url: /dashboard-kohbo/holidays-christmas
-            clickAction: /dashboard-kohbo/holidays-christmas
-
 
       #
       # Ensure all xmas lights are OFF
