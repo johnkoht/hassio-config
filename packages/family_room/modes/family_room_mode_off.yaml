@@ -1,6 +1,7 @@
 # Family Room Mode Off
 #
-# The Family Room is off when when it's bedtime
+# The Family Room is off when it's bedtime, the house is empty or Away.
+# Also clears occupancy (JK-1219).
 #
 
 automation:
@@ -49,3 +50,7 @@ automation:
           entity_id: input_select.family_room
         data:
           option: "Off"
+      # Off means nobody is using the room
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.family_room_occupied

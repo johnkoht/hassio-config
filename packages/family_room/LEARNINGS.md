@@ -17,3 +17,7 @@ They stay disabled; reviving them is John's call. Adding an option means an inpu
 ## No enabled lights-on automation
 
 With `family_room_lights_to_on` disabled, nothing turns the family room lights on automatically. It is a mode-only room for the override work, not a kit room, unless that automation is revived.
+
+## `family_room_mode_off` clears occupancy (JK-1219, PR 6)
+
+Audit of `family_room_occupied` going off at the Off triggers (house empty, Away, bedtime on, HA start, automation reload): music pause, TV off and lights off already fire on the select going Off, so nothing new there; speech notifications off and the announcement room lists (`announceable_rooms`, voice/critical/doorbell/hourly speech) just stop targeting the room, which is wanted at those times. The start/reload triggers are gated by the same conditions, so forcing it off there only happens when the room is already going Off. `family_room_mode_auto` triggers on occupancy ON only, so nothing bounces (test pins it). Mode-only room: no hand flag, no latch.

@@ -19,6 +19,14 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      # Mudroom lighting automations are on (hand-only)
+      - condition: state
+        entity_id: input_boolean.mudroom_lighting_automations
+        state: "on"
+      # No hand override in effect
+      - condition: state
+        entity_id: input_boolean.mudroom_lights_manually_toggled
+        state: "off"
       - condition: or
         conditions:
           # Mudroom is on
