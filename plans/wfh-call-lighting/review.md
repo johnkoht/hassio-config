@@ -17,3 +17,7 @@ Reviewer: independent sonnet `reviewer` subagent, 2026-10-30. Verdict round 1: *
 Checks that held: entertainment guards, detector ignores automation and `:al:` contexts on paper, `to: [Auto, Off]` is complete (the select has three options).
 
 Round 2 (re-review of the corrected plan): **APPROVED**, all 9 fixed, no new DEFECTs. Five BACKLOG notes: gate order has two house-level conditions after room-level ones (harmless); a call still in DnD at 12 h gets AL resumed and is not re-paused (accepted); a mid-call HA restart loses the `for:` backstops (the end trigger covers the normal case; best effort); pre-mortem Risk 4 text was stale (fixed); a cosmetic prd.json description (fixed).
+
+## Implementation review (final)
+
+Reviewer: independent sonnet `reviewer`. Round 1 at 1d8f66e: **ITERATE**, one DEFECT (the "Bulbs are on" guard was not pinned: flipping it to "off" stayed green); BACKLOG: an `office_occupied` flap mid-call resumes AL, `build-log.md` uncommitted. Fixed in cc8e686 with a guard test (sabotage rows 11 and 12). Round 2 at cc8e686: **APPROVED**, suite 1105 passed, 9 skipped, two further sabotage checks red then restored. The reviewer's own sabotage checks (drop `for` on end, drop the `stuck` branch, gate `or` to `and`, drop start's entertainment condition) all went red.
