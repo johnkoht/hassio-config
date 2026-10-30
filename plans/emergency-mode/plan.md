@@ -1,11 +1,11 @@
 ---
 title: Emergency Mode
 slug: emergency-mode
-status: approved
+status: in-progress
 created: 2026-10-28
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 issues: [JK-1149, JK-1165]
 depends_on: JK-1165 hotfixes #72 (fire trigger + parallel alerts) and #75 (flash restore), both shipped 2026-10-28/29
 ---
