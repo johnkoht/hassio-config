@@ -279,3 +279,38 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 
 ### PR 4 review loop
 - Final reviewer (sonnet) at f79de9c: ITERATE, two DEFECTs. (1) the `choose` default path and the main bathroom script body of `mode_auto` were unpinned (3 sabotages stayed green); (2) `main_bathroom_lights_off` no longer cleared `main_bathroom_lights_auto` (the deleted detection did). Fixed with a default/Auto assertion in the shared bounce-guard helper, script-body assertions, and a lights_auto test; re-sabotaged: default removed (bathroom, Nino), script `select_option` broken, lights_auto write broken, all red.
+
+## PR 5 sabotage
+
+Production line broken in place (or a temp file added), the new test file run with `-x`, then restored. Baseline 817 passed, 9 skipped; 863 passed with the two new files. All reds confirmed.
+
+| Test file | Sabotage | First red test |
+|---|---|---|
+| select_options | `family_room_mode_on` selects `On` again | test_every_select_option_call_uses_a_defined_option |
+| select_options | `family_room_arrival` selects `Dim` again | test_every_select_option_call_uses_a_defined_option |
+| select_options | `mudroom_mode_motion` selects a bogus option | test_every_select_option_call_uses_a_defined_option |
+| select_options | fake entry added to KNOWN_VIOLATIONS (ratchet) | test_known_violations_are_all_still_real |
+| select_options | legacy `service:` call with root `entity_id` in a temp package | test_every_select_option_call_uses_a_defined_option |
+| select_options | `data.entity_id` list style bad call in a temp package | test_every_select_option_call_uses_a_defined_option |
+| select_options | checker stops reading `data.entity_id` | test_checker_catches_a_bad_call_in_every_call_style |
+| migration | `family_room_mode_on` gains `initial_state: on` | test_automation_pinned_and_in_packages_once |
+| migration | `mudroom_lights_to_on` alias changed | test_automation_pinned_and_in_packages_once |
+| migration | `mudroom_lights_to_on` id changed | test_automation_pinned_and_in_packages_once |
+| migration | same id also in `automation/` | test_automation_pinned_and_in_packages_once |
+| migration | same id in a second package file | test_automation_pinned_and_in_packages_once |
+| migration | `automation/family_room/` comes back | test_legacy_directories_are_gone |
+| migration | family room select gains `Dim` | test_select_options_equal_the_live_list[family_room] |
+| migration | family room select loses `Off` | test_select_options_equal_the_live_list[family_room] |
+| migration | mudroom options reordered | test_select_options_equal_the_live_list[mudroom] |
+| migration | mudroom select gains `initial` | test_select_options_equal_the_live_list[mudroom] |
+| migration | occupancy boolean gains `initial` | test_family_room_occupied_boolean_has_no_initial |
+| migration | `platform:` reintroduced in a trigger | test_migrated_automation_uses_modern_keys |
+| migration | `service:` reintroduced | test_migrated_automation_uses_modern_keys |
+| migration | top-level `trigger:` key | test_migrated_automation_uses_modern_keys |
+| migration | root-level `entity_id` on an action | test_migrated_automation_uses_modern_keys |
+| migration | `family_room_lights_to_on` back to `switch.turn_on` | test_disabled_family_room_automations_point_at_defined_options |
+| migration | `family_room_mode_on` back to `On` | test_disabled_family_room_automations_point_at_defined_options |
+
+The first run left an empty `automation/family_room/` after the "legacy dir" row, which made the later rows red for the wrong reason; the directory was removed and those rows rerun.
+
+Semantic diff (old vs new, keys normalised): 18 automations (10 family room, 8 mudroom; the brief said 9 mudroom, the legacy tree has 8) differ only in the three intended action edits. Option test found no violations elsewhere (113 literal calls, 49 selects).
