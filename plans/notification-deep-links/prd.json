@@ -16,9 +16,9 @@
         "Pushes with no link produce one warning with the count and do not fail",
         "No call site file is changed; full suite green; every new test has a sabotage run that goes red"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
@@ -130,7 +130,7 @@
   "metadata": {
     "createdAt": "2026-10-30T00:00:00Z",
     "totalTasks": 10,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "failedTasks": 0,
     "note": "One PR per task; PR 1 = task-1. Push pruning is a proposal and is out of scope."
   }
