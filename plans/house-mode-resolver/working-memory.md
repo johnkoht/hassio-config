@@ -17,5 +17,5 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 *(none yet)*
 
 ## Decision Ledger
-- [2026-10-30] Arrival debounce on `house_occupied -> on` is 10 s (review B2) — docs affected: packages/house/LEARNINGS.md — status: open
-- [2026-10-30] `alarm_disarm_in_morning` re-checks bedtime, armed_home, occupied after the wait, not the clock (review D2) — docs affected: packages/security/LEARNINGS.md, packages/house/LEARNINGS.md — status: open
+- [2026-10-30] Arrival debounce on `house_occupied -> on` is 10 s (review B2) — docs affected: packages/house/LEARNINGS.md — status: folded
+- [2026-10-30] `alarm_disarm_in_morning` re-checks bedtime, armed_home, occupied after the wait, not the clock (review D2) — docs affected: packages/security/LEARNINGS.md, packages/house/LEARNINGS.md — status: folded
