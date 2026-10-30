@@ -1,0 +1,4 @@
+input_boolean:
+  family_room_occupied:
+    name: Family room
+    icon: mdi:sofa

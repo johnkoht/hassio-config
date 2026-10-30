@@ -1,0 +1,84 @@
+# Family Room Not Occupied
+#
+# Clears occupancy once presence, BLE, motion and the kitchen have all gone quiet.
+#
+
+automation:
+  - id: "family_room_not_occupied"
+    initial_state: "on"
+    alias: "Family room not occupied"
+    triggers:
+      # Bayesian sensor turns off for 3 mins
+      - trigger: state
+        entity_id: binary_sensor.family_room_presence
+        to: "off"
+        for:
+          minutes: 3
+      # No bluetooth devices detected
+      - trigger: state
+        entity_id: binary_sensor.family_room_ble_occupancy
+        to: "off"
+        for:
+          minutes: 2
+      # No motion for 5 minutes
+      - trigger: state
+        entity_id: binary_sensor.family_room_motion_sensor
+        to: "off"
+        for:
+          minutes: 5
+      # Aqara occupancy off
+      - trigger: state
+        entity_id: binary_sensor.family_room_motion_sensor_occupancy
+        to: "off"
+      # Aqara occupancy off for 15 mins total
+      - trigger: state
+        entity_id: binary_sensor.family_room_motion_sensor_occupancy
+        to: "off"
+        for:
+          minutes: 5
+      # Kitchen is NOT occupied for 5 mins
+      - trigger: state
+        entity_id: input_boolean.kitchen_occupied
+        to: "off"
+        for:
+          minutes: 5
+    conditions:
+      - condition: state
+        entity_id: input_boolean.family_room_occupied
+        state: "on"
+      - condition: or
+        conditions:
+          # Family room no aqara occupancy (10 mins of no motion)
+          # AND kitchen is NOT occupied
+          # AND TV is OFF
+          # We're most likely not using the family room
+          - condition: and
+            conditions:
+              # No motion for 10 mins in family room
+              - condition: state
+                entity_id: binary_sensor.family_room_motion_sensor_occupancy
+                state: "off"
+              # Kitchen is NOT occupied
+              - condition: state
+                entity_id: input_boolean.kitchen_occupied
+                state: "off"
+              # TV is OFF
+              - condition: state
+                entity_id: media_player.sony_bravia_tv
+                state: "off"
+      # No BLE devices detected
+      - condition: state
+        entity_id: binary_sensor.family_room_ble_occupancy
+        state: "off"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.family_room_occupied
+      # Notification for logging
+      - action: script.general_notification
+        data:
+          title: "Family Room Logger"
+          message: "The family room is NO LONGER occupied"
+          devices: "jk"
+          priority: "passive"
+          tag: "family-room-not-occupied"
