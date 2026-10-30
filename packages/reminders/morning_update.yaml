@@ -74,6 +74,7 @@ script:
             - Birthdays (only if there are any)
             - Air quality (only if poor or under alert)
             - Indoor plants that need water (only if any are listed)
+            - Medication refills (only if listed)
             - Fun holiday flair
 
             Avoid emojis, lists, or symbols like &, #, or similar. Use full sentences only. Keep everything in one single paragraph with no line breaks.
@@ -198,6 +199,23 @@ script:
                 {% endif %}
               {% endfor %}
             {% endif %}
+
+            ---
+
+            ### MEDICATION REFILLS
+            Only mention a medication refill if a line appears below; otherwise say nothing about it.
+            {% set meds = {'sensor.nino_medication_days_remaining': "Nino's medication"} %}
+            {% set threshold = states('input_number.medication_refill_threshold_days') | float(0) %}
+            {% set critical = states('input_number.medication_refill_critical_days') | float(0) %}
+            {% for entity, label in meds.items() %}
+              {% if has_value(entity) %}
+                {% set days = states(entity) | int(-1) %}
+                {% if threshold > 0 and days >= 0 and days < threshold %}
+            {% if days == 0 %}{{ label }} is almost out.{% else %}{{ label }} is running low, about {{ days }} {{ 'day' if days == 1 else 'days' }} left.{% endif %}{% if critical > 0 and days < critical %} It needs a refill today.{% endif %}
+
+                {% endif %}
+              {% endif %}
+            {% endfor %}
 
             ---
 
