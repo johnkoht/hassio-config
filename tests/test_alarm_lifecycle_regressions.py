@@ -182,7 +182,9 @@ def test_noonlight_is_mentioned_nowhere_else_in_the_config():
     Noonlight outside the two alert scripts (and the one switch.turn_off)."""
     roots = ["automation", "scripts", "automations.yaml", "scripts.yaml", "scenes.yaml",
              "dashboards", "esphome", "blueprints", "custom_templates", "configuration.yaml", "packages"]
-    allowed = {"alarm_triggered.yaml", "fire_alarm_triggered.yaml"}
+    # the test-mode files only mention it in comments and the notification text
+    allowed = {"alarm_triggered.yaml", "fire_alarm_triggered.yaml", "alarm_test_mode.yaml",
+               "alarm_test_mode_notify_on.yaml"}
     offenders = []
     for root in roots:
         base = REPO / root
