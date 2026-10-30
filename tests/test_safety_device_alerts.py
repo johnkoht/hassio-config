@@ -244,7 +244,10 @@ def test_triggers():
     ids = {t["id"]: t for t in a["triggers"]}
     assert ids["morning"]["at"] == "09:00:00"
     assert ids["snooze_end"]["event_data"]["entity_id"] == "timer.safety_device_alert_snooze"
-    assert ids["attention"]["entity_id"] == SAT and "attribute" not in ids["attention"]
+    # any from/to/not_from/not_to would limit a state trigger to on/off and block attribute-only changes
+    assert ids["attention"] == {"trigger": "state", "entity_id": SAT, "id": "attention"}
+    assert ids["snooze_end"]["trigger"] == "event" and ids["snooze_end"]["event_type"] == "timer.finished"
+    assert ids["morning"]["trigger"] == "time"
 
 
 def test_daytime_state_change_with_new_device_sends():
@@ -346,6 +349,7 @@ def test_push_parameters():
 def test_snooze_actions_start_the_timer_with_the_right_duration():
     a = load(SNOOZE)["automation"][0]
     pushed = [x["action"] for x in push_action()["data"]["actions"]]
+    assert all(t["trigger"] == "event" and t["event_type"] == "mobile_app_notification_action" for t in a["triggers"])
     by_id = {t["id"]: t["event_data"]["action"] for t in a["triggers"]}
     assert by_id == {"day": pushed[0], "week": pushed[1]}
     branches = {b["conditions"][0]["id"]: b["sequence"][0] for b in a["actions"][0]["choose"]}
@@ -388,4 +392,5 @@ def test_home_card_is_a_state_conditional():
     assert c["type"] == "conditional"
     assert all(x["condition"] == "state" for x in c["conditions"])
     assert c["conditions"][0]["entity"] == "binary_sensor.safety_devices_need_attention"
+    assert c["conditions"][0]["state"] == "on"
     assert "safety_device_notification" in (REPO / "dashboards/kohbo/home/home.yaml").read_text()
