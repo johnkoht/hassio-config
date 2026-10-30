@@ -40,3 +40,7 @@ A state trigger on a nonexistent entity never errors, it just never fires. `door
 Since 2026-10-29 (JK-1123) only an exterior door, the garage, an arrival or
 the house becoming occupied mutes them; the activate side (Away, sunset, 22:00,
 bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
+
+## Critical pushes bypass the notification level (JK-1149, PR 2)
+
+`general_notification` used to stop at `notification_level == None` before it read the priority, and was `mode: queued` (max 10), so a camera burst could push the alarm out. Critical now always passes and the script is `mode: parallel` (max 25). The fire push goes to `all`. Same-tag pushes can now race (see `packages/security/CLAUDE.md`). Caller audit (2026-10-30): the only same-tag pair across scripts is `home-security-alarm` (alarm triggered, then alarm disabled), which is meant to replace the first.

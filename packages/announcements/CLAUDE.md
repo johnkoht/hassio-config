@@ -107,7 +107,7 @@ For emergencies only. Broadcasts to **all rooms**. It starts `script.announcemen
 
 | Priority | Expires | Behavior |
 |---|---|---|
-| `critical` | Never | Skips the queue via `critical_announcement`. A critical item that still arrives through the queue goes first and `append.yaml` drops the other queued items |
+| `critical` | Never | Skips the queue via `critical_announcement`. A critical item that still arrives through the queue (severe thunderstorm warning, extreme heat warning, hazardous air; not the tornado warning, which calls `critical_announcement`) goes first and `append.yaml` drops the other queued items |
 | `high` | Never | Plays before normal/low |
 | `normal` | 10 min | Discarded after 10 min if unplayed |
 | `low` | 3 min | Discarded after 3 min; skips rooms with active music |
@@ -170,3 +170,9 @@ packages/announcements/
     ├── shared_config.yaml                # input_boolean.announcement_queue_running
     └── queue_cleanup.yaml                # discard low/normal when house empties
 ```
+
+---
+
+## Volume ceiling
+
+No announcement may set a Sonos volume above **75**. The engine selectors cap at 75, `critical_announcement` is 40 (not halved during an emergency, never raised), and `tests/test_emergency_delivery_regressions.py` fails on any base volume literal above 75.

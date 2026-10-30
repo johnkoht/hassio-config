@@ -177,7 +177,7 @@ Messages are processed in priority order:
 | `normal` | Regular announcements | 10 min |
 | `low` | Non-essential info | 3 min |
 
-`script.critical_announcement` no longer uses the queue. A `critical` item that still arrives through the queue (for example a tornado warning sent via `voice_announcement`) is put first, and `append.yaml` drops the other queued messages, as before.
+`script.critical_announcement` no longer uses the queue. A `critical` item that still arrives through the queue (today: the severe thunderstorm warning, the extreme heat warning and hazardous air, all sent via `voice_announcement`; the tornado warning now uses `critical_announcement`) is put first, and `append.yaml` drops the other queued messages, as before.
 
 ### MQTT Topics
 
