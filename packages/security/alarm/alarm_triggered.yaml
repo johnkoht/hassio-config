@@ -21,11 +21,14 @@ automation:
     alias: "Security Alarm - Disabled"
     mode: "single"
     triggers:
-      # Security alarm is disabled
+      # Security alarm leaves triggered: disarmed, or the trigger time ran
+      # out and alarmo went back to an armed state (or a panic from disarmed)
       - trigger: state
         entity_id: alarm_control_panel.alarmo
         from: "triggered"
-        to: "disarmed"
+        not_to:
+          - "unavailable"
+          - "unknown"
     actions:
       - action: script.security_alarm_disabled
         data: {}
@@ -45,11 +48,23 @@ script:
       # see https://www.home-assistant.io/docs/scripts/#parallelizing-actions
       #
       - parallel:
-          # Notify Noonlight
-          - action: switch.turn_on
-            continue_on_error: true
-            target:
-              entity_id: switch.noonlight_alarm
+          # Notify Noonlight, unless alarm test mode is explicitly on.
+          # Only an `on` state skips it: off, unknown, unavailable or a
+          # missing helper all dispatch. State conditions never raise.
+          - if:
+              - condition: state
+                entity_id: input_boolean.alarm_test_mode
+                state: "on"
+            then:
+              - action: system_log.write
+                data:
+                  level: warning
+                  message: "Alarm test mode is on: Noonlight was NOT notified"
+            else:
+              - action: switch.turn_on
+                continue_on_error: true
+                target:
+                  entity_id: switch.noonlight_alarm
 
           # Sound the sirens!
           - action: switch.turn_on
@@ -123,7 +138,7 @@ script:
       # Notify us
       - action: script.general_notification
         data:
-          message: The security alarm has been disabled.
+          message: The security alarm has stopped (disarmed, or its trigger time ended).
           title: Security Alarm
           devices: "all"
           priority: "time-sensitive"

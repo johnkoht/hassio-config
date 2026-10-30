@@ -1,0 +1,12 @@
+# Alarm Test Mode
+#
+# While on, the alert scripts skip the Noonlight dispatch (sirens, lights and
+# voice still run). initial: false is deliberate: it must come back off after a
+# restart. Auto-off and a notification live in alarm_test_mode_*.yaml.
+#
+
+input_boolean:
+  alarm_test_mode:
+    name: Alarm Test Mode
+    icon: mdi:test-tube
+    initial: false
