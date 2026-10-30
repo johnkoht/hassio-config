@@ -260,6 +260,7 @@ automation:
               actions:
                 - action: "GARAGE_EVENING_LOCK_UNLOCK"
                   title: "Unlock"
+                  authenticationRequired: true
               url: /dashboard-kohbo/security-house-locks
         else:
           - action: script.general_notification

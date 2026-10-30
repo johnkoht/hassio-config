@@ -331,6 +331,7 @@ def test_locked_push_only_when_locked(auto):
     ok = next(x for x in branch["then"] if x.get("action") == "script.general_notification")["data"]
     assert ok["priority"] == "passive" and ok["tag"] == "garage-entry-evening-lock"
     assert ok["actions"][0]["action"] == "GARAGE_EVENING_LOCK_UNLOCK"
+    assert ok["actions"][0]["authenticationRequired"] is True
     fail = branch["else"][0]["data"]
     # Dropped at level Important unless time-sensitive, and a failed lock matters
     assert fail["priority"] == "time-sensitive" and "actions" not in fail
@@ -363,6 +364,15 @@ def test_unlock_handler_needs_our_window_and_a_quiet_home():
     }
     assert [s["action"] for s in a["actions"]] == ["lock.unlock", "timer.cancel"]
     assert a["actions"][1]["target"]["entity_id"] == WINDOW
+    assert a["actions"][0]["target"]["entity_id"] == "lock.garage_entry_door"
+    assert a["mode"] == "single"
+
+
+def test_noon_floor_in_conditions_and_recheck(auto):
+    recheck = next(x for x in _actions(auto) if x.get("condition") == "and")
+    for conds in (auto["conditions"], recheck["conditions"]):
+        times = [c for c in conds if c.get("condition") == "time"]
+        assert [c["after"] for c in times] == ["12:00:00"]
 
 
 def test_only_the_evening_lock_opens_the_unlock_window(auto):
