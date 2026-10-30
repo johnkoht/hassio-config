@@ -1,0 +1,31 @@
+# House Mode Doorbell Text
+#
+# Set the doorbell display text to match the house mode.
+#
+automation:
+  - id: "house_mode_doorbell_text"
+    alias: "House Mode - Doorbell Text"
+    initial_state: on
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: input_select.house
+        to:
+          - "Auto"
+          - "Away"
+          - "Bedtime"
+          - "Quiet"
+          - "Vacation"
+    actions:
+      - action: select.select_option
+        target:
+          entity_id: select.front_door_camera_doorbell_text
+        data:
+          option: >-
+            {{ {
+              'Auto': 'WELCOME!',
+              'Away': 'DO NOT DISTURB',
+              'Bedtime': 'DO NOT DISTURB',
+              'Quiet': 'SHHH…KIDS SLEEPING',
+              'Vacation': 'Please do not disturb!'
+            }[trigger.to_state.state] }}

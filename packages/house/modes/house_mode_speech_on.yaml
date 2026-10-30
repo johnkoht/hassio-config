@@ -1,0 +1,24 @@
+# House Mode Speech On
+#
+# Turn speech notifications back on when the house returns to Auto.
+#
+automation:
+  - id: "house_mode_speech_on"
+    alias: "House Mode - Speech On"
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_select.house
+        to: "Auto"
+        not_from:
+          - "unknown"
+          - "unavailable"
+    conditions:
+      - alias: "Speech notifications are off"
+        condition: state
+        entity_id: input_boolean.speech_notifications
+        state: "off"
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.speech_notifications

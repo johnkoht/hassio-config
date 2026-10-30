@@ -1,0 +1,23 @@
+# House Mode Away Notification
+#
+# Push a passive note when the house goes to Away.
+#
+automation:
+  - id: "house_mode_away_notification"
+    alias: "House Mode - Away Notification"
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_select.house
+        to: "Away"
+        not_from:
+          - "unknown"
+          - "unavailable"
+    actions:
+      - action: script.general_notification
+        data:
+          title: "Away Mode"
+          message: "Nobody is home so away mode has been activated!"
+          devices: "jk"
+          priority: "passive"
+          tag: "house-mode-away"
