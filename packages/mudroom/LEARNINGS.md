@@ -28,3 +28,14 @@ Backlog: `mudroom_mode_motion` triggers on house `Auto` only, not `Quiet`. Out o
 
 `scenes/house/returned_home*.yaml` turn `light.mudroom_main_lights` on without the flag or latch. A scene is an arrival action, and `mudroom_lights_manual_change` ignores it (the call has a parent id), so it never latches. Same as the other migrated rooms.
 
+## Garage entry door evening auto lock (JK-1233)
+
+- **Guards are real signals (spike, 2026-10-30).** Over 14 days the driveway and garage-driveway cameras, the four `backyard_{south,pool,northwest,porch}_person_detected` cameras and the bayesian `binary_sensor.backyard_occupied` all turned on in the evening, none stuck (longest run 5 minutes, bayesian 20). The `*_person_occupancy` sensors never fired; don't use them.
+- **Fail open on purpose.** `unavailable` fails a `state: off` guard, so a dead sensor keeps the door unlocked until the bedtime or 22:00 lock. A silent UniFi Protect feed freeze would blind the guards and nothing here detects it; the warning push is the remaining net.
+- **`general_notification` drops `active` and `passive` at level Important** (the usual night level). Only `time-sensitive` and `critical` get through, so the failure push is time-sensitive and the passive "Locked" push (with its Unlock tap) only arrives at level All. The automation also refuses to lock at level None, because the warning could not go out.
+- **The Unlock tap belongs to one lock.** `..._unlock_window` (30 minutes) is started only after this automation's confirmed lock, so a stale push can't unlock after a bedtime or manual lock; one tap cancels it.
+- **The 2-minute wait outlives the conditions**, so the actions re-check the live guards before `lock.lock`. A test keeps the two lists identical.
+- **`time after 12:00` stops the dark morning**: `sun.sun` below_horizon alone also covers the hours before sunrise, when the morning unlock would be re-locked.
+- Not changed: the 19:30 `..._auto_lock_in_evening` still locks with no outdoor guard (backlog); the old 15-minute rule stays off with its popup toggle.
+- The switch and both timers have no `initial:`. HA creates the switch off, so nothing locks until John turns it on.
+
