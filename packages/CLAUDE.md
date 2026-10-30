@@ -214,6 +214,19 @@ automation:
           entity_id: light.office_lights
 ```
 
+### Manual override latch (migrated rooms)
+
+Migrated rooms are listed in `MIGRATED_ROOMS` in `tests/test_room_lighting_override_regressions.py`. Their Lighting ON examples also check the latch (`input_boolean.{room}_lights_manually_toggled` must be `off`) after the room flag.
+
+| Flag | Written by |
+|------|-----------|
+| `{room}_lighting_automations` | Hand only. No `initial:`, no automation writes it |
+| `{room}_lights_manually_toggled` | Set by `{room}_lights_manual_change` (hand changes only); cleared by `{room}_lights_reset_manual_toggle` |
+
+- Reset has three triggers and no conditions: `{room}_occupied` off for 30 s, `input_select.{room}` to Off, `house_occupied` off.
+- Gate order on ON automations: global, room flag, latch, then mode.
+- The room going Off turns lights off regardless of either flag. Room Off forces occupancy off only after the reset lands (ordering rule, tested).
+
 ### Mode transition automation
 ```yaml
 automation:

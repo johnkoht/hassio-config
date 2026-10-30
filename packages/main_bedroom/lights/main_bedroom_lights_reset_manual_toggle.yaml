@@ -1,3 +1,8 @@
+# Main Bedroom Lights Reset Manual Toggle
+#
+# Clears the manual latch when the room empties or goes Off, or the house empties.
+#
+
 automation:
   - id: "main_bedroom_lights_reset_manual_toggle"
     alias: "Main Bedroom Lights - Reset Manual Toggle"
@@ -7,10 +12,13 @@ automation:
         to: "off"
         for:
           seconds: 30
-    conditions:
-      - condition: state
-        entity_id: input_boolean.main_bedroom_lights_manually_toggled
-        state: "on"
+      - trigger: state
+        entity_id: input_select.main_bedroom
+        to: "Off"
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.main_bedroom_lights_manually_toggled
+        target:
+          entity_id: input_boolean.main_bedroom_lights_manually_toggled

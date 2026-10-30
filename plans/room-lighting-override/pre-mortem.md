@@ -1,0 +1,94 @@
+## Pre-Mortem: Room Lighting Override (whole plan; PR 1 = main bedroom pilot)
+
+Run 2026-10-30 against plan.md at master 9d766de (after house-mode-resolver #99 and kitchen hotfix #73).
+
+### Reconciliation with master (read before building)
+
+- **Resolver (#99).** `input_select.house` has one writer. Room `*_mode_auto` files accept house Auto or Quiet (the main bedroom file was not among them: it triggers on house `to: Auto`, occupancy off, and Wake for 10 min). The plan's Auto-bounce guard already says "house_occupied on plus house not Away/Vacation, don't require house == Auto". That is compatible with the resolver as long as we add no `state: "Auto"` condition on the house select (a test in test_house_mode_resolver.py fails on that). PR 1 adds the guard only to the unoccupied branch and leaves the triggers alone.
+- **#73 (kitchen).** Lives in kitchen files that PR 1 does not touch. The plan's repo-wide ordering invariant must therefore accept a room whose `mode_off` clears the flag itself (kitchen today) as well as a room with a reset automation, or the test is red on master. Encoded as three accepted shapes in the test.
+- **Main bedroom reality vs the plan text.** `mode_off` already forces occupancy off and a reset automation already exists, so for this room the ordering rule is already satisfied. `lights_to_off` today checks only the global flag and an occupied-off/in-bed/bedtime or-block, never the room flag or the latch. That is the shape Open decision 6 wants, so the gate audit changes only the Off-transition bypass (below).
+- **Live state (read-only):** `main_bedroom_lighting_automations` on, `main_bedroom_lights_manually_toggled` on, `main_bedroom_lights_auto` off. All three are YAML-owned (registry has no UI options; `editable: false`). The latch being on right now means motion lights are blocked until the room next goes unoccupied/Off; the new reset also fires on Off.
+
+### Risk 1: A brightness trigger latches the override on automation noise (HIGH)
+
+**Problem**: ZHA transition reports, Adaptive Lighting adjustments and group recompute can produce state changes with a fresh context (`parent_id` none). A brightness trigger would then set the latch right after the motion-on automation fires, and motion lights would be dead until the room empties.
+
+**Mitigation**: Phase 0 spike (homelab, read-only) decides the condition before it is written. Condition checks `parent_id == none` and `user_id` shape, excludes Adaptive Lighting by context, and ignores attribute changes whose `from_state` was off or that arrive within a debounce of an automation-context change. If the spike shows noise, brightness is dropped from v1 (plan Open decision 2 fallback) and on/off ships alone. The trigger uses `attribute: brightness` with no `from`/`to`/`not_*`.
+
+**Verification**: Spike result recorded in prd.md. Static test asserts the trigger shape and the context condition. Post-deploy recorder check lists latches held for over an hour.
+
+### Risk 2: Widening detection makes the latch fire in more situations (MEDIUM)
+
+**Problem**: Today the latch is set only on a manual OFF while `lights_auto` is on. After this PR any manual on, off or brightness change sets it (the `lights_auto` condition goes away). A bedtime manual light-off keeps the latch on until the room next goes unoccupied/Off, so morning motion lights may stay off until then. Same outcome as today for the common evening path, but more reachable.
+
+**Mitigation**: Accept it (it is the approved plan: any manual change = override). Do not add extra reset triggers beyond the plan. Record it in the PR and the LEARNINGS so John can ask for a Wake/Auto reset if he sees it. Dashboard shows the latch in Phase 4.
+
+**Verification**: Post-deploy recorder check "latch on > 1 h"; John tests a manual off then motion in the same room.
+
+### Risk 3: Reset automation is blocked or misses a path (HIGH)
+
+**Problem**: A latch that can't clear is the kitchen bug. The reset has `for: 30s` on occupancy off (dropped by reloads) and must also fire on the room going Off and the house going unoccupied.
+
+**Mitigation**: Reset is ungated (no conditions, not even "latch is on"); three triggers; `initial: off` on the latch re-applies at restart. Test asserts triggers, no conditions, and target-block syntax.
+
+**Verification**: Static test + sabotage (remove a trigger, add a condition, both go red).
+
+### Risk 4: Renaming the detection automation leaves a registry ghost and breaks references (MEDIUM)
+
+**Problem**: The id changes from `main_bedroom_lights_turned_off` to `main_bedroom_lights_manual_change` (filename == id). The old entity becomes a ghost until cleaned. `automation.<slug(alias)>` references would break.
+
+**Mitigation**: Grep done: nothing references `automation.main_bedroom_lights_manually_turned_off` or `_turned_off` outside the disabled `.disabled` files. Old registry ghost is listed for the lead to clear after deploy; no automation depends on it.
+
+**Verification**: Repo grep returns zero live references; entity-reference test stays green.
+
+### Risk 5: `initial:` removal on the hand flag strands or flips it (MEDIUM)
+
+**Problem**: Removing `initial: on` from `main_bedroom_lighting_automations` takes effect on an input_boolean reload, and HA then restores last state. Live is `on`, so it stays on. If John had it off it stays off (that is the point). Nothing to strand now, but it must not be set by an automation afterwards.
+
+**Mitigation**: No automation writes the flag (test, repo-wide scan of the main-bedroom flag; the commented-out lines in `mode_auto`/`not_occupied` stay comments or are deleted). Deploy note: input_boolean reload, no restart.
+
+**Verification**: Live read of the flag before and after the reload (lead).
+
+### Risk 6: Off-transition bypass turns lights off in an unwanted case (LOW-MEDIUM)
+
+**Problem**: `lights_to_off` on the room going Off will stop requiring "occupied off / in bed / bedtime". A hand-picked Off while someone is in the room turns the lights off.
+
+**Mitigation**: That is the plan's rule ("Room Off turns the lights off unconditionally", checks only global `lighting_automations`). Only the Off trigger bypasses; the vacancy trigger keeps today's or-block. Documented in README.
+
+**Verification**: Static test: Off path has no room-flag or latch condition; vacancy path unchanged.
+
+### Risk 7: Bounce guard conflicts with the resolver (LOW)
+
+**Problem**: Requiring house == Auto would stop firing when the resolver picks Quiet. A guard that is too loose lets the room flip to Auto while the house is Away/Vacation.
+
+**Mitigation**: Guard is `house_occupied on` plus house not in Away/Vacation. No house == Auto condition, no new trigger option.
+
+**Verification**: Test asserts the guard on the occupancy-off branch and that no `state: Auto` condition on the house select was added (the resolver test already enforces this).
+
+### Risk 8: Tests turn the repo-wide scan into a source of false failures (MEDIUM)
+
+**Problem**: The plan's repo-wide checks would fail on master for rooms not yet migrated (kitchen has no reset automation; main bathroom's Auto has no house_occupied check).
+
+**Mitigation**: Per-room checks parametrize over `MIGRATED_ROOMS` (main bedroom only now). The repo-wide invariants are the ordering invariant (accepts three shapes) and the "nothing writes a migrated room's hand flag" scan. Later PRs append rooms. Each new check gets a sabotage run.
+
+**Verification**: Full suite passes on master + PR; sabotage list in the build log.
+
+### Risk 9: Documentation debt (LOW)
+
+**Problem**: README lighting section is stale (mentions a global/room flag "or"), docs/ROOMS.md entity table has one row, packages/CLAUDE.md has no latch pattern, no main_bedroom LEARNINGS.
+
+**Mitigation**: Update README, ROOMS.md, packages/CLAUDE.md (a short "manual override latch" pattern, marked as applying to migrated rooms), new main_bedroom/LEARNINGS.md, in PR 1.
+
+**Verification**: /wrap user-docs check.
+
+### Risk 10: Rollback safety (LOW)
+
+**Problem**: PR 1 touches one room and a new test file. Revert is a clean git revert plus the same reloads. No data or helper is created or removed (the latch helper already exists), so a revert leaves state consistent.
+
+## Summary
+
+Total risks identified: 10 (plus a reconciliation note)
+Categories: context gaps, backward compatibility, test complexity, integration, documentation, rollback
+CRITICAL risks (must address before proceeding): none. Risk 1 is HIGH and gated by the Phase 0 spike before any brightness trigger is written.
+
+**Ready to proceed with these mitigations?** Yes: no structural blocker inside the approved plan.
