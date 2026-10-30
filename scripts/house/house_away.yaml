@@ -30,3 +30,4 @@ sequence:
       devices: "jk"
       priority: "active"
       tag: "house-mode-away"
+      url: /dashboard-kohbo/home#house_mode

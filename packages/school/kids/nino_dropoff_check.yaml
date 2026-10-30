@@ -34,3 +34,4 @@ automation:
               title: "At school"
             - action: "NINO_HOME_TODAY"
               title: "Home today"
+          url: /dashboard-kohbo/school

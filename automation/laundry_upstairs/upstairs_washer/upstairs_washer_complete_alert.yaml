@@ -58,6 +58,9 @@ action:
     data:
       message: "The upstairs washer is finished and ready to be emptied."
       title: "Upstairs Washing Machine"
+      data:
+        url: /dashboard-kohbo/rooms-laundry
+        clickAction: /dashboard-kohbo/rooms-laundry
   #
   # Display a message on the TV
   - if:
