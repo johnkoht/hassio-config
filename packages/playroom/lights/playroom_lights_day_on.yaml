@@ -53,6 +53,10 @@ automation:
       - condition: state
         entity_id: input_boolean.playroom_lighting_automations
         state: "on"
+      # Nobody has taken the lights by hand
+      - condition: state
+        entity_id: input_boolean.playroom_lights_manually_toggled
+        state: "off"
       # Playroom is occupied
       - condition: state
         entity_id: input_boolean.playroom_occupied

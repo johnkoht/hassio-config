@@ -17,7 +17,7 @@ from jinja2 import Environment
 REPO = Path(__file__).resolve().parent.parent
 
 # Later PRs append rooms here.
-MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage"]
+MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -205,12 +205,14 @@ def _manual(room):
 
 MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
               "kitchen": "light.kitchen_ceiling_lights",
-              "garage": "light.garage_lights"}
+              "garage": "light.garage_lights",
+              "playroom": "light.playroom_lights"}
 OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
-            "garage": "garage_lights_off"}
+            "garage": "garage_lights_off", "playroom": "playroom_lights_to_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
-            "garage": ["garage_lights_motion_on"]}
+            "garage": ["garage_lights_motion_on"],
+            "playroom": ["playroom_lights_motion_on", "playroom_lights_day_on"]}
 
 
 # Other lights whose hand changes must also latch the override (Dim pendants).
@@ -383,6 +385,9 @@ def test_mode_off_ordering_invariant(room):
 
 
 # 8 ---------------------------------------------------------------------------
+NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom")
+
+
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
 def test_mode_auto_bounce_guard(room):
     """Where mode_auto turns on occupancy-off: needs house_occupied on, house not Away/Vacation, no
@@ -391,8 +396,8 @@ def test_mode_auto_bounce_guard(room):
     occ_off = [t for t in as_list(a["triggers"])
                if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
     if not occ_off:
-        # Kitchen/garage: mode_auto has no occupancy-off trigger, so there is nothing to bounce.
-        assert room in ("kitchen", "garage"), f"{room} lost its occupancy-off trigger"
+        # These rooms' mode_auto has no occupancy-off trigger, so there is nothing to bounce.
+        assert room in NO_OCC_OFF_TRIGGER, f"{room} lost its occupancy-off trigger"
         return
     branch = next(o for o in a["actions"][0]["choose"]
                   if any(c.get("condition") == "trigger" and c.get("id") == f"{room}_unoccupied"
@@ -446,3 +451,24 @@ def test_garage_motion_off_obeys_hand_flag_not_latch():
     path, a = ALL["garage_lights_motion_off"]
     assert cond_index(conds_for(a), flag("garage"), "on") == 0
     assert latch("garage") not in path.read_text()
+
+
+# 11 playroom ----------------------------------------------------------------
+def test_playroom_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: Off at Away/bedtime/house-empty also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("playroom_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.playroom_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_playroom_not_occupied_only_clears_occupancy():
+    """not_occupied no longer re-enables the hand flag after a delay."""
+    body = action_body(auto("playroom_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+    assert not any("delay" in s for s in body)
+
+
+def test_playroom_old_detection_is_gone():
+    assert "playroom_lights_manually_turned_off" not in ALL

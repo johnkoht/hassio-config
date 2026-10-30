@@ -39,3 +39,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - `garage_lights_off` had no lights-on condition before and still has none; Off and Away share the `room_off` trigger id.
 - Deploy order: input_boolean reload before automations (new helper `garage_lights_manually_toggled`); read the hand flag before and after the reload (initial removed).
 - Ghost: `garage_lights_turned_off` entity is retired by the delete; reset flag state is whatever HA restores.
+
+## PR 4 notes (developer A)
+- Playroom: `playroom_lights_off` and `playroom_lights_motion_off` are disabled legacy twins; left untouched (no flag writes, no gate added). Enabled off automation is `playroom_lights_to_off`.
+- Playroom `mode_auto` has no occupancy-off trigger; the bounce-guard test now uses a NO_OCC_OFF_TRIGGER tuple instead of a hardcoded kitchen/garage pair.
+- Deploy order: input_boolean reload before automations (new helper `playroom_lights_manually_toggled`).
