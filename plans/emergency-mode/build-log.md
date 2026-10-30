@@ -24,3 +24,10 @@ Branch: worktree-emergency-mode-pr1 (pushed as feature/emergency-mode-pr1). Work
 - Runtime volume clamp in the engine (+test), tasks 7-10 built. 493 passed.
 - Sabotage (revert -> red, static): intruder gate inverted, fire gate off, fire continue_on_error removed, disarm to-disarmed only, panic back to alert script, panic device id changed, test-mode initial removed, auto-off 60, fire text without cancel path; engine clamp removed/175.
 - PR 3 final review (sonnet) at 1d288d9: APPROVED, no DEFECTs; BACKLOG 1 (wider Noonlight scan) done, sabotage red; others deferred.
+
+## PR 4 (worktree emergency-mode-pr4)
+- task-11: X1 sirens on fire + fire_alarm_cleared, X3 keep_lights_on + disarm restore, panic inverted to known-good, engine clamp 0..75 (NaN->30). 524 passed.
+- Sabotage (red): panic known-good dropped state, clamp lower bound, NaN guard, intruder keep_lights_on, flash always restore, disarm restore removed, fire sirens removed, cleared ignoring intruder alarm.
+- X4 not built (no evidence of a pre-emption problem).
+- PR 4 final review (sonnet) at dc8fd52: APPROVED; BACKLOG 1/2/4 (stuck fire sirens, disarm vs smoke, int assertion) fixed in 9d596d7 and re-reviewed: APPROVED. Test tightened afterwards.
+- Phase 5.4 /wrap run; Phase 5.5 finalize: status shipped, prd.json reconciled.

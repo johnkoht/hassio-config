@@ -53,6 +53,14 @@ script:
                 target:
                   entity_id: switch.noonlight_alarm
 
+          # Sound the sirens: smoke detectors only sound locally. Stopped by
+          # fire_alarm_cleared when the smoke clears.
+          - action: switch.turn_on
+            target:
+              entity_id:
+                - switch.alarm_siren_1
+                - switch.alarm_siren_2
+
           # Flash the lights
           - action: script.turn_on
             target:
