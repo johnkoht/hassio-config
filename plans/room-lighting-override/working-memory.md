@@ -23,3 +23,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 ## Task 3-5 notes
 - Wall dim within 10s of an automation change is debounced away (stateless debounce, known trade-off). Rendered the manual-change templates with jinja2 against 10 fake triggers; all behave as pinned.
 - `trigger.from_state` can be none on first state; the condition guards it.
+
+## Task 2 notes (tests)
+- Lightly-edited sabotage can miss: a `str.replace` on a repeated line may land in `conditions:` instead of `actions:`; confirm the sabotage parses and hits the intended block.
+- Ordering invariant (test 7) parametrizes only over rooms whose `*_mode_off` turns occupancy off (found by filename); the others are not collected, so no skips.
+- Duplicate-basename check passes repo-wide on master; no restriction to room prefixes was needed.
