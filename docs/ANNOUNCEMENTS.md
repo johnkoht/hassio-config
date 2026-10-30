@@ -19,7 +19,7 @@ Key features:
 
 ## Architecture
 
-The announcement system uses a layered architecture. Automations call wrapper scripts that handle logic like room selection and sound mapping, which feed into a queue system, and finally the core engine broadcasts the audio.
+The announcement system uses a layered architecture. Automations call wrapper scripts that handle logic like room selection and sound mapping, which feed into a queue system, and finally the core engine broadcasts the audio. Critical announcements skip the queue and start the engine directly.
 
 ```mermaid
 flowchart TB
@@ -35,7 +35,7 @@ flowchart TB
     Automations --> VoiceAnnouncement
     Automations --> CriticalAnnouncement
     VoiceAnnouncement --> Enqueue
-    CriticalAnnouncement --> Enqueue
+    CriticalAnnouncement --> Engine
     Enqueue --> Queue
     Queue --> Processor
     Processor --> Engine
@@ -49,7 +49,7 @@ flowchart TB
 | Script | Purpose |
 |--------|---------|
 | `script.voice_announcement` | Primary TTS wrapper. Handles sound mapping, room-awareness, volume adjustment, and priority. |
-| `script.critical_announcement` | Emergency broadcasts. Ignores occupancy, uses louder volume and alarm sound. |
+| `script.critical_announcement` | Emergency broadcasts. Ignores occupancy, uses louder volume and alarm sound. Skips the queue and starts the engine directly. |
 | `script.announcement_engine` | Low-level engine that plays the chime and TTS via Sonos announce. |
 | `script.repeat_last_voice_announcement` | Replays the most recent announcement stored in `input_text.latest_voice_announcement`. |
 
@@ -110,8 +110,10 @@ The `script.critical_announcement` is for emergencies like fire, smoke, or water
 
 - Broadcasts to **all rooms** regardless of occupancy
 - Uses a **nuclear alarm** sound
-- **Clears the queue** of non-critical messages
-- Ignores time-of-day restrictions
+- **Skips the queue**: it starts `script.announcement_engine` directly, so `house_occupied`, quiet mode before 9 AM and the queue's running flag can't hold it. A fire or alarm overnight is announced at once.
+- Ignores time-of-day, `speech_notifications` and `bedtime` restrictions
+- Doesn't touch queued messages. Non-critical ones are held while an emergency is active (see Emergency Mode)
+- Quiet mode halves the volume, except while an emergency is active
 
 ```yaml
 - action: script.critical_announcement
@@ -119,6 +121,22 @@ The `script.critical_announcement` is for emergencies like fire, smoke, or water
     media_players: all
     speech_message: "Warning! Water leak detected in the basement."
 ```
+
+---
+
+## Emergency Mode
+
+`binary_sensor.emergency_active` is on while `alarm_control_panel.alarmo` is `triggered`, `binary_sensor.smoke_detector` is `on`, or the manual override `input_boolean.emergency_mode` is on (it turns itself off after 10 minutes, at HA start and after an automation reload). It's derived from real state, so it clears itself when the alarm or smoke clears.
+
+While it is on:
+
+- **The engine plays only `priority: critical`.** Its first step drops anything else, so the doorbell chime and hourly dong are silenced too. If the sensor is missing or unavailable the gate lets everything through.
+- **The queue is held, not cleared.** The processor dequeues nothing but a critical item. When the emergency ends it resumes: expired items are dropped (low 3 min, normal 10 min), and so is every `low` item. Valid normal and high items still play.
+- **TTS wait is `len/14 + 3` seconds** for every message (it was `len/17 + 1`), so the next item doesn't start over the end of the previous one.
+
+Known gap: if an emergency starts after the processor has handed an ordinary item to the busy engine, the engine drops it and the processor still removes it from the queue.
+
+Safe test: turn on `input_boolean.emergency_mode`, ring a test chime or enqueue a low message and confirm it's held, then call `script.critical_announcement` with a test message. Don't use the alarm, panic button or fire scripts: they notify Noonlight.
 
 ---
 
@@ -159,7 +177,7 @@ Messages are processed in priority order:
 | `normal` | Regular announcements | 10 min |
 | `low` | Non-essential info | 3 min |
 
-When a critical message is enqueued, all non-critical messages are cleared from the queue.
+`script.critical_announcement` no longer uses the queue. A `critical` item that still arrives through the queue (for example a tornado warning sent via `voice_announcement`) is put first, and `append.yaml` drops the other queued messages, as before.
 
 ### MQTT Topics
 
@@ -174,6 +192,7 @@ When a critical message is enqueued, all non-critical messages are cleared from 
 The processor only runs when:
 - House is occupied
 - Not in quiet mode before 9 AM
+- No emergency is active, unless the next item is `critical`
 - Queue is not empty
 - No announcement currently playing
 - An announceable room is occupied (for non-critical messages)
@@ -225,7 +244,7 @@ packages/announcements/
 ├── queue/
 │   ├── enqueue.yaml                      # Queue entry script
 │   ├── append.yaml                       # MQTT append automation
-│   ├── processor.yaml                    # Queue processor automation
+│   ├── processor.yaml                    # Queue processor automation (holds non-critical during an emergency)
 │   ├── mqtt_sensor.yaml                  # sensor.announcement_queue
 │   ├── shared_config.yaml                # input_boolean.announcement_queue_running
 │   └── queue_cleanup.yaml                # Cleanup when house empty
