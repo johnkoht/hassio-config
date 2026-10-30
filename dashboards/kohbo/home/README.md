@@ -27,7 +27,6 @@ home/
 ├── README.md                                 # This file
 ├── house_mode_popup.yaml                     # House mode selector popup
 ├── _vacuum_active_notification.yaml          # Vacuum running notification
-├── _safety_device_notification.yaml          # Safety device header chip (offline / low battery)
 ├── _front_door_camera_notification.yaml      # Front door camera motion alert
 └── _driveway_front_camera_notification.yaml  # Driveway camera motion alert
 ```
@@ -125,9 +124,9 @@ The mode is derived from the Quiet, Bedtime, Vacation and house-occupied toggles
 
 If certain cameras detect a person or vehicle, a little alert message will pop up at the bottom of the screen. If clicked, a camera popup will open with access to the live feed and more options.
 
-### Safety Device Card
+### Safety Device Alert
 
-A small red shield chip in the header, left of the bell, shown only while `binary_sensor.safety_devices_need_attention` is on (a leak sensor or safety device offline for an hour or low on battery). Tap opens the Sensors Offline tab. The push side is described in [sensor_health](../../../packages/system/sensor_health/README.md#safety-alerts).
+While `binary_sensor.safety_devices_need_attention` is on (a leak sensor or safety device offline for an hour or low on battery), a red shield appears at the left of the header (tap: Sensors Offline), and the Notifications popup lists **Safety Device Needs Attention** (`shared/notifications/safety_devices_attention.yaml`), which opens the Sensors Offline tab. The push side is described in [sensor_health](../../../packages/system/sensor_health/README.md#safety-alerts).
 
 ### Vacuum Notification
 
