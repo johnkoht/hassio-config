@@ -1,0 +1,85 @@
+# House Mode Resolve
+#
+# The only writer of input_select.house. Derives the mode from current
+# state: Vacation, Away, Bedtime, Quiet, else Auto. Selects only on change.
+#
+automation:
+  - id: "house_mode_resolve"
+    alias: "House Mode - Resolve"
+    initial_state: on
+    mode: queued
+    max: 10
+    triggers:
+      # Empty: Away straight away
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        id: "changed"
+      # Occupied: wait so an arrival can end bedtime first
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+        for:
+          seconds: 10
+        id: "changed"
+      # Empty long enough for Vacation
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: 2
+        id: "empty_hold"
+      - trigger: state
+        entity_id:
+          - input_boolean.vacation_mode
+          - input_boolean.bedtime
+          - input_boolean.quiet_mode
+        to:
+          - "on"
+          - "off"
+        id: "changed"
+      # A restart or reload drops the timers above, so resolve again.
+      # The Vacation hold counts as met here.
+      - trigger: homeassistant
+        event: start
+        id: "restart"
+      - trigger: event
+        event_type: automation_reloaded
+        id: "restart"
+    # Variables and conditions live in actions on purpose: automation-level
+    # ones render when the trigger fires, before a queued run starts.
+    actions:
+      - variables:
+          # Empty when an input isn't on/off, so we never guess
+          resolved: >-
+            {% set known = ['on', 'off'] %}
+            {% set occupied = states('input_boolean.house_occupied') %}
+            {% set vacation = states('input_boolean.vacation_mode') %}
+            {% set bedtime = states('input_boolean.bedtime') %}
+            {% set quiet = states('input_boolean.quiet_mode') %}
+            {% if occupied not in known or vacation not in known
+                  or bedtime not in known or quiet not in known %}
+            {% elif occupied == 'off' and vacation == 'on'
+                  and ((trigger.id | default('')) in ['empty_hold', 'restart']
+                       or (now() - states.input_boolean.house_occupied.last_changed).total_seconds() >= 120) %}
+            Vacation
+            {%- elif occupied == 'off' %}
+            Away
+            {%- elif bedtime == 'on' %}
+            Bedtime
+            {%- elif quiet == 'on' %}
+            Quiet
+            {%- else %}
+            Auto
+            {%- endif %}
+      - alias: "The inputs are known and the mode is changing"
+        condition: template
+        value_template: >-
+          {{ resolved | trim != ''
+             and states('input_select.house') not in ['unknown', 'unavailable']
+             and states('input_select.house') != resolved | trim }}
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house
+        data:
+          option: "{{ resolved | trim }}"

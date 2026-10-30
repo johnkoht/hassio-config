@@ -1,0 +1,24 @@
+# House Mode Quiet Speech Off
+#
+# Turn speech notifications off when Quiet starts during the afternoon nap window.
+#
+automation:
+  - id: "house_mode_quiet_speech_off"
+    alias: "House Mode - Quiet Speech Off"
+    initial_state: on
+    triggers:
+      - trigger: state
+        entity_id: input_select.house
+        to: "Quiet"
+        not_from:
+          - "unknown"
+          - "unavailable"
+    conditions:
+      - alias: "It's an afternoon nap"
+        condition: time
+        after: "12:00:00"
+        before: "15:00:00"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.speech_notifications
