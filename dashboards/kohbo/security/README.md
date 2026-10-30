@@ -130,7 +130,7 @@ Each card uses `horizontal_action_card` decluttering template with navigation ac
 ### Popups
 
 - **Front Door Lock Popup** - Front door lock controls
-- **Garage Entry Lock Popup** - Garage entry door lock controls
+- **Garage Entry Lock Popup** - Garage entry door lock controls, including the Evening Lock If Open Too Long switch (`input_boolean.garage_entry_door_evening_auto_lock`) that locks the door after sunset with a 2 minute warning push
 - **Security Settings Popup** - Security automation settings
 
 ## Security Sub-Pages
