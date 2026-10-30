@@ -91,8 +91,8 @@ Totals: about 108 push call sites in scope (87 use the script, rest direct notif
 | packages/foyer/front_door_lock/front_door_lock_stuck_alert.yaml, front_door_lock_with_retry.yaml | lock not responding / not locked (2) | `security-house-locks` | upgrade to `security-house-locks#front_door_lock_popup` |
 | packages/security/security_unlock_front_door_by_fingerprint.yaml (direct) | fingerprint unlock | none | `security-house-locks#front_door_lock_popup` |
 | packages/security/security_status_notification.yaml | shields-up status | none | `security` |
-| automations.yaml (UI) | kids escaping, critical | none | `security-exterior-doors` (confirm sensors, Open decision 6) |
-| packages/ninos_room/nino_escaping/nino_escape_monitor.yaml (direct) | escape monitor | none | same as above |
+| automations.yaml (UI) | kids escaping, critical | none | exempt (decision 6: John does not use the escape alerts; left in the UI file, unlinked) |
+| packages/ninos_room/nino_escaping/nino_escape_monitor.yaml (direct) | escape monitor | none | removed in PR D (decision 6); the monitor and its turn on/off helpers were push-only |
 | automations.yaml (UI) | "Test Motion" debug push | none | exempt (looks like leftover debug; suggest deleting separately) |
 
 ### Home and systems (Phase 2)
@@ -138,7 +138,7 @@ Alternatives considered. A global default of `/dashboard-kohbo/home` for every u
 2. Protection PR A, alarm and fire. Alarm triggered and disabled to `security-alarm-panel`, fire to `security`, security status to `security`. Add `url` to the fire `script.turn_on` variables.
 3. Protection PR B, cameras. Derive the per-camera hash in `camera_detection_alert.yaml` (3 branches, direct `ios_family`; add `clickAction`), and link camera on and off.
 4. Protection PR C, leak. Add `data:` with the link to both leak alerts. Extend `test_leak_monitoring_regressions.py` to assert it.
-5. Protection PR D, doors, garage, locks, kids escape. Link the five unlinked ones, upgrade the two lock alerts to the popup hash, link fingerprint.
+5. Protection PR D, doors, garage, locks. Link the unlinked garage-arrival pushes and fingerprint, upgrade the lock alerts (front door, and the garage entry evening lock) to the popup hash. The kids escape push is removed instead of linked (decision 6).
 6. Phase 2 PR E, climate and weather. HVAC thermostat popups, `climate#weather` on the rest.
 7. Phase 2 PR F, house and everyday. Laundry, school, energy, vacation and away, holidays. Include the two direct washer callers.
 8. Phase 2 PR G, system alerts. Zigbee, radio, AP to the sensor views.
@@ -161,14 +161,14 @@ Phases 1 and 2 touch automations and scripts, so each PR waits for John's go-ahe
 
 ## Open decisions
 
-All resolved by the plan's recommended default (John, 2026-10-30, written authorization to approve the batch; no specific answers given). Decision 6 still wants John to confirm which sensors the kids-escape alerts use before PR D.
+All resolved by the plan's recommended default (John, 2026-10-30, written authorization to approve the batch; no specific answers given).
 
 1. Android `clickAction`. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: send both `url` and `clickAction` now, since it's one line and iOS ignores `clickAction`. Alternative: skip until an Android phone exists.
 2. Exempt mechanism. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: a fixture file (path plus reason). Alternative: an explicit `url: none` in each call, which is more self-documenting but touches about 45 files for no behaviour change.
 3. Alarm triggered target. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: `security-alarm-panel`, because disarming is the action. Alternative: stay on `security` (the whole-house score).
 4. Vacuum target. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: keep the `main-floor-vacuum` view for maintenance reminders. Use `#main_floor_quick_clean_popup` only for something like "vacuum stuck", if such a notification exists. The ticket says "vacuum popup", so John may want the popup for all of them.
 5. Camera hash derivation. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: derive the hash from `notifications_boolean` (fragile if a naming pattern breaks, but the test catches it). Alternative: pass an explicit `popup_hash` field from each of the 21 detection automations.
-6. Kids-escape destination. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: `security-exterior-doors`, assuming the two door sensors are on that view. Needs John to confirm which sensors these are.
+6. Kids-escape destination. **Resolved (John, 2026-10-30): drop it.** "We can drop the escape notification as I don't use it." PR D removed the Nino escape monitor (`packages/ninos_room/nino_escaping/`: the monitor and its turn on/off helpers, whose only job was the push) instead of linking it. The UI-owned "Kids Escaping" automation in `automations.yaml` is untouched and stays on the exempt list; delete it in the UI if it is also unwanted.
 7. Missing screens. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: ship interim links (`security` for fire, `energy` for UPS) and build the popups as task 10. Alternative: leave those unlinked until the popups exist.
 8. Test strictness. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: report-only in task 1, enforcing in task 9. Alternative: enforce from the start, which makes every phase PR fix its own violations.
 9. Stray debug push. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: leave the "Test Motion" UI automation alone and exempt it, flagged for John to delete. It is not part of this plan.
@@ -206,7 +206,7 @@ Actions: **Cut** = delete the push (the automation keeps doing its other job). *
 | 19 | Cut | `packages/playroom/party_time/playroom_activate_party_time.yaml`, `playroom_deactivate_party_time.yaml` | Party time on / off (time-sensitive, John) | John-triggered toggle echoes. |
 | 20 | Passive | `packages/security/security_unlock_front_door_by_fingerprint.yaml` | "Fingerprint identified with ID N and unlocked the front door" | Every household unlock; keep as a silent record. |
 
-**Keep (not proposed for change):** alarm triggered (critical), fire and smoke, leak alerts, person detections (including the critical-at-bedtime path), doorbell, front-door lock failures, garage open too long, exterior doors and windows left open, UPS on battery and UPS offline, Zigbee coordinator and Z-Wave controller offline, medication reminders and escalation, school departure and pickup reminders, garbage day, birthdays, kids activity and neighborhood reminders, bedtime notifications, severe weather warnings, guest arrived/left, laundry done (everyone gets these today; whether it should be John-only is Cristina's call, not proposed), and the Nino escape monitor.
+**Keep (not proposed for change):** alarm triggered (critical), fire and smoke, leak alerts, person detections (including the critical-at-bedtime path), doorbell, front-door lock failures, garage open too long, exterior doors and windows left open, UPS on battery and UPS offline, Zigbee coordinator and Z-Wave controller offline, medication reminders and escalation, school departure and pickup reminders, garbage day, birthdays, kids activity and neighborhood reminders, bedtime notifications, severe weather warnings, guest arrived/left, laundry done (everyone gets these today; whether it should be John-only is Cristina's call, not proposed).
 
 **Rough effect if all taken:** about 28 push call sites or automations cut (rows 1 to 7, 18, 19, counting the 7 animal automations), about 26 demoted to passive, 2 narrowed to John (plus one recipient change in row 10). The deep-links audit and exempt list shrink accordingly: cut rows leave the "passive loggers" exempt list, and demoted rows keep their links.
 

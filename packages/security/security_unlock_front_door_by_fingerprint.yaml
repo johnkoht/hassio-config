@@ -45,3 +45,6 @@ automation:
         data:
           message: "Fingerprint identified with ID: {{ trigger.event.data.new_state.attributes.ulp_id }} and unlocked the front door"
           title: "Fingerprint Scan Notification"
+          data:
+            url: /dashboard-kohbo/security-house-locks#front_door_lock_popup
+            clickAction: /dashboard-kohbo/security-house-locks#front_door_lock_popup
