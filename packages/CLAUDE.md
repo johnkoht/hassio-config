@@ -95,7 +95,7 @@ Always check these in conditions before taking action. Order: house-level → ro
 | `input_boolean.guest_mode` | Automations that would be disruptive to guests |
 | `input_boolean.bad_weather` | Outdoor/foyer lighting, weather-reactive automations |
 
-House mode: `input_select.house` — options: Auto / Away / Vacation / Bedtime / Quiet / Entertainment
+House mode: `input_select.house` — options: Auto / Away / Vacation / Bedtime / Quiet / Entertainment. It is derived by `packages/house/modes/house_mode_resolve.yaml`; never select an option from another automation, and treat Quiet like Auto for "the house is up".
 
 ---
 

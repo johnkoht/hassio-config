@@ -113,6 +113,8 @@ Accessed via the House Mode chip in the header. Allows selection of:
 - **Entertainment** - Optimized for media/entertainment
 - **Vacation** - Extended away mode
 
+The mode is derived from the Quiet, Bedtime, Vacation and house-occupied toggles, so a pick here lasts only until one of them changes. Toggle those to change it.
+
 ### Thermostat Popups
 
 - **Main Floor Thermostat** (`#main_floor_thermostat`) - Full climate control for main floor

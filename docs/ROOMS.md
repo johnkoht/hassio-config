@@ -164,6 +164,7 @@ Room modes respond to house-level changes:
 
 - When `input_boolean.house_occupied` turns off → Rooms transition to Away
 - When everyone is sleeping → Bedrooms transition to Bedtime
+- When the house is **Quiet** (kids asleep or napping, e.g. bedtime has ended but someone is still in bed) → common rooms treat it like **Auto**; room Auto automations accept both. Any new room-mode logic must not require the house to be exactly Auto.
 - When the house comes back from Away with a kid still in bed → that kid's bedroom returns to Bedtime
 - When `input_boolean.guest_mode` is on → Some automations are modified
 

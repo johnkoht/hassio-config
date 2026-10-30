@@ -62,3 +62,7 @@ bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
 **Fire sirens need their own off path.** `security_alarm_disabled` only runs on an alarmo exit from `triggered`, which fire never causes, so `fire_alarm_cleared` turns the sirens off a minute after the smoke detector reads `off` (also from `unavailable`; skipped while alarmo is triggered). The reverse is guarded too: disarming the intruder alarm leaves the sirens on while smoke is still detected. Alarm test mode does not silence the sirens, only Noonlight.
 
 **Fall back on anything unknown.** Panic takes the alarmo path only in a known-good alarmo state, because a state condition on a missing entity is false and would otherwise skip the alert. The engine clamp tests NaN explicitly (`float('nan')` parses, and `min`/`max` with NaN are order-dependent).
+
+## Morning disarm is bounded and re-checked (JK-1118)
+
+`alarm_disarm_in_morning` starts on bedtime ending, and a night arrival can end bedtime, so its old "after 05:00" start was true until midnight. It now starts only 05:00 to 12:00 and, after the wait for first-floor occupancy (up to 2.5 h), checks bedtime off, `armed_home` and occupied again before `alarmo.disarm`. There is no clock re-check after the wait on purpose: a late-morning wait should still disarm, not leave the house armed all day. Every failed check ends the run with the panel untouched.
