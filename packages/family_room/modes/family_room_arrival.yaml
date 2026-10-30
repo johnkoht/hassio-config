@@ -1,0 +1,30 @@
+# Family Room Arrival
+#
+# If we arrive home, let's dim the lights
+# in the family room to provide a little light
+# Disabled; the select has no "Dim" option, so it now selects "Auto".
+#
+
+automation:
+  - id: "family_room_arrival"
+    alias: Family room arrival
+    initial_state: "off"
+    triggers:
+      # John arrives home
+      - trigger: state
+        entity_id: input_select.john_status
+        to: "Just Arrived"
+      # Cristina just arrived
+      - trigger: state
+        entity_id: input_select.cristina_status_dropdown
+        to: "Just Arrived"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.family_room_occupied
+        state: "off"
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.family_room
+        data:
+          option: "Auto"
