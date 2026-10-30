@@ -1,11 +1,11 @@
 ---
 title: House Mode Resolver
 slug: house-mode-resolver
-status: approved
+status: in-progress
 created: 2026-10-28
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 ---
 
 # House Mode Resolver
