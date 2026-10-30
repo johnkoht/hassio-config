@@ -135,6 +135,77 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
         cards:
           - type: custom:button-card
+            name: Medication Supply
+            template: kohbo_card_section_title
+
+          - type: entities
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+            entities:
+              - type: custom:template-entity-row
+                name: Days left
+                icon: mdi:pill
+                entity: sensor.nino_medication_days_remaining
+                state: >-
+                  {%- set s = states('sensor.nino_medication_days_remaining') -%}
+                  {%- if s in ['unavailable', 'unknown', 'none', ''] -%}Not set
+                  {%- else -%}{%- set d = s | int(0) -%}{{ d }} {{ 'day' if d == 1 else 'days' }}{%- endif -%}
+                color: >-
+                  {%- set d = states('sensor.nino_medication_days_remaining') | int(-1) -%}
+                  {%- set t = states('input_number.medication_refill_threshold_days') | float(0) -%}
+                  {%- set c = states('input_number.medication_refill_critical_days') | float(0) -%}
+                  {%- if d >= 0 and c > 0 and d < c -%}var(--error-color)
+                  {%- elif d >= 0 and t > 0 and d < t -%}var(--orange-color)
+                  {%- else -%}var(--light-grey-color){%- endif -%}
+                card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+              - entity: input_number.nino_medication_refill_days
+                name: Days to enter
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - type: custom:template-entity-row
+                name: Add days to supply
+                icon: mdi:plus-circle-outline
+                state: Tap
+                secondary: Adds the days above
+                tap_action:
+                  action: perform-action
+                  perform_action: script.medication_refilled
+                  data:
+                    medication: nino
+                card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+              - type: custom:template-entity-row
+                name: Set days left
+                icon: mdi:pencil-outline
+                state: Tap
+                secondary: Replaces the count with the days above
+                tap_action:
+                  action: perform-action
+                  perform_action: script.medication_stock_set
+                  data:
+                    medication: nino
+                card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            name: Refill Alerts
+            template: kohbo_card_section_title
+
+          - type: entities
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+            entities:
+              - entity: input_number.medication_refill_threshold_days
+                name: Alert below (days)
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - entity: input_number.medication_refill_critical_days
+                name: Critical below (days)
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+        cards:
+          - type: custom:button-card
             name: Reminder Settings
             template: kohbo_card_section_title
 
