@@ -341,3 +341,15 @@ Mudroom (Away is its Off). Each row: break the production line in place, confirm
 | latch: `initial: off` removed | test_flag_has_no_initial_and_latch_initial_off[mudroom] |
 | lights_to_on alias changed | test_mudroom_live_entity_identity_unchanged |
 | not_occupied writes the hand flag | test_nothing_writes_the_hand_flag[mudroom] |
+
+Family room (mode-only).
+
+| Sabotage | First red test |
+|---|---|
+| mode_off: occupancy clear turned into turn_on | test_mode_only_room_mode_off_forces_occupancy_off_with_target[family_room] |
+| mode_off: root-level `entity_id` | test_mode_only_room_mode_off_forces_occupancy_off_with_target[family_room] |
+| mode_off: not-already-Off condition changed | test_family_room_mode_off_clears_occupancy_after_selecting_off |
+| mode_auto: occupancy-off trigger added | test_mode_only_room_mode_auto_guard[family_room] |
+| lights_to_on revived (initial_state on) | test_family_room_disabled_automations_stay_disabled |
+| mode_on revived | test_family_room_disabled_automations_stay_disabled |
+| hand flag helper added | test_mode_only_room_has_no_override_kit[family_room] |
