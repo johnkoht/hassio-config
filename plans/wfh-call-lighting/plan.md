@@ -1,11 +1,11 @@
 ---
 title: WFH Call Lighting
 slug: wfh-call-lighting
-status: approved
+status: shipped
 created: 2026-10-29
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 ---
 
 # WFH Call Lighting
@@ -102,5 +102,23 @@ All resolved. John (2026-10-30): "Otherwise looks good." Specific answers below;
 - **Fighting other automations.** `office_lights_day_on` and `office_lights_on` use bare `turn_on` and would use whatever AL (off) gives; with AL paused they inherit the last values. Low risk, verify live.
 - **Flicker from the 10 second start debounce and a camera that flaps.** The camera sensor already has delay_on; accepted.
 - **Privacy.** No schedule or location is recorded here; "afternoon" is a season-level description only.
+
+## Ship addendum (2026-10-30, live reads before building)
+
+Facts read from the Yellow (read-only) that change or pin the plan. Where this contradicts the sections above, this wins.
+
+- **AL office entry** controls `light.office_light_1` to `_4` only: the four ceiling bulbs. Options: `intercept: true`, `adapt_only_on_bare_turn_on: true`, `take_over_control: true` (`pause_all`), `detect_non_ha_changes: false`, `autoreset_control_seconds: 0`, kelvin 2000 to 5500, brightness 35 to 100.
+- **The lamp is not AL and not dimmable.** `light.office_office_lamp` reports `supported_color_modes: [onoff]`. John's "ceiling bulbs and lamp only" is read as "leave shelf and El Gato alone"; the lamp gets no colour command. Start sends values to `light.office_ceiling_bulbs` only.
+- **Switch ids exist:** `switch.adaptive_lighting_office`, `_sleep_mode_office`, `_adapt_color_office`, `_adapt_brightness_office`. The sleep switch is referenced by the office dashboard only; nothing in `packages/` pauses the office AL except the two entertainment files.
+- **Switch attributes (live, sun down):** `brightness_pct` (38.5) and `color_temp_kelvin` (2000), plus `manual_control`. The gate reads these.
+- **AL turn-on resets manual control and force-adapts** (`async_turn_on` calls `manager.reset(*lights)` then `_update_attrs_and_maybe_adapt_lights(force=True)`; turn-off also resets). An off/on cycle is a clean resume.
+- **Gate is kelvin first.** The daytime brightness default is 100, so "AL brightness below setting" is almost always true. Gate: AL kelvin below the call kelvin, or AL brightness more than 5 points below the call brightness. Missing attributes mean "not below" (nothing fires).
+- **Call spanning dusk.** Added a second start trigger: the AL switch's `color_temp_kelvin` attribute crossing below `input_number.office_call_color_temp`. Same conditions and actions.
+- **Start conditions (final, global to feature):** `lighting_automations` on, `house_occupied` on, `office_lighting_automations` on, `office_lights_manually_toggled` off, `office_occupied` on, `input_select.office` = `DnD`, `john_dnd` on, `input_select.house` not `Bedtime`, `entertainment_mode` off, `office_call_lighting` on, `office_call_al_paused` off, AL switch on, AL sleep switch off, then the gate. The explicit DnD condition matters for the crossing trigger and also blocks a re-fire when AL turns back on at resume.
+- **End:** `input_select.office` to `Auto` or `Off` for 3 minutes, or `office_occupied` off. Condition: flag on. Resume order is switch on, then flag off.
+- **Reset:** flag on for 3 hours, flag on for 12 hours, HA start, `automation_reloaded`. Condition: flag on, and (the 12-hour trigger, or the office is not in `DnD`), so a long call is not interrupted at 3 hours. Reload and start paths are best effort; the 3 and 12 hour triggers are the guarantee. Both resume paths call `switch.turn_on` only when `entertainment_mode` is off and always clear the flag.
+- **Latch.** Start's `light.turn_on` runs inside an automation, so its context has a parent and no user, which `office_lights_manual_change` ignores; AL's resume uses `:al:` contexts, also ignored. Residual risk: a late Hue device report after the context expires could latch (see `packages/office/LEARNINGS.md`). Handoff asks John to confirm in the logbook after the first real call that `office_lights_manually_toggled` stayed off. Fallback if it latches (backlog): ignore bulb brightness reports within N seconds of the run.
+- **Accepted:** if John switches AL off by hand mid-call, end turns it back on. Entertainment ending mid-call turns AL on for the rest of that call.
+- **Helpers apply by reload** (`input_boolean.reload`, `input_number.reload`); no restart. No `initial:` on any of the four. The numbers start at min (2700 / 30); the feature switch is created off, so nothing fires until John seeds 3000 / 100 and turns it on.
 
 On approval → /approve → /ship wfh-call-lighting

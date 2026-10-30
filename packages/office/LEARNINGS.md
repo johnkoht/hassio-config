@@ -21,3 +21,14 @@ DnD keeps the lights on: `office_lights_on` and `office_lights_day_on` pass Auto
 ## JK-1219 deliberately not applied
 
 `office_mode_off` still does not turn `office_occupied` off. It runs at house empty, Away and Bedtime. Listeners of occupancy going off: `office_music_off`, `office_speech_notifications_off`, `office_echo_dnd_off` (turns the Echo DnD switch off), `office_dnd_off` (clears office DnD, which re-runs `office_mode_auto`), `office_camera_light_off`, `turn_off_office_shelf_lights`, the air-quality detections, announcement routing. At Bedtime, with John still working in the office, forcing occupancy off would drop his Echo DnD and speech notifications and can bounce the room back through DnD off, so the room is left alone. The latch is still cleared by the reset on room Off.
+
+## Call lighting (JK-692)
+
+- The office AL entry controls only the four ceiling bulbs (`light.office_light_1..4`). The lamp is onoff-only and gets no colour.
+- Gate: AL kelvin below the setting, or AL brightness more than 5 below it. Brightness alone is near-always true at the 100 default.
+- Start's own `light.turn_on` has an automation parent context, so `office_lights_manual_change` ignores it; AL resume uses `:al:` contexts.
+- Residual risk: a late Hue device report could latch `office_lights_manually_toggled`. Check the logbook after the first real call.
+- Start requires the manual latch off, the hand flag on, and the DnD select.
+- End and reset call `switch.turn_on` only when `entertainment_mode` is off, and always clear the flag.
+- Accepted cases: entertainment ending mid-call turns AL on for the rest of that call; a manual AL off mid-call is overridden at call end; reset on HA start/reload is best effort (3 h when not in DnD, 12 h hard cap are the guarantee).
+- The numbers and flags have no `initial:`, so they start off / at min. The feature switch gates everything until John seeds 3000 / 100.

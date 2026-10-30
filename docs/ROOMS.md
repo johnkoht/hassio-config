@@ -125,6 +125,7 @@ Here's what's happening behind the scenes:
 | Exit DnD | Camera off | Change mode to Auto |
 | DnD indicator | DnD mode active | Turn on red light outside |
 | Disable TTS | DnD mode active | Block TTS to office speakers |
+| Call lighting | Camera or audio call, AL warmer or dimmer than the setting | Pause AL, hold ceiling bulbs at the set colour/brightness (see `packages/office/README.md`) |
 
 ### File Structure
 
