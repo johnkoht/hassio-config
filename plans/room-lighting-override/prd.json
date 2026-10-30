@@ -1,0 +1,151 @@
+{
+  "name": "room-lighting-override",
+  "branchName": "feature/room-lighting-pr1",
+  "goal": "Two-flag room lighting override model (hand flag + manual latch with one reset) in every room with a mode select; PR 1 is the main bedroom pilot.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Context spike (Phase 0)",
+      "description": "Context spike (Phase 0) (see prd.md)",
+      "acceptanceCriteria": [
+        "Phase 0 result section recorded from read-only live data",
+        "Exact condition template recorded, brightness decision pinned"
+      ],
+      "pr": 1,
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "88bc302"
+    },
+    {
+      "id": "task-2",
+      "title": "Regression test file",
+      "description": "Regression test file (see prd.md)",
+      "acceptanceCriteria": [
+        "Per-room checks over MIGRATED_ROOMS=[main_bedroom]",
+        "Repo-wide ordering invariant (3 shapes) and hand-flag writer scan",
+        "Duplicate-basename check",
+        "Each check sabotage-tested"
+      ],
+      "pr": 1,
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "5819ca6"
+    },
+    {
+      "id": "task-3",
+      "title": "Main bedroom manual change detection",
+      "description": "Main bedroom manual change detection (see prd.md)",
+      "acceptanceCriteria": [
+        "main_bedroom_lights_manual_change replaces turned_off; id==filename",
+        "Context, unavailable guard and brightness debounce per PRD",
+        "No lights_auto precondition; old id unreferenced"
+      ],
+      "pr": 1,
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "7306ae3"
+    },
+    {
+      "id": "task-4",
+      "title": "Main bedroom reset on Off",
+      "description": "Main bedroom reset on Off (see prd.md)",
+      "acceptanceCriteria": [
+        "Triggers: occupied off 30s, room Off, house_occupied off",
+        "No conditions; target block; header comment"
+      ],
+      "pr": 1,
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "7306ae3"
+    },
+    {
+      "id": "task-5",
+      "title": "Main bedroom hand flag, gates, Off path, bounce guard",
+      "description": "Main bedroom hand flag, gates, Off path, bounce guard (see prd.md)",
+      "acceptanceCriteria": [
+        "No initial: on the hand flag; latch initial off",
+        "Gates ordered global, room, latch, mode",
+        "lights_off per review defect 3",
+        "mode_auto unoccupied branch house_occupied + not Away/Vacation",
+        "No automation writes the hand flag"
+      ],
+      "pr": 1,
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "7306ae3"
+    },
+    {
+      "id": "task-6",
+      "title": "Docs for the main bedroom pilot",
+      "description": "Docs for the main bedroom pilot (see prd.md)",
+      "acceptanceCriteria": [
+        "README, docs/ROOMS.md, packages/CLAUDE.md pattern, main_bedroom LEARNINGS.md"
+      ],
+      "pr": 1,
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "43b3ae2"
+    },
+    {
+      "id": "task-7",
+      "title": "Kitchen (Phase 2)",
+      "description": "Kitchen (Phase 2) (see prd.md)",
+      "acceptanceCriteria": [
+        "Kit applied, #73 line removed, Off lights-off regardless, kitchen in MIGRATED_ROOMS"
+      ],
+      "pr": 2,
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-8",
+      "title": "Garage (Phase 3)",
+      "description": "Garage (Phase 3) (see prd.md)",
+      "acceptanceCriteria": [
+        "Manual-change context check, reset, gate, drop initial: on, mode_off forcing occupancy off (re-derived)"
+      ],
+      "pr": 3,
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-9",
+      "title": "Phase 4 rooms in one PR",
+      "description": "Phase 4 rooms in one PR (see prd.md)",
+      "acceptanceCriteria": [
+        "One commit per room; same tests; dashboards manual-override rows incl. main bedroom; docs"
+      ],
+      "pr": 4,
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-10",
+      "title": "family_room and mudroom migration then kit",
+      "description": "family_room and mudroom migration then kit (see prd.md)",
+      "acceptanceCriteria": [
+        "Behaviour-neutral migration, option test, kit adopted"
+      ],
+      "pr": 5,
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-30T04:33:55.194390Z",
+    "totalTasks": 10,
+    "completedTasks": 6,
+    "failedTasks": 0,
+    "note": "Only PR 1 tasks (task-1..6) are built in this run; later PRs ship on the lead's go."
+  }
+}

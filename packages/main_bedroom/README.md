@@ -47,8 +47,13 @@ The Main Bedroom has a few states
 - **Bedtime**: The house is occupied, the bedroom is occupied and we're sleeping
 - **Wake**: We've just woken up
 
-## Motion Activated Lighting
-The main bedrooms has motion activated lighting when it's in the Auto state. Lights will automatically turn on only when the global lighting automation boolean is enabled or the `main_bedroom_lighting_automation` boolean is enabled.
+## Lighting
+Two flags gate the automatic lights.
 
-**The conditions are**
-- Motion
+- `input_boolean.main_bedroom_lighting_automations` is hand-only: no `initial:`, and no automation writes it.
+- `input_boolean.main_bedroom_lights_manually_toggled` is the manual latch. `main_bedroom_lights_manual_change` sets it on any hand on/off/brightness change of `light.main_bedroom_main_lights` (not the lamps in the group). Automation and Adaptive Lighting changes are ignored.
+- `main_bedroom_lights_reset_manual_toggle` clears the latch when the room has been unoccupied for 30 s, the room goes Off, or the house empties.
+
+**Motion on / day on gate order**: global `lighting_automations`, the room flag, the latch (must be off), then the room mode.
+
+**Lights off** (`main_bedroom_lights_off`): the room going Off turns the lights off whatever either room flag says (the house-wide lighting switch still applies). Vacancy, bed and bedtime only do so while the room flag is on.

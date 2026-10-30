@@ -1,3 +1,8 @@
+# Main Bedroom Lights Day On
+#
+# Low light turns the lights on in Auto. Gated by both flags and the manual latch.
+#
+
 automation:
   - id: "main_bedroom_lights_day_on"
     initial_state: on
@@ -85,4 +90,5 @@ automation:
           transition: 5
       # Toggle the boolean to flag it was auto
       - action: input_boolean.turn_on
-        entity_id: input_boolean.main_bedroom_lights_auto
+        target:
+          entity_id: input_boolean.main_bedroom_lights_auto
