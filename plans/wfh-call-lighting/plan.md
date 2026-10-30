@@ -1,7 +1,7 @@
 ---
 title: WFH Call Lighting
 slug: wfh-call-lighting
-status: draft
+status: approved
 created: 2026-10-29
 has_pre_mortem: false
 has_review: false
@@ -9,6 +9,8 @@ has_prd: false
 ---
 
 # WFH Call Lighting
+
+> Approved by John 2026-10-30 (written authorization to approve the batch; answers folded in below).
 
 Linear: JK-692. John: "In the winter around 3-5 it gets dark outside and adaptive lighting kicks in. We should turn AL off and put the lights on daytime color/brightness, then back after calls end."
 
@@ -49,7 +51,7 @@ So `input_select.office` = `DnD` already means "occupied and John is on a call (
 - *`adapt_color` off* alone pauses colour but leaves brightness adapting, so the room still dims.
 - *The master switch* is one visible toggle (already on the office page), already scripted in this repo (entertainment mode), and a clean off/on has AL re-apply its current values when it comes back, which is exactly "resume and re-adapt". Cost: the switch is shared with entertainment mode and the dashboard toggle, so this automation must record that it paused AL and only resume what it paused (below).
 
-**Daytime values (open decision 1):** after pausing, `light.turn_on` on the office ceiling bulbs and the lamp with `color_temp_kelvin: 4000` and `brightness_pct: 100`. Shelf lights are decorative and keep whatever they have. Values live in two `input_number` helpers (kelvin, brightness), no `initial:`, so John can tune from the dashboard without a code change (the `initial:` gotcha in memory). Recommended defaults 4000K and 100%; on camera 4000 to 5000K reads as neutral to cool white.
+**Daytime values (open decision 1):** after pausing, `light.turn_on` on the office ceiling bulbs and the lamp with `color_temp_kelvin: 3000` and `brightness_pct: 100` (**Resolved (John, 2026-10-30):** 3000K; brightness stays at the default 100%). Shelf lights and the El Gato are left alone (**Resolved (John, 2026-10-30):** the other lights don't matter, so only the ceiling bulbs and the lamp, as the plan recommended). Shelf lights are decorative and keep whatever they have. Values live in two `input_number` helpers (kelvin, brightness), no `initial:`, so John can tune from the dashboard without a code change (the `initial:` gotcha in memory). Defaults are now 3000K and 100% (John's call; warmer than the original 4000K recommendation, still tunable from the dashboard if it looks off on camera).
 
 **Three small automations, one job each**, in a new `packages/office/call_lighting/` directory (unique basenames; `!include_dir_named` keys by basename):
 
@@ -65,9 +67,10 @@ Dashboard: add the feature switch and the two tuning numbers under the existing 
 
 - **Back-to-back calls.** `input_select.office` does not leave `DnD` if the next call starts inside the debounce, so end never fires and AL stays paused through the whole run. If it does leave and re-enter, end resumes AL and start pauses it again about 10 seconds later, a brief flicker at worst. The 3 minute end debounce is the knob.
 - **Leaving the room mid-call.** `office_dnd_off` fires when John's room presence leaves `office` or the office goes unoccupied; end also triggers on `office_occupied` off. Consequence: AL resumes and the office re-adapts while he is out. If the room is empty the office light automations turn the lights off anyway.
+- **Call signal (resolved).** Per John, a camera call or an audio call both trigger it. `input_select.office` = `DnD` with `john_dnd` on already covers both: `john_dnd_on` fires on camera (3s) or audio (5s). No new trigger is needed.
 - **Room DnD for a non-call reason.** Guest mode sets DnD without `john_dnd`, so start requires `john_dnd` on. Manually selecting `DnD` on `input_select.office` with `john_dnd` off does nothing, which is intended.
 - **Another thing paused AL** (entertainment mode, John's dashboard toggle). Start requires the AL switch on, and end resumes only when the flag says this automation paused it. If entertainment mode turns AL off mid-call, end must not turn it back on; the flag is cleared by end only after checking entertainment mode is off (build detail, tested).
-- **Lights off during a call.** Start skips `light.turn_on` for lights that are off. If John turns them on mid-call with AL paused, they come on at their last values (4000K from this automation). Accepted.
+- **Lights off during a call.** Start skips `light.turn_on` for lights that are off. If John turns them on mid-call with AL paused, they come on at their last values (3000K from this automation). Accepted.
 - **Sleep mode / bedtime.** Start also requires `input_select.house` not `Bedtime` and `switch.adaptive_lighting_sleep_mode_office` off.
 - **Illuminance gate vs AL attributes.** If neither gate is usable, fall back to a sun elevation condition. Failure direction either way is "daytime lights on a daytime call", harmless.
 
@@ -83,13 +86,15 @@ Dashboard: add the feature switch and the two tuning numbers under the existing 
 
 ## Open decisions
 
-1. **Daytime values.** Recommend 4000K and 100% brightness, tunable from the dashboard. Alternatives: 4500K for a cooler look on camera, or 80% to avoid glare. Needs John's eyes in a real call.
-2. **Pause mechanism.** Recommend the master AL switch off (justification above). Alternative: `set_manual_control` on the ceiling bulbs only, which leaves AL running for the lamp and shelf. Say if the lamp and shelf should keep adapting.
-3. **Which lights get the daytime values.** Recommend ceiling bulbs and the lamp, not shelf or El Gato.
-4. **Call signal.** Recommend `input_select.office` = `DnD` with `john_dnd` on. Alternative: trigger straight off `binary_sensor.john_laptop_camera_active` for video calls only, so audio-only calls (AirPods) do not touch the lights. DnD includes audio-only calls, which may light up the room unnecessarily.
-5. **End debounce.** Recommend 3 minutes on top of the existing DnD debounce. Shorter resumes AL between back-to-back calls; longer holds daytime lights after a call.
-6. **When it applies.** Recommend "whenever AL has moved the lights off daylight" (self-selecting, no clock) over a fixed afternoon window, so it also covers dark overcast days.
-7. **Phone calls away from the laptop.** The chain only sees laptop camera and audio. A call on a phone speaker does nothing. Accepted for v1.
+All resolved. John (2026-10-30): "Otherwise looks good." Specific answers below; the rest take the plan's recommendation.
+
+1. **Daytime values.** **Resolved (John, 2026-10-30):** 3000K, brightness stays at the default 100%, both tunable from the dashboard. (Replaces the earlier 4000K recommendation.)
+2. **Pause mechanism.** **Resolved (John, 2026-10-30):** the other lights don't matter, so use the recommended master AL switch off. The `set_manual_control` alternative is dropped.
+3. **Which lights get the daytime values.** **Resolved (John, 2026-10-30):** ceiling bulbs and the lamp, as recommended. Shelf and El Gato are left alone.
+4. **Call signal.** **Resolved (John, 2026-10-30):** trigger on a camera OR audio call. That is the recommended `input_select.office` = `DnD` with `john_dnd` on, which already includes audio-only calls (AirPods) and camera calls. The camera-only alternative is dropped.
+5. **End debounce.** **Resolved (John, 2026-10-30):** yes to the debounce, 3 minutes on top of the existing DnD debounce, as recommended.
+6. **When it applies.** **Resolved (John, 2026-10-30), by default:** whenever AL has moved the lights off daylight (self-selecting, no clock).
+7. **Phone calls away from the laptop.** **Resolved (John, 2026-10-30), by default:** accepted for v1; the chain only sees laptop camera and audio.
 
 ## Risks
 

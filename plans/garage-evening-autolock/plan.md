@@ -1,7 +1,7 @@
 ---
 title: Garage Evening Autolock
 slug: garage-evening-autolock
-status: draft
+status: approved
 created: 2026-10-29
 has_pre_mortem: false
 has_review: false
@@ -11,13 +11,15 @@ related: JK-1233
 
 # Garage Evening Autolock
 
+> Approved by John 2026-10-30 (written authorization to approve the batch; answers folded in below).
+
 Linear JK-1233 (Garage door autolock improvements): "I used to have a feature that autolocks the garage door after 15 minutes but I had to turn it off because it would lock us out if we were playing on the driveway or in the yard. I'd like to add a feature/setting that re-introduces the 15 minute auto-lock but only after sundown or after 7pm."
 
 ## Problem
 
 The 15-minute auto-lock was useful at night and a nuisance in the daytime, so it was switched off for good. With it off, nothing re-locks the garage entry door between the evening lock time and bedtime if somebody unlocks it. The fix is to bring the rule back for the evening only, behind a dashboard switch, with guards against the lockout case.
 
-## Which "garage door"? Lock, not cover (open question 1 confirms)
+## Which "garage door"? Lock, not cover (confirmed)
 
 "Garage door" could mean the three overhead covers (`cover.garage_door_1` to `_3`, group `cover.garage_doors`) or the entry door lock (`lock.garage_entry_door`). The evidence points to the lock:
 
@@ -25,7 +27,7 @@ The 15-minute auto-lock was useful at night and a nuisance in the daytime, so it
 - **"Lock us out" is a lock failure.** A cover closing does not lock anybody out; the entry door locking while people are outside does.
 - **The covers already have a working rule.** `garage_doors_close_if_open_too_long` and `garage_doors_close_when_home` run today and need nobody to switch them off. They also gate on `binary_sensor.garage_ble_occupancy` and `binary_sensor.garage_motion_sensor_occupancy`, which a driveway game does not trip.
 
-The cover is still possible if John meant it (see Variant B below), so it stays an open question.
+**Resolved (John, 2026-10-30):** yes, it is the garage entry door lock. Variant B (covers) is dropped; the section stays below only as a record of the road not taken.
 
 ## Current state (verified 2026-10-29)
 
@@ -42,7 +44,7 @@ Repo, `packages/mudroom/garage_entry_door/`:
 
 ## Design
 
-Leave the old daytime automation alone (off, John's call whether it is ever revived or removed). Add one new automation with one job: the same 15-minute rule, in the evening only, behind its own switch.
+Leave the old daytime automation alone. **Resolved (John, 2026-10-30):** keep it for now; `garage_entry_door_lock_if_open_too_long` stays off with its popup toggle in place, and neither is removed by this plan. Add one new automation with one job: the same 15-minute rule, in the evening only, behind its own switch.
 
 ### New helpers (no `initial:`, so UI edits survive restarts)
 
@@ -54,7 +56,7 @@ Leave the old daytime automation alone (off, John's call whether it is ever revi
 
 Options: (a) sunset, (b) a fixed 19:00, (c) whichever comes first.
 
-**Recommend (a): `sun.sun` is `below_horizon`.** The failure case is children playing outside, which happens in daylight, and daylight moves by hours across the year. A fixed 19:00 is still bright daylight in midsummer, so the lockout comes back exactly when kids are outside most; sunset tracks the real condition with no helper to maintain. In midwinter sunset is already early evening, which is fine, because it is dark and nobody is out. `state: below_horizon` also covers the whole night to sunrise, avoiding the `condition: sun after: sunset` quirk of resetting at midnight. The fixed-time option adds a second helper and a seasonal gap for no gain; (c) is just (a) plus a cap that only matters in summer, and (c) is where the lockout lives. If John wants a 19:00 floor as well, it is a one-line `or` with the existing `input_datetime.garage_entry_door_evening_lock_time`, noted as open question 3.
+**Recommend (a): `sun.sun` is `below_horizon`.** The failure case is children playing outside, which happens in daylight, and daylight moves by hours across the year. A fixed 19:00 is still bright daylight in midsummer, so the lockout comes back exactly when kids are outside most; sunset tracks the real condition with no helper to maintain. In midwinter sunset is already early evening, which is fine, because it is dark and nobody is out. `state: below_horizon` also covers the whole night to sunrise, avoiding the `condition: sun after: sunset` quirk of resetting at midnight. The fixed-time option adds a second helper and a seasonal gap for no gain; (c) is just (a) plus a cap that only matters in summer, and (c) is where the lockout lives. **Resolved (John, 2026-10-30):** sunset is fine, so there is no 19:00 floor and no second helper. (A floor would have been a one-line `or` with `input_datetime.garage_entry_door_evening_lock_time`.)
 
 ### Automation: `garage_entry_door_evening_auto_lock.yaml`
 
@@ -70,9 +72,9 @@ Id `garage_entry_door_evening_auto_lock`, `mode: single`, `initial_state: on`, o
 1. `input_boolean.garage_entry_door_evening_auto_lock` on (the dashboard setting).
 2. `lock.garage_entry_door` unlocked, and `binary_sensor.interior_garage_door` off for the timeout (door closed, not propped).
 3. `sun.sun` below_horizon.
-4. `input_boolean.entertainment_mode` off and `input_boolean.guest_mode` off (the evening lock already treats guests as a reason to leave the door alone; keep them consistent).
+4. `input_boolean.entertainment_mode` off and `input_boolean.guest_mode` off (**Resolved (John, 2026-10-30):** skip during guest mode and also during entertainment mode; the evening lock already treats guests as a reason to leave the door alone, so this stays consistent).
 5. `binary_sensor.somebody_just_arrived` off (existing guard).
-6. Nobody outside or in the garage: `binary_sensor.driveway_front_camera_person_detected` and `binary_sensor.garage_driveway_person_detected` off for 5 minutes, `binary_sensor.garage_motion_sensor_occupancy` off, `binary_sensor.garage_ble_occupancy` off, `cover.garage_doors` closed. These are the same signals `garage_doors_close_if_open_too_long` and the garage flood-light automation already use. The garage covers being open means people are coming and going.
+6. Nobody outside or in the garage (**Resolved (John, 2026-10-30):** both the driveway camera and the back yard count as "someone outside"): `binary_sensor.driveway_front_camera_person_detected` and `binary_sensor.garage_driveway_person_detected` off for 5 minutes, the back yard off for 5 minutes (the "Backyard Occupied" bayesian sensor from `somebody_is_outside_bayesian.yaml`, plus the `binary_sensor.backyard_*_person_detected` camera sensors; confirm exact ids at build, task 1), `binary_sensor.garage_motion_sensor_occupancy` off, `binary_sensor.garage_ble_occupancy` off, `cover.garage_doors` closed. These are the same signals `garage_doors_close_if_open_too_long` and the garage flood-light automation already use. The garage covers being open means people are coming and going.
 7. `timer.garage_entry_door_evening_auto_lock_snooze` idle.
 
 Bedtime needs no condition: `garage_entry_door_lock_auto_lock_when_home` already locks at bedtime, and locking again is harmless. House occupied is also not needed; `garage_entry_door_lock_auto_lock` handles the empty house.
@@ -80,7 +82,7 @@ Bedtime needs no condition: `garage_entry_door_lock_auto_lock_when_home` already
 If a condition blocks the lock, the trigger will not retry by itself (a state trigger with `for:` fires once). Add a re-evaluation trigger on the blockers turning off for 5 minutes (person-detected sensors, garage motion, BLE, cover closed), mirroring how the evening-lock automation re-evaluates after `somebody_just_arrived` clears.
 
 **Actions**
-1. Push (below) with a snooze action, wait for the response for a 2-minute grace.
+1. Push (below) with a snooze action, wait for the response for a 2-minute grace (**Resolved (John, 2026-10-30):** yes to the 2-minute warning with snooze).
 2. If snoozed: start the timer, stop.
 3. Otherwise `lock.lock` on `lock.garage_entry_door`.
 4. Passive log notification that it locked, with an "Unlock" action wired to `lock.unlock` through `mobile_app_notification_action`.
@@ -109,11 +111,11 @@ Do not add a second automation. Make `sensor.garage_doors_auto_close_timeout` re
 
 ## Tasks
 
-1. Spike, read-only: confirm on the host that `binary_sensor.driveway_front_camera_person_detected` and `binary_sensor.garage_driveway_person_detected` actually turn on for people on the driveway (logbook around a known outdoor time). If not, the lockout guard is cosmetic and the design needs a different signal.
+1. Spike, read-only: confirm on the host that `binary_sensor.driveway_front_camera_person_detected`, `binary_sensor.garage_driveway_person_detected` and the back yard sensors (the bayesian sensor's entity id and the `backyard_*_person_detected` cameras) actually turn on for people on the driveway (logbook around a known outdoor time). If not, the lockout guard is cosmetic and the design needs a different signal.
 2. Add `garage_entry_door_evening_auto_lock.yaml` with the helpers, header comment and condition ladder above.
 3. Dashboard: add the toggle (and, if wanted, the snooze timer) to `dashboards/kohbo/security/garage_entry_lock_popup.yaml`, plus a line in `dashboards/kohbo/security/README.md`. Touch `dashboards/kohbo/kohbo.yaml` on deploy.
 4. Tests, `tests/test_garage_entry_evening_autolock.py` in the style of `tests/test_front_door_lock_regressions.py` and `tests/test_door_left_open_realert.py`:
-   - conditions include the switch, sun below_horizon, entertainment/guest/just-arrived, the four outdoor guards and the snooze timer;
+   - conditions include the switch, sun below_horizon, entertainment/guest/just-arrived, the outdoor guards (driveway, garage-driveway and back yard) and the snooze timer;
    - the daytime case (sun above_horizon) blocks;
    - the message renders when the trigger is a state or sun trigger with no `from_state`;
    - helpers carry no `initial:`;
@@ -123,16 +125,18 @@ Do not add a second automation. Make `sensor.garage_doors_auto_close_timeout` re
 
 ## Open questions for John
 
-1. **Lock or cover?** The plan assumes the entry door lock (evidence above). Say so if you meant the overhead doors and Variant B applies.
-2. **Sunset or 7pm?** Recommended: sunset only. Want a 19:00 floor too (earlier of the two), or a sunset offset?
-3. **Revive the old automation?** `garage_entry_door_lock_if_open_too_long` is off. Leave it off and its popup toggle in place, or remove both once the new switch exists?
-4. **Warning push with a 2-minute grace and snooze,** or lock silently and notify after only?
-5. **Outdoor guards:** are the driveway and garage-driveway person cameras enough, or should the back yard count too (the "Backyard Occupied" bayesian sensor exists but is probabilistic)?
-6. **Guest mode:** skip the lock while guest mode is on, matching the evening lock, or keep locking?
+All six answered by John on 2026-10-30.
+
+1. **Lock or cover?** **Resolved (John, 2026-10-30):** yes, the garage entry door lock. Variant B is dropped.
+2. **Sunset or 7pm?** **Resolved (John, 2026-10-30):** sunset is fine; no 19:00 floor and no offset.
+3. **Revive the old automation?** **Resolved (John, 2026-10-30):** keep the old automation for now (off, popup toggle left in place). Revisit removal later, separately.
+4. **Warning push with a 2-minute grace and snooze,** or lock silently? **Resolved (John, 2026-10-30):** yes to the 2-minute warning with snooze.
+5. **Outdoor guards.** **Resolved (John, 2026-10-30):** both the driveway camera and the back yard count as "someone outside". The back yard is added to condition 6. The bayesian sensor is probabilistic, so it is OR'd with the back yard person cameras, and a stuck-on sensor still fails open (see Risks).
+6. **Guest mode.** **Resolved (John, 2026-10-30):** yes, skip during guest mode, and also during entertainment mode (condition 4).
 
 ## Risks
 
 - A guard that never clears (stuck camera sensor) means the door stays unlocked until the existing bedtime/22:00 locks. Fail-open is deliberate.
-- Lockout is still possible when the family is in a place no sensor covers (side yard, out front). The warning push is the mitigation.
+- Lockout is still possible when the family is in a place no sensor covers (side yard, out front); the back yard is now covered. The warning push is the mitigation.
 - Overlap with the 19:30 evening lock and the old automation; separate ids and a single helper timeout keep that predictable.
 - Privacy: only generic times and entity ids; no schedules tied to people, addresses or locations.

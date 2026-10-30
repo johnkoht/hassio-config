@@ -1,7 +1,7 @@
 ---
 title: House Mode Resolver
 slug: house-mode-resolver
-status: draft
+status: approved
 created: 2026-10-28
 has_pre_mortem: false
 has_review: false
@@ -9,6 +9,8 @@ has_prd: false
 ---
 
 # House Mode Resolver
+
+> Approved by John 2026-10-30 (written authorization to approve the batch; answers folded in below).
 
 Linear: JK-1118 (follow-up to PR #71). Sibling plan: `room-lighting-override` (room-level lighting and occupancy; not yet written in `plans/`).
 
@@ -146,18 +148,18 @@ Patch in place: add a quiet check to `house_mode_auto`, vacation guards to `hous
 
 ## Open decisions
 
-Each has a recommended default. The plan above assumes the defaults.
+Each has a recommended default. The plan above assumes the defaults. **Resolved (John, 2026-10-30):** OD-1 was already decided by John (2026-10-29); OD-2 to OD-10 take the plan's recommended default, marked on each line.
 
-- **OD-1. The last awake adult leaves at night (others in bed).** **Decided by John 2026-10-29: Bedtime, and arm.** Shipped as a hotfix: `bedtime_mode_on` triggers on `person.*` leaving home again, and `bedtime_mode_off_on_arrival` (Task 6) already exists, so this plan only adjusts its landing state (Quiet vs Auto, OD-2) and scope (OD-8).
-- **OD-2. Bedtime ends while quiet mode is still on.** Default: **Quiet.** This needs Task 5, or the common rooms stay Off.
-- **OD-3. The "house becomes occupied → Auto" trigger.** Default: **replace it with the resolver.** Arrival selects whatever the state says (Bedtime, Quiet or Auto), never a hard-coded Auto.
-- **OD-4. Does one adult getting up end bedtime?** Default: **yes, but only before noon.** One home adult awake is enough, and a no-adult-home fallback is kept. This matches today's effective OR, now bounded and without the away loophole.
-- **OD-5. Manual selects from the dashboard** (for example, picking Bedtime or Entertainment by hand). Default: **accept that the next resolve overwrites them.** Today the next edge overwrites them too. The select becomes a derived display; to change behaviour, toggle the booleans. A popup change is backlog (X4).
-- **OD-6. Entertainment in the resolver.** Default: **leave it out.** Nothing consumes house == Entertainment, and `entertainment_mode` (the boolean) runs its own side effects. Alternative: map the boolean to Entertainment between Bedtime and Quiet. It is cheap, but it adds transitions with no consumer.
-- **OD-7. How Vacation enters.** Default: **Vacation requires the house to be empty for 2+ min.** The house passes through Away first, so the Away-keyed consumers (room Off, lights to away, alarm, cameras, windows) still fire when vacation mode was turned on before leaving. The normal path is already Away first, because `vacation_mode_turn_on` requires an empty house. Also: **occupied + vacation_mode on (a sitter) resolves to the normal modes, not Vacation.** That changes today's `house_mode_auto`, which picks Vacation. It gives a keyholder a working house, and the vacation alarm and faux-home logic keep their own gating.
-- **OD-8. Who triggers "arrival ends bedtime".** Default: **family adults only** (those with in-bed booleans: John, Cristina). An unlock-privileged guest arriving at night would end bedtime, and nothing would restore it (they have no in-bed boolean to trigger `bedtime_mode_on`), so the alarm wouldn't re-arm. Alternative: any unlock-privileged person, plus a re-arm path. More scope.
-- **OD-9. Rooms that re-enter Auto only on house → Auto, with no occupancy recovery** (`foyer_mode_auto`, `upstairs_hallway_mode_auto`). Default: **add Quiet to the foyer trigger. Leave the upstairs hallway in Bedtime until Quiet clears,** since the kids' rooms are on that hall. Alternatively, leave both and hand them to `room-lighting-override`.
-- **OD-10. Morning in-bed flapping.** Default: **a separate issue** (person-level sensors). The resolver makes it less harmful (Bedtime↔Quiet instead of Bedtime↔Auto), but the `bedtime` boolean and its consumers still flap.
+- **OD-1. The last awake adult leaves at night (others in bed).** **Resolved (John, 2026-10-29): Bedtime, and arm.** Shipped as a hotfix: `bedtime_mode_on` triggers on `person.*` leaving home again, and `bedtime_mode_off_on_arrival` (Task 6) already exists, so this plan only adjusts its landing state (Quiet vs Auto, OD-2) and scope (OD-8).
+- **OD-2. Bedtime ends while quiet mode is still on.** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: **Quiet.** This needs Task 5, or the common rooms stay Off.
+- **OD-3. The "house becomes occupied → Auto" trigger.** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: **replace it with the resolver.** Arrival selects whatever the state says (Bedtime, Quiet or Auto), never a hard-coded Auto.
+- **OD-4. Does one adult getting up end bedtime?** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: **yes, but only before noon.** One home adult awake is enough, and a no-adult-home fallback is kept. This matches today's effective OR, now bounded and without the away loophole.
+- **OD-5. Manual selects from the dashboard** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** (for example, picking Bedtime or Entertainment by hand). Default: **accept that the next resolve overwrites them.** Today the next edge overwrites them too. The select becomes a derived display; to change behaviour, toggle the booleans. A popup change is backlog (X4).
+- **OD-6. Entertainment in the resolver.** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: **leave it out.** Nothing consumes house == Entertainment, and `entertainment_mode` (the boolean) runs its own side effects. Alternative: map the boolean to Entertainment between Bedtime and Quiet. It is cheap, but it adds transitions with no consumer.
+- **OD-7. How Vacation enters.** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: **Vacation requires the house to be empty for 2+ min.** The house passes through Away first, so the Away-keyed consumers (room Off, lights to away, alarm, cameras, windows) still fire when vacation mode was turned on before leaving. The normal path is already Away first, because `vacation_mode_turn_on` requires an empty house. Also: **occupied + vacation_mode on (a sitter) resolves to the normal modes, not Vacation.** That changes today's `house_mode_auto`, which picks Vacation. It gives a keyholder a working house, and the vacation alarm and faux-home logic keep their own gating.
+- **OD-8. Who triggers "arrival ends bedtime".** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: **family adults only** (those with in-bed booleans: John, Cristina). An unlock-privileged guest arriving at night would end bedtime, and nothing would restore it (they have no in-bed boolean to trigger `bedtime_mode_on`), so the alarm wouldn't re-arm. Alternative: any unlock-privileged person, plus a re-arm path. More scope.
+- **OD-9. Rooms that re-enter Auto only on house → Auto, with no occupancy recovery** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** (`foyer_mode_auto`, `upstairs_hallway_mode_auto`). Default: **add Quiet to the foyer trigger. Leave the upstairs hallway in Bedtime until Quiet clears,** since the kids' rooms are on that hall. Alternatively, leave both and hand them to `room-lighting-override`.
+- **OD-10. Morning in-bed flapping.** **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: **a separate issue** (person-level sensors). The resolver makes it less harmful (Bedtime↔Quiet instead of Bedtime↔Auto), but the `bedtime` boolean and its consumers still flap.
 
 ## Risks
 

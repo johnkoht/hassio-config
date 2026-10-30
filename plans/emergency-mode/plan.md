@@ -1,7 +1,7 @@
 ---
 title: Emergency Mode
 slug: emergency-mode
-status: draft
+status: approved
 created: 2026-10-28
 has_pre_mortem: false
 has_review: false
@@ -11,6 +11,8 @@ depends_on: JK-1165 hotfixes #72 (fire trigger + parallel alerts) and #75 (flash
 ---
 
 # Emergency Mode
+
+> Approved by John 2026-10-30 (written authorization to approve the batch; answers folded in below).
 
 ## Problem
 
@@ -105,22 +107,24 @@ Size: S = one or two files and a small diff; M = several files or a behaviour ch
 8. **PR 3: disarm off-path.** `security_alarm_disabled` triggers on `from: "triggered"` to any state except `unavailable`/`unknown`. Add a test.
 9. **PR 3: Noonlight on fire (P12).** `fire_alarm_alert` gets a Noonlight branch with `continue_on_error: true`, gated by test mode exactly like the intruder branch. Before building, read the Noonlight component (on the host, read-only) and Noonlight's docs for how a false alarm is cancelled. The component's switch-off doesn't cancel, so the cancel path is Noonlight's own (app or callback). Put that cancel path in the fire push text so whoever gets it knows how to stand the dispatch down. Add a regression test for the branch and its gate.
 10. **PR 3: panic via alarmo.** First, have the `homelab` agent read the live alarmo version and code (read-only) to confirm `alarm_control_panel.alarm_trigger` works from `disarmed`, what state alarmo goes to after trigger time, and whether it needs a code (if so, `!secret alarmo_code`). Then `panic_button.yaml` calls `alarm_control_panel.alarm_trigger` on `alarm_control_panel.alarmo` instead of the alert script. Verify only after the button is repaired, and only with test mode on.
-11. **PR 4 (optional): polish.** X1 per John's decision. X3, if chosen: the intruder path passes a flag so `alarm_flash_lights` skips its restore, and `security_alarm_disabled` restores the snapshot on disarm (the fire path keeps restoring right away). X4 only if a real test shows a pre-emption problem.
+11. **PR 4 (optional, can wait for a real test): polish.** X1 (sirens on fire): yes, per decision 7. X3 (chosen, decision 9): the intruder path passes a flag so `alarm_flash_lights` skips its restore, and `security_alarm_disabled` restores the snapshot on disarm (the fire path keeps restoring right away). X4 only if a real test shows a pre-emption problem.
 
 ## Open decisions
 
-1. **New flag, or reuse `alert_mode`?** Recommended: **new `input_boolean.emergency_mode`**, as only a manual/test override, with the real gate being the derived `binary_sensor.emergency_active`. `alert_mode` means "bypass quiet once" to the legacy Alexa script, which clears it after each use.
-2. **Derived sensor, or the investigation's latched boolean + timer?** Recommended: **derived sensor**. It can't stick and needs no wiring in the alert scripts. Trade-off: the gate lifts the moment the alarm is disarmed or the smoke clears, with no grace period. If John wants a tail, add `delay_off: 60s` to the template sensor.
-3. **Drop or defer non-critical announcements during an emergency?** **Decided 10-28: hold, don't clear.** John asked whether to clear the queue or hold announcements until `emergency_active` is off. Hold: nothing non-critical is dequeued while the emergency is on, and direct engine callers (doorbell, dong) are dropped, not queued. When it clears, expired items are dropped (low 3 min, normal 10 min) and so is anything `low`, since stale chit-chat after an alarm is noise; normal and high reminders that are still valid then play. Clearing the whole queue at the start was rejected because a time-sensitive normal reminder can still matter once the emergency ends. The hold replaces the old critical-append purge, which no longer runs once critical skips the queue (task 4).
-4. **Auto-clear?** Recommended: the manual boolean auto-clears at **10 min** and at HA start. The derived sensor clears on disarm, trigger-time expiry, or smoke clearing.
-5. **Critical bypasses the MQTT queue?** Recommended: **yes** (P3). Alternative: keep critical in the queue and patch each processor gate plus the append race. That's more edits and still leaves the MQTT round-trip in the critical path.
-6. **Panic through alarmo?** Recommended: **yes**, provided alarmo triggers from disarmed (task 9 verifies). If it doesn't, fallback: panic turns on `input_boolean.emergency_mode` and calls the alert script, and disarming the boolean runs `security_alarm_disabled`.
-7. **Sirens on fire?** Recommended: **yes**. Smoke detectors sound locally, but the sirens reach the whole house.
-8. **Noonlight on fire?** **Decided 10-28 (John): yes.** See P12 and task 9. The false-alarm risk (cooking) is handled by Noonlight's own cancel path, which goes in the fire push.
-9. **Lights after flashing.** Reframed 10-29. John expects his scene back, and the restore was broken (it snapshotted the light group, so every light came on); #75 fixed it, so **restore is the default**. Open: for an intruder alarm only, keep the lights on until disarm (X3)? Recommended: **restore on fire and tests, keep lights on until disarm for an intruder.**
-10. **Tornado and hazardous air?** Recommended: move **tornado only** to critical_announcement; leave hazardous air on voice_announcement.
-11. **TTS wait formula.** Recommended: **`len/14 + 3` s for every priority**. Simple, and it fixes clipping at the cost of slightly longer gaps between queued messages. Alternative: lengthen the wait only for critical.
-12. **Package location.** Recommended: `packages/security/emergency/`, since alarm and fire own the trigger states. Alternative: `packages/house/`, next to the other house modes.
+All resolved. No new answers from John on 2026-10-30; items 3 and 8 were decided on 10-28, and the rest take the recommendation stated in each item.
+
+1. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **New flag, or reuse `alert_mode`?** Recommended: **new `input_boolean.emergency_mode`**, as only a manual/test override, with the real gate being the derived `binary_sensor.emergency_active`. `alert_mode` means "bypass quiet once" to the legacy Alexa script, which clears it after each use.
+2. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **Derived sensor, or the investigation's latched boolean + timer?** Recommended: **derived sensor**. It can't stick and needs no wiring in the alert scripts. Trade-off: the gate lifts the moment the alarm is disarmed or the smoke clears, with no grace period. If John wants a tail, add `delay_off: 60s` to the template sensor.
+3. **Drop or defer non-critical announcements during an emergency?** **Decided 10-28: hold, don't clear.** John asked whether to clear the queue or hold announcements until `emergency_active` is off. Hold: nothing non-critical is dequeued while the emergency is on, and direct engine callers (doorbell, dong) are dropped, not queued. When it clears, expired items are dropped (low 3 min, normal 10 min) and so is anything `low`, since stale chit-chat after an alarm is noise; normal and high reminders that are still valid then play. Clearing the whole queue at the start was rejected because a time-sensitive normal reminder can still matter once the emergency ends. The hold replaces the old critical-append purge, which no longer runs once critical skips the queue (task 4). **Resolved (John, 2026-10-30):** stands as decided on 10-28.
+4. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **Auto-clear?** Recommended: the manual boolean auto-clears at **10 min** and at HA start. The derived sensor clears on disarm, trigger-time expiry, or smoke clearing.
+5. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **Critical bypasses the MQTT queue?** Recommended: **yes** (P3). Alternative: keep critical in the queue and patch each processor gate plus the append race. That's more edits and still leaves the MQTT round-trip in the critical path.
+6. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **Panic through alarmo?** Recommended: **yes**, provided alarmo triggers from disarmed (task 9 verifies). If it doesn't, fallback: panic turns on `input_boolean.emergency_mode` and calls the alert script, and disarming the boolean runs `security_alarm_disabled`.
+7. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **Sirens on fire?** Recommended: **yes**. Smoke detectors sound locally, but the sirens reach the whole house.
+8. **Noonlight on fire?** **Decided 10-28 (John): yes.** See P12 and task 9. The false-alarm risk (cooking) is handled by Noonlight's own cancel path, which goes in the fire push. **Resolved (John, 2026-10-30):** stands as decided on 10-28.
+9. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands: restore on fire and tests, keep lights on until disarm for an intruder, so X3 is in PR 4):** **Lights after flashing.** Reframed 10-29. John expects his scene back, and the restore was broken (it snapshotted the light group, so every light came on); #75 fixed it, so **restore is the default**. Open: for an intruder alarm only, keep the lights on until disarm (X3)? Recommended: **restore on fire and tests, keep lights on until disarm for an intruder.**
+10. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **Tornado and hazardous air?** Recommended: move **tornado only** to critical_announcement; leave hazardous air on voice_announcement.
+11. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **TTS wait formula.** Recommended: **`len/14 + 3` s for every priority**. Simple, and it fixes clipping at the cost of slightly longer gaps between queued messages. Alternative: lengthen the wait only for critical.
+12. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** **Package location.** Recommended: `packages/security/emergency/`, since alarm and fire own the trigger states. Alternative: `packages/house/`, next to the other house modes.
 
 ## Risks
 

@@ -1,7 +1,7 @@
 ---
 title: Notification Deep Links
 slug: notification-deep-links
-status: draft
+status: approved
 created: 2026-10-29
 has_pre_mortem: false
 has_review: false
@@ -10,6 +10,8 @@ linear: JK-1068
 ---
 
 # Notification Deep Links
+
+> Approved by John 2026-10-30 (written authorization to approve the batch; answers folded in below).
 
 ## Problem
 
@@ -159,15 +161,58 @@ Phases 1 and 2 touch automations and scripts, so each PR waits for John's go-ahe
 
 ## Open decisions
 
-1. Android `clickAction`. Default: send both `url` and `clickAction` now, since it's one line and iOS ignores `clickAction`. Alternative: skip until an Android phone exists.
-2. Exempt mechanism. Default: a fixture file (path plus reason). Alternative: an explicit `url: none` in each call, which is more self-documenting but touches about 45 files for no behaviour change.
-3. Alarm triggered target. Default: `security-alarm-panel`, because disarming is the action. Alternative: stay on `security` (the whole-house score).
-4. Vacuum target. Default: keep the `main-floor-vacuum` view for maintenance reminders. Use `#main_floor_quick_clean_popup` only for something like "vacuum stuck", if such a notification exists. The ticket says "vacuum popup", so John may want the popup for all of them.
-5. Camera hash derivation. Default: derive the hash from `notifications_boolean` (fragile if a naming pattern breaks, but the test catches it). Alternative: pass an explicit `popup_hash` field from each of the 21 detection automations.
-6. Kids-escape destination. Default: `security-exterior-doors`, assuming the two door sensors are on that view. Needs John to confirm which sensors these are.
-7. Missing screens. Default: ship interim links (`security` for fire, `energy` for UPS) and build the popups as task 10. Alternative: leave those unlinked until the popups exist.
-8. Test strictness. Default: report-only in task 1, enforcing in task 9. Alternative: enforce from the start, which makes every phase PR fix its own violations.
-9. Stray debug push. Default: leave the "Test Motion" UI automation alone and exempt it, flagged for John to delete. It is not part of this plan.
+All resolved by the plan's recommended default (John, 2026-10-30, written authorization to approve the batch; no specific answers given). Decision 6 still wants John to confirm which sensors the kids-escape alerts use before PR D.
+
+1. Android `clickAction`. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: send both `url` and `clickAction` now, since it's one line and iOS ignores `clickAction`. Alternative: skip until an Android phone exists.
+2. Exempt mechanism. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: a fixture file (path plus reason). Alternative: an explicit `url: none` in each call, which is more self-documenting but touches about 45 files for no behaviour change.
+3. Alarm triggered target. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: `security-alarm-panel`, because disarming is the action. Alternative: stay on `security` (the whole-house score).
+4. Vacuum target. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: keep the `main-floor-vacuum` view for maintenance reminders. Use `#main_floor_quick_clean_popup` only for something like "vacuum stuck", if such a notification exists. The ticket says "vacuum popup", so John may want the popup for all of them.
+5. Camera hash derivation. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: derive the hash from `notifications_boolean` (fragile if a naming pattern breaks, but the test catches it). Alternative: pass an explicit `popup_hash` field from each of the 21 detection automations.
+6. Kids-escape destination. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: `security-exterior-doors`, assuming the two door sensors are on that view. Needs John to confirm which sensors these are.
+7. Missing screens. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: ship interim links (`security` for fire, `energy` for UPS) and build the popups as task 10. Alternative: leave those unlinked until the popups exist.
+8. Test strictness. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: report-only in task 1, enforcing in task 9. Alternative: enforce from the start, which makes every phase PR fix its own violations.
+9. Stray debug push. **Resolved (John, 2026-10-30), by default (the plan's recommendation stands):** Default: leave the "Test Motion" UI automation alone and exempt it, flagged for John to delete. It is not part of this plan.
+
+## Push pruning (JK-1068 follow-up, John 2026-10-30)
+
+**PROPOSAL, needs John's pick.** Pruning is NOT approved; only the deep-links work above is. John asked: "can we maybe clean up some of these push notifications too? I get a lot and it's annoying. Can you propose a list to cut/turn off for now?"
+
+Basis: the audit above (about 108 push call sites) plus a fresh grep of `packages/`, `automation/` and `scripts/` for `script.general_notification` and `notify.` (95 files). Frequency is judged from the trigger (a state flip or occupancy edge fires many times a day; an alarm or fault fires rarely), not from live counts; the `homelab` agent can pull a real count per tag from the recorder if John wants numbers before choosing. Note two files (`upstairs_dryer_complete.yml`, `today_is_full_moon.yml`) are `.yml`, which HA never loads, so they send nothing today and need no decision.
+
+Actions: **Cut** = delete the push (the automation keeps doing its other job). **Passive** = keep the push but `priority: passive`, so it lands silently in the notification list with no sound or banner. **John-only** = change `devices: "all"` to `"jk"`. **Keep** = leave alone.
+
+### Candidates, highest value first
+
+| # | Action | File(s) | What it says | Reason |
+|---|---|---|---|---|
+| 1 | Cut | `automation/family_room/family_room_occupied.yaml`, `family_room_not_occupied.yaml` | "Family Room Logger": room is / is no longer occupied (passive, John) | Fires on every occupancy flip, many times a day. A logger, not an alert; the logbook has it. |
+| 2 | Cut | `packages/kitchen/lights/kitchen_lights_manually_turned_on.yaml`, `kitchen_lights_turned_off.yaml`, `packages/playroom/lights/playroom_lights_turned_off.yaml`, `packages/upstairs_hallway/lights/upstairs_hallway_lights_manually_turned_off.yaml` | Lights turned on/off, with context parent id and user id (passive, John) | Debug text, every manual switch. The room-lighting-override plan already drops the kitchen ones. |
+| 3 | Cut | `packages/people/john/do_not_disturb/automations/john_dnd_on.yaml`, `john_work_call_on.yaml`, `john_work_call_off.yaml`, `john_personal_time_on.yaml`, `john_personal_time_off.yaml` | DnD on; work call on/off; personal time on/off (passive, John) | Echoes of toggles John set or can see on the dashboard; several flips a day. |
+| 4 | Cut | `packages/people/nearly_home/nearly_home_on.yaml`, `nearly_home_off.yaml` | "Nearly home automation turned on/off" (passive, John) | A status flip on every approach and arrival; no action to take. |
+| 5 | Cut | `automation/people/returned_home.yaml`, `packages/people/announcements/person_announcement_script.yaml`, `automation/people/cristina/cristina_arrived_work.yaml` | "Home Arrival Mode"; "Somebody's here!" with the generated line; work-arrival log (all passive, John) | Arrival logs on every comings and goings. The spoken announcement already covers "somebody's here". The work-arrival log is also a routine in a public repo. |
+| 6 | Cut one | `scripts/house/house_away.yaml` (keep `automation/house/modes/house_mode_away.yaml`) | "Nobody is home so away mode has been activated" | Same event pushed twice (script active, automation passive). Cut the active copy. |
+| 7 | Cut | animal branch of `packages/security/cameras/detection_notifications/camera_detection_alert.yaml` (7 animal automations) | "An animal has been detected in <camera>" | The existing "pause to cut down on notification overload" toggle is evidence this is the noisiest source. Animals are rarely actionable. Person detections stay. |
+| 8 | Passive | same file, vehicle branch (3 automations) | "A vehicle has been detected in <camera>" | Every car passing; keep for the record, drop the banner. |
+| 9 | Passive | `packages/climate/main_floor/main_floor_climate_to_eco.yaml`, `main_floor_climate_to_resume.yaml`, `packages/climate/second_floor/second_floor_climate_to_eco.yaml`, `second_floor_climate_to_resume.yaml` | "Climate turned to ECO / activated, setpoint N" (time-sensitive, John) | Occupancy-driven flips, up to a few a day, each time-sensitive. Informational. |
+| 10 | Passive | `packages/security/alarm/alarm_arm_home_script.yaml`, `alarm_arm_if_john_away.yaml`, `alarm_arm_away_when_vacation_mode.yaml`, `alarm_disarm_in_morning.yaml`, `alarm_disarm_when_house_becomes_occupied.yaml` | "Home is armed / disarmed ..." status (active or time-sensitive) | Routine daily confirmations from automations. The alarm-triggered push stays critical. Also move `alarm_disarm_in_morning` from everyone to John-only (action: John-only). |
+| 11 | Passive | `packages/people/john/daily_report/john_daily_report.yaml`, `packages/reminders/morning_update.yaml` | "Daily Report!", "Daily Update!" (time-sensitive, John) | Long generated summaries, also spoken; a banner with sound adds nothing. |
+| 12 | Passive | `packages/garage/doors/door_2/garage_door_2_open_upon_arrival.yaml`, `door_3/garage_door_3_open_upon_arrival.yaml` | "Garage door is opening upon somebody's arrival" | Fires on every arrival and is the automation doing its job. Garage open-too-long pushes stay. |
+| 13 | Passive | `packages/security/security_status_notification.yaml` | "Home Security - Shields Up" status text (time-sensitive, John) | Fires each bedtime and when the house empties, up to once an hour; a status recap, not an alert. |
+| 14 | Passive | `packages/house/vacation_mode/vacation_mode_turn_on.yaml`, `vacation_mode_turn_off.yaml` | Vacation mode on / off (time-sensitive, John) | John flips it himself; the confirmation does not need a banner. |
+| 15 | Passive | `packages/weather/tempest_alerts/tempest_high_uv_alert.yaml`, `tempest_rain_amount_alert.yaml`, `packages/energy/sensors/energy_prices_are_negative.yaml` | UV alert; rain accumulation; negative energy price (time-sensitive, John) | Daily-ish seasonal information; nothing urgent. NWS and severe rain warnings stay. |
+| 16 | John-only | `packages/security/cameras/camera_notifications/camera_notifications_activate.yaml`, `camera_notifications_deactivate.yaml` | Camera detections enabled / disabled (passive, everyone) | A toggle echo that every phone receives. |
+| 17 | Passive | `packages/system/alerts/zigbee_router_unavailable.yaml`, `playroom_ap_unavailable.yaml`, `packages/system/ups/ups_battery_power_restored.yaml` | Router unavailable; AP disconnected (self power-cycling); UPS back on AC (time-sensitive, John) | Self-healing faults and an all-clear. The coordinator, Z-Wave, UPS-on-battery and UPS-offline pushes stay. |
+| 18 | Cut | `packages/today_is_a_full_moon.yaml`, `packages/holidays/christmas/modes/christmas_not_activated.yaml` | "Full Moon Reminder"; "Christmas is NO longer activate" | Novelty and a mode echo. |
+| 19 | Cut | `packages/playroom/party_time/playroom_activate_party_time.yaml`, `playroom_deactivate_party_time.yaml` | Party time on / off (time-sensitive, John) | John-triggered toggle echoes. |
+| 20 | Passive | `packages/security/security_unlock_front_door_by_fingerprint.yaml` | "Fingerprint identified with ID N and unlocked the front door" | Every household unlock; keep as a silent record. |
+
+**Keep (not proposed for change):** alarm triggered (critical), fire and smoke, leak alerts, person detections (including the critical-at-bedtime path), doorbell, front-door lock failures, garage open too long, exterior doors and windows left open, UPS on battery and UPS offline, Zigbee coordinator and Z-Wave controller offline, medication reminders and escalation, school departure and pickup reminders, garbage day, birthdays, kids activity and neighborhood reminders, bedtime notifications, severe weather warnings, guest arrived/left, laundry done (everyone gets these today; whether it should be John-only is Cristina's call, not proposed), and the Nino escape monitor.
+
+**Rough effect if all taken:** about 28 push call sites or automations cut (rows 1 to 7, 18, 19, counting the 7 animal automations), about 26 demoted to passive, 2 narrowed to John (plus one recipient change in row 10). The deep-links audit and exempt list shrink accordingly: cut rows leave the "passive loggers" exempt list, and demoted rows keep their links.
+
+**Overlaps with the approved plans, none blocking:** row 2 overlaps `room-lighting-override`; rows 5 and 18 touch the "passive loggers" exempt list above; rows in `packages/security/alarm/` overlap the emergency-mode PRs only through shared files (merge order, not logic).
+
+**John's pick needed:** which rows (or all), and whether passive means "no banner" (as above) or "cut" for rows 8 to 15. Once picked, it ships as its own PR; it is independent of the deep-links PRs and touches only automation files, so it waits for John's go-ahead before merge and deploy.
 
 ## Risks
 
