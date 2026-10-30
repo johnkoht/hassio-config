@@ -216,7 +216,7 @@ automation:
 
 ### Manual override latch (migrated rooms)
 
-Migrated rooms (everything with lighting automations except family room and mudroom) are listed in `MIGRATED_ROOMS` in `tests/test_room_lighting_override_regressions.py`. Their Lighting ON examples also check the latch (`input_boolean.{room}_lights_manually_toggled` must be `off`) after the room flag.
+Migrated rooms (every room with enabled lighting automations) are listed in `MIGRATED_ROOMS` in `tests/test_room_lighting_override_regressions.py`. Their Lighting ON examples also check the latch (`input_boolean.{room}_lights_manually_toggled` must be `off`) after the room flag.
 
 | Flag | Written by |
 |------|-----------|
