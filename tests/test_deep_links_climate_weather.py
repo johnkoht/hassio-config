@@ -19,7 +19,7 @@ EXPECTED = {
     f"{CLIMATE}second_floor/second_floor_climate_to_resume.yaml": [HVAC + "upper_floor_thermostat"],
     "packages/weather/tempest_alerts/tempest_high_uv_alert.yaml": [WEATHER],
     "packages/weather/tempest_alerts/tempest_rain_amount_alert.yaml": [WEATHER],
-    # one rain warning plus seven NWS branches
+    # eight calls: one rain warning and seven NWS branches (six per-alert, one heavy-rain)
     "packages/weather/severe_weather_alert/severe_weather_warning.yaml": [WEATHER] * 8,
 }
 
