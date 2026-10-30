@@ -15,6 +15,11 @@
 #       title: "Action 1"
 #     - action: "ACTION_ID_2"
 #       title: "Action 2"
+#   url: "/dashboard-kohbo/security-cameras#front_door_camera"  # Optional - tap target
+#
+# url is sent as `url` (iOS) and `clickAction` (Android) from one value, and
+# both keys are left out when it is empty. A popup hash only opens on the view
+# that includes it; tests/test_notification_deep_links.py checks every link.
 #
 
 #
@@ -197,12 +202,9 @@ script:
           image: "{{ image | default('') }}"
           entity_id: "{{ entity_id | default('') }}"
           url: "{{ url | default('') }}"
-          priority: >-
-            {% if priority is defined and priority|length %}
-              {{priority}}
-            {% else %}
-              "active"
-            {% endif %}
+          # Link keys, only when a url was given: iOS reads url, Android clickAction
+          link: "{{ {'url': url, 'clickAction': url} if url | length > 0 else {} }}"
+          priority: "{{ priority if priority is defined and priority | length else 'active' }}"
 
       # Make sure notifications are not disabled. A critical push always goes
       # out: an alarm or fire must reach everyone whatever the level is.
@@ -246,14 +248,14 @@ script:
         data:
           message: "{{ message }}"
           title: "{{ title }}"
-          data:
-            tag: "{{ tag }}"
-            image: "{{ image }}"
-            entity_id: "{{ entity_id }}"
-            push:
-              interruption-level: "{{ priority }}"
-            actions: "{{ actions }}"
-            url: "{{url}}"
+          data: >-
+            {{ {
+              'tag': tag,
+              'image': image,
+              'entity_id': entity_id,
+              'push': {'interruption-level': priority},
+              'actions': actions | default('')
+            } | combine(link) }}
 
 
 automation:

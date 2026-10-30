@@ -1,11 +1,11 @@
 ---
 title: Notification Deep Links
 slug: notification-deep-links
-status: approved
+status: in-progress
 created: 2026-10-29
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 linear: JK-1068
 ---
 
