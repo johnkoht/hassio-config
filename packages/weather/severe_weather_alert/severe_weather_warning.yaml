@@ -378,6 +378,7 @@ automation:
                       devices: "jk"
                       priority: "time-sensitive"
                       tag: "severe-weather-alert-{{0}}"
+                      url: "/dashboard-kohbo/climate#weather"
                   - delay:
                       seconds: 2
               - if:
@@ -391,6 +392,7 @@ automation:
                       devices: "jk"
                       priority: "time-sensitive"
                       tag: "severe-weather-alert-{{1}}"
+                      url: "/dashboard-kohbo/climate#weather"
                   - delay:
                       seconds: 2
               - if:
@@ -404,6 +406,7 @@ automation:
                       devices: "jk"
                       priority: "time-sensitive"
                       tag: "severe-weather-alert-{{2}}"
+                      url: "/dashboard-kohbo/climate#weather"
           - conditions:
               - "{{ states('sensor.nws_alerts') | int == 2 }}"
             sequence:
@@ -418,6 +421,7 @@ automation:
                       devices: "jk"
                       priority: "time-sensitive"
                       tag: "severe-weather-alert-{{0}}"
+                      url: "/dashboard-kohbo/climate#weather"
                   - delay:
                       seconds: 2
               - if:
@@ -431,6 +435,7 @@ automation:
                       devices: "jk"
                       priority: "time-sensitive"
                       tag: "severe-weather-alert-{{1}}"
+                      url: "/dashboard-kohbo/climate#weather"
           - conditions:
               - "{{ states('sensor.nws_alerts') | int == 1 }}"
             sequence:
@@ -445,6 +450,7 @@ automation:
                       devices: "jk"
                       priority: "time-sensitive"
                       tag: "severe-weather-alert-{{0}}"
+                      url: "/dashboard-kohbo/climate#weather"
       - delay:
           seconds: 5
       - condition: template
@@ -470,3 +476,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "severe-weather-alert-multiple"
+          url: "/dashboard-kohbo/climate#weather"
