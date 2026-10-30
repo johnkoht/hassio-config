@@ -11,9 +11,9 @@
         "Back yard entity ids are confirmed from live state and listed in pre-mortem.md",
         "Each guard sensor has on-transitions in the last 14 days and no run longer than 20 minutes"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
@@ -25,9 +25,9 @@
         "Warn (time-sensitive, snooze), wait 2 minutes, snooze stops, recheck, lock with continue_on_error, locked-or-failed push",
         "No start or reload trigger; sunset offset 1 minute"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3",
@@ -37,9 +37,9 @@
         "Needs unlock-window timer active, lock locked, house occupied, bedtime off",
         "Cancels the window after one unlock"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4",
@@ -49,9 +49,9 @@
         "Popup has input_boolean.garage_entry_door_evening_auto_lock and the timeout row when on",
         "dashboards/kohbo/security/README.md mentions it"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5",
@@ -62,9 +62,9 @@
         "Trigger set, recheck parity, push priorities, unlock handler pinned",
         "Full suite passes; sabotage checks go red"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-6",
@@ -73,15 +73,15 @@
       "acceptanceCriteria": [
         "Each is updated in this branch"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     }
   ],
   "metadata": {
     "createdAt": "2026-10-30T00:00:00Z",
     "totalTasks": 6,
-    "completedTasks": 0,
+    "completedTasks": 6,
     "failedTasks": 0
   }
 }
