@@ -17,3 +17,5 @@ Branch: worktree-emergency-mode-pr1 (pushed as feature/emergency-mode-pr1). Work
 - task-6 built: general_notification (critical bypass, parallel max 25), fire push to all, tornado via critical_announcement. +9 tests, 454 passed.
 - Sabotage (revert -> red): mode queued; max 10; first condition without critical; or-branch without critical; fire push jk; tornado voice_announcement; tornado auto. All red.
 - Caller audit of same-tag pushes recorded in pre-mortem.md (PR 2 refresh).
+- Volume ceiling rule (coordinator, John): engine selector max 80 -> 75; ceiling tests added (+4, 458 passed); sabotage red on selector max, a voice_announcement base, a doorbell volume, an enqueue default.
+- PR 2 final review (sonnet) at 58ff791: APPROVED, no DEFECTs; delta (ceiling + docs) re-checked after.

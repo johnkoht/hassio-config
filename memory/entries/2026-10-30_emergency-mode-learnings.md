@@ -17,3 +17,4 @@
 ## PR 2: critical delivery
 
 `general_notification` lets `critical` through at every `notification_level` and is `mode: parallel` (max 25); the fire push goes to `all`; the tornado warning calls `critical_announcement` on all speakers, so it no longer hits `append.yaml`'s critical purge. +9 tests (454 passing), 7 sabotage checks red. Caveat: severe thunderstorm and extreme heat warnings are still queue-path criticals (and still purge); same-tag pushes can now race in parallel mode (only `home-security-alarm` alarm/disabled pairs).
+**Volume ceiling (owner rule):** no announcement sets a Sonos volume above 75 (in-ceiling speakers on amps). Engine selectors were capped at 80, now 75; critical stays 40; emergency only skips the quiet halving. A test scans every `set vol = N` base, the engine/enqueue defaults and the doorbell/dong chime volumes (3 sabotage checks red).

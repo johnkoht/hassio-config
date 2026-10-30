@@ -170,3 +170,9 @@ packages/announcements/
     ├── shared_config.yaml                # input_boolean.announcement_queue_running
     └── queue_cleanup.yaml                # discard low/normal when house empties
 ```
+
+---
+
+## Volume ceiling
+
+No announcement may set a Sonos volume above **75**. The engine selectors cap at 75, `critical_announcement` is 40 (not halved during an emergency, never raised), and `tests/test_emergency_delivery_regressions.py` fails on any base volume literal above 75.
