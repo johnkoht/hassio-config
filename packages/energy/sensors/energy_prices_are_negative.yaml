@@ -32,3 +32,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "energy_prices_are_negative"
+          url: /dashboard-kohbo/energy

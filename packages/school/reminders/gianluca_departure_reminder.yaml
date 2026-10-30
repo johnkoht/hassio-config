@@ -47,3 +47,4 @@ automation:
           devices: "all"
           priority: "time-sensitive"
           tag: "gianluca_departure_reminder"
+          url: /dashboard-kohbo/school
