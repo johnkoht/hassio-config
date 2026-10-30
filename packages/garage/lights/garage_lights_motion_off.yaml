@@ -20,6 +20,10 @@ automation:
         entity_id: input_boolean.garage_occupied
         to: "off"
     conditions:
+      # Garage lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.garage_lighting_automations
+        state: "on"
       # Garage is not occupied
       - condition: state
         entity_id: input_boolean.garage_occupied
@@ -34,4 +38,5 @@ automation:
         state: "on"
     actions:
       - action: light.turn_off
-        entity_id: light.garage_lights
+        target:
+          entity_id: light.garage_lights

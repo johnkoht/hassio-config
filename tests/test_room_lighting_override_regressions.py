@@ -16,8 +16,8 @@ from jinja2 import Environment
 
 REPO = Path(__file__).resolve().parent.parent
 
-# Later PRs append rooms here (garage, ...).
-MIGRATED_ROOMS = ["main_bedroom", "kitchen"]
+# Later PRs append rooms here.
+MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -204,14 +204,32 @@ def _manual(room):
 
 
 MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
-              "kitchen": "light.kitchen_ceiling_lights"}
-OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off"}
+              "kitchen": "light.kitchen_ceiling_lights",
+              "garage": "light.garage_lights"}
+OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
+            "garage": "garage_lights_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
-            "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"]}
+            "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
+            "garage": ["garage_lights_motion_on"]}
+
+
+# Other lights whose hand changes must also latch the override (Dim pendants).
+EXTRA_LIGHTS = {"kitchen": ["light.kitchen_island_pendants"]}
 
 
 def _main_light(room):
     return MAIN_LIGHT[room]
+
+
+@pytest.mark.parametrize("room,light", [(r, l) for r, ls in EXTRA_LIGHTS.items() for l in ls])
+def test_manual_change_also_watches_extra_lights(room, light):
+    """A hand change to the Dim pendants must latch too, else Dim motion re-applies over it."""
+    trig = as_list(_manual(room)["triggers"])
+    for to in ("on", "off"):
+        assert any(t.get("entity_id") == light and t.get("to") == to
+                   and "attribute" not in t for t in trig), to
+    assert any(t.get("entity_id") == light and t.get("attribute") == "brightness"
+               and not {"from", "to", "not_from", "not_to"} & set(t) for t in trig)
 
 
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
@@ -373,8 +391,8 @@ def test_mode_auto_bounce_guard(room):
     occ_off = [t for t in as_list(a["triggers"])
                if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
     if not occ_off:
-        # Kitchen: mode_auto has no occupancy-off trigger, so there is nothing to bounce.
-        assert room == "kitchen", f"{room} lost its occupancy-off trigger"
+        # Kitchen/garage: mode_auto has no occupancy-off trigger, so there is nothing to bounce.
+        assert room in ("kitchen", "garage"), f"{room} lost its occupancy-off trigger"
         return
     branch = next(o for o in a["actions"][0]["choose"]
                   if any(c.get("condition") == "trigger" and c.get("id") == f"{room}_unoccupied"
@@ -401,3 +419,30 @@ def test_no_duplicate_package_basenames():
         seen.setdefault(p.name, []).append(str(p.relative_to(REPO)))
     dups = {k: v for k, v in seen.items() if len(v) > 1}
     assert not dups, dups
+
+
+# 10 garage ------------------------------------------------------------------
+def test_garage_mode_off_never_forces_occupancy_off():
+    """Plan task 17: garage_mode_off only runs while the garage is already unoccupied and never writes
+    garage_occupied, so the ordering invariant does not apply; the latch is reset by its own automation."""
+    mode_off = load_yaml(_mode_off_rooms()["garage"])["automation"][0]
+    assert not any(e == "input_boolean.garage_occupied"
+                   for _, e, _ in turn_calls(mode_off["actions"]))
+    assert "garage_lights_reset_manual_toggle" in ALL
+
+
+def test_garage_automation_off_does_not_latch():
+    """Flapping fix: an automation-driven off (parent, no user) must not set the latch or disable anything."""
+    off = _trigger("0", _st("on", _ctx("p"), T0), _st("off", _ctx("x", parent="par"), T0))
+    assert _passes("garage", off) is False
+    # ...and the same context clause is what a real wall press passes through
+    wall = _trigger("0", _st("on", _ctx("p"), T0), _st("off", _ctx("w"), T0))
+    assert _passes("garage", wall) is True
+    assert "parent_id" in "\n".join(c.get("value_template", "") for c in conds_for(_manual("garage")))
+
+
+def test_garage_motion_off_obeys_hand_flag_not_latch():
+    """Vacancy-off obeys the hand flag (Open decision 6) and never reads the latch."""
+    path, a = ALL["garage_lights_motion_off"]
+    assert cond_index(conds_for(a), flag("garage"), "on") == 0
+    assert latch("garage") not in path.read_text()

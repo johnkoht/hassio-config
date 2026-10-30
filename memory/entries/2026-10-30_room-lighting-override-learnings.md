@@ -21,3 +21,10 @@ The kitchen has the same kit: hand-only master switch, new `kitchen_lights_manua
 - Deploy order matters for a new helper: input_boolean reload before the automation reload.
 - Kitchen `mode_auto` has no occupancy-off trigger, so the bounce-guard test asserts that instead.
 
+## PR 3 of 5: garage (stops the flapping)
+
+Same kit; the flapping was two automations toggling the flag (63 changes each in 7 days) because the detection automation had no context check. The plan's task 17 was wrong: `garage_mode_off` only runs while the garage is already empty, so nothing forces occupancy off and nothing needed changing there. Vacancy-off (`garage_lights_off`, `garage_lights_motion_off`) now obeys the hand flag; `garage_lights_off` gained the house-wide check it lacked. The kitchen reviewer's pendant gap is closed in its own commit. 646 tests, 13 + 1 sabotage checks.
+
+- Re-derive a plan task from the live code before building it; a premise that was wrong here would have added a harmful occupancy write.
+- Live entity ids can carry clone suffixes (`_2`) that hide which automation owns a behaviour; read the logbook, not the repo, to attribute a flapping flag.
+

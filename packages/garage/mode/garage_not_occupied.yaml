@@ -1,3 +1,7 @@
+# Garage Not Occupied
+#
+# Marks the garage empty when no sensor sees anyone.
+#
 automation:
   - id: "garage_not_occupied"
     initial_state: on
@@ -37,9 +41,5 @@ automation:
         state: "off"
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.garage_occupied
-      # Waits 30 seconds to enable lighting automations
-      - delay: "00:00:30"
-      # Enable garage lighting automations
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.garage_lighting_automations
+        target:
+          entity_id: input_boolean.garage_occupied
