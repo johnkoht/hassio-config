@@ -47,3 +47,7 @@ automation:
         data:
           entity_id: input_select.mudroom_bathroom
           option: "Off"
+      # Mark the Mudroom Bathroom as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.mudroom_bathroom_occupied
