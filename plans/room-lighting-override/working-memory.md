@@ -28,3 +28,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - Lightly-edited sabotage can miss: a `str.replace` on a repeated line may land in `conditions:` instead of `actions:`; confirm the sabotage parses and hits the intended block.
 - Ordering invariant (test 7) parametrizes only over rooms whose `*_mode_off` turns occupancy off (found by filename); the others are not collected, so no skips.
 - Duplicate-basename check passes repo-wide on master; no restriction to room prefixes was needed.
+
+## PR 2 (kitchen) notes
+- `kitchen_lights_motion_on` mode check is an `or` (Auto/Dim), so the on-gate test finds the mode by "first condition mentioning input_select.<room>", not by state Auto.
+- Kitchen test fixtures differ per room: main light `light.kitchen_ceiling_lights`, off automation `kitchen_lights_to_off`; kept in MAIN_LIGHT / OFF_AUTO / ON_AUTOS dicts in the regression test.
+- Deploy order: input_boolean reload before automations (new helper `kitchen_lights_manually_toggled`).

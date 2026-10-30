@@ -1,5 +1,5 @@
+# Hand-only master switch for kitchen lighting automations. Never written by automations.
 input_boolean:
   kitchen_lighting_automations:
     name: Kitchen Lighting Automations
     icon: mdi:motion-sensor
-    initial: on

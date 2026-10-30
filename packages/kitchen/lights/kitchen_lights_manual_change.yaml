@@ -1,0 +1,48 @@
+# Kitchen Lights Manual Change
+#
+# A hand change (wall, app, dashboard) sets the manual latch and clears the auto flag.
+# Automation and Adaptive Lighting changes are ignored.
+#
+
+automation:
+  - id: "kitchen_lights_manual_change"
+    alias: "Kitchen lights manual change"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: light.kitchen_ceiling_lights
+        to: "on"
+      - trigger: state
+        entity_id: light.kitchen_ceiling_lights
+        to: "off"
+      - trigger: state
+        entity_id: light.kitchen_ceiling_lights
+        attribute: brightness
+        id: brightness
+    conditions:
+      - alias: "Real transition and not from an automation or Adaptive Lighting"
+        condition: template
+        value_template: >
+          {% set f = trigger.from_state %}
+          {% set t = trigger.to_state %}
+          {{ f is not none and t is not none
+             and f.state in ['on', 'off']
+             and ':al:' not in t.context.id
+             and (t.context.user_id is not none or t.context.parent_id is none) }}
+      - alias: "Brightness changes: on to on, not an automation follow-up"
+        condition: template
+        value_template: >
+          {% set f = trigger.from_state %}
+          {% set t = trigger.to_state %}
+          {{ trigger.id != 'brightness'
+             or (f is not none and t is not none
+                 and f.state == 'on' and t.state == 'on'
+                 and not (f.context.parent_id is not none
+                          and (t.last_updated - f.last_updated).total_seconds() < 10)) }}
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.kitchen_lights_manually_toggled
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.kitchen_lights_auto

@@ -42,6 +42,10 @@ automation:
       - condition: state
         entity_id: input_boolean.kitchen_lighting_automations
         state: "on"
+      # No hand override in effect
+      - condition: state
+        entity_id: input_boolean.kitchen_lights_manually_toggled
+        state: "off"
       # Kitchen is Auto
       - condition: state
         entity_id: input_select.kitchen
@@ -65,9 +69,11 @@ automation:
     actions:
       # Turn the lights on
       - action: light.turn_on
-        entity_id: light.kitchen_ceiling_lights
+        target:
+          entity_id: light.kitchen_ceiling_lights
         data:
           transition: 5
       # Toggle the boolean to flag it was auto
       - action: input_boolean.turn_on
-        entity_id: input_boolean.kitchen_lights_auto
+        target:
+          entity_id: input_boolean.kitchen_lights_auto
