@@ -1,0 +1,39 @@
+# Garage Entry Door - Evening Auto Lock Unlock Action
+#
+# Unlock the door when somebody taps Unlock on the "Locked" push, only within
+# 30 minutes of the evening auto lock. A standalone handler: the tap comes after the run.
+#
+
+automation:
+  - id: "garage_entry_door_evening_auto_lock_unlock_action"
+    alias: "Garage Entry Door - Evening Auto Lock Unlock Action"
+    initial_state: on
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "GARAGE_EVENING_LOCK_UNLOCK"
+    conditions:
+      # A stale push in the notification centre must not unlock the house:
+      # the window is started by the evening auto lock, not by any lock
+      - condition: state
+        entity_id: timer.garage_entry_door_evening_auto_lock_unlock_window
+        state: "active"
+      - condition: state
+        entity_id: lock.garage_entry_door
+        state: "locked"
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+    actions:
+      - action: lock.unlock
+        target:
+          entity_id: lock.garage_entry_door
+      # One tap per lock
+      - action: timer.cancel
+        target:
+          entity_id: timer.garage_entry_door_evening_auto_lock_unlock_window

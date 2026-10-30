@@ -1,0 +1,299 @@
+# Garage Entry Door - Evening Auto Lock
+#
+# After sunset, lock the garage entry door once it has been unlocked for the
+# auto lock timeout, unless somebody is outside. Pushes a 2 minute warning
+# with a snooze first. Behind its own switch; the daytime rule stays off.
+#
+
+automation:
+  - id: "garage_entry_door_evening_auto_lock"
+    alias: "Garage Entry Door - Evening Auto Lock"
+    initial_state: on
+    mode: single
+    # A second trigger during the 2 minute warning is expected, not a fault
+    max_exceeded: silent
+    # No start or reload trigger on purpose: a reload must never lock the door
+    triggers:
+      # Unlocked for the timeout
+      - trigger: state
+        entity_id: lock.garage_entry_door
+        to: "unlocked"
+        for:
+          minutes: "{{ states('input_number.garage_entry_door_auto_lock_timeout') | int(15) }}"
+        id: "unlocked"
+      # Closed for the timeout (in and out, so the lock time alone isn't enough)
+      - trigger: state
+        entity_id: binary_sensor.interior_garage_door
+        to: "off"
+        for:
+          minutes: "{{ states('input_number.garage_entry_door_auto_lock_timeout') | int(15) }}"
+        id: "door_closed"
+      # A door left unlocked all afternoon. One minute late so sun.sun has flipped
+      - trigger: sun
+        event: sunset
+        offset: "00:01:00"
+        id: "sunset"
+      # A state trigger with for: fires once, so re-evaluate when a blocker clears
+      - trigger: state
+        entity_id:
+          - binary_sensor.driveway_front_camera_person_detected
+          - binary_sensor.garage_driveway_person_detected
+          - binary_sensor.backyard_south_person_detected
+          - binary_sensor.backyard_pool_person_detected
+          - binary_sensor.backyard_northwest_person_detected
+          - binary_sensor.backyard_porch_person_detected
+          - binary_sensor.backyard_occupied
+          - binary_sensor.garage_motion_sensor_occupancy
+          - binary_sensor.garage_ble_occupancy
+        to: "off"
+        for:
+          minutes: 5
+        id: "cleared"
+      - trigger: state
+        entity_id: cover.garage_doors
+        to: "closed"
+        for:
+          minutes: 5
+        id: "cleared"
+      - trigger: state
+        entity_id: binary_sensor.somebody_just_arrived
+        to: "off"
+        for:
+          minutes: 10
+        id: "cleared"
+      # Snooze over
+      - trigger: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.garage_entry_door_evening_auto_lock_snooze
+        id: "snooze_done"
+    conditions:
+      # The dashboard switch
+      - condition: state
+        entity_id: input_boolean.garage_entry_door_evening_auto_lock
+        state: "on"
+      # Guests and parties leave the door alone
+      - condition: state
+        entity_id:
+          - input_boolean.guest_mode
+          - input_boolean.entertainment_mode
+        state: "off"
+      # Never during a fire or alarm
+      - condition: state
+        entity_id: binary_sensor.emergency_active
+        state: "off"
+      # The warning push is the escape hatch; if it can't go out, don't lock
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.notification_level
+            state: "None"
+      # Evening only: after sunset, but not the dark hours of the morning
+      - condition: state
+        entity_id: sun.sun
+        state: "below_horizon"
+      - condition: time
+        after: "12:00:00"
+      # Unlocked for the timeout, and the door shut (not propped open)
+      - condition: state
+        entity_id: lock.garage_entry_door
+        state: "unlocked"
+        for:
+          minutes: "{{ states('input_number.garage_entry_door_auto_lock_timeout') | int(15) }}"
+      - condition: state
+        entity_id: binary_sensor.interior_garage_door
+        state: "off"
+        for:
+          minutes: "{{ states('input_number.garage_entry_door_auto_lock_timeout') | int(15) }}"
+      # Nobody just arrived
+      - condition: state
+        entity_id: binary_sensor.somebody_just_arrived
+        state: "off"
+      # Snooze is not running
+      - condition: state
+        entity_id: timer.garage_entry_door_evening_auto_lock_snooze
+        state: "idle"
+      # Nobody outside: driveway, back yard, garage
+      - condition: state
+        entity_id:
+          - binary_sensor.driveway_front_camera_person_detected
+          - binary_sensor.garage_driveway_person_detected
+          - binary_sensor.backyard_south_person_detected
+          - binary_sensor.backyard_pool_person_detected
+          - binary_sensor.backyard_northwest_person_detected
+          - binary_sensor.backyard_porch_person_detected
+          - binary_sensor.backyard_occupied
+          - binary_sensor.garage_motion_sensor_occupancy
+          - binary_sensor.garage_ble_occupancy
+        state: "off"
+        for:
+          minutes: 5
+      - condition: state
+        entity_id: cover.garage_doors
+        state: "closed"
+        for:
+          minutes: 5
+    actions:
+      - variables:
+          action_snooze: "{{ 'GARAGE_EVENING_SNOOZE_' ~ context.id }}"
+
+      # Warn first: being locked out is the whole problem
+      - alias: "Warn that the door locks in 2 minutes"
+        action: script.general_notification
+        data:
+          title: Garage Entry Door
+          message: "Locking the garage entry door in 2 minutes"
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "garage-entry-evening-lock"
+          actions:
+            - action: "{{ action_snooze }}"
+              title: "Snooze 1 hour"
+          url: /dashboard-kohbo/security-house-locks
+
+      - alias: "Wait 2 minutes for a snooze"
+        wait_for_trigger:
+          - trigger: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_snooze }}"
+        timeout:
+          minutes: 2
+        continue_on_timeout: true
+
+      # wait.trigger is none when the 2 minutes ran out
+      - alias: "Snoozed: start the timer and stop"
+        if:
+          - condition: template
+            value_template: "{{ wait.trigger is not none }}"
+        then:
+          - action: timer.start
+            target:
+              entity_id: timer.garage_entry_door_evening_auto_lock_snooze
+          - stop: "Snoozed from the warning push"
+
+      # State can change during the warning; the for: guards become "off now"
+      - alias: "Still safe to lock"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: input_boolean.garage_entry_door_evening_auto_lock
+            state: "on"
+          - condition: state
+            entity_id:
+              - input_boolean.guest_mode
+              - input_boolean.entertainment_mode
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.emergency_active
+            state: "off"
+          - condition: not
+            conditions:
+              - condition: state
+                entity_id: input_select.notification_level
+                state: "None"
+          - condition: state
+            entity_id: sun.sun
+            state: "below_horizon"
+          - condition: time
+            after: "12:00:00"
+          - condition: state
+            entity_id: lock.garage_entry_door
+            state: "unlocked"
+          - condition: state
+            entity_id: binary_sensor.interior_garage_door
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.somebody_just_arrived
+            state: "off"
+          - condition: state
+            entity_id: timer.garage_entry_door_evening_auto_lock_snooze
+            state: "idle"
+          - condition: state
+            entity_id:
+              - binary_sensor.driveway_front_camera_person_detected
+              - binary_sensor.garage_driveway_person_detected
+              - binary_sensor.backyard_south_person_detected
+              - binary_sensor.backyard_pool_person_detected
+              - binary_sensor.backyard_northwest_person_detected
+              - binary_sensor.backyard_porch_person_detected
+              - binary_sensor.backyard_occupied
+              - binary_sensor.garage_motion_sensor_occupancy
+              - binary_sensor.garage_ble_occupancy
+            state: "off"
+          - condition: state
+            entity_id: cover.garage_doors
+            state: "closed"
+
+      # Lock the door! No retry loop: a failure shows on the Device Health score
+      - alias: "Lock the door"
+        action: lock.lock
+        target:
+          entity_id: lock.garage_entry_door
+        continue_on_error: true
+
+      - alias: "Wait up to 30 seconds for the lock"
+        wait_template: "{{ is_state('lock.garage_entry_door', 'locked') }}"
+        timeout:
+          seconds: 30
+        continue_on_timeout: true
+
+      - alias: "Say what happened"
+        if:
+          - condition: state
+            entity_id: lock.garage_entry_door
+            state: "locked"
+        then:
+          # The Unlock tap works for 30 minutes after this lock, not after a later one
+          - action: timer.start
+            target:
+              entity_id: timer.garage_entry_door_evening_auto_lock_unlock_window
+          # Passive log line that replaces the warning, with a way back in.
+          # Passive is dropped at notification level Important; the tap needs level All
+          - action: script.general_notification
+            data:
+              title: Garage Entry Door
+              message: "Locked the garage entry door"
+              devices: "all"
+              priority: "passive"
+              tag: "garage-entry-evening-lock"
+              actions:
+                - action: "GARAGE_EVENING_LOCK_UNLOCK"
+                  title: "Unlock"
+              url: /dashboard-kohbo/security-house-locks
+        else:
+          - action: script.general_notification
+            data:
+              title: Garage Entry Door
+              message: "Could not lock the garage entry door"
+              devices: "all"
+              priority: "time-sensitive"
+              tag: "garage-entry-evening-lock"
+              url: /dashboard-kohbo/security-house-locks
+
+
+#
+# Garage Entry Door Evening Auto Lock
+# No initial: so a dashboard edit survives a restart
+#
+input_boolean:
+  garage_entry_door_evening_auto_lock:
+    name: Garage Entry Door Evening Auto Lock
+    icon: mdi:lock-clock
+
+
+#
+# Snooze for the warning push
+#
+timer:
+  garage_entry_door_evening_auto_lock_snooze:
+    name: Garage Entry Door Evening Auto Lock Snooze
+    duration: "01:00:00"
+    restore: true
+    icon: mdi:rewind-60
+
+  garage_entry_door_evening_auto_lock_unlock_window:
+    name: Garage Entry Door Evening Auto Lock Unlock Window
+    duration: "00:30:00"
+    restore: true
+    icon: mdi:lock-open-check
