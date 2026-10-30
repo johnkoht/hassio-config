@@ -20,3 +20,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Decision Ledger
 *(Builder rulings that supersede or refine a documented rule. Entry: `[YYYY-MM-DD] ruling — docs affected: <paths or none-yet> — status: open|folded`.)*
+- [Task 1] NOTHING_NOVEL - Task 1

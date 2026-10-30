@@ -1,0 +1,33 @@
+# Office Call Lighting Helpers
+#
+# Switch, latch flag and settings for office call lighting.
+# The numbers start at their minimum: seed 3000 / 100 from the
+# dashboard, then turn the switch on. No `initial:` (keeps restore).
+
+input_boolean:
+  office_call_lighting:
+    name: Office Call Lighting
+    icon: mdi:video-account
+
+  office_call_al_paused:
+    name: Office Call AL Paused
+    icon: mdi:pause-circle
+
+input_number:
+  office_call_color_temp:
+    name: Office Call Color Temp
+    min: 2700
+    max: 6500
+    step: 100
+    mode: box
+    unit_of_measurement: K
+    icon: mdi:thermometer
+
+  office_call_brightness:
+    name: Office Call Brightness
+    min: 30
+    max: 100
+    step: 5
+    mode: box
+    unit_of_measurement: "%"
+    icon: mdi:brightness-6
