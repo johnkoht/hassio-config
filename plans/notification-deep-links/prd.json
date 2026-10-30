@@ -1,0 +1,137 @@
+{
+  "name": "notification-deep-links",
+  "branchName": "feature/notification-deep-links",
+  "goal": "Every push a person would act on opens the most useful dashboard view or popup, gated by a repo test.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Transport fix and test scaffold (PR 1)",
+      "description": "script.general_notification sends url and clickAction from one value and omits both when empty; tests/test_notification_deep_links.py builds the dashboard map from kohbo.yaml and checks declared links; missing links report-only.",
+      "acceptanceCriteria": [
+        "With a url, the rendered push data holds url and clickAction with the same value",
+        "With url '' or absent, neither key is in the rendered data",
+        "tag, image, entity_id, push.interruption-level and actions render identically with and without a url (actions absent renders '')",
+        "The dashboard map is built by following !include from kohbo.yaml; known pairs (security-cameras#front_door_camera, climate#weather, sensors#zigbee_routers_popup) resolve and security#front_door_camera does not",
+        "Every declared dashboard link in packages/, automation/, scripts/, automations.yaml resolves to a view and popup in the map; a broken link fails the test",
+        "Pushes with no link produce one warning with the count and do not fail",
+        "No call site file is changed; full suite green; every new test has a sabotage run that goes red"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-2",
+      "title": "Protection PR A: alarm and fire",
+      "description": "Alarm triggered and disabled to security-alarm-panel; fire to security (url in the script.turn_on variables); shields-up status to security.",
+      "acceptanceCriteria": [
+        "Each named push carries the stated link and the declared-link test passes",
+        "Critical priority and recipients of these pushes are unchanged",
+        "Alarm and fire regression suites stay green"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Protection PR B: cameras",
+      "description": "Derive the per-camera popup hash in camera_detection_alert.yaml (3 branches) from notifications_boolean; add camera on/off links.",
+      "acceptanceCriteria": [
+        "The test expands every camera's derived link and each resolves to security-cameras#<camera>",
+        "Camera on and off pushes link to security-cameras"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Protection PR C: leak",
+      "description": "Add data: with a link to both leak alerts; extend test_leak_monitoring_regressions.py.",
+      "acceptanceCriteria": [
+        "Both alerts carry url and clickAction pointing at security-leak-sensors",
+        "Leak regression tests assert the link"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Protection PR D: doors, garage, locks, kids escape (BLOCKED on decision 6)",
+      "description": "Link the unlinked door and garage pushes, upgrade lock alerts (including the garage evening autolock pushes) to the popup hash, link fingerprint, kids escape.",
+      "acceptanceCriteria": [
+        "Blocked until John confirms which sensors the kids-escape alerts use",
+        "Each linked push resolves in the test"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Phase 2 PR E: climate and weather",
+      "description": "HVAC thermostat popups for eco/resume; climate#weather for NWS, UV and rain.",
+      "acceptanceCriteria": [
+        "Each push carries its stated link and resolves"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-7",
+      "title": "Phase 2 PR F: house and everyday",
+      "description": "Laundry (including both direct washer callers), school, energy, vacation and away, holidays.",
+      "acceptanceCriteria": [
+        "Each push carries its stated link and resolves",
+        "Washer recipient logic unchanged"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-8",
+      "title": "Phase 2 PR G: system alerts",
+      "description": "Zigbee router popup, radio/AP/watcher-down to sensors-offline.",
+      "acceptanceCriteria": [
+        "Each push carries its stated link and resolves"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-9",
+      "title": "Enforce the test and exempt list",
+      "description": "Flip missing-link to a failure; add tests/fixtures/notification_url_exempt.yaml (path plus reason); stale-reason check; docs.",
+      "acceptanceCriteria": [
+        "An unlinked call not on the exempt list fails",
+        "An exempt call that gains a url fails with a remove-from-list message"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-10",
+      "title": "Needs-popup extras (dashboard-only)",
+      "description": "Fire/smoke, UPS/power and radio health popups, each followed by a one-line PR swapping its interim link.",
+      "acceptanceCriteria": [
+        "Each popup hash is in the view its link names and the test passes"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-30T00:00:00Z",
+    "totalTasks": 10,
+    "completedTasks": 1,
+    "failedTasks": 0,
+    "note": "One PR per task; PR 1 = task-1. Push pruning is a proposal and is out of scope."
+  }
+}
