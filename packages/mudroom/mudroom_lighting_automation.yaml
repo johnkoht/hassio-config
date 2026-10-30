@@ -1,0 +1,6 @@
+# Hand-only master switch for mudroom lighting automations. Never written by automations, no initial:
+# (HA creates it off; turn it on once at deploy).
+input_boolean:
+  mudroom_lighting_automations:
+    name: Mudroom Lighting Automations
+    icon: mdi:motion-sensor
