@@ -1,0 +1,123 @@
+# Medication Refill Scripts
+#
+# medication_refilled adds days of stock; medication_stock_set replaces it.
+# Both clear the low-stock push. Days default to the refill-days helper.
+#
+
+script:
+  medication_refilled:
+    alias: "Medication Refilled"
+    mode: queued
+    icon: mdi:pill
+    fields:
+      medication:
+        name: Medication
+        description: Whose medication was refilled
+        default: nino
+        selector:
+          select:
+            options:
+              - nino
+      days:
+        name: Days
+        description: Days of supply added. Falls back to the refill-days helper.
+        required: false
+        selector:
+          number:
+            min: 1
+            max: 90
+    sequence:
+      - alias: "Resolve the target"
+        variables:
+          med: "{{ medication | default('nino') }}"
+          doses_per_day: 2
+          stock_entities:
+            nino: input_number.nino_medication_stock
+          refill_entities:
+            nino: input_number.nino_medication_refill_days
+          tags:
+            nino: medication-refill-nino
+          stock_entity: "{{ stock_entities.get(med) }}"
+          resolved_days: >-
+            {% if days is defined and days not in [none, ''] %}
+              {{ days | float(0) }}
+            {% else %}
+              {{ states(refill_entities.get(med, 'input_number.nino_medication_refill_days')) | float(0) }}
+            {% endif %}
+      - alias: "Known medication and days above 0"
+        condition: template
+        value_template: "{{ stock_entity is not none and resolved_days | float(0) > 0 }}"
+      - alias: "Add the days to the stock"
+        variables:
+          stock_max: "{{ state_attr(stock_entity, 'max') | float(365) }}"
+          current: "{{ [states(stock_entity) | float(0), 0] | max }}"
+          new_stock: "{{ ([current + resolved_days | float(0) * doses_per_day, stock_max] | min) | round(0) | int }}"
+      - action: input_number.set_value
+        target:
+          entity_id: "{{ stock_entity }}"
+        data:
+          value: "{{ new_stock }}"
+      - alias: "Clear the push"
+        continue_on_error: true
+        action: script.clear_notifications
+        data:
+          devices: all
+          tag: "{{ tags[med] }}"
+
+  medication_stock_set:
+    alias: "Medication Stock Set"
+    mode: queued
+    icon: mdi:pill
+    fields:
+      medication:
+        name: Medication
+        description: Whose medication stock to set
+        default: nino
+        selector:
+          select:
+            options:
+              - nino
+      days:
+        name: Days
+        description: Days of supply on hand. Falls back to the refill-days helper.
+        required: false
+        selector:
+          number:
+            min: 1
+            max: 90
+    sequence:
+      - alias: "Resolve the target"
+        variables:
+          med: "{{ medication | default('nino') }}"
+          doses_per_day: 2
+          stock_entities:
+            nino: input_number.nino_medication_stock
+          refill_entities:
+            nino: input_number.nino_medication_refill_days
+          tags:
+            nino: medication-refill-nino
+          stock_entity: "{{ stock_entities.get(med) }}"
+          resolved_days: >-
+            {% if days is defined and days not in [none, ''] %}
+              {{ days | float(0) }}
+            {% else %}
+              {{ states(refill_entities.get(med, 'input_number.nino_medication_refill_days')) | float(0) }}
+            {% endif %}
+      - alias: "Known medication and days above 0"
+        condition: template
+        value_template: "{{ stock_entity is not none and resolved_days | float(0) > 0 }}"
+      - alias: "Work out the new stock"
+        variables:
+          stock_max: "{{ state_attr(stock_entity, 'max') | float(365) }}"
+          new_stock: "{{ ([resolved_days | float(0) * doses_per_day, stock_max] | min) | round(0) | int }}"
+      - action: input_number.set_value
+        target:
+          entity_id: "{{ stock_entity }}"
+        data:
+          value: "{{ new_stock }}"
+      - alias: "Clear the push"
+        continue_on_error: true
+        action: script.clear_notifications
+        data:
+          devices: all
+          tag: "{{ tags[med] }}"

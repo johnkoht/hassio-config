@@ -1,0 +1,22 @@
+# Medication Refill Thresholds
+#
+# Days-left levels for the refill alert. John sets 7 and 3; 0 means off.
+#
+
+input_number:
+  medication_refill_threshold_days:
+    name: Medication Refill Threshold Days
+    min: 0
+    max: 60
+    step: 1
+    mode: box
+    unit_of_measurement: days
+    icon: mdi:pill
+  medication_refill_critical_days:
+    name: Medication Refill Critical Days
+    min: 0
+    max: 30
+    step: 1
+    mode: box
+    unit_of_measurement: days
+    icon: mdi:pill-off
