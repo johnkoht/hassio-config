@@ -118,6 +118,11 @@ alert:
       - ios_family
       #- tts_announcements_devices
       - leak_voice_announcement
+    # Tap the push to open the leak sensors page. The REST voice notifier
+    # ignores this data; the phones read url (iOS) and clickAction (Android).
+    data:
+      url: /dashboard-kohbo/security-leak-sensors
+      clickAction: /dashboard-kohbo/security-leak-sensors
 
   # If there's a leak while we're away then send us
   # a push notification.
@@ -137,6 +142,10 @@ alert:
     done_message: "The water leak has been dealt with"
     notifiers:
       - ios_family
+    # Tap the push to open the leak sensors page (url on iOS, clickAction on Android)
+    data:
+      url: /dashboard-kohbo/security-leak-sensors
+      clickAction: /dashboard-kohbo/security-leak-sensors
 
 notify:
   - name: leak_voice_announcement
