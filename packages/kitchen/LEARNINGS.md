@@ -31,3 +31,4 @@ The flag is now hand-only. A separate latch, `kitchen_lights_manually_toggled`, 
 ## Dim pendants latch too
 
 `kitchen_lights_manual_change` also watches `light.kitchen_island_pendants` (a Lutron dimmer driven by Dim-mode motion on), so a hand setting there sets the latch and Dim motion doesn't re-apply over it.
+Baseline before it shipped (7-day recorder read): 7 pendant changes, 3 with an automation parent, 4 with neither parent nor user. If those 4 are late Lutron reports after an automation call they would latch falsely; check the logbook for `kitchen_lights_manually_toggled` right after a Dim motion-on or `kitchen_lights_to_off`.
