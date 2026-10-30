@@ -126,9 +126,10 @@
         "One commit per room; same tests; dashboards manual-override rows incl. main bedroom; docs"
       ],
       "pr": 4,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "fb6d962"
     },
     {
       "id": "task-10",
@@ -146,8 +147,8 @@
   "metadata": {
     "createdAt": "2026-10-30T04:33:55.194390Z",
     "totalTasks": 10,
-    "completedTasks": 8,
+    "completedTasks": 9,
     "failedTasks": 0,
-    "note": "PR 1 (#100) and PR 2 (#101) merged; PR 3 (task-8) garage in this branch."
+    "note": "PR 1-3 merged (#100-#102); PR 4 (task-9) Phase 4 rooms in this branch."
   }
 }

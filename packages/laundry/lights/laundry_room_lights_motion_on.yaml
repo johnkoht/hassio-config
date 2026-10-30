@@ -13,14 +13,22 @@ automation:
         entity_id: binary_sensor.laundry_room_motion_sensor_motion
         to: "on"
     conditions:
-      # Laundry Room is Auto
-      - condition: state
-        entity_id: input_select.laundry_room
-        state: "Auto"
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      # And lighting automations for the laundry room are enabled
+      - condition: state
+        entity_id: input_boolean.laundry_room_lighting_automations
+        state: "on"
+      # Lights were not changed by hand
+      - condition: state
+        entity_id: input_boolean.laundry_room_lights_manually_toggled
+        state: "off"
+      # Laundry Room is Auto
+      - condition: state
+        entity_id: input_select.laundry_room
+        state: "Auto"
       # Light is low
       - condition: numeric_state
         entity_id: sensor.laundry_room_motion_sensor_illuminance
@@ -32,8 +40,10 @@ automation:
     actions:
       # Turn the lights ON
       - action: light.turn_on
-        entity_id: light.laundry_room_main_lights
+        target:
+          entity_id: light.laundry_room_main_lights
       # Turn ON the boolean to notify it's been automatically
       # turned on
       - action: input_boolean.turn_on
-        entity_id: input_boolean.laundry_room_lights_auto
+        target:
+          entity_id: input_boolean.laundry_room_lights_auto

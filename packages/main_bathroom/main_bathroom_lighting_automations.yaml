@@ -1,5 +1,5 @@
+# Hand-only master switch for main bathroom lighting automations. Never written by automations.
 input_boolean:
   main_bathroom_lighting_automations:
     name: Main Bathroom Lighting Automations
     icon: mdi:motion-sensor
-    initial: on

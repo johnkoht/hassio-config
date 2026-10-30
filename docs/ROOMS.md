@@ -161,7 +161,7 @@ Some rooms have additional `input_boolean` entities for granular control:
 
 Migrated rooms use two flags: the hand-only room flag says whether automation may run at all, and the latch says someone took over the lights. Motion/day-on automations require the flag on and the latch off. The latch is cleared by a reset automation (room unoccupied 30 s, room goes Off, house empties), and the room going Off turns the lights off whatever either room flag says (the house-wide switch still applies).
 
-This is rolled out room by room. The main bedroom, the kitchen and the garage are done; the other rooms still use the old model where automations write the room flag as a latch, until their own PR.
+This is rolled out room by room. Every room with lighting automations now uses it (main bedroom, kitchen, garage, playroom, upstairs hallway, office, main bathroom, laundry); family room and mudroom are next. Rooms with a mode but no lighting automations have no flags: their `mode_off` just forces occupancy off (the office keeps its own rule, see its LEARNINGS). The dashboard shows a tap-to-clear Manual Override row under each Lighting Automations toggle.
 
 ### Linking to House State
 

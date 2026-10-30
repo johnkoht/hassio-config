@@ -29,6 +29,10 @@ automation:
       - condition: state
         entity_id: input_boolean.office_lighting_automations
         state: "on"
+      # Nobody has taken the lights by hand
+      - condition: state
+        entity_id: input_boolean.office_lights_manually_toggled
+        state: "off"
       # Office is occupied
       - condition: state
         entity_id: input_boolean.office_occupied

@@ -1,7 +1,6 @@
 # Laundry Room Lights Off
 #
-# Automatically turn the lights off based on various
-# triggers like the Laundry Room is off/not occupied
+# Room Off always turns the lights off. Vacancy only does so while the hand flag is on.
 #
 automation:
   - id: "laundry_room_lights_off"
@@ -12,35 +11,46 @@ automation:
       - trigger: state
         entity_id: input_select.laundry_room
         to: "Off"
+        id: "room_off"
       # Laundry Room is not occupied
       - trigger: state
         entity_id: input_boolean.laundry_room_occupied
         to: "off"
+        id: "vacancy"
       # Lighting automations turn on
       - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
+        id: "house_flag_on"
     conditions:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
       # Lights are currently on
       - condition: state
         entity_id: light.laundry_room_main_lights
         state: "on"
-      # Laundry Room is Off, not occupied, or the room is bright enough
       - condition: or
         conditions:
-          # Laundry Room is Off
-          - condition: state
-            entity_id: input_select.laundry_room
-            state: "Off"
-          # Laundry Room is not occupied
-          - condition: state
-            entity_id: input_boolean.laundry_room_occupied
-            state: "off"
+          # Room Off always wins
+          - condition: trigger
+            id: "room_off"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.laundry_room_lighting_automations
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.laundry_room_occupied
+                state: "off"
     actions:
       # Turn the lights OFF
       - action: light.turn_off
-        entity_id: light.laundry_room_main_lights
+        target:
+          entity_id: light.laundry_room_main_lights
       # Turn OFF the boolean to notify it's been automatically
       # turned on
       - action: input_boolean.turn_off
-        entity_id: input_boolean.laundry_room_lights_auto
+        target:
+          entity_id: input_boolean.laundry_room_lights_auto

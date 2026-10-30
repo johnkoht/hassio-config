@@ -116,14 +116,6 @@ cards:
       #   secondary_info: last-changed
       #   state_color: true
 
-      # Lighting Automations Toggle
-      - entity: input_boolean.dining_room_lighting_automations
-        name: Lighting Automations
-        icon: kohbo:kohbo-light-2
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
       # # Adaptive Lighting Toggle
       # - entity: switch.adaptive_lighting_family_room
       #   name: Adaptive Lighting

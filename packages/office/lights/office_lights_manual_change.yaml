@@ -1,0 +1,59 @@
+# Office Lights Manual Change
+#
+# A hand change (wall switch, app, dashboard) to the wall switch or the ceiling bulbs sets the
+# manual latch and clears the auto flag. Automation, sync and Adaptive Lighting changes are ignored.
+#
+
+automation:
+  - id: "office_lights_manual_change"
+    alias: "Office lights manual change"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: light.office_light_switch
+        to: "on"
+      - trigger: state
+        entity_id: light.office_light_switch
+        to: "off"
+      - trigger: state
+        entity_id: light.office_light_switch
+        attribute: brightness
+        id: brightness
+      # The bulbs are what the on-type automations turn on; same rules
+      - trigger: state
+        entity_id: light.office_ceiling_bulbs
+        to: "on"
+      - trigger: state
+        entity_id: light.office_ceiling_bulbs
+        to: "off"
+      - trigger: state
+        entity_id: light.office_ceiling_bulbs
+        attribute: brightness
+        id: brightness
+    conditions:
+      - alias: "Real transition and not from an automation or Adaptive Lighting"
+        condition: template
+        value_template: >
+          {% set f = trigger.from_state %}
+          {% set t = trigger.to_state %}
+          {{ f is not none and t is not none
+             and f.state in ['on', 'off']
+             and ':al:' not in t.context.id
+             and (t.context.user_id is not none or t.context.parent_id is none) }}
+      - alias: "Brightness changes: on to on, not an automation follow-up"
+        condition: template
+        value_template: >
+          {% set f = trigger.from_state %}
+          {% set t = trigger.to_state %}
+          {{ trigger.id != 'brightness'
+             or (f is not none and t is not none
+                 and f.state == 'on' and t.state == 'on'
+                 and not (f.context.parent_id is not none
+                          and (t.last_updated - f.last_updated).total_seconds() < 10)) }}
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.office_lights_manually_toggled
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.office_lights_auto

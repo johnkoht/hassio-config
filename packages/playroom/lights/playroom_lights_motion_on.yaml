@@ -13,10 +13,6 @@ automation:
         entity_id: binary_sensor.playroom_entry_motion_sensor_motion
         to: "on"
     conditions:
-      # Playroom is Auto
-      - condition: state
-        entity_id: input_select.playroom
-        state: "Auto"
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -25,6 +21,14 @@ automation:
       - condition: state
         entity_id: input_boolean.playroom_lighting_automations
         state: "on"
+      # Nobody has taken the lights by hand
+      - condition: state
+        entity_id: input_boolean.playroom_lights_manually_toggled
+        state: "off"
+      # Playroom is Auto
+      - condition: state
+        entity_id: input_select.playroom
+        state: "Auto"
       # # The playroom has two motion sensors, one directly across from the
       # # entry and the other above the entry. The far motion sensor sometimes
       # # gets triggered when somebody walks by the playroom, so it's not the

@@ -48,3 +48,7 @@ automation:
         data:
           entity_id: input_select.jr_suite
           option: "Off"
+      # Mark the Jr. Suite as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.jr_suite_occupied

@@ -28,3 +28,12 @@ Same kit; the flapping was two automations toggling the flag (63 changes each in
 - Re-derive a plan task from the live code before building it; a premise that was wrong here would have added a harmful occupancy write.
 - Live entity ids can carry clone suffixes (`_2`) that hide which automation owns a behaviour; read the logbook, not the repo, to attribute a flapping flag.
 
+## PR 4 of 5: Phase 4 rooms, one PR (16 commits, 8 rooms with the kit, 8 mode-only)
+
+Kit rooms: playroom, upstairs hallway, office, main bathroom, laundry (also gained the gate its toggle never had); dining room lost its unused flag and `lights_auto`. Mode-only rooms (basement, jr_suite, powder_room, mudroom_bathroom, sunroom, foyer, Nino's and Gianluca's rooms) have `mode_off` clearing occupancy, with the kids' rooms only when the bed is empty. The office is the one room where JK-1219 was NOT applied (it would switch off the DnD switch and speech and could bounce the room to Auto); its latch still clears on room Off. Main bathroom's and the kids' `mode_auto` gained the bounce guard behind a trigger id. Dashboard: Manual Override rows. 816 tests, about 70 sabotage checks.
+
+- A flat action list in `mode_auto` needs a `choose` with a trigger id before the guard can be tested; the generic guard test must also assert the trigger id exists, or deleting the id leaves it green.
+- A test that scans `packages/` for removed ids also scans `.md`; LEARNINGS must not name the removed helpers.
+- Per-room generalisation needs name maps (`PACKAGE_DIR`, `MODE_ID`): package dirs, helper ids and automation ids disagree for laundry, Nino's and Gianluca's rooms.
+- Listener audits are what make JK-1219 safe: three outcomes (apply, apply behind a condition, defer).
+

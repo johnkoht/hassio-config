@@ -1,7 +1,7 @@
 # Office Lights Off
 #
 # Automatically turn the lights off when the Office
-# goes Off or becomes unoccupied.
+# goes Off, or becomes unoccupied while the hand flag is on.
 #
 # NOTE: office_all_lights now contains the ceiling BULBS rather than the
 # Inovelli. In Smart Bulb Mode turning the switch "off" leaves the bulbs lit,
@@ -17,29 +17,36 @@ automation:
       - trigger: state
         entity_id: input_select.office
         to: "Off"
+        id: "room_off"
       # Office is not occupied
       - trigger: state
         entity_id: input_boolean.office_occupied
         to: "off"
+        id: "vacancy"
       # Lighting automations turn on
       - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
+        id: "house_flag_on"
     conditions:
-      # Office lighting automations must be enabled
+      # Lighting automations enabled
       - condition: state
-        entity_id: input_boolean.office_lighting_automations
+        entity_id: input_boolean.lighting_automations
         state: "on"
-      # Office is Off, or nobody is in it
+      # Room Off always wins; vacancy needs the hand flag on
       # (brightness-based turn-off is office_lights_day_off's job)
       - condition: or
         conditions:
-          - condition: state
-            entity_id: input_select.office
-            state: "Off"
-          - condition: state
-            entity_id: input_boolean.office_occupied
-            state: "off"
+          - condition: trigger
+            id: "room_off"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.office_lighting_automations
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.office_occupied
+                state: "off"
     actions:
       # Turn off the lights
       - action: light.turn_off

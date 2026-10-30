@@ -118,3 +118,16 @@ Plan-level pre-mortem and review stand. Kitchen-specific risks, from reading mas
 - **Hand flag stranded off (LOW).** Live it is on; the flapping left it on at last read. Removing `initial: on` takes effect on an input_boolean reload, and HA restores the last state. Read it before and after the reload.
 - **Ghost entity ids.** The two flapping automations have `_2` clone-derived entity ids live (`main_bedroom_lights_manually_turned_off_2`, `playroom_not_occupied_2`). Renaming the garage detection automation retires the first; nothing in the repo references either.
 - **Garage Away.** Select options are Auto/Off/Away. Away turns lights off today; kept (both Off and Away use the `room_off` trigger id).
+
+---
+
+## PR 4 addendum (Phase 4 rooms, one PR, one commit per room), 2026-10-30
+
+- **Live hand flags read before building (read-only).** Every hand flag of the rooms in this PR is **on**: main bathroom, playroom, office, upstairs hallway, laundry (plus the already migrated main bedroom, kitchen, garage). The one flag that is **off** is `dining_room_lighting_automations`, which this PR removes along with its row, so nothing needs a manual switch-on after `initial:` goes. Mode-only rooms have no flag. The house-wide `lighting_automations` is on.
+- **Large single PR (John's call).** One commit per room, each with its tests, so any room reverts on its own. The ordering invariant test runs over the whole PR: a room's reset automation lands in the same commit as that room's `mode_off` forcing occupancy off.
+- **Kids' rooms and risky listeners (HIGH).** JK-1219 for the kids' rooms and bathrooms is done only after a per-room listener audit (music, heaters, TTS routing); if an audit finds a risky effect at the mode_off trigger times the room is left alone and deferred, and the report says so.
+- **Office DnD.** DnD keeps lights on; `office_lights_on` treats DnD like Auto, so the latch gate must sit ahead of that mode-or block without changing which modes pass.
+- **Disabled automations that still write the flag** (`office_lighting_automation_on` / `office_lighting_automations_off`) are deleted; they are inert today but would break the "nothing writes the hand flag" scan.
+- **Laundry's toggle did nothing** (`laundry_room_lights_motion_on` never checked its flag). Adding the gate is a behaviour change for the flag's owner: with the flag on (live), nothing changes.
+- **Dashboard rows.** A "Manual override" row per migrated room that has a "Lighting Automations" row (kitchen, main bedroom, main bathroom, playroom, office, upstairs hallway); the dining row goes. Garage and laundry have no such row on their pages and are not given one. Dashboard changes follow dashboards/CLAUDE.md (card_mod include, same row shape) and carry the `kohbo.yaml` touch note for deploy.
+- **New helpers need an input_boolean reload before the automation reload** (five new latches).

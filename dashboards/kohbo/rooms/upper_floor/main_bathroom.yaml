@@ -155,6 +155,14 @@ cards:
         secondary_info: last-changed
         state_color: true
 
+      # Manual override: set by a hand change to the lights, tap to clear
+      - entity: input_boolean.main_bathroom_lights_manually_toggled
+        name: Manual Override
+        icon: mdi:hand-back-right
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
       - entity: switch.adaptive_lighting_sleep_mode_main_bathroom
         name: Adaptive Lighting Sleep Mode
         icon: mdi:theme-light-dark
