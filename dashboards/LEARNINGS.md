@@ -41,3 +41,7 @@ automations do. Sensors page Power section, 2026-10-29.
 ## Medication Supply rows (2026-10-30)
 
 - The Nino popup shows days, never doses. The stock helper is not on the dashboard; "Days left" reads "Not set" while the sensor is `unavailable`. "Add days to supply" and "Set days left" are `template-entity-row`s with a `perform-action` tap that call the scripts with no `days`, so the scripts read "Days to enter" themselves. The tap_action on a template-entity-row was copied from other cards and is untested live: check it after deploy.
+
+## Push notification links (2026-10-30)
+
+- A push opens `/dashboard-kohbo/<view path>` or `<view path>#<popup hash>`. The hash only opens if that view's include tree defines the popup, so renaming a view `path:` or moving a popup breaks links in `packages/`. `tests/test_notification_deep_links.py` builds the view and popup map from `kohbo.yaml` and fails on any declared link that no longer resolves. Run it after dashboard changes.
