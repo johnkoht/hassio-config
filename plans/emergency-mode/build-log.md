@@ -12,3 +12,8 @@ Branch: worktree-emergency-mode-pr1 (pushed as feature/emergency-mode-pr1). Work
 - Sabotage (revert -> red): gate always-true (red); drop default('normal') (red only after StrictUndefined added to test env); critical back to enqueue (red); old TTS wait (red); no low purge (red); hold condition removed (red); sensor drops smoke (red); quiet halving during emergency (red).
 - Phase 4.2: independent final review (sonnet) at f38775a: APPROVED, 18 sabotage checks all red, 3 BACKLOG notes.
 - Phase 5: wrap. plan.md stays in-progress (shipped is stamped at PR 4). PR 1 tasks marked complete in prd.json.
+
+## PR 2 (worktree emergency-mode-pr2)
+- task-6 built: general_notification (critical bypass, parallel max 25), fire push to all, tornado via critical_announcement. +9 tests, 454 passed.
+- Sabotage (revert -> red): mode queued; max 10; first condition without critical; or-branch without critical; fire push jk; tornado voice_announcement; tornado auto. All red.
+- Caller audit of same-tag pushes recorded in pre-mortem.md (PR 2 refresh).

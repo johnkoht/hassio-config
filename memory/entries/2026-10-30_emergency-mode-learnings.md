@@ -13,3 +13,7 @@
 - Deploy: Template and Input Boolean aren't reloaded by `deploy.sh --reload`.
 
 **Follow-ups (backlog):** leak notifier has no explicit timeout; `auto` resolving to no speakers is silent; deferral race (ordinary item dropped if an emergency starts while it waits for the engine); a stuck smoke sensor has no override; queue-path critical items still purge the queue in `append.yaml`.
+
+## PR 2: critical delivery
+
+`general_notification` lets `critical` through at every `notification_level` and is `mode: parallel` (max 25); the fire push goes to `all`; the tornado warning calls `critical_announcement` on all speakers, so it no longer hits `append.yaml`'s critical purge. +9 tests (454 passing), 7 sabotage checks red. Caveat: severe thunderstorm and extreme heat warnings are still queue-path criticals (and still purge); same-tag pushes can now race in parallel mode (only `home-security-alarm` alarm/disabled pairs).
