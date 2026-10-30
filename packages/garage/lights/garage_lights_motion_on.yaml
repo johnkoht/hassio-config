@@ -18,10 +18,6 @@ automation:
         entity_id: cover.garage_doors
         to: "open"
     conditions:
-      # Garage is Auto
-      - condition: state
-        entity_id: input_select.garage
-        state: "Auto"
       # Lighting automations must be enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
@@ -30,6 +26,14 @@ automation:
       - condition: state
         entity_id: input_boolean.garage_lighting_automations
         state: "on"
+      # No hand override in effect
+      - condition: state
+        entity_id: input_boolean.garage_lights_manually_toggled
+        state: "off"
+      # Garage is Auto
+      - condition: state
+        entity_id: input_select.garage
+        state: "Auto"
       # Light is low
       - condition: numeric_state
         entity_id: sensor.garage_motion_sensor_illuminance
@@ -40,7 +44,9 @@ automation:
         state: "off"
     actions:
       - action: light.turn_on
-        entity_id: light.garage_lights
+        target:
+          entity_id: light.garage_lights
       # Toggle the boolean to flag it was auto
       - action: input_boolean.turn_on
-        entity_id: input_boolean.garage_lights_auto
+        target:
+          entity_id: input_boolean.garage_lights_auto
