@@ -48,10 +48,11 @@ script:
                   level: warning
                   message: "Alarm test mode is on: Noonlight was NOT notified"
             else:
-              - action: switch.turn_on
+              # Request fire (the switch always requests police).
+              - action: noonlight.create_alarm
                 continue_on_error: true
-                target:
-                  entity_id: switch.noonlight_alarm
+                data:
+                  service: fire
 
           # Sound the sirens: smoke detectors only sound locally. Stopped by
           # fire_alarm_cleared when the smoke clears.
