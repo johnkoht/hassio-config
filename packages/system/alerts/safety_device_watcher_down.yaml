@@ -25,3 +25,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "safety-device-watcher"
+          url: /dashboard-kohbo/sensors-offline

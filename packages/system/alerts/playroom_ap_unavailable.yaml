@@ -45,3 +45,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "playroom-ap-disconnected"
+          url: /dashboard-kohbo/sensors-offline

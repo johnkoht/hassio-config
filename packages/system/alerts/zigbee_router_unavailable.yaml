@@ -38,3 +38,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "d"
+          url: /dashboard-kohbo/sensors#zigbee_routers_popup
