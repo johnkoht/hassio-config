@@ -56,4 +56,4 @@ Two flags gate the automatic lights.
 
 **Motion on / day on gate order**: global `lighting_automations`, the room flag, the latch (must be off), then the room mode.
 
-**Lights off** (`main_bedroom_lights_off`): the room going Off always turns the lights off. Vacancy, bed and bedtime only do so while the room flag is on.
+**Lights off** (`main_bedroom_lights_off`): the room going Off turns the lights off whatever either room flag says (the house-wide lighting switch still applies). Vacancy, bed and bedtime only do so while the room flag is on.

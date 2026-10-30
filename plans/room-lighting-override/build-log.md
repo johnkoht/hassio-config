@@ -39,3 +39,6 @@ Each row: break the production line, run the matching test, `git checkout` the f
 | 9 duplicate basename | copy of a package file under another dir | yes |
 
 Two first attempts were bad sabotage (edit landed in the wrong block, or kept the order sorted) and were redone; they are not counted.
+
+## PR 1 review loop
+- Final reviewer (sonnet) at 43b3ae2: ITERATE, one DEFECT (two template clauses had no failing test). Fixed: added script-run-by-user, brightness off-to-on and on-to-off cases (24 tests in the file); re-sabotaged both clauses, both red. Also `mode: queued` on manual_change and wording fixes (Off still obeys the house-wide switch).

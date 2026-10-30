@@ -7,7 +7,7 @@
 automation:
   - id: "main_bedroom_lights_manual_change"
     alias: "Main Bedroom lights manual change"
-    mode: single
+    mode: queued
     triggers:
       - trigger: state
         entity_id: light.main_bedroom_main_lights
