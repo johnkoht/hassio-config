@@ -15,9 +15,9 @@
         "automation/house/modes/ no longer exists; the only writers of input_select.house are the resolver and scripts/house/house_away.yaml; no file named house_mode_* collides in packages/",
         "Modern syntax, one automation per file, filename == id, header title + 1-3 lines"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
@@ -28,9 +28,9 @@
         "Time condition 05:00 to 12:00; template passes when an adult whose person is home is awake, or when neither adult is home (both known); unknown/unavailable persons never count as away",
         "Uses target:, modern syntax, initial_state on kept"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3",
@@ -41,9 +41,9 @@
         "Grep shows the only remaining automation that requires house == Auto is packages/hourly_dong.yaml",
         "foyer_mode_auto triggers on [Auto, Quiet]; upstairs_hallway_mode_auto untouched (OD-9)"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4",
@@ -54,9 +54,9 @@
         "Between the wait and alarmo.disarm there are state conditions: bedtime off, alarm armed_home, house_occupied on; no time re-check after the wait",
         "bedtime_mode_off_on_arrival keeps its triggers, conditions and action; only the header comment changes"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5",
@@ -67,9 +67,9 @@
         "PEOPLE.md says bedtime ends when one home adult is up; ROOMS.md says Quiet counts as Auto for room Auto; AUTOMATIONS.md House Modes has one line on the resolver",
         "No PII in any added text"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-6",
@@ -80,15 +80,15 @@
         "Each sabotage (resolver priority swap, remove restart clause, automation-level variables, alarm before:, post-wait re-checks, room Quiet revert, bedtime_off away branch) turns a test red",
         "Live select vs computed value recorded in the build log; no HA service called"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     }
   ],
   "metadata": {
     "createdAt": "2026-10-30T00:00:00Z",
     "totalTasks": 6,
-    "completedTasks": 0,
+    "completedTasks": 6,
     "failedTasks": 0
   }
 }
