@@ -1,0 +1,19 @@
+# Emergency Active
+#
+# On while the alarm is triggered, the smoke detector is on, or the
+# manual override is on. Derived from real state so it can't stick.
+# The announcement engine and queue processor read it.
+#
+
+template:
+  - binary_sensor:
+      - name: "Emergency Active"
+        unique_id: emergency_active
+        default_entity_id: binary_sensor.emergency_active
+        icon: mdi:alert-octagon
+        state: >-
+          {{
+            is_state('alarm_control_panel.alarmo', 'triggered')
+            or is_state('binary_sensor.smoke_detector', 'on')
+            or is_state('input_boolean.emergency_mode', 'on')
+          }}

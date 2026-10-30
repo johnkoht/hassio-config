@@ -1,0 +1,24 @@
+# Emergency Mode - Auto Off
+#
+# Turn the manual override off after 10 minutes, at HA start, and after an
+# automation reload (a reload loses the pending 10 minute timer).
+#
+
+automation:
+  - id: "emergency_mode_auto_off"
+    alias: "Emergency Mode - Auto Off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.emergency_mode
+        to: "on"
+        for:
+          minutes: 10
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.emergency_mode

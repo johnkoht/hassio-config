@@ -15,11 +15,16 @@ The announcement system broadcasts TTS through Sonos in-ceiling speakers. It is 
 ```
 Automation
   └─▶ script.voice_announcement       (normal TTS)
-  └─▶ script.critical_announcement    (emergencies)
-        └─▶ script.announcement_queue_enqueue
-              └─▶ MQTT topic: home/announcement_queue/append
-                    └─▶ queue processor automation
-                          └─▶ script.announcement_engine   (plays chime + TTS on Sonos)
+  └─▶ script.critical_announcement    (emergencies; skips the queue)
+        └─▶ script.announcement_engine   (priority: critical)
+
+script.voice_announcement
+  └─▶ script.announcement_queue_enqueue
+        └─▶ MQTT topic: home/announcement_queue/append
+              └─▶ queue processor automation
+                    └─▶ script.announcement_engine   (plays chime + TTS on Sonos)
+
+script.announcement_engine  (first step: emergency gate)
 ```
 
 ---
@@ -70,7 +75,7 @@ Use this for all normal announcements. It handles room selection, volume, and pr
 
 ## script.critical_announcement — Parameters
 
-For emergencies only. Broadcasts to **all rooms**, clears the queue, ignores time/quiet restrictions.
+For emergencies only. Broadcasts to **all rooms**. It starts `script.announcement_engine` directly (`priority: critical`, via `script.turn_on` so callers don't wait), so the queue processor's gates (`house_occupied`, quiet before 9 AM) never hold it. It ignores time, `speech_notifications` and `bedtime`. Quiet mode halves the volume, except while `binary_sensor.emergency_active` is on.
 
 ```yaml
 - action: script.critical_announcement
@@ -102,10 +107,21 @@ For emergencies only. Broadcasts to **all rooms**, clears the queue, ignores tim
 
 | Priority | Expires | Behavior |
 |---|---|---|
-| `critical` | Never | Clears all other queued messages; plays immediately |
+| `critical` | Never | Skips the queue via `critical_announcement`. A critical item that still arrives through the queue goes first and `append.yaml` drops the other queued items |
 | `high` | Never | Plays before normal/low |
 | `normal` | 10 min | Discarded after 10 min if unplayed |
 | `low` | 3 min | Discarded after 3 min; skips rooms with active music |
+
+---
+
+## Emergency Mode
+
+`binary_sensor.emergency_active` (`packages/security/emergency/`) is on while `alarm_control_panel.alarmo` is `triggered`, `binary_sensor.smoke_detector` is on, or `input_boolean.emergency_mode` (manual/test override, auto-off after 10 min, at start and on automation reload) is on.
+
+- The **engine** has a `priority` field and a first-step gate: non-`critical` runs stop while an emergency is active. This covers the doorbell and hourly dong, which call the engine directly. Fields have no runtime default, so the gate uses `priority | default('normal')`. It fails open if the sensor is missing or unavailable.
+- The **processor** dequeues only a critical item during an emergency (non-critical items are held, not cleared), resumes on `emergency_active -> off`, and on that run drops `low` items and expired items.
+- The engine waits `len/14 + 3` s after TTS, and has `max: 25` so a burst can't drop a critical call.
+- Never test with the alarm, panic, fire or Noonlight scripts. Use `input_boolean.emergency_mode` and `script.critical_announcement`.
 
 ---
 
@@ -132,7 +148,7 @@ The MQTT-based queue prevents overlapping announcements:
 | `home/announcement_queue/data` | Current queue state (JSON) |
 | `home/announcement_queue/state` | Trigger for sensor updates |
 
-The processor only runs when: house is occupied, queue is not empty, no announcement is currently playing, and at least one announceable room is occupied (for non-critical messages).
+The processor only runs when: house is occupied (and not quiet mode before 9 AM), the next item is critical if an emergency is active, queue is not empty, no announcement is currently playing, and at least one announceable room is occupied (for non-critical messages).
 
 ---
 
@@ -142,7 +158,7 @@ The processor only runs when: house is occupied, queue is not empty, no announce
 packages/announcements/
 ├── announcement_engine.yaml              # Core TTS + chime playback
 ├── voice_announcement.yaml               # Primary wrapper script
-├── critical_announcement.yaml            # Emergency wrapper
+├── critical_announcement.yaml            # Emergency wrapper (starts the engine directly)
 ├── announceable_rooms.yaml               # binary_sensor: any occupied room with TTS on?
 ├── latest_voice_announcement.yaml        # input_text stores last message
 ├── repeat_latest_voice_announcement.yaml # Replay last message script
