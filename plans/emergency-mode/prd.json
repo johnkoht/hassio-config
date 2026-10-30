@@ -15,9 +15,10 @@
         "Each file has a title + 1-3 line header comment; modern syntax; no PII"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "d5c6e86"
     },
     {
       "id": "task-2",
@@ -33,9 +34,10 @@
         "doorbell_ring.yaml and hourly_dong.yaml still call script.announcement_engine directly (unchanged, asserted by test) so they pick up the gate"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "d5c6e86"
     },
     {
       "id": "task-3",
@@ -50,9 +52,10 @@
         "tests/test_announcement_queue_regressions.py::test_critical_auto_reaches_occupied_main_bedroom passes against the new structure"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "d5c6e86"
     },
     {
       "id": "task-4",
@@ -67,9 +70,10 @@
         "append.yaml's critical purge is unchanged (plan task 4; recorded in the report: a queue-path critical item such as tornado until PR 2 still purges queued items) and a test asserts that a critical item arriving via the queue still plays during an emergency (processor condition passes it, the engine gate passes it)"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "d5c6e86"
     },
     {
       "id": "task-5",
@@ -83,9 +87,10 @@
         "No PII; gitleaks pre-commit passes without --no-verify"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "f38775a"
     },
     {
       "id": "task-6",
@@ -179,7 +184,7 @@
   "metadata": {
     "createdAt": "2026-10-29T22:29:33-05:00",
     "totalTasks": 11,
-    "completedTasks": 0,
+    "completedTasks": 5,
     "failedTasks": 0,
     "prs": {
       "1": "audio gate (tasks 1-5)",
