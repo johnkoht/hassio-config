@@ -166,6 +166,14 @@ cards:
         secondary_info: last-changed
         state_color: true
 
+      # Manual override: set by a hand change to the lights, tap to clear
+      - entity: input_boolean.main_bedroom_lights_manually_toggled
+        name: Manual Override
+        icon: mdi:hand-back-right
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
       # Adaptive Lighting Toggle
       - entity: switch.adaptive_lighting_main_bedroom
         name: Adaptive Lighting
