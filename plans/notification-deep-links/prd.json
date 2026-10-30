@@ -29,9 +29,9 @@
         "Critical priority and recipients of these pushes are unchanged",
         "Alarm and fire regression suites stay green"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3",
@@ -41,9 +41,9 @@
         "The test expands every camera's derived link and each resolves to security-cameras#<camera>",
         "Camera on and off pushes link to security-cameras"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4",
@@ -53,9 +53,9 @@
         "Both alerts carry url and clickAction pointing at security-leak-sensors",
         "Leak regression tests assert the link"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5",
@@ -65,7 +65,7 @@
         "Blocked until John confirms which sensors the kids-escape alerts use",
         "Each linked push resolves in the test"
       ],
-      "status": "pending",
+      "status": "blocked",
       "passes": false,
       "attemptCount": 0
     },
@@ -76,9 +76,9 @@
       "acceptanceCriteria": [
         "Each push carries its stated link and resolves"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-7",
@@ -88,9 +88,9 @@
         "Each push carries its stated link and resolves",
         "Washer recipient logic unchanged"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-8",
@@ -99,9 +99,9 @@
       "acceptanceCriteria": [
         "Each push carries its stated link and resolves"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-9",
@@ -111,9 +111,9 @@
         "An unlinked call not on the exempt list fails",
         "An exempt call that gains a url fails with a remove-from-list message"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-10",
@@ -130,7 +130,7 @@
   "metadata": {
     "createdAt": "2026-10-30T00:00:00Z",
     "totalTasks": 10,
-    "completedTasks": 1,
+    "completedTasks": 8,
     "failedTasks": 0,
     "note": "One PR per task; PR 1 = task-1. Push pruning is a proposal and is out of scope."
   }

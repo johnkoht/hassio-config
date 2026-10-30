@@ -45,3 +45,4 @@ automations do. Sensors page Power section, 2026-10-29.
 ## Push notification links (2026-10-30)
 
 - A push opens `/dashboard-kohbo/<view path>` or `<view path>#<popup hash>`. The hash only opens if that view's include tree defines the popup, so renaming a view `path:` or moving a popup breaks links in `packages/`. `tests/test_notification_deep_links.py` builds the view and popup map from `kohbo.yaml` and fails on any declared link that no longer resolves. Run it after dashboard changes.
+- A new push with no `url` fails the same test unless its file is in `tests/fixtures/notification_url_exempt.yaml`. Add a link first; exempt only when there is no screen to open, and give the reason. The test also fails on an exempt entry that has since gained a link.
