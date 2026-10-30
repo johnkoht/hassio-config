@@ -17,7 +17,7 @@ from jinja2 import Environment
 REPO = Path(__file__).resolve().parent.parent
 
 # Later PRs append rooms here.
-MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway"]
+MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway", "office"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -207,15 +207,19 @@ MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
               "kitchen": "light.kitchen_ceiling_lights",
               "garage": "light.garage_lights",
               "playroom": "light.playroom_lights",
-              "upstairs_hallway": "light.upstairs_hallway"}
+              "upstairs_hallway": "light.upstairs_hallway",
+              # The wall switch (what the old detection watched); the bulbs are in EXTRA_LIGHTS.
+              "office": "light.office_light_switch"}
 OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
             "garage": "garage_lights_off", "playroom": "playroom_lights_to_off",
-            "upstairs_hallway": "upstairs_hallway_lights_to_off"}
+            "upstairs_hallway": "upstairs_hallway_lights_to_off",
+            "office": "office_lights_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
             "garage": ["garage_lights_motion_on"],
             "playroom": ["playroom_lights_motion_on", "playroom_lights_day_on"],
-            "upstairs_hallway": ["upstairs_hallway_lights_motion_on"]}
+            "upstairs_hallway": ["upstairs_hallway_lights_motion_on"],
+            "office": ["office_lights_motion_on", "office_lights_day_on", "office_lights_on"]}
 
 # The hallway's motion-on never had a mode condition (the room has no Dim/DnD split); adding one
 # would change behaviour, so its gate is checked as house flag, room flag, latch only.
@@ -223,7 +227,8 @@ NO_MODE_CONDITION = ("upstairs_hallway",)
 
 
 # Other lights whose hand changes must also latch the override (Dim pendants).
-EXTRA_LIGHTS = {"kitchen": ["light.kitchen_island_pendants"]}
+EXTRA_LIGHTS = {"kitchen": ["light.kitchen_island_pendants"],
+                "office": ["light.office_ceiling_bulbs"]}
 
 
 def _main_light(room):
@@ -393,7 +398,7 @@ def test_mode_off_ordering_invariant(room):
 
 
 # 8 ---------------------------------------------------------------------------
-NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom", "upstairs_hallway")
+NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom", "upstairs_hallway", "office")
 
 
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
@@ -506,3 +511,59 @@ def test_upstairs_hallway_sleep_mode_automations_do_not_touch_flags():
 
 def test_upstairs_hallway_old_detection_is_gone():
     assert "upstairs_hallway_lights_manually_turned_off" not in ALL
+
+
+# 13 office ------------------------------------------------------------------
+def test_office_lights_on_latch_gate_before_mode_and_dnd_still_passes():
+    """DnD keeps the lights on: office_lights_on passes Auto and DnD (only), and the latch sits ahead of that."""
+    conds = conds_for(auto("office_lights_on"))
+    mode_i = next(i for i, c in enumerate(conds) if "input_select.office" in str(c))
+    assert cond_index(conds, latch("office"), "off") < mode_i
+    modes = conds[mode_i]
+    assert modes["condition"] == "or"
+    passing = sorted(str(s) for c in modes["conditions"] for s in as_list(c["state"]))
+    assert passing == ["Auto", "DnD"]
+
+
+def test_office_day_on_still_passes_dnd_and_motion_on_only_auto():
+    day = next(c for c in conds_for(auto("office_lights_day_on"))
+               if c.get("condition") == "or" and "input_select.office" in str(c))
+    assert sorted(str(s) for c in day["conditions"] for s in as_list(c["state"])) == ["Auto", "DnD"]
+    assert cond_index(conds_for(auto("office_lights_motion_on")), "input_select.office", "Auto") is not None
+
+
+@pytest.mark.parametrize("aid", [
+    "office_lights_scene_toggle", "office_lights_sync_bulbs_from_switch",
+    "office_lights_sync_switch_state", "office_camera_light_on", "office_dnd_light_on",
+    "office_shelf_lights_turn_on_deep_work_lighting"])
+def test_office_user_driven_light_automations_are_not_latch_gated(aid):
+    """Scene toggles, switch/bulb syncs and the DnD/camera/deep-work lights follow the user, not occupancy."""
+    path, _ = ALL[aid]
+    assert latch("office") not in path.read_text()
+
+
+def test_office_old_detection_and_dead_flag_writers_are_gone():
+    for aid in ("office_lights_manually_turned_off", "office_lighting_automation_on",
+                "office_lighting_automation_off"):
+        assert aid not in ALL
+
+
+def test_office_motion_off_obeys_hand_flag_not_latch():
+    path, a = ALL["office_lights_motion_off"]
+    assert cond_index(conds_for(a), flag("office"), "on") == 0
+    assert latch("office") not in path.read_text()
+
+
+def test_office_manual_change_ignores_sync_driven_changes():
+    """A bulb/switch change made by the sync automations carries a parent and no user."""
+    sync = _trigger("0", _st("off", _ctx("p"), T0), _st("on", _ctx("s", parent="par"), T0))
+    assert _passes("office", sync) is False
+
+
+def test_office_mode_off_leaves_occupancy_alone():
+    """JK-1219 deliberately not applied to the office (see packages/office/LEARNINGS.md); the latch is
+    still cleared by the reset automation on room Off."""
+    mode_off = load_yaml(_mode_off_rooms()["office"])["automation"][0]
+    assert not any(e == "input_boolean.office_occupied"
+                   for _, e, _ in turn_calls(mode_off["actions"]))
+    assert "office_lights_reset_manual_toggle" in ALL

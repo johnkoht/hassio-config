@@ -1,5 +1,5 @@
+# Hand-only master switch for office lighting automations. Never written by automations.
 input_boolean:
   office_lighting_automations:
     name: Office Lighting Automations
     icon: mdi:lightbulb-auto
-    initial: on
