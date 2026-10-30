@@ -15,6 +15,7 @@ The dashboard is organized into the following main sections:
     - Front Door Camera Notification
     - Driveway Front Camera Notification
     - Vacuum Active Notification
+    - Safety Device Notification (conditional card under the header)
     - House Mode Popup
 
 ### 🌡️ Climate

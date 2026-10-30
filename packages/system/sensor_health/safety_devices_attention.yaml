@@ -1,0 +1,73 @@
+# Safety Devices Attention
+#
+# Leak sensors and the safety group (smoke, gates, glass break, locks, garage covers) that have been offline for an hour
+# or whose battery is under 30%. Known-issue devices are listed separately, never dropped. Feeds the safety alert push.
+#
+
+template:
+  # Trigger-based on purpose: a live template walking ~25 devices re-renders on every state change (2026-10-17 Yellow saturation).
+  - triggers:
+      - trigger: time_pattern
+        minutes: /5
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - variables:
+          # The debounce and the battery threshold live here and nowhere else.
+          # last_changed restarts for every entity on an HA restart, so the debounce also covers the start-up grace.
+          # Known limit: it also forgets how long a device has been down, so an outage still open after a restart is listed again
+          # an hour later (and can re-push once). Trigger-based template attributes are not restored, so there is nowhere to keep it.
+          debounce_minutes: 60
+          low_battery_threshold: 30
+          rollup: >-
+            {% set known = label_entities('known_issue') %}
+            {% set cutoff = now() - timedelta(minutes=debounce_minutes) %}
+            {% set ns = namespace(offline=[], offline_known=[], low={}, low_known={}, names_offline=[], names_low=[], all=[]) %}
+            {% for s in expand('group.leak_sensors', 'group.key_sensors_safety') %}
+              {% set e = s.entity_id %}
+              {% set tag = ' (known issue)' if e in known else '' %}
+              {% if s.state in ['unavailable', 'unknown'] and s.last_changed < cutoff %}
+                {% if e in known %}{% set ns.offline_known = ns.offline_known + [e] %}{% else %}{% set ns.offline = ns.offline + [e] %}{% endif %}
+                {% set ns.names_offline = ns.names_offline + [s.name ~ tag] %}
+                {% set ns.all = ns.all + [e] %}
+              {% endif %}
+              {# Locks and garage covers have no battery to report #}
+              {% set d = device_id(e) if e.startswith('binary_sensor.') else none %}
+              {% if d %}
+                {% set b = device_entities(d) | select('match', 'sensor\\.') | select('is_state_attr', 'device_class', 'battery') | first | default(none) %}
+                {% if b and states(b) | is_number and states(b) | float(0) < low_battery_threshold %}
+                  {% set level = states(b) | float(0) %}
+                  {% if e in known %}{% set ns.low_known = dict(ns.low_known, **{e: level}) %}{% else %}{% set ns.low = dict(ns.low, **{e: level}) %}{% endif %}
+                  {% set ns.names_low = ns.names_low + [s.name ~ ' (' ~ (level | round(0) | int) ~ '%)' ~ tag] %}
+                  {% set ns.all = ns.all + [e] %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ {'offline': ns.offline, 'offline_known': ns.offline_known, 'low': ns.low, 'low_known': ns.low_known,
+                'names_offline': ns.names_offline, 'names_low': ns.names_low, 'count': ns.all | unique | list | count} | tojson }}
+    sensor:
+      # State is how many devices need attention. `offline` and `low_battery` hold the unlabelled ones, the *_known
+      # attributes the "Known issue" ones. The two names_* lists carry every device, for the push message.
+      - name: Safety Devices Attention
+        unique_id: safety_devices_attention
+        default_entity_id: sensor.safety_devices_attention
+        icon: mdi:shield-alert
+        state: "{{ rollup['count'] if rollup is mapping else 'unavailable' }}"
+        attributes:
+          offline: "{{ rollup['offline'] }}"
+          offline_known: "{{ rollup['offline_known'] }}"
+          low_battery: "{{ rollup['low'] }}"
+          low_battery_known: "{{ rollup['low_known'] }}"
+          offline_names: "{{ rollup['names_offline'] }}"
+          low_battery_names: "{{ rollup['names_low'] }}"
+          debounce_minutes: "{{ debounce_minutes }}"
+          battery_threshold: "{{ low_battery_threshold }}"
+    binary_sensor:
+      # For the Home page card: Lovelace conditional cards reject condition: template.
+      - name: Safety Devices Need Attention
+        unique_id: safety_devices_need_attention
+        default_entity_id: binary_sensor.safety_devices_need_attention
+        device_class: problem
+        state: "{{ rollup is mapping and rollup['count'] > 0 }}"

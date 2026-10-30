@@ -66,3 +66,14 @@ bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
 ## Morning disarm is bounded and re-checked (JK-1118)
 
 `alarm_disarm_in_morning` starts on bedtime ending, and a night arrival can end bedtime, so its old "after 05:00" start was true until midnight. It now starts only 05:00 to 12:00 and, after the wait for first-floor occupancy (up to 2.5 h), checks bedtime off, `armed_home` and occupied again before `alarmo.disarm`. There is no clock re-check after the wait on purpose: a late-morning wait should still disarm, not leave the house armed all day. Every failed check ends the run with the panel untouched.
+
+## Safety device alerts watch the state, not the event (JK-1231)
+
+`sensor.safety_devices_attention` (sensor_health) feeds the push in `packages/system/alerts/safety_device_*.yaml`. Things that cost a review round:
+
+- **Trigger-based template entities restore only state, name, icon and picture.** Custom attributes are gone after a restart, so the sensor cannot remember how long a device was down. `last_changed` also restarts for every entity at boot. The one-hour debounce doubles as the start grace; the price is a possible repeat push an hour after a restart.
+- **A state-template error makes the entity `unavailable`; an error in the trigger's `variables` leaves it stale.** A watcher on `unavailable` alone misses the second. The watcher checks `last_reported` too.
+- **`rollup.count` is `str.count` when the JSON fails to parse.** Use `rollup['count']` and guard with `is mapping`.
+- **`quiet_mode` is "somebody is in bed", not "night".** Midday naps hold the daytime paths; 09:00 is the only unconditional one.
+- **The label is a cadence, not a mute.** `known_issue` devices stay in the list and push on Mondays; the new-device rule ignores a label change.
+- Lock and cover battery is skipped by decision, but `lock.garage_entry_door` does have one.
