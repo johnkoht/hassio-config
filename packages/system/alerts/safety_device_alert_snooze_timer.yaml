@@ -1,0 +1,12 @@
+# Safety Device Alert Snooze Timer
+#
+# Running means the safety device alert is snoozed. Started by safety_device_alert_snooze_action for 1 day or 1 week.
+# restore: true so a snooze survives a restart.
+#
+
+timer:
+  safety_device_alert_snooze:
+    name: Safety Device Alert Snooze
+    duration: "24:00:00"
+    restore: true
+    icon: mdi:bell-sleep
