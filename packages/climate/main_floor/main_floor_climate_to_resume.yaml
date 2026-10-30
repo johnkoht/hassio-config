@@ -51,3 +51,4 @@ script:
           message: "The main floor climate has been activated. The temperature is ste to {{ state_attr('climate.nest_main_floor', 'temperature') }} and the HVAC mode is {{ states('climate.nest_main_floor') }}"
           devices: "jk"
           priority: "time-sensitive"
+          url: /dashboard-kohbo/climate-hvac#main_floor_thermostat
