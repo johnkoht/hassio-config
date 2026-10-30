@@ -171,6 +171,8 @@ def test_engine_clamps_runtime_volume_to_the_ceiling(field, given, expected):
     template = engine_volume_templates()[field]
     out = Environment(undefined=StrictUndefined).from_string(template).render(**{field: given})
     assert int(out) == expected and int(out) <= VOLUME_CEILING
+    import ast
+    assert type(ast.literal_eval(out.strip())) is int  # HA native typing hands play_media an int
 
 
 @pytest.mark.parametrize("field", ["sound_volume", "speech_volume"])
