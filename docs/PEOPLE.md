@@ -149,6 +149,17 @@ These sensors aggregate individual person states:
 
 ---
 
+## Medication Stock
+
+Nino's medication has a supply count (`packages/people/nino/medication_refill/`, `packages/reminders/medication_refill/`).
+
+- **Stored in doses, shown in days.** `input_number.nino_medication_stock` holds doses (two a day, so a 30-day fill is 60). Nothing on the dashboard shows doses: `sensor.nino_medication_days_remaining` is doses / 2, rounded down. A stock of -1 means "not set yet": the sensor is `unavailable`, the dashboard says "Not set", and no alert fires.
+- **Counting.** Each time `input_boolean.nino_medication_1_taken` or `_2_taken` goes off to on (dashboard, push, button, Alexa), the stock drops by one. The 03:00 reset and a restart do not count. Un-toggling does not add one back; fix a mistake with "Set days left".
+- **Alerts.** Under `input_number.medication_refill_threshold_days` (7) a time-sensitive push to everyone, repeated daily at 09:00; under `input_number.medication_refill_critical_days` (3) a critical phone push. Both carry "+15 days" and "+30 days" buttons. A line is added to the morning announcement. This is a phone alert only, never the alarm or announcement path.
+- **Refilling and seeding, in the Nino popup.** Type days in "Days to enter", then tap "Add days to supply" (adds) or "Set days left" (replaces). Both clear the push. The push buttons add 15 or 30 days.
+
+---
+
 ## File Structure
 
 ```

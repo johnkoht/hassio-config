@@ -186,6 +186,7 @@ More → Sensors. Tabbed section (Overview / Offline / Low Battery) sharing `tem
   - Garbage Day
   - Leak Sensor Offline
   - Nino Medication Reminder
+  - Nino popup: Medication Supply (days left, add days, set days left) and Refill Alerts (alert/critical thresholds)
 
 ---
 

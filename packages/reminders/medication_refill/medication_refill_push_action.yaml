@@ -1,0 +1,27 @@
+# Medication Refill Push Action
+#
+# Add 15 or 30 days of stock when a +15 / +30 button is tapped on the
+# low-stock push. The script clears the push, so a stale tap does nothing.
+#
+
+automation:
+  - id: "medication_refill_push_action"
+    alias: "Medication Refill Push Action"
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "MEDICATION_REFILLED_NINO_15"
+        id: "15"
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "MEDICATION_REFILLED_NINO_30"
+        id: "30"
+    conditions: []
+    actions:
+      - action: script.medication_refilled
+        data:
+          medication: nino
+          days: "{{ trigger.id | int }}"

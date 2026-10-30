@@ -1,0 +1,90 @@
+{
+  "name": "medication-refill-tracking",
+  "branchName": "feature/medication-refill",
+  "goal": "Track Nino's medication doses on hand, alert in days when low, one-tap refill.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Stock helpers and days-remaining sensor",
+      "description": "See prd.md",
+      "acceptanceCriteria": [
+        "See prd.md task-1"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-2",
+      "title": "Decrement automations",
+      "description": "See prd.md",
+      "acceptanceCriteria": [
+        "See prd.md task-2"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-3",
+      "title": "Refill script and push action",
+      "description": "See prd.md",
+      "acceptanceCriteria": [
+        "See prd.md task-3"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-4",
+      "title": "Low-stock alert",
+      "description": "See prd.md",
+      "acceptanceCriteria": [
+        "See prd.md task-4"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-5",
+      "title": "Dashboard rows and morning brief",
+      "description": "See prd.md",
+      "acceptanceCriteria": [
+        "See prd.md task-5"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-6",
+      "title": "Tests",
+      "description": "See prd.md",
+      "acceptanceCriteria": [
+        "See prd.md task-6"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-7",
+      "title": "Docs",
+      "description": "See prd.md",
+      "acceptanceCriteria": [
+        "See prd.md task-7"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-30T02:30:00Z",
+    "totalTasks": 7,
+    "completedTasks": 7,
+    "failedTasks": 0
+  }
+}
