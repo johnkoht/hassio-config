@@ -1,0 +1,46 @@
+# Safety Device Alert Snooze Action
+#
+# Snooze the safety device alert for a day or a week when John taps an action on the push.
+# A standalone event automation: the push is answered hours later, and a wait_for_trigger would not survive a restart.
+#
+
+automation:
+  - id: "safety_device_alert_snooze_action"
+    alias: "Safety - Device Alert Snooze Action"
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "SAFETY_ALERT_SNOOZE_DAY"
+        id: "day"
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "SAFETY_ALERT_SNOOZE_WEEK"
+        id: "week"
+    actions:
+      # Explicit branch per id, no default: an id added later must not silently snooze for a day.
+      - choose:
+          - alias: "Snooze 1 day"
+            conditions:
+              - condition: trigger
+                id: "day"
+            sequence:
+              - action: timer.start
+                target:
+                  entity_id: timer.safety_device_alert_snooze
+                data:
+                  duration:
+                    days: 1
+          - alias: "Snooze 1 week"
+            conditions:
+              - condition: trigger
+                id: "week"
+            sequence:
+              - action: timer.start
+                target:
+                  entity_id: timer.safety_device_alert_snooze
+                data:
+                  duration:
+                    days: 7

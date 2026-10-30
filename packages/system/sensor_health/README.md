@@ -1,6 +1,6 @@
 # Sensor Health
 
-Groups and template entities behind kohbo More → Sensors (`dashboards/kohbo/sensors/`), including the Device Health score. There are no automations here. JK-1094's offline and battery alerts should build on these entities, not on lists of their own.
+Groups and template entities behind kohbo More → Sensors (`dashboards/kohbo/sensors/`), including the Device Health score. The Safety alerts section below is the one exception: it holds the push for leak sensors and other safety devices (JK-1231, with JK-1094). Further alerts should build on these entities, not on lists of their own.
 
 ## What's tracked
 
@@ -34,6 +34,8 @@ The Safety group was picked by John: the smoke detector, both door locks, the th
 | `sensor.device_health_status` | `Healthy` / `Degraded` / `Down` | `icon`, `color` |
 | `sensor.key_sensors_offline` | count of tracked sensors that are `unavailable`/`unknown`, minus known issues | `entities` (IDs), `known_issues` (IDs) |
 | `sensor.key_sensors_low_battery` | count of tracked sensors whose device battery is low, minus known issues | `batteries` and `known_issues` (`{sensor_id: level}`, low ones only) |
+| `sensor.safety_devices_attention` | count of safety devices offline for an hour or under 30% battery (known issues included) | `offline`, `low_battery` (`{id: level}`), their `*_known` twins, `offline_names`, `low_battery_names` |
+| `binary_sensor.safety_devices_need_attention` | on when that count is above 0 | |
 | `sensor.key_sensors_network_problems` | network rows that are off, unavailable, or below their `total` | |
 | `binary_sensor.zigbee_coordinator_online` | ZHA config entry is loaded | `summary` |
 | `binary_sensor.zwave_controller_online` | ZWA-2 status is `ready` | `summary` |
@@ -44,6 +46,37 @@ The Safety group was picked by John: the smoke detector, both door locks, the th
 **The low-battery threshold** has one home: `variables:` on `sensor.key_sensors_low_battery`. Both its state and its `batteries` attribute read it. The dashboard only reads `batteries`, so changing that one value changes the whole page.
 
 **Battery lookup:** `device_id(sensor)` → that device's `sensor.*` entity with `device_class: battery`. It's guarded for entities with no device.
+
+## Safety alerts
+
+A push to John (`devices: "jk"`, time-sensitive) when a **leak sensor or a `key_sensors_safety` device** is offline or low on battery. Files: `safety_devices_attention.yaml` here, and `safety_device_*.yaml` in `packages/system/alerts/`.
+
+| Piece | Job |
+|---|---|
+| `sensor.safety_devices_attention` | Every 5 minutes, lists `group.leak_sensors` + `group.key_sensors_safety` members that have been `unavailable`/`unknown` for **60 minutes**, or whose battery is under **30%** (binary sensors only: locks and garage covers are offline-only). Both numbers are `variables:` at the top of the file. Known-issue devices stay in, in their own attributes |
+| `safety_device_offline_alert` | One push, tag `safety-device-offline` (each push replaces the last), with **Snooze 1 day** and **Snooze 1 week** buttons |
+| `safety_device_alert_snooze_action` + `timer.safety_device_alert_snooze` | The buttons start the timer (1 or 7 days, restored after a restart). While it runs, nothing is pushed |
+| `safety_device_watcher_down` | Pushes if the attention sensor is unavailable, missing or has not refreshed for 20 minutes (a broken template would otherwise hide every alert) |
+| `binary_sensor.safety_devices_need_attention` | Drives the red Home card (`dashboards/kohbo/home/_safety_device_notification.yaml`) |
+
+**When it pushes**
+
+- **09:00 every day** while any unlabelled device is listed. This is the guaranteed path.
+- **When a device newly crosses the threshold**, but only between 07:00 and 21:00 and with `quiet_mode` off. Otherwise it waits for 09:00. `quiet_mode` means somebody is in bed, naps included: a leak sensor that dies during a nap is reported next morning.
+- **When a snooze ends**, same daytime rule.
+- **Known issue** devices (label `known_issue`) still count and still push, but when they are all that is left the push is **Mondays only**. A device you label stops triggering instant pushes; it never leaves the list.
+- Fixing a device, a level changing, or labelling one sends nothing.
+- No `house_occupied` condition: a dead leak sensor matters most when nobody is home.
+
+**Known limits**
+
+- A restart makes every entity's `last_changed` start over and trigger-based template attributes are not restored, so an outage that is still open after a restart is listed again an hour later and can push once more (same tag). A flip between `unavailable` and `unknown` restarts the hour the same way.
+- A new device that fails while snoozed waits for the snooze to end.
+- `script.general_notification` drops every non-critical push when `input_select.notification_level` is `None`. That includes this alert and the watcher push.
+- The garage entry lock has a battery sensor, but locks and covers are offline-only by decision. To include it, drop the `binary_sensor.` guard in the rollup.
+- The panic button is not watched (broken, JK-1230).
+
+**Deploy:** Template entities, Timer, then Automations (`deploy.sh --reload` does only the automations). No restart.
 
 ## Zigbee routers
 
@@ -96,4 +129,4 @@ To stop a sensor you know is broken from dragging the counts and the score down,
 
 ## Reloads
 
-New or changed groups need Developer Tools → YAML → **Groups**, and template entities need **Template entities**. `deploy.sh --reload` reloads neither.
+New or changed groups need Developer Tools → YAML → **Groups**, and template entities need **Template entities**. A new timer needs **Timers**. `deploy.sh --reload` reloads none of them.
