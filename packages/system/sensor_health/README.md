@@ -57,7 +57,7 @@ A push to John (`devices: "jk"`, time-sensitive) when a **leak sensor or a `key_
 | `safety_device_offline_alert` | One push, tag `safety-device-offline` (each push replaces the last), with **Snooze 1 day** and **Snooze 1 week** buttons |
 | `safety_device_alert_snooze_action` + `timer.safety_device_alert_snooze` | The buttons start the timer (1 or 7 days, restored after a restart). While it runs, nothing is pushed |
 | `safety_device_watcher_down` | Pushes if the attention sensor is unavailable, missing or has not refreshed for 20 minutes (a broken template would otherwise hide every alert) |
-| `binary_sensor.safety_devices_need_attention` | Drives the red Home card (`dashboards/kohbo/home/_safety_device_notification.yaml`) |
+| `binary_sensor.safety_devices_need_attention` | Shows the red shield at the left of the Home header and the Notifications popup card (`dashboards/kohbo/shared/notifications/safety_devices_attention.yaml`) |
 
 **When it pushes**
 
