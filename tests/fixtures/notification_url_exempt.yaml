@@ -73,7 +73,7 @@
 - path: packages/reminders/medication_refill/medication_refill_low_stock_alert.yaml
   reason: "Personal reminder"
 - path: scripts.yaml
-  reason: "Personal reminder"
+  reason: "Unused notify_engine script, out of scope in the plan; remove if the script is deleted"
 
 # Pending PR D (doors, garage, locks, kids escape), blocked on decision 6; remove when PR D links it
 - path: packages/garage/doors/door_2/garage_door_2_open_upon_arrival.yaml

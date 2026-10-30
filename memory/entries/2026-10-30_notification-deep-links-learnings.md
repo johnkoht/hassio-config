@@ -19,7 +19,7 @@
 
 Linked 39 more pushes (64 of 110 now carry a link) in six theme PRs, plus an enforcing PR: the test now fails on a push with no `url` unless its file is in `tests/fixtures/notification_url_exempt.yaml` (path plus reason), and on an exempt entry that has gone stale. Each theme PR is independent (own caller files, own test file) so they merge in any order; Enforce goes last because on plain master it would list the unlinked pushes.
 - Alarm triggered and stopped open the alarm panel; fire and shields-up open the security overview.
-- Camera detections derive the popup hash from the notifications boolean (`camera_link` variable, sent as `url` and `clickAction`); the test expands all seven booleans the 18 detection automations pass.
+- Camera detections derive the popup hash from the notifications boolean (`camera_link` variable, sent as `url` and `clickAction`); the test expands all seven booleans the 17 detection automations pass.
 - The leak `alert:` entries carry `data:` with the link. Checked in HA core: `alert` passes `data` to each notifier unchanged and the REST voice notifier ignores it, so the voice path is unaffected.
 - Direct notifier pushes (two washers, Christmas off) take the link in their own `data:` with both keys; the washers keep their who-is-home recipient template.
 - UPS pushes fell between PRs F and G in the plan (interim `energy` link). They are exempt until the UPS popup exists (task 10).
