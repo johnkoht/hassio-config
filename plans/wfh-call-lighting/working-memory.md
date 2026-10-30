@@ -24,3 +24,21 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [Task 2] NOTHING_NOVEL - Task 2
 - [Task 3] NOTHING_NOVEL - Task 3
 - [Task 4] NOTHING_NOVEL - Task 4
+
+## Sabotage results (task-5)
+Each edit was made, `tests/test_office_call_lighting.py` run, then the file restored with `git checkout`.
+
+| # | Sabotage | Tests that went red |
+|---|---|---|
+| 1 | remove `office_call_al_paused` condition from start | `test_start_has_condition[input_boolean.office_call_al_paused-off]`, `test_start_feature_switch_before_al_gate_template` |
+| 2 | remove flag condition from end | `test_end_requires_flag` |
+| 3 | unguarded `switch.turn_on` in end | `test_resume_shape[end]` |
+| 4 | remove DnD condition from start | `test_start_has_condition[input_select.office-DnD]`, `test_start_gate_order_global_room_latch_occupancy_mode` |
+| 5 | remove `office_lights_manually_toggled` condition from start | `test_start_has_condition[input_boolean.office_lights_manually_toggled-off]`, `test_start_gate_order_global_room_latch_occupancy_mode` |
+| 6 | add `light.office_office_lamp` to the start target | `test_start_action_order`, `test_start_targets_only_ceiling_bulbs` |
+| 7 | `initial: false` on `office_call_lighting` | `test_no_helper_has_initial` |
+| 8 | end clears the flag before AL turn_on | `test_resume_shape[end]` |
+| 9 | remove the 12 h `stuck` trigger from reset | `test_reset_triggers` |
+| 10 | unguarded `switch.turn_on` in reset | `test_resume_shape[reset]` |
+
+All ten went red; none stayed green.
