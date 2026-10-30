@@ -51,3 +51,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "vacation-mode-activated"
+          url: /dashboard-kohbo/home#house_mode

@@ -48,3 +48,4 @@ automation:
           devices: "all"
           priority: "time-sensitive"
           tag: "gianluca_school_pickup"
+          url: /dashboard-kohbo/school

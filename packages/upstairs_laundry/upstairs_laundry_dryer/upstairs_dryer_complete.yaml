@@ -27,3 +27,4 @@ automation:
           devices: "all"
           priority: "active"
           tag: "main-level-dryer"
+          url: /dashboard-kohbo/rooms-laundry
