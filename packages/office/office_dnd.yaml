@@ -25,7 +25,7 @@ automation:
     triggers:
       # John's DnD is activated
       - trigger: state
-        entity_id: input_boolean.john_dnd
+        entity_id: binary_sensor.john_dnd_active
         to: "on"
       # Office becomes occupied
       - trigger: state
@@ -51,7 +51,7 @@ automation:
             conditions:
               # John's DnD is on
               - condition: state
-                entity_id: input_boolean.john_dnd
+                entity_id: binary_sensor.john_dnd_active
                 state: "on"
               # AND John is in the office
               - condition: state
@@ -77,7 +77,7 @@ automation:
     triggers:
       # John's DnD is off
       - trigger: state
-        entity_id: input_boolean.john_dnd
+        entity_id: binary_sensor.john_dnd_active
         to: "off"
         for:
           minutes: 2
@@ -103,7 +103,7 @@ automation:
             conditions:
               # John's DnD is off
               - condition: state
-                entity_id: input_boolean.john_dnd
+                entity_id: binary_sensor.john_dnd_active
                 state: "off"
               # John not in the office anymore
               - condition: template

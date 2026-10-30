@@ -17,10 +17,6 @@ automation:
       # - platform: state
       #   entity_id: input_boolean.office_occupied
       #   to: "on"
-      # # John's DnD is activated
-      # - platform: state
-      #   entity_id: input_boolean.john_dnd
-      #   to: "on"
       # # John is in the office
       # - platform: state
       #   entity_id: sensor.john_room_presence

@@ -37,16 +37,9 @@ automation:
 
       - if:
           # Only move forward if I'm not on a call
-          - condition: and
-            conditions:
-              # Not in DnD mode
-              - condition: state
-                entity_id: input_boolean.john_dnd
-                state: "off"
-              # Audio is not active
-              - condition: state
-                entity_id: binary_sensor.john_laptop_audio_active
-                state: "off"
+          - condition: state
+            entity_id: binary_sensor.john_dnd_active
+            state: "off"
         then:
           - action: script.john_daily_update_announcement
 

@@ -1,0 +1,15 @@
+# John DnD Active
+#
+# On when manual/work-laptop DnD, or the personal Mac camera or mic, is on.
+#
+
+template:
+  - binary_sensor:
+      - name: John DnD Active
+        unique_id: john_dnd_active
+        default_entity_id: binary_sensor.john_dnd_active
+        delay_on: "00:00:05"
+        state: >-
+          {{ is_state('input_boolean.john_dnd', 'on')
+             or is_state('binary_sensor.johns_mbp_2026_camera_in_use', 'on')
+             or is_state('binary_sensor.johns_mbp_2026_audio_input_in_use', 'on') }}
