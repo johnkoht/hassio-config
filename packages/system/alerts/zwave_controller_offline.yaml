@@ -40,3 +40,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "zwave-controller-offline"
+          url: /dashboard-kohbo/sensors-offline
