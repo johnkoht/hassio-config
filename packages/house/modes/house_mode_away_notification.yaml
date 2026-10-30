@@ -21,3 +21,4 @@ automation:
           devices: "jk"
           priority: "passive"
           tag: "house-mode-away"
+          url: /dashboard-kohbo/home#house_mode

@@ -63,6 +63,9 @@ automation:
         data:
           message: "The main level washer is finished and is ready to be emptied."
           title: "Main Level Washing Machine"
+          data:
+            url: /dashboard-kohbo/rooms-laundry
+            clickAction: /dashboard-kohbo/rooms-laundry
       #
       # Display a message on the TV
       - if:

@@ -50,6 +50,9 @@ automation:
         data:
           title: Holidays
           message: Christmas is NO longer activate
+          data:
+            url: /dashboard-kohbo/holidays-christmas
+            clickAction: /dashboard-kohbo/holidays-christmas
 
 
       #
