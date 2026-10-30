@@ -52,3 +52,4 @@ automation:
           devices: "jk"
           priority: "active"
           tag: "garage-door-3-automation"
+          url: /dashboard-kohbo/security-garage-doors

@@ -75,19 +75,9 @@
 - path: scripts.yaml
   reason: "Unused notify_engine script, out of scope in the plan; remove if the script is deleted"
 
-# Pending PR D (doors, garage, locks, kids escape), blocked on decision 6; remove when PR D links it
-- path: packages/garage/doors/door_2/garage_door_2_open_upon_arrival.yaml
-  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
-- path: packages/garage/doors/door_3/garage_door_3_open_upon_arrival.yaml
-  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
-- path: packages/ninos_room/nino_escaping/nino_escape_monitor.yaml
-  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
-- path: packages/security/security_unlock_front_door_by_fingerprint.yaml
-  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
-
-# UI-owned file with three pushes: kids-escape alert (pending PR D, decision 6), a leftover Test Motion debug push, and a weather-lights note
+# UI-owned file with unlinked pushes: a kids-escape alert, a leftover Test Motion debug push, and a weather-lights note
 - path: automations.yaml
-  reason: "UI-owned file: kids-escape alert (PR D, decision 6), a leftover Test Motion debug push, a weather-lights note"
+  reason: "UI-owned file: kids-escape alert (not linked, John does not use it), a leftover Test Motion debug push, a weather-lights note"
 
 # Pending a UPS popup (task 10 extras); the plan's interim link is energy, not applied yet
 - path: packages/system/ups/ups_battery_power_activated.yaml
