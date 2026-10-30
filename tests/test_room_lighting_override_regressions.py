@@ -136,7 +136,8 @@ def cond_index(conds, entity, state):
 
 
 # Rooms whose package directory is not named after the room (laundry_room lives in packages/laundry).
-PACKAGE_DIR = {"laundry_room": "laundry"}
+PACKAGE_DIR = {"laundry_room": "laundry", "ninos_bedroom": "ninos_room",
+               "gianlucas_room": "gianluca_room"}
 
 
 def room_files(room):
@@ -641,13 +642,16 @@ def test_laundry_not_occupied_only_clears_occupancy():
 # 16 mode-only rooms (no lighting automations: no flags, no latch) ------------
 # Only `<room>_mode_off` forcing `<room>_occupied` off (JK-1219), plus the bounce guard where
 # mode_auto has an occupancy-off trigger. Not in MIGRATED_ROOMS.
-MODE_ONLY_ROOMS = ["dining_room", "basement", "jr_suite", "powder_room", "mudroom_bathroom", "sunroom", "foyer"]
+# Gianluca's mode automations are named gianlucas_bedroom_* while his helpers are gianlucas_room_*.
+MODE_ID = {"gianlucas_room": "gianlucas_bedroom"}
+MODE_ONLY_ROOMS = ["dining_room", "basement", "jr_suite", "powder_room", "mudroom_bathroom", "sunroom", "foyer",
+                  "ninos_bedroom"]
 
 
 @pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
 def test_mode_only_room_mode_off_forces_occupancy_off_with_target(room):
     """JK-1219: Off also clears occupancy, via a target: block."""
-    steps = [s for s in walk(auto(f"{room}_mode_off")["actions"])
+    steps = [s for s in walk(auto(f"{MODE_ID.get(room, room)}_mode_off")["actions"])
              if s.get("action") == "input_boolean.turn_off"]
     assert any(s.get("target", {}).get("entity_id") == f"input_boolean.{room}_occupied"
                for s in steps)
@@ -658,7 +662,7 @@ def test_mode_only_room_mode_off_forces_occupancy_off_with_target(room):
 def test_mode_only_room_mode_auto_guard(room):
     """Where mode_auto triggers on occupancy off it needs the bounce guard; otherwise there is
     nothing to bounce and the trigger must stay absent."""
-    a = auto(f"{room}_mode_auto")
+    a = auto(f"{MODE_ID.get(room, room)}_mode_auto")
     occ_off = [t for t in as_list(a["triggers"])
                if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
     if occ_off:
@@ -702,3 +706,23 @@ def test_dining_room_dead_helpers_are_gone_from_config():
 def test_dining_room_not_occupied_only_clears_occupancy():
     body = action_body(auto("dining_room_not_occupied"))
     assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+# 18 kids' rooms: mode_off clears occupancy only when nobody is home and the bed is empty -------
+KIDS_BED = {"ninos_bedroom": "binary_sensor.nino_bed_occupied"}
+
+
+@pytest.mark.parametrize("room", sorted(KIDS_BED))
+def test_kids_mode_off_only_clears_occupancy_with_empty_bed(room):
+    """Off fires at house empty / Away / restart only, and a kid still in bed keeps the room
+    occupied (same rule as not_occupied; the occupied automation will not re-fire on an unchanged
+    bed sensor). Pins the bed guard and the house-empty-or-Away gate."""
+    a = auto(f"{MODE_ID.get(room, room)}_mode_off")
+    gate = next(c for c in as_list(a["conditions"]) if c.get("condition") == "or")
+    gated = {(c["entity_id"], str(c["state"])) for c in gate["conditions"]}
+    assert gated == {("input_boolean.house_occupied", "off"), ("input_select.house", "Away")}
+    clears = [s for s in walk(a["actions"]) if s.get("action") == "input_boolean.turn_off"
+              and s.get("target", {}).get("entity_id") == f"input_boolean.{room}_occupied"]
+    assert len(clears) == 1
+    guarded = [s for s in walk(a["actions"]) if "if" in s and clears[0] in as_list(s.get("then"))]
+    assert guarded and cond_index(guarded[0]["if"], KIDS_BED[room], "off") is not None

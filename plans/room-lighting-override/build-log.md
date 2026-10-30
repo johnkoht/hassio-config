@@ -252,3 +252,15 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | mode_off occupancy-off becomes turn_on | test_mode_only_room_mode_off_forces_occupancy_off_with_target[foyer] |
 | mode_off occupancy-off uses root entity_id | test_mode_only_room_mode_off_forces_occupancy_off_with_target[foyer] |
 | mode_auto gains unguarded occupancy-off trigger | test_mode_only_room_mode_auto_guard[foyer] (full-suite -x hits test_foyer_returns_to_auto_from_quiet first) |
+
+### ninos_bedroom (812 passed, 9 skipped)
+
+| Sabotage | First red test |
+|---|---|
+| mode_off occupancy-off becomes turn_on | test_mode_only_room_mode_off_forces_occupancy_off_with_target[ninos_bedroom] |
+| mode_off occupancy-off uses root entity_id | test_mode_only_room_mode_off_forces_occupancy_off_with_target[ninos_bedroom] |
+| mode_off bed guard flipped to bed occupied | test_kids_mode_off_only_clears_occupancy_with_empty_bed[ninos_bedroom] |
+| mode_off Away gate changed | test_kids_mode_off_only_clears_occupancy_with_empty_bed[ninos_bedroom] |
+| mode_auto guard loses house_occupied | test_mode_only_room_mode_auto_guard[ninos_bedroom] |
+| mode_auto guard loses Vacation | test_mode_only_room_mode_auto_guard[ninos_bedroom] |
+| mode_auto occupancy-off trigger loses its id | test_mode_only_room_mode_auto_guard[ninos_bedroom] |
