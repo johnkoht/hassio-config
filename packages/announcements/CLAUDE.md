@@ -175,4 +175,4 @@ packages/announcements/
 
 ## Volume ceiling
 
-No announcement may set a Sonos volume above **75**. The engine clamps `sound_volume` and `speech_volume` to 75 at runtime (`[value, 75] | min | int`, 30 when missing or not a number), the selectors cap at 75, `critical_announcement` is 40 (not halved during an emergency, never raised), and `tests/test_emergency_delivery_regressions.py` fails on any base volume literal above 75.
+No announcement may set a Sonos volume above **75**. The engine clamps `sound_volume` and `speech_volume` to 0..75 at runtime (`[[v, 0] | max, 75] | min | int`; 30 when missing, not a number or NaN), the selectors cap at 75, `critical_announcement` is 40 (not halved during an emergency, never raised), and `tests/test_emergency_delivery_regressions.py` fails on any base volume literal above 75.

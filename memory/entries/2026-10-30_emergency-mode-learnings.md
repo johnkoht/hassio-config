@@ -22,3 +22,9 @@
 ## PR 3: alarm lifecycle
 
 `input_boolean.alarm_test_mode` (initial false, 30 min auto-off, persistent notification) gates the Noonlight dispatch in both alert scripts (`if: state ... on` / `else: dispatch`, so only an explicit `on` skips it). Fire alert now notifies Noonlight (decision 8) with the cancel path in its push. `security_alarm_disabled` fires on any exit from `triggered`. Panic triggers alarmo (no code, works from disarmed, read-only verified in alarmo 1.10.18); falls back to the alert script if alarmo is unavailable; ZHA device trigger id untouched. Engine volume now clamped to 75 at runtime. +36 tests (493), 18 sabotage checks red, all static. Findings: the Noonlight switch sends police only and its off doesn't cancel; the live install uses the production endpoint.
+
+## PR 4: polish, ship
+
+Sirens on fire (decision 7) with a `fire_alarm_cleared` off path; intruder keeps the lights on until disarm and disarm restores the snapshot (decision 9, X3); panic takes the alarmo path only in a known-good state; engine volume clamp is 0..75 with NaN to 30. X4 (pre-empting a playing message) not built: no real test has shown a pre-emption problem. Left for John: Noonlight sends police for a fire (`noonlight.create_alarm service: fire` exists). +30 tests (524), 8 sabotage checks red.
+
+**Whole project:** 4 PRs, 11 tasks. The independent reviews, not the pre-mortem, caught the real faults each time (blocking engine call, halved quiet volume, narrow Noonlight scan). Static-only testing held for every alarm path; the first live checks are John's, with test mode on.

@@ -87,7 +87,9 @@ script:
           - action: script.turn_on
             target:
               entity_id: script.alarm_flash_lights
-            data: {}
+            data:
+              variables:
+                keep_lights_on: true
 
           # Send a push notification
           - action: script.turn_on
@@ -113,14 +115,22 @@ script:
         target:
           entity_id: switch.noonlight_alarm
 
-      # Turn off the sirens!
-      - action: switch.turn_off
-        target:
-          entity_id:
-            - switch.alarm_siren_1
-            - switch.alarm_siren_2
+      # Turn off the sirens! Not while the smoke detector is still on: a fire
+      # during the intruder alarm keeps its sirens until fire_alarm_cleared.
+      - if:
+          - condition: not
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.smoke_detector
+                state: "on"
+        then:
+          - action: switch.turn_off
+            target:
+              entity_id:
+                - switch.alarm_siren_1
+                - switch.alarm_siren_2
 
-      # Stop the flash; if it was cut short, restore the lights it snapshotted
+      # Stop the flash if it is still running
       - if:
           - condition: state
             entity_id: script.alarm_flash_lights
@@ -129,11 +139,14 @@ script:
           - action: script.turn_off
             target:
               entity_id: script.alarm_flash_lights
-          # The snapshot may not exist yet; never block the notification
-          - action: scene.turn_on
-            continue_on_error: true
-            target:
-              entity_id: scene.alarm_flash_lights_initial_state
+
+      # Lights stayed on for the intruder alarm: put them back. The flash
+      # snapshots at its start, so this is this alarm's snapshot. It may not
+      # exist (restart, flash never ran); never block the notification.
+      - action: scene.turn_on
+        continue_on_error: true
+        target:
+          entity_id: scene.alarm_flash_lights_initial_state
 
       # Notify us
       - action: script.general_notification

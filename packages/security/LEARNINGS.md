@@ -54,3 +54,11 @@ bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
 **Alarmo leaves `triggered` for an armed state when the trigger time ends** (`disarm_after_trigger` is off), so `security_alarm_disabled` watches `from: triggered`, not `to: disarmed`. A trigger from `disarmed` ends in `disarmed` (3600 s).
 
 **The panic button hardware is dead (JK-1230).** The alarmo path is verified statically and by reading alarmo's source only.
+
+## Lights, sirens and panic (JK-1149, PR 4)
+
+**Intruder keeps the lights on; fire restores.** `alarm_flash_lights` takes `keep_lights_on` (intruder passes true); with it the final restore is skipped, the 10 toggles end with the lights on, and `security_alarm_disabled` restores the snapshot (`scene.turn_on`, `continue_on_error`: the scene is runtime-only and is gone after a restart). The fire path and tests restore at the end of the flash.
+
+**Fire sirens need their own off path.** `security_alarm_disabled` only runs on an alarmo exit from `triggered`, which fire never causes, so `fire_alarm_cleared` turns the sirens off a minute after the smoke detector reads `off` (also from `unavailable`; skipped while alarmo is triggered). The reverse is guarded too: disarming the intruder alarm leaves the sirens on while smoke is still detected. Alarm test mode does not silence the sirens, only Noonlight.
+
+**Fall back on anything unknown.** Panic takes the alarmo path only in a known-good alarmo state, because a state condition on a missing entity is false and would otherwise skip the alert. The engine clamp tests NaN explicitly (`float('nan')` parses, and `min`/`max` with NaN are order-dependent).
