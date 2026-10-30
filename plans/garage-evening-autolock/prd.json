@@ -1,0 +1,87 @@
+{
+  "name": "garage-evening-autolock",
+  "branchName": "feature/garage-evening-autolock",
+  "goal": "After sunset, re-lock the garage entry door once unlocked past the timeout, behind a dashboard switch, with a warning push, snooze and lockout guards.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Spike: confirm the outdoor guards are real signals",
+      "description": "Read-only recorder and state reads on the host for the driveway, back yard and garage sensors.",
+      "acceptanceCriteria": [
+        "Back yard entity ids are confirmed from live state and listed in pre-mortem.md",
+        "Each guard sensor has on-transitions in the last 14 days and no run longer than 20 minutes"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Evening auto lock automation and helpers",
+      "description": "packages/mudroom/garage_entry_door/garage_entry_door_evening_auto_lock.yaml with the switch, snooze timer and unlock-window timer.",
+      "acceptanceCriteria": [
+        "Helpers have no initial:",
+        "Conditions: switch, guest/entertainment, emergency, notification level, sun below_horizon, time after 12:00, lock and door for the timeout, just arrived, snooze idle, all outdoor guards for 5 minutes, cover closed",
+        "Warn (time-sensitive, snooze), wait 2 minutes, snooze stops, recheck, lock with continue_on_error, locked-or-failed push",
+        "No start or reload trigger; sunset offset 1 minute"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Unlock action handler",
+      "description": "Standalone event automation for the Unlock tap on the Locked push.",
+      "acceptanceCriteria": [
+        "Needs unlock-window timer active, lock locked, house occupied, bedtime off",
+        "Cancels the window after one unlock"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Dashboard switch and README",
+      "description": "Add the switch and shared timeout to the garage entry lock popup; README line.",
+      "acceptanceCriteria": [
+        "Popup has input_boolean.garage_entry_door_evening_auto_lock and the timeout row when on",
+        "dashboards/kohbo/security/README.md mentions it"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Regression tests with sabotage checks",
+      "description": "tests/test_garage_entry_evening_autolock.py",
+      "acceptanceCriteria": [
+        "Each gate, guard, daytime and morning case blocks",
+        "Trigger set, recheck parity, push priorities, unlock handler pinned",
+        "Full suite passes; sabotage checks go red"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Docs, LEARNINGS and memory",
+      "description": "docs/AUTOMATIONS.md, packages/mudroom/LEARNINGS.md, memory entry and index.",
+      "acceptanceCriteria": [
+        "Each is updated in this branch"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-30T00:00:00Z",
+    "totalTasks": 6,
+    "completedTasks": 0,
+    "failedTasks": 0
+  }
+}
