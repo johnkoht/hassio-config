@@ -125,3 +125,25 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | mode_off occupancy-off uses root entity_id | test_upstairs_hallway_mode_off_forces_occupancy_off_with_target |
 | not_occupied regains delay | test_upstairs_hallway_not_occupied_only_clears_occupancy |
 | sleep_mode_on writes the latch | test_upstairs_hallway_sleep_mode_automations_do_not_touch_flags |
+
+### office (728 passed, 9 skipped)
+
+| Sabotage | First red test |
+|---|---|
+| hand flag `initial: on` back | test_flag_has_no_initial_and_latch_initial_off[office] |
+| latch `initial: on` | test_flag_has_no_initial_and_latch_initial_off[office] |
+| reset loses Off trigger | test_reset_automation_shape[office] |
+| reset gains a condition | test_reset_automation_shape[office] |
+| not_occupied writes hand flag | test_nothing_writes_the_hand_flag[office] |
+| office_lights_off mentions latch id | test_off_path_ignores_flag_and_latch_on_room_off[office] |
+| office_lights_off room_off branch gains flag | test_off_path_ignores_flag_and_latch_on_room_off[office] |
+| motion_on / day_on / lights_on latch check removed (3 rows) | test_on_automations_gated_by_flags_and_latch_before_mode[office-...] |
+| office_lights_on drops DnD from mode block | test_office_lights_on_latch_gate_before_mode_and_dnd_still_passes |
+| office_lights_day_on drops DnD from mode block | test_office_day_on_still_passes_dnd_and_motion_on_only_auto |
+| scene_toggle gains latch | test_office_user_driven_light_automations_are_not_latch_gated[office_lights_scene_toggle] |
+| motion_off loses hand flag | test_office_motion_off_obeys_hand_flag_not_latch |
+| manual_change loses unavailable guard | test_manual_change_conditions_guard_context_and_unavailable[office] |
+| manual_change loses parent/user clause | test_manual_change_templates_render[automation-...-office] |
+| manual_change stops watching the bulbs | test_manual_change_also_watches_extra_lights[office-light.office_ceiling_bulbs] |
+| manual_change stops watching the switch off | test_manual_change_triggers_and_alias[office] |
+| office_mode_off turns occupancy off | test_office_mode_off_leaves_occupancy_alone |
