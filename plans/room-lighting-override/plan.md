@@ -1,7 +1,7 @@
 ---
 title: Room Lighting Override
 slug: room-lighting-override
-status: draft
+status: approved
 created: 2026-10-28
 issues: [JK-1145, JK-1102, JK-1219]
 related: [house-mode-resolver]
@@ -11,6 +11,8 @@ has_prd: false
 ---
 
 # Room Lighting Override
+
+> Approved by John 2026-10-30 (written authorization to approve the batch; answers folded in below).
 
 ## Problem
 
@@ -56,10 +58,11 @@ Converge on the main bedroom model, generalized into a small per-room kit, and r
 
 **Ordering rule (the one thing that must be right).** In any room, the reset automation lands, in the same PR or earlier, before `mode_off` forces occupancy off. Otherwise the kitchen's stuck-flag bug spreads to every room. A regression test enforces it.
 
-**Scope: every room with a mode select** (John, 10-28). Pilot first, then one room per small PR:
+**Scope: every room with a mode select** (John, 10-28). Pilot first (main bedroom, kitchen and garage, one PR each), then the remaining Phase 4 rooms together in a single PR (**Resolved (John, 2026-10-30):** "One PR is fine"):
 
 - **Pilot and early rooms (protection):** main bedroom, kitchen (supersedes #73), garage (live flapping).
 - **Rooms with motion or day lighting:** the full kit (both flags, manual-change detection, reset automation, Off forces occupancy off, Off turns lights off).
+- **Phase 4 rooms: one PR.** Order inside the PR is unchanged: per room, the reset automation lands in the same commit as, or before, that room's `mode_off` forcing occupancy off, and the repo-wide ordering test runs over the whole PR. Phase 5 (family_room, mudroom) stays separate because its first step is a behaviour-neutral migration.
 - **Rooms with a mode but no lighting automations** (basement, jr_suite, powder_room, mudroom_bathroom, sunroom, foyer, Nino's and Gianluca's rooms): only Off forces occupancy off, plus the Auto-bounce guard. No flags are added where nothing would read them.
 - **family_room and mudroom:** now in scope. They first get a migration phase (modern syntax, `packages/` layout, fix the invalid `On`/`Dim` options), then the kit.
 
@@ -98,7 +101,7 @@ Protection items (stuck or flapping flags) are still labelled separately from po
 17. **JK-1219 for the garage** — `garage_mode_off` (house → Bedtime) forces `garage_occupied` off. Check `garage_mode_auto`, which triggers on occupancy *on*, so it doesn't bounce.
 18. **Tests + deploy + live check.**
 
-### Phase 4 — Rollout to every remaining room with a mode (each room is its own small PR, same kit, same tests)
+### Phase 4 — Rollout to every remaining room with a mode (one PR for all of them, per John 2026-10-30; same kit, same tests; one commit per room so the PR stays reviewable and a single room can be reverted)
 
 Protection (a flag that sticks or misfires today):
 
@@ -147,19 +150,22 @@ Over the days after the deploy, for each migrated room:
 
 Reuse the shape of the investigation's q4/q5/q6 queries. Results go in the PR description with neutral wording, and no times tied to people.
 
-## Open decisions (recommended defaults)
+## Open decisions (all resolved)
 
-1. **Hand-only lighting flag in every room with motion lights?** Recommend **yes**. One meaning for the dashboard toggle everywhere.
-2. **Does a manual brightness change set the manual flag?** Recommend **yes for on, off and brightness**, not for Adaptive Lighting colour or temperature (excluded via the context check). Fallback if Phase 0 shows ZHA transition reports look manual: v1 ships on/off only, and brightness follows once a debounce is proven (ignore brightness changes within ~10s of an automation-context change on the same light).
-3. **Force occupancy off on Off in every room that goes Off?** Recommend **yes**, but only room by room, and only after that room's reset automation lands (the ordering rule).
-4. **Drop `initial:` on the lighting flags?** Recommend **yes**, and keep `initial: off` on the manual flags so a restart always starts clean.
-5. **Dining room:** recommend **removing** the unused flag (and `dining_room_lights_auto`) rather than migrating it.
-6. **Does the manual flag block the vacancy-off automations (`*_lights_to_off` / `*_lights_off`)?** Recommend **no**. The latch blocks on-type automations only, and the off-when-empty path obeys only the hand flag. Otherwise a manually-on light stays on after everyone leaves, because the reset fires after the off trigger has passed. This matches the main bedroom today.
-7. **Scope:** **decided 10-28 (John): every room with a mode select.** Main bedroom, kitchen and garage go first as pilots; then Phase 4; then Phase 5 for family_room and mudroom. Open: do Phase 4 rooms ship one per PR (recommended) or batched by floor?
-8. **Alias stability:** recommend **keeping existing aliases** on renamed or folded automations wherever `automation.<slug>` is referenced (dashboards, `automation.turn_on/off`), and choosing new aliases whose slug matches the id.
+John's only specific answer was on decision 7 (one PR). Every other decision takes its recommended default, marked below.
+
+1. **Hand-only lighting flag in every room with motion lights?** **Resolved (John, 2026-10-30), by default:** the recommendation stands. Recommend **yes**. One meaning for the dashboard toggle everywhere.
+2. **Does a manual brightness change set the manual flag?** **Resolved (John, 2026-10-30), by default:** the recommendation stands. Recommend **yes for on, off and brightness**, not for Adaptive Lighting colour or temperature (excluded via the context check). Fallback if Phase 0 shows ZHA transition reports look manual: v1 ships on/off only, and brightness follows once a debounce is proven (ignore brightness changes within ~10s of an automation-context change on the same light).
+3. **Force occupancy off on Off in every room that goes Off?** **Resolved (John, 2026-10-30), by default:** the recommendation stands. Recommend **yes**, but only room by room, and only after that room's reset automation lands (the ordering rule).
+4. **Drop `initial:` on the lighting flags?** **Resolved (John, 2026-10-30), by default:** the recommendation stands. Recommend **yes**, and keep `initial: off` on the manual flags so a restart always starts clean.
+5. **Dining room:** **Resolved (John, 2026-10-30), by default (the recommendation stands):** recommend **removing** the unused flag (and `dining_room_lights_auto`) rather than migrating it.
+6. **Does the manual flag block the vacancy-off automations (`*_lights_to_off` / `*_lights_off`)?** **Resolved (John, 2026-10-30), by default:** the recommendation stands. Recommend **no**. The latch blocks on-type automations only, and the off-when-empty path obeys only the hand flag. Otherwise a manually-on light stays on after everyone leaves, because the reset fires after the off trigger has passed. This matches the main bedroom today.
+7. **Scope:** **decided 10-28 (John): every room with a mode select.** Main bedroom, kitchen and garage go first as pilots; then Phase 4; then Phase 5 for family_room and mudroom. **Resolved (John, 2026-10-30):** "One PR is fine": the remaining Phase 4 rooms ship together in a single PR (one commit per room), not one per room or per floor. Phase 5 stays its own PR(s).
+8. **Alias stability:** **Resolved (John, 2026-10-30), by default (the recommendation stands):** recommend **keeping existing aliases** on renamed or folded automations wherever `automation.<slug>` is referenced (dashboards, `automation.turn_on/off`), and choosing new aliases whose slug matches the id.
 
 ## Risks
 
+- **A single large Phase 4 PR** (John's call) is harder to review and revert. Mitigation: one commit per room, the repo-wide ordering test, and the recorder check per room after deploy.
 - **Stuck flag spreads** if occupancy-off-on-Off lands before a room's reset: enforced by the ordering rule and the repo-wide invariant test.
 - **False "manual" detections** (ZHA transition reports, Adaptive Lighting, light-group recompute arriving with a fresh context) would latch the override and kill motion lights until the room empties: Phase 0 spike first, the Open decision 2 fallback, and the recorder check that lists latches held for over an hour. The worst case self-heals at the next unoccupied/Off.
 - **Removing `initial: on` strands a flag that's off now.** The old latch may have left a room's flag off, and after the change it restores off forever. Mitigation: after each deploy, read the live flag state and ask John to switch it on once (one dashboard tap). Never set it from an automation.
