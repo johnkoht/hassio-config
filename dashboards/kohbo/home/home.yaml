@@ -28,20 +28,32 @@ cards:
           template: kohbo_header_page_title
           name: Home
 
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:bell
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#notifications'
+        #
+        # Safety alert chip (only while a safety device needs attention) + Notifications
+        #
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  justify-content: flex-end !important;
+                  gap: 8px !important;
+                }
+                #root > * {
+                  flex: 0 0 auto !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - !include /config/dashboards/kohbo/home/_safety_device_notification.yaml
 
-
-  #
-  # Safety Device Needs Attention
-  # Shown only while a leak sensor or safety device is offline or low on battery
-  #
-  - !include /config/dashboards/kohbo/home/_safety_device_notification.yaml
+              - type: custom:button-card
+                template: kohbo_header_chip_card
+                icon: mdi:bell
+                icon_color: var(--secondary-text-color)
+                tap_action:
+                  action: navigate
+                  navigation_path: '#notifications'
 
   #
   # Quick Overview
