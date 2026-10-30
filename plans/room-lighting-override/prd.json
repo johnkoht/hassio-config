@@ -12,9 +12,10 @@
         "Exact condition template recorded, brightness decision pinned"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "88bc302"
     },
     {
       "id": "task-2",
@@ -27,9 +28,10 @@
         "Each check sabotage-tested"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "5819ca6"
     },
     {
       "id": "task-3",
@@ -41,9 +43,10 @@
         "No lights_auto precondition; old id unreferenced"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "7306ae3"
     },
     {
       "id": "task-4",
@@ -54,9 +57,10 @@
         "No conditions; target block; header comment"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "7306ae3"
     },
     {
       "id": "task-5",
@@ -70,9 +74,10 @@
         "No automation writes the hand flag"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "7306ae3"
     },
     {
       "id": "task-6",
@@ -82,9 +87,10 @@
         "README, docs/ROOMS.md, packages/CLAUDE.md pattern, main_bedroom LEARNINGS.md"
       ],
       "pr": 1,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "43b3ae2"
     },
     {
       "id": "task-7",
@@ -138,7 +144,7 @@
   "metadata": {
     "createdAt": "2026-10-30T04:33:55.194390Z",
     "totalTasks": 10,
-    "completedTasks": 0,
+    "completedTasks": 6,
     "failedTasks": 0,
     "note": "Only PR 1 tasks (task-1..6) are built in this run; later PRs ship on the lead's go."
   }
