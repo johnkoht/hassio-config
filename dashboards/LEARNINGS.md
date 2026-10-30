@@ -37,3 +37,7 @@ automations do. Sensors page Power section, 2026-10-29.
 - Each migrated room's page has a `Manual Override` entity row (`<room>_lights_manually_toggled`) under its `Lighting Automations` row. The latter is hand-only now; the former is set by a hand change to the lights and cleared by tapping it or by the room's reset automation. Garage and laundry have no such row on their pages, so they have none. The new latches only exist after an input_boolean reload.
 - The mudroom page had no lighting rows, so it got both `Lighting Automations` (`mudroom_lighting_automations`) and `Manual Override` at the top of Quick Settings (PR 6). Its hand flag is created off by HA; the deploy turns it on once.
 
+
+## Medication Supply rows (2026-10-30)
+
+- The Nino popup shows days, never doses. The stock helper is not on the dashboard; "Days left" reads "Not set" while the sensor is `unavailable`. "Add days to supply" and "Set days left" are `template-entity-row`s with a `perform-action` tap that call the scripts with no `days`, so the scripts read "Days to enter" themselves. The tap_action on a template-entity-row was copied from other cards and is untested live: check it after deploy.
