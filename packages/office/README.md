@@ -66,11 +66,11 @@ Off mode is enabled when we're not home or everybody is asleep. When the Office 
 The Office goes into Do Not Disturb (DnD) mode when I'm on a call. This will disabled speech notifications and turn on the red light outside my office. 
 
 **Triggered by**
-- John DnD mode `input_boolean.john_dnd`
+- `binary_sensor.john_dnd_active` (manual toggle / work laptop via `input_boolean.john_dnd`, or the personal Mac camera or mic)
 - Office becomes occupied
 
 **The conditions are**
-- John DnD mode is on
+- `binary_sensor.john_dnd_active` is on
 - Office is occupied
 
 Eventually, this could also include Cristina or a guest. One thing to note, there is a state of DnD on John as well as the Office. The reason is that I might be in DnD mode but not in the office. Sometimes I take calls on the patio or the kitchen. 

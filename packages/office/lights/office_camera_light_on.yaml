@@ -8,9 +8,9 @@ automation:
     initial_state: on
     alias: "Office Camera Light On"
     triggers:
-      # Laptop camera goes on
+      # Mac camera goes on
       - trigger: state
-        entity_id: binary_sensor.john_laptop_camera_active
+        entity_id: binary_sensor.johns_mbp_2026_camera_in_use
         to: "on"
         for:
           seconds: 2
@@ -23,9 +23,9 @@ automation:
       - condition: state
         entity_id: input_boolean.office_occupied
         state: "on"
-      # Laptop camera is on
+      # Mac camera is on
       - condition: state
-        entity_id: binary_sensor.john_laptop_camera_active
+        entity_id: binary_sensor.johns_mbp_2026_camera_in_use
         state: "on"
       # John's in the office
       - condition: state

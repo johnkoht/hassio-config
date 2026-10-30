@@ -14,7 +14,7 @@ automation:
         entity_id: sensor.john_calendar_focus_mode
       # DnD turns OFF
       - trigger: state
-        entity_id: input_boolean.john_dnd
+        entity_id: binary_sensor.john_dnd_active
         to: "off"
       # Hassio restart/relaod
       - trigger: homeassistant
@@ -26,10 +26,6 @@ automation:
       # deep work mode at midnight
       - condition: time
         after: "05:00:00"
-      # # Make sure it's not DnD mode
-      # - condition: state
-      #   entity_id: input_boolean.john_dnd
-      #   state: "off"
       # Make sure I'm home
       - condition: state
         entity_id: input_boolean.john_home

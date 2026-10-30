@@ -43,7 +43,7 @@ automation:
         state: "DnD"
       - alias: "John is in DnD"
         condition: state
-        entity_id: input_boolean.john_dnd
+        entity_id: binary_sensor.john_dnd_active
         state: "on"
       - alias: "House is not in Bedtime"
         condition: not

@@ -84,16 +84,16 @@ I walk into the office. The motion sensor triggers, and `input_boolean.office_oc
 
 **A Call Comes In**
 
-My calendar shows a meeting starting. My laptop camera turns on. The Office detects I'm on a call and transitions to **DnD** mode:
+My camera or mic turns on. The Office detects I'm on a call and transitions to **DnD** mode:
 
 - Music stops immediately
 - A red light turns on outside the office door → family knows not to interrupt
 - TTS notifications are disabled → no "John, dinner's ready!" mid-presentation
-- The El Gato camera light turns on (synced with my laptop camera)
+- The El Gato camera light turns on (synced with the personal Mac camera)
 
 **Back to Work**
 
-The call ends. My laptop camera turns off. The Office transitions back to **Auto** mode:
+The call ends. My camera and mic turn off. The Office transitions back to **Auto** mode:
 
 - The red light outside turns off
 - Music resumes
@@ -121,8 +121,8 @@ Here's what's happening behind the scenes:
 | Office not occupied | No motion/presence for 3 min | Turn off `input_boolean.office_occupied` |
 | Lights on when dark | Occupied + illuminance < 150 lux | Turn on ceiling lights |
 | Music auto-play | Occupied + John present + working hours | Start music playback |
-| Enter DnD | Camera on + calendar active | Change mode to DnD |
-| Exit DnD | Camera off | Change mode to Auto |
+| Enter DnD | Camera or mic on (`binary_sensor.john_dnd_active`) | Change mode to DnD |
+| Exit DnD | Camera and mic off for 2 min | Change mode to Auto |
 | DnD indicator | DnD mode active | Turn on red light outside |
 | Disable TTS | DnD mode active | Block TTS to office speakers |
 | Call lighting | Camera or audio call, AL warmer or dimmer than the setting | Pause AL, hold ceiling bulbs at the set colour/brightness (see `packages/office/README.md`) |
