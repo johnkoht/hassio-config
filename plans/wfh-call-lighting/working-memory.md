@@ -23,3 +23,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [Task 1] NOTHING_NOVEL - Task 1
 - [Task 2] NOTHING_NOVEL - Task 2
 - [Task 3] NOTHING_NOVEL - Task 3
+- [Task 4] NOTHING_NOVEL - Task 4
