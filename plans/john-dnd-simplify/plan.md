@@ -1,11 +1,11 @@
 ---
 title: John DnD Simplify
 slug: john-dnd-simplify
-status: in-progress
+status: shipped
 created: 2026-10-30
 has_pre_mortem: true
 has_review: true
-has_prd: false
+has_prd: true
 ---
 
 # John DnD Simplify
