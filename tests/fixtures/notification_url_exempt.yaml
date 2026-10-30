@@ -1,0 +1,98 @@
+# Pushes that deliberately carry no dashboard link (notification-deep-links).
+# One entry per file: path plus the reason. tests/test_notification_deep_links.py
+# fails on any unlinked push not listed here, and on an entry that has gone stale
+# (the file's pushes now all carry a link, or it no longer sends one).
+
+# Passive logger: a status echo with nothing to open
+- path: packages/family_room/occupancy/family_room_not_occupied.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/family_room/occupancy/family_room_occupied.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/john/do_not_disturb/automations/john_dnd_on.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/john/do_not_disturb/automations/john_personal_time_off.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/john/do_not_disturb/automations/john_personal_time_on.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/john/do_not_disturb/automations/john_work_call_off.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/john/do_not_disturb/automations/john_work_call_on.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/nearly_home/nearly_home_off.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/nearly_home/nearly_home_on.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/people/announcements/person_announcement_script.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: automation/people/returned_home.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: automation/people/cristina/cristina_arrived_work.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/playroom/party_time/playroom_activate_party_time.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/playroom/party_time/playroom_deactivate_party_time.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: automation/guests/guest_announce_arrival.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: automation/guests/guest_announce_departure.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+- path: packages/today_is_a_full_moon.yaml
+  reason: "Passive logger: a status echo with nothing to open"
+
+# Reminder with no screen to open
+- path: packages/reminders/bedtime_notifications.yaml
+  reason: "Reminder with no screen to open"
+- path: packages/reminders/birthdays/birthday_reminder/birthday_today_reminder.yaml
+  reason: "Reminder with no screen to open"
+- path: packages/reminders/birthdays/birthday_reminder/birthday_tomorrow_reminder.yaml
+  reason: "Reminder with no screen to open"
+- path: packages/reminders/garbage_day/automations/garbage_day_is_tomorrow_reminder.yaml
+  reason: "Reminder with no screen to open"
+- path: packages/reminders/kids_activities/automations/kids_activity_tomorrow_reminder.yaml
+  reason: "Reminder with no screen to open"
+- path: packages/reminders/neighborhood/automations/neighborhood_event_tomorrow_reminder.yaml
+  reason: "Reminder with no screen to open"
+- path: packages/reminders/morning_update.yaml
+  reason: "Reminder with no screen to open"
+- path: packages/people/john/daily_report/john_daily_report.yaml
+  reason: "Reminder with no screen to open"
+
+# Personal reminder: no dashboard target exists and none should be invented
+- path: packages/people/cristina/commute/cristina_train_delay_alert.yaml
+  reason: "Personal reminder"
+- path: packages/people/cristina/find_phone/cristina_find_phone.yaml
+  reason: "Personal reminder"
+- path: packages/people/cristina/medication_reminder/cristina_daily_medication_reminder.yaml
+  reason: "Personal reminder"
+- path: packages/people/cristina/medication_reminder/cristina_friday_medication_reminder.yaml
+  reason: "Personal reminder"
+- path: packages/people/nino/medication_reminder/nino_medication_escalation.yaml
+  reason: "Personal reminder"
+- path: packages/people/nino/medication_reminder/nino_medication_reminder.yaml
+  reason: "Personal reminder"
+- path: packages/reminders/medication_refill/medication_refill_low_stock_alert.yaml
+  reason: "Personal reminder"
+- path: scripts.yaml
+  reason: "Personal reminder"
+
+# Pending PR D (doors, garage, locks, kids escape), blocked on decision 6; remove when PR D links it
+- path: packages/garage/doors/door_2/garage_door_2_open_upon_arrival.yaml
+  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
+- path: packages/garage/doors/door_3/garage_door_3_open_upon_arrival.yaml
+  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
+- path: packages/ninos_room/nino_escaping/nino_escape_monitor.yaml
+  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
+- path: packages/security/security_unlock_front_door_by_fingerprint.yaml
+  reason: "Pending PR D (doors, garage, locks, kids escape), blocked on decision 6"
+
+# UI-owned file with three pushes: kids-escape alert (pending PR D, decision 6), a leftover Test Motion debug push, and a weather-lights note
+- path: automations.yaml
+  reason: "UI-owned file: kids-escape alert (PR D, decision 6), a leftover Test Motion debug push, a weather-lights note"
+
+# Pending a UPS popup (task 10 extras); the plan's interim link is energy, not applied yet
+- path: packages/system/ups/ups_battery_power_activated.yaml
+  reason: "Needs a UPS popup first (task 10 extras); the plan's interim link is energy, not applied yet"
+- path: packages/system/ups/ups_battery_power_restored.yaml
+  reason: "Needs a UPS popup first (task 10 extras); the plan's interim link is energy, not applied yet"
+- path: packages/system/ups/ups_offline.yaml
+  reason: "Needs a UPS popup first (task 10 extras); the plan's interim link is energy, not applied yet"
