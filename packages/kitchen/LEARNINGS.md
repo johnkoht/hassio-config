@@ -28,3 +28,6 @@ The flag is now hand-only. A separate latch, `kitchen_lights_manually_toggled`, 
 
 `light.kitchen_ceiling_lights` is a light group. Its changes carry the automation's context, but some attribute-only rows had no parent in the Phase 0 capture, so the manual-change automation keeps the 10 s debounce and the `unavailable` guard (see `packages/main_bedroom/LEARNINGS.md`).
 
+## Dim pendants latch too
+
+`kitchen_lights_manual_change` also watches `light.kitchen_island_pendants` (a Lutron dimmer driven by Dim-mode motion on), so a hand setting there sets the latch and Dim motion doesn't re-apply over it.
