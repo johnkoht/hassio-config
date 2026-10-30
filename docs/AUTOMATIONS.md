@@ -51,6 +51,7 @@ Here are some of my favorite and most useful automations:
 
 - **[Safety Outlets](https://github.com/johnkoht/hassio-config/blob/master/packages/main_bathroom/outlets/main_bathroom_turn_off_outlets.yaml)**: Some outlets around the house will automatically turn off when we're not home or the room is off. The best example is the hair dryer and steamer in our main bathroom. 
 - **[Radio & UPS offline alerts](https://github.com/johnkoht/hassio-config/tree/master/packages/system)**: a push when the Zigbee coordinator, Z-Wave controller or UPS drops offline (re-checked after HA starts), plus a critical push when the UPS goes on battery and another when line power is back.
+- **[Safety device alerts](https://github.com/johnkoht/hassio-config/tree/master/packages/system/sensor_health)**: a time-sensitive push to John when a leak sensor, the smoke detector or another safety device has been offline for an hour or is under 30% battery. It repeats each morning at 09:00 until fixed, can be snoozed for a day or a week from the push, and also shows as a red card on Home.
 
 ### Holidays
 
