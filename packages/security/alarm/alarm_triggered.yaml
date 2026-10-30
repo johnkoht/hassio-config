@@ -102,7 +102,7 @@ script:
                 devices: "all"
                 priority: "critical"
                 tag: "home-security-alarm"
-                url: /dashboard-kohbo/security
+                url: /dashboard-kohbo/security-alarm-panel
 
 
   security_alarm_disabled:
@@ -156,4 +156,4 @@ script:
           devices: "all"
           priority: "time-sensitive"
           tag: "home-security-alarm"
-          url: /dashboard-kohbo/security
+          url: /dashboard-kohbo/security-alarm-panel
