@@ -1,3 +1,8 @@
+# Kitchen Mode Off
+#
+# House empty, Away or bedtime puts the kitchen in Off and unoccupied.
+#
+
 automation:
   - id: "kitchen_mode_off"
     initial_state: on
@@ -68,7 +73,3 @@ automation:
       - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.kitchen_occupied
-      # Reset the manual-override latch; kitchen_not_occupied can't once occupancy is forced off
-      - action: input_boolean.turn_on
-        target:
-          entity_id: input_boolean.kitchen_lighting_automations
