@@ -77,3 +77,5 @@ bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
 - **`quiet_mode` is "somebody is in bed", not "night".** Midday naps hold the daytime paths; 09:00 is the only unconditional one.
 - **The label is a cadence, not a mute.** `known_issue` devices stay in the list and push on Mondays; the new-device rule ignores a label change.
 - Lock and cover battery is skipped by decision, but `lock.garage_entry_door` does have one.
+
+- **`last_changed` is not an attribute (2026-10-30, PR #124).** `state_attr(x, 'last_changed')` is always `None`, so a time-since check built on it always passes. Use `states.x.last_changed` instead. The backyard kitchen-door guard was silently dead because of this.
