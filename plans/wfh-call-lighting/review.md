@@ -16,4 +16,4 @@ Reviewer: independent sonnet `reviewer` subagent, 2026-10-30. Verdict round 1: *
 
 Checks that held: entertainment guards, detector ignores automation and `:al:` contexts on paper, `to: [Auto, Off]` is complete (the select has three options).
 
-Round 2 (re-review of the corrected plan): see bottom.
+Round 2 (re-review of the corrected plan): **APPROVED**, all 9 fixed, no new DEFECTs. Five BACKLOG notes: gate order has two house-level conditions after room-level ones (harmless); a call still in DnD at 12 h gets AL resumed and is not re-paused (accepted); a mid-call HA restart loses the `for:` backstops (the end trigger covers the normal case; best effort); pre-mortem Risk 4 text was stale (fixed); a cosmetic prd.json description (fixed).

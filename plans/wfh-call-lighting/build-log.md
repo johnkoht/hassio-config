@@ -2,3 +2,4 @@
 
 - 2026-10-30 Phase 0: started; plan stamped in-progress. Worktree `.claude/worktrees/wfh-call-lighting`, branch `worktree-wfh-call-lighting` from origin/master ee6b638. Baseline: 1057 passed, 9 skipped.
 - Phase 1.1: live read of AL entry and switch attributes done (see plan addendum).
+- Phase 1.2/1.3: pre-mortem (no CRITICAL) and review (round 1 ITERATE, round 2 APPROVED) done. Phase 2: PRD with 5 tasks.
