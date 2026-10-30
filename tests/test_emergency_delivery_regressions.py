@@ -149,3 +149,50 @@ def test_critical_volume_is_still_40():
     cfg = load(ANNOUNCEMENTS / "critical_announcement.yaml")["script"]["critical_announcement"]["variables"]
     for key in ("sound_file_volume", "speech_volume"):
         assert "set vol = 40" in cfg[key]
+
+
+def engine_volume_templates():
+    seq = load(ANNOUNCEMENTS / "announcement_engine.yaml")["script"]["announcement_engine"]["sequence"]
+    plays = [s for s in seq if s.get("action") == "media_player.play_media"]
+    assert len(plays) == 2
+    return {"sound_volume": plays[0]["data"]["extra"]["volume"],
+            "speech_volume": plays[1]["data"]["extra"]["volume"]}
+
+
+@pytest.mark.parametrize("field", ["sound_volume", "speech_volume"])
+@pytest.mark.parametrize("given,expected", [
+    (30, 30), ("30", 30), (75, 75), (200, 75), ("90", 75), (75.5, 75), (1000000, 75),
+    (27.5, 27), ("not a number", 30), (None, 30),
+])
+def test_engine_clamps_runtime_volume_to_the_ceiling(field, given, expected):
+    """Whatever a caller passes, the volume that reaches play_media is <= 75."""
+    template = engine_volume_templates()[field]
+    out = Environment(undefined=StrictUndefined).from_string(template).render(**{field: given})
+    assert int(out) == expected and int(out) <= VOLUME_CEILING
+
+
+@pytest.mark.parametrize("field", ["sound_volume", "speech_volume"])
+def test_engine_volume_undefined_falls_back_and_stays_under_the_ceiling(field):
+    template = engine_volume_templates()[field]
+    assert int(Environment(undefined=StrictUndefined).from_string(template).render()) == 30
+
+
+def test_engine_has_no_other_volume_path():
+    seq = load(ANNOUNCEMENTS / "announcement_engine.yaml")["script"]["announcement_engine"]["sequence"]
+    keys, actions = [], []
+
+    def walk(node):
+        if isinstance(node, dict):
+            for k, v in node.items():
+                if "volume" in str(k):
+                    keys.append(k)
+                if k == "action":
+                    actions.append(v)
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(seq)
+    assert keys == ["volume", "volume"]  # the two clamped extra.volume values
+    assert not [a for a in actions if "volume" in str(a)]  # no media_player.volume_set
