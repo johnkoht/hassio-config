@@ -139,16 +139,17 @@
         "Behaviour-neutral migration, option test, kit adopted"
       ],
       "pr": 5,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "714969d"
     }
   ],
   "metadata": {
     "createdAt": "2026-10-30T04:33:55.194390Z",
     "totalTasks": 10,
-    "completedTasks": 9,
+    "completedTasks": 10,
     "failedTasks": 0,
-    "note": "PR 1-4 merged (#100-#103); PR 5 (task-10 part 1: family_room/mudroom migration) in this branch; PR 6 (adopt) pending, task-10 stays pending until then."
+    "note": "All six PRs built. PR 1-5 merged (#100-#104); PR 6 (mudroom kit, family room mode-only) is the final PR. Task-10 spans PR 5 (migration) and PR 6 (adopt)."
   }
 }

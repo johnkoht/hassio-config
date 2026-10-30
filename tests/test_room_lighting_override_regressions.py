@@ -18,7 +18,15 @@ REPO = Path(__file__).resolve().parent.parent
 
 # Later PRs append rooms here.
 MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway", "office",
-                  "main_bathroom", "laundry_room"]
+                  "main_bathroom", "laundry_room", "mudroom"]
+
+# The mudroom has no Off option: Away plays that role everywhere the kit says "Off".
+ROOM_OFF_OPTION = {"mudroom": "Away"}
+
+
+def off_option(room):
+    return ROOM_OFF_OPTION.get(room, "Off")
+
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -193,7 +201,7 @@ def test_reset_automation_shape(room):
                    and t.get("to") == to and (t.get("for") or not need_for) for t in trig)
 
     assert has(f"input_boolean.{room}_occupied", "off", need_for=True)
-    assert has(f"input_select.{room}", "Off")
+    assert has(f"input_select.{room}", off_option(room))
     assert has("input_boolean.house_occupied", "off")
     assert not a.get("conditions")
     steps = list(walk(a["actions"]))
@@ -217,12 +225,13 @@ MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
               # The wall switch (what the old detection watched); the bulbs are in EXTRA_LIGHTS.
               "office": "light.office_light_switch",
               "main_bathroom": "light.main_bathroom_main_lights",
-              "laundry_room": "light.laundry_room_main_lights"}
+              "laundry_room": "light.laundry_room_main_lights",
+              "mudroom": "light.mudroom_main_lights"}
 OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
             "garage": "garage_lights_off", "playroom": "playroom_lights_to_off",
             "upstairs_hallway": "upstairs_hallway_lights_to_off",
             "office": "office_lights_off", "main_bathroom": "main_bathroom_lights_off",
-            "laundry_room": "laundry_room_lights_off"}
+            "laundry_room": "laundry_room_lights_off", "mudroom": "mudroom_lights_to_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
             "garage": ["garage_lights_motion_on"],
@@ -231,7 +240,8 @@ ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_ligh
             "office": ["office_lights_motion_on", "office_lights_day_on", "office_lights_on"],
             # bedtime_motion_on is the night light: on-type, so the latch gates it too.
             "main_bathroom": ["main_bathroom_lights_motion_on", "main_bathroom_bedtime_motion_on"],
-            "laundry_room": ["laundry_room_lights_motion_on"]}
+            "laundry_room": ["laundry_room_lights_motion_on"],
+            "mudroom": ["mudroom_lights_to_on", "mudroom_lights_to_dim"]}
 
 # The hallway's motion-on never had a mode condition (the room has no Dim/DnD split); adding one
 # would change behaviour, so its gate is checked as house flag, room flag, latch only.
@@ -358,7 +368,7 @@ def test_on_automations_gated_by_flags_and_latch_before_mode(room, auto_id):
 def test_off_path_ignores_flag_and_latch_on_room_off(room):
     """Room Off turns lights off regardless of flag and latch; only the vacancy branch reads the hand flag."""
     path, a = ALL[OFF_AUTO[room]]
-    assert any(t.get("id") == "room_off" and t.get("to") == "Off" for t in as_list(a["triggers"]))
+    assert any(t.get("id") == "room_off" and t.get("to") == off_option(room) for t in as_list(a["triggers"]))
     assert latch(room) not in path.read_text()
     conds = conds_for(a)
     assert cond_index(conds, HOUSE_FLAG, "on") is not None
@@ -412,12 +422,17 @@ def test_mode_off_ordering_invariant(room):
 # 8 ---------------------------------------------------------------------------
 NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom", "upstairs_hallway", "office",
                        "laundry_room")
+# The mudroom has no mode_auto at all (no Auto option); see section 19.
+NO_MODE_AUTO = ("mudroom",)
 
 
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
 def test_mode_auto_bounce_guard(room):
     """Where mode_auto turns on occupancy-off: needs house_occupied on, house not Away/Vacation, no
     house == Auto condition. Kitchen has no such trigger, so it asserts that instead."""
+    if room in NO_MODE_AUTO:
+        assert f"{room}_mode_auto" not in ALL
+        return
     a = auto(f"{room}_mode_auto")
     occ_off = [t for t in as_list(a["triggers"])
                if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
@@ -669,7 +684,7 @@ def test_laundry_not_occupied_only_clears_occupancy():
 # Gianluca's mode automations are named gianlucas_bedroom_* while his helpers are gianlucas_room_*.
 MODE_ID = {"gianlucas_room": "gianlucas_bedroom"}
 MODE_ONLY_ROOMS = ["dining_room", "basement", "jr_suite", "powder_room", "mudroom_bathroom", "sunroom", "foyer",
-                  "ninos_bedroom", "gianlucas_room"]
+                  "ninos_bedroom", "gianlucas_room", "family_room"]
 
 
 @pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
@@ -751,3 +766,85 @@ def test_kids_mode_off_only_clears_occupancy_with_empty_bed(room):
     assert len(clears) == 1
     guarded = [s for s in walk(a["actions"]) if "if" in s and clears[0] in as_list(s.get("then"))]
     assert guarded and cond_index(guarded[0]["if"], KIDS_BED[room], "off") is not None
+
+
+# 19 mudroom: no Off and no Auto; Away is the Off ----------------------------
+MUDROOM_MODE_AUTOS = ("mudroom_mode_on", "mudroom_mode_motion", "mudroom_mode_night_motion",
+                      "mudroom_mode_away")
+
+
+def test_mudroom_has_no_off_or_auto_option_and_no_mode_auto():
+    opts = load_yaml(REPO / "packages/mudroom/mudroom_state.yaml")["input_select"]["mudroom"]["options"]
+    assert "Off" not in opts and "Auto" not in opts and "Away" in opts
+    assert "mudroom_mode_auto" not in ALL and "mudroom_mode_off" not in ALL
+
+
+def test_mudroom_mode_away_clears_occupancy_with_target():
+    """JK-1219 with Away as the Off: house-empty Away also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("mudroom_mode_away")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.mudroom_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+@pytest.mark.parametrize("aid", MUDROOM_MODE_AUTOS)
+def test_mudroom_no_mode_automation_triggers_on_occupancy_off(aid):
+    """Nothing to bounce: clearing occupancy must not make a mode automation re-select a mode."""
+    for t in as_list(auto(aid)["triggers"]):
+        assert not (t.get("entity_id") == "input_boolean.mudroom_occupied"
+                    and t.get("to") in ("off", False)), t
+        assert "mudroom_occupied" not in str(t.get("entity_id")), t
+
+
+def test_mudroom_lights_to_away_ignores_both_flags():
+    """Away / house Away turns the lights off regardless of the hand flag and the latch."""
+    path, a = ALL["mudroom_lights_to_away"]
+    text = path.read_text()
+    assert flag("mudroom") not in text and latch("mudroom") not in text
+    assert cond_index(conds_for(a), HOUSE_FLAG, "on") is not None
+
+
+def test_mudroom_live_entity_identity_unchanged():
+    """automation.mudroom_mode_on_2 is the live entity for this id; id and alias must not change."""
+    a = auto("mudroom_lights_to_on")
+    assert a["alias"] == "Mudroom lights to on"
+
+
+def test_mudroom_not_occupied_only_clears_occupancy():
+    body = action_body(auto("mudroom_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+def test_mudroom_hand_flag_is_not_defaulted_on():
+    """Created off by HA and turned on once at deploy: no initial, per the hand-only rule."""
+    assert "initial" not in helper_def("mudroom", "mudroom_lighting_automations")
+
+
+def test_mudroom_vacancy_triggers_carry_the_vacancy_id():
+    trig = as_list(auto("mudroom_lights_to_off")["triggers"])
+    vac = {t["entity_id"] for t in trig if t.get("id") == "vacancy"}
+    assert vac == {"binary_sensor.mudroom_motion_sensor_motion_detection",
+                   "input_boolean.mudroom_occupied"}
+
+
+# 20 family room: mode-only (its four lights-on/mode automations stay disabled) --------
+def test_family_room_mode_auto_has_no_occupancy_off_trigger():
+    """Nothing to bounce: mode_auto fires on occupancy ON only, so clearing it at Off can't re-Auto."""
+    for t in as_list(auto("family_room_mode_auto")["triggers"]):
+        assert not (t.get("entity_id") == "input_boolean.family_room_occupied"
+                    and t.get("to") in ("off", False)), t
+
+
+def test_family_room_disabled_automations_stay_disabled():
+    for aid in ("family_room_lights_to_on", "family_room_mode_on", "family_room_arrival",
+                "family_room_mode_away"):
+        assert auto(aid).get("initial_state") in ("off", False), aid
+
+
+def test_family_room_mode_off_clears_occupancy_after_selecting_off():
+    """Off at house-empty/Away/bedtime/restart clears occupancy; the not-already-Off condition stays."""
+    a = auto("family_room_mode_off")
+    acts = [s.get("action") for s in as_list(a["actions"])]
+    assert acts == ["input_select.select_option", "input_boolean.turn_off"]
+    assert "is_state('input_select.family_room','Off')" in str(a["conditions"])

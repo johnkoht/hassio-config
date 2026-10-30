@@ -314,3 +314,46 @@ Production line broken in place (or a temp file added), the new test file run wi
 The first run left an empty `automation/family_room/` after the "legacy dir" row, which made the later rows red for the wrong reason; the directory was removed and those rows rerun.
 
 Semantic diff (old vs new, keys normalised): 18 automations (10 family room, 8 mudroom; the brief said 9 mudroom, the legacy tree has 8) differ only in the three intended action edits. Option test found no violations elsewhere (113 literal calls, 49 selects).
+
+## PR 6 sabotage
+
+Mudroom (Away is its Off). Each row: break the production line in place, confirm red, restore.
+
+| Sabotage | First red test |
+|---|---|
+| to_on: latch condition flipped to `on` | test_on_automations_gated_by_flags_and_latch_before_mode[mudroom_lights_to_on] |
+| to_dim: hand flag swapped for the house flag | test_on_automations_gated_by_flags_and_latch_before_mode[mudroom_lights_to_dim] |
+| to_off: `room_off` id dropped from the Away trigger | test_off_path_ignores_flag_and_latch_on_room_off[mudroom] |
+| to_off: latch id appears in the file | test_off_path_ignores_flag_and_latch_on_room_off[mudroom] |
+| to_off: hand flag dropped from the vacancy branch | test_off_path_ignores_flag_and_latch_on_room_off[mudroom] |
+| to_off: `vacancy` id removed from the occupied trigger | test_mudroom_vacancy_triggers_carry_the_vacancy_id |
+| reset: select trigger back to `Off` | test_reset_automation_shape[mudroom] |
+| reset: `for:` debounce removed | test_reset_automation_shape[mudroom] |
+| reset: root-level `entity_id` instead of `target:` | test_reset_automation_shape[mudroom] |
+| manual_change: parent_id guard removed | test_manual_change_templates_render[mudroom-automation] |
+| manual_change: brightness trigger lost | test_manual_change_triggers_and_alias[mudroom] |
+| manual_change: watches the wrong light | test_manual_change_triggers_and_alias[mudroom] |
+| mode_away: occupancy clear turned into turn_on | test_mudroom_mode_away_clears_occupancy_with_target |
+| mode_away: root-level `entity_id` | test_mudroom_mode_away_clears_occupancy_with_target |
+| mode_motion: trigger on `mudroom_occupied` off | test_mudroom_no_mode_automation_triggers_on_occupancy_off |
+| lights_to_away: mentions the hand flag | test_mudroom_lights_to_away_ignores_both_flags |
+| flag: `initial:` added | test_flag_has_no_initial_and_latch_initial_off[mudroom] |
+| latch: `initial: off` removed | test_flag_has_no_initial_and_latch_initial_off[mudroom] |
+| lights_to_on alias changed | test_mudroom_live_entity_identity_unchanged |
+| not_occupied writes the hand flag | test_nothing_writes_the_hand_flag[mudroom] |
+
+Family room (mode-only).
+
+| Sabotage | First red test |
+|---|---|
+| mode_off: occupancy clear turned into turn_on | test_mode_only_room_mode_off_forces_occupancy_off_with_target[family_room] |
+| mode_off: root-level `entity_id` | test_mode_only_room_mode_off_forces_occupancy_off_with_target[family_room] |
+| mode_off: not-already-Off condition changed | test_family_room_mode_off_clears_occupancy_after_selecting_off |
+| mode_auto: occupancy-off trigger added | test_mode_only_room_mode_auto_guard[family_room] |
+| lights_to_on revived (initial_state on) | test_family_room_disabled_automations_stay_disabled |
+| mode_on revived | test_family_room_disabled_automations_stay_disabled |
+| hand flag helper added | test_mode_only_room_has_no_override_kit[family_room] |
+
+## PR 6 review loop and finalize
+- Final reviewer (sonnet) at 7797e54: ITERATE, one minor DEFECT (memory entry said the plan was stamped shipped before the stamp; PR numbers guessed). Fixed; the stamp is now real (Phase 5.5): plan.md `status: shipped`, prd.json reconciled (10/10 complete).
+- COMPLETE: six PRs, 901 tests.
