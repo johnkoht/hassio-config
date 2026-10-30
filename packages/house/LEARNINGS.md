@@ -75,6 +75,7 @@ Vacation). `scripts/house/house_away.yaml` is the one leftover writer.
 - Arrival is debounced 10 s (`house_occupied` to on) so the arrival
   automation can end bedtime before the resolver runs, avoiding a one-second
   Bedtime that would fire `office_mode_off` and friends. Departure is not.
+- The doorbell select has no `Please do not disturb!` option (live options: `WELCOME!`, `DO NOT DISTURB`, `SHHH…KIDS SLEEPING`, ...), so the old Vacation text always errored; Vacation now uses `DO NOT DISTURB`.
 - Side effects (doorbell text, speech on at Auto, away push, nap speech off)
   are transition automations in `modes/`. Speech comes back on only at Auto, so
   a morning that ends in Quiet keeps it off until quiet mode ends.

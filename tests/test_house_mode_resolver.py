@@ -224,7 +224,7 @@ DOORBELL = {
     "Away": "DO NOT DISTURB",
     "Bedtime": "DO NOT DISTURB",
     "Quiet": "SHHH…KIDS SLEEPING",
-    "Vacation": "Please do not disturb!",
+    "Vacation": "DO NOT DISTURB",  # "Please do not disturb!" is not a live option
 }
 
 
@@ -328,6 +328,10 @@ def test_the_wait_cannot_be_the_only_gate():
     gates = [a for a in actions[wait + 1:] if a.get("condition") == "state"]
     bed = [g for g in gates if g["entity_id"] == "input_boolean.bedtime"]
     assert bed and bed[0]["state"] == "off"
+    panel = [g for g in gates if g["entity_id"] == "alarm_control_panel.alarmo"]
+    assert panel and panel[0]["state"] == "armed_home"
+    occupied = [g for g in gates if g["entity_id"] == "input_boolean.house_occupied"]
+    assert occupied and occupied[0]["state"] == "on"
 
 
 # --- rooms accept Quiet -------------------------------------------------------

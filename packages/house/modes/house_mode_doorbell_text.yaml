@@ -27,5 +27,5 @@ automation:
               'Away': 'DO NOT DISTURB',
               'Bedtime': 'DO NOT DISTURB',
               'Quiet': 'SHHH…KIDS SLEEPING',
-              'Vacation': 'Please do not disturb!'
+              'Vacation': 'DO NOT DISTURB'
             }[trigger.to_state.state] }}
