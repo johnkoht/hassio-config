@@ -48,3 +48,7 @@ automation:
         data:
           entity_id: input_select.basement
           option: "Off"
+      # Mark the basement as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.basement_occupied
