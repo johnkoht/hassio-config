@@ -105,3 +105,23 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | playroom_mode_off loses occupancy-off | test_playroom_mode_off_forces_occupancy_off_with_target |
 | playroom_mode_off occupancy-off uses root entity_id | test_playroom_mode_off_forces_occupancy_off_with_target |
 | not_occupied regains delay | test_playroom_not_occupied_only_clears_occupancy |
+
+### upstairs_hallway (694 passed, 9 skipped)
+
+| Sabotage | First red test |
+|---|---|
+| hand flag `initial: on` back | test_flag_has_no_initial_and_latch_initial_off[upstairs_hallway] |
+| latch `initial: on` | test_flag_has_no_initial_and_latch_initial_off[upstairs_hallway] |
+| reset loses Off trigger | test_reset_automation_shape[upstairs_hallway] |
+| reset gains a condition | test_reset_automation_shape[upstairs_hallway] |
+| not_occupied writes hand flag | test_nothing_writes_the_hand_flag[upstairs_hallway] |
+| to_off mentions latch id | test_off_path_ignores_flag_and_latch_on_room_off[upstairs_hallway] |
+| to_off room_off branch gains flag | test_off_path_ignores_flag_and_latch_on_room_off[upstairs_hallway] |
+| to_off vacancy branch loses hand flag | test_off_path_ignores_flag_and_latch_on_room_off[upstairs_hallway] |
+| motion_on latch check removed | test_on_automations_gated_by_flags_and_latch_before_mode[upstairs_hallway-upstairs_hallway_lights_motion_on] |
+| manual_change loses unavailable guard | test_manual_change_conditions_guard_context_and_unavailable[upstairs_hallway] |
+| manual_change loses parent/user clause | test_manual_change_templates_render[automation-...-upstairs_hallway] |
+| mode_off loses occupancy-off | test_upstairs_hallway_mode_off_forces_occupancy_off_with_target |
+| mode_off occupancy-off uses root entity_id | test_upstairs_hallway_mode_off_forces_occupancy_off_with_target |
+| not_occupied regains delay | test_upstairs_hallway_not_occupied_only_clears_occupancy |
+| sleep_mode_on writes the latch | test_upstairs_hallway_sleep_mode_automations_do_not_touch_flags |

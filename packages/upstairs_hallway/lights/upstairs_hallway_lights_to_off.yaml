@@ -1,5 +1,8 @@
-# Turn upstairs hallway lights to off
+# Upstairs Hallway Lights to Off
 #
+# Room Off always turns the lights off. Vacancy only does so while the hand flag is on.
+#
+
 automation:
   - id: "upstairs_hallway_lights_to_off"
     initial_state: on
@@ -9,27 +12,39 @@ automation:
       - trigger: state
         entity_id: input_select.upstairs_hallway
         to: "Off"
+        id: "room_off"
       # Lighting automations turn on
       - trigger: state
         entity_id: input_boolean.lighting_automations
         to: "on"
-      # Upstairs Hallway is no longer occupied
+        id: "house_flag_on"
+      # Hallway is not occupied
       - trigger: state
         entity_id: input_boolean.upstairs_hallway_occupied
         to: "off"
+        id: "vacancy"
     conditions:
-      # Lighting automations are enabled
+      # Lighting automations enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # Lights are on
+      # Lights are currently on
       - condition: state
         entity_id: light.upstairs_hallway
         state: "on"
+      - condition: or
+        conditions:
+          # Room Off always wins
+          - condition: trigger
+            id: "room_off"
+          - condition: state
+            entity_id: input_boolean.upstairs_hallway_lighting_automations
+            state: "on"
     actions:
-      # Turn OFF the upstairs hallway lights
       - action: light.turn_off
-        entity_id: light.upstairs_hallway
-      # Toggle the boolean
+        target:
+          entity_id: light.upstairs_hallway
+      # Lights are no longer auto-on
       - action: input_boolean.turn_off
-        entity_id: input_boolean.upstairs_hallway_lights_auto
+        target:
+          entity_id: input_boolean.upstairs_hallway_lights_auto
