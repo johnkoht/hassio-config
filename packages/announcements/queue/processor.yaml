@@ -7,6 +7,8 @@
 # - Filtering out expired messages
 # - Maintaining the queue priority order
 # - Triggering the announcement engine
+# - Holding non-critical items while binary_sensor.emergency_active is on,
+#   then dropping low priority items when it clears
 #
 automation:
   - id: announcement_queue_processor
@@ -43,6 +45,11 @@ automation:
         to: "off"
         for:
           minutes: 3
+      # Emergency over: resume the held queue (low items are dropped)
+      - trigger: state
+        entity_id: binary_sensor.emergency_active
+        to: "off"
+        id: emergency_cleared
 
     conditions:
       # Make sure the house is occupied
@@ -60,6 +67,24 @@ automation:
         value_template: >
           {% set q = state_attr('sensor.announcement_queue', 'queue') %}
           {{ q is iterable and q | length > 0 }}
+      # During an emergency only a critical item may be dequeued. The check
+      # looks at the first unexpired item, the one `next` will be.
+      - alias: "No non-critical item while an emergency is active"
+        condition: template
+        value_template: >
+          {% set now_iso = now().isoformat() %}
+          {% set q = state_attr('sensor.announcement_queue', 'queue') %}
+          {% set ns = namespace(first=none) %}
+          {% if q is iterable and q is not string %}
+            {% for msg in q %}
+              {% if ns.first is none and msg is mapping
+                    and (not msg.get('expires_at') or msg.get('expires_at') > now_iso) %}
+                {% set ns.first = msg %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {{ not is_state('binary_sensor.emergency_active', 'on')
+             or (ns.first is not none and ns.first.get('priority') == 'critical') }}
       # Make sure the queue is not running
       - condition: state
         entity_id: input_boolean.announcement_queue_running
@@ -93,6 +118,11 @@ automation:
           #
           raw_queue: "{{ state_attr('sensor.announcement_queue', 'queue') }}"
           #
+          # True when this run was started by the emergency clearing:
+          # low priority items are dropped outright, they're stale chatter.
+          #
+          purge_low: "{{ trigger is defined and trigger.id | default('') == 'emergency_cleared' }}"
+          #
           # This is the queue with the expired messages filtered out.
           #
           queue: >-
@@ -105,7 +135,9 @@ automation:
                   {% set expires_at = msg.get('expires_at') %}
                   {% set priority = msg.get('priority', 'normal') %}
                   {# Keep message if not expired - we process all priorities when occupied #}
-                  {% if not expires_at or expires_at > now_iso %}
+                  {% if purge_low and priority == 'low' %}
+                    {# dropped after an emergency #}
+                  {% elif not expires_at or expires_at > now_iso %}
                     {% set valid_msgs.list = valid_msgs.list + [msg] %}
                   {% endif %}
                 {% endif %}
@@ -140,6 +172,7 @@ automation:
                   sound_length: "{{ next.sound_length }}"
                   sound_volume: "{{ next.sound_volume }}"
                   speech_volume: "{{ next.speech_volume }}"
+                  priority: "{{ next.get('priority', 'normal') }}"
                   media_players: "{{ next.media_players }}"
 
               # # Debug notification
@@ -173,6 +206,8 @@ automation:
                       and msg.get('sound_file') == next.get('sound_file')
                       and msg.get('expires_at') == next.get('expires_at') %}
                   {% set ns.dropped = true %}
+                {% elif purge_low and msg.get('priority') == 'low' %}
+                  {# dropped after an emergency #}
                 {% elif not msg.get('expires_at') or msg.get('expires_at') > now_iso %}
                   {% set ns.list = ns.list + [msg] %}
                 {% endif %}

@@ -14,14 +14,36 @@
 # Sound length (optional)
 # Speech message (optional)
 # Rooms (required)
+# Priority (optional, default normal)
+#
+# While binary_sensor.emergency_active is on, only priority
+# critical plays. Everything else is dropped at the first step.
 #
 
 script:
   announcement_engine:
     alias: "Announcement Engine"
     mode: "queued"
+    # A burst (doorbell loop, dong, queue) must not drop a critical call
+    max: 25
 
     fields:
+      #
+      #
+      # Priority (fields have no runtime default; the gate defaults it)
+      #
+      priority:
+        name: Priority
+        description: Only "critical" plays while an emergency is active
+        example: "critical"
+        default: "normal"
+        selector:
+          select:
+            options:
+              - "critical"
+              - "high"
+              - "normal"
+              - "low"
       #
       #
       # Sound File Details
@@ -90,8 +112,16 @@ script:
               - media_player.sonos_playroom
 
     sequence:
+      # Emergency gate: fails open if the sensor is missing or unavailable
+      - alias: "Skip non-critical announcements during an emergency"
+        condition: template
+        value_template: >-
+          {{ not is_state('binary_sensor.emergency_active', 'on')
+             or (priority | default('normal')) == 'critical' }}
+
       # Play a chime
       - action: media_player.play_media
+        continue_on_error: true
         data:
           # entity_id: media_player.sonos_office
           entity_id: "{{ media_players }}"
@@ -123,7 +153,9 @@ script:
           extra:
             volume: "{{speech_volume}}"
 
+      # Conservative: cloud TTS fetch time isn't in the estimate, and a short
+      # wait let the next item start over the tail of a critical message.
       - alias: "Wait for TTS to finish (approx)"
         delay: >
           {% set length = (speech_message|length) | float(0) %}
-          {{ ((length / 17) | round(0, 'ceil') + 1) | int(1) }}
+          {{ ((length / 14) | round(0, 'ceil') + 3) | int(3) }}

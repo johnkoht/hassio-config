@@ -108,7 +108,7 @@ def critical_auto_players(occupied_booleans):
     script = yaml.safe_load(
         (REPO / "packages/announcements/critical_announcement.yaml").read_text()
     )["script"]["critical_announcement"]
-    template = script["sequence"][0]["data"]["media_players"]
+    template = script["variables"]["target_players"]
     states = type("States", (), {"input_boolean": _Domain(
         {name: _Entity("on") for name in occupied_booleans})})()
     return Environment().from_string(template).render(media_players="auto", states=states)
