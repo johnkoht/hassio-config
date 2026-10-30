@@ -1,0 +1,98 @@
+# Office Call Lighting - Start
+#
+# On a call, pause Adaptive Lighting and set the daytime colour once
+# AL has warmed or dimmed the room. The flag is set first (latch).
+#
+
+automation:
+  - id: "office_call_lighting_start"
+    alias: "Office Call Lighting - Start"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_select.office
+        to: "DnD"
+        for:
+          seconds: 10
+        id: dnd
+      - trigger: numeric_state
+        entity_id: switch.adaptive_lighting_office
+        attribute: color_temp_kelvin
+        below: input_number.office_call_color_temp
+        id: dusk
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.office_lighting_automations
+        state: "on"
+      - alias: "Lights not manually toggled"
+        condition: state
+        entity_id: input_boolean.office_lights_manually_toggled
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.office_occupied
+        state: "on"
+      - alias: "Office is in DnD"
+        condition: state
+        entity_id: input_select.office
+        state: "DnD"
+      - alias: "John is in DnD"
+        condition: state
+        entity_id: input_boolean.john_dnd
+        state: "on"
+      - alias: "House is not in Bedtime"
+        condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.house
+            state: "Bedtime"
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
+      - alias: "Call lighting is enabled"
+        condition: state
+        entity_id: input_boolean.office_call_lighting
+        state: "on"
+      - alias: "AL not already paused for a call"
+        condition: state
+        entity_id: input_boolean.office_call_al_paused
+        state: "off"
+      - alias: "Adaptive Lighting is on"
+        condition: state
+        entity_id: switch.adaptive_lighting_office
+        state: "on"
+      - alias: "AL sleep mode is off"
+        condition: state
+        entity_id: switch.adaptive_lighting_sleep_mode_office
+        state: "off"
+      - alias: "Adaptive Lighting has moved off daylight"
+        condition: template
+        value_template: >
+          {{ state_attr('switch.adaptive_lighting_office','color_temp_kelvin') | float(99999) < states('input_number.office_call_color_temp') | float(0)
+             or state_attr('switch.adaptive_lighting_office','brightness_pct') | float(100) < states('input_number.office_call_brightness') | float(100) - 5 }}
+    actions:
+      - alias: "Set the latch flag first"
+        action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.office_call_al_paused
+      - alias: "Pause Adaptive Lighting"
+        action: switch.turn_off
+        target:
+          entity_id: switch.adaptive_lighting_office
+      - alias: "Bulbs are on"
+        if:
+          - condition: state
+            entity_id: light.office_ceiling_bulbs
+            state: "on"
+        then:
+          - action: light.turn_on
+            target:
+              entity_id: light.office_ceiling_bulbs
+            data:
+              color_temp_kelvin: "{{ states('input_number.office_call_color_temp') | int(3000) }}"
+              brightness_pct: "{{ states('input_number.office_call_brightness') | int(100) }}"
