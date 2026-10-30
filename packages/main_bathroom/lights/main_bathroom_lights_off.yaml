@@ -44,3 +44,7 @@ automation:
       - action: light.turn_off
         target:
           entity_id: light.main_bathroom_lights
+      # Lights are no longer auto-on (the dashboard shows this flag)
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.main_bathroom_lights_auto

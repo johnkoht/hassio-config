@@ -276,3 +276,6 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | mode_auto guard loses house_occupied | test_mode_only_room_mode_auto_guard[gianlucas_room] |
 | mode_auto guard loses Vacation | test_mode_only_room_mode_auto_guard[gianlucas_room] |
 | mode_auto occupancy-off trigger loses its id | test_mode_only_room_mode_auto_guard[gianlucas_room] |
+
+### PR 4 review loop
+- Final reviewer (sonnet) at f79de9c: ITERATE, two DEFECTs. (1) the `choose` default path and the main bathroom script body of `mode_auto` were unpinned (3 sabotages stayed green); (2) `main_bathroom_lights_off` no longer cleared `main_bathroom_lights_auto` (the deleted detection did). Fixed with a default/Auto assertion in the shared bounce-guard helper, script-body assertions, and a lights_auto test; re-sabotaged: default removed (bathroom, Nino), script `select_option` broken, lights_auto write broken, all red.

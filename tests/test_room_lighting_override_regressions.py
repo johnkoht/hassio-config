@@ -428,6 +428,13 @@ def test_mode_auto_bounce_guard(room):
     _assert_bounce_guard(a, room, occ_off)
 
 
+def _selects_auto(steps):
+    """Any step that puts the room in Auto: a select_option Auto, or its turn_on_auto script."""
+    return any((s.get("action") == "input_select.select_option"
+                and (s.get("data") or {}).get("option") == "Auto")
+               or "turn_on_auto" in str(s.get("action", "")) for s in steps if isinstance(s, dict))
+
+
 def _assert_bounce_guard(a, room, occ_off):
     # The branch is selected by trigger id: the occupancy-off trigger must carry it.
     assert all(t.get("id") == f"{room}_unoccupied" for t in occ_off), occ_off
@@ -442,6 +449,11 @@ def _assert_bounce_guard(a, room, occ_off):
     assert any("Away" in as_list(n["conditions"][0].get("state"))
                and "Vacation" in as_list(n["conditions"][0].get("state"))
                and n["conditions"][0].get("entity_id") == "input_select.house" for n in nots)
+    # The other triggers still return the room to Auto: the choose keeps a real default.
+    choose = a["actions"][0]
+    assert choose.get("default"), "choose lost its default path"
+    assert _selects_auto(list(walk(choose["default"]))), "default no longer selects Auto"
+    assert _selects_auto(list(walk(branch["sequence"]))), "guarded branch no longer selects Auto"
     scanned = {k: v for k, v in a.items() if k not in ("triggers", "trigger")}
     for d in walk(scanned):
         if d.get("condition") == "state" and "input_select.house" in as_list(d.get("entity_id")):
@@ -612,7 +624,19 @@ def test_main_bathroom_mode_auto_guard_covers_the_occupancy_trigger_and_sets_aut
     choose = a["actions"][0]
     assert all(s["action"] == "script.main_bathroom_mode_turn_on_auto"
                for s in walk(choose.get("default")) if "action" in s)
-    assert auto("script.main_bathroom_mode_turn_on_auto")
+    script = auto("script.main_bathroom_mode_turn_on_auto")
+    text = str(script)
+    assert _selects_auto([x for x in walk(script) if isinstance(x, dict)]), "script no longer selects Auto"
+    assert "automation.main_bathroom_bedtime_motion_on" in text
+    assert "automation.main_bathroom_lights_motion_on" in text
+
+
+def test_main_bathroom_lights_off_clears_lights_auto():
+    """The dashboard shows main_bathroom_lights_auto; the deleted detection used to clear it."""
+    steps = action_body(auto("main_bathroom_lights_off"))
+    assert any(s.get("action") == "input_boolean.turn_off"
+               and s.get("target", {}).get("entity_id") == "input_boolean.main_bathroom_lights_auto"
+               for s in steps)
 
 
 def test_main_bathroom_old_detection_is_gone():
