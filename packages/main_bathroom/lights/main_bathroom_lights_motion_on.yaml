@@ -16,6 +16,10 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bathroom_lighting_automations
         state: "on"
+      # Lights were not changed by hand
+      - condition: state
+        entity_id: input_boolean.main_bathroom_lights_manually_toggled
+        state: "off"
       # Bathroom is Auto
       - condition: state
         entity_id: input_select.main_bathroom
@@ -30,9 +34,11 @@ automation:
         state: "off"
     actions:
       - action: light.turn_on
-        entity_id: light.main_bathroom_main_lights
+        target:
+          entity_id: light.main_bathroom_main_lights
       # - service: automation.turn_on
       #   entity_id: automation.main_bathroom_lights_motion_off
       # Toggle the boolean to flag it was auto
       - action: input_boolean.turn_on
-        entity_id: input_boolean.main_bathroom_lights_auto
+        target:
+          entity_id: input_boolean.main_bathroom_lights_auto
