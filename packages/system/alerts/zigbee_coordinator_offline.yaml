@@ -37,3 +37,4 @@ automation:
           devices: "jk"
           priority: "time-sensitive"
           tag: "zigbee-coordinator-offline"
+          url: /dashboard-kohbo/sensors-offline
