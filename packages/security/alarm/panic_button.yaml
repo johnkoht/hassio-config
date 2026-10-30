@@ -18,17 +18,26 @@ automation:
       # Trigger alarmo so a panic has an off path: its triggered state starts
       # security_alarm_alert and disarming (or the trigger time ending) stops it.
       # alarmo needs no code to trigger and honours it from disarmed.
+      # Only a known-good alarmo state takes the alarmo path. Anything else
+      # (unavailable, unknown, a missing entity) runs the alert directly rather
+      # than do nothing: a state condition on a missing entity is false.
       - if:
           - condition: state
             entity_id: alarm_control_panel.alarmo
             state:
-              - "unavailable"
-              - "unknown"
+              - "disarmed"
+              - "arming"
+              - "pending"
+              - "armed_home"
+              - "armed_away"
+              - "armed_night"
+              - "armed_vacation"
+              - "armed_custom_bypass"
+              - "triggered"
         then:
-          # alarmo is down: run the alert directly rather than do nothing
-          - action: script.security_alarm_alert
-            data: {}
-        else:
           - action: alarm_control_panel.alarm_trigger
             target:
               entity_id: alarm_control_panel.alarmo
+        else:
+          - action: script.security_alarm_alert
+            data: {}
