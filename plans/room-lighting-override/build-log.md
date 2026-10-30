@@ -236,3 +236,11 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | mode_off occupancy-off becomes turn_on | test_mode_only_room_mode_off_forces_occupancy_off_with_target[mudroom_bathroom] |
 | mode_off occupancy-off uses root entity_id | test_mode_only_room_mode_off_forces_occupancy_off_with_target[mudroom_bathroom] |
 | mode_auto gains unguarded occupancy-off trigger | test_mode_only_room_mode_auto_guard[mudroom_bathroom] |
+
+### sunroom (802 passed, 9 skipped)
+
+| Sabotage | First red test |
+|---|---|
+| mode_off occupancy-off becomes turn_on | test_mode_only_room_mode_off_forces_occupancy_off_with_target[sunroom] |
+| mode_off occupancy-off uses root entity_id | test_mode_only_room_mode_off_forces_occupancy_off_with_target[sunroom] |
+| mode_auto gains unguarded occupancy-off trigger | test_mode_only_room_mode_auto_guard[sunroom] |
