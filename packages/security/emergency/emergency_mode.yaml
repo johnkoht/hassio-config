@@ -1,0 +1,11 @@
+# Emergency Mode
+#
+# Manual override for the emergency gate. Turning it on has the same
+# effect as an active alarm or fire, for tests and the dashboard.
+# No initial: so a dashboard edit survives; it auto-offs (see emergency_mode_auto_off).
+#
+
+input_boolean:
+  emergency_mode:
+    name: Emergency Mode
+    icon: mdi:alert-octagon
