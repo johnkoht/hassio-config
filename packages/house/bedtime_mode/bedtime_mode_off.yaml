@@ -1,17 +1,20 @@
 # Bedtime Mode Off
 #
-# When both of us are deteremined to be awake,
-# we'll turn off the bedtime mode for the house
+# End bedtime in the morning once an adult at home is up, or when no
+# adult is home. Only between 05:00 and 12:00.
 #
 automation:
   - id: "bedtime_mode_off"
     alias: "Bedtime Mode - Off"
     initial_state: on
     triggers:
-      # Somebody is out of bed
+      # An adult got out of bed
       - trigger: state
-        entity_id: binary_sensor.everybody_in_bed
+        entity_id:
+          - input_boolean.john_is_in_bed
+          - input_boolean.cristina_in_bed
         to: "off"
+      # An adult is marked awake
       - trigger: state
         entity_id:
           - input_boolean.cristina_is_awake
@@ -26,36 +29,19 @@ automation:
     conditions:
       - condition: time
         after: "05:00:00"
-      - condition: or
-        conditions:
-          # John is away or home and awake
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: input_boolean.john_home
-                state: "off"
-              - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: input_boolean.john_home
-                    state: "on"
-                  - condition: state
-                    entity_id: input_boolean.john_is_awake
-                    state: "on"
-          # Cristina is away or home and awake
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: input_boolean.cristina_home
-                state: "off"
-              - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: input_boolean.cristina_home
-                    state: "on"
-                  - condition: state
-                    entity_id: input_boolean.cristina_is_awake
-                    state: "on"
+        before: "12:00:00"
+      - alias: "An adult at home is awake, or no adult is home"
+        condition: template
+        value_template: >-
+          {% set john = states('person.john_koht') %}
+          {% set cristina = states('person.cristina_falbo') %}
+          {% set unsure = ['unknown', 'unavailable'] %}
+          {% set nobody_home = john not in unsure + ['home']
+                               and cristina not in unsure + ['home'] %}
+          {% set awake = (john == 'home' and is_state('input_boolean.john_is_awake', 'on'))
+                         or (cristina == 'home' and is_state('input_boolean.cristina_is_awake', 'on')) %}
+          {{ nobody_home or awake }}
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.bedtime
+        target:
+          entity_id: input_boolean.bedtime
