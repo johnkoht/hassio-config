@@ -62,3 +62,23 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | day_on latch check removed | test_on_automations_gated_by_flags_and_latch_before_mode[kitchen-kitchen_lights_day_on] |
 | manual_change loses unavailable guard | test_manual_change_conditions_guard_context_and_unavailable[kitchen] |
 | kitchen_mode_auto gains occupancy-off trigger | test_mode_auto_bounce_guard[kitchen] |
+
+## PR 3 sabotage (garage)
+
+Each production line broken in place, suite run with `-x`, then restored. Baseline 624 passed, 9 skipped; now 646 passed, 9 skipped.
+
+| Sabotage | First red test |
+|---|---|
+| hand flag `initial: on` back | test_flag_has_no_initial_and_latch_initial_off[garage] |
+| latch `initial: on` | test_flag_has_no_initial_and_latch_initial_off[garage] |
+| reset loses Off trigger | test_reset_automation_shape[garage] |
+| reset gains a condition | test_reset_automation_shape[garage] |
+| garage_not_occupied writes hand flag | test_nothing_writes_the_hand_flag[garage] |
+| garage_lights_off mentions latch id | test_off_path_ignores_flag_and_latch_on_room_off[garage] |
+| room_off branch gains flag | test_off_path_ignores_flag_and_latch_on_room_off[garage] |
+| motion_on latch check removed | test_on_automations_gated_by_flags_and_latch_before_mode[garage-garage_lights_motion_on] |
+| motion_on mode condition first | test_on_automations_gated_by_flags_and_latch_before_mode[garage-garage_lights_motion_on] |
+| manual_change loses parent/user clause (flapping) | test_manual_change_templates_render[automation-...-garage] |
+| manual_change loses unavailable guard | test_manual_change_conditions_guard_context_and_unavailable[garage] |
+| motion_off loses hand flag | test_garage_motion_off_obeys_hand_flag_not_latch |
+| garage_mode_off turns occupancy off | test_garage_mode_off_never_forces_occupancy_off |
