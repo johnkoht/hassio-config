@@ -68,6 +68,13 @@ automation:
                   - condition: state
                     entity_id: input_boolean.house_occupied
                     state: "on"
+                  - condition: not
+                    conditions:
+                      - condition: state
+                        entity_id: input_select.house
+                        state:
+                          - "Away"
+                          - "Vacation"
                 then:
                   - action: script.main_bedroom_mode_turn_on_auto
 
@@ -117,10 +124,6 @@ script:
         entity_id:
           - automation.main_bedroom_john_night_light_off
           - automation.main_bedroom_night_light_for_john
-      # #
-      # # Enable bedroom lighting automations
-      # - action: input_boolean.turn_on
-      #   entity_id: input_boolean.main_bedroom_lighting_automations
       #
       # Turn off adaptive lighting
       - action: switch.turn_off

@@ -19,3 +19,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Decision Ledger
 - [2026-10-30] Vacancy-off in main_bedroom_lights_off obeys the hand flag; Off transition obeys neither flag (review defect 3, plan Open decision 6) — docs affected: plan.md (folded), main_bedroom README, LEARNINGS — status: open
+
+## Task 3-5 notes
+- Wall dim within 10s of an automation change is debounced away (stateless debounce, known trade-off). Rendered the manual-change templates with jinja2 against 10 fake triggers; all behave as pinned.
+- `trigger.from_state` can be none on first state; the condition guards it.
