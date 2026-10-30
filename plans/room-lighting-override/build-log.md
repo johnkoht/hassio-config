@@ -192,3 +192,15 @@ Each production line broken in place, suite run with `-x`, then restored. Baseli
 | mode_off loses occupancy-off | test_laundry_mode_off_forces_occupancy_off_with_target |
 | mode_off occupancy-off uses root entity_id | test_laundry_mode_off_forces_occupancy_off_with_target |
 | not_occupied regains delay | test_laundry_not_occupied_only_clears_occupancy |
+
+### dining_room (782 passed, 9 skipped)
+
+| Sabotage | First red test |
+|---|---|
+| mode_off loses occupancy-off | test_mode_only_room_mode_off_forces_occupancy_off_with_target[dining_room] |
+| mode_off occupancy-off uses root entity_id | test_mode_only_room_mode_off_forces_occupancy_off_with_target[dining_room] |
+| not_occupied regains the flag write | test_mode_off_ordering_invariant[dining_room] |
+| lights_off references dining_room_lights_auto | test_dining_room_dead_helpers_are_gone_from_config |
+| hand flag helper returns | test_mode_only_room_has_no_override_kit[dining_room] |
+| latch helper added | test_mode_only_room_has_no_override_kit[dining_room] |
+| mode_auto gains unguarded occupancy-off trigger | test_mode_only_room_mode_auto_guard[dining_room] |
