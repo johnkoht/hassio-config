@@ -35,6 +35,24 @@ script:
                 sound: "nuclear"
                 speech_message: Alert! The smoke detector has been trigger. Get to safety immediately!
 
+          # Notify Noonlight, unless alarm test mode is explicitly on.
+          # Only an `on` state skips it: off, unknown, unavailable or a
+          # missing helper all dispatch. State conditions never raise.
+          - if:
+              - condition: state
+                entity_id: input_boolean.alarm_test_mode
+                state: "on"
+            then:
+              - action: system_log.write
+                data:
+                  level: warning
+                  message: "Alarm test mode is on: Noonlight was NOT notified"
+            else:
+              - action: switch.turn_on
+                continue_on_error: true
+                target:
+                  entity_id: switch.noonlight_alarm
+
           # Flash the lights
           - action: script.turn_on
             target:
@@ -47,7 +65,14 @@ script:
               entity_id: script.general_notification
             data:
               variables:
-                message: The smoke detector has activated, I'm turning off the HVAC. Please get to safety!
+                message: >-
+                  The smoke detector has activated, I'm turning off the HVAC. Please get to safety!
+                  {% if is_state('input_boolean.alarm_test_mode', 'on') -%}
+                  Alarm test mode is on: Noonlight was NOT notified.
+                  {%- else -%}
+                  Noonlight has been notified. If it is a false alarm, cancel it in the Noonlight app
+                  or tell the dispatcher when they call. Home Assistant cannot cancel it.
+                  {%- endif %}
                 title: Fire & Smoke Alarm
                 devices: "all"
                 priority: "critical"

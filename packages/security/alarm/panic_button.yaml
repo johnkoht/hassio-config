@@ -1,3 +1,9 @@
+# Security - Panic Button
+#
+# The ZHA panic button triggers alarmo, which starts the alarm alert and
+# can be disarmed. Keep the device trigger as is.
+#
+
 automation:
   - id: "panic_button"
     alias: "Security - Panic Button"
@@ -9,5 +15,20 @@ automation:
         subtype: remote_button_short_press
         trigger: device
     actions:
-      - action: script.security_alarm_alert
-        data: {}
+      # Trigger alarmo so a panic has an off path: its triggered state starts
+      # security_alarm_alert and disarming (or the trigger time ending) stops it.
+      # alarmo needs no code to trigger and honours it from disarmed.
+      - if:
+          - condition: state
+            entity_id: alarm_control_panel.alarmo
+            state:
+              - "unavailable"
+              - "unknown"
+        then:
+          # alarmo is down: run the alert directly rather than do nothing
+          - action: script.security_alarm_alert
+            data: {}
+        else:
+          - action: alarm_control_panel.alarm_trigger
+            target:
+              entity_id: alarm_control_panel.alarmo

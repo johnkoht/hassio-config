@@ -1,0 +1,22 @@
+# Alarm Test Mode - Notify On
+#
+# Persistent notification while test mode is on, so nobody forgets
+# that an alarm will NOT notify Noonlight.
+#
+
+automation:
+  - id: "alarm_test_mode_notify_on"
+    alias: "Alarm Test Mode - Notify On"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.alarm_test_mode
+        to: "on"
+    actions:
+      - action: persistent_notification.create
+        data:
+          notification_id: alarm_test_mode
+          title: "Alarm test mode is ON"
+          message: >-
+            An alarm or fire will NOT notify Noonlight while this is on.
+            It turns itself off after 30 minutes.

@@ -66,7 +66,9 @@ def test_intruder_alert_sirens_do_not_wait_on_noonlight():
     find_branch(branches, "script.turn_on", "script.critical_announcement")
     find_branch(branches, "script.turn_on", "script.alarm_flash_lights")
     find_branch(branches, "script.turn_on", "script.general_notification")
-    assert find_branch(branches, "switch.turn_on", "switch.noonlight_alarm").get("continue_on_error") is True
+    noonlight = next(b for b in branches if "if" in b)["else"][0]  # gated on alarm test mode
+    assert noonlight["target"]["entity_id"] == "switch.noonlight_alarm"
+    assert noonlight.get("continue_on_error") is True
 
 
 def test_flash_lights_snapshots_each_light_not_the_group():
