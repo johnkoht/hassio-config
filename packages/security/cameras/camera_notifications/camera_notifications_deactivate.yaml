@@ -67,3 +67,4 @@ automation:
           devices: "all"
           priority: "passive"
           tag: "camera-notifications"
+          url: /dashboard-kohbo/security-cameras

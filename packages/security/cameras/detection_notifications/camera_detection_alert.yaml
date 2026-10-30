@@ -45,6 +45,8 @@ script:
         {{ detection_type | title }} Detected
       message: >-
         A {{ detection_type }} has been detected in {{ camera_name }}
+      camera_link: >-
+        /dashboard-kohbo/security-cameras#{{ notifications_boolean | replace('input_boolean.', '') | replace('_notifications', '') }}
 
     sequence:
       - condition: state
@@ -99,7 +101,10 @@ script:
                         name: default
                         critical: 1
                         volume: 1
-                    url: /dashboard-kohbo/security-cameras
+                    # Opens this camera's popup; the hash is the boolean's name
+                    # without "input_boolean." and "_notifications"
+                    url: "{{ camera_link }}"
+                    clickAction: "{{ camera_link }}"
                     actions:
                       - action: "SNOOZE_{{ snooze_timer }}"
                         title: "Snooze 15 min"
@@ -128,7 +133,10 @@ script:
                     entity_id: "{{ proxy_camera }}"
                     push:
                       interruption-level: active
-                    url: /dashboard-kohbo/security-cameras
+                    # Opens this camera's popup; the hash is the boolean's name
+                    # without "input_boolean." and "_notifications"
+                    url: "{{ camera_link }}"
+                    clickAction: "{{ camera_link }}"
                     actions:
                       - action: "SNOOZE_{{ snooze_timer }}"
                         title: "Snooze 15 min"
@@ -154,7 +162,10 @@ script:
                     entity_id: "{{ proxy_camera }}"
                     push:
                       interruption-level: time-sensitive
-                    url: /dashboard-kohbo/security-cameras
+                    # Opens this camera's popup; the hash is the boolean's name
+                    # without "input_boolean." and "_notifications"
+                    url: "{{ camera_link }}"
+                    clickAction: "{{ camera_link }}"
                     actions:
                       - action: "SNOOZE_{{ snooze_timer }}"
                         title: "Snooze 15 min"
