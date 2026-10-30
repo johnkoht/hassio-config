@@ -284,11 +284,17 @@ def test_stock_set_replaces_with_days_times_two():
     assert run_script("medication_stock_set", "5", 400)[0] == 365
 
 
+ALERT_TAG = next(a for a in ALERT['actions'] if 'variables' in a)['variables']['medications'][0]['tag']
+
+
 def test_scripts_clear_the_push():
     for name in SCRIPTS:
         steps = [s for s in SCRIPTS[name]["sequence"] if s.get("action") == "script.clear_notifications"]
         assert len(steps) == 1
         assert steps[0]["data"]["devices"] == "all"
+        # The tag must come from the same map the alert's tag is in
+        assert steps[0]["data"]["tag"] == "{{ tags[med] }}"
+        assert ALERT_TAG == "medication-refill-nino"
         assert "tags" in SCRIPTS[name]["sequence"][0]["variables"]
         assert SCRIPTS[name]["sequence"][0]["variables"]["tags"]["nino"] == "medication-refill-nino"
 

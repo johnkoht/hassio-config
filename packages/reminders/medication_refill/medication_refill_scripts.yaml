@@ -39,11 +39,8 @@ script:
             nino: medication-refill-nino
           stock_entity: "{{ stock_entities.get(med) }}"
           resolved_days: >-
-            {% if days is defined and days not in [none, ''] %}
-              {{ days | float(0) }}
-            {% else %}
-              {{ states(refill_entities.get(med, 'input_number.nino_medication_refill_days')) | float(0) }}
-            {% endif %}
+            {{ (days | float(0)) if (days is defined and days not in [none, ''])
+               else (states(refill_entities.get(med, 'input_number.nino_medication_refill_days')) | float(0)) }}
       - alias: "Known medication and days above 0"
         condition: template
         value_template: "{{ stock_entity is not none and resolved_days | float(0) > 0 }}"
@@ -98,11 +95,8 @@ script:
             nino: medication-refill-nino
           stock_entity: "{{ stock_entities.get(med) }}"
           resolved_days: >-
-            {% if days is defined and days not in [none, ''] %}
-              {{ days | float(0) }}
-            {% else %}
-              {{ states(refill_entities.get(med, 'input_number.nino_medication_refill_days')) | float(0) }}
-            {% endif %}
+            {{ (days | float(0)) if (days is defined and days not in [none, ''])
+               else (states(refill_entities.get(med, 'input_number.nino_medication_refill_days')) | float(0)) }}
       - alias: "Known medication and days above 0"
         condition: template
         value_template: "{{ stock_entity is not none and resolved_days | float(0) > 0 }}"
