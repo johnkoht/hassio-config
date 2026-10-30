@@ -43,3 +43,7 @@ automation:
         data:
           entity_id: input_select.dining_room
           option: "Off"
+      # Mark the dining room as unoccupied
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.dining_room_occupied

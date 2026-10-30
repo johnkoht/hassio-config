@@ -424,6 +424,10 @@ def test_mode_auto_bounce_guard(room):
         # These rooms' mode_auto has no occupancy-off trigger, so there is nothing to bounce.
         assert room in NO_OCC_OFF_TRIGGER, f"{room} lost its occupancy-off trigger"
         return
+    _assert_bounce_guard(a, room, occ_off)
+
+
+def _assert_bounce_guard(a, room, occ_off):
     # The branch is selected by trigger id: the occupancy-off trigger must carry it.
     assert all(t.get("id") == f"{room}_unoccupied" for t in occ_off), occ_off
     branch = next(o for o in a["actions"][0]["choose"]
@@ -631,4 +635,70 @@ def test_laundry_mode_off_forces_occupancy_off_with_target():
 
 def test_laundry_not_occupied_only_clears_occupancy():
     body = action_body(auto("laundry_room_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+# 16 mode-only rooms (no lighting automations: no flags, no latch) ------------
+# Only `<room>_mode_off` forcing `<room>_occupied` off (JK-1219), plus the bounce guard where
+# mode_auto has an occupancy-off trigger. Not in MIGRATED_ROOMS.
+MODE_ONLY_ROOMS = ["dining_room"]
+
+
+@pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
+def test_mode_only_room_mode_off_forces_occupancy_off_with_target(room):
+    """JK-1219: Off also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto(f"{room}_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == f"input_boolean.{room}_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+@pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
+def test_mode_only_room_mode_auto_guard(room):
+    """Where mode_auto triggers on occupancy off it needs the bounce guard; otherwise there is
+    nothing to bounce and the trigger must stay absent."""
+    a = auto(f"{room}_mode_auto")
+    occ_off = [t for t in as_list(a["triggers"])
+               if t.get("entity_id") == f"input_boolean.{room}_occupied" and t.get("to") == "off"]
+    if occ_off:
+        _assert_bounce_guard(a, room, occ_off)
+
+
+@pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
+def test_mode_only_room_has_no_override_kit(room):
+    assert not helper_exists(room, f"{room}_lighting_automations")
+    assert not helper_exists(room, f"{room}_lights_manually_toggled")
+
+
+def helper_exists(room, name):
+    for f in room_files(room):
+        doc = load_yaml(f)
+        if isinstance(doc, dict) and name in (doc.get("input_boolean") or {}):
+            return True
+    return False
+
+
+# 17 dining room -------------------------------------------------------------
+REMOVED_DINING = ("dining_room_lighting_automations", "dining_room_lights_auto")
+
+
+def test_dining_room_dead_helpers_are_gone_from_config():
+    """The dining room has no lights-on automation: its hand flag and lights_auto helper were removed
+    (dashboards are checked separately by the dashboard owner)."""
+    hits = []
+    roots = [REPO / "packages", REPO / "automation", REPO / "scripts"]
+    files = [f for r in roots if r.exists() for f in r.rglob("*") if f.is_file()]
+    files += [REPO / n for n in ("automations.yaml", "scripts.yaml", "scenes.yaml") if (REPO / n).exists()]
+    for f in files:
+        try:
+            text = f.read_text()
+        except UnicodeDecodeError:
+            continue
+        hits += [f"{f.relative_to(REPO)}: {n}" for n in REMOVED_DINING if n in text]
+    assert not hits, hits
+
+
+def test_dining_room_not_occupied_only_clears_occupancy():
+    body = action_body(auto("dining_room_not_occupied"))
     assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
