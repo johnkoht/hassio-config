@@ -19,3 +19,7 @@ Branch: worktree-emergency-mode-pr1 (pushed as feature/emergency-mode-pr1). Work
 - Caller audit of same-tag pushes recorded in pre-mortem.md (PR 2 refresh).
 - Volume ceiling rule (coordinator, John): engine selector max 80 -> 75; ceiling tests added (+4, 458 passed); sabotage red on selector max, a voice_announcement base, a doorbell volume, an enqueue default.
 - PR 2 final review (sonnet) at 58ff791: APPROVED, no DEFECTs; delta (ceiling + docs) re-checked after.
+
+## PR 3 (worktree emergency-mode-pr3)
+- Runtime volume clamp in the engine (+test), tasks 7-10 built. 493 passed.
+- Sabotage (revert -> red, static): intruder gate inverted, fire gate off, fire continue_on_error removed, disarm to-disarmed only, panic back to alert script, panic device id changed, test-mode initial removed, auto-off 60, fire text without cancel path; engine clamp removed/175.
