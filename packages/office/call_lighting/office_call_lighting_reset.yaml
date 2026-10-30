@@ -1,0 +1,60 @@
+# Office Call Lighting - Reset
+#
+# Safety net so Adaptive Lighting is never left off: resume it if the
+# pause flag outlives a call, or is found set after a start or reload.
+#
+
+automation:
+  - id: "office_call_lighting_reset"
+    alias: "Office Call Lighting - Reset"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.office_call_al_paused
+        to: "on"
+        for:
+          hours: 3
+        id: long
+      - trigger: state
+        entity_id: input_boolean.office_call_al_paused
+        to: "on"
+        for:
+          hours: 12
+        id: stuck
+      - trigger: homeassistant
+        event: start
+        id: start
+      - trigger: event
+        event_type: automation_reloaded
+        id: reload
+    conditions:
+      - alias: "AL is paused for a call"
+        condition: state
+        entity_id: input_boolean.office_call_al_paused
+        state: "on"
+      # A call over 3 h must not be interrupted; 12 h is the hard cap.
+      # Start and reload are best effort.
+      - alias: "Hard cap reached, or the office is no longer in DnD"
+        condition: or
+        conditions:
+          - condition: trigger
+            id: stuck
+          - condition: not
+            conditions:
+              - condition: state
+                entity_id: input_select.office
+                state: "DnD"
+    actions:
+      - alias: "Resume Adaptive Lighting unless entertainment mode owns the lights"
+        if:
+          - condition: state
+            entity_id: input_boolean.entertainment_mode
+            state: "off"
+        then:
+          - action: switch.turn_on
+            target:
+              entity_id: switch.adaptive_lighting_office
+      - alias: "Clear the latch flag last"
+        action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.office_call_al_paused

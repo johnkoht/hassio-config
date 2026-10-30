@@ -1,0 +1,23 @@
+# Review: wfh-call-lighting (plan + pre-mortem)
+
+Reviewer: independent sonnet `reviewer` subagent, 2026-10-30. Verdict round 1: **ITERATE**, no structural blocker.
+
+| # | Finding | Tag | Disposition |
+|---|---------|-----|-------------|
+| 1 | Ship addendum missing from `plan.md` (replace had not matched) | DEFECT | Fixed: addendum appended, PRD generated from it |
+| 2 | Start gate lacked `input_select.office` = DnD (matters for the dusk-crossing trigger) | DEFECT | Fixed: explicit condition |
+| 3 | Start ignored the manual latch, `house_occupied`, entertainment mode | DEFECT | Fixed: all three added in gate order |
+| 4 | No-latch claim rests on synthetic contexts; late Hue reports could latch | DEFECT | Handoff logbook check + backlog fallback; documented in LEARNINGS |
+| 5 | Reload/restart loses `for:` timers; `automation_reloaded` unverified | DEFECT | Reload and start paths documented best effort; 3 h and 12 h triggers are the guarantee; trigger shape tested |
+| 6 | Attribute trigger could re-fire on AL resume | DEFECT | DnD condition blocks it; resume order (switch on, then flag off) pinned by a test |
+| 7 | 3 h reset during a live call causes flicker | BACKLOG | Taken: reset needs "not in DnD", plus a 12 h unconditional trigger |
+| 8 | End overrides a manual AL off mid-call | BACKLOG | Accepted, documented |
+| 9 | Plan/pre-mortem claimed a sleep-mode pauser exists | BACKLOG | Corrected |
+
+Checks that held: entertainment guards, detector ignores automation and `:al:` contexts on paper, `to: [Auto, Off]` is complete (the select has three options).
+
+Round 2 (re-review of the corrected plan): **APPROVED**, all 9 fixed, no new DEFECTs. Five BACKLOG notes: gate order has two house-level conditions after room-level ones (harmless); a call still in DnD at 12 h gets AL resumed and is not re-paused (accepted); a mid-call HA restart loses the `for:` backstops (the end trigger covers the normal case; best effort); pre-mortem Risk 4 text was stale (fixed); a cosmetic prd.json description (fixed).
+
+## Implementation review (final)
+
+Reviewer: independent sonnet `reviewer`. Round 1 at 1d8f66e: **ITERATE**, one DEFECT (the "Bulbs are on" guard was not pinned: flipping it to "off" stayed green); BACKLOG: an `office_occupied` flap mid-call resumes AL, `build-log.md` uncommitted. Fixed in cc8e686 with a guard test (sabotage rows 11 and 12). Round 2 at cc8e686: **APPROVED**, suite 1105 passed, 9 skipped, two further sabotage checks red then restored. The reviewer's own sabotage checks (drop `for` on end, drop the `stuck` branch, gate `or` to `and`, drop start's entertainment condition) all went red.
