@@ -45,5 +45,10 @@ script:
             - action: light.toggle
               target:
                 entity_id: light.emergency_light_group
-      # Restore lights to original state
-      - scene: scene.alarm_flash_lights_initial_state
+      # Restore lights to original state. An intruder alarm passes
+      # keep_lights_on: the lights stay on until disarm, which restores them.
+      - if:
+          - condition: template
+            value_template: "{{ not (keep_lights_on | default(false)) }}"
+        then:
+          - scene: scene.alarm_flash_lights_initial_state

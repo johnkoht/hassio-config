@@ -83,14 +83,16 @@ def test_flash_lights_snapshots_each_light_not_the_group():
     assert script["mode"] == "single"
 
 
-def test_alarm_disabled_restores_lights_when_flash_cut_short():
-    """Stopping the flash mid-run skips its restore step."""
+def test_alarm_disabled_stops_the_flash_and_restores_the_lights():
+    """The intruder alarm keeps the lights on until disarm (X3); disarm then puts
+    back the snapshot the flash took. The snapshot may be missing (restart)."""
     script = load("packages/security/alarm/alarm_triggered.yaml")["script"]["security_alarm_disabled"]
-    (stop,) = [s for s in script["sequence"] if "if" in s]
+    seq = script["sequence"]
+    (stop,) = [s for s in seq if "if" in s]
     assert stop["if"][0]["entity_id"] == "script.alarm_flash_lights"
-    actions = [a["action"] for a in stop["then"]]
-    assert actions == ["script.turn_off", "scene.turn_on"]
-    restore = stop["then"][1]
+    assert [a["action"] for a in stop["then"]] == ["script.turn_off"]
+    restore = next(s for s in seq if s.get("action") == "scene.turn_on")
     assert restore["target"]["entity_id"] == "scene.alarm_flash_lights_initial_state"
-    # the snapshot may not exist yet; a failed restore must not skip the notification
+    assert seq.index(restore) > seq.index(stop)  # stop the flash first, then restore
+    # a failed restore must not skip the notification
     assert restore.get("continue_on_error") is True

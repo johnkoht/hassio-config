@@ -163,6 +163,8 @@ def engine_volume_templates():
 @pytest.mark.parametrize("given,expected", [
     (30, 30), ("30", 30), (75, 75), (200, 75), ("90", 75), (75.5, 75), (1000000, 75),
     (27.5, 27), ("not a number", 30), (None, 30),
+    # clamped at the bottom too: nothing negative, and NaN can't slip through
+    (-5, 0), ("-5", 0), (-1000000, 0), ("-inf", 0), ("inf", 75), ("nan", 30), (0, 0),
 ])
 def test_engine_clamps_runtime_volume_to_the_ceiling(field, given, expected):
     """Whatever a caller passes, the volume that reaches play_media is <= 75."""
