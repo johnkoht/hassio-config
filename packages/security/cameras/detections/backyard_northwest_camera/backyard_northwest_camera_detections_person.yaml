@@ -22,7 +22,7 @@ automation:
       - condition: state
         entity_id: input_boolean.backyard_northwest_camera_notifications
         state: "on"
-      # Always alert when away; when home only alert if kitchen door wasn't opened recently
+      # Always alert when away; when home, not while a kitchen door is open or moved in the last 10 min
       - condition: or
         conditions:
           - condition: state
@@ -34,7 +34,9 @@ automation:
                 entity_id: input_boolean.house_occupied
                 state: "on"
               - condition: template
-                value_template: "{{ ( now().timestamp() - as_timestamp(state_attr('binary_sensor.kitchen_doors','last_changed'), 0) ) | int > 600 }}"
+                value_template: >
+                  {% set d = states.binary_sensor.kitchen_doors %}
+                  {{ d is none or (d.state != 'on' and now() - d.last_changed > timedelta(minutes=10)) }}
     actions:
       - action: script.camera_detection_alert
         data:
