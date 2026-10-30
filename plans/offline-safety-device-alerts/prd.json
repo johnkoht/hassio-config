@@ -16,9 +16,9 @@
         "State is the unique device count; a non-mapping rollup gives unavailable",
         "binary_sensor.safety_devices_need_attention is on when the count is above 0"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2-alert-automations",
@@ -34,9 +34,9 @@
         "Timer has restore: true; the day action starts it for 1 day and the week action for 7 days",
         "The watcher pushes when the attention sensor is unavailable, missing or stale for 20 minutes"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3-dashboard-card",
@@ -46,9 +46,9 @@
         "Conditional card on binary_sensor.safety_devices_need_attention using condition: state",
         "Included on Home under the page header, linking to the Sensors Offline tab"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4-tests",
@@ -59,9 +59,9 @@
         "Each behaviour is sabotage-checked (red when reverted)",
         "Full suite passes"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5-docs",
@@ -73,15 +73,15 @@
         "docs/AUTOMATIONS.md mentions the alert",
         "Memory entry and index line"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     }
   ],
   "metadata": {
     "createdAt": "2026-10-30T06:25:05.477540Z",
     "totalTasks": 5,
-    "completedTasks": 0,
+    "completedTasks": 5,
     "failedTasks": 0
   }
 }

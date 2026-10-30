@@ -11,3 +11,5 @@ Independent reviewer (sonnet, read-only). Round 1 verdict: **ITERATE**. No struc
 | 5 | DEFECT | `mode: single` drops overlapping triggers | Already `queued`, max 5 |
 | 6 | DEFECT | `quiet_mode` is on now; attention path may never fire | It is "somebody in bed" (naps too). Plan decision 7 as approved; README says 09:00 is the guaranteed path; test covers quiet_mode at noon (risk 13) |
 | 7-12 | BACKLOG | timer.finished across restart (09:00 covers), dict durations (verified: `cv.time_period` in HA core), clear push after snooze, new device during snooze waits (John's rule), level None applies to watcher too (README), first-battery-sensor lookup | Recorded |
+
+Final build review (sonnet, sha 681c75f): ITERATE, one DEFECT (three trigger/card behaviours had no test that could go red). Fixed; re-review at sha 04ae92f: **APPROVED**, 949 passed, four re-run mutations red.

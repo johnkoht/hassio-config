@@ -1,7 +1,7 @@
 ---
 title: Offline Safety Device Alerts
 slug: offline-safety-device-alerts
-status: in-progress
+status: shipped
 created: 2026-10-29
 has_pre_mortem: true
 has_review: true
