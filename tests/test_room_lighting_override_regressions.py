@@ -17,7 +17,7 @@ from jinja2 import Environment
 REPO = Path(__file__).resolve().parent.parent
 
 # Later PRs append rooms here.
-MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom"]
+MIGRATED_ROOMS = ["main_bedroom", "kitchen", "garage", "playroom", "upstairs_hallway"]
 
 HOUSE_FLAG = "input_boolean.lighting_automations"
 TURN_SERVICES = {"input_boolean.turn_on", "input_boolean.turn_off", "input_boolean.toggle"}
@@ -206,13 +206,20 @@ def _manual(room):
 MAIN_LIGHT = {"main_bedroom": "light.main_bedroom_main_lights",
               "kitchen": "light.kitchen_ceiling_lights",
               "garage": "light.garage_lights",
-              "playroom": "light.playroom_lights"}
+              "playroom": "light.playroom_lights",
+              "upstairs_hallway": "light.upstairs_hallway"}
 OFF_AUTO = {"main_bedroom": "main_bedroom_lights_off", "kitchen": "kitchen_lights_to_off",
-            "garage": "garage_lights_off", "playroom": "playroom_lights_to_off"}
+            "garage": "garage_lights_off", "playroom": "playroom_lights_to_off",
+            "upstairs_hallway": "upstairs_hallway_lights_to_off"}
 ON_AUTOS = {"main_bedroom": ["main_bedroom_lights_motion_on", "main_bedroom_lights_day_on"],
             "kitchen": ["kitchen_lights_motion_on", "kitchen_lights_day_on"],
             "garage": ["garage_lights_motion_on"],
-            "playroom": ["playroom_lights_motion_on", "playroom_lights_day_on"]}
+            "playroom": ["playroom_lights_motion_on", "playroom_lights_day_on"],
+            "upstairs_hallway": ["upstairs_hallway_lights_motion_on"]}
+
+# The hallway's motion-on never had a mode condition (the room has no Dim/DnD split); adding one
+# would change behaviour, so its gate is checked as house flag, room flag, latch only.
+NO_MODE_CONDITION = ("upstairs_hallway",)
 
 
 # Other lights whose hand changes must also latch the override (Dim pendants).
@@ -322,8 +329,9 @@ def test_on_automations_gated_by_flags_and_latch_before_mode(room, auto_id):
     """On-type lighting automations check house flag, room flag, latch=off, in that order, before the mode."""
     conds = conds_for(auto(auto_id))
     idx = [cond_index(conds, HOUSE_FLAG, "on"), cond_index(conds, flag(room), "on"),
-           cond_index(conds, latch(room), "off"),
-           next((i for i, c in enumerate(conds) if f"input_select.{room}" in str(c)), None)]
+           cond_index(conds, latch(room), "off")]
+    if room not in NO_MODE_CONDITION:
+        idx.append(next((i for i, c in enumerate(conds) if f"input_select.{room}" in str(c)), None))
     assert None not in idx, idx
     assert idx == sorted(idx), idx
 
@@ -385,7 +393,7 @@ def test_mode_off_ordering_invariant(room):
 
 
 # 8 ---------------------------------------------------------------------------
-NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom")
+NO_OCC_OFF_TRIGGER = ("kitchen", "garage", "playroom", "upstairs_hallway")
 
 
 @pytest.mark.parametrize("room", MIGRATED_ROOMS)
@@ -472,3 +480,29 @@ def test_playroom_not_occupied_only_clears_occupancy():
 
 def test_playroom_old_detection_is_gone():
     assert "playroom_lights_manually_turned_off" not in ALL
+
+
+# 12 upstairs hallway --------------------------------------------------------
+def test_upstairs_hallway_mode_off_forces_occupancy_off_with_target():
+    """JK-1219: house-empty/restart Off also clears occupancy, via a target: block."""
+    steps = [s for s in walk(auto("upstairs_hallway_mode_off")["actions"])
+             if s.get("action") == "input_boolean.turn_off"]
+    assert any(s.get("target", {}).get("entity_id") == "input_boolean.upstairs_hallway_occupied"
+               for s in steps)
+    assert all("entity_id" not in s for s in steps)
+
+
+def test_upstairs_hallway_not_occupied_only_clears_occupancy():
+    """not_occupied no longer re-enables the hand flag after a delay."""
+    body = action_body(auto("upstairs_hallway_not_occupied"))
+    assert [s.get("action") for s in body] == ["input_boolean.turn_off"]
+
+
+def test_upstairs_hallway_sleep_mode_automations_do_not_touch_flags():
+    for aid in ("upstairs_hallway_lights_sleep_mode_on", "upstairs_hallway_lights_sleep_mode_off"):
+        text = str(auto(aid))
+        assert latch("upstairs_hallway") not in text and flag("upstairs_hallway") not in text
+
+
+def test_upstairs_hallway_old_detection_is_gone():
+    assert "upstairs_hallway_lights_manually_turned_off" not in ALL

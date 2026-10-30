@@ -44,3 +44,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - Playroom: `playroom_lights_off` and `playroom_lights_motion_off` are disabled legacy twins; left untouched (no flag writes, no gate added). Enabled off automation is `playroom_lights_to_off`.
 - Playroom `mode_auto` has no occupancy-off trigger; the bounce-guard test now uses a NO_OCC_OFF_TRIGGER tuple instead of a hardcoded kitchen/garage pair.
 - Deploy order: input_boolean reload before automations (new helper `playroom_lights_manually_toggled`).
+- Upstairs hallway: `motion_on` has no mode condition, so the on-gate test skips the mode index for rooms in NO_MODE_CONDITION; no mode condition added (behaviour). `to_off` had no hand-flag check before; the vacancy branch now needs it (kit item 6). New helper `upstairs_hallway_lights_manually_toggled` (input_boolean reload first).
