@@ -24,6 +24,7 @@ packages/security/
 │   ├── alarm_disarm_in_morning.yaml
 │   ├── alarm_arm_home_script.yaml
 │   ├── alarm_triggered.yaml          # alarm triggered response
+│   ├── alarm_test_mode*.yaml         # test-mode helper, 30 min auto-off, notifications
 │   └── panic_button.yaml
 ├── cameras/
 │   ├── camera_notifications/         # global on/off for camera notifications
@@ -88,7 +89,7 @@ The alarm uses the `alarmo` custom integration. Always use `!secret` for the cod
 ### Alarm triggered response
 
 When the alarm triggers (`alarm_triggered.yaml`), `script.security_alarm_alert` does all of these at once in one `parallel:` block, so the Noonlight cloud call (`continue_on_error: true`) can't hold up the sirens:
-- Notify Noonlight
+- Notify Noonlight (skipped only while `input_boolean.alarm_test_mode` is `on`)
 - Sound the sirens
 - Play critical TTS announcement
 - Flash lights throughout the house
@@ -147,6 +148,7 @@ Lock unlock by fingerprint is in `security_unlock_front_door_by_fingerprint.yaml
 
 `fire_alarm/fire_alarm_triggered.yaml` fires on `binary_sensor.smoke_detector` (Vivint) and runs these at once in one `parallel:` block, so a slow Nest call can't delay the alert:
 - Call `script.critical_announcement` — broadcasts to all rooms
+- Notify Noonlight (same test-mode gate as the alarm)
 - Flash all lights
 - Send critical push notification to `devices: "all"`
 - Turn off both Nest thermostats (`continue_on_error: true`)
@@ -164,3 +166,11 @@ Always use `script.critical_announcement` (not `voice_announcement`) for fire/sm
 ### Volume ceiling
 
 No announcement may set a Sonos volume above 75 (in-ceiling speakers on amps); `critical_announcement` stays at 40. Emergency mode only skips the quiet-mode halving, it never raises the level. `tests/test_emergency_delivery_regressions.py` enforces the ceiling.
+
+### Noonlight, test mode and the alarm off path
+
+- **Noonlight is production and irreversible from HA.** The integration's `switch.noonlight_alarm` creates a real dispatch (police only; it never sends fire or medical) and turning it off only flips local state. Cancel it with Noonlight (app, or tell the dispatcher when they call). Never run `security_alarm_alert`, `fire_alarm_alert`, the panic button or an alarmo trigger as a test without test mode on.
+- **`input_boolean.alarm_test_mode`** (`alarm/alarm_test_mode*.yaml`): while it is `on`, both alert scripts skip the Noonlight call and log a warning; sirens, lights, voice and pushes still run. `initial: false` is deliberate (it must come back off after a restart); it also auto-offs after 30 minutes, at HA start and on automation reload, and shows a persistent notification while on. Only an explicit `on` skips Noonlight: off, unknown, unavailable or a missing helper all dispatch.
+- **Off path:** `security_alarm_disabled` runs on any exit from `triggered` (not only to `disarmed`): alarmo goes back to an armed state when the trigger time ends, and a trigger from `disarmed` ends in `disarmed`.
+- **Panic:** the ZHA button triggers `alarm_control_panel.alarmo` (no code needed, honoured from `disarmed`; verified read-only in alarmo 1.10.18), so a panic has a disarm path and sets `emergency_active`. If alarmo is unavailable it runs `security_alarm_alert` directly. The device trigger id must stay as is. The button hardware is dead (JK-1230), so this path has no live verification yet.
+- **Fire push** names the Noonlight cancel path (and says Noonlight was NOT notified in test mode).

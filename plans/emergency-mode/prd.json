@@ -1,6 +1,6 @@
 {
   "name": "emergency-mode",
-  "branchName": "feature/emergency-mode-pr2",
+  "branchName": "feature/emergency-mode-pr3",
   "goal": "While a security alarm or fire is active, the critical voice message plays in full, on every speaker, at any hour, and nothing non-critical plays over or after it until the emergency ends. Delivered as 4 PRs; this run builds PR 1 (tasks 1-5).",
   "userStories": [
     {
@@ -119,9 +119,9 @@
         "Persistent notification created while on and dismissed on off"
       ],
       "pr": 3,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-8",
@@ -132,9 +132,9 @@
         "Test asserts the trigger shape"
       ],
       "pr": 3,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-9",
@@ -147,9 +147,9 @@
         "Regression test covers branch and gate"
       ],
       "pr": 3,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-10",
@@ -162,9 +162,9 @@
         "Fallback per decision 6 if alarmo does not trigger from disarmed"
       ],
       "pr": 3,
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-11",
@@ -184,7 +184,7 @@
   "metadata": {
     "createdAt": "2026-10-29T22:29:33-05:00",
     "totalTasks": 11,
-    "completedTasks": 6,
+    "completedTasks": 10,
     "failedTasks": 0,
     "prs": {
       "1": "audio gate (tasks 1-5)",
@@ -192,6 +192,6 @@
       "3": "alarm lifecycle (tasks 7-10)",
       "4": "polish (task 11)"
     },
-    "currentPr": 2
+    "currentPr": 3
   }
 }

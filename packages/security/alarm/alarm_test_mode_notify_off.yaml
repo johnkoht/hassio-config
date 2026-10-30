@@ -1,0 +1,17 @@
+# Alarm Test Mode - Notify Off
+#
+# Clear the persistent notification when test mode turns off.
+#
+
+automation:
+  - id: "alarm_test_mode_notify_off"
+    alias: "Alarm Test Mode - Notify Off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.alarm_test_mode
+        to: "off"
+    actions:
+      - action: persistent_notification.dismiss
+        data:
+          notification_id: alarm_test_mode

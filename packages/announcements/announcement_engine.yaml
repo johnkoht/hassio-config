@@ -129,7 +129,8 @@ script:
           media_content_type: music
           announce: true
           extra:
-            volume: "{{sound_volume}}"
+            # Hard ceiling: nothing over 75 plays, whatever a caller passes
+            volume: "{{ [sound_volume | default(30) | float(30), 75] | min | int }}"
 
       # Wait for the chime to complete
       - alias: "Wait for chime to complete"
@@ -151,7 +152,8 @@ script:
           media_content_type: music
           announce: true
           extra:
-            volume: "{{speech_volume}}"
+            # Hard ceiling: nothing over 75 plays, whatever a caller passes
+            volume: "{{ [speech_volume | default(30) | float(30), 75] | min | int }}"
 
       # Conservative: cloud TTS fetch time isn't in the estimate, and a short
       # wait let the next item start over the tail of a critical message.
