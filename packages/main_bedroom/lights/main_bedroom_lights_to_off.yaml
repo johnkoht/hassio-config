@@ -1,3 +1,9 @@
+# Main Bedroom Lights Off
+#
+# Room Off always turns the lights off. Vacancy, bed and bedtime only do so
+# while the hand flag is on.
+#
+
 automation:
   - id: "main_bedroom_lights_off"
     initial_state: on
@@ -7,56 +13,54 @@ automation:
       - trigger: state
         entity_id: input_select.main_bedroom
         to: "Off"
-      # House is off
-      - trigger: state
-        entity_id: input_select.house
-        to: "Off"
+        id: "room_off"
       # Main bedroom is not occupied
       - trigger: state
         entity_id: input_boolean.main_bedroom_occupied
         to: "off"
+        id: "vacancy"
       # Main bedroom lighting automation turned on
       - trigger: state
         entity_id: input_boolean.main_bedroom_lighting_automations
         from: "off"
         to: "on"
+        id: "flag_on"
     conditions:
       # Lighting automations are enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      # Make sure lighting automations are enabled
-      # OR the bedroom is turned off (in case leave)
-      # - condition: or
-      #   conditions:
-      #     # And lighting automations for the bedroom are enabled
-      #     - condition: state
-      #       entity_id: input_boolean.main_bedroom_lighting_automations
-      #       state: "on"
-      #     # OR the bedroom is turned OFF
-      #     - condition: state
-      #       entity_id: input_select.main_bedroom
-      #       state: "Off"
-      - condition: or
-        conditions:
-          # Main bedroom is not occupied
-          - condition: state
-            entity_id: input_boolean.main_bedroom_occupied
-            state: "off"
-          # Or we're in bed
-          - condition: state
-            entity_id:
-              - input_boolean.john_is_in_bed
-              - input_boolean.cristina_in_bed
-            state: "on"
-          # Bedtime is enabled
-          - condition: state
-            entity_id: input_boolean.bedtime
-            state: "on"
       # Bedroom lights are on
       - condition: state
         entity_id: light.main_bedroom_lights
         state: "on"
+      - condition: or
+        conditions:
+          # Room Off always wins
+          - condition: trigger
+            id: "room_off"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.main_bedroom_lighting_automations
+                state: "on"
+              - condition: or
+                conditions:
+                  # Main bedroom is not occupied
+                  - condition: state
+                    entity_id: input_boolean.main_bedroom_occupied
+                    state: "off"
+                  # Or we're in bed
+                  - condition: state
+                    entity_id:
+                      - input_boolean.john_is_in_bed
+                      - input_boolean.cristina_in_bed
+                    state: "on"
+                  # Bedtime is enabled
+                  - condition: state
+                    entity_id: input_boolean.bedtime
+                    state: "on"
     actions:
       - action: light.turn_off
-        entity_id: light.main_bedroom_lights
+        target:
+          entity_id: light.main_bedroom_lights
