@@ -3,15 +3,14 @@ Notification deep links (plans/notification-deep-links).
 
 Builds a map of the Kohbo dashboard (view path -> popup hashes) from the YAML,
 finds every phone push in the repo, and checks that each link it carries opens
-something that exists. A push with no link is only REPORTED for now (the plan
-flips that to enforcing once every theme has landed).
+something that exists. A push with no link must be on the exempt list
+(tests/fixtures/notification_url_exempt.yaml), with a reason.
 
 Run `python tests/test_notification_deep_links.py` for the full audit table.
 """
 import ast
 import re
 import sys
-import warnings
 from pathlib import Path
 
 import pytest
@@ -245,14 +244,42 @@ def test_bad_links_are_caught():
     assert link_problem("/dashboard-kohbo/security-cameras#front_door_camera", VIEWS) is None
 
 
-def test_unlinked_pushes_are_reported_not_enforced():
-    """Report-only until every theme has landed (plan task 9 flips this)."""
-    if UNLINKED:
-        warnings.warn(
-            f"{len(UNLINKED)} of {len(CALLS)} push call sites carry no link "
-            "(python tests/test_notification_deep_links.py lists them)",
-            stacklevel=1,
-        )
+EXEMPT_FILE = REPO / "tests" / "fixtures" / "notification_url_exempt.yaml"
+
+
+def load_exempt():
+    return {e["path"]: e["reason"] for e in yaml.safe_load(EXEMPT_FILE.read_text())}
+
+
+EXEMPT = load_exempt()
+
+
+def test_exempt_entries_have_a_path_and_a_reason():
+    entries = yaml.safe_load(EXEMPT_FILE.read_text())
+    assert len(entries) == len(EXEMPT), "duplicate path in the exempt list"
+    assert all(e.get("reason", "").strip() for e in entries)
+
+
+def test_every_push_has_a_link_or_is_exempt():
+    """A push nobody can tap through to the right screen needs a decision, written down."""
+    missing = sorted({f for f, _ in UNLINKED if f not in EXEMPT})
+    assert not missing, (
+        "These pushes carry no url. Link them to a dashboard view, or add the file to "
+        f"tests/fixtures/notification_url_exempt.yaml with a reason:\n  " + "\n  ".join(missing))
+
+
+def test_exempt_entries_are_not_stale():
+    by_file = {}
+    for f, _, urls in CALLS:
+        by_file.setdefault(f, []).append(bool(urls))
+    stale = []
+    for path in sorted(EXEMPT):
+        flags = by_file.get(path)
+        if flags is None:
+            stale.append(f"{path}: sends no push any more, remove it from the exempt list")
+        elif all(flags):
+            stale.append(f"{path}: every push now carries a url, remove it from the exempt list")
+    assert not stale, "\n".join(stale)
 
 
 # --- script.general_notification transport ---------------------------------
