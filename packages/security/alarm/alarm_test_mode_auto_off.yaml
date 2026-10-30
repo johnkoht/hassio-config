@@ -1,0 +1,24 @@
+# Alarm Test Mode - Auto Off
+#
+# Turn test mode off after 30 minutes, at HA start, and after an automation
+# reload (a reload loses the pending 30 minute timer).
+#
+
+automation:
+  - id: "alarm_test_mode_auto_off"
+    alias: "Alarm Test Mode - Auto Off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.alarm_test_mode
+        to: "on"
+        for:
+          minutes: 30
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.alarm_test_mode

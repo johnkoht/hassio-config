@@ -44,3 +44,13 @@ bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
 ## Critical pushes bypass the notification level (JK-1149, PR 2)
 
 `general_notification` used to stop at `notification_level == None` before it read the priority, and was `mode: queued` (max 10), so a camera burst could push the alarm out. Critical now always passes and the script is `mode: parallel` (max 25). The fire push goes to `all`. Same-tag pushes can now race (see `packages/security/CLAUDE.md`). Caller audit (2026-10-30): the only same-tag pair across scripts is `home-security-alarm` (alarm triggered, then alarm disabled), which is meant to replace the first.
+
+## Alarm lifecycle (JK-1149, PR 3)
+
+**Gate on `state`, not a template.** The Noonlight branch is `if: state alarm_test_mode on` / `then: log` / `else: dispatch`. A state condition on a missing or unavailable helper is false and never raises, so the dispatch runs. A template condition that errors would be treated as false and could skip the dispatch.
+
+**Noonlight sends police only.** The switch always requests `police`, even for the fire branch; the `noonlight.create_alarm` service can request `fire`. Left as is (decision 8 said "Noonlight on fire", not which service); the dispatcher decides after calling. Noonlight cancel isn't in the component.
+
+**Alarmo leaves `triggered` for an armed state when the trigger time ends** (`disarm_after_trigger` is off), so `security_alarm_disabled` watches `from: triggered`, not `to: disarmed`. A trigger from `disarmed` ends in `disarmed` (3600 s).
+
+**The panic button hardware is dead (JK-1230).** The alarmo path is verified statically and by reading alarmo's source only.
