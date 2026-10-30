@@ -22,3 +22,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 *(Builder rulings that supersede or refine a documented rule. Entry: `[YYYY-MM-DD] ruling — docs affected: <paths or none-yet> — status: open|folded`.)*
 - [Task 1] NOTHING_NOVEL - Task 1
 - [Task 2] NOTHING_NOVEL - Task 2
+- [Task 3] NOTHING_NOVEL - Task 3
