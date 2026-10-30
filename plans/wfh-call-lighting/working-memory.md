@@ -40,5 +40,7 @@ Each edit was made, `tests/test_office_call_lighting.py` run, then the file rest
 | 8 | end clears the flag before AL turn_on | `test_resume_shape[end]` |
 | 9 | remove the 12 h `stuck` trigger from reset | `test_reset_triggers` |
 | 10 | unguarded `switch.turn_on` in reset | `test_resume_shape[reset]` |
+| 11 | flip the start "Bulbs are on" guard state from `on` to `off` | `test_start_light_turn_on_guarded_by_bulbs_on` |
+| 12 | move `light.turn_on` out of the guard `then` to the top level of start actions | `test_start_light_turn_on_guarded_by_bulbs_on` |
 
-All ten went red; none stayed green.
+All twelve went red; none stayed green.

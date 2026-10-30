@@ -171,6 +171,16 @@ def test_start_action_order():
     assert acts == [("input_boolean.turn_on", FLAG), ("switch.turn_off", AL), ("light.turn_on", BULBS)]
 
 
+def test_start_light_turn_on_guarded_by_bulbs_on():
+    """light.turn_on runs only inside an `if` on the bulbs being on, never at the top level."""
+    acts = START["actions"]
+    assert not [s for s in acts if s.get("action") == "light.turn_on"]
+    guard = acts[2]
+    assert "if" in guard and "then" in guard
+    assert guard["if"] == [{"condition": "state", "entity_id": BULBS, "state": "on"}]
+    assert [s["action"] for s in guard["then"]] == ["light.turn_on"]
+
+
 def test_start_targets_only_ceiling_bulbs():
     """The lamp, shelf, el gato and the whole-room group are never touched."""
     text = START_F.read_text()
