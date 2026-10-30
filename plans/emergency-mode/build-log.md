@@ -23,3 +23,4 @@ Branch: worktree-emergency-mode-pr1 (pushed as feature/emergency-mode-pr1). Work
 ## PR 3 (worktree emergency-mode-pr3)
 - Runtime volume clamp in the engine (+test), tasks 7-10 built. 493 passed.
 - Sabotage (revert -> red, static): intruder gate inverted, fire gate off, fire continue_on_error removed, disarm to-disarmed only, panic back to alert script, panic device id changed, test-mode initial removed, auto-off 60, fire text without cancel path; engine clamp removed/175.
+- PR 3 final review (sonnet) at 1d288d9: APPROVED, no DEFECTs; BACKLOG 1 (wider Noonlight scan) done, sabotage red; others deferred.

@@ -175,3 +175,20 @@ def test_panic_falls_back_to_the_alert_only_when_alarmo_is_down():
     assert set(cond["state"]) == {"unavailable", "unknown"}
     assert [a["action"] for a in step["then"]] == ["script.security_alarm_alert"]
     assert "security_alarm_alert" not in yaml.safe_dump(step["else"])
+
+
+def test_noonlight_is_mentioned_nowhere_else_in_the_config():
+    """Widened scan: no automation, script, dashboard or esphome file may name
+    Noonlight outside the two alert scripts (and the one switch.turn_off)."""
+    roots = ["automation", "scripts", "automations.yaml", "scripts.yaml", "scenes.yaml",
+             "dashboards", "esphome", "blueprints", "custom_templates", "configuration.yaml", "packages"]
+    allowed = {"alarm_triggered.yaml", "fire_alarm_triggered.yaml"}
+    offenders = []
+    for root in roots:
+        base = REPO / root
+        files = [base] if base.is_file() else list(base.rglob("*")) if base.exists() else []
+        for f in files:
+            if f.is_file() and f.suffix in {".yaml", ".yml", ".json", ".py", ".j2"} and f.name not in allowed:
+                if "noonlight" in f.read_text(errors="ignore").lower():
+                    offenders.append(str(f.relative_to(REPO)))
+    assert offenders == []
