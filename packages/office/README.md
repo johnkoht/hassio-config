@@ -74,3 +74,12 @@ The Office goes into Do Not Disturb (DnD) mode when I'm on a call. This will dis
 - Office is occupied
 
 Eventually, this could also include Cristina or a guest. One thing to note, there is a state of DnD on John as well as the Office. The reason is that I might be in DnD mode but not in the office. Sometimes I take calls on the patio or the kitchen. 
+
+## Call lighting
+
+During a camera or audio call, once Adaptive Lighting has warmed or dimmed the ceiling bulbs, the room pauses AL and holds them at the tunable colour temperature and brightness. AL resumes 3 minutes after the call ends.
+
+- Automations (`packages/office/call_lighting/`): `office_call_lighting_start`, `office_call_lighting_end`, `office_call_lighting_reset`.
+- Helpers: `input_boolean.office_call_lighting` (feature switch), `input_boolean.office_call_al_paused`, `input_number.office_call_color_temp`, `input_number.office_call_brightness`. Seed 3000 / 100, then turn the switch on.
+- Only the four ceiling bulbs are touched. The lamp, shelf lights and El Gato are untouched.
+- Dashboard: Quick Settings on the office page.
