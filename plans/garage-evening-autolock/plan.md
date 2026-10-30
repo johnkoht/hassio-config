@@ -1,11 +1,11 @@
 ---
 title: Garage Evening Autolock
 slug: garage-evening-autolock
-status: approved
+status: shipped
 created: 2026-10-29
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 related: JK-1233
 ---
 
@@ -93,6 +93,19 @@ If a condition blocks the lock, the trigger will not retry by itself (a state tr
 
 - **Before:** `devices: all`, `priority: time-sensitive`, tag `garage-entry-evening-lock`, message "Locking the garage entry door in 2 minutes", actions "Snooze 1 hour" (timer 01:00:00). Recommended over after-only notification because the whole problem is being locked out; the push is the escape hatch.
 - **After:** `priority: passive` log line, tag shared with the first so it replaces it, with an "Unlock" action. No TTS: it would announce into rooms while people are likely outside, and the announcement engine adds noise for a routine event.
+
+## Build-time refinements (2026-10-30, from the pre-mortem and review)
+
+Folded in during /ship; they supersede the matching lines above.
+
+- **Task 1 done.** The spike ran read-only on the host: the four `binary_sensor.backyard_{south,pool,northwest,porch}_person_detected` cameras, the two driveway cameras and `binary_sensor.backyard_occupied` all fire for people outside, none is stuck on (see `pre-mortem.md`). `*_person_occupancy` never fires; unused.
+- **Extra conditions** (and in the post-wait recheck): `binary_sensor.emergency_active` off, `input_select.notification_level` not `None` (the warning push is the escape hatch), and the lock `unlocked` for the timeout (not only the door closed).
+- **Evening floor.** `sun.sun` below_horizon plus `time after 12:00`, so the dark hours before sunrise (morning unlock) never trigger it. No helper.
+- **Triggers added:** `timer.finished` for the snooze, and a 10-minute `somebody_just_arrived` off. Sunset trigger has a 1-minute offset.
+- **Post-wait recheck.** The 2-minute wait can outlive the conditions, so an action-level `condition: and` checks the live guards again before `lock.lock`.
+- **Follow-up pushes.** "Could not lock" is `time-sensitive` (the `Important` level drops `active` and `passive`). The passive "Locked" push, which carries Unlock, only arrives at level `All`.
+- **Unlock handler** is its own file, `garage_entry_door_evening_auto_lock_unlock_action.yaml`. It needs `timer.garage_entry_door_evening_auto_lock_unlock_window` active (30 minutes, started only by the evening auto lock after a confirmed lock), lock locked, house occupied, bedtime off, and cancels the window after one tap.
+- **Dashboard:** the popup gets the switch with the shared timeout shown when on; the snooze timer is not shown.
 
 ## Variant B (only if "garage door" means the covers)
 
