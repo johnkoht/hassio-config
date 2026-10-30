@@ -641,7 +641,7 @@ def test_laundry_not_occupied_only_clears_occupancy():
 # 16 mode-only rooms (no lighting automations: no flags, no latch) ------------
 # Only `<room>_mode_off` forcing `<room>_occupied` off (JK-1219), plus the bounce guard where
 # mode_auto has an occupancy-off trigger. Not in MIGRATED_ROOMS.
-MODE_ONLY_ROOMS = ["dining_room", "basement"]
+MODE_ONLY_ROOMS = ["dining_room", "basement", "jr_suite"]
 
 
 @pytest.mark.parametrize("room", MODE_ONLY_ROOMS)
