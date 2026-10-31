@@ -18,3 +18,14 @@ def test_every_camera_caller_passes_camera_entity():
     assert len(callers) >= 8
     bad = [str(p) for p in callers if len(ENTITY.findall(p.read_text())) < len(CALLER.findall(p.read_text()))]
     assert not bad, bad
+
+
+# Frigate's camera entities (unsuffixed); the cards must use the UniFi Protect ones.
+# The porch's Protect entity is camera.g5_turret_ultra_high_resolution_channel.
+FRIGATE = {"front_door", "driveway_front", "garage_driveway", "backyard_south",
+           "backyard_porch", "backyard_pool", "backyard_northwest"}
+
+
+def test_cards_use_protect_not_frigate_entities():
+    used = {m for p in FILES for m in re.findall(r"camera_entity:\s*camera\.([a-z0-9_]+)", p.read_text())}
+    assert used and not (used & FRIGATE), used & FRIGATE
