@@ -24,3 +24,7 @@ I use [Bermuda](https://github.com/agittins/bermuda) for room presence detection
 ## Zone Presence
 
 Home Assistant has a great [Zone](https://www.home-assistant.io/integrations/zone/) integration that lets you identify zones to track. I haven't done as much as I'd like to do here, but I have some useful automations to notify the house occupants whenever somebody arrives or leaves work. School drop-offs are tracked too, including inferring a drop-off when a family member without a GPS tracker leaves home in the drop-off window. Grocery store visits get announced.
+
+## Car Outside
+
+`binary_sensor.car_outside` says a car is parked outside, for the freezing-night reminder. There is no "car in the garage" signal, so it works the other way round: a UniFi Protect vehicle detection on a driveway camera turns it on, and it clears when the garage doors close or at 08:00. It needs no car identity, so a visitor's car counts. Limits: a car the camera never detected gives no reminder, and a car that left without the doors cycling can stay on until 08:00. The BLE car sensors (`sensor.audi_presence`, `sensor.bmw_presence`) are not used because they go stale as `not_home`.
