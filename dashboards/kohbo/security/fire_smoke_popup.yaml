@@ -1,0 +1,82 @@
+#
+# Fire & Smoke Popup: smoke detector, emergency state, and the two test toggles.
+# Status and switches only: nothing here runs the fire alarm, sirens or panic.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#fire_smoke_popup'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+cards:
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Fire & Smoke
+
+  - type: custom:button-card
+    template: section_title
+    name: Status
+
+  - type: vertical-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_device_entity_horizontal
+        entity: binary_sensor.smoke_detector
+        name: Smoke Detector
+        icon: mdi:smoke-detector-variant
+        show_last_changed: true
+        state_display: |
+          [[[
+            if (entity.state === 'on') return 'Smoke';
+            return entity.state === 'off' ? 'Clear' : 'Offline';
+          ]]]
+        styles:
+          state:
+            - color: |
+                [[[ return entity.state === 'on' ? 'var(--error-color)' : entity.state === 'off' ? 'var(--success-color)' : 'var(--warning-color)'; ]]]
+          icon:
+            - color: |
+                [[[ return entity.state === 'on' ? 'var(--error-color)' : entity.state === 'off' ? 'var(--success-color)' : 'var(--warning-color)'; ]]]
+
+      - type: custom:button-card
+        template: kohbo_device_entity_horizontal
+        entity: binary_sensor.emergency_active
+        name: Emergency Active
+        icon: mdi:alert-octagon
+        show_last_changed: true
+        state_display: |
+          [[[ return entity.state === 'on' ? 'Active' : 'Clear'; ]]]
+        styles:
+          state:
+            - color: |
+                [[[ return entity.state === 'on' ? 'var(--error-color)' : 'var(--success-color)'; ]]]
+          icon:
+            - color: |
+                [[[ return entity.state === 'on' ? 'var(--error-color)' : 'var(--success-color)'; ]]]
+
+  - type: custom:button-card
+    name: Emergency is active while the smoke detector is on, the alarm is triggered, or emergency mode is on. While it is, only critical announcements play.
+    template: kohbo_card_section_description
+
+  - type: custom:button-card
+    template: section_title
+    name: Settings
+
+  - type: entities
+    entities:
+      - entity: input_boolean.emergency_mode
+        name: Emergency Mode
+        icon: mdi:alert-octagon-outline
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.alarm_test_mode
+        name: Alarm Test Mode
+        icon: mdi:test-tube
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  - type: custom:button-card
+    name: Emergency mode is a manual override that turns itself off after 10 minutes. With alarm test mode on, a smoke alarm does not call for dispatch.
+    template: kohbo_card_section_description

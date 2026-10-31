@@ -25,3 +25,4 @@ automation:
           devices: "jk"
           priority: "passive"
           tag: "ups-power-restored"
+          url: /dashboard-kohbo/sensors#ups_power_popup

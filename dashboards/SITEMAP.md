@@ -61,6 +61,7 @@ The dashboard is organized into the following main sections:
 - Security Settings Popup
 - House Locks Popup
 - Garage Entry Lock Popup
+- Fire & Smoke Popup (`security/fire_smoke_popup.yaml`, `#fire_smoke_popup`, opened by the fire alarm push)
 
 ### 🏡 Rooms
 
@@ -152,7 +153,7 @@ Tabbed section (Indoor / Outdoor) sharing `templates/includes/plants/plants_head
 More → Sensors. Tabbed section (Overview / Offline / Low Battery) sharing `templates/includes/sensors/sensors_header.yaml`. Tracks the physical sensors the room pages use. No settings popup. See the [sensors README](kohbo/sensors/README.md) and the [sensor_health README](../packages/system/sensor_health/README.md).
 
 - **Overview** (`sensors/sensors.yaml`, `/dashboard-kohbo/sensors`)
-  - Device Health card (Healthy / Degraded / Down, score ring, and Networks / Sensors / Batteries tiles; the last two open their tabs), 5 Network rows (Zigbee coordinator, routers N of total, Z-Wave, Hue spots, BLE proxies; the routers row opens `#zigbee_routers_popup`, every `zigbee_router`-labelled device with Online/Offline and LQI, offline and weakest first), then online sensors by type, Safety & Security first
+  - Device Health card (Healthy / Degraded / Down, score ring, and Networks / Sensors / Batteries tiles; the last two open their tabs), 5 Network rows (Zigbee coordinator, routers N of total, Z-Wave, Hue spots, BLE proxies; the routers row opens `#zigbee_routers_popup`, every `zigbee_router`-labelled device with Online/Offline and LQI, offline and weakest first), 4 Power rows (UPS; the UPS alert pushes open `#ups_power_popup`, the coordinator and Z-Wave alert pushes open `#radio_health_popup`), then online sensors by type, Safety & Security first
 - **Offline** (`sensors/offline.yaml`, `/dashboard-kohbo/sensors-offline`)
   - Every tracked sensor that's unavailable or unknown, oldest outage first, with its area; "Known issue"-labelled ones in their own section
 - **Low Battery** (`sensors/low_battery.yaml`, `/dashboard-kohbo/sensors-low-battery`)
