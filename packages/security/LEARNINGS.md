@@ -79,3 +79,8 @@ bedtime, doors closed 45 min) is unchanged. Both flip pushes are `passive`.
 - Lock and cover battery is skipped by decision, but `lock.garage_entry_door` does have one.
 
 - **`last_changed` is not an attribute (2026-10-30, PR #124).** `state_attr(x, 'last_changed')` is always `None`, so a time-since check built on it always passes. Use `states.x.last_changed` instead. The backyard kitchen-door guard was silently dead because of this.
+
+## Protect freeze watchdog: threshold and reload side effects (2026-10-30)
+
+Detect a frozen Protect feed from the camera **motion** sensors, which change about 75 times an hour; person and vehicle are too sparse. The threshold is 6 h, not 3: quiet nights reach 4.5 h, the freezes lasted over 24 h. A Protect reload takes every sensor unavailable then back to off, so `wait_for_trigger` on those sensors needs `not_from`/`not_to` unavailable and unknown or the reload itself reads as recovery. Triggers on `to: "off"` (garage evening auto-lock, garage flood-light off) also fire on that transition; both re-check their conditions, so they were left without a guard. Restored sensors start with `last_changed` = restart time, so the stale sensor is blind for 6 h after a restart.
+
