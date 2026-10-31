@@ -1,0 +1,78 @@
+# Protect Detection Watchdog
+#
+# When camera detections freeze, reload UniFi Protect and tell John whether it worked.
+# At most one reload per 6 hours. Passive push if motion came back, time-sensitive if not.
+#
+
+automation:
+  - id: "protect_detection_watchdog"
+    alias: "Protect - Detection Watchdog"
+    mode: single
+    # A second trigger during the wait is expected, not a fault
+    max_exceeded: silent
+    triggers:
+      # Not from unavailable: the stale sensor flickering through a restart is not a freeze
+      - trigger: state
+        entity_id: binary_sensor.protect_detections_stale
+        to: "on"
+        not_from:
+          - "unavailable"
+          - "unknown"
+    conditions:
+      - alias: "No reload in the last 6 hours (last_triggered is none on the first run)"
+        condition: template
+        value_template: >-
+          {% set last = this.attributes.last_triggered %}
+          {{ last is none or (now() - last) > timedelta(hours=6) }}
+    actions:
+      - alias: "Reload UniFi Protect"
+        action: homeassistant.reload_config_entry
+        target:
+          entity_id: binary_sensor.backyard_pool_motion_2
+        continue_on_error: true
+
+      # Only real changes count: a reload itself takes the sensors through unavailable
+      - alias: "Wait up to an hour for any motion sensor to change"
+        wait_for_trigger:
+          - trigger: state
+            entity_id:
+              - binary_sensor.front_door_camera_motion
+              - binary_sensor.driveway_front_camera_motion
+              - binary_sensor.garage_driveway_camera_motion
+              - binary_sensor.backyard_south_camera_motion
+              - binary_sensor.backyard_porch_motion_2
+              - binary_sensor.backyard_pool_motion_2
+              - binary_sensor.backyard_northwest_motion_2
+            not_from:
+              - "unavailable"
+              - "unknown"
+            not_to:
+              - "unavailable"
+              - "unknown"
+        timeout:
+          minutes: 60
+        continue_on_timeout: true
+
+      # wait.trigger is none when the hour ran out
+      - alias: "Say whether the reload fixed it"
+        if:
+          - condition: template
+            value_template: "{{ wait.trigger is not none }}"
+        then:
+          - action: script.general_notification
+            data:
+              title: Camera Detections
+              message: "Camera detections had frozen; UniFi Protect was reloaded and they're back"
+              devices: "jk"
+              priority: "passive"
+              tag: "protect-watchdog"
+              url: /dashboard-kohbo/security-cameras
+        else:
+          - action: script.general_notification
+            data:
+              title: Camera Detections
+              message: "Camera detections are frozen and a reload didn't fix them. Camera alerts and the garage auto-lock's outside check are blind. Check the NVR."
+              devices: "jk"
+              priority: "time-sensitive"
+              tag: "protect-watchdog"
+              url: /dashboard-kohbo/security-cameras

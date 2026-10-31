@@ -1,0 +1,44 @@
+# Protect Detections Stale
+#
+# On when no camera motion sensor has changed in 6 hours: UniFi Protect's event feed has frozen
+# (2026-09-08, 2026-10-28). Quiet nights reach about 4.5 h; the freezes lasted over 24 h.
+# Trigger-based, not live (live templates saturate the Yellow). Restored sensors start fresh after
+# a restart, so a start or reload never reads on; the sensor is blind for 6 h after a restart.
+#
+
+template:
+  - triggers:
+      - trigger: time_pattern
+        minutes: /15
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - variables:
+          stale_after_hours: 6
+          # Newest change among the available motion sensors, as a timestamp, or none if all are missing
+          newest: >-
+            {% set ns = namespace(newest=none) %}
+            {% for s in expand(
+                'binary_sensor.front_door_camera_motion',
+                'binary_sensor.driveway_front_camera_motion',
+                'binary_sensor.garage_driveway_camera_motion',
+                'binary_sensor.backyard_south_camera_motion',
+                'binary_sensor.backyard_porch_motion_2',
+                'binary_sensor.backyard_pool_motion_2',
+                'binary_sensor.backyard_northwest_motion_2') if s.state not in ['unavailable', 'unknown'] %}
+              {% set t = s.last_changed | as_timestamp %}
+              {% if ns.newest is none or t > ns.newest %}{% set ns.newest = t %}{% endif %}
+            {% endfor %}
+            {{ ns.newest }}
+    binary_sensor:
+      - name: Protect Detections Stale
+        unique_id: protect_detections_stale
+        default_entity_id: binary_sensor.protect_detections_stale
+        icon: mdi:camera-off
+        # Unavailable, never on, while every motion sensor is missing
+        availability: "{{ newest is not none }}"
+        state: "{{ newest is not none and (now() | as_timestamp) - newest > stale_after_hours * 3600 }}"
+        attributes:
+          newest_motion: "{{ newest | timestamp_local if newest is not none else none }}"
