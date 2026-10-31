@@ -20,7 +20,7 @@ DnD keeps the lights on: `office_lights_on` and `office_lights_day_on` pass Auto
 
 ## JK-1219 deliberately not applied
 
-`office_mode_off` still does not turn `office_occupied` off. It runs at house empty, Away and Bedtime. Listeners of occupancy going off: `office_music_off`, `office_speech_notifications_off`, `office_echo_dnd_off` (turns the Echo DnD switch off), `office_dnd_off` (clears office DnD, which re-runs `office_mode_auto`), `office_camera_light_off`, `turn_off_office_shelf_lights`, the air-quality detections, announcement routing. At Bedtime, with John still working in the office, forcing occupancy off would drop his Echo DnD and speech notifications and can bounce the room back through DnD off, so the room is left alone. The latch is still cleared by the reset on room Off.
+`office_mode_off` still does not turn `office_occupied` off. It runs at house empty, Away and Bedtime. Listeners of occupancy going off: `office_music_off`, `office_speech_notifications_off`, `office_dnd_off` (clears office DnD, which re-runs `office_mode_auto`), `office_camera_light_off`, `turn_off_office_shelf_lights`, the air-quality detections, announcement routing. At Bedtime, with John still working in the office, forcing occupancy off would drop his speech notifications and can bounce the room back through DnD off, so the room is left alone. The latch is still cleared by the reset on room Off.
 
 ## Call lighting (JK-692)
 
