@@ -259,6 +259,42 @@ def test_away_push_waits_for_the_alarm_and_is_audible():
     data = push["data"]
     assert (data["priority"], data["tag"], data["devices"]) == ("active", "house-mode-away", "jk")
     assert "isn't armed" in data["message"] and "is armed" in data["message"]
+    assert data["important"] is True  # gets through the Important level, still "active"
+
+
+def _gate_passes(level, priority, important=None):
+    """Render the Important-level branch of general_notification's gate."""
+    script = load("packages/general_notifications.yaml")["script"]["general_notification"]
+    cond = next(c for c in script["sequence"] if c.get("condition") == "or")
+    tmpl = cond["conditions"][2]["value_template"]
+    env = Environment(undefined=StrictUndefined)
+    ctx = {"priority": priority}
+    if important is not None:
+        ctx["important"] = important
+    ctx["states"] = type("S", (), {"input_select": type("I", (), {
+        "notification_level": type("L", (), {"state": level})()})()})()
+    return env.from_string(tmpl).render(**ctx).strip() == "true"
+
+
+def test_general_notification_declares_important_field():
+    script = load("packages/general_notifications.yaml")["script"]["general_notification"]
+    field = script["fields"]["important"]
+    assert field["default"] is False and "boolean" in field["selector"]
+    cond = next(c for c in script["sequence"] if c.get("condition") == "or")
+    assert "important" in cond["conditions"][2]["value_template"]
+
+
+@pytest.mark.parametrize("level,priority,important,expected", [
+    ("Important", "active", None, False),
+    ("Important", "active", False, False),
+    ("Important", "active", True, True),
+    ("Important", "time-sensitive", None, True),
+    ("Important", "critical", None, True),
+    ("None", "active", True, False),
+    ("None", "time-sensitive", True, False),
+])
+def test_important_level_gate_truth_table(level, priority, important, expected):
+    assert _gate_passes(level, priority, important) is expected
 
 
 def test_quiet_speech_off_only_in_the_nap_window():
