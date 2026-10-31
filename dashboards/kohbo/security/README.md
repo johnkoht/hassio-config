@@ -28,6 +28,7 @@ security/
 ├── front_door_lock_popup.yaml                  # Front door lock popup
 ├── garage_entry_lock_popup.yaml                # Garage entry door lock popup
 ├── house_locks_popup.yaml                      # House locks overview popup
+├── fire_smoke_popup.yaml                       # Fire & smoke popup (#fire_smoke_popup)
 ├── components/
 │   ├── front_door_lock_component.yaml          # Front door lock component
 │   ├── garage_entry_door_lock_component.yaml   # Garage entry door lock component
@@ -157,6 +158,7 @@ Detailed view of all house locks with individual controls.
 **Popups:**
 - Front Door Lock Popup (`#front_door_lock_popup`)
 - Garage Entry Lock Popup (`#garage_entry_lock_popup`)
+- Fire & Smoke Popup (`#fire_smoke_popup`): smoke detector, emergency active, and the Emergency Mode and Alarm Test Mode toggles. Status and switches only; opened by the fire alarm push, no button runs the alarm, sirens or panic.
 
 ### Garage Doors (`pages/garage_doors.yaml`)
 
