@@ -15,7 +15,7 @@ automation:
           - "Auto"
           - "Off"
         for:
-          minutes: 3
+          minutes: 1
         id: left_dnd
       - trigger: state
         entity_id: input_boolean.office_occupied

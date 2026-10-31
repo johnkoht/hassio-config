@@ -238,11 +238,11 @@ def test_gate_tracks_the_setting():
 
 # end / reset ----------------------------------------------------------------
 def test_end_triggers():
-    """End on leaving DnD for 3 min, or on the office emptying."""
+    """End on leaving DnD for 1 min, or on the office emptying."""
     t = END["triggers"]
     assert len(t) == 2
     assert t[0]["trigger"] == "state" and t[0]["entity_id"] == "input_select.office"
-    assert t[0]["to"] == ["Auto", "Off"] and t[0]["for"] == {"minutes": 3}
+    assert t[0]["to"] == ["Auto", "Off"] and t[0]["for"] == {"minutes": 1}
     assert t[1] == {"trigger": "state", "entity_id": "input_boolean.office_occupied", "to": "off",
                     "id": "vacated"}
 
