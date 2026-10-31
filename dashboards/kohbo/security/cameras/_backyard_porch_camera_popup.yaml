@@ -9,7 +9,6 @@ variables:
   - notifications_entity: input_boolean.backyard_porch_camera_notifications
   - timer_entity: timer.backyard_porch_camera_notifications_snooze_timer
   - countdown_sensor: sensor.backyard_porch_timer_countdown
-  - stream_id: backyard_porch
   - camera_entity: camera.backyard_porch
   - motion_entity: binary_sensor.backyard_porch_motion_2
   - person_entity: binary_sensor.backyard_porch_person_detected

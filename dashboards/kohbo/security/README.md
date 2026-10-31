@@ -319,12 +319,14 @@ Each camera has a dedicated popup with:
 - Camera controls
 - Stream quality options
 
+**Streaming:** both templates use `advanced-camera-card` with `camera_entity` and `live_provider: ha`, so video goes through Home Assistant's built-in go2rtc/WebRTC. It works over Nabu Casa and off-LAN. The cards no longer talk to the Frigate host's go2rtc directly: that port is loopback-only (unauthenticated go2rtc is an RCE/SSRF risk) and plain http to a LAN IP is blocked as mixed content on the https URL. Don't add a `go2rtc:` block or a LAN URL back.
+
 **Components:**
 - Uses `camera_card` decluttering template
 - Each card includes:
   - Hash for popup navigation
   - Camera name
-  - Stream ID (low quality for preview)
+  - Camera entity (a UniFi Protect high-channel camera; streamed through HA)
   - Motion entity for status
 
 ## Components Used
@@ -471,7 +473,7 @@ cards:
   variables:
     - hash: '#front_door_camera'
     - name: Front Door
-    - stream_id: front_door_low
+    - camera_entity: camera.front_door_camera_high_resolution_channel
     - motion_entity: binary_sensor.front_door_camera_motion
 ```
 
