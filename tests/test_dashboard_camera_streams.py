@@ -29,3 +29,35 @@ FRIGATE = {"front_door", "driveway_front", "garage_driveway", "backyard_south",
 def test_cards_use_protect_not_frigate_entities():
     used = {m for p in FILES for m in re.findall(r"camera_entity:\s*camera\.([a-z0-9_]+)", p.read_text())}
     assert used and not (used & FRIGATE), used & FRIGATE
+
+
+TEMPLATES = DASH / "templates/decluttering/security"
+EXPECTED = {
+    "Front Door": "camera.front_door_camera_high_resolution_channel",
+    "Driveway Front": "camera.driveway_front_camera_high",
+    "Garage Driveway": "camera.garage_driveway_camera_high",
+    "Backyard South": "camera.backyard_south_camera_high",
+    "Backyard Porch": "camera.g5_turret_ultra_high_resolution_channel",
+    "Backyard Pool": "camera.backyard_pool_high_resolution_channel",
+    "Backyard Northwest": "camera.backyard_northwest_high_resolution_channel",
+}
+PAIR = re.compile(r"- name:\s*(.+?)\s*$(?:(?!- name:).)*?- camera_entity:\s*(camera\.[a-z0-9_]+)", re.M | re.S)
+
+
+def test_templates_stream_through_ha():
+    for name in ("camera_card.yaml", "camera_popup.yaml"):
+        text = (TEMPLATES / name).read_text()
+        assert "live_provider: ha" in text and "camera_entity: '[[camera_entity]]'" in text, name
+
+
+def test_each_camera_maps_to_its_own_entity():
+    cams = DASH / "kohbo/security/cameras"
+    files = [cams / "cameras.yaml", *sorted(cams.glob("_*_camera_popup.yaml"))]
+    seen = {}
+    for f in files:
+        for name, ent in PAIR.findall(f.read_text()):
+            if name in EXPECTED:
+                assert ent == EXPECTED[name], (f.name, name, ent)
+                seen.setdefault(name, 0)
+                seen[name] += 1
+    assert seen == {n: 2 for n in EXPECTED}, seen

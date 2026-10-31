@@ -11,6 +11,7 @@
 ## Camera streams go through HA, not go2rtc direct (2026-10-30)
 
 - `camera_card` and `camera_popup` use `advanced-camera-card` with `camera_entity` + `live_provider: ha` (HA's built-in go2rtc/WebRTC). The old `live_provider: go2rtc` pointed at the Frigate host's go2rtc by LAN IP; that port was moved to loopback for security, and plain http to a LAN IP is mixed content on the https Nabu Casa URL anyway, so every stream broke. Never point a card at a LAN go2rtc, and don't ask to reopen the port.
+- The entities are UniFi Protect's (the unsuffixed `camera.*` are Frigate's; the porch's Protect entity is `camera.g5_turret_ultra_high_resolution_channel`). With a Protect entity the card has no Frigate engine, so the popup's event thumbnails were removed; events are in the Protect app. Grid and popup both use the high-resolution channel; `lazy_load` keeps off-screen cards idle.
 - Callers pass `camera_entity` (a UniFi Protect high-channel camera), not a `stream_id`. Unsuffixed `camera.front_door` etc. are the Frigate integration's. `tests/test_dashboard_camera_streams.py` guards both.
 
 ## Room pages
