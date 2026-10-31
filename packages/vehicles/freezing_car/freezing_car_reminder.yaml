@@ -14,6 +14,7 @@ automation:
       - trigger: state
         entity_id: binary_sensor.car_outside
         to: "on"
+        for: "00:10:00"  # still outside 10 min later, so not pulling into the garage
     conditions:
       - condition: state
         entity_id: input_boolean.house_occupied
@@ -26,6 +27,10 @@ automation:
           - condition: state
             entity_id: input_select.house
             state: "Bedtime"
+      - alias: "Evening to 08:00 only"
+        condition: time
+        after: input_datetime.freezing_car_reminder_time
+        before: "08:00:00"
       - condition: state
         entity_id: input_boolean.freezing_car_reminder
         state: "on"

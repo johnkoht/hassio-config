@@ -183,6 +183,18 @@ def test_triggers():
     assert ("state", "binary_sensor.car_outside") in kinds
 
 
+def test_car_outside_trigger_is_debounced():
+    t = next(t for t in REMINDER["triggers"] if t.get("entity_id") == "binary_sensor.car_outside")
+    assert t["for"] == "00:10:00"
+    assert "for" not in next(t for t in REMINDER["triggers"] if t["trigger"] == "time")
+
+
+def test_time_window_condition():
+    c = next(c for c in REMINDER["conditions"] if c.get("condition") == "time")
+    assert c["after"] == "input_datetime.freezing_car_reminder_time"
+    assert c["before"] == "08:00:00"
+
+
 # --- notification --------------------------------------------------------
 def _push():
     return next(a for a in REMINDER["actions"] if a.get("action") == "script.general_notification")["data"]
@@ -219,6 +231,10 @@ def test_car_outside_uses_protect_vehicle_sensors():
         "binary_sensor.garage_driveway_vehicle_detected",
     }
     assert {x["id"] for x in t["triggers"]} == {"seen", "cleared"}
+    cleared = [x for x in t["triggers"] if x["id"] == "cleared"]
+    door = next(x for x in cleared if x["trigger"] == "state")
+    assert door["entity_id"] == "cover.garage_doors" and door["to"] == "closed"
+    assert any(x["trigger"] == "time" and x["at"] == "08:00:00" for x in cleared)
     state = t["binary_sensor"][0]["state"]
     env = Environment()
     assert env.from_string(state).render(trigger={"id": "seen"}) == "True"
