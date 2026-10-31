@@ -1315,6 +1315,11 @@ cards:
   - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml
 
   #
+  # Fire & Smoke
+  #
+  - !include /config/dashboards/kohbo/security/fire_smoke_popup.yaml
+
+  #
   # Security Settings
   #
   - !include /config/dashboards/kohbo/security/components/security_settings_popup.yaml

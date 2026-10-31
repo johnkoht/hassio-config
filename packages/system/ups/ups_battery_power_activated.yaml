@@ -18,3 +18,4 @@ automation:
           devices: "jk"
           priority: "critical"
           tag: "ups-power-outage"
+          url: /dashboard-kohbo/sensors#ups_power_popup

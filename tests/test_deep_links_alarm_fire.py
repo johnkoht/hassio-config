@@ -2,7 +2,7 @@
 Deep links for the alarm, fire and security-status pushes (notification-deep-links PR A).
 
 The alarm pushes open the alarm panel (disarm is there); fire and the shields-up
-status open the security overview. Whether each link opens a real view and popup
+status open the security overview (fire opens its Fire & Smoke popup). Whether each link opens a real view and popup
 is checked repo-wide in test_notification_deep_links.py.
 """
 import pytest
@@ -11,7 +11,7 @@ from test_notification_deep_links import CALLS, VIEWS, link_problem
 
 EXPECTED = {
     "packages/security/alarm/alarm_triggered.yaml": ["/dashboard-kohbo/security-alarm-panel"] * 2,
-    "packages/security/fire_alarm/fire_alarm_triggered.yaml": ["/dashboard-kohbo/security"],
+    "packages/security/fire_alarm/fire_alarm_triggered.yaml": ["/dashboard-kohbo/security#fire_smoke_popup"],
     "packages/security/security_status_notification.yaml": ["/dashboard-kohbo/security"],
 }
 

@@ -10,6 +10,8 @@ A tabbed group of three views (the Plants and Holidays pattern):
 - **Offline** - Tracked sensors that are unavailable or unknown, oldest outage first; "Known issue" ones in their own section
 - **Low Battery** - Tracked sensors below the battery threshold, lowest first; "Known issue" ones in their own section
 - **Zigbee Routers popup** - Opened from the routers row: every `zigbee_router`-labelled device, offline first, then weakest LQI
+- **UPS & Power popup** (`#ups_power_popup`) - The Power rows (UPS status, battery, runtime, load), opened by the UPS alert pushes
+- **Radio Health popup** (`#radio_health_popup`) - Zigbee coordinator and routers, Z-Wave controller and its status, opened by the coordinator and controller alert pushes
 
 Entry point: bottom navbar → More → Sensors (`/dashboard-kohbo/sensors`). There's no settings popup: no automations act on these entities.
 
@@ -21,7 +23,9 @@ sensors/
 ├── sensors.yaml                # Overview tab (path: sensors)
 ├── offline.yaml                # Offline tab (path: sensors-offline)
 ├── low_battery.yaml            # Low Battery tab (path: sensors-low-battery)
-└── zigbee_routers_popup.yaml   # #zigbee_routers_popup
+├── zigbee_routers_popup.yaml   # #zigbee_routers_popup
+├── ups_power_popup.yaml        # #ups_power_popup
+└── radio_health_popup.yaml     # #radio_health_popup
 ```
 
 Shared: `templates/includes/sensors/sensors_header.yaml` (title + tabs) and `templates/includes/sensors/device_health_overview.yaml` (the Device Health card).
