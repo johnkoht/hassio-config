@@ -1,11 +1,13 @@
 # House Mode Away Notification
 #
-# Push a passive note when the house goes to Away.
+# When the house goes to Away, wait for the alarm to arm, then send one
+# normal-priority push saying whether it did. Skipped if someone is back.
 #
 automation:
   - id: "house_mode_away_notification"
     alias: "House Mode - Away Notification"
     initial_state: on
+    mode: restart
     triggers:
       - trigger: state
         entity_id: input_select.house
@@ -14,11 +16,24 @@ automation:
           - "unknown"
           - "unavailable"
     actions:
+      - alias: "Wait for the alarm to arm (it arms 1 min into Away)"
+        wait_template: "{{ states('alarm_control_panel.alarmo').startswith('armed') }}"
+        timeout: "00:03:00"
+        continue_on_timeout: true
+      - alias: "Still Away"
+        condition: state
+        entity_id: input_select.house
+        state: "Away"
       - action: script.general_notification
         data:
-          title: "Away Mode"
-          message: "Nobody is home so away mode has been activated!"
+          title: "House is empty"
+          message: >
+            {% if states('alarm_control_panel.alarmo').startswith('armed') %}
+              Everyone's out and the alarm is armed.
+            {% else %}
+              Everyone's out, but the alarm isn't armed.
+            {% endif %}
           devices: "jk"
-          priority: "passive"
+          priority: "active"
           tag: "house-mode-away"
-          url: /dashboard-kohbo/home#house_mode
+          url: /dashboard-kohbo/security-alarm-panel
