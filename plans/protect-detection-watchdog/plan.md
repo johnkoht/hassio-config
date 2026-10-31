@@ -1,7 +1,7 @@
 ---
 title: Protect Detection Watchdog
 slug: protect-detection-watchdog
-status: in-progress
+status: shipped
 created: 2026-10-30
 has_pre_mortem: true
 has_review: true
@@ -9,6 +9,8 @@ has_prd: true
 ---
 
 # Protect Detection Watchdog
+
+> Shipped with a 6 h threshold and a 60 min post-reload wait (not 3 h and 20 min): normal quiet nights reach 4.5 h in the recorder; see pre-mortem.md.
 
 ## Problem
 
@@ -64,6 +66,8 @@ Rejected:
 - **Pool/northwest motion gets tuned down or a camera is removed, so a false stale reading.** Mitigation: the 3 h window across all seven cameras, and the reload is harmless (cameras reconnect in seconds). The push only fires after a reload fails to restore motion.
 - **A reload during an event drops one detection.** Accepted. It happens at most once per 6 h, and only when detections are already dead.
 - **The freeze takes motion's `last_changed` with it, but the `restored`/unavailable path differs after a restart.** Mitigation: the just-started guard, plus a test for missing sensors.
+- **The reload takes the Protect sensors unavailable, then back to off.** Any trigger on `to: "off"` fires on that unavailable→off transition. The garage evening auto-lock and the garage flood-light off automation both do; both re-check every condition (outdoor sensors off for 5 min, the 2-minute warning push), so the run is safe and, after a freeze with a stuck-on sensor, correct. No `not_from` guard was added to them. The watchdog's own wait ignores unavailable transitions.
+- **Blind for 6 h after a restart.** Restored sensors start with `last_changed` = restart time, so `protect_detections_stale` cannot read on until 6 h after a restart. A freeze that starts during that window is found late. Accepted.
 - **Frigate isn't a fallback** until JK-1234's MQTT broker fix lands; this plan doesn't depend on it.
 
 On approval → /approve → /ship protect-detection-watchdog
