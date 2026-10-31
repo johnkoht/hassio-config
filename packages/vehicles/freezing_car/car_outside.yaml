@@ -1,0 +1,26 @@
+# Car Outside
+#
+# On when a driveway camera sees a vehicle. Protect detections are momentary,
+# so it latches until the garage doors close or 08:00. A car outside is
+# the signal; "not in the garage" is never used (a stale sensor would miss).
+#
+
+template:
+  - triggers:
+      - trigger: state
+        entity_id:
+          - binary_sensor.driveway_front_camera_vehicle_detected
+          - binary_sensor.garage_driveway_vehicle_detected
+        to: "on"
+        id: seen
+      - trigger: state
+        entity_id: cover.garage_doors
+        to: "closed"
+        id: cleared
+      - trigger: time
+        at: "08:00:00"
+        id: cleared
+    binary_sensor:
+      - name: Car Outside
+        unique_id: car_outside
+        state: "{{ trigger.id == 'seen' }}"

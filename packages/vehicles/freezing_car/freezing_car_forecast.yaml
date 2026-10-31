@@ -1,0 +1,60 @@
+# Freezing Car - Overnight Forecast
+#
+# Lowest hourly temperature from now until 08:00 local, from pirateweather
+# with weather.kpwk as the fallback. Refreshed hourly (trigger-based, no live
+# template). Unavailable, never freezing, when no forecast comes back.
+#
+
+template:
+  - triggers:
+      - trigger: time_pattern
+        minutes: 5
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: state
+        entity_id: input_number.freezing_car_threshold
+    actions:
+      - action: weather.get_forecasts
+        continue_on_error: true
+        data:
+          type: hourly
+        target:
+          entity_id: weather.pirateweather
+        response_variable: primary
+      - action: weather.get_forecasts
+        continue_on_error: true
+        data:
+          type: hourly
+        target:
+          entity_id: weather.kpwk
+        response_variable: fallback
+      - variables:
+          hours: >-
+            {% set p = ((primary or {}).get('weather.pirateweather') or {}).get('forecast') or [] %}
+            {% set f = ((fallback or {}).get('weather.kpwk') or {}).get('forecast') or [] %}
+            {{ p if p | count > 0 else f }}
+          low: >-
+            {% set end = now().replace(hour=8, minute=0, second=0, microsecond=0) %}
+            {% if now() >= end %}{% set end = end + timedelta(days=1) %}{% endif %}
+            {% set ns = namespace(t=[]) %}
+            {% for h in hours %}
+              {% set at = as_local(as_datetime(h.datetime)) %}
+              {% if at + timedelta(hours=1) > now() and at < end and h.temperature is number %}
+                {% set ns.t = ns.t + [h.temperature] %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.t | min if ns.t | count > 0 else 'none' }}
+    sensor:
+      - name: Overnight Low Forecast
+        unique_id: overnight_low_forecast
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state: "{{ low }}"
+        availability: "{{ low is number }}"
+    binary_sensor:
+      - name: Freezing Night Expected
+        unique_id: freezing_night_expected
+        state: "{{ low | float(999) <= states('input_number.freezing_car_threshold') | float(0) }}"
+        availability: "{{ low is number }}"

@@ -1,0 +1,26 @@
+# Freezing Car Reminder - Helpers
+#
+# No initial: so values set on the dashboard survive restarts.
+#
+
+input_boolean:
+  freezing_car_reminder:
+    name: Freezing Car Reminder
+    icon: mdi:car-snowflake
+
+input_number:
+  freezing_car_threshold:
+    name: Freezing Car Threshold
+    icon: mdi:thermometer-low
+    unit_of_measurement: "°F"
+    min: 28
+    max: 40
+    step: 1
+    mode: box
+
+input_datetime:
+  freezing_car_reminder_time:
+    name: Freezing Car Reminder Time
+    icon: mdi:clock-outline
+    has_date: false
+    has_time: true
