@@ -31,6 +31,9 @@
 # - time-sensitive: time sensitive
 # - critical: critical iOS alert (always sent, even when notification_level is None)
 #
+# important: true lets a push through the Important level without raising its
+# priority, so it stays a normal iOS interruption. None still blocks it.
+#
 
 input_select:
   notification_level:
@@ -38,7 +41,7 @@ input_select:
     options:
       # All priority option levels
       - "All"
-      # Only time sensitive and critical
+      # Only time sensitive, critical, or important: true
       - "Important"
       # Turn off push notifications
       - "None"
@@ -137,6 +140,17 @@ script:
               - critical
       #
       #
+      # Important
+      #
+      important:
+        name: Important
+        description: Let this push through the Important level without changing its priority
+        example: false
+        default: false
+        selector:
+          boolean:
+      #
+      #
       # Tag
       #
       tag:
@@ -224,12 +238,13 @@ script:
             entity_id: input_select.notification_level
             state: "All"
           # OR important notifications only is enabled and the
-          # priority is time sensitive or critical
+          # priority is time sensitive or critical, or important is true
           - condition: template
             value_template: >-
               {%
                 if states.input_select.notification_level.state == 'Important'
-                and (priority == "critical" or priority == "time-sensitive")
+                and (priority == "critical" or priority == "time-sensitive"
+                     or (important is defined and important))
               %}
                 true
               {% else %}
