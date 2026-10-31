@@ -12,7 +12,7 @@ Home Assistant OS is deployed on a [Home Assistant Yellow](https://www.home-assi
 - [Z-Wave JS UI](https://zwave-js.github.io/zwave-js-ui/) for Z-Wave device management
 - [Zigbee Home Automation (ZHA)](https://www.home-assistant.io/integrations/zha/) for Zigbee devices
 - [ESPHome](https://esphome.io/) for custom sensors and devices
-- [Mosquitto](https://mosquitto.org/) for the MQTT broker
+- [Mosquitto](https://mosquitto.org/) for the MQTT broker. Each client has its own login, and the broker enforces topic ACLs, so a new MQTT device is silently denied until the broker gets an ACL entry for it.
 
 ---
 
