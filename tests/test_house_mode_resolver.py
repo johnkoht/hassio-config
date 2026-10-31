@@ -248,11 +248,17 @@ def test_speech_on_only_for_auto_and_only_if_off():
     assert auto["actions"][0]["action"] == "input_boolean.turn_on"
 
 
-def test_away_push_is_unchanged():
+def test_away_push_waits_for_the_alarm_and_is_audible():
+    """One normal-priority push after the alarm arms (John, 2026-10-30); skipped if someone's back."""
     auto = automation(f"{MODES}/house_mode_away_notification.yaml")
     assert auto["triggers"][0]["to"] == "Away"
-    data = auto["actions"][0]["data"]
-    assert (data["priority"], data["tag"], data["devices"]) == ("passive", "house-mode-away", "jk")
+    assert auto["mode"] == "restart"
+    wait, still, push = auto["actions"]
+    assert "alarmo" in wait["wait_template"] and wait["continue_on_timeout"] is True
+    assert (still["entity_id"], still["state"]) == ("input_select.house", "Away")
+    data = push["data"]
+    assert (data["priority"], data["tag"], data["devices"]) == ("active", "house-mode-away", "jk")
+    assert "isn't armed" in data["message"] and "is armed" in data["message"]
 
 
 def test_quiet_speech_off_only_in_the_nap_window():
