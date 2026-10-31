@@ -8,6 +8,12 @@
 - **Whole-card includes go under `templates/includes/`, not `button_cards/` (device health, 2026-10-16).** `button_cards/` is loaded with `!include_dir_merge_named`, so a card file there (`kohbo_security_overview.yaml`) turns its `type:` and `cards:` keys into two junk button-card templates. `includes/sensors/device_health_overview.yaml` is the right shape.
 - **The frontend never sees `last_reported` (sensors, 2026-10-16).** HA's compressed state feed sends only `lc` and `lu`, and reloads bump `last_updated` on everything, so "offline since" reads `last_changed`.
 
+## Camera streams go through HA, not go2rtc direct (2026-10-30)
+
+- `camera_card` and `camera_popup` use `advanced-camera-card` with `camera_entity` + `live_provider: ha` (HA's built-in go2rtc/WebRTC). The old `live_provider: go2rtc` pointed at the Frigate host's go2rtc by LAN IP; that port was moved to loopback for security, and plain http to a LAN IP is mixed content on the https Nabu Casa URL anyway, so every stream broke. Never point a card at a LAN go2rtc, and don't ask to reopen the port.
+- The entities are UniFi Protect's (the unsuffixed `camera.*` are Frigate's; the porch's Protect entity is `camera.g5_turret_ultra_high_resolution_channel`). With a Protect entity the card has no Frigate engine, so the popup's event thumbnails were removed; events are in the Protect app. Grid and popup both use the high-resolution channel; `lazy_load` keeps off-screen cards idle.
+- Callers pass `camera_entity` (a UniFi Protect high-channel camera), not a `stream_id`. Unsuffixed `camera.front_door` etc. are the Frigate integration's. `tests/test_dashboard_camera_streams.py` guards both.
+
 ## Room pages
 
 - **`room_card`'s `room:` is an HA area_id** (compared to `sensor.<person>_room_presence`). A room with no HA area of its own (mudroom bathroom) gets a value that never matches, rather than the parent area's id, which would show that area's people.

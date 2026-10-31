@@ -93,21 +93,7 @@ camera_popup:
         cameras:
           - name: '[[name]]'
             camera_entity: '[[camera_entity]]'
-            live_provider: go2rtc
-            go2rtc:
-              url: http://10.0.10.207:1984
-              stream: '[[stream_id]]'
-              modes: [webrtc, mse]
-        live:
-          controls:
-            thumbnails:
-              mode: below
-              events_media_type: all
-              media_type: events
-              show_details: false
-              show_download_control: false
-              show_favorite_control: false
-              show_timeline_control: false
+            live_provider: ha
 
 
       - type: entities
