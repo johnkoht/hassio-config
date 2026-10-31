@@ -63,7 +63,7 @@ cards:
     variables:
       - hash: '#backyard_porch_camera'
       - name: Backyard Porch
-      - camera_entity: camera.backyard_porch
+      - camera_entity: camera.g5_turret_ultra_high_resolution_channel
       - motion_entity: binary_sensor.backyard_porch_motion_2
 
   #
