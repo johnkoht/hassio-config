@@ -35,5 +35,6 @@ automation:
             {% endif %}
           devices: "jk"
           priority: "active"
+          important: true
           tag: "house-mode-away"
           url: /dashboard-kohbo/security-alarm-panel
