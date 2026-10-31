@@ -1,0 +1,57 @@
+# Freezing Car Reminder
+#
+# One push per night to put the car in the garage when the overnight low is
+# at or below the threshold and a car is outside.
+#
+
+automation:
+  - id: "freezing_car_reminder"
+    alias: "Freezing Car Reminder"
+    mode: single
+    triggers:
+      - trigger: time
+        at: input_datetime.freezing_car_reminder_time
+      - trigger: state
+        entity_id: binary_sensor.car_outside
+        to: "on"
+        for: "00:10:00"  # still outside 10 min later, so not pulling into the garage
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.house
+            state: "Bedtime"
+      - alias: "Evening to 08:00 only"
+        condition: time
+        after: input_datetime.freezing_car_reminder_time
+        before: "08:00:00"
+      - condition: state
+        entity_id: input_boolean.freezing_car_reminder
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.freezing_night_expected
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.car_outside
+        state: "on"
+      - alias: "Not already reminded tonight"
+        condition: template
+        value_template: >-
+          {{ this.attributes.last_triggered is none
+             or (now() - this.attributes.last_triggered).total_seconds() > 43200 }}
+    actions:
+      - action: script.general_notification
+        data:
+          title: "Freezing tonight"
+          message: >-
+            A car is parked outside and the low is {{ states('sensor.overnight_low_forecast') | float(0) | round(0) | int }}°F. Put it in the garage.
+          devices: "all"
+          priority: "time-sensitive"
+          tag: "freezing-car"
+          url: /dashboard-kohbo/security-cameras#driveway_front_camera

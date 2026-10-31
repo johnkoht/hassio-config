@@ -68,6 +68,8 @@ Here are some of my favorite and most useful automations:
 - **[Train delay alerts](https://github.com/johnkoht/hassio-config/blob/master/packages/people/cristina/commute/cristina_train_delay_alert.yaml)**: a push when a commute train is running 5+ minutes late or is cancelled, once per train, cleared when it's back on time.
 - **[John's Daily Report](https://github.com/johnkoht/hassio-config/blob/master/packages/people/john/daily_report/john_daily_report.yaml)**: every morning when I start my work day, I get a TTS notification in the office that tells me about my day, next meeting, sleep score, and more.
 
+- **[Freezing night car reminder](https://github.com/johnkoht/hassio-config/tree/master/packages/vehicles/freezing_car)**: when the overnight low (now until 08:00, from Pirateweather with NWS as fallback) is at or below a threshold and a driveway camera has seen a vehicle, one time-sensitive push per night says to put the car in the garage. It fires at a set evening time or when a car shows up later, and tapping it opens the driveway camera. Gated on house occupied, bedtime and a feature switch. Set the threshold (try 34) and reminder time (20:00) once on the helpers. See [Presence](PRESENCE.md#car-outside).
+
 ### Miscellaneous
 
 - **[Vacuum my office when I drop the dog at daycare](https://github.com/johnkoht/hassio-config/blob/master/packages/vacuums/main_level/vacuums_clean_office_when_dog_is_at_daycare.yaml)**: The dog stays in my office and I'm lazy, so I send the robot vacuum to clean whenever I drop the dog off at daycare.
