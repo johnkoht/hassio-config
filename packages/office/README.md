@@ -77,7 +77,7 @@ Eventually, this could also include Cristina or a guest. One thing to note, ther
 
 ## Call lighting
 
-During a camera or audio call, once Adaptive Lighting has warmed or dimmed the ceiling bulbs, the room pauses AL and holds them at the tunable colour temperature and brightness. AL resumes 3 minutes after the call ends.
+During a camera or audio call, once Adaptive Lighting has warmed or dimmed the ceiling bulbs, the room pauses AL and holds them at the tunable colour temperature and brightness. AL resumes about 3 minutes after the call ends: office DnD clears 2 minutes after the call, then AL waits 1 more minute.
 
 - Automations (`packages/office/call_lighting/`): `office_call_lighting_start`, `office_call_lighting_end`, `office_call_lighting_reset`.
 - Helpers: `input_boolean.office_call_lighting` (feature switch), `input_boolean.office_call_al_paused`, `input_number.office_call_color_temp`, `input_number.office_call_brightness`. Seed 3000 / 100, then turn the switch on.
