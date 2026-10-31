@@ -122,3 +122,5 @@ Facts read from the Yellow (read-only) that change or pin the plan. Where this c
 - **Helpers apply by reload** (`input_boolean.reload`, `input_number.reload`); no restart. No `initial:` on any of the four. The numbers start at min (2700 / 30); the feature switch is created off, so nothing fires until John seeds 3000 / 100 and turns it on.
 
 On approval → /approve → /ship wfh-call-lighting
+
+> **Addendum 2026-10-30 (#127):** At John's request the end wait is now 1 min, not 3, so AL resumes ~3 min after a call (2-min `office_dnd_off` debounce + 1 min).

@@ -1,6 +1,6 @@
 # WFH call lighting (JK-692)
 
-**What:** On a camera or audio call in the office (`input_select.office` = DnD, John's DnD on), once Adaptive Lighting has warmed or dimmed the ceiling bulbs, pause the office AL switch and set the bulbs to 3000K at 100% (two dashboard-tunable numbers); resume AL 3 minutes after the call ends. Four helper files, three automations in `packages/office/call_lighting/`, dashboard rows, README / ROOMS / LEARNINGS, 48 tests, 12 sabotage rows. Suite 1057 to 1105.
+**What:** On a camera or audio call in the office (`input_select.office` = DnD, John's DnD on), once Adaptive Lighting has warmed or dimmed the ceiling bulbs, pause the office AL switch and set the bulbs to 3000K at 100% (two dashboard-tunable numbers); resume AL 3 minutes after the call ends (cut to 1 minute on 2026-10-30, #127, at John's request; with the 2-minute office DnD debounce that is about 3 minutes in total). Four helper files, three automations in `packages/office/call_lighting/`, dashboard rows, README / ROOMS / LEARNINGS, 48 tests, 12 sabotage rows. Suite 1057 to 1105.
 
 **Metrics:** 5 tasks built sequentially by 5 sonnet developers; plan review ITERATE then APPROVED; final review ITERATE (one vacuous guard test) then fixed. No CRITICAL pre-mortem risk.
 
