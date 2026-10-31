@@ -240,7 +240,6 @@ def test_lock_reevaluation_after_a_reload_is_safe_without_a_not_from_guard():
     assert cleared and all(t["for"] == {"minutes": 5} and "not_from" not in t for t in cleared)
     cond = [c for c in auto["conditions"] if c.get("state") == "off" and "binary_sensor.backyard_occupied" in c.get("entity_id", [])]
     assert cond and cond[0]["for"] == {"minutes": 5}
-    assert auto["actions"][1]["action"] if False else True
     assert auto["actions"][0]["variables"] and auto["actions"][1]["action"] == "script.general_notification"
 
 
