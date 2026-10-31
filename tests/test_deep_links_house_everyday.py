@@ -26,7 +26,7 @@ EXPECTED = {
     "packages/school/reminders/nino_pickup_reminder.yaml": SCHOOL,
     "packages/house/vacation_mode/vacation_mode_turn_on.yaml": MODE,
     "packages/house/vacation_mode/vacation_mode_turn_off.yaml": MODE,
-    "packages/house/modes/house_mode_away_notification.yaml": MODE,
+    "packages/house/modes/house_mode_away_notification.yaml": "/dashboard-kohbo/security-alarm-panel",
 }
 
 
