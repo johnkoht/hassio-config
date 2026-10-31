@@ -10,6 +10,22 @@ cards:
   - !include /config/dashboards/templates/includes/security/security_header.yaml
 
   #
+  # Detections: on when no camera motion has changed in 6 hours (UniFi Protect feed frozen)
+  #
+  - type: entities
+    entities:
+      - entity: binary_sensor.protect_detections_stale
+        name: Detections Frozen
+        icon: mdi:camera-off
+        state_color: true
+      - type: attribute
+        entity: binary_sensor.protect_detections_stale
+        attribute: newest_motion
+        name: Newest Motion
+        icon: mdi:motion-sensor
+        format: relative
+
+  #
   # Front Door Camera Card
   #
   - type: custom:decluttering-card
