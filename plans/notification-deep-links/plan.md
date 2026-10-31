@@ -144,6 +144,7 @@ Alternatives considered. A global default of `/dashboard-kohbo/home` for every u
 8. Phase 2 PR G, system alerts. Zigbee, radio, AP to the sensor views.
 9. Flip the test to enforcing, add the exempt list (`tests/fixtures/notification_url_exempt.yaml`: path plus one-line reason), and update `docs/` plus the header of `general_notifications.yaml`.
 10. Needs-popup extras (dashboard-only, can follow the dashboard auto-merge rule): fire and smoke, UPS and power, radio health. Each ends with a one-line follow-up PR that swaps its interim link.
+    **Status (2026-10-30): done in one PR with the link swaps, per John's approval.** `security#fire_smoke_popup` (fire alarm push), `sensors#ups_power_popup` (three UPS pushes; they were exempt, so the interim `energy` link was never applied), `sensors#radio_health_popup` (Zigbee coordinator and Z-Wave controller pushes, moved off `sensors-offline`). Deploy the dashboard before or with the automations.
 
 Phases 1 and 2 touch automations and scripts, so each PR waits for John's go-ahead before merge and deploy. Task 10 is dashboard-only.
 

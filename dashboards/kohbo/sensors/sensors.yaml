@@ -268,6 +268,12 @@ cards:
   #
   - !include /config/dashboards/kohbo/sensors/zigbee_routers_popup.yaml
 
+  #
+  # UPS & Power, Radio Health Popups
+  #
+  - !include /config/dashboards/kohbo/sensors/ups_power_popup.yaml
+  - !include /config/dashboards/kohbo/sensors/radio_health_popup.yaml
+
 
   #
   # Navbar

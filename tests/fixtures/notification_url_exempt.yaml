@@ -48,11 +48,3 @@
 # UI-owned file with unlinked pushes: a kids-escape alert, a leftover Test Motion debug push, and a weather-lights note
 - path: automations.yaml
   reason: "UI-owned file: kids-escape alert (not linked, John does not use it), a leftover Test Motion debug push, a weather-lights note"
-
-# Pending a UPS popup (task 10 extras); the plan's interim link is energy, not applied yet
-- path: packages/system/ups/ups_battery_power_activated.yaml
-  reason: "Needs a UPS popup first (task 10 extras); the plan's interim link is energy, not applied yet"
-- path: packages/system/ups/ups_battery_power_restored.yaml
-  reason: "Needs a UPS popup first (task 10 extras); the plan's interim link is energy, not applied yet"
-- path: packages/system/ups/ups_offline.yaml
-  reason: "Needs a UPS popup first (task 10 extras); the plan's interim link is energy, not applied yet"

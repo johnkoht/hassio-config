@@ -86,7 +86,7 @@ script:
                 devices: "all"
                 priority: "critical"
                 tag: "home-fire-alarm"
-                url: /dashboard-kohbo/security
+                url: /dashboard-kohbo/security#fire_smoke_popup
 
           # Turn OFF the HVAC
           - action: climate.turn_off

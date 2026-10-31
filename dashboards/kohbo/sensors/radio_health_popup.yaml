@@ -1,0 +1,40 @@
+#
+# Radio Health Popup: Zigbee (ZHA) coordinator and routers, and the Z-Wave controller, for the radio alert pushes.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#radio_health_popup'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+cards:
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Radio Health
+
+  - type: vertical-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: binary_sensor.zigbee_coordinator_online
+        name: Zigbee Coordinator
+
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: sensor.zigbee_routers_online
+        name: Zigbee Routers
+        tap_action:
+          action: navigate
+          navigation_path: '#zigbee_routers_popup'
+
+      - type: custom:button-card
+        template: kohbo_device_sensor_health_entity
+        entity: binary_sensor.zwave_controller_online
+        name: Z-Wave Controller
+
+      - type: custom:button-card
+        template: kohbo_device_entity_horizontal
+        entity: sensor.home_assistant_connect_zwa_2_status
+        name: Z-Wave Controller Status
+        icon: mdi:z-wave
+        show_last_changed: true
