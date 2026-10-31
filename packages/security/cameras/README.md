@@ -14,3 +14,6 @@ UniFi Protect's event-linked sensors have frozen silently twice (2026-09-08, 202
 
 ## Changing camera credentials
 Rotating the cameras' RTSP credentials in UniFi Protect gives every channel a new stream address. HA keeps the old ones, so the Protect `camera.*_high*` entities go unavailable and the dashboard camera cards stop playing. Reload the UniFi Protect integration (Settings -> Devices & services -> UniFi Protect -> Reload) to pick up the new ones. No restart is needed. Frigate takes its credential from its own host config, which is managed outside this repo.
+
+## Frigate access
+HA reaches Frigate directly: the integration uses Frigate's API, and the Frigate `camera.*` entities pull its RTSP restream. The Frigate host firewalls both to the current HA host, so a new HA host (such as the planned server move) must be added to Frigate's allow-lists first, or the integration times out. Frigate's public web URL blocks the raw restream API, so a dashboard card shouldn't embed that URL's live view.
