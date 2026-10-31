@@ -9,7 +9,6 @@ variables:
   - notifications_entity: input_boolean.garage_driveway_camera_notifications
   - timer_entity: timer.garage_driveway_camera_notifications_snooze_timer
   - countdown_sensor: sensor.garage_driveway_timer_countdown
-  - stream_id: garage_driveway
-  - camera_entity: camera.garage_driveway
+  - camera_entity: camera.garage_driveway_camera_high
   - motion_entity: binary_sensor.garage_driveway_camera_motion
   - person_entity: binary_sensor.garage_driveway_person_detected

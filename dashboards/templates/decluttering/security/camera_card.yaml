@@ -6,11 +6,8 @@ camera_card:
     type: custom:advanced-camera-card
     cameras:
       - name: '[[name]]'
-        live_provider: go2rtc
-        go2rtc:
-          url: http://10.0.10.207:1984
-          stream: '[[stream_id]]'
-          modes: [webrtc, mse]
+        camera_entity: '[[camera_entity]]'
+        live_provider: ha
     view:
       actions:
         tap_action:

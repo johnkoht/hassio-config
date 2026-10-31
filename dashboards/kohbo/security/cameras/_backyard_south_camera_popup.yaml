@@ -9,7 +9,6 @@ variables:
   - notifications_entity: input_boolean.backyard_south_camera_notifications
   - timer_entity: timer.backyard_south_camera_notifications_snooze_timer
   - countdown_sensor: sensor.backyard_south_timer_countdown
-  - stream_id: backyard_south
-  - camera_entity: camera.backyard_south
+  - camera_entity: camera.backyard_south_camera_high
   - motion_entity: binary_sensor.backyard_south_camera_motion
   - person_entity: binary_sensor.backyard_south_person_detected

@@ -17,7 +17,7 @@ cards:
     variables:
       - hash: '#front_door_camera'
       - name: Front Door
-      - stream_id: front_door_low
+      - camera_entity: camera.front_door_camera_high_resolution_channel
       - motion_entity: binary_sensor.front_door_camera_motion
 
 
@@ -29,7 +29,7 @@ cards:
     variables:
       - hash: '#driveway_front_camera'
       - name: Driveway Front
-      - stream_id: driveway_front_low
+      - camera_entity: camera.driveway_front_camera_high
       - motion_entity: binary_sensor.driveway_front_camera_motion
 
 
@@ -41,7 +41,7 @@ cards:
     variables:
       - hash: '#garage_driveway_camera'
       - name: Garage Driveway
-      - stream_id: garage_driveway
+      - camera_entity: camera.garage_driveway_camera_high
       - motion_entity: binary_sensor.garage_driveway_camera_motion
 
   #
@@ -52,7 +52,7 @@ cards:
     variables:
       - hash: '#backyard_south_camera'
       - name: Backyard South
-      - stream_id: backyard_south
+      - camera_entity: camera.backyard_south_camera_high
       - motion_entity: binary_sensor.backyard_south_camera_motion
 
   #
@@ -63,7 +63,7 @@ cards:
     variables:
       - hash: '#backyard_porch_camera'
       - name: Backyard Porch
-      - stream_id: backyard_porch
+      - camera_entity: camera.backyard_porch
       - motion_entity: binary_sensor.backyard_porch_motion_2
 
   #
@@ -74,7 +74,7 @@ cards:
     variables:
       - hash: '#backyard_pool_camera'
       - name: Backyard Pool
-      - stream_id: backyard_pool
+      - camera_entity: camera.backyard_pool_high_resolution_channel
       - motion_entity: binary_sensor.backyard_pool_motion_2
 
   #
@@ -85,7 +85,7 @@ cards:
     variables:
       - hash: '#backyard_northwest_camera'
       - name: Backyard Northwest
-      - stream_id: backyard_northwest
+      - camera_entity: camera.backyard_northwest_high_resolution_channel
       - motion_entity: binary_sensor.backyard_northwest_motion_2
 
 
