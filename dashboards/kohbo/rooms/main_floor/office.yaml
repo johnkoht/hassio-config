@@ -271,28 +271,6 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-      # Call Lighting: pins the ceiling bulbs during a call
-      - entity: input_boolean.office_call_lighting
-        name: Call Lighting
-        icon: mdi:video-account
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      - entity: input_number.office_call_color_temp
-        name: Call Color Temp
-
-      - entity: input_number.office_call_brightness
-        name: Call Brightness
-
-      # On while Adaptive Lighting is paused for a call; stuck on = a missed resume
-      - entity: input_boolean.office_call_al_paused
-        name: AL Paused For Call
-        icon: mdi:pause-circle
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
   #
   # Ceiling Lights Pop Up
   #
@@ -392,6 +370,37 @@ cards:
           - entity: input_boolean.vacuum_office_at_night
             name: Clean at Night
             icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      #
+      # Call Lighting
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Call Lighting
+
+      - type: entities
+        entities:
+          # Call Lighting: pins the ceiling bulbs during a call
+          - entity: input_boolean.office_call_lighting
+            name: Call Lighting
+            icon: mdi:video-account
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          - entity: input_number.office_call_color_temp
+            name: Call Color Temp
+
+          - entity: input_number.office_call_brightness
+            name: Call Brightness
+
+          # On while Adaptive Lighting is paused for a call; stuck on = a missed resume
+          - entity: input_boolean.office_call_al_paused
+            name: AL Paused For Call
+            icon: mdi:pause-circle
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
