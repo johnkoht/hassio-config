@@ -94,16 +94,6 @@ camera_popup:
           - name: '[[name]]'
             camera_entity: '[[camera_entity]]'
             live_provider: ha
-        live:
-          controls:
-            thumbnails:
-              mode: below
-              events_media_type: all
-              media_type: events
-              show_details: false
-              show_download_control: false
-              show_favorite_control: false
-              show_timeline_control: false
 
 
       - type: entities
