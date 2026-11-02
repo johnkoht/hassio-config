@@ -35,5 +35,5 @@ card_mod:
     }
 visibility:
   - condition: state
-    entity: binary_sensor.front_door_person_occupancy
+    entity: binary_sensor.front_door_camera_person_detected
     state: "on"
