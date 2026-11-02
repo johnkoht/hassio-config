@@ -61,3 +61,18 @@ def test_each_camera_maps_to_its_own_entity():
                 seen.setdefault(name, 0)
                 seen[name] += 1
     assert seen == {n: 2 for n in EXPECTED}, seen
+
+
+# Frigate flags static decor as a stationary person and holds it on for minutes,
+# so the home banners read UniFi Protect's person sensors instead.
+BANNERS = {
+    "_front_door_camera_notification.yaml": "binary_sensor.front_door_camera_person_detected",
+    "_driveway_front_camera_notification.yaml": "binary_sensor.driveway_front_camera_person_detected",
+}
+
+
+def test_person_banners_use_protect_sensors():
+    for name, entity in BANNERS.items():
+        text = (DASH / "kohbo" / "home" / name).read_text()
+        assert f"entity: {entity}" in text, name
+        assert "_person_occupancy" not in text, name
