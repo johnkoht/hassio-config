@@ -27,7 +27,7 @@ home/
 ├── README.md                                 # This file
 ├── house_mode_popup.yaml                     # House mode selector popup
 ├── _vacuum_active_notification.yaml          # Vacuum running notification
-├── _front_door_camera_notification.yaml      # Front door camera motion alert
+├── _front_door_camera_notification.yaml      # Front door person banner (Protect person sensor)
 └── _driveway_front_camera_notification.yaml  # Driveway camera motion alert
 ```
 
