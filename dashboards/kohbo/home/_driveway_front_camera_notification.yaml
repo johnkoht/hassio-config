@@ -35,5 +35,5 @@ card_mod:
     }
 visibility:
   - condition: state
-    entity: binary_sensor.driveway_front_person_occupancy
+    entity: binary_sensor.driveway_front_camera_person_detected
     state: "on"
