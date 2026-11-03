@@ -80,3 +80,19 @@ def test_commute_flag_dwell_is_90_seconds(person):
     path = REPO / f"packages/people/{person}/commute/{person}_is_commuting.yaml"
     auto = yaml.load(path.read_text(), Loader=HomeAssistantLoader)["automation"][0]
     assert auto["triggers"][0]["for"] == {"seconds": 90}
+
+
+@pytest.mark.parametrize("person", ["john", "cristina"])
+def test_commute_flag_sets_at_home_midway_and_city_station(person):
+    """The phone dwells at the home station in the morning; it must count."""
+    path = REPO / f"packages/people/{person}/commute/{person}_is_commuting.yaml"
+    auto = yaml.load(path.read_text(), Loader=HomeAssistantLoader)["automation"][0]
+    zones = {
+        z
+        for c in auto["conditions"]
+        if c.get("condition") == "zone"
+        for z in c["zone"]
+    }
+    assert zones == {
+        f"__SECRET:commute_{s}_station_zone__" for s in ("home", "midway", "city")
+    }
