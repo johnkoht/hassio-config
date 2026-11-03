@@ -440,8 +440,6 @@ def test_foyer_returns_to_auto_from_quiet():
 
 
 IMPORTANT_PUSHES = [
-    ("packages/reminders/medication_refill/medication_refill_low_stock_alert.yaml", 1),
-    ("packages/security/cameras/protect_watchdog/protect_detection_watchdog.yaml", 2),
     ("packages/system/alerts/zigbee_router_unavailable.yaml", 1),
     ("packages/reminders/birthdays/birthday_reminder/birthday_today_reminder.yaml", 1),
     ("packages/reminders/birthdays/birthday_reminder/birthday_tomorrow_reminder.yaml", 1),

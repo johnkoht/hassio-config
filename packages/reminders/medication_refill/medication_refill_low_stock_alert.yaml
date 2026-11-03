@@ -58,7 +58,6 @@ automation:
                         {{ repeat.item.label }} is running low: about {{ days }} days left.
                       {%- endif -%}
                     priority: "{{ 'critical' if is_critical else 'time-sensitive' }}"
-                    important: true
                     tag: "{{ repeat.item.tag }}"
                     actions:
                       - action: "MEDICATION_REFILLED_{{ repeat.item.action_prefix }}_15"
