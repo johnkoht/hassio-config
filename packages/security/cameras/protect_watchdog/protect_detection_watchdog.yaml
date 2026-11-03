@@ -65,6 +65,7 @@ automation:
               message: "Camera detections had frozen; UniFi Protect was reloaded and they're back"
               devices: "jk"
               priority: "passive"
+              important: true
               tag: "protect-watchdog"
               url: /dashboard-kohbo/security-cameras
         else:
@@ -74,5 +75,6 @@ automation:
               message: "Camera detections are frozen and a reload didn't fix them. Camera alerts and the garage auto-lock's outside check are blind. Check the NVR."
               devices: "jk"
               priority: "time-sensitive"
+              important: true
               tag: "protect-watchdog"
               url: /dashboard-kohbo/security-cameras
