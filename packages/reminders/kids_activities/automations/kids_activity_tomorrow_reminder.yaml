@@ -61,4 +61,5 @@ automation:
           title: "Kids Activity Reminder"
           devices: "jk"
           priority: "active"
+          important: true
           tag: "kids-activity-reminder"

@@ -437,3 +437,30 @@ def test_no_room_requires_the_house_to_be_exactly_auto():
 def test_foyer_returns_to_auto_from_quiet():
     auto = automation("packages/foyer/modes/foyer_mode_auto.yaml")
     assert auto["triggers"][0]["to"] == ["Auto", "Quiet"]
+
+
+IMPORTANT_PUSHES = [
+    ("packages/system/alerts/zigbee_router_unavailable.yaml", 1),
+    ("packages/reminders/birthdays/birthday_reminder/birthday_today_reminder.yaml", 1),
+    ("packages/reminders/birthdays/birthday_reminder/birthday_tomorrow_reminder.yaml", 1),
+    ("packages/reminders/kids_activities/automations/kids_activity_tomorrow_reminder.yaml", 1),
+]
+
+
+def _notification_calls(node):
+    if isinstance(node, dict):
+        if node.get("action") == "script.general_notification":
+            yield node
+        for v in node.values():
+            yield from _notification_calls(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _notification_calls(v)
+
+
+@pytest.mark.parametrize("rel,count", IMPORTANT_PUSHES)
+def test_listed_pushes_pass_the_important_level(rel, count):
+    calls = list(_notification_calls(load(rel)))
+    assert len(calls) == count
+    for call in calls:
+        assert call["data"]["important"] is True
