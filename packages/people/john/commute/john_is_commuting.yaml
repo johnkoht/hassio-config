@@ -1,6 +1,6 @@
 # John is Commuting
 #
-# Flags the commute once John has been at a commute station for 90 seconds.
+# Flags the commute once John has been at the home, midway or city station for 90 seconds.
 #
 
 automation:
@@ -23,10 +23,11 @@ automation:
       - condition: state
         entity_id: input_boolean.john_commuting
         state: "off"
-      # At one of the commute stations
+      # At one of the commute stations (home station is where the morning dwell happens)
       - condition: zone
         entity_id: person.john_koht
         zone:
+          - !secret commute_home_station_zone
           - !secret commute_midway_station_zone
           - !secret commute_city_station_zone
     actions:
