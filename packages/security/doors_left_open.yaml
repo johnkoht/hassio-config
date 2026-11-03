@@ -4,9 +4,9 @@
 timer:
   snooze_door_left_open_automation:
     name: Snooze Door Left Open Automation
-    duration: "00:30:00"
+    duration: "00:10:00"
     restore: true
-    icon: mdi:rewind-30
+    icon: mdi:rewind-10
 
 #
 # Automations
@@ -89,7 +89,7 @@ automation:
           tag: "door-open"
           actions:
             - action: "{{ action_snooze }}"
-              title: "Snooze 30 Minutes"
+              title: "Snooze 10 Minutes"
           url: /dashboard-kohbo/security-exterior-doors
 
       #

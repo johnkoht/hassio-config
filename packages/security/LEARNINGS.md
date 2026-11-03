@@ -88,3 +88,7 @@ Detect a frozen Protect feed from the camera **motion** sensors, which change ab
 
 Rotating the Protect RTSP credentials changes every channel's stream address. HA's Protect cameras then fail with "Error opening stream" and go unavailable until the Protect config entry is reloaded; the event sensors are unaffected. The same day, Frigate was moved to the MQTT broker HA actually listens on (JK-1234). Before that, Frigate's `*_occupancy` sensors had never changed, because Frigate published to a different broker that HA didn't connect to. They are a working fallback for Protect detections now.
 
+
+## Timer duration changes need a timer reload (2026-11-02)
+
+`deploy.sh --reload` reloads automations, scripts and rest_command, not timers. After changing a timer's `duration`, reload timers (Developer Tools → YAML, or `timer.reload`). A snooze already running keeps its old duration until it finishes, and `restore: true` carries that across a restart.
