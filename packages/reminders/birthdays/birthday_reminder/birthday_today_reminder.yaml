@@ -52,4 +52,5 @@ automation:
           title: "Birthday Reminder"
           devices: "jk"
           priority: "active"
+          important: true
           tag: "birthday-reminder"
