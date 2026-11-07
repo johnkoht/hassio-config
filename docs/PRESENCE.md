@@ -10,10 +10,10 @@ For home presence, I use the [Person integration](https://www.home-assistant.io/
 
 - Home Assistant [Companion App](https://companion.home-assistant.io/) for GPS-based device tracking
 - [UniFi Network](https://www.home-assistant.io/integrations/unifi/) for network-based device tracking
-- [Nmap Tracker](https://www.home-assistant.io/integrations/nmap_tracker) for network-based device tracking
-- [iPhone Detect](https://github.com/mudape/iphonedetect)  for network-based device tracking
+- [Nmap Tracker](https://www.home-assistant.io/integrations/nmap_tracker) and [Ping](https://www.home-assistant.io/integrations/ping/) for network-based device tracking (weak `person.*` members only)
+- An MQTT iPhone tracker on another host, which publishes `device_tracker.*_iphone_detect` through MQTT discovery
 
-The companion app and iPhone Detect are usually the most accurate for my wife and me. I also have a Bayesian sensor for presence detection for us. I use the three network-based trackers for regular guests, and they work fairly accurately. These trackers will help reliably determine who is home or if the house is not occupied. 
+The companion app and the iPhone tracker are usually the most accurate for my wife and me. HA runs on the Servers VLAN, away from the phones, so nmap can't see their MACs and ping is unreliable for sleeping iPhones. Neither one is a Bayesian input. I also have a Bayesian sensor for presence detection for us. I use the three network-based trackers for regular guests, and they work fairly accurately. These trackers will help reliably determine who is home or if the house is not occupied. 
 
 I adopted Phil Hawthorne's methodology for [making presence detection not so binary](https://philhawthorne.com/making-home-assistants-presence-detection-not-so-binary/). Each person has an input_boolean that defines whether they are home or not, but there also is an input_select that clarifies the state as: "Home," "Away," "Just Arrived," or "Just Left." This is helpful when somebody leaves and quickly returns.
 

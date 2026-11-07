@@ -48,13 +48,13 @@
     #   prob_given_false: 0.125
     #   to_state: "not_home"
 
-    # Nmap device
+    # Nmap device — disabled: nmap can't see phones from HA's VLAN
     #
-    - platform: state
-      entity_id: "device_tracker.cfalb_iphone_17_nmap"
-      prob_given_true: 0.50
-      prob_given_false: 0.20
-      to_state: "home"
+    # - platform: state
+    #   entity_id: "device_tracker.cfalb_iphone_17_nmap"
+    #   prob_given_true: 0.50
+    #   prob_given_false: 0.20
+    #   to_state: "home"
     # - platform: state
     #   entity_id: "device_tracker.cfalb_iphone_17_nmap"
     #   prob_given_true: 0.4
