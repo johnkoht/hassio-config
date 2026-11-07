@@ -71,3 +71,7 @@ production_auth.json
 .mcp.json
 .claude/settings.local.json
 .venv/
+
+# go2rtc from the removed webrtc custom component (held credentials)
+go2rtc.yaml
+go2rtc-*

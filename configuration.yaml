@@ -133,17 +133,6 @@ camera:
 http:
   use_x_forwarded_for: true
   cors_allowed_origins:
-    - "http://10.0.10.80:3001"
     - "http://192.168.1.0/24"
   trusted_proxies:
-    #- 192.168.1.14
-    - 192.168.1.0/24
-
-auth_header:
-  # Optionally set this if you're not using authentik proxy or oauth2_proxy
-  #username_header: X-Forwarded-Preferred-Username
-  username_header: X-authentik-username
-  # Optionally set this if you don't want to bypass the login prompt
-  # allow_bypass_login: false
-  # Optionally enable debug mode to see the headers Home-Assistant gets
-  debug: false
+    - 192.168.1.24  # Pi Caddy
