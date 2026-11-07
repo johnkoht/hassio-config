@@ -394,6 +394,8 @@
     - binary_sensor.motion_basement_east
     to:
     - 'on'
+  - trigger: state
+    entity_id: binary_sensor.upstairs_hallway_nightlight_motion
   conditions: []
   actions:
   - action: script.general_notification
