@@ -14,7 +14,7 @@
 
 set -e
 
-HA_TARGET="${HA_TARGET:-yellow}"
+HA_TARGET="${HA_TARGET:-epicurus}"
 case $HA_TARGET in
   yellow)
     HA_HOST="${HA_HOST:-hassio}"

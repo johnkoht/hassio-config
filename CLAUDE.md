@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-A Home Assistant configuration for a fully automated smart home running on Home Assistant Yellow with Nabu Casa. The philosophy is **hundreds of small, focused automations** rather than monolithic ones — each room is an independent state machine. See `docs/` for in-depth documentation on rooms, people, presence, announcements, and devices.
+A Home Assistant configuration for a fully automated smart home running on epicurus (Docker VM) with Nabu Casa. The philosophy is **hundreds of small, focused automations** rather than monolithic ones — each room is an independent state machine. See `docs/` for in-depth documentation on rooms, people, presence, announcements, and devices.
 
 ---
 
@@ -21,11 +21,12 @@ No build system. Changes are applied by reloading or restarting Home Assistant.
 ```
 
 `deploy.sh` pulls from GitHub, so push first. `HA_TARGET` selects the host:
-`yellow` (HAOS, `ha` CLI) or `epicurus` (Docker; `docker exec`/REST reloads).
+`epicurus` (default; Docker, `docker exec`/REST reloads) or `yellow` (the retired
+HAOS box, kept only for rollback).
 
 **Deploy notes:**
 - Pass `--skip-ci` with every deploy, and never run a bare `--check`: its local Docker step can delete the gitignored `secrets.yaml`, which can't be recovered.
-- `--reload` doesn't reload Groups, Template entities or Scenes. Reload those from Developer Tools → YAML, or through the supervisor API.
+- `--reload` doesn't reload Groups, Template entities or Scenes. Reload those from Developer Tools → YAML, or through the REST API.
 - `deploy.sh` touches `dashboards/kohbo/kohbo.yaml` after every pull (#45), because HA caches the YAML dashboard on that file's mtime. After a manual `git pull` on the host, touch it yourself, or the dashboard stays stale.
 - Recorder changes apply only on a restart, and only John restarts HA.
 
