@@ -383,7 +383,7 @@
       default_player_entity_id_input: media_player.office_3
 - id: '1775872697085'
   alias: New automation - test
-  description: ''
+  description: Critical test push on motion. Kept on purpose.
   triggers:
   - trigger: state
     entity_id:
