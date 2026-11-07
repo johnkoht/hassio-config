@@ -75,3 +75,6 @@ production_auth.json
 # go2rtc from the removed webrtc custom component (held credentials)
 go2rtc.yaml
 go2rtc-*
+
+# HA backups (NFS-mounted from TrueNAS on epicurus)
+/backups/
