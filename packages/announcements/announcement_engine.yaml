@@ -146,11 +146,11 @@ script:
 
         # {{ quiet_time_volume if quiet_time_volume is defined and quiet_time_volume != none else 0 }}
 
-      # Play the TTS message
+      # Play the TTS message; encoded so & # ? % in the text can't split the URL
       - action: media_player.play_media
         data:
           entity_id: "{{ media_players }}"
-          media_content_id: "media-source://tts/cloud?message={{speech_message}}&language=en-GB&gender=female"
+          media_content_id: "media-source://tts/cloud?message={{ speech_message | urlencode }}&language=en-GB&gender=female"
           media_content_type: music
           announce: true
           extra:
