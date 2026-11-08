@@ -40,7 +40,7 @@ esphome run esphome/<device>.yaml
 ## Codebase Structure
 
 ```
-/homeassistant/
+/config/   (on epicurus: /root/homeassistant/config)
 ├── configuration.yaml        # Main entry point — loads everything via includes
 ├── automations.yaml          # Legacy UI-created automations
 ├── scripts.yaml              # Scripts (also scripts/ dir for organized ones)
@@ -248,7 +248,7 @@ Everything committed here is world-readable on GitHub, and that includes history
 - **Check the condition ladder** — every automation that affects lights, sound, or security must check the relevant house-wide booleans (`house_occupied`, `lighting_automations`, `speech_notifications`) before acting.
 - **One automation, one job** — if an automation is doing two distinct things, split it into two files.
 - **No fabrication** — don't invent entity names, sensor IDs, or room names. If you don't know the exact entity ID, say so and ask, or look it up in the relevant package directory.
-- **Validate before presenting** — run `ha core check` mentally: does this YAML parse? Are all required fields present? Is the `target:` block used correctly?
+- **Validate before presenting** — run `check_config` mentally: does this YAML parse? Are all required fields present? Is the `target:` block used correctly?
 - **Docs travel with the change** — when behaviour or entities change, update the matching `docs/*.md` and package READMEs in the same PR (`/wrap` and `/hotfix` check for this).
 
 ---
