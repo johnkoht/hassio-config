@@ -92,8 +92,8 @@ packages/people/{name}/
 Home presence combines multiple trackers into the HA Person integration:
 1. **iOS Companion App** — GPS-based (most reliable for John & Cristina)
 2. **UniFi Network** — WiFi device tracking
-3. **Nmap Tracker** — network scan
-4. **iPhone Detect** — iOS-specific network detection
+3. **MQTT iPhone tracker** — runs on a host on the phones' VLAN and publishes `device_tracker.*_iphone_detect` through MQTT discovery
+4. **Nmap / Ping** — weak `person.*` members only. HA sits on the Servers VLAN, so neither is a Bayesian input
 
 Room presence uses **Bermuda** via ESPHome Bluetooth proxies. `sensor.{name}_room_presence` wraps it: state is the HA area_id (e.g. `office`) or `not_home`. John, Cristina and Nonna are migrated; a few guest sensors still use the legacy ESPresense `mqtt_room` topic. Add a person with the `add-presence-person` skill.
 
