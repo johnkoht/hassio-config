@@ -4,7 +4,7 @@
 
 ## Deployment
 
-Home Assistant OS is deployed on a [Home Assistant Yellow](https://www.home-assistant.io/yellow/) (this is temporary while I migrate infrastructure). I also use [Nabu Casa](https://www.nabucasa.com/) for remote access and to support the project.
+Home Assistant runs in Docker on a Proxmox VM (epicurus). It moved off the [Home Assistant Yellow](https://www.home-assistant.io/yellow/) in November 2026. I also use [Nabu Casa](https://www.nabucasa.com/) for remote access and to support the project.
 
 ## Key Software
 
