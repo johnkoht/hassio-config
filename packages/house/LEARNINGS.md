@@ -81,7 +81,13 @@ Vacation). `scripts/house/house_away.yaml` is the one leftover writer.
   a morning that ends in Quiet keeps it off until quiet mode ends.
 - Room `*_mode_auto` automations accept Auto or Quiet. Anything new that needs
   the house "up" should accept Quiet too; `hourly_dong` still requires Auto on
-  purpose. A new `state: "Auto"` condition on the select fails a test.
+  purpose. A new `state: "Auto"` condition on the select fails a test, and so
+  does a `*_mode_auto` trigger on exactly `to: "Auto"`. The office, garage and
+  hallway had only the trigger, so JK-1118 missed them (2026-11-11). Bedrooms
+  and the main bathroom are still Auto-only and allowlisted, awaiting John.
+- A room's lights-on automation that triggers on occupancy races the room's
+  mode-auto on the same change, and sees the old mode. Give it a trigger on the
+  room going Auto too (`office_lights_on`).
 - Bedtime ends (`bedtime_mode_off`) when any home adult is awake, or no adult
   is home, between 05:00 and 12:00. The old version also passed when an adult
   was away, which let an absent adult end it.
