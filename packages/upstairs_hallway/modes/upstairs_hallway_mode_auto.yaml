@@ -5,10 +5,12 @@ automation:
     initial_state: on
     alias: "Upstairs Hallway - Mode Auto"
     triggers:
-      # House turn to Auto mode
+      # House turns to Auto (or Quiet) mode
       - trigger: state
         entity_id: input_select.house
-        to: "Auto"
+        to:
+          - "Auto"
+          - "Quiet"
     conditions:
       # House is occupied
       - condition: state
