@@ -17,6 +17,10 @@ automation:
       - trigger: state
         entity_id: input_boolean.office_occupied
         to: "on"
+      # Office turns Auto (it can lag occupancy by a moment)
+      - trigger: state
+        entity_id: input_select.office
+        to: "Auto"
       # 15 mins after sunset
       - trigger: sun
         event: sunset
