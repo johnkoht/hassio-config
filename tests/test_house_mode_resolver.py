@@ -434,6 +434,32 @@ def test_no_room_requires_the_house_to_be_exactly_auto():
     assert exact == ["packages/hourly_dong.yaml"]
 
 
+# Bedrooms and the main bathroom stay Auto-only: Quiet means someone is asleep.
+AUTO_ONLY_ROOM_TRIGGERS = [
+    "packages/gianluca_room/modes/gianlucas_room_mode_auto.yaml",
+    "packages/main_bathroom/mode/main_bathroom_mode_auto.yaml",
+    "packages/main_bedroom/mode/main_bedroom_mode_auto.yaml",
+    "packages/ninos_room/modes/ninos_bedroom_mode_auto.yaml",
+]
+
+
+def test_no_room_auto_trigger_waits_for_exactly_auto():
+    """A room Auto that triggers only on house -> Auto stays Off when Bedtime ends in Quiet."""
+    exact = []
+    for path in (REPO / "packages").rglob("*_mode_auto.yaml"):
+        auto = automation(str(path.relative_to(REPO)))
+        for trig in auto.get("triggers", []):
+            if trig.get("entity_id") == "input_select.house" and trig.get("to") == "Auto":
+                exact.append(str(path.relative_to(REPO)))
+    assert sorted(exact) == AUTO_ONLY_ROOM_TRIGGERS
+
+
+def test_office_lights_on_follows_the_office_turning_auto():
+    """Occupancy fires office_mode_auto and office_lights_on together; the mode lags."""
+    auto = automation("packages/office/lights/office_lights_on.yaml")
+    assert {"trigger": "state", "entity_id": "input_select.office", "to": "Auto"} in auto["triggers"]
+
+
 def test_foyer_returns_to_auto_from_quiet():
     auto = automation("packages/foyer/modes/foyer_mode_auto.yaml")
     assert auto["triggers"][0]["to"] == ["Auto", "Quiet"]

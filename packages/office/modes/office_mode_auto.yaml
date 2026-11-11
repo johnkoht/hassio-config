@@ -13,10 +13,12 @@ automation:
       - trigger: state
         entity_id: input_boolean.office_occupied
         to: "on"
-      # House turn to Auto mode
+      # House turns to Auto (or Quiet) mode
       - trigger: state
         entity_id: input_select.house
-        to: "Auto"
+        to:
+          - "Auto"
+          - "Quiet"
       # Office DnD turns off
       - trigger: state
         entity_id: input_boolean.office_dnd
