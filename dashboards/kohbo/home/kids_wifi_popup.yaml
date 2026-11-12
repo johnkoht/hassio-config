@@ -53,17 +53,17 @@ cards:
             - type: entities
               card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
               entities:
-                - entity: input_datetime.kids_wifi_weekday_off_time
-                  name: Weekday Off
-                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
                 - entity: input_datetime.kids_wifi_weekday_on_time
                   name: Weekday On
                   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-                - entity: input_datetime.kids_wifi_weekend_off_time
-                  name: Weekend Off
+                - entity: input_datetime.kids_wifi_weekday_off_time
+                  name: Weekday Off
                   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
                 - entity: input_datetime.kids_wifi_weekend_on_time
                   name: Weekend On
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+                - entity: input_datetime.kids_wifi_weekend_off_time
+                  name: Weekend Off
                   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
   - type: custom:button-card
