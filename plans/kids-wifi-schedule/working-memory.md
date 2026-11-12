@@ -18,6 +18,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [task-2] NOTHING_NOVEL — task-2
 - [task-3] NOTHING_NOVEL — task-3
 - [task-4] Startup-ordering finding recorded under Active Gotchas
+- [task-5] NOTHING_NOVEL — task-5
 
 ## Shared Utilities Created
 
