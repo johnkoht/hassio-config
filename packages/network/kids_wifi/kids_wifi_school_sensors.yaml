@@ -1,0 +1,23 @@
+# Kids WiFi School Sensors
+#
+# On when either kid has school today / tomorrow. Deliberately no
+# availability block, so unavailable inputs read as "no school".
+#
+
+template:
+  - binary_sensor:
+      - name: Kids School Tomorrow
+        unique_id: kids_school_tomorrow
+        default_entity_id: binary_sensor.kids_school_tomorrow
+        icon: mdi:school
+        state: >-
+          {{ is_state('binary_sensor.primary_school_in_session_tomorrow', 'on')
+             or is_state('binary_sensor.parochial_school_in_session_tomorrow', 'on') }}
+
+      - name: Kids School Today
+        unique_id: kids_school_today
+        default_entity_id: binary_sensor.kids_school_today
+        icon: mdi:school
+        state: >-
+          {{ is_state('binary_sensor.primary_school_in_session_today', 'on')
+             or is_state('binary_sensor.parochial_school_in_session_today', 'on') }}

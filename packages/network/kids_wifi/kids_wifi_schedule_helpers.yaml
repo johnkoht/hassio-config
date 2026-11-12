@@ -1,0 +1,32 @@
+# Kids WiFi Schedule Helpers
+#
+# Master toggle plus weekday/weekend off and on times for switch.kids_enabled.
+# No default values set, so dashboard edits survive restarts.
+#
+
+input_boolean:
+  kids_wifi_schedule:
+    name: Kids WiFi Schedule
+    icon: mdi:wifi-cog
+
+input_datetime:
+  kids_wifi_weekday_off_time:
+    name: Kids WiFi Weekday Off Time
+    icon: mdi:wifi-off
+    has_date: false
+    has_time: true
+  kids_wifi_weekday_on_time:
+    name: Kids WiFi Weekday On Time
+    icon: mdi:wifi
+    has_date: false
+    has_time: true
+  kids_wifi_weekend_off_time:
+    name: Kids WiFi Weekend Off Time
+    icon: mdi:wifi-off
+    has_date: false
+    has_time: true
+  kids_wifi_weekend_on_time:
+    name: Kids WiFi Weekend On Time
+    icon: mdi:wifi
+    has_date: false
+    has_time: true
