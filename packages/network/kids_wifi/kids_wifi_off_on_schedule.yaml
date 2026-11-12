@@ -1,0 +1,53 @@
+# Kids WiFi - Off on Schedule
+#
+# Turn the kids network off at the scheduled off time.
+# Weekday time applies when either kid has school tomorrow, weekend time otherwise.
+#
+
+automation:
+  - id: "kids_wifi_off_on_schedule"
+    alias: "Kids WiFi - Off on Schedule"
+    mode: single
+    triggers:
+      - trigger: time
+        at: input_datetime.kids_wifi_weekday_off_time
+        id: weekday_off
+      - trigger: time
+        at: input_datetime.kids_wifi_weekend_off_time
+        id: weekend_off
+    conditions:
+      - condition: state
+        entity_id: input_boolean.kids_wifi_schedule
+        state: "on"
+      - condition: state
+        entity_id: switch.kids_enabled
+        state: "on"
+      - alias: "The helper that fired is set"
+        condition: template
+        value_template: >
+          {% set helper = {
+            'weekday_off': 'input_datetime.kids_wifi_weekday_off_time',
+            'weekend_off': 'input_datetime.kids_wifi_weekend_off_time'
+          }[trigger.id] %}
+          {{ state_attr(helper, 'timestamp') | int(0) > 0 }}
+      - alias: "Off time matches tomorrow's school status"
+        condition: or
+        conditions:
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: weekday_off
+              - condition: state
+                entity_id: binary_sensor.kids_school_tomorrow
+                state: "on"
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: weekend_off
+              - condition: state
+                entity_id: binary_sensor.kids_school_tomorrow
+                state: "off"
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.kids_enabled

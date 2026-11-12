@@ -1,0 +1,71 @@
+#
+# Kids WiFi Popup
+#
+# Kids network switch, the schedule toggle and its four on/off times.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#kids_wifi'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+cards:
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Kids WiFi
+
+  #
+  # Kids WiFi and Schedule
+  #
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: entities
+        entities:
+          - entity: switch.kids_enabled
+            name: Kids WiFi
+            icon: mdi:wifi
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          - entity: input_boolean.kids_wifi_schedule
+            name: Schedule
+            icon: mdi:wifi-cog
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.kids_wifi_schedule
+            state: 'on'
+        card:
+          type: custom:stack-in-card
+          mode: vertical
+          card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+          cards:
+            - type: entities
+              card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+              entities:
+                - entity: input_datetime.kids_wifi_weekday_off_time
+                  name: Weekday Off
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+                - entity: input_datetime.kids_wifi_weekday_on_time
+                  name: Weekday On
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+                - entity: input_datetime.kids_wifi_weekend_off_time
+                  name: Weekend Off
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+                - entity: input_datetime.kids_wifi_weekend_on_time
+                  name: Weekend On
+                  card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  - type: custom:button-card
+    name: Weekday times apply when either kid has school (off the night before, on the morning of). Weekend times apply otherwise. Off times must be before midnight. Set all four times before turning the schedule on.
+    template: kohbo_card_section_description

@@ -17,6 +17,7 @@ The dashboard is organized into the following main sections:
     - Vacuum Active Notification
     - Safety Device Notification (conditional card under the header)
     - House Mode Popup
+    - Kids WiFi Popup
 
 ### 🌡️ Climate
 - **Climate** (`climate/climate.yaml`)

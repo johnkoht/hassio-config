@@ -426,6 +426,17 @@ cards:
           navigation_path: '/dashboard-kohbo/main-floor-vacuum'
           haptic: light
 
+      # Kids WiFi
+      - type: custom:button-card
+        entity: switch.kids_enabled
+        name: Kids WiFi
+        template: kohbo_device_entity
+        icon: mdi:wifi
+        tap_action:
+          action: navigate
+          navigation_path: '#kids_wifi'
+          haptic: light
+
       # Halloween (in season only)
       - type: conditional
         conditions:
@@ -566,3 +577,9 @@ cards:
   # House Mode Popup
   #
   - !include /config/dashboards/kohbo/home/house_mode_popup.yaml
+
+
+  #
+  # Kids WiFi Popup
+  #
+  - !include /config/dashboards/kohbo/home/kids_wifi_popup.yaml
