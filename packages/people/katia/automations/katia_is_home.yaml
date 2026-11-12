@@ -1,5 +1,6 @@
 # Automation to detect and initiate home for Katia
 #
+# iPhone Detect must agree, so a UniFi tracker blip alone can't mark her home.
 #
 automation:
   - id: "katia_is_home"
@@ -14,6 +15,10 @@ automation:
       - trigger: state
         entity_id: binary_sensor.katia_presence
         to: "on"
+      # iPhone detect tracker is detected home
+      - trigger: state
+        entity_id: device_tracker.katia_iphone_detect
+        to: "home"
       # Hassio restart/reload
       - trigger: event
         event_type: automation_reloaded
@@ -24,6 +29,10 @@ automation:
       - condition: state
         entity_id: input_boolean.katia_home
         state: "off"
+      # iPhone detect agrees she's home
+      - condition: state
+        entity_id: device_tracker.katia_iphone_detect
+        state: "home"
       - or:
           # Person marked as HOME
           - condition: state
