@@ -15,6 +15,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 - [task-1] NOTHING_NOVEL — task-1
 - [task-2] NOTHING_NOVEL — task-2
+- [task-3] NOTHING_NOVEL — task-3
 
 ## Shared Utilities Created
 
