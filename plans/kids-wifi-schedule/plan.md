@@ -1,7 +1,7 @@
 ---
 title: Kids WiFi Schedule
 slug: kids-wifi-schedule
-status: in-progress
+status: shipped
 created: 2026-11-11
 has_pre_mortem: true
 has_review: true
