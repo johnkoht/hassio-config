@@ -1,0 +1,96 @@
+{
+  "name": "kids-wifi-schedule",
+  "branchName": "feature/kids-wifi-schedule",
+  "goal": "Schedule the kids network off at night and on in the morning, weekday times when either kid has school, configured from a #kids_wifi popup on Home.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Helpers and school sensors",
+      "description": "input_boolean.kids_wifi_schedule + four time input_datetimes (no initial:) in kids_wifi_schedule_helpers.yaml; binary_sensor.kids_school_tomorrow/today template sensors in kids_wifi_school_sensors.yaml",
+      "acceptanceCriteria": [
+        "No initial: key in packages/network/kids_wifi/",
+        "kids_school_tomorrow = primary OR parochial in_session_tomorrow via is_state(...,'on'); kids_school_today likewise with _today",
+        "No availability: block on either sensor",
+        "Duplicates/naming tests pass; no kids_wifi_* basename collisions"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Off automation",
+      "description": "kids_wifi_off_on_schedule.yaml, alias 'Kids WiFi - Off on Schedule'",
+      "acceptanceCriteria": [
+        "Time triggers on weekday/weekend off helpers with ids weekday_off/weekend_off",
+        "Conditions in order: schedule on, switch on, trigger.id->helper timestamp>0 guard (no trigger.entity_id), weekday_off<->kids_school_tomorrow on / weekend_off<->off",
+        "switch.turn_off with target block",
+        "8-case table holds"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "On automation",
+      "description": "kids_wifi_on_on_schedule.yaml, alias 'Kids WiFi - On on Schedule'",
+      "acceptanceCriteria": [
+        "Mirrors task-2 with on helpers (weekday_on/weekend_on), switch off, kids_school_today, switch.turn_on",
+        "8-case table holds with today"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Restart catch-up",
+      "description": "kids_wifi_on_after_restart.yaml, alias 'Kids WiFi - On After Restart'",
+      "acceptanceCriteria": [
+        "Triggers: homeassistant start + event_template_reloaded",
+        "Conditions: schedule on, switch off, window template (today's on <= now < tonight's off, both helpers set)",
+        "switch.turn_on",
+        "Host renders: before/inside/after window and unset helper give False/True/False/False"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Popup and Home entry point",
+      "description": "dashboards/kohbo/home/kids_wifi_popup.yaml (#kids_wifi) + include and Kids WiFi tile in home.yaml",
+      "acceptanceCriteria": [
+        "Bubble pop-up hash '#kids_wifi' with kohbo styles and title",
+        "Entities card: switch.kids_enabled + input_boolean.kids_wifi_schedule with boolean layout",
+        "Conditional (state) card with the four times using garage-lock nesting",
+        "Description card with rules and no clock times",
+        "Include after House Mode include; tile after Main Floor Vacuum tile navigating to '#kids_wifi'",
+        "No new CSS; YAML parses; hash and navigation_path greps match"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Docs",
+      "description": "AUTOMATIONS.md entry, home/README.md file tree, SITEMAP.md Home popups",
+      "acceptanceCriteria": [
+        "AUTOMATIONS.md Miscellaneous entry linking packages/network/kids_wifi, no clock times",
+        "home/README.md tree lists kids_wifi_popup.yaml",
+        "SITEMAP Home popups lists Kids WiFi Popup"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-11-12T03:51:36.274291+00:00",
+    "totalTasks": 6,
+    "completedTasks": 0,
+    "failedTasks": 0
+  }
+}
