@@ -15,7 +15,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "commitSha": "41b35c64"
     },
     {
       "id": "task-2",
