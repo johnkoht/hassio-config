@@ -14,6 +14,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [plan] Prototype from before the plan (day-of-week rules) is in the session scratchpad only. Don't resurrect its gating.
 
 - [task-1] NOTHING_NOVEL — task-1
+- [task-2] NOTHING_NOVEL — task-2
 
 ## Shared Utilities Created
 
