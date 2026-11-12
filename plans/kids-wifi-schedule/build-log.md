@@ -6,9 +6,9 @@ Started: 2026-11-11 (/ship, full mode)
 - [x] Phase 1.2: pre-mortem — 10 risks, 0 CRITICAL (pre-mortem.md)
 - [x] Phase 1.3: review — independent agent (sonnet), Approve with suggestions, no structural blocker; MUST items folded into plan.md (review.md)
 - [x] Phase 2: memory review (5 bullets in PRD constraints), PRD 6 tasks, artifact commit
-- [ ] Phase 3: worktree
-- [ ] Phase 4: build + final review
-- [ ] Phase 5: wrap, finalize, merge gate
+- [x] Phase 3: worktree (EnterWorktree, worktree-kids-wifi-schedule)
+- [x] Phase 4: build 6/6 first-attempt, every task reviewer APPROVED; holistic review READY
+- [x] Phase 5: wrap ✅ (merged origin/master #148), status shipped; merge gate pending
 - [ ] Phase 6: cleanup
 
 Notes:
