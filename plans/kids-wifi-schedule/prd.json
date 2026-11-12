@@ -41,9 +41,10 @@
         "Mirrors task-2 with on helpers (weekday_on/weekend_on), switch off, kids_school_today, switch.turn_on",
         "8-case table holds with today"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "6506d9f9"
     },
     {
       "id": "task-4",
