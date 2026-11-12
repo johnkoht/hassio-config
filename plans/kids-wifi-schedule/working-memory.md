@@ -25,4 +25,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 ## Context Corrections
 
 ## Decision Ledger
-- [2026-11-11] School-night = either kid has school tomorrow (school sensors), not day-of-week; camp skipped — docs affected: docs/AUTOMATIONS.md — status: open
+- [2026-11-11] School-night = either kid has school tomorrow (school sensors), not day-of-week; camp skipped — docs affected: docs/AUTOMATIONS.md — status: folded
