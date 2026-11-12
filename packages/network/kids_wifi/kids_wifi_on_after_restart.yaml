@@ -1,0 +1,38 @@
+# Kids WiFi - On After Restart
+#
+# Turn the kids network back on after a start or reload if we are
+# inside today's on window. Covers HA being down at the scheduled on time.
+#
+
+automation:
+  - id: "kids_wifi_on_after_restart"
+    alias: "Kids WiFi - On After Restart"
+    mode: single
+    triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    conditions:
+      - condition: state
+        entity_id: input_boolean.kids_wifi_schedule
+        state: "on"
+      - condition: state
+        entity_id: switch.kids_enabled
+        state: "off"
+      - alias: "Inside today's on window"
+        condition: template
+        value_template: >
+          {% set on_h = 'input_datetime.kids_wifi_weekday_on_time'
+             if is_state('binary_sensor.kids_school_today', 'on')
+             else 'input_datetime.kids_wifi_weekend_on_time' %}
+          {% set off_h = 'input_datetime.kids_wifi_weekday_off_time'
+             if is_state('binary_sensor.kids_school_tomorrow', 'on')
+             else 'input_datetime.kids_wifi_weekend_off_time' %}
+          {{ state_attr(on_h, 'timestamp') | int(0) > 0
+             and state_attr(off_h, 'timestamp') | int(0) > 0
+             and today_at(states(on_h)) <= now() < today_at(states(off_h)) }}
+    actions:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.kids_enabled
