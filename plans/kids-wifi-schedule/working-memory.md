@@ -13,6 +13,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [plan] The garage-lock popup helper HAS initial:. Do not copy that.
 - [plan] Prototype from before the plan (day-of-week rules) is in the session scratchpad only. Don't resurrect its gating.
 
+- [task-1] NOTHING_NOVEL — task-1
+
 ## Shared Utilities Created
 
 ## Context Corrections
