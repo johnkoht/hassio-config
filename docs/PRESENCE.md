@@ -17,7 +17,7 @@ The companion app and the iPhone tracker are usually the most accurate for my wi
 
 UniFi can briefly mark offline phones as home, for example when a WLAN is switched off. For Katia, whose person has only router trackers, the iPhone tracker has to agree before she's marked home.
 
-I adopted Phil Hawthorne's methodology for [making presence detection not so binary](https://philhawthorne.com/making-home-assistants-presence-detection-not-so-binary/). Each person has an input_boolean that defines whether they are home or not, but there also is an input_select that clarifies the state as: "Home," "Away," "Just Arrived," or "Just Left." This is helpful when somebody leaves and quickly returns.
+I adopted Phil Hawthorne's methodology for [making presence detection not so binary](https://philhawthorne.com/making-home-assistants-presence-detection-not-so-binary/). Each person has an input_boolean that defines whether they are home or not, but there also is an input_select that clarifies the state as: "Home," "Away," "Just Arrived," or "Just Left." This is helpful when somebody leaves and quickly returns. Departure announcements wait one minute after the person goes away, so a GPS flap at the zone edge announces once instead of twice. Arrival announcements and the status itself are not delayed.
 
 ## Room Presence
 
