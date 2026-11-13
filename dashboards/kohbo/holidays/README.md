@@ -76,7 +76,6 @@ Plumbing automations (`turn_on/off_christmas_lights`, `activate_christmas_season
 - **The Christmas master group includes the front yard plugs**, so `switch.christmas_lights` reads On during Halloween and turning it off would turn off the Halloween decorations. The page hides "All Christmas Lights" out of season until the group is fixed in the package.
 - **The Outdoor Spots card bypasses the Accent Lights boolean.** Spots switched on from the card aren't turned off by the bedtime automation, which acts on `input_boolean.exterior_accent_lights`. Use the Accent Lights row above the card as the main control.
 - **The Hue power plugs are never on this dashboard.** The two front-left Hue power switches feed the spots and must stay on.
-- **An unavailable plug reads "Off"** in `kohbo_device_smart_plug_entity` (Window Lights 5 today).
 
 ---
 

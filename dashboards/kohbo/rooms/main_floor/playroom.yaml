@@ -115,15 +115,11 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_15_power
-          confirmation: true
 
       - type: custom:button-card
         entity: switch.smart_plug_18_switch
         name: Bay Window
         template: kohbo_device_smart_plug_entity
-        variables:
-          power_sensor: sensor.smart_plug_16_power
-          confirmation: true
 
       - type: custom:button-card
         entity: switch.smart_plug_16_switch
@@ -131,7 +127,6 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_16_power
-          confirmation: true
 
       - type: custom:button-card
         entity: switch.smart_plug_17_switch
@@ -139,7 +134,6 @@ cards:
         template: kohbo_device_smart_plug_entity
         variables:
           power_sensor: sensor.smart_plug_17_power
-          confirmation: true
 
       # Alexa Dot
       - type: custom:button-card
