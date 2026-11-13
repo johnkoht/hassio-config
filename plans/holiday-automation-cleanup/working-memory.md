@@ -14,7 +14,9 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [orchestrator] Never run `./deploy.sh --check` (it can delete secrets.yaml). Gate is `tests/run.sh` (full suite; baseline 1410 passed, 9 skipped on 723106b8).
 
 ## Shared Utilities Created
+- [task-1] `tests/test_holiday_lights_regressions.py` now has `_auto(rel)`, `_targets(action)`, `_state_conds(auto)`, `_render(rel, day)` (jinja2 date-template renderer with stubbed `now`) for later tasks to reuse.
 
 ## Context Corrections
+- [task-1] `dashboards/kohbo/holidays/README.md:59` still names the deleted automations (`activate_christmas_season`, manual pair, `initial_state: false`); task-3 docs must rewrite it. Deleted automations (shortcut button, manual pair, activate_christmas_season, handle_ikea_unresponsive) leave registry ghosts on the host (release step).
 
 ## Decision Ledger
