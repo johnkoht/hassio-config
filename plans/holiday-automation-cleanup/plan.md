@@ -1,7 +1,7 @@
 ---
 title: Holiday Automation Cleanup
 slug: holiday-automation-cleanup
-status: in-progress
+status: shipped
 approved: 2026-11-13
 approval_note: "John approved in the parent session 2026-11-13 ('Approve any plans. Don't wait on me unless not confident or risky.') with the recommended defaults for every open question: Q1 front yard follows the trees until bedtime/away; Q2 drop confirmation on the 4 playroom plug tiles; Q3 add the 'Start and stop Christmas on its own' toggle, on by default; Q4 keep ui_test untouched; Q5 tree = plug 4, repoint the energy meter; Q6 Christmas turns Halloween off."
 created: 2026-11-12
