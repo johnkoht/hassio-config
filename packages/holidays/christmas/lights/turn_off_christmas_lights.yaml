@@ -1,0 +1,27 @@
+# Turn OFF Christmas Lights
+#
+# Christmas mode off: power off the indoor lights and the front yard
+# decorations. Not season-gated, so lights never stay on out of season.
+#
+
+automation:
+  - id: "turn_off_christmas_lights"
+    alias: "Turn OFF Christmas Lights"
+    mode: "single"
+    triggers:
+      # Christmas mode is NOT activated
+      - trigger: state
+        entity_id: input_boolean.christmas_active
+        to: "off"
+      # Retry after 3 minutes in case a plug missed the first command
+      - trigger: state
+        entity_id: input_boolean.christmas_active
+        to: "off"
+        for:
+          minutes: 3
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.christmas_lights
+            - switch.front_yard_holiday_decorations
