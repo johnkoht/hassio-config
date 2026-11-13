@@ -16,9 +16,7 @@ automation:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
-      #
-      # Foyer state changes to OFF
-      # OR Foyer is Auto but house is Off
+      # Foyer is Off or Away
       - condition: or
         conditions:
           - condition: state
@@ -27,14 +25,6 @@ automation:
           - condition: state
             entity_id: input_select.foyer
             state: "Away"
-          - condition: and
-            conditions:
-              - condition: state
-                entity_id: input_select.foyer
-                state: "Auto"
-              - condition: state
-                entity_id: input_select.house
-                state: "Off"
       # Lights are ON
       - condition: state
         entity_id: light.foyer_lights
