@@ -13,7 +13,7 @@ automation:
           nvr_id: "{{ config_entry_id(trigger.entity_id) }}"
           event_id: "{{ trigger.to_state.attributes.event_id }}"
           image_path: /api/unifiprotect/thumbnail/{{ nvr_id }}/{{ event_id }}
-          proxy_camera: camera.camera_proxy_camera_backyard_porch_camera_high_resolution_channel
+          proxy_camera: camera.camera_proxy_camera_g5_turret_ultra_high_resolution_channel
           snooze_timer: timer.backyard_porch_camera_notifications_snooze_timer
           notifications_boolean: input_boolean.backyard_porch_camera_notifications
     conditions:
