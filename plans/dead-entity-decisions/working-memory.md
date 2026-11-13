@@ -15,3 +15,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Decision Ledger
 - [2026-11-13] Items 9 and 9a move from PR C to PR B (pre-mortem R1: guaranteed conflict in tests/test_dead_entity_regressions.py and ninos_bedroom_heater.yaml) — docs affected: plan.md Tasks — status: folded
+- [Task 2] A template test can load `tomorrow_is_garbage_day` via yaml + `jinja2.Environment` with stubbed `now`/`timedelta`/`state_attr` globals (tests/test_dead_entity_b.py; later PR B tasks add there). Calendar `start_time` is a "YYYY-MM-DD HH:MM:SS" string, so `start[:10]` vs tomorrow's isoformat compares dates.
