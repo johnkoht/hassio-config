@@ -7,6 +7,9 @@ automation:
       - trigger: state
         entity_id: input_boolean.joe_home
         to: "off"
+        # Hold so a zone-edge flap announces once
+        for:
+          minutes: 1
     conditions:
       # Somebody has been home for 5 minutes
       - condition: state

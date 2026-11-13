@@ -11,6 +11,9 @@ automation:
         entity_id: person.celi
         from: "home"
         to: "not_home"
+        # Hold so a zone-edge flap announces once
+        for:
+          minutes: 1
     conditions:
       # We've been home for at least 5 minutes
       - condition: state
