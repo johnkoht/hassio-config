@@ -15,3 +15,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Decision Ledger
 - [2026-11-13] Items 9 and 9a move from PR C to PR B (pre-mortem R1: guaranteed conflict in tests/test_dead_entity_regressions.py and ninos_bedroom_heater.yaml) — docs affected: plan.md Tasks — status: folded
+- [Task 5] BSD sed: `sed -i -E` treats -E as the backup suffix (leaves `*-E` files); use `sed -i '' -E`. A test holding a literal that matches its own absence regex breaks once the file is tracked; build it by concatenation.
