@@ -18,7 +18,7 @@
 
 ## Verdict
 
-**Target 2026.9.4.** It has no DB migration (schema 53 since 7.4), no Python change (3.14.2), and needs no Z-Wave JS UI bump (schema 49 floor; external Z-Wave JS UI 11.22.0 = schema 50). Do not stop on 9.0, which has a RAM-spike/reboot-loop bug fixed in 9.1. Two config changes break silently, and one HACS integration fails to load unless it is updated first.
+**Target 2026.9.4.** It has no DB migration (schema 53 since 7.4), no Python change (core minimum 3.14.2; the image runs 3.14.6), and needs no Z-Wave JS UI bump (schema 49 floor; external Z-Wave JS UI 11.22.0 = schema 50). Do not stop on 9.0, which has a RAM-spike/reboot-loop bug fixed in 9.1. Two config changes break silently, and one HACS integration fails to load unless it is updated first.
 
 Waiting for 10.2+ is reasonable. 10.x adds no YAML breakage for this config, only open regressions: UniFi Network setup, ZHA network-bridged coordinator stalls, and an MQTT-select crash/rollback.
 
@@ -62,8 +62,8 @@ Detection binary sensors no longer carry `event_id`/`event_score`. That metadata
 
 ## Behavior changes to watch after upgrade
 
-1. **`http:` YAML is auto-moved into the UI (2026.8).** `configuration.yaml:130` sets `use_x_forwarded_for` + `trusted_proxies` + CORS. Confirm remote access and `auth_header` still work. There are community reports of proxy breakage through 8.3.
-2. **Devices split per integration (2026.8).** There are 64 `device_id:` references, mostly ZHA plus 15 in `automations.yaml`. ZHA, Nest, ESPHome and Z-Wave JS were migrated upstream; Sonos device IDs reportedly changed. Check Repairs and run `ha core check`.
+1. **`http:` YAML is auto-moved into the UI (2026.8).** The `http:` block in `configuration.yaml` sets `use_x_forwarded_for` + `trusted_proxies` + CORS. Confirm remote access and `auth_header` still work. There are community reports of proxy breakage through 8.3.
+2. **Devices split per integration (2026.8).** There are 64 `device_id:` references, mostly ZHA plus 15 in `automations.yaml`. ZHA, Nest, ESPHome and Z-Wave JS were migrated upstream; Sonos device IDs reportedly changed. Check Repairs and run `docker exec homeassistant python -m homeassistant --script check_config -c /config`.
 3. **LLM tool names gain a domain prefix (2026.9)** (`intent__HassTurnOn`). Voice/LLM agents on home-llm may need a prompt or model tweak. Unverified.
 4. **card-mod 4.2.1 is abandoned.** On 2026.9, *all* card-mod styling dies when the active theme defines `card-mod-*-yaml` (card-mod #606/#617). `kohbo` is clean; `rounded` and `minimalist-*` aren't. Make sure no wall tablet or phone has one of those selected. Longer-term replacement: UIX (drop-in).
 5. **High CPU with camera streams** (core #178556, open since 8.x, reportedly eased in 10.0). This repo has 5 proxy cameras. Watch epicurus' CPU (`sensor.system_monitor_processor_use`).

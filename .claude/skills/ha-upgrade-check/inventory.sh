@@ -57,5 +57,5 @@ except Exception as ex:
     print("repairs unreadable:", ex)
 PY
 echo "## error/critical log lines since last start"
-docker logs homeassistant 2>&1 | grep -cE ' (ERROR|CRITICAL) ' || true
+docker logs --since "$(docker inspect -f '{{.State.StartedAt}}' homeassistant)" homeassistant 2>&1 | grep -cE ' (ERROR|CRITICAL) ' || true
 REMOTE
