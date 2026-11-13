@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "plan": "plans/dead-entity-decisions",
+  "workspace": "/Users/johnkoht/code/hassio-config/.claude/worktrees/dead-entity-c",
+  "branch": "worktree-dead-entity-c",
+  "baseCommit": "866566107d97d7dd42a34dfeb51cdfb29dfc99ec",
+  "finalizedCommit": "75aaa789b178a1a5cc34e1ed68a506ba54cd5cb0",
+  "mainlineRef": "refs/heads/master",
+  "harness": "claude"
+}
