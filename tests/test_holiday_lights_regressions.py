@@ -113,6 +113,42 @@ def test_halloween_restart_respects_time_of_day():
     assert {"condition": "state", "entity_id": "input_boolean.bedtime", "state": "off"} in on["conditions"]
 
 
+HALLOWEEN_SEASON = "input_boolean.halloween_season_active"
+
+
+def test_halloween_off_is_season_gated():
+    off = automations(HALLOWEEN / "halloween_lights.yaml")["halloween_lights_turn_off"]
+    assert off["conditions"][0] == {"condition": "state", "entity_id": HALLOWEEN_SEASON, "state": "on"}
+    gate = next(c for c in off["conditions"] if c["condition"] == "or")
+    assert HALLOWEEN_SEASON not in str(gate)
+    assert "switch.front_yard_holiday_decorations" not in {
+        c.get("entity_id") for c in off["conditions"] if c["condition"] == "state"
+    }
+
+
+def test_halloween_season_end_turns_off_decorations_unless_christmas():
+    (ended,) = automations(HALLOWEEN / "halloween_season_ended.yaml").values()
+    assert ended["id"] == "halloween_season_ended" and ended["alias"] == "Halloween Season Ended"
+    assert ended["triggers"] == [{"trigger": "state", "entity_id": HALLOWEEN_SEASON, "to": "off"}]
+    assert ended["conditions"] == [
+        {"alias": "Not handing over to Christmas", "condition": "state", "entity_id": SEASON, "state": "off"}
+    ]
+    (action,) = ended["actions"]
+    assert action["action"] == "switch.turn_off"
+    assert _targets(action) == ["switch.front_yard_holiday_decorations"]
+
+
+def test_season_handover():
+    (started,) = automations(CHRISTMAS / "christmas_season_started.yaml").values()
+    assert {"trigger": "state", "entity_id": SEASON, "to": "on"} in started["triggers"]
+    assert [(a["action"], a["target"]["entity_id"]) for a in started["actions"]] == [
+        ("input_boolean.turn_off", HALLOWEEN_SEASON)
+    ]
+    # The handover must not cut the front yard: the end automation stands down.
+    (ended,) = automations(HALLOWEEN / "halloween_season_ended.yaml").values()
+    assert (SEASON, "off") in {(c["entity_id"], c["state"]) for c in ended["conditions"]}
+
+
 # ---------------------------------------------------------------------------
 # Christmas package rewrite (JK-1229)
 # ---------------------------------------------------------------------------
