@@ -1,0 +1,28 @@
+# Christmas Season Ended
+#
+# Season over: clear the Christmas mode boolean. The start trigger
+# covers a season that ended while HA was down.
+#
+
+automation:
+  - id: "christmas_season_ended"
+    alias: "Christmas Season Ended"
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.christmas_season_active
+        to: "off"
+      - trigger: homeassistant
+        event: start
+        id: startup
+    conditions:
+      - condition: state
+        entity_id: input_boolean.christmas_season_active
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.christmas_active
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.christmas_active
