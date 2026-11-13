@@ -9,7 +9,13 @@ JOHN_FILES = [
     "packages/people/john/daily_report/john_calendar_events_today.yaml",
 ]
 WORK_CAL = re.compile(r"calendar\.john_koht_[a-z0-9]+_com")
-DEAD = ("tempest_rain_amount", "tempest_high_uv_alert", "tempest_rain_alert")
+DEAD = (
+    "tempest_rain_amount",
+    "tempest_high_uv_alert",
+    "tempest_rain_alert",
+    "Tempest Rain Alert",
+    "High UV Alert",
+)
 THIS = "tests/test_dead_entity_decisions_c.py"
 
 

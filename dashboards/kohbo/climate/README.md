@@ -216,8 +216,6 @@ Uses `kohbo_room_temperature_card` decluttering template.
 #### Severe Weather
 - **Severe Weather Warning** - Weather alert automation
 - **Severe Rain Incoming** - Rain prediction alerts
-- **Tempest Rain Alert** - Real-time rain detection
-- **High UV Alert** - UV index warnings
 
 **Implementation:** Uses `custom:bubble-card` with `pop-up` card type, includes `entities` cards for automation toggles.
 
