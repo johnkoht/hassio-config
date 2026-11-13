@@ -42,7 +42,7 @@
     {
       "id": "task-4",
       "title": "Plug tiles and duplicate view (dashboard only)",
-      "description": "PR 2: see prd.md task-4",
+      "description": "PR 2 (separate branch feature/holiday-dashboard-plug-tiles); tracked in that PR",
       "acceptanceCriteria": [
         "See prd.md task-4 ACs"
       ],
@@ -54,7 +54,7 @@
   "metadata": {
     "createdAt": "2026-11-13T00:00:00Z",
     "totalTasks": 4,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "failedTasks": 0
   }
 }
