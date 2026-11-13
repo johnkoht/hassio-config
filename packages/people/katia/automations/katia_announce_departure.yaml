@@ -8,6 +8,9 @@ automation:
         entity_id: person.katia
         from: "home"
         to: "not_home"
+        # Hold so a zone-edge flap announces once
+        for:
+          minutes: 1
     conditions:
       # Not home
       - condition: state
