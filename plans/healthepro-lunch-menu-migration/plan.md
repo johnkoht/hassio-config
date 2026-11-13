@@ -1,7 +1,7 @@
 ---
 title: Migrate Primary School Lunch Menu from Choosi to HealthePro
 slug: healthepro-lunch-menu-migration
-status: built-pending-verification
+status: verified-fix-pending-deploy
 created: 2026-08-24
 has_pre_mortem: false
 has_review: false
@@ -317,3 +317,21 @@ entity is missing rather than returning `None`.
 8. Trigger `script.morning_update` (or render its template) and confirm the lunch
    section reads correctly.
 9. Commit, push, then `./deploy.sh` — the Yellow pulls from GitHub, so push first.
+
+## Verification results (2026-11-12, live on epicurus)
+
+- Steps 1, 2, 4, 5 pass live.
+- Step 7 resolved by reading the `rest_command` source: it returns `{content, status}`
+  on HTTP >= 400 without raising; timeouts raise `HomeAssistantError`, covered by
+  `continue_on_error` plus the `response is defined` guard.
+- **Bug found:** the failure fallback held `this.state` / `this.attributes.*` without
+  checking the date. A failed fetch across midnight, or an unpublished month (HTTP 400),
+  would leave yesterday's items in `lunch_menu` / `entrees`, and `morning_update.yaml`
+  would announce them as today's lunch. Seen in live verification against an
+  unpublished month; not yet seen as a real announcement.
+- **Fix:** the fallback holds only when `this.attributes.menu_date == today`, else
+  0 / [] / ''. `menu_date` is held on failure, so it stays the date the data is from.
+  `day_off` got the same guard. Regression test:
+  `tests/test_lunch_menu_stale_hold.py` (ok today, failure same day, failure next
+  day, no prior state, undefined response).
+- Still open: steps 6 and 8 re-check after this fix is deployed.

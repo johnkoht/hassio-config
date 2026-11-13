@@ -13,8 +13,9 @@
 #     hence the `is mapping` guard
 #   - `current_display` interleaves `type: category` headers with `type: recipe`
 #     items; each recipe belongs to the most recent category above it
-#   - Months the district hasn't published yet return HTTP 400, so the sensor
-#     holds its previous value rather than blanking out
+#   - Months the district hasn't published yet return HTTP 400. On a failed fetch
+#     the sensor holds its last value only if menu_date is today; otherwise it
+#     empties, so yesterday's menu is never announced as today's
 #
 
 rest_command:
@@ -63,11 +64,22 @@ template:
     sensor:
       - name: Primary School Lunch Menu
         unique_id: primary_school_lunch_menu
-        state: "{{ items | count if ok else this.state }}"
+        state: >-
+          {{ items | count if ok else
+             (this.state if (this.attributes.menu_date | default('', true)) == today else 0) }}
         icon: mdi:food-apple
         attributes:
-          lunch_menu: "{{ items if ok else this.attributes.lunch_menu | default([], true) }}"
-          entrees: "{{ entrees if ok else this.attributes.entrees | default([], true) }}"
+          lunch_menu: >-
+            {{ items if ok else
+               (this.attributes.lunch_menu | default([], true)
+                if (this.attributes.menu_date | default('', true)) == today else []) }}
+          entrees: >-
+            {{ entrees if ok else
+               (this.attributes.entrees | default([], true)
+                if (this.attributes.menu_date | default('', true)) == today else []) }}
           menu_date: "{{ today if ok else this.attributes.menu_date | default('', true) }}"
-          day_off: "{{ day_off if ok else this.attributes.day_off | default('', true) }}"
+          day_off: >-
+            {{ day_off if ok else
+               (this.attributes.day_off | default('', true)
+                if (this.attributes.menu_date | default('', true)) == today else '') }}
           last_fetch: "{{ now().isoformat() if ok else this.attributes.last_fetch | default('', true) }}"
