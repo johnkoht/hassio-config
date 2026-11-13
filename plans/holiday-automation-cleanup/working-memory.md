@@ -17,6 +17,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [task-1] `tests/test_holiday_lights_regressions.py` now has `_auto(rel)`, `_targets(action)`, `_state_conds(auto)`, `_render(rel, day)` (jinja2 date-template renderer with stubbed `now`) for later tasks to reuse.
 
 - [task-2] Test helpers `HALLOWEEN_SEASON` const added; `halloween_lights_turn_off` now season-gated, `halloween_season_ended` stands down when `christmas_season_active` is on (Q6 handover keeps the front yard lit).
+- [task-3] `christmas_season_schedule.yaml` is an old-style `group:` (people_groups.yaml pattern); tests load dashboard YAML with a `_TagLoader` (SafeLoader tolerating `!include`). Suite baseline now 1446 passed, 9 skipped.
 
 ## Context Corrections
 - [task-1] `dashboards/kohbo/holidays/README.md:59` still names the deleted automations (`activate_christmas_season`, manual pair, `initial_state: false`); task-3 docs must rewrite it. Deleted automations (shortcut button, manual pair, activate_christmas_season, handle_ikea_unresponsive) leave registry ghosts on the host (release step).
