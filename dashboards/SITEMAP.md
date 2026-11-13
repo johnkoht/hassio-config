@@ -136,7 +136,7 @@ Tabbed section (Overview / Halloween / Christmas) sharing `templates/includes/ho
 - **Halloween** (`holidays/halloween.yaml`, `/dashboard-kohbo/holidays-halloween`)
   - Season toggle, front yard decorations + 4 plugs, Accent Lights, Outdoor Spots, Halloween Colors scene
 - **Christmas** (`holidays/christmas.yaml`, `/dashboard-kohbo/holidays-christmas`)
-  - All Christmas Lights (in season only), season toggle, trees, playroom window lights, front yard, Christmas Colors scene
+  - All Christmas Lights, season toggle, trees, playroom window lights, front yard, Christmas Colors scene
 - Popups:
   - Holidays Settings Popup (`holidays/_holidays_settings_popup.yaml`, shared by all three tabs)
 
