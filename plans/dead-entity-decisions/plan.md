@@ -1,15 +1,15 @@
 ---
 title: Dead Entity Decisions
 slug: dead-entity-decisions
-status: approved
+status: in-progress
 approved: 2026-11-13
 approval_note: "John, 2026-11-13 (relayed): approve with the plan's recommendations — 10 rain delete, 11 UV delete, 12 heater arrival fix yes, 6 rename to calendar.john_work + disable _2 (no history rewrite), 9a add guard (re-pair held for John), 9 delete bathroom heater, 13 mudroom Auto→Motion, 8 calendar.house_chores, 5 delete Katia observation, 4 Cristina cleanup, select-option fixes + guard test. Held: anything needing a restart to take effect (PR A proxies) and the Nino sensor re-pair."
 created: 2026-11-12
 issues: [JK-1232]
 related: [room-lighting-override, monitoring-dashboards]
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 ---
 
 # Dead Entity Decisions
@@ -256,8 +256,8 @@ Repo edits only, plus two live actions John does himself: the calendar rename an
    - Fix the select options per the table and delete the three disabled files.
    - Add the select-option state guard test.
    - Update `docs/PRESENCE.md`/package READMEs where they name the removed inputs.
-   - Rebase after #151 merges (the Katia files are adjacent).
-3. **PR C: decisions (items 6, 9, 9a, 10, 11), after John answers.** If John keeps measured rain, the three accumulation sensors and the rewritten alert go in a separate PR D, because they need a restart.
+   - Also items 9 and 9a (moved from PR C at ship time, pre-mortem R1). #151 merged 11-12; no rebase needed.
+3. **PR C: decisions (items 6, 10, 11; 9 and 9a moved to PR B at ship time).** If John keeps measured rain, the three accumulation sensors and the rewritten alert go in a separate PR D, because they need a restart.
    - Generic work calendar ID in the two files, deployed with the UI rename.
    - Delete the bathroom heater package.
    - Bedroom heater unavailable guard.
