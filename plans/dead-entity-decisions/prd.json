@@ -10,9 +10,9 @@
       "acceptanceCriteria": [
         "See prd.md Task 1 acceptance criteria"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
@@ -21,9 +21,9 @@
       "acceptanceCriteria": [
         "See prd.md Task 2 acceptance criteria"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3",
@@ -32,9 +32,9 @@
       "acceptanceCriteria": [
         "See prd.md Task 3 acceptance criteria"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4",
@@ -43,9 +43,9 @@
       "acceptanceCriteria": [
         "See prd.md Task 4 acceptance criteria"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5",
@@ -54,15 +54,15 @@
       "acceptanceCriteria": [
         "See prd.md Task 5 acceptance criteria"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     }
   ],
   "metadata": {
     "createdAt": "2026-11-13T00:29:36",
     "totalTasks": 5,
-    "completedTasks": 0,
+    "completedTasks": 5,
     "failedTasks": 0,
     "prs": {
       "A": [
@@ -76,6 +76,11 @@
       "C": [
         "task-5"
       ]
+    },
+    "prNumbers": {
+      "A": 158,
+      "B": 161,
+      "C": 162
     }
   }
 }
