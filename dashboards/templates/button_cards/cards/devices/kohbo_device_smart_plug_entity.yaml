@@ -3,13 +3,23 @@ kohbo_device_smart_plug_entity:
   icon: mdi:power-plug
   state_display: >
     [[[
-      if (entity.state == "on")
-        if (variables.power_sensor)
-          return `On - ${states[variables.power_sensor].state} Watts`;
-        else
-          return `On - ${variables.last_changed}`;
-      else
+      if (entity.state == "on") {
+        const sensor = variables.power_sensor ? states[variables.power_sensor] : null;
+        if (sensor && sensor.state !== "" && Number.isFinite(Number(sensor.state))) {
+          return `On - ${sensor.state} Watts`;
+        }
+        return `On - ${variables.last_changed}`;
+      }
+      if (entity.state == "off") {
         return `Off - ${variables.last_changed}`;
+      }
+      if (entity.state == "unavailable") {
+        return "Unavailable";
+      }
+      if (entity.state == "unknown") {
+        return "Unknown";
+      }
+      return entity.state;
     ]]]
   confirmation: >
     [[[

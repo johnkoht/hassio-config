@@ -1,0 +1,30 @@
+# Turn ON Christmas Lights
+#
+# Christmas mode on, during the season: power the indoor lights
+# and the front yard decorations.
+#
+
+automation:
+  - id: "turn_on_christmas_lights"
+    alias: "Turn ON Christmas Lights"
+    mode: "single"
+    triggers:
+      # Christmas mode is activated
+      - trigger: state
+        entity_id: input_boolean.christmas_active
+        to: "on"
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      # It's Christmas season
+      - condition: state
+        entity_id: input_boolean.christmas_season_active
+        state: "on"
+    actions:
+      - action: switch.turn_on
+        target:
+          entity_id:
+            - switch.christmas_lights
+            - switch.front_yard_holiday_decorations
