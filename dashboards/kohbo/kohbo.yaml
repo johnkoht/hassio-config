@@ -41,7 +41,6 @@ views:
 
   # Main Floor
   - !include /config/dashboards/kohbo/rooms/main_floor/main_floor_index.yaml
-  - !include /config/dashboards/kohbo/rooms/active_rooms.yaml
   - !include /config/dashboards/kohbo/rooms/main_floor/family_room.yaml
   - !include /config/dashboards/kohbo/rooms/main_floor/kitchen.yaml
   - !include /config/dashboards/kohbo/rooms/main_floor/playroom.yaml

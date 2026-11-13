@@ -52,6 +52,12 @@ cards:
     name: Christmas
   - type: entities
     entities:
+      - entity: group.christmas_season_schedule
+        name: Start and stop Christmas on its own
+        icon: mdi:calendar-star
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
       - entity: automation.christmas_activated
         name: Lights On in the Evening
         icon: mdi:weather-sunset-down
@@ -66,5 +72,5 @@ cards:
         state_color: true
 
   - type: custom:button-card
-    name: The season toggle turns these on and off; switch one off to skip it for the rest of the season.
+    name: Start and stop runs the season on Dec 1 and ends it after Jan 7. Switch a row off to skip it; it stays off until you switch it back on.
     template: kohbo_card_section_description
