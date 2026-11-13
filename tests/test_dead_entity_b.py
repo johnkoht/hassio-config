@@ -167,3 +167,19 @@ def test_nino_off_path_reaches_occupancy_branches():
     assert _render_nino(tpl, "73") == "True"
     entities = [b.get("entity_id") for b in branches[1:]]
     assert entities == ["input_boolean.house_occupied", "input_boolean.ninos_bedroom_occupied"]
+
+
+def test_dead_aqara_weather_sensor_not_referenced():
+    import subprocess
+
+    files = subprocess.run(
+        ["git", "ls-files"], cwd=REPO, capture_output=True, text=True, check=True
+    ).stdout.splitlines()
+    hits = []
+    for f in files:
+        if f.startswith(("plans/", "memory/")) or f == "tests/test_dead_entity_b.py":
+            continue
+        p = REPO / f
+        if p.is_file() and "aqara_weather_sensor_1" in p.read_text(errors="ignore"):
+            hits.append(f)
+    assert not hits
