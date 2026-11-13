@@ -12,7 +12,7 @@ esphome:
 
 api:
   encryption:
-    key: "Bg67mhzRJdyDuSOmhRNx4XbsPEB4eJ5jSF1847TEDjY="
+    key: !secret bluetooth_proxy_jr_suite_api_key
 
 wifi:
   ssid: !secret wifi_ssid
