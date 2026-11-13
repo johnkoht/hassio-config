@@ -56,7 +56,7 @@ Here are some of my favorite and most useful automations:
 
 ### Holidays
 
-- **[Holiday decorations](https://github.com/johnkoht/hassio-config/tree/master/packages/holidays)**: in season, the front yard decorations (`switch.front_yard_holiday_decorations`, one group of four outdoor plugs shared by Halloween and Christmas) run on a schedule: Halloween from morning to night, Christmas from evening to bedtime. Also, the Halloween colors (`scene.halloween_front_yard_spots`) go onto the front yard Hue spots when the accent lights come on. The plugs that power the Hue spots are never automated. Notes in [LEARNINGS](../packages/holidays/LEARNINGS.md).
+- **[Holiday decorations](https://github.com/johnkoht/hassio-config/tree/master/packages/holidays)**: in season, the front yard decorations (`switch.front_yard_holiday_decorations`, one group of four outdoor plugs shared by Halloween and Christmas) run on a schedule: Halloween from morning to night, Christmas from evening to bedtime. Christmas starts itself on Dec 1 and stops after Jan 7, and each season drives the front yard only in its own season (Christmas turning on ends Halloween). Also, the Halloween colors (`scene.halloween_front_yard_spots`) go onto the front yard Hue spots when the accent lights come on. The plugs that power the Hue spots are never automated. Notes in [LEARNINGS](../packages/holidays/LEARNINGS.md).
 
 ### Notifications & Reminders
 

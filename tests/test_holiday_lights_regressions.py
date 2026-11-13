@@ -323,3 +323,38 @@ def test_holiday_yaml_basenames_are_unique_across_packages():
 def test_outdoor_lighting_has_no_commented_holiday_block():
     text = (REPO / "packages/outdoor_lighting.yaml").read_text()
     assert "turn_on_holiday_lights" not in text and "turn_off_holiday_lights" not in text
+
+
+class _TagLoader(yaml.SafeLoader):
+    """SafeLoader that tolerates HA's !include/!secret tags."""
+
+
+_TagLoader.add_multi_constructor("!", lambda loader, suffix, node: f"!{suffix}")
+
+
+def test_tree_energy_meter_reads_the_tree_plug():
+    """The family room tree is on plug 4 (a member of switch.christmas_trees), not plug 14."""
+    group = yaml.safe_load((CHRISTMAS / "lights/christmas_lights_group.yaml").read_text())
+    trees = next(g for g in group["switch"] if g["unique_id"] == "christmas_trees")["entities"]
+    meters = yaml.safe_load(
+        (REPO / "packages/energy/sensors/device_daily_energy_meters.yaml").read_text()
+    )
+    source = meters["utility_meter"]["smart_plug_14_daily_energy"]["source"]
+    plug = re.match(r"sensor\.(smart_plug_\d+)_", source).group(1)
+    assert f"switch.{plug}_switch" in trees
+
+
+def test_christmas_season_schedule_group_and_popup_row():
+    content = yaml.safe_load((CHRISTMAS / "christmas_season_schedule.yaml").read_text())
+    assert content["group"]["christmas_season_schedule"]["entities"] == [
+        "automation.christmas_enabled",
+        "automation.christmas_disabled",
+    ]
+    popup = yaml.load(
+        (REPO / "dashboards/kohbo/holidays/_holidays_settings_popup.yaml").read_text(), _TagLoader
+    )
+    rows = [
+        row for card in popup["cards"] if card.get("type") == "entities"
+        for row in card["entities"]
+    ]
+    assert any(r.get("entity") == "group.christmas_season_schedule" for r in rows)
