@@ -103,33 +103,6 @@ recorder:
       - sensor.*_lqi_*
       - sensor.kohbo_udm_*_utilization*
 
-camera:
-  # Main Level Vacuum
-  - platform: xiaomi_cloud_map_extractor
-    name: Main Level Vacuum
-    host: !secret main_level_xiaomi_vacuum_host
-    token: !secret main_level_xiaomi_vacuum_token
-    username: !secret xiaomi_cloud_username
-    password: !secret xiaomi_cloud_password
-    draw: ["all"]
-    scan_interval: 60
-    auto_update: false
-    attributes:
-      - calibration_points
-  #
-  # Upper Level vacuum
-  - platform: xiaomi_cloud_map_extractor
-    name: Upper Level Vacuum
-    host: !secret upper_level_xiaomi_vacuum_host
-    token: !secret upper_level_xiaomi_vacuum_token
-    username: !secret xiaomi_cloud_username
-    password: !secret xiaomi_cloud_password
-    draw: ["all"]
-    scan_interval: 60
-    auto_update: false
-    attributes:
-      - calibration_points
-
 http:
   use_x_forwarded_for: true
   cors_allowed_origins:
