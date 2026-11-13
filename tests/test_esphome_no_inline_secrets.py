@@ -52,3 +52,22 @@ def test_guard_catches_a_literal():
     assert CRED.match('    key: "abc"')
     assert CRED.match("    password: hunter2")
     assert CRED.match("    key: !secret x").group(2).startswith("!secret ")
+
+
+def test_gitleaks_rule_flags_mid_file_key(tmp_path):
+    import shutil
+    import subprocess
+
+    if not shutil.which("gitleaks"):
+        pytest.skip("gitleaks not installed")
+    d = tmp_path / "esphome"
+    d.mkdir()
+    (d / "t.yaml").write_text(
+        'esphome:\n  name: t\napi:\n  encryption:\n    key: "' + "A" * 43 + '="\nota:\n  - platform: esphome\n'
+    )
+    cfg = Path(__file__).resolve().parent.parent / ".gitleaks.toml"
+    r = subprocess.run(
+        ["gitleaks", "dir", str(tmp_path), "--config", str(cfg), "--no-banner", "-r", str(tmp_path / "o.json")],
+        capture_output=True, text=True,
+    )
+    assert '"esphome-api-encryption-key"' in (tmp_path / "o.json").read_text(), r.stderr
