@@ -12,7 +12,7 @@ The registry entry for id `mudroom_lights_to_on` was derived from a clone of `mu
 
 `input_select.mudroom` is `On, Motion, Away, Night Motion`. Lights run off the mode (`On`, `Motion`, `Night Motion`) plus the global lighting flag; there is no Off to force them dark and no Auto to follow the house.
 
-`mudroom_lights_to_away` still tests `input_select.mudroom` for state `Auto`, which can never be true, so that branch is dead (only the `Away` branch works). It is a condition, not a `select_option`, and was kept verbatim.
+`mudroom_lights_to_away` tested `input_select.mudroom` for `Auto`, which can never be true, so its house-Away branch was dead. JK-1232 changed it to `Motion`, the mudroom's default, so lights now go off when the house goes Away.
 
 ## Override kit (JK-1145, PR 6)
 
