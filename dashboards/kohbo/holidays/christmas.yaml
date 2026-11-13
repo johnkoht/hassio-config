@@ -15,29 +15,23 @@ cards:
 
 
   #
-  # All Christmas Lights (in season only; the group includes the front yard plugs)
+  # All Christmas Lights (trees + playroom; the front yard is separate)
   #
-  - type: conditional
-    conditions:
-      - condition: state
-        entity: input_boolean.christmas_season_active
-        state: "on"
-    card:
-      type: custom:decluttering-card
-      template: horizontal_action_card
-      variables:
-        - entity: switch.christmas_lights
-        - name: All Christmas Lights
-        - template: kohbo_horizontal_action_card_light_entity
-        - icon: mdi:string-lights
-        - tap_action: nothing
-        - navigation_path: ""
-        - action_cards:
-          # Toggle All Christmas Lights
-          - type: custom:decluttering-card
-            template: card_boolean_component
-            variables:
-              - entity: switch.christmas_lights
+  - type: custom:decluttering-card
+    template: horizontal_action_card
+    variables:
+      - entity: switch.christmas_lights
+      - name: All Christmas Lights
+      - template: kohbo_horizontal_action_card_light_entity
+      - icon: mdi:string-lights
+      - tap_action: nothing
+      - navigation_path: ""
+      - action_cards:
+        # Toggle All Christmas Lights
+        - type: custom:decluttering-card
+          template: card_boolean_component
+          variables:
+            - entity: switch.christmas_lights
 
 
   #
@@ -57,7 +51,7 @@ cards:
         state_color: true
 
   - type: custom:button-card
-    name: Turns the nightly Christmas light automations on for the season.
+    name: Starts on Dec 1 and ends after Jan 7 on its own, and lets the evening and bedtime automations run.
     template: kohbo_card_section_description
 
 

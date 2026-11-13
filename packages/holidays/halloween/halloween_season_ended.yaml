@@ -1,0 +1,23 @@
+# Halloween Season Ended
+#
+# Power the front yard decorations off when Halloween season ends,
+# unless Christmas is taking over the front yard.
+#
+
+automation:
+  - id: "halloween_season_ended"
+    alias: "Halloween Season Ended"
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.halloween_season_active
+        to: "off"
+    conditions:
+      - alias: "Not handing over to Christmas"
+        condition: state
+        entity_id: input_boolean.christmas_season_active
+        state: "off"
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.front_yard_holiday_decorations

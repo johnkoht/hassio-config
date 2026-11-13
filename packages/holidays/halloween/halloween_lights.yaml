@@ -1,7 +1,7 @@
 # Halloween Lights
 #
-# Power the front yard inflatables on in the morning during
-# Halloween season, and off at 10pm or bedtime. A restart
+# During Halloween season, power the front yard inflatables on
+# in the morning and off at 10pm or bedtime. A restart
 # re-applies whichever state the time of day calls for.
 #
 
@@ -62,9 +62,9 @@ automation:
         entity_id: input_boolean.bedtime
         to: "on"
     conditions:
-      # Any decoration is currently ON
+      # Halloween season is ACTIVE
       - condition: state
-        entity_id: switch.front_yard_holiday_decorations
+        entity_id: input_boolean.halloween_season_active
         state: "on"
       - alias: "A restart only turns them off between 10pm and 8am, or at bedtime"
         condition: or
