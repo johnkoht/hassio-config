@@ -34,9 +34,10 @@
       "acceptanceCriteria": [
         "See prd.md task-3 ACs"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "b351476f"
     },
     {
       "id": "task-4",
