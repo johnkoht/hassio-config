@@ -1,3 +1,9 @@
+# Christmas NOT Activated
+#
+# Turn Christmas mode off when the house is away, in bedtime or empty,
+# and switch every Christmas light off. Not season-gated.
+#
+
 automation:
   - id: "christmas_not_activated"
     alias: "Christmas NOT Activated"
@@ -44,30 +50,18 @@ automation:
             state: "off"
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.christmas_active
+        target:
+          entity_id: input_boolean.christmas_active
 
-
-      #
-      # Ensure all xmas lights are OFF
-      # In case something was turned on without the boolean
-      # then turn them off.
-      #
-      # TODO: probably refactor this so that is a light/swtich is
-      # turned on then the boolean turns on.
-      #
-      - if:
-          - condition: state
-            entity_id:
-              - switch.christmas_lights
-              - light.christmas_lights
-              - switch.christmas_trees
-              - switch.christmas_playroom_lights
-            state: "on"
-        then:
-          - action: switch.turn_off
-            entity_id:
-              - switch.christmas_lights
-              - switch.christmas_trees
-              - switch.christmas_playroom_lights
-          - action: light.turn_off
-            entity_id: light.christmas_lights
+      # Safety net: lights may have been switched on without the boolean
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.christmas_lights
+            - switch.christmas_trees
+            - switch.christmas_playroom_lights
+            - switch.front_yard_holiday_decorations
+      # UI switch_as_x wrapper over switch.christmas_lights
+      - action: light.turn_off
+        target:
+          entity_id: light.christmas_lights

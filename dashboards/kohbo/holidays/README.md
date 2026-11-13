@@ -40,7 +40,7 @@ Two `horizontal_action_card`s (Halloween, Christmas), each with a `card_boolean_
 
 ### Christmas
 
-1. **All Christmas Lights** - `switch.christmas_lights`, shown only while `input_boolean.christmas_season_active` is on (see caveat below)
+1. **All Christmas Lights** - `switch.christmas_lights` (trees + playroom), always shown
 2. **Season** - `input_boolean.christmas_season_active`
 3. **Trees** - `switch.christmas_trees` group toggle, then Main Tree and Small Tree plug tiles with wattage
 4. **Playroom** - `switch.christmas_playroom_lights` group toggle, then Window Lights 1, 2 & 3, 4 and 5
@@ -53,30 +53,30 @@ Two `horizontal_action_card`s (Halloween, Christmas), each with a `card_boolean_
 | Halloween | `automation.halloween_lights_turn_on` | Decorations On in the Morning |
 | Halloween | `automation.halloween_lights_turn_off` | Decorations Off at Night |
 | Halloween | `automation.halloween_front_yard_hue_scene` | Halloween Colors on the Spots |
+| Christmas | `group.christmas_season_schedule` | Start and stop Christmas on its own |
 | Christmas | `automation.christmas_activated` | Lights On in the Evening |
 | Christmas | `automation.christmas_not_activated` | Lights Off at Bedtime or Away |
 
-Plumbing automations (`turn_on/off_christmas_lights`, `activate_christmas_season`, the manual enable/disable pair) and `christmas_enabled` / `christmas_disabled` (`initial_state: false`, so a toggle would be reset on every restart) are left out on purpose.
+Plumbing is left out on purpose: `turn_on/off_christmas_lights`, `christmas_season_started/ended` and `halloween_season_ended`.
 
 ## Key Entities
 
 | Entity | Purpose |
 |---|---|
 | `input_boolean.halloween_season_active` | Halloween season switch |
-| `input_boolean.christmas_season_active` | Christmas season switch; turning it on/off enables/disables the nightly Christmas automations |
+| `input_boolean.christmas_season_active` | Christmas season switch, set by date (Dec 1 to Jan 7); gates the evening automations |
 | `input_boolean.christmas_active` | Nightly "Christmas lights are on now" flag, set at dusk and cleared at bedtime/away. Plumbing; not on the page |
 | `switch.front_yard_holiday_decorations` | Group of the 4 front yard Z-Wave outlets (Halloween inflatables or Christmas decorations) |
 | `switch.christmas_trees` | Group of the two tree plugs |
 | `switch.christmas_playroom_lights` | Group of the four playroom window plugs |
-| `switch.christmas_lights` | Master group: trees + playroom + front yard decorations |
+| `switch.christmas_lights` | Master group: trees + playroom (front yard is separate) |
+| `group.christmas_season_schedule` | Toggle for the `christmas_enabled` / `christmas_disabled` date automations |
 | `input_boolean.exterior_accent_lights` | Feature switch for the Hue spots (driven by `outdoor_lighting.yaml`) |
 
 ## Caveats
 
-- **The Christmas master group includes the front yard plugs**, so `switch.christmas_lights` reads On during Halloween and turning it off would turn off the Halloween decorations. The page hides "All Christmas Lights" out of season until the group is fixed in the package.
 - **The Outdoor Spots card bypasses the Accent Lights boolean.** Spots switched on from the card aren't turned off by the bedtime automation, which acts on `input_boolean.exterior_accent_lights`. Use the Accent Lights row above the card as the main control.
 - **The Hue power plugs are never on this dashboard.** The two front-left Hue power switches feed the spots and must stay on.
-- **An unavailable plug reads "Off"** in `kohbo_device_smart_plug_entity` (Window Lights 5 today).
 
 ---
 
