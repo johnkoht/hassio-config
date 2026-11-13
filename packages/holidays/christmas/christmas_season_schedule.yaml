@@ -1,0 +1,12 @@
+# Christmas Season Schedule
+#
+# Settings popup toggle for the Dec 1 start and Jan 7 stop automations.
+#
+
+group:
+  christmas_season_schedule:
+    name: Christmas Season Schedule
+    icon: mdi:calendar-star
+    entities:
+      - automation.christmas_enabled
+      - automation.christmas_disabled

@@ -132,10 +132,10 @@ utility_meter:
     cycle: daily
     always_available: true
 
-  # Smart Plug 14 - Family Room Xmas Tree
+  # Family Room Xmas Tree (the tree is on plug 4; the key keeps its old plug 14 name)
   smart_plug_14_daily_energy:
     name: "Family Room Xmas Tree Daily Energy"
-    source: sensor.smart_plug_14_summation_delivered
+    source: sensor.smart_plug_4_family_room_summation_delivered
     cycle: daily
     always_available: true
 
