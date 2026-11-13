@@ -1,0 +1,21 @@
+# Christmas Season Started
+#
+# Christmas season takes over from Halloween: turn the Halloween season off.
+#
+
+automation:
+  - id: "christmas_season_started"
+    alias: "Christmas Season Started"
+    mode: "single"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.christmas_season_active
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.halloween_season_active
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.halloween_season_active

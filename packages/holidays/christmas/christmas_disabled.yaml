@@ -1,15 +1,17 @@
-# This will disable Christmas and all related
-# automations to make sure relevant automations
-# are on/off during the season
+# Christmas Disabled
 #
+# Turns the season boolean off outside Dec 1 through Jan 7,
+# at 2am and on HA start.
+#
+
 automation:
   - id: "christmas_disabled"
     alias: Christmas Disabled
     mode: "single"
-    initial_state: false
     triggers:
       - trigger: homeassistant
         event: start
+        id: startup
       # At 2am
       - trigger: time
         at: "02:00:00"
@@ -18,48 +20,11 @@ automation:
       - condition: state
         entity_id: input_boolean.christmas_season_active
         state: "on"
-      # Between Jan 7th and before December
+      # Outside 12/1 - 1/07
       - condition: template
         value_template: >
-          {% set d = now() %}
-          {{ (d.month == 1 and d.day > 7) or (d.month > 2 and d.month < 12) }}
+          {% set d = now() %}{{ not (d.month == 12 or (d.month == 1 and d.day <= 7)) }}
     actions:
-      # Turn the script to DISABLE the booleans and automations
-      - action: script.turn_on
-        entity_id: script.christmas_disable_automations
-
-  #
-  # Christmas Manually Disabled
-  #
-  # If Christmas boolean is manually disabled then we need to deactivate
-  # all of the automations for xmas.
-  #
-  - id: "christmas_manually_disabled"
-    alias: "Christman Manually Disabled"
-    mode: "single"
-    triggers:
-      - trigger: state
-        entity_id: input_boolean.christmas_season_active
-        to: "off"
-    actions:
-      # Turn the script to enable the booleans and automations
-      - action: script.turn_on
-        entity_id: script.christmas_disable_automations
-
-
-script:
-  christmas_disable_automations:
-    alias: Christmas - Disable Automations
-    mode: "queued"
-    sequence:
-      # Turn OFF the Christmas Season boolean
       - action: input_boolean.turn_off
-        entity_id: input_boolean.christmas_season_active
-
-      # Turn OFF a bunch of automations
-      - action: automation.turn_off
-        entity_id:
-          - automation.christmas_activated
-          - automation.christmas_not_activated
-          - automation.turn_on_christmas_lights
-          - automation.turn_off_christmas_lights
+        target:
+          entity_id: input_boolean.christmas_season_active
