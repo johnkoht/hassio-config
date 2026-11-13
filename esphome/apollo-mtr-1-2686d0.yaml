@@ -15,7 +15,7 @@ esphome:
   friendly_name: ${friendly_name}
 api:
   encryption:
-    key: FgewpvCn79uBMUe9DdusvLIs3XhmnaO70VwUj+0nt08=
+    key: !secret apollo_mtr_1_2686d0_api_key
 
 
 wifi:

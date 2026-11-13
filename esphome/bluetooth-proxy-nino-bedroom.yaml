@@ -12,7 +12,7 @@ esphome:
 
 api:
   encryption:
-    key: "v6hzA4IpY428wRsoU0dotkhgg0YHh/BJMIMAgK7aHL4="
+    key: !secret bluetooth_proxy_nino_bedroom_api_key
 
 wifi:
   ssid: !secret wifi_ssid

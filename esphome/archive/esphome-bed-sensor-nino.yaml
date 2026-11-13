@@ -13,7 +13,7 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "ol/WEgvcvizw+9U4G1qOWB33a6PlD63hj7XZqCbFe04="
+    key: !secret archive_esphome_bed_sensor_nino_api_key
 
 ota:
   - platform: esphome
@@ -25,7 +25,7 @@ wifi:
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Esphome-Web-106D68"
-    password: "bQkPOMJCWZQt"
+    password: !secret archive_esphome_bed_sensor_nino_ap_password
 
 captive_portal:
 
