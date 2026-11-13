@@ -106,3 +106,11 @@ def test_kitchen_override_latch_cannot_survive_away_bedtime_off():
     off = automation("packages/kitchen/modes/kitchen_mode_off.yaml")
     written = [a.get("target", {}).get("entity_id") for a in off["actions"]]
     assert "input_boolean.kitchen_lighting_automations" not in written
+
+
+def test_katia_home_requires_iphone_detect():
+    """A UniFi blip on a WLAN toggle marked Katia home (11-11); detect must agree."""
+    auto = automation("packages/people/katia/automations/katia_is_home.yaml")
+    assert has_state_condition(auto, "device_tracker.katia_iphone_detect", "home")
+    assert any(t.get("to") == "home"
+               for t in state_triggers(auto, "device_tracker.katia_iphone_detect"))

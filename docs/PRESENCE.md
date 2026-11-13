@@ -15,6 +15,8 @@ For home presence, I use the [Person integration](https://www.home-assistant.io/
 
 The companion app and the iPhone tracker are usually the most accurate for my wife and me. HA runs on the Servers VLAN, away from the phones, so nmap can't see their MACs and ping is unreliable for sleeping iPhones. Neither one is a Bayesian input. I also have a Bayesian sensor for presence detection for us. I use the three network-based trackers for regular guests, and they work fairly accurately. These trackers will help reliably determine who is home or if the house is not occupied. 
 
+UniFi can briefly mark offline phones as home, for example when a WLAN is switched off. For Katia, whose person has only router trackers, the iPhone tracker has to agree before she's marked home.
+
 I adopted Phil Hawthorne's methodology for [making presence detection not so binary](https://philhawthorne.com/making-home-assistants-presence-detection-not-so-binary/). Each person has an input_boolean that defines whether they are home or not, but there also is an input_select that clarifies the state as: "Home," "Away," "Just Arrived," or "Just Left." This is helpful when somebody leaves and quickly returns.
 
 ## Room Presence
