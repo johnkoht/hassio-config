@@ -18,7 +18,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #110 merged 51026ccc"
     },
     {
       "id": "task-2",
@@ -31,7 +32,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #111 merged 0ab53320"
     },
     {
       "id": "task-3",
@@ -43,7 +45,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #112 merged 0981766c"
     },
     {
       "id": "task-4",
@@ -55,19 +58,21 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #113 merged 68429ed4"
     },
     {
       "id": "task-5",
-      "title": "Protection PR D: doors, garage, locks, kids escape (BLOCKED on decision 6)",
+      "title": "Protection PR D: doors, garage, locks (kids escape dropped, decision 6)",
       "description": "Link the unlinked door and garage pushes, upgrade lock alerts (including the garage evening autolock pushes) to the popup hash, link fingerprint, kids escape.",
       "acceptanceCriteria": [
-        "Blocked until John confirms which sensors the kids-escape alerts use",
+        "Decision 6 resolved: the push-only Nino escape monitor is removed; the UI kids-escape alert stays exempt",
         "Each linked push resolves in the test"
       ],
-      "status": "blocked",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "evidence": "PR #121 merged 9358eb2b (garage arrival, fingerprint, lock popup hash; Nino escape monitor deleted per decision 6, UI kids-escape alert stays exempt)"
     },
     {
       "id": "task-6",
@@ -78,7 +83,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #114 merged aa0b48a5"
     },
     {
       "id": "task-7",
@@ -90,7 +96,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #115 merged 513234af"
     },
     {
       "id": "task-8",
@@ -101,7 +108,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #116 merged 501720a7"
     },
     {
       "id": "task-9",
@@ -113,7 +121,8 @@
       ],
       "status": "complete",
       "passes": true,
-      "attemptCount": 1
+      "attemptCount": 1,
+      "evidence": "PR #117 merged 8da0c67c"
     },
     {
       "id": "task-10",
@@ -122,16 +131,18 @@
       "acceptanceCriteria": [
         "Each popup hash is in the view its link names and the test passes"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "evidence": "PR #131 merged 039ecf5f (fire_smoke_popup, ups_power_popup, radio_health_popup added and pushes relinked in the same PR)"
     }
   ],
   "metadata": {
     "createdAt": "2026-10-30T00:00:00Z",
     "totalTasks": 10,
-    "completedTasks": 8,
+    "completedTasks": 10,
     "failedTasks": 0,
-    "note": "One PR per task; PR 1 = task-1. Push pruning is a proposal and is out of scope."
+    "note": "One PR per task; PR 1 = task-1. Push pruning shipped separately as PR #122 (merged 0363312a). Reconciled against origin/master 2026-11-12.",
+    "completedAt": "2026-10-31T00:00:00Z"
   }
 }

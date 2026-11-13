@@ -24,3 +24,13 @@ Linked 39 more pushes (64 of 110 now carry a link) in six theme PRs, plus an enf
 - Direct notifier pushes (two washers, Christmas off) take the link in their own `data:` with both keys; the washers keep their who-is-home recipient template.
 - UPS pushes fell between PRs F and G in the plan (interim `energy` link). They are exempt until the UPS popup exists (task 10).
 - Not done: PR D (decision 6), the popup extras (fire, UPS, radio health), push pruning (proposal only). The plan stays `in-progress`.
+
+## Close-out (2026-11-12)
+
+**Shipped:** all 10 tasks. PR D (#121) linked garage arrival and fingerprint pushes and moved the lock alerts to the popup hash; decision 6 removed the push-only Nino escape monitor instead of linking it. Task 10 (#131) added `security#fire_smoke_popup`, `sensors#ups_power_popup` and `sensors#radio_health_popup` and relinked their pushes in one PR, so the planned follow-up link-swap PRs weren't needed. Push pruning shipped separately (#122). Deep-link suites: 149 passing on master.
+
+**Pre-mortem:** none of the 9 risks materialized. The two that mattered most, an empty map passing everything (risk 4) and report-only mode hiding gaps (risk 6), were closed by the finder guard and the Enforce PR.
+
+**Learnings:**
+- Independent theme PRs, each with its own caller files and test file, merged in any order. Enforce went last and was validated on a scratch merge of every branch.
+- A blocked task whose decision resolves to "delete" should flip to complete at merge. prd.json kept task-5 `blocked` and task-10 `pending` for 12 days after both merged. Reconcile prd.json in the PR that finishes the task.

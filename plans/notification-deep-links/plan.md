@@ -1,7 +1,7 @@
 ---
 title: Notification Deep Links
 slug: notification-deep-links
-status: in-progress
+status: shipped
 created: 2026-10-29
 has_pre_mortem: true
 has_review: true
