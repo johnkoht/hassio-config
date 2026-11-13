@@ -16,3 +16,5 @@ Memory review (applied in task prompts):
 - HA template type coercion: compare with `| string` where numbers render.
 - Keep inline docs short: header = title + 1-3 lines; reasoning in commits.
 - Worktree push needs an explicit refspec; verify `headRefOid`.
+
+Merge boundary (merge-boundary.json): workspace .claude/worktrees/dead-entity-c, branch worktree-dead-entity-c (pushed as feature/dead-entity-decisions-c, PR #162), base 86656610, finalized 75aaa789, mainline refs/heads/master (the PRs target origin master; the local master in the main checkout carries unrelated unpushed commits), harness claude. Sibling PRs #158 (A) and #161 (B) carry no bookkeeping. Merge order A, B, C (C carries the shipped stamp). Merge gate pending: release agent / John.
