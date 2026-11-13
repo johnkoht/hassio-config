@@ -45,6 +45,9 @@ Their object_id is `camera_proxy_` + the slugified *full source entity_id*,
 hence the doubled `camera_`: `camera.camera_proxy_camera_front_door_camera_high_resolution_channel`.
 
 The platform does not error on a missing source entity — it sits at `idle`
-forever and logs nothing. As of 2026-09-10 the backyard porch proxy sources
-`camera.backyard_porch_camera_high_resolution_channel`, which does not exist
-(the real entity is `camera.backyard_porch`), so that proxy is silently dead.
+forever and logs nothing. The porch camera is a G5 Turret Ultra, so its Protect
+entity is `camera.g5_turret_ultra_high_resolution_channel` (the earlier
+"backyard porch camera" name never existed), and `camera.backyard_porch` is
+Frigate's, not Protect's.
+
+A new `platform: proxy` file only appears after an HA restart, not a reload.
