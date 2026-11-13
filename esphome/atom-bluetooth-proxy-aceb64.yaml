@@ -9,7 +9,7 @@ esphome:
   friendly_name: ${friendly_name}
 api:
   encryption:
-    key: TF8YSwNaqBjkHcD7Bm8jGD4u4kyEQY4Gt5XyledSOiY=
+    key: !secret atom_bluetooth_proxy_aceb64_api_key
 
 wifi:
   ssid: !secret wifi_ssid

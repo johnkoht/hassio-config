@@ -9,7 +9,7 @@ esphome:
   friendly_name: ${friendly_name}
 api:
   encryption:
-    key: zxsX7zR/hlFf72U/oRn0tRypDZHTMsHLf+nrfjaka3s=
+    key: !secret m5stack_atom_lite_cefb10_api_key
 
 wifi:
   ssid: !secret wifi_ssid

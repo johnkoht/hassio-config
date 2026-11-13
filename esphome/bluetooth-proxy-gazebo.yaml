@@ -12,7 +12,7 @@ esphome:
 
 api:
   encryption:
-    key: "3FT2wtNtCa17+/5tWXYvujRHBMmJ7FcQRl8tQ6KIvIU="
+    key: !secret bluetooth_proxy_gazebo_api_key
 
 wifi:
   ssid: !secret wifi_ssid

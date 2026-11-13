@@ -9,7 +9,7 @@ esphome:
   friendly_name: ${friendly_name}
 api:
   encryption:
-    key: zgGgDvXAaKjbiHD94bLmRXxqLWaJDs0veIsQSAAPmxQ=
+    key: !secret archive_everything_presence_lite_2e1144_api_key
 
 
 wifi:
