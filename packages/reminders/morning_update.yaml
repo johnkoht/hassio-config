@@ -141,13 +141,16 @@ script:
             {% elif is_state('binary_sensor.nino_school_day', 'on') %}
               Today is a school day, so remind Nino to get ready.
 
-              {# Announce only the first menu item (the main dish); the rest stays on the sensor and dashboard #}
+              {# Announce one dish only: the first entree that is not a standing alternate (bag lunch, yogurt lunch) or plant based. The rest stays on the sensor and dashboard #}
               {% set menu = state_attr('sensor.primary_school_lunch_menu', 'lunch_menu') | default([], true) %}
-              {% if menu | length == 0 %}
+              {% set entrees = state_attr('sensor.primary_school_lunch_menu', 'entrees') | default([], true) %}
+              {% set pool = entrees if entrees | length > 0 else menu %}
+              {% set main = pool | reject('search', '(?i)uncrustable|yogurt lunch|plant based|veggie') | first | default(pool | first | default('', true), true) %}
+              {% if not main %}
                 Hey Nino, don't forget to check the lunch menu today!
               {% else %}
-                Tell Nino today's lunch is {{ menu | first }}. Mention only that one dish, and do not list or mention any other menu items.
-                You can say something like: "Nino, today's lunch is {{ menu | first }}."
+                Tell Nino today's lunch is {{ main }}. Mention only that one dish, and do not list or mention any other menu items.
+                You can say something like: "Nino, today's lunch is {{ main }}."
               {% endif %}
             {% endif %}
 
