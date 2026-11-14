@@ -155,3 +155,74 @@ def test_checker_catches_a_bad_call_in_every_call_style():
          "data": {"option": "{{ foo }}"}},
     ]
     assert [o for _, o in select_calls(doc)] == ["Bad", "Bad2", "Bad3"]
+
+
+# --- State conditions and triggers (JK-1232) ---------------------------------------------
+# `select_option` isn't the only way to name an option: a state condition or trigger on an
+# option that was removed never matches, silently. Same definitions, same empty allowlist.
+STATE_KEYS = ("state", "to", "from", "not_to", "not_from")
+STATE_SCAN_ROOTS = ("packages", "automation", "scripts", "scripts.yaml", "automations.yaml", "dashboards")
+IGNORED_STATES = {"unknown", "unavailable"}
+
+
+def state_refs(doc):
+    """Yield (entity_id, option) for literal state values on state conditions/triggers."""
+    for d in _walk(doc):
+        if "state" not in (d.get("condition"), d.get("trigger"), d.get("platform")):
+            continue
+        # entity_id for automations, entity for Lovelace conditions
+        ents = _as_list(d.get("entity_id")) + _as_list(d.get("entity"))
+        for e in ents:
+            if not (isinstance(e, str) and e.startswith("input_select.") and "{" not in e):
+                continue
+            for key in STATE_KEYS:
+                for v in _as_list(d.get(key)) if key in d else []:
+                    if isinstance(v, str) and "{" not in v and v not in IGNORED_STATES:
+                        yield e, v
+
+
+def find_state_violations(options, stats=None):
+    found = set()
+    for path in _yaml_files(*STATE_SCAN_ROOTS):
+        doc = _load(path)
+        if doc is None:
+            continue
+        if stats is not None:
+            stats["files"] += 1
+        for entity, option in state_refs(doc):
+            if entity in options:
+                if stats is not None:
+                    stats["refs"] += 1
+                if option not in options[entity]:
+                    found.add((_rel(path), entity, option))
+    return found
+
+
+def test_every_state_condition_and_trigger_uses_a_defined_option():
+    found = find_state_violations(collect_options())
+    assert not found, "state/to/from on an option the select does not define:\n" + "\n".join(map(str, sorted(found)))
+
+
+def test_state_guard_scans_a_real_surface():
+    stats = {"files": 0, "refs": 0}
+    find_state_violations(collect_options(), stats)
+    assert stats["files"] > 300 and stats["refs"] > 100, stats
+
+
+def test_state_checker_catches_every_form():
+    doc = [
+        {"condition": "state", "entity_id": "input_select.x", "state": "Bad"},
+        {"condition": "state", "entity_id": ["input_select.x"], "state": ["Ok", "Bad2"]},
+        {"trigger": "state", "entity_id": "input_select.x", "to": "Bad3", "from": "Bad4",
+         "not_to": ["Bad5"], "not_from": "Bad6"},
+        {"platform": "state", "entity_id": "input_select.x", "to": "Bad7"},
+        {"type": "conditional", "conditions": [{"condition": "state", "entity": "input_select.x", "state": "Bad8"}]},
+        # skipped: templated entity, unknown/unavailable, templated value, other domain, not a state dict
+        {"condition": "state", "entity_id": "input_select.{{ r }}", "state": "Skip"},
+        {"trigger": "state", "entity_id": "input_select.x", "to": "unavailable", "from": "unknown"},
+        {"condition": "state", "entity_id": "input_select.x", "state": "{{ foo }}"},
+        {"condition": "state", "entity_id": "input_boolean.x", "state": "on"},
+        {"condition": "template", "entity_id": "input_select.x", "state": "Skip2"},
+    ]
+    assert [o for _, o in state_refs(doc)] == [
+        "Bad", "Ok", "Bad2", "Bad3", "Bad4", "Bad5", "Bad6", "Bad7", "Bad8"]

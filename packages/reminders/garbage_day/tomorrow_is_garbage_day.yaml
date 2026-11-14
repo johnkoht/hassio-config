@@ -4,13 +4,10 @@ template:
         unique_id: tomorrow_is_garbage_day
         default_entity_id: binary_sensor.tomorrow_is_garbage_day
         state: >-
-          {% set event = strptime(state_attr('calendar.garbage_day', 'start_time'), '%Y-%m-%d %H:%M:%S') %}
+          {% set start = state_attr('calendar.house_chores', 'start_time') %}
+          {% set msg = state_attr('calendar.house_chores', 'message') %}
           {{
-            (
-              event.year == now().year
-              and
-              event.month == now().month
-              and
-              event.day == now().day + 1
-            )
+            start is string
+            and 'garbage' in ((msg or '') | lower)
+            and start[:10] == (now().date() + timedelta(days=1)).isoformat()
           }}

@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parent.parent
+GARBAGE = "packages/reminders/garbage_day/"
 BDAY = "packages/reminders/birthdays/birthday_reminder/"
 
 # (file, new name present, regex that must be absent)
@@ -20,10 +21,18 @@ CASES = [
     (BDAY + "birthday_today_reminder.yaml", "calendar.birthdays", r"birthdays_2"),
     (BDAY + "birthday_tomorrow.yaml", "calendar.birthdays", r"birthdays_2"),
     (BDAY + "birthday_tomorrow_reminder.yaml", "calendar.birthdays", r"birthdays_2"),
-    ("packages/ninos_room/ninos_bathroom_heater.yaml", "group.family", r"group\.familiy"),
-    ("packages/ninos_room/ninos_bedroom_heater.yaml", "group.family", r"group\.familiy"),
+    ("packages/ninos_room/ninos_bedroom_heater.yaml",
+     "input_select.john_status", r"group\.fami"),
     ("automation/gianlucas_room/gianluca_heater_on_upon_arrival.yaml",
-     "group.family", r"group\.familiy"),
+     "input_select.cristina_status_dropdown", r"group\.fami"),
+    ("packages/people/katia/katia_presence.yaml",
+     "device_tracker.katia_iphone_detect", r"katia_backup_ping_tracker"),
+    ("binary_sensors/cristina/cristina_presence.yaml",
+     "device_tracker.cristina_iphone_detect", r"cfalb_iphone_17_nmap"),
+    (GARBAGE + "automations/garbage_day_on.yaml", "calendar.house_chores", r"calendar\.garbage_day"),
+    (GARBAGE + "automations/garbage_day_off.yaml", "calendar.house_chores", r"calendar\.garbage_day"),
+    (GARBAGE + "tomorrow_is_garbage_day.yaml",
+     "calendar.house_chores", r"calendar\.garbage_day"),
     ("packages/foyer/modes/foyer_mode_off.yaml", 'to: "Bedtime"', r'to: "bedtime"'),
 ]
 

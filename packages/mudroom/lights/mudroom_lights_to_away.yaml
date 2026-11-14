@@ -27,12 +27,12 @@ automation:
           - condition: state
             entity_id: input_select.mudroom
             state: "Away"
-          # OR mudroom is auto or house is set to away
+          # OR mudroom is in Motion mode and house is set to away
           - condition: and
             conditions:
               - condition: state
                 entity_id: input_select.mudroom
-                state: "Auto"
+                state: "Motion"
               - condition: state
                 entity_id: input_select.house
                 state: "Away"
