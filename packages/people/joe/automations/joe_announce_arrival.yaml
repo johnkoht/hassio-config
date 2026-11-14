@@ -25,6 +25,14 @@ automation:
         data:
           person: joe
           announcement_type: arrival
+
+      # Suppress the generic guest-mode announcement
+      - condition: state
+        entity_id: input_boolean.guest_mode_announced
+        state: "off"
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.guest_mode_announced
       # # Announcement
       # - service: script.voice_announcement
       #   data:
