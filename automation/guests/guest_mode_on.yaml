@@ -6,6 +6,12 @@ trigger:
     entity_id: group.guests
     from: "not_home"
     to: "home"
+  # A parent's iPhone detect confirms them (see the condition below)
+  - platform: state
+    entity_id:
+      - device_tracker.sonia_iphone_detect
+      - device_tracker.antoun_iphone_detect
+    to: "home"
   - platform: homeassistant
     event: start
 condition:
@@ -16,6 +22,18 @@ condition:
   - condition: state
     entity_id: group.guests
     state: "home"
+  # A parent only counts once their iPhone detect agrees (UniFi blips)
+  - condition: template
+    value_template: >-
+      {% set parents = {
+        'person.antoun_koht': 'device_tracker.antoun_iphone_detect',
+        'person.sonia_koht': 'device_tracker.sonia_iphone_detect'} %}
+      {% set ns = namespace(n=0) %}
+      {% for p in expand('group.guests') if p.state == 'home'
+         and (p.entity_id not in parents or is_state(parents[p.entity_id], 'home')) %}
+        {% set ns.n = ns.n + 1 %}
+      {% endfor %}
+      {{ ns.n > 0 }}
 action:
   - service: input_boolean.turn_on
     entity_id: input_boolean.guest_mode
