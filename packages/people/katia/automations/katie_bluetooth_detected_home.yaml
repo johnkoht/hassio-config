@@ -4,13 +4,14 @@ automation:
     mode: queued
     initial_state: on
     triggers:
-      # If ESPresense detects her in a room
+      # If ESPresense detects her in a room (unavailable/unknown on a
+      # template reload is not a sighting)
       - trigger: template
-        value_template: "{{ states.sensor.katia_room_presence.state != 'not_home'}}"
+        value_template: "{{ states('sensor.katia_room_presence') not in ['not_home', 'unavailable', 'unknown'] }}"
     conditions:
       # Detected in a room by BLE
       - condition: template
-        value_template: "{{ states.sensor.katia_room_presence.state != 'not_home'}}"
+        value_template: "{{ states('sensor.katia_room_presence') not in ['not_home', 'unavailable', 'unknown'] }}"
       # Katia's person object is not home
       - condition: state
         entity_id: person.katia
