@@ -6,8 +6,11 @@ automation:
       # Garbage calendar turned ON
       - trigger: calendar
         event: start
-        entity_id: calendar.garbage_day
+        entity_id: calendar.house_chores
     conditions:
+      # Only garbage events (not other chores)
+      - condition: template
+        value_template: "{{ 'garbage' in (trigger.calendar_event.summary | default('', true) | lower) }}"
       # Garbage day boolean is current OFF
       - condition: state
         entity_id: input_boolean.garbage_day
@@ -15,8 +18,10 @@ automation:
     actions:
       # Turn on the boolean
       - action: input_boolean.turn_on
-        entity_id: input_boolean.garbage_day
+        target:
+          entity_id: input_boolean.garbage_day
 
       # Turn the automation reminder on
       - action: automation.turn_on
-        entity_id: automation.garbage_day_is_today_reminder
+        target:
+          entity_id: automation.garbage_day_is_today_reminder

@@ -50,7 +50,6 @@ Each provides: temperature, humidity, CO2, VOCs, PM2.5, AQI score
 | Nino's Bedroom | `sensor.nino_room_temperature` | Standalone |
 | Nino's Bedroom (door) | `sensor.ninos_door_sensor_temperature` | Aqara door sensor |
 | Gianluca's Bedroom (door) | `sensor.gianlucas_door_sensor_temperature` | Aqara door sensor |
-| Nino's Bathroom | `sensor.aqara_weather_sensor_1_temperature` | Aqara weather |
 | Guest Bedroom | `sensor.guest_bedroom_temperature` | Standalone |
 | Mudroom | `sensor.mudroom_motion_sensor_air_temperature` | Motion sensor |
 | Pool East Entry | `sensor.pool_motion_east_entry_temperature` | Motion sensor |

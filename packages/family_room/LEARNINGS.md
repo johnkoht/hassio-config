@@ -6,17 +6,16 @@ The ten legacy automations and the select and occupancy boolean moved into this 
 
 ## The select has three options: Auto, Away, Off
 
-Live `input_select.family_room` is `Auto, Away, Off`. `On` and `Dim` were commented out long ago, but four automations still pointed at them. They are all `initial_state: off` and disabled live (last run 2022):
+Live `input_select.family_room` is `Auto, Away, Off`. `On` and `Dim` were commented out long ago, but four automations still pointed at them, all disabled live (last run 2022). `family_room_mode_on` and `family_room_lights_to_on` were deleted in JK-1232 (they needed an `On` option that doesn't exist). Two remain, `initial_state: off`:
 
-- `family_room_mode_on` and `family_room_arrival`: `select_option` was `On` / `Dim`, which HA rejects. Repointed to `Auto`.
-- `family_room_lights_to_on`: triggers on `On`, so its room branch never fires; its `switch.turn_on` on a light entity became `light.turn_on`.
+- `family_room_arrival`: `select_option` was `Dim`, which HA rejects. Repointed to `Auto`.
 - `family_room_mode_away`: valid option, just disabled.
 
-They stay disabled; reviving them is John's call. Adding an option means an input_select reload, which can reset the value, so PR 5 left the list alone. `tests/test_room_select_options.py` fails on any new `select_option` to an option that isn't defined.
+They stay disabled; reviving them is John's call. `family_room_lights_to_off` no longer triggers on house `Off` (house has no such option). Adding an option means an input_select reload, which can reset the value, so PR 5 left the list alone. `tests/test_room_select_options.py` fails on any `select_option` call, or state condition or trigger, naming an option that isn't defined.
 
 ## No enabled lights-on automation
 
-With `family_room_lights_to_on` disabled, nothing turns the family room lights on automatically. It is a mode-only room for the override work, not a kit room, unless that automation is revived.
+With `family_room_lights_to_on` gone, nothing turns the family room lights on automatically. It is a mode-only room for the override work, not a kit room, unless one is added.
 
 ## `family_room_mode_off` clears occupancy (JK-1219, PR 6)
 

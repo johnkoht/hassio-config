@@ -1,3 +1,7 @@
+# Cameras Available
+#
+# Online only when all 7 Protect uptime sensors have a state (checked by state, not ID).
+#
 template:
   - binary_sensor:
       - name: "Cameras Available"
@@ -6,15 +10,15 @@ template:
           {% set cameras = [
             'sensor.g4_bullet_uptime',
             'sensor.g4_bullet_uptime_2',
-            'sensor.g4_bullet_uptime_3',
-            'sensor.g4_bullet_uptime_4',
+            'sensor.backyard_pool_uptime',
+            'sensor.backyard_northwest_uptime',
             'sensor.driveway_front_camera_uptime',
             'sensor.front_door_camera_uptime',
             'sensor.g5_turret_ultra_uptime_2'
           ] %}
 
           {% set offline = cameras
-            | select('in', [None, 'unknown', 'unavailable'])
+            | reject('has_value')
             | list
             | length %}
           {{ offline == 0 }}
@@ -23,15 +27,15 @@ template:
             {% set cameras = [
               'sensor.g4_bullet_uptime',
               'sensor.g4_bullet_uptime_2',
-              'sensor.g4_bullet_uptime_3',
-              'sensor.g4_bullet_uptime_4',
+              'sensor.backyard_pool_uptime',
+              'sensor.backyard_northwest_uptime',
               'sensor.driveway_front_camera_uptime',
               'sensor.front_door_camera_uptime',
               'sensor.g5_turret_ultra_uptime_2'
             ] %}
 
             {% set offline = cameras
-              | select('in', [None, 'unknown', 'unavailable'])
+              | reject('has_value')
               | list
               | length %}
             {{ offline }}
@@ -39,15 +43,15 @@ template:
             {% set cameras = [
               'sensor.g4_bullet_uptime',
               'sensor.g4_bullet_uptime_2',
-              'sensor.g4_bullet_uptime_3',
-              'sensor.g4_bullet_uptime_4',
+              'sensor.backyard_pool_uptime',
+              'sensor.backyard_northwest_uptime',
               'sensor.driveway_front_camera_uptime',
               'sensor.front_door_camera_uptime',
               'sensor.g5_turret_ultra_uptime_2'
             ] %}
 
             {% set offline = cameras
-              | select('in', [None, 'unknown', 'unavailable'])
+              | reject('has_value')
               | list %}
             {{ offline }}
           total_cameras: 7
