@@ -67,8 +67,18 @@ def test_nested_resolution_includes_extended_family_and_guests():
     assert _members("guests", _groups()) <= all_people
 
 
-def test_joe_is_in_all_people():
-    assert "person.joe_falbo" in _members("all_people", _groups())
+def test_joe_is_in_extended_family():
+    """Joe counted as extended family before the July 2025 refactor dropped him.
+
+    extended_family nests into guests and all_people, so he is in both; guest
+    mode follows him, and his arrival announcement suppresses the generic line
+    (see test_joe_arrival_suppresses_guest_mode_announcement).
+    """
+    groups = _groups()
+    assert "person.joe_falbo" in groups["extended_family"]["entities"]
+    assert "person.joe_falbo" not in groups["all_people"]["entities"]
+    assert "person.joe_falbo" in _members("guests", groups)
+    assert "person.joe_falbo" in _members("all_people", groups)
 
 
 def test_every_referenced_person_is_in_all_people():
