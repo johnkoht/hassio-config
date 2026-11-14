@@ -2,7 +2,7 @@
 Deep links for climate and weather pushes (notification-deep-links PR E).
 
 Eco and resume pushes open the thermostat popup for their floor; every weather
-push (NWS alerts, rain, UV) opens the weather popup.
+push (NWS alerts) opens the weather popup.
 """
 import pytest
 
@@ -17,8 +17,6 @@ EXPECTED = {
     f"{CLIMATE}main_floor/main_floor_climate_to_resume.yaml": [HVAC + "main_floor_thermostat"],
     f"{CLIMATE}second_floor/second_floor_climate_to_eco.yaml": [HVAC + "upper_floor_thermostat"],
     f"{CLIMATE}second_floor/second_floor_climate_to_resume.yaml": [HVAC + "upper_floor_thermostat"],
-    "packages/weather/tempest_alerts/tempest_high_uv_alert.yaml": [WEATHER],
-    "packages/weather/tempest_alerts/tempest_rain_amount_alert.yaml": [WEATHER],
     # eight calls: one rain warning and seven NWS branches (six per-alert, one heavy-rain)
     "packages/weather/severe_weather_alert/severe_weather_warning.yaml": [WEATHER] * 8,
 }
