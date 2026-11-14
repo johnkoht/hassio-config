@@ -4,6 +4,8 @@
 # a bunch of triggers and conditions and then run a
 # script to handle home actions.
 #
+# iPhone Detect must agree, so a UniFi tracker blip alone can't mark him home.
+#
 id: "joe_home"
 initial_state: "on"
 alias: "Joe Home"
@@ -14,11 +16,19 @@ trigger:
   - platform: state
     entity_id: person.joe_falbo
     to: "home"
+  # iPhone detect tracker is detected home
+  - platform: state
+    entity_id: device_tracker.joe_iphone_detect
+    to: "home"
   - platform: event
     event_type: automation_reloaded
   - platform: homeassistant
     event: start
 condition:
+  # iPhone detect agrees he's home
+  - condition: state
+    entity_id: device_tracker.joe_iphone_detect
+    state: "home"
   # - condition: state
   #   entity_id: binary_sensor.joe_presence
   #   state: "on"
