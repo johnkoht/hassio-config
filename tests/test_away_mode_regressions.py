@@ -202,3 +202,36 @@ def test_guest_mode_ignores_unconfirmed_parent_blip():
     assert run(blip, {"device_tracker.sonia_iphone_detect": "home"})
     assert run(blip + [member("person.katia", "home")], {})
     assert not run([member("person.katia", "not_home")], {})
+
+
+def test_joe_arrival_suppresses_guest_mode_announcement():
+    """Joe is in extended_family -> guests, so guest_mode follows him. His
+    arrival must set guest_mode_announced (after announcing) so guest_mode_on
+    skips its generic line, the same way the other guests' arrivals do."""
+    auto = automation("packages/people/joe/automations/joe_announce_arrival.yaml")
+    actions = auto["actions"]
+    announce = next(i for i, a in enumerate(actions)
+                    if a.get("action") == "script.person_announcement")
+    gate, setter = actions[announce + 1], actions[announce + 2]
+    assert gate == {"condition": "state",
+                    "entity_id": "input_boolean.guest_mode_announced", "state": "off"}
+    assert setter["action"] == "input_boolean.turn_on"
+    assert setter["target"]["entity_id"] == "input_boolean.guest_mode_announced"
+    # guest_mode_on honours the flag after its delay
+    on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
+    tail = on["action"][-3:]
+    assert any(a.get("entity_id") == "input_boolean.guest_mode_announced"
+               and a.get("state") == "off" for a in tail)
+
+
+def test_guest_mode_on_counts_joe_without_parent_detect():
+    """Joe is not in the parents' detect map, so his home state alone counts."""
+    from types import SimpleNamespace
+    on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
+    tmpl = [c for c in on["condition"] if c.get("condition") == "template"][0]["value_template"]
+    joe = [SimpleNamespace(entity_id="person.joe_falbo", state="home")]
+    assert _render(tmpl, {}, expand=lambda g: joe)
+    # a parent blip alongside Joe does not matter; Joe still counts
+    blip = SimpleNamespace(entity_id="person.sonia_koht", state="home")
+    assert _render(tmpl, {"device_tracker.sonia_iphone_detect": "not_home"},
+                   expand=lambda g: joe + [blip])
