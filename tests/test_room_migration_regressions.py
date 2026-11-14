@@ -2,8 +2,9 @@
 Regression pins for the Phase 5 migration of the family room and mudroom (JK-1145, PR 5).
 
 Both rooms' legacy automations moved from `automation/` into `packages/` in modern syntax.
-The registry keys on `id`, so id, alias and `initial_state` must not drift: four family room
-automations are disabled live and must stay disabled, and `mudroom_lights_to_on` is live as
+The registry keys on `id`, so id, alias and `initial_state` must not drift: two family room
+automations are disabled live and must stay disabled (`family_room_lights_to_on` and
+`family_room_mode_on` were deleted in JK-1232), and `mudroom_lights_to_on` is live as
 `automation.mudroom_mode_on_2`. Select option lists are pinned to the live lists.
 """
 from pathlib import Path
@@ -22,12 +23,10 @@ MANIFEST = {
         ("family_room_occupied", "Family room occupied", "on"),
         ("family_room_lights_to_away", "Family room lights to away", "on"),
         ("family_room_lights_to_off", "Family room lights to off", "on"),
-        ("family_room_lights_to_on", "Family room lights to On", "off"),
         ("family_room_arrival", "Family room arrival", "off"),
         ("family_room_mode_away", "Family room mode away", "off"),
         ("family_room_mode_auto", "Family Room Mode Auto", "on"),
         ("family_room_mode_off", "Family Room Mode Off", "on"),
-        ("family_room_mode_on", "Family room mode on", "off"),
     ],
     "mudroom": [
         ("mudroom_lights_to_away", "Mudroom lights to away", "on"),
@@ -128,8 +127,15 @@ def test_family_room_occupied_boolean_has_no_initial():
 
 
 def test_disabled_family_room_automations_point_at_defined_options():
-    for auto_id in ("family_room_mode_on", "family_room_arrival"):
-        (_, a), = _find(auto_id)
-        assert a["actions"][0]["data"]["option"] in LIVE_OPTIONS["family_room"]
-    (_, a), = _find("family_room_lights_to_on")
-    assert a["actions"][0]["action"] == "light.turn_on"
+    (_, a), = _find("family_room_arrival")
+    assert a["actions"][0]["data"]["option"] in LIVE_OPTIONS["family_room"]
+
+
+def test_dead_select_option_automations_are_deleted():
+    """Triggered on options the selects no longer define; disabled since 2022 (JK-1232)."""
+    for rel in ("packages/family_room/lights/family_room_lights_to_on.yaml",
+                "packages/family_room/modes/family_room_mode_on.yaml",
+                "automation/garage/lights/garage_lights_to_off.yaml"):
+        assert not (REPO / rel).exists(), rel
+    for auto_id in ("family_room_lights_to_on", "family_room_mode_on", "garage_lights_to_off"):
+        assert not _find(auto_id), auto_id

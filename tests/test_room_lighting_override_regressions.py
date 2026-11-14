@@ -828,7 +828,7 @@ def test_mudroom_vacancy_triggers_carry_the_vacancy_id():
                    "input_boolean.mudroom_occupied"}
 
 
-# 20 family room: mode-only (its four lights-on/mode automations stay disabled) --------
+# 20 family room: mode-only (its arrival and away automations stay disabled) --------
 def test_family_room_mode_auto_has_no_occupancy_off_trigger():
     """Nothing to bounce: mode_auto fires on occupancy ON only, so clearing it at Off can't re-Auto."""
     for t in as_list(auto("family_room_mode_auto")["triggers"]):
@@ -837,8 +837,7 @@ def test_family_room_mode_auto_has_no_occupancy_off_trigger():
 
 
 def test_family_room_disabled_automations_stay_disabled():
-    for aid in ("family_room_lights_to_on", "family_room_mode_on", "family_room_arrival",
-                "family_room_mode_away"):
+    for aid in ("family_room_arrival", "family_room_mode_away"):
         assert auto(aid).get("initial_state") in ("off", False), aid
 
 
