@@ -1,0 +1,5 @@
+# Camera Proxy for the Backyard Northwest Camera
+#
+camera:
+  - platform: proxy
+    entity_id: camera.backyard_northwest_high_resolution_channel

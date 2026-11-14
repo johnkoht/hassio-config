@@ -1,0 +1,5 @@
+# Camera Proxy for the Backyard Pool Camera
+#
+camera:
+  - platform: proxy
+    entity_id: camera.backyard_pool_high_resolution_channel
