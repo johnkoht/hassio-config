@@ -114,3 +114,53 @@ def test_katia_home_requires_iphone_detect():
     assert has_state_condition(auto, "device_tracker.katia_iphone_detect", "home")
     assert any(t.get("to") == "home"
                for t in state_triggers(auto, "device_tracker.katia_iphone_detect"))
+
+
+PARENTS = [
+    ("tayta", "person.sonia_koht", "device_tracker.sonia_iphone_detect",
+     "packages/people/tayta/automations/tayta_is_home.yaml",
+     "packages/people/tayta/automations/tayta_announce_arrival.yaml"),
+    ("jido", "person.antoun_koht", "device_tracker.antoun_iphone_detect",
+     "packages/people/jido/presence/jido_is_home.yaml",
+     "packages/people/jido/presence/jido_announce_arrival.yaml"),
+]
+
+
+@pytest.mark.parametrize("name,person,detect,is_home,announce", PARENTS)
+def test_parent_home_requires_iphone_detect(name, person, detect, is_home, announce):
+    """UniFi blips marked the parents home after they left (JK-1251); detect must agree."""
+    auto = automation(is_home)
+    assert has_state_condition(auto, detect, "home")
+    assert any(t.get("to") == "home" for t in state_triggers(auto, detect))
+    arrival = automation(announce)
+    assert has_state_condition(arrival, detect, "home")
+    (trigger,) = state_triggers(arrival, person)
+    assert trigger.get("for"), "arrival must wait for detect to confirm"
+
+
+def test_tayta_room_presence_unavailable_is_not_a_sighting():
+    """template.reload made the sensor unavailable and marked Tayta home (JK-1251)."""
+    auto = automation("packages/people/tayta/automations/tayta_is_home.yaml")
+    (trigger,) = state_triggers(auto, "sensor.tayta_room_presence")
+    assert {"unavailable", "unknown"} <= set(trigger["not_to"])
+    rendered = str(auto["conditions"])
+    assert "unavailable" in rendered and "unknown" in rendered
+
+
+def test_katia_bluetooth_home_ignores_unavailable():
+    auto = automation("packages/people/katia/automations/katie_bluetooth_detected_home.yaml")
+    for tmpl in [auto["triggers"][0]["value_template"], auto["conditions"][0]["value_template"]]:
+        assert "unavailable" in tmpl and "unknown" in tmpl and "not in" in tmpl
+
+
+def test_garage_unlock_parents_need_detect_and_hold():
+    auto = automation("packages/mudroom/garage_entry_door/garage_entry_door_unlock_upon_arrival.yaml")
+    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
+    held = [t for t in auto["triggers"] if t.get("for")]
+    parents = {"person.sonia_koht", "person.antoun_koht"}
+    assert parents <= set(held[0]["entity_id"])
+    assert not any(parents & set(t["entity_id"]) for t in plain
+                   if isinstance(t["entity_id"], list))
+    tmpl = str(auto["conditions"])
+    assert "device_tracker.sonia_iphone_detect" in tmpl
+    assert "device_tracker.antoun_iphone_detect" in tmpl
