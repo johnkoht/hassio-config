@@ -87,12 +87,12 @@ cards:
           power_sensor: sensor.smart_plug_9_active_power
 
       - type: custom:button-card
-        entity: switch.smart_plug_4_switch
+        entity: switch.family_room_smart_plug_25
         name: Small Tree
         template: kohbo_device_smart_plug_entity
         icon: mdi:pine-tree
         variables:
-          power_sensor: sensor.smart_plug_4_family_room_power
+          power_sensor: sensor.family_room_smart_plug_25_power
 
 
   #
