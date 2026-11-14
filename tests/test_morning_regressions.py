@@ -137,3 +137,61 @@ def test_plants_flag_dry_soil_only():
     assert "small plant" not in out
     assert "dry" not in render(brief_section("PLANTS"), states={
         "sensor.large_plant_soil_moisture": "unavailable"})
+
+
+# --- Lunch: announce only the main dish (JK-1253) ---
+
+ENTREES = ["Uncrustable Lunch with Cheese and Crackers", "Yogurt Lunch with cheese, granola and crackers",
+           "Cheddar Burger", "Hamburger", "Plant Based Burger"]
+FULL_MENU = ENTREES + ["Baby Carrots", "1% White Milk"]
+
+
+def render_lunch(menu, entrees=None, closed=False):
+    env = Environment(extensions=["jinja2.ext.loopcontrols"])
+    env.tests["search"] = lambda v, pat: re.search(pat, str(v)) is not None
+    on = {"binary_sensor.nino_school_day"}
+    if closed:
+        on.add("binary_sensor.primary_school_closed_today")
+    attrs = {("sensor.primary_school_lunch_menu", "lunch_menu"): menu,
+             ("sensor.primary_school_lunch_menu", "entrees"): entrees}
+    env.globals.update(
+        is_state=lambda e, s: s == "on" and e in on,
+        state_attr=lambda e, a: attrs.get((e, a)),
+        states=lambda e: "unknown",
+    )
+    return " ".join(env.from_string(brief_section("SCHOOL & LUNCH")).render().split())
+
+
+def test_lunch_announces_only_the_main_dish():
+    out = render_lunch(FULL_MENU, ENTREES)
+    assert "today's lunch is Cheddar Burger" in out
+    for other in ["Uncrustable", "Yogurt", "Hamburger", "Plant Based", "Carrots", "Milk"]:
+        assert other not in out
+
+
+def test_lunch_skips_plant_based_and_standing_alternates():
+    out = render_lunch(["Uncrustable Lunch", "Plant Based Burger", "Chef Salad"],
+                       ["Uncrustable Lunch", "Plant Based Burger", "Chef Salad"])
+    assert "today's lunch is Chef Salad" in out
+
+
+def test_lunch_falls_back_to_first_item_when_only_alternates():
+    out = render_lunch(["Uncrustable Lunch", "Yogurt Lunch"], ["Uncrustable Lunch", "Yogurt Lunch"])
+    assert "today's lunch is Uncrustable Lunch" in out and "Yogurt" not in out
+
+
+def test_lunch_uses_full_menu_when_no_entree_category():
+    assert "today's lunch is Pasta" in render_lunch(["Pasta", "Salad"], [])
+
+
+@pytest.mark.parametrize("menu", [[], None])
+def test_lunch_empty_menu_keeps_no_menu_wording(menu):
+    out = render_lunch(menu, menu)
+    assert "don't forget to check the lunch menu today" in out
+    assert "today's lunch is" not in out
+
+
+def test_lunch_silent_on_closed_day_and_still_uses_sensor_list_attribute():
+    out = render_lunch(FULL_MENU, ENTREES, closed=True)
+    assert "no school today" in out and "Burger" not in out and "today's lunch is" not in out
+    assert "'lunch_menu'" in brief_prompt()
