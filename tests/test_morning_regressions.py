@@ -137,3 +137,52 @@ def test_plants_flag_dry_soil_only():
     assert "small plant" not in out
     assert "dry" not in render(brief_section("PLANTS"), states={
         "sensor.large_plant_soil_moisture": "unavailable"})
+
+
+# --- Lunch: announce only the first menu item (JK-1253) ---
+
+SCHOOL_DAY = {"binary_sensor.nino_school_day"}
+FULL_MENU = ["Uncrustable Lunch with Cheese and Crackers", "Cheddar Burger", "Hamburger",
+             "Baby Carrots", "1% White Milk"]
+
+
+def render_lunch(menu, school_day=True, closed=False):
+    env = Environment(extensions=["jinja2.ext.loopcontrols"])
+    on = set()
+    if school_day:
+        on.add("binary_sensor.nino_school_day")
+    if closed:
+        on.add("binary_sensor.primary_school_closed_today")
+    env.globals.update(
+        is_state=lambda e, s: s == "on" and e in on,
+        state_attr=lambda e, a: menu if (e, a) == ("sensor.primary_school_lunch_menu", "lunch_menu") else None,
+        states=lambda e: "unknown",
+    )
+    return " ".join(env.from_string(brief_section("SCHOOL & LUNCH")).render().split())
+
+
+def test_lunch_announces_only_the_first_item():
+    out = render_lunch(FULL_MENU)
+    assert "today's lunch is Uncrustable Lunch with Cheese and Crackers" in out
+    for other in FULL_MENU[1:]:
+        assert other not in out
+
+
+def test_lunch_ignores_favorites_further_down_the_menu():
+    # Burgers are a favorite, but only the first item is spoken
+    out = render_lunch(["Chef Salad", "Cheddar Burger", "Pizza"])
+    assert "Chef Salad" in out and "Burger" not in out and "Pizza" not in out
+
+
+@pytest.mark.parametrize("menu", [[], None])
+def test_lunch_empty_menu_keeps_no_menu_wording(menu):
+    out = render_lunch(menu)
+    assert "don't forget to check the lunch menu today" in out
+    assert "today's lunch is" not in out
+
+
+def test_lunch_silent_on_closed_day_and_still_uses_sensor_list_attribute():
+    out = render_lunch(FULL_MENU, closed=True)
+    assert "no school today" in out and "Burger" not in out and "today's lunch is" not in out
+    # The full list is still read from the unchanged sensor attribute
+    assert "'lunch_menu'" in brief_prompt()
