@@ -1,7 +1,7 @@
 ---
 title: Dead Entity Decisions
 slug: dead-entity-decisions
-status: in-progress
+status: shipped
 approved: 2026-11-13
 approval_note: "John, 2026-11-13 (relayed): approve with the plan's recommendations — 10 rain delete, 11 UV delete, 12 heater arrival fix yes, 6 rename to calendar.john_work + disable _2 (no history rewrite), 9a add guard (re-pair held for John), 9 delete bathroom heater, 13 mudroom Auto→Motion, 8 calendar.house_chores, 5 delete Katia observation, 4 Cristina cleanup, select-option fixes + guard test. Held: anything needing a restart to take effect (PR A proxies) and the Nino sensor re-pair."
 created: 2026-11-12

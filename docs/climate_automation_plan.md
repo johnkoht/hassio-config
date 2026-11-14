@@ -78,9 +78,9 @@ These exist and can be used directly:
 | Temperature | `sensor.tempest_temperature` |
 | Humidity | `sensor.tempest_humidity` |
 | Illuminance (solar proxy) | `sensor.tempest_illuminance` |
-| UV Index | `sensor.tempest_uv` |
+| UV Index | `sensor.tempest_uv_index` |
 | Precipitation | `sensor.tempest_precipitation` |
-| Rain Rate | `sensor.tempest_rain_rate` |
+| Rain Rate | `sensor.tempest_precipitation_intensity` |
 | Weather entity | `weather.pirateweather` |
 
 ---

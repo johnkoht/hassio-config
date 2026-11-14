@@ -139,17 +139,3 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-
-      - entity: automation.tempest_rain_alert
-        name: Tempest Rain Alert
-        icon: mdi:weather-pouring
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
-
-      - entity: automation.tempest_high_uv_alert
-        name: High UV Alert
-        icon: mdi:sun-wireless
-        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
-        secondary_info: last-changed
-        state_color: true
