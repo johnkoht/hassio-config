@@ -9,12 +9,19 @@ automation:
           - person.john_koht
           - person.cristina_falbo
           - person.mary_falbo
-          - person.antoun_koht
-          - person.sonia_koht
           - person.katia
           - person.celi
           - person.joe_falbo
         to: "home"
+      # Parents: hold so iPhone detect can confirm (a UniFi blip alone
+      # must not unlock the door)
+      - trigger: state
+        entity_id:
+          - person.antoun_koht
+          - person.sonia_koht
+        to: "home"
+        for:
+          minutes: 1
       # House becomes occupied
       - trigger: state
         entity_id: input_boolean.house_occupied
@@ -28,6 +35,14 @@ automation:
       - condition: state
         entity_id: input_boolean.house_occupied
         state: "on"
+      # A parent's arrival needs their iPhone detect to agree
+      - condition: template
+        value_template: >-
+          {% set detect = {
+            'person.antoun_koht': 'device_tracker.antoun_iphone_detect',
+            'person.sonia_koht': 'device_tracker.sonia_iphone_detect'} %}
+          {{ trigger.entity_id not in detect
+             or is_state(detect[trigger.entity_id], 'home') }}
     actions:
       # Unlock the door!
       - action: lock.unlock

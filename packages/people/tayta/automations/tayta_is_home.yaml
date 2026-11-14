@@ -1,5 +1,8 @@
 # Automation to detect and initiate home for Tayta
 #
+# iPhone Detect must agree, so a UniFi tracker blip alone can't mark her home.
+# Room presence going unavailable (template reload) is not a sighting.
+#
 automation:
   - id: "tayta_is_home"
     initial_state: on
@@ -9,22 +12,33 @@ automation:
       - trigger: state
         entity_id: sensor.tayta_room_presence
         from: "not_home"
+        not_to:
+          - "unavailable"
+          - "unknown"
       # Tayta's home
       - trigger: state
         entity_id: person.sonia_koht
+        to: "home"
+      # iPhone detect tracker is detected home
+      - trigger: state
+        entity_id: device_tracker.sonia_iphone_detect
         to: "home"
       - trigger: event
         event_type: automation_reloaded
       - trigger: homeassistant
         event: start
     conditions:
+      # iPhone detect agrees she's home
+      - condition: state
+        entity_id: device_tracker.sonia_iphone_detect
+        state: "home"
       - condition: or
         conditions:
           - condition: state
             entity_id: person.sonia_koht
             state: "home"
           - condition: template
-            value_template: "{{ states.sensor.tayta_room_presence.state != 'not_home'}}"
+            value_template: "{{ states('sensor.tayta_room_presence') not in ['not_home', 'unavailable', 'unknown'] }}"
     actions:
       - action: input_boolean.turn_on
         entity_id: input_boolean.tayta_home

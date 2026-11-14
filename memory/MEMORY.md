@@ -46,3 +46,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-11-13 · [dead-entity-decisions](entries/2026-11-13_dead-entity-decisions-learnings.md) — JK-1232 in 3 PRs (#158 cameras, #161 dead refs/heaters/select guard, #162 work calendar + Tempest deletes); multi-PR bookkeeping conflicts, display-name greps missed by ID-only absence tests
 - 2026-11-13 · [lunch-main-dish](entries/2026-11-13_lunch-main-dish.md) — JK-1253 morning brief names one lunch dish (first non-alternate entree), not the literal first item (bag lunch); sensor unchanged
 - 2026-11-13 · [family-room-tree-plug-25](entries/2026-11-13_family-room-tree-plug-25.md) — JK-1252 tree moved to switch.family_room_smart_plug_25 (group, tile, tree meter); plug 4 stays as North Wall Outlet
+- 2026-11-13 · [parent-presence-blips](entries/2026-11-13_parent-presence-blips.md) — JK-1251 parents' arrival/unlock/guest mode need iPhone detect; room-presence triggers ignore unavailable

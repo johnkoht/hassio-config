@@ -8,10 +8,17 @@ automation:
         entity_id: person.sonia_koht
         from: "not_home"
         to: "home"
+        # Hold so detect can confirm; a UniFi blip alone never announces
+        for:
+          minutes: 1
     conditions:
       # A guest is home
       - condition: state
         entity_id: person.sonia_koht
+        state: "home"
+      # iPhone detect agrees
+      - condition: state
+        entity_id: device_tracker.sonia_iphone_detect
         state: "home"
       # We've been home for at least 5 minutes
       - condition: state
