@@ -206,32 +206,88 @@ def test_guest_mode_ignores_unconfirmed_parent_blip():
 
 def test_joe_arrival_suppresses_guest_mode_announcement():
     """Joe is in extended_family -> guests, so guest_mode follows him. His
-    arrival must set guest_mode_announced (after announcing) so guest_mode_on
-    skips its generic line, the same way the other guests' arrivals do."""
+    arrival must set guest_mode_announced so guest_mode_on skips its generic
+    line. The flag is set BEFORE the announcement: guest_mode_on checks it 2
+    minutes after Joe counts, and the 1 minute hold would otherwise eat the margin."""
     auto = automation("packages/people/joe/automations/joe_announce_arrival.yaml")
     actions = auto["actions"]
+    setter = next(i for i, a in enumerate(actions)
+                  if a.get("action") == "input_boolean.turn_on"
+                  and a["target"]["entity_id"] == "input_boolean.guest_mode_announced")
     announce = next(i for i, a in enumerate(actions)
                     if a.get("action") == "script.person_announcement")
-    gate, setter = actions[announce + 1], actions[announce + 2]
-    assert gate == {"condition": "state",
-                    "entity_id": "input_boolean.guest_mode_announced", "state": "off"}
-    assert setter["action"] == "input_boolean.turn_on"
-    assert setter["target"]["entity_id"] == "input_boolean.guest_mode_announced"
+    assert setter < announce
+    # no gate ahead of the announcement: it must always play
+    assert not any(a.get("condition") for a in actions[:announce])
     # guest_mode_on honours the flag after its delay
     on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
     tail = on["action"][-3:]
     assert any(a.get("entity_id") == "input_boolean.guest_mode_announced"
                and a.get("state") == "off" for a in tail)
+    delay = next(a for a in on["action"] if "delay" in a)["delay"]
+    assert delay == "00:02:00"
 
 
-def test_guest_mode_on_counts_joe_without_parent_detect():
-    """Joe is not in the parents' detect map, so his home state alone counts."""
+JOE = "person.joe_falbo"
+JOE_DETECT = "device_tracker.joe_iphone_detect"
+
+
+def test_joe_home_requires_iphone_detect():
+    """Same UniFi blip protection as the parents (JK-1251)."""
+    content = yaml.load((REPO / "automation/people/joe/joe_home.yaml").read_text(), Loader=_Loader)
+    assert any(c.get("condition") == "state" and c.get("entity_id") == JOE_DETECT
+               and c.get("state") == "home" for c in content["condition"])
+    assert any(t.get("entity_id") == JOE_DETECT and t.get("to") == "home"
+               for t in content["trigger"])
+
+
+def test_joe_announce_arrival_holds_and_requires_detect():
+    auto = automation("packages/people/joe/automations/joe_announce_arrival.yaml")
+    assert has_state_condition(auto, JOE_DETECT, "home")
+    (trigger,) = state_triggers(auto, JOE)
+    assert trigger.get("for"), "arrival must wait for detect to confirm"
+
+
+def test_garage_unlock_joe_needs_detect_and_hold():
+    from types import SimpleNamespace
+    auto = automation("packages/mudroom/garage_entry_door/garage_entry_door_unlock_upon_arrival.yaml")
+    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
+    held = [t for t in auto["triggers"] if t.get("for")]
+    assert JOE in held[0]["entity_id"]
+    assert not any(JOE in (t["entity_id"] if isinstance(t["entity_id"], list) else [t["entity_id"]])
+                   for t in plain)
+    tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
+    trig = SimpleNamespace(entity_id=JOE)
+    assert _render(tmpl, {JOE_DETECT: "home"}, trigger=trig)
+    for bad in ("not_home", "unknown", "unavailable"):
+        assert not _render(tmpl, {JOE_DETECT: bad}, trigger=trig)
+
+
+def test_guest_mode_counts_joe_only_with_detect():
     from types import SimpleNamespace
     on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
+    triggered = {e for t in on["trigger"] for e in
+                 (t.get("entity_id") if isinstance(t.get("entity_id"), list) else [t.get("entity_id")])}
+    assert JOE_DETECT in triggered
     tmpl = [c for c in on["condition"] if c.get("condition") == "template"][0]["value_template"]
-    joe = [SimpleNamespace(entity_id="person.joe_falbo", state="home")]
-    assert _render(tmpl, {}, expand=lambda g: joe)
-    # a parent blip alongside Joe does not matter; Joe still counts
-    blip = SimpleNamespace(entity_id="person.sonia_koht", state="home")
-    assert _render(tmpl, {"device_tracker.sonia_iphone_detect": "not_home"},
-                   expand=lambda g: joe + [blip])
+    joe = [SimpleNamespace(entity_id=JOE, state="home")]
+    assert not _render(tmpl, {JOE_DETECT: "not_home"}, expand=lambda g: joe)
+    assert not _render(tmpl, {JOE_DETECT: "unknown"}, expand=lambda g: joe)
+    assert _render(tmpl, {JOE_DETECT: "home"}, expand=lambda g: joe)
+    # an unconfirmed Joe does not hide a real guest
+    katia = SimpleNamespace(entity_id="person.katia", state="home")
+    assert _render(tmpl, {JOE_DETECT: "not_home"}, expand=lambda g: joe + [katia])
+
+
+def test_joe_has_no_room_presence_not_home_trigger():
+    """No Joe automation fires on sensor.joe_room_presence from not_home, so none
+    needs the unavailable/unknown guard (it is only read by dashboards/templates)."""
+    hits = []
+    for path in REPO.rglob("*.yaml"):
+        rel = path.relative_to(REPO).as_posix()
+        if rel.startswith(("plans/", ".claude/", "dashboards/", "tests/")):
+            continue
+        text = path.read_text()
+        if "sensor.joe_room_presence" in text and "from:" in text and "trigger" in text:
+            hits.append(rel)
+    assert hits == []

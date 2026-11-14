@@ -48,3 +48,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-11-13 · [family-room-tree-plug-25](entries/2026-11-13_family-room-tree-plug-25.md) — JK-1252 tree moved to switch.family_room_smart_plug_25 (group, tile, tree meter); plug 4 stays as North Wall Outlet
 - 2026-11-13 · [parent-presence-blips](entries/2026-11-13_parent-presence-blips.md) — JK-1251 parents' arrival/unlock/guest mode need iPhone detect; room-presence triggers ignore unavailable
 - 2026-11-14 · [joe-all-people-group](entries/2026-11-14_joe-all-people-group.md) — Joe back in extended_family (John's call, reverts #166's all_people listing); his arrival suppresses the guest-mode line; tests updated
+- 2026-11-14 · [joe-detect-gate](entries/2026-11-14_joe-detect-gate.md) — JK-1251 follow-up: Joe's home flag, arrival announcement (held 1 min), garage unlock and guest mode need iPhone detect; announced flag set before announcing
