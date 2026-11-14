@@ -143,14 +143,25 @@ def test_tayta_room_presence_unavailable_is_not_a_sighting():
     auto = automation("packages/people/tayta/automations/tayta_is_home.yaml")
     (trigger,) = state_triggers(auto, "sensor.tayta_room_presence")
     assert {"unavailable", "unknown"} <= set(trigger["not_to"])
-    rendered = str(auto["conditions"])
-    assert "unavailable" in rendered and "unknown" in rendered
+    tmpl = auto["conditions"][1]["conditions"][1]["value_template"]
+    import jinja2
+    for rp, ok in [("unavailable", False), ("unknown", False), ("not_home", False), ("kitchen", True)]:
+        out = jinja2.Environment().from_string(tmpl).render(states=lambda e: rp)
+        assert (out.strip() == "True") is ok
 
 
 def test_katia_bluetooth_home_ignores_unavailable():
     auto = automation("packages/people/katia/automations/katie_bluetooth_detected_home.yaml")
     for tmpl in [auto["triggers"][0]["value_template"], auto["conditions"][0]["value_template"]]:
         assert "unavailable" in tmpl and "unknown" in tmpl and "not in" in tmpl
+
+
+def _render(tpl, states_map, **ctx):
+    import jinja2
+    from types import SimpleNamespace
+    env = jinja2.Environment()
+    return env.from_string(tpl).render(
+        is_state=lambda e, v: states_map.get(e) == v, **ctx).strip() == "True"
 
 
 def test_garage_unlock_parents_need_detect_and_hold():
@@ -161,6 +172,33 @@ def test_garage_unlock_parents_need_detect_and_hold():
     assert parents <= set(held[0]["entity_id"])
     assert not any(parents & set(t["entity_id"]) for t in plain
                    if isinstance(t["entity_id"], list))
-    tmpl = str(auto["conditions"])
-    assert "device_tracker.sonia_iphone_detect" in tmpl
-    assert "device_tracker.antoun_iphone_detect" in tmpl
+    tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
+    from types import SimpleNamespace
+    for who, det in [("person.sonia_koht", "device_tracker.sonia_iphone_detect"),
+                     ("person.antoun_koht", "device_tracker.antoun_iphone_detect")]:
+        trig = SimpleNamespace(entity_id=who)
+        assert _render(tmpl, {det: "home"}, trigger=trig)
+        assert not _render(tmpl, {det: "not_home"}, trigger=trig)
+        assert not _render(tmpl, {det: "unknown"}, trigger=trig)
+    for other in ("person.john_koht", "input_boolean.house_occupied"):
+        assert _render(tmpl, {}, trigger=SimpleNamespace(entity_id=other))
+
+
+def test_guest_mode_ignores_unconfirmed_parent_blip():
+    from types import SimpleNamespace
+    content = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
+    assert {"device_tracker.sonia_iphone_detect", "device_tracker.antoun_iphone_detect"} <= {
+        e for t in content["trigger"] for e in (t.get("entity_id") if isinstance(t.get("entity_id"), list) else [t.get("entity_id")])}
+    tmpl = [c for c in content["condition"] if c.get("condition") == "template"][0]["value_template"]
+
+    def member(e, s):
+        return SimpleNamespace(entity_id=e, state=s)
+
+    def run(members, detect):
+        return _render(tmpl, detect, expand=lambda g: members)
+
+    blip = [member("person.sonia_koht", "home")]
+    assert not run(blip, {"device_tracker.sonia_iphone_detect": "not_home"})
+    assert run(blip, {"device_tracker.sonia_iphone_detect": "home"})
+    assert run(blip + [member("person.katia", "home")], {})
+    assert not run([member("person.katia", "not_home")], {})
