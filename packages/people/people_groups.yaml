@@ -39,6 +39,8 @@ group:
       - group.family
       - group.extended_family
       - group.guests
+      # Joe is not a guest: guests nest into guest_mode, which he shouldn't flip
+      - person.joe_falbo
 
 
   arriving:
