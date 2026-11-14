@@ -24,6 +24,7 @@ group:
       - person.olivia
       - person.shawn
       - person.nonno
+      - person.joe_falbo
 
   guests:
     name: Guests
