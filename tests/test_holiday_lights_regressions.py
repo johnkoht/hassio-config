@@ -333,15 +333,15 @@ _TagLoader.add_multi_constructor("!", lambda loader, suffix, node: f"!{suffix}")
 
 
 def test_tree_energy_meter_reads_the_tree_plug():
-    """The family room tree is on plug 4 (a member of switch.christmas_trees), not plug 14."""
+    """The family room tree plug (a member of switch.christmas_trees) feeds the tree meter, not plug 14."""
     group = yaml.safe_load((CHRISTMAS / "lights/christmas_lights_group.yaml").read_text())
     trees = next(g for g in group["switch"] if g["unique_id"] == "christmas_trees")["entities"]
     meters = yaml.safe_load(
         (REPO / "packages/energy/sensors/device_daily_energy_meters.yaml").read_text()
     )
     source = meters["utility_meter"]["smart_plug_14_daily_energy"]["source"]
-    plug = re.match(r"sensor\.(smart_plug_\d+)_", source).group(1)
-    assert f"switch.{plug}_switch" in trees
+    plug = re.match(r"sensor\.(family_room_smart_plug_\d+)_", source).group(1)
+    assert f"switch.{plug}" in trees
 
 
 def test_christmas_season_schedule_group_and_popup_row():
