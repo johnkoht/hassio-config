@@ -1,6 +1,7 @@
 # Nino Pickup Reminder (v2)
 #
 # Pickup reminder timed off sensor.nino_pickup_time, with dual TTS + push.
+# Fires only when Nino's drop-off latched today (the at_school evidence).
 # Named "v2" to avoid a collision with the still-live original pickup
 # reminder in nino_school/automations/.
 #
@@ -23,6 +24,14 @@ automation:
       - condition: state
         entity_id: input_boolean.nino_home_today
         state: "off"
+      # Only announce when Nino is actually at school (JK-65): his drop-off
+      # latched today. Same evidence as binary_sensor.nino_at_school, minus
+      # its dismissal cutoff, which would race this trigger when the lead is 0.
+      - alias: "Nino was dropped off at school today"
+        condition: template
+        value_template: >-
+          {%- set d = states.input_boolean.nino_dropped_off -%}
+          {{ d is not none and d.state == 'on' and d.last_changed >= today_at('00:00') }}
     actions:
       # Call the announcement engine
       - action: script.voice_announcement

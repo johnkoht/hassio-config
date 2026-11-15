@@ -11,7 +11,7 @@ Speech notifications give the house a personality. I have a bunch of Sonos Amps 
 - [Exterior lights turning on/off](https://github.com/johnkoht/hassio-config/blob/master/packages/outdoor_lighting.yaml)
 - [Announce arrival and departure of family](https://github.com/johnkoht/hassio-config/blob/master/packages/people/announcements/person_announcement_script.yaml)
 - [Washer or Dryer is finished](https://github.com/johnkoht/hassio-config/tree/master/packages/laundry/main_level_washer)
-- [School day announcement, five-minute departure warning, dropoff/pickup reminders (skipped when a kid is home sick)](https://github.com/johnkoht/hassio-config/tree/master/packages/school/reminders)
+- [School day announcement, five-minute departure warning, dropoff/pickup reminders (skipped when a kid is home sick; Nino's pickup also needs his drop-off latched)](https://github.com/johnkoht/hassio-config/tree/master/packages/school/reminders)
 - [Calendar reminder (upcoming or next day)](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders)
 - [Commuting notifications (arrived at station, heading home, train five mins away)](https://github.com/johnkoht/hassio-config/tree/master/packages/people/john/commute)
 - [Garbage day](https://github.com/johnkoht/hassio-config/tree/master/packages/reminders/garbage_day)
