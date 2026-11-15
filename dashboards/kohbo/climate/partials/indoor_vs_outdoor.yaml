@@ -1,0 +1,105 @@
+# Indoor vs Outdoor
+#
+# Temperature and humidity tiles: outdoor, indoor average, and the difference.
+# Reuses kohbo_energy_stat_card for the tile look.
+#
+type: custom:stack-in-card
+mode: vertical
+card_mod:
+  style: |
+    :host {
+      --stack-card-gap: 0;
+      --vertical-stack-card-gap: 0 !important;
+    }
+cards:
+  - type: custom:button-card
+    template: kohbo_card_header
+    name: Indoor vs Outdoor
+
+  # Temperature: Outdoor | Indoor | Difference
+  - type: custom:stack-in-card
+    mode: horizontal
+    cards:
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.tempest_temperature
+        name: Outdoor
+        show_state: true
+        state_display: |
+          [[[
+            const v = parseFloat(entity?.state);
+            return isNaN(v) ? '—' : Math.round(v) + '°';
+          ]]]
+        variables:
+          show_divider: true
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.average_indoor_temperature
+        name: Indoor
+        show_state: true
+        state_display: |
+          [[[
+            const v = parseFloat(entity?.state);
+            return isNaN(v) ? '—' : Math.round(v) + '°';
+          ]]]
+        variables:
+          show_divider: true
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.average_indoor_temperature
+        name: Difference
+        show_state: true
+        state_display: |
+          [[[
+            const i = parseFloat(entity?.state);
+            const o = parseFloat(states['sensor.tempest_temperature']?.state);
+            if (isNaN(i) || isNaN(o)) return '—';
+            const d = Math.round(i - o);
+            return (d > 0 ? '+' : '') + d + '°';
+          ]]]
+        variables:
+          show_divider: false
+
+  # Humidity: Outdoor | Indoor | Difference
+  - type: custom:stack-in-card
+    mode: horizontal
+    cards:
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.tempest_humidity
+        name: Outdoor RH
+        show_state: true
+        state_display: |
+          [[[
+            const v = parseFloat(entity?.state);
+            return isNaN(v) ? '—' : Math.round(v) + '%';
+          ]]]
+        variables:
+          show_divider: true
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.average_indoor_humidity
+        name: Indoor RH
+        show_state: true
+        state_display: |
+          [[[
+            const v = parseFloat(entity?.state);
+            return isNaN(v) ? '—' : Math.round(v) + '%';
+          ]]]
+        variables:
+          show_divider: true
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.average_indoor_humidity
+        name: Difference
+        show_state: true
+        state_display: |
+          [[[
+            const i = parseFloat(entity?.state);
+            const o = parseFloat(states['sensor.tempest_humidity']?.state);
+            if (isNaN(i) || isNaN(o)) return '—';
+            const d = Math.round(i - o);
+            return (d > 0 ? '+' : '') + d + '%';
+          ]]]
+        variables:
+          show_divider: false

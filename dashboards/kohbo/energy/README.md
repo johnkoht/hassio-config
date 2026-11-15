@@ -23,6 +23,7 @@ energy/
 Partials are card collections that are `!include`d into the main page. They're organized by section:
 
 - **todays_overview.yaml** - Today's energy overview with real-time stats, forecast, and 24h chart
+- **price_alerts.yaml** - Price tier, high (6¢+) / negative alert state, day-ahead peak (8¢+) and high (6-8¢) hour counts, and whether the eco automations are armed
 - **energy_history.yaml** - Historical comparisons with timeframe selector (week/30 days/weekly/monthly)
 - **settings_popup.yaml** - Energy-related automation toggles
 
@@ -66,7 +67,8 @@ Each stat card has a 10-segment progress bar with color-coded status:
 |--------|------|--------|---------------|
 | **Actual** | Bars | Left (kWh) | Hourly energy consumption today |
 | **Forecast** | Line | Left (kWh) | Predicted hourly usage (adjusted for today's pace) |
-| **Price** | Line | Right (¢) | ComEd real-time electricity price |
+| **Price** | Line | Right (¢) | ComEd real-time electricity price, dashed line at the 6¢ high-price threshold |
+| **Outdoor** | Line | Hidden (°F) | `sensor.tempest_temperature` hourly average; also a daily-mean line on the 7-day and 30-day history charts |
 
 ---
 
