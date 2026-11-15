@@ -69,7 +69,7 @@ automation:
 #
 script:
   main_bathroom_activate_bedtime_lighting_mode:
-    alias: Main Bedroom - Activate Bedtime Lighting Mode
+    alias: Main Bathroom - Activate Bedtime Lighting Mode
     mode: restart
     sequence:
       # Turn on the bedtime motion automation

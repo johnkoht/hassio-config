@@ -24,7 +24,7 @@ automation:
         to: "Auto"
       # It's after 7am
       - trigger: time
-        at: "00:07:00"
+        at: "07:00:00"
       # Bedtime hours inactive
       - trigger: state
         entity_id: binary_sensor.bedtime

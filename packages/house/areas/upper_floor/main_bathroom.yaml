@@ -10,8 +10,18 @@ template:
           mode: "{{ states('input_select.main_bathroom') | default('Auto') }}"
           icon: "mdi:shower"
           permalink: "/dashboard-kohbo/rooms-main-bathroom"
-          temperature: ""
-          humidity: ""
+          temperature: >
+            {% if states('sensor.main_bathroom_temperature') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.main_bathroom_temperature') | float }}
+            {% else %}
+              ""
+            {% endif %}
+          humidity: >
+            {% if states('sensor.main_bathroom_humidity') not in ['unavailable', 'unknown', ''] %}
+              {{ states('sensor.main_bathroom_humidity') | float }}
+            {% else %}
+              ""
+            {% endif %}
           aqi: ""
           last_changed: >
             {% if states.input_boolean.main_bathroom_occupied.last_changed %}
