@@ -306,6 +306,11 @@ cards:
                   fontSize: '10px'
                 formatter: |
                   EVAL: (val) => val ? `${val.toFixed(0)}` : '0'
+            - id: outdoor_temp
+              seriesName: Outdoor
+              opposite: true
+              show: false
+              forceNiceScale: true
           legend:
             show: false
           tooltip:
@@ -329,6 +334,18 @@ cards:
                 color: var(--orange-color)    # above average
               - value: 160
                 color: var(--error-color)     # extreme
+          # Outdoor daily mean temperature (line, hidden axis)
+          - entity: sensor.tempest_temperature
+            type: line
+            name: Outdoor
+            color: var(--secondary-text-color)
+            stroke_width: 2
+            curve: smooth
+            yaxis_id: outdoor_temp
+            statistics:
+              type: mean
+              period: day
+              align: start
 
       #--- Past 30 Days (daily bars) ---
       "Past 30 Days":
@@ -370,6 +387,11 @@ cards:
                   fontSize: '10px'
                 formatter: |
                   EVAL: (val) => val ? `${val.toFixed(0)}` : '0'
+            - id: outdoor_temp
+              seriesName: Outdoor
+              opposite: true
+              show: false
+              forceNiceScale: true
           legend:
             show: false
           tooltip:
@@ -393,6 +415,18 @@ cards:
                 color: var(--orange-color)    # above average
               - value: 160
                 color: var(--error-color)     # extreme
+          # Outdoor daily mean temperature (line, hidden axis)
+          - entity: sensor.tempest_temperature
+            type: line
+            name: Outdoor
+            color: var(--secondary-text-color)
+            stroke_width: 2
+            curve: smooth
+            yaxis_id: outdoor_temp
+            statistics:
+              type: mean
+              period: day
+              align: start
 
       #--- Weekly (12 weeks, weekly aggregated bars) ---
       "Weekly":

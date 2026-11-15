@@ -10,6 +10,7 @@ The Climate dashboard provides:
 
 - **Current Weather** - Real-time weather conditions and forecasts
 - **Floor-Level Climate Overview** - Temperature graphs and air quality monitoring for Main Floor and Upper Floor
+- **Indoor vs Outdoor** - Outdoor, indoor-average and difference tiles for temperature and humidity (`partials/indoor_vs_outdoor.yaml`), plus 24h temperature and humidity charts with an outdoor line (HVAC tab chart also has the outdoor line)
 - **HVAC Controls** - Thermostat controls for main HVAC systems (Nest thermostats)
 - **Radiant Floor Heating** - Zone-based radiant floor heating controls (Ecobee thermostats)
 - **Room Temperature Monitoring** - Individual room temperature cards organized by floor
