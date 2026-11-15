@@ -51,7 +51,7 @@ flowchart TB
 | `script.voice_announcement` | Primary TTS wrapper. Handles sound mapping, room-awareness, volume adjustment, and priority. |
 | `script.critical_announcement` | Emergency broadcasts. Ignores occupancy, uses louder volume and alarm sound. Skips the queue and starts the engine directly. |
 | `script.announcement_engine` | Low-level engine that plays the chime and TTS via Sonos announce. |
-| `script.repeat_last_voice_announcement` | Replays the most recent announcement stored in `input_text.latest_voice_announcement`. |
+| `script.repeat_last_voice_announcement` | Replays the most recent announcement stored in `input_text.latest_voice_announcement` (max 255; longer messages are saved truncated with `...`). |
 
 ---
 
