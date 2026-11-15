@@ -1,4 +1,11 @@
+# Latest Voice Announcement
+#
+# Last spoken message, replayed by repeat_last_voice_announcement.
+# 255 is HA's input_text limit; writers truncate to fit.
+#
+
 input_text:
   latest_voice_announcement:
     name: Latest Voice Announcement
     icon: mdi:bullhorn
+    max: 255
