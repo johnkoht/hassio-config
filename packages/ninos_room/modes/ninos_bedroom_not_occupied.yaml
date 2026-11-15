@@ -2,6 +2,8 @@
 #
 # Clear occupancy once the lights and bed are off. An empty house clears
 # it outright (bed permitting) so Mode Auto can resume on return.
+# The lamp (an occupied trigger) never holds occupancy: only the bed and
+# main lights gate the clear, so a lamp left on overnight stays harmless.
 #
 
 automation:
@@ -18,6 +20,12 @@ automation:
       # Lights turned OFF
       - trigger: state
         entity_id: light.ninos_bedroom_main_lights
+        to: "off"
+        for:
+          minutes: 5
+      # Lamp turned OFF
+      - trigger: state
+        entity_id: light.nino_bedroom_lamp
         to: "off"
         for:
           minutes: 5
