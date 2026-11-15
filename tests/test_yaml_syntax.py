@@ -258,3 +258,17 @@ class TestYAMLSyntaxPerFile:
                 f"File parsed to None but is not empty"
         except yaml.YAMLError as e:
             pytest.fail(f"YAML syntax error: {e}")
+
+
+class TestThemeYAML:
+    """Themes live outside packages/, so the package scan never sees them."""
+
+    def test_themes_have_no_duplicate_keys(self):
+        """JK-1247: a repeated theme key is flagged by the HA config check."""
+        errors = []
+        for path in sorted((CONFIG_ROOT / "themes").glob("**/*.yaml")):
+            try:
+                yaml.load(path.read_text(encoding="utf-8"), Loader=UniqueKeyLoader)
+            except DuplicateKeyError as e:
+                errors.append(f"{path.relative_to(CONFIG_ROOT)}: {e}")
+        assert not errors, "Duplicate theme keys:\n" + "\n".join(errors)
