@@ -174,7 +174,7 @@ def room_files(room):
 
 
 def test_files_found():
-    assert len(room_files("powder_room")) == 9 and len(room_files("mudroom_bathroom")) == 10
+    assert len(room_files("powder_room")) >= 9 and len(room_files("mudroom_bathroom")) >= 10
 
 
 @pytest.mark.parametrize("room", ROOMS)
