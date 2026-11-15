@@ -6,13 +6,18 @@ trigger:
     entity_id: group.guests
     from: "not_home"
     to: "home"
-  # A parent's or Joe's iPhone detect confirms them (see the condition below)
+  # A parent's, Katia's or Joe's iPhone detect confirms them (see the
+  # condition below). Held 1 minute so a detect flap can't re-enable it, and
+  # so UniFi has caught up to person.* when detect leads.
   - platform: state
     entity_id:
       - device_tracker.sonia_iphone_detect
       - device_tracker.antoun_iphone_detect
+      - device_tracker.katia_iphone_detect
       - device_tracker.joe_iphone_detect
     to: "home"
+    for:
+      minutes: 1
   - platform: homeassistant
     event: start
 condition:
@@ -23,12 +28,13 @@ condition:
   - condition: state
     entity_id: group.guests
     state: "home"
-  # A parent or Joe only counts once their iPhone detect agrees (UniFi blips)
+  # A parent, Katia or Joe only counts once their iPhone detect agrees (UniFi blips)
   - condition: template
     value_template: >-
       {% set parents = {
         'person.antoun_koht': 'device_tracker.antoun_iphone_detect',
         'person.sonia_koht': 'device_tracker.sonia_iphone_detect',
+        'person.katia': 'device_tracker.katia_iphone_detect',
         'person.joe_falbo': 'device_tracker.joe_iphone_detect'} %}
       {% set ns = namespace(n=0) %}
       {% for p in expand('group.guests') if p.state == 'home'

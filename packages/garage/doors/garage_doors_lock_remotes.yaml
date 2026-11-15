@@ -55,12 +55,19 @@ automation:
           - person.john_koht
           - person.cristina_falbo
           - person.mary_falbo
+          - person.celi
+        to: "home"
+      # Parents, Katia and Joe: hold so iPhone detect can confirm (a UniFi
+      # blip alone must not unlock the remotes)
+      - trigger: state
+        entity_id:
           - person.antoun_koht
           - person.sonia_koht
           - person.katia
-          - person.celi
           - person.joe_falbo
         to: "home"
+        for:
+          minutes: 1
       # Hassio restart/relaod
       - trigger: homeassistant
         event: start
@@ -75,8 +82,18 @@ automation:
           - lock.garage_door_3_lock_remotes
         match: any
         state: "locked"
+      # A parent's, Katia's or Joe's arrival needs their iPhone detect to agree
+      - condition: template
+        value_template: >-
+          {% set detect = {
+            'person.antoun_koht': 'device_tracker.antoun_iphone_detect',
+            'person.sonia_koht': 'device_tracker.sonia_iphone_detect',
+            'person.katia': 'device_tracker.katia_iphone_detect',
+            'person.joe_falbo': 'device_tracker.joe_iphone_detect'} %}
+          {% set who = trigger.entity_id | default('', true) %}
+          {{ who not in detect or is_state(detect[who], 'home') }}
     actions:
-      # Lock the garage remotes
+      # Unlock the garage remotes
       - action: lock.unlock
         entity_id:
           - lock.garage_door_1_lock_remotes
