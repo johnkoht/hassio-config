@@ -1,4 +1,9 @@
+# Mudroom Bathroom Occupied
+#
+# Occupancy flag, set by the occupied / not occupied automations.
+#
+
 input_boolean:
   mudroom_bathroom_occupied:
-    name: Mudroom Bathoom Occupied
+    name: Mudroom Bathroom Occupied
     icon: mdi:toilet

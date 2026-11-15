@@ -19,7 +19,7 @@ automation:
       - trigger: state
         entity_id: input_boolean.bedtime
         to: "on"
-      # Hassio restart/relaod
+      # Hassio restart/reload
       - trigger: homeassistant
         event: start
       - trigger: event
@@ -44,8 +44,9 @@ automation:
             state: "on"
     actions:
       - action: input_select.select_option
-        data:
+        target:
           entity_id: input_select.powder_room
+        data:
           option: "Off"
       # Mark the Powder Room as unoccupied
       - action: input_boolean.turn_off
