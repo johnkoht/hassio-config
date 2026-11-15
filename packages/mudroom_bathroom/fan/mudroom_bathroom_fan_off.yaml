@@ -34,4 +34,5 @@ automation:
             state: "off"
     actions:
       - action: fan.turn_off
-        entity_id: fan.mudroom_bathroom_fan
+        target:
+          entity_id: fan.mudroom_bathroom_fan

@@ -37,6 +37,7 @@ group:
       - input_boolean.office_occupied
       - input_boolean.dining_room_occupied
       - input_boolean.mudroom_occupied
+      - input_boolean.mudroom_bathroom_occupied
       - input_boolean.foyer_occupied
       - input_boolean.jr_suite_occupied
       - input_boolean.laundry_room_occupied
@@ -76,6 +77,7 @@ template:
             or states.input_boolean.office_occupied.state == "on"
             or states.input_boolean.dining_room_occupied.state == "on"
             or states.input_boolean.mudroom_occupied.state == "on"
+            or states.input_boolean.mudroom_bathroom_occupied.state == "on"
             or states.input_boolean.foyer_occupied.state == "on"
             or states.input_boolean.jr_suite_occupied.state == "on"
           }}

@@ -1,3 +1,8 @@
+# Powder Room State
+#
+# Auto/Off mode selector for the Powder Room.
+#
+
 input_select:
   powder_room:
     name: Powder Room

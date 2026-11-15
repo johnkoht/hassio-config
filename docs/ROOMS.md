@@ -182,10 +182,10 @@ The powder room and mudroom bathroom have no climate sensors and simpler state m
 
 | Room | Occupied when | Empty when | When empty |
 |------|---------------|------------|------------|
-| Mudroom Bathroom | Motion, or the light turns on | No motion for a few minutes after the door opens, or the Aqara occupancy sensor clears | Light off; fan off after 5 min |
+| Mudroom Bathroom | Motion, or the light turns on | The Aqara occupancy sensor clears, or 5 min of no motion with the door not closed (an offline door sensor does not hold it occupied) | Light off; fan off after 5 min |
 | Powder Room | The light turns on, or the door closes (no motion sensor) | The light has been off for 5 min, or the door is open with the light off | Light off; fan off after 5 min |
 
-Both rooms going to **Off** mode also turn the light and fan off. Their automations carry no `initial_state`, so the dashboard toggles survive a restart. While the powder room's door sensor is offline, its occupancy follows the light alone. See `packages/powder_room/` and `packages/mudroom_bathroom/`.
+The mudroom bathroom's motion light needs the house occupied and turns on only below 150 lux. Both rooms' lights-off automations only run while `input_boolean.lighting_automations` is on; turning it back on sweeps lights left on in an empty room. Both rooms going to **Off** mode also turn the light and fan off. Their automations carry no `initial_state`, so the dashboard toggles survive a restart. While the powder room's door sensor is offline, its occupancy follows the light alone. See `packages/powder_room/` and `packages/mudroom_bathroom/`.
 
 ---
 

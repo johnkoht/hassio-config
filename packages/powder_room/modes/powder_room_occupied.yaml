@@ -1,5 +1,7 @@
 # Powder Room Occupied
 #
+# Mark the room occupied when the door closes or the light turns on.
+#
 automation:
   - id: "powder_room_occupied"
     alias: "Powder Room Occupied"
@@ -21,7 +23,7 @@ automation:
       - condition: state
         entity_id: input_boolean.powder_room_occupied
         state: "off"
-      # Occupancy detetected
+      # Occupancy detected
       - condition: or
         conditions:
           # Powder Room door is closed
@@ -34,4 +36,5 @@ automation:
             state: "on"
     actions:
       - action: input_boolean.turn_on
-        entity_id: input_boolean.powder_room_occupied
+        target:
+          entity_id: input_boolean.powder_room_occupied

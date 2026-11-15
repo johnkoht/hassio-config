@@ -1,3 +1,9 @@
+# Powder Room Mode Auto
+#
+# The Powder Room follows the house: Auto when the house is
+# occupied, in Auto/Quiet mode and not in bedtime.
+#
+
 automation:
   - id: "powder_room_mode_auto"
     alias: "Powder Room mode Auto"
@@ -32,6 +38,7 @@ automation:
           - "Quiet"
     actions:
       - action: input_select.select_option
-        data:
+        target:
           entity_id: input_select.powder_room
+        data:
           option: "Auto"
