@@ -130,7 +130,7 @@ script:
         target:
           entity_id: input_text.latest_voice_announcement
         data:
-          value: "{{ speech_message }}"
+          value: "{{ speech_message | string | truncate(255, true, '...', 0) }}"
 
       # Start the engine without waiting: the engine is mode queued so
       # playback stays in order, and a REST caller (the leak notifier,
