@@ -1,3 +1,8 @@
+# Powder Room Occupied
+#
+# Occupancy flag, set by the occupied / not occupied automations.
+#
+
 input_boolean:
   powder_room_occupied:
     name: Powder Room Occupied

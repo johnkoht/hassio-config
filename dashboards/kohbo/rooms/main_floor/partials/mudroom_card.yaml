@@ -6,7 +6,7 @@ template: room_card
 variables:
   - mode: input_select.mudroom
   - occupancy: input_boolean.mudroom_occupied
-  - room: "foyer"
+  - room: "mud_room"
   - room_name: Mudroom
   - navigation_path: '/dashboard-kohbo/rooms-mudroom'
   - temperature: "[[[ return states['sensor.mudroom_motion_sensor_air_temperature'].state ]]]"
