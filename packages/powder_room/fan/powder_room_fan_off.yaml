@@ -33,4 +33,5 @@ automation:
             state: "off"
     actions:
       - action: fan.turn_off
-        entity_id: fan.powder_room_fan
+        target:
+          entity_id: fan.powder_room_fan

@@ -19,6 +19,10 @@ automation:
         entity_id: input_boolean.lighting_automations
         to: "on"
     conditions:
+      # Lighting automations are enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
       # Lights are currently on
       - condition: state
         entity_id: light.powder_room_main_lights

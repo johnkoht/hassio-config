@@ -1,3 +1,8 @@
+# Mudroom Bathroom State
+#
+# Auto/Off mode selector for the Mudroom Bathroom.
+#
+
 input_select:
   mudroom_bathroom:
     name: Mudroom Bathroom
