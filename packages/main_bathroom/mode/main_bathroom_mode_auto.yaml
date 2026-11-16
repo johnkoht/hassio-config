@@ -14,10 +14,12 @@ automation:
         entity_id: input_boolean.main_bathroom_occupied
         to: "off"
         id: "main_bathroom_unoccupied"
-      # Main bedroom turns to Wake
+      # Bathroom has been Wake for 10 minutes (as in the main bedroom)
       - trigger: state
-        entity_id: input_select.main_bedroom
+        entity_id: input_select.main_bathroom
         to: "Wake"
+        for:
+          minutes: 10
       # Main bedroom turns to Auto
       - trigger: state
         entity_id: input_select.main_bedroom
