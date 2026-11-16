@@ -321,9 +321,10 @@ automation:
       # Set the action variables
       #
       - variables:
-          action_taken: "{{ 'TAKEN_' ~ context.id }}"
+          # Fixed ids (not per-run): a tap works until the 03:00 reset, heard
+          # by nino_medication_push_action.yaml while the dose is outstanding
+          action_taken: "NINO_MEDICATION_TAKEN_{{ dose }}"
           action_snooze: "{{ 'SNOOZE_' ~ context.id }}"
-          # Fixed id (not per-run): a tap works however late
           action_skip: "NINO_MEDICATION_SKIP_{{ dose }}"
 
       #
@@ -362,9 +363,9 @@ automation:
 
       #
       # Wait for a response: the taken boolean flipping on (covers
-      # the ZHA shortcut button and any other path that marks the
-      # dose taken), the push notification's Taken action, the
-      # push notification's Snooze action, or the dose being skipped
+      # the ZHA shortcut button, the push Taken action (handled by
+      # nino_medication_push_action.yaml) and any other path that marks
+      # the dose taken), the push notification's Snooze action, or the dose being skipped
       # (ends the wait; the skip automation cleans up).
       #
       # The taken-trigger MUST be a template trigger, not a state
@@ -375,11 +376,6 @@ automation:
           - trigger: template
             id: "taken"
             value_template: "{{ is_state(taken_boolean, 'on') }}"
-          - trigger: event
-            id: "taken_push"
-            event_type: mobile_app_notification_action
-            event_data:
-              action: "{{ action_taken }}"
           - trigger: event
             id: "snooze"
             event_type: mobile_app_notification_action
@@ -396,10 +392,10 @@ automation:
       # refers to this automation's original trigger, not the wait's).
       #
       - choose:
-          # Marked taken (boolean flipped, or the push Taken action)
+          # Marked taken (the boolean flipped; the push Taken action sets it)
           - conditions:
               - condition: template
-                value_template: "{{ wait.trigger is not none and wait.trigger.id in ['taken', 'taken_push'] }}"
+                value_template: "{{ wait.trigger is not none and wait.trigger.id == 'taken' }}"
             sequence:
               - action: script.nino_medication_taken
                 data:
@@ -499,7 +495,7 @@ script:
         name: Dose
         description: >-
           The dose number to mark as taken. Optional — when omitted,
-          uses the pending dose, else the earliest untaken dose today.
+          uses the pending dose, else the earliest open dose today (dose 2 only once due or dose 1 given).
         example: "1"
         selector:
           select:
@@ -509,7 +505,9 @@ script:
     variables:
       # Resolve the dose: requested, else pending, else earliest open
       # (untaken and not skipped; earliest-first is intentional: an early
-      # dose is marked first), else "none" and the script no-ops.
+      # dose 1 is marked first; dose 2 only once it is due or dose 1 has been
+      # given, so an early phrase after a dose 1 skip does not mark it),
+      # else "none" and the script no-ops.
       resolved_dose: >-
         {% set requested = dose | default('', true) | string %}
         {% set pending = states('sensor.nino_medication_pending_dose') | string %}
@@ -518,7 +516,7 @@ script:
         {% set time_1_ok = time_1 not in ['unknown', 'unavailable', '', None] %}
         {% set time_2_ok = time_2 not in ['unknown', 'unavailable', '', None] %}
         {% set dose_1_open = time_1_ok and is_state('input_boolean.nino_medication_1_taken', 'off') and not is_state('input_boolean.nino_medication_1_skipped', 'on') %}
-        {% set dose_2_open = time_2_ok and is_state('input_boolean.nino_medication_2_taken', 'off') and not is_state('input_boolean.nino_medication_2_skipped', 'on') %}
+        {% set dose_2_open = time_2_ok and (now() >= today_at(time_2) or is_state('input_boolean.nino_medication_1_taken', 'on')) and is_state('input_boolean.nino_medication_2_taken', 'off') and not is_state('input_boolean.nino_medication_2_skipped', 'on') %}
         {% if requested | string in ['1', '2'] %}
         {{ requested }}
         {% elif pending | string in ['1', '2'] %}
