@@ -20,10 +20,12 @@ automation:
       - condition: state
         entity_id: input_boolean.main_bathroom_lights_manually_toggled
         state: "off"
-      # Bathroom is Auto
+      # Bathroom is Auto or Wake
       - condition: state
         entity_id: input_select.main_bathroom
-        state: "Auto"
+        state:
+          - "Auto"
+          - "Wake"
       # Light is low
       - condition: numeric_state
         entity_id: sensor.main_bathroom_motion_sensor_illuminance

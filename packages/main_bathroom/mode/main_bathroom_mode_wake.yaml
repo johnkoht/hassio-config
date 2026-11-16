@@ -1,0 +1,43 @@
+# Main Bathroom Mode Wake
+#
+# The main bedroom wakes (Bedtime -> Wake): the bathroom leaves Bedtime for Wake,
+# which runs the regular motion lights and drops the night light. Like the bedroom,
+# it clears to Auto after 10 minutes (main_bathroom_mode_auto).
+#
+automation:
+  - id: "main_bathroom_mode_wake"
+    initial_state: on
+    alias: "Main Bathroom mode wake"
+    triggers:
+      # Main bedroom turns to Wake
+      - trigger: state
+        entity_id: input_select.main_bedroom
+        to: "Wake"
+    conditions:
+      # Only move to Wake from Bedtime
+      - condition: state
+        entity_id: input_select.main_bathroom
+        state: "Bedtime"
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.main_bathroom
+        data:
+          option: "Wake"
+
+      # Turn off the bedtime motion
+      - action: automation.turn_off
+        target:
+          entity_id: automation.main_bathroom_bedtime_motion_on
+
+      # Turn on the regular motion automation
+      - action: automation.turn_on
+        target:
+          entity_id: automation.main_bathroom_lights_motion_on
+
+      # Turn OFF sleep mode
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.adaptive_lighting_sleep_mode_main_bathroom
+            - switch.adaptive_lighting_sleep_mode_main_bathroom_toilet

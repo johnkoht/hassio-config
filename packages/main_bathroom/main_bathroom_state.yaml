@@ -8,4 +8,5 @@ input_select:
       - "Auto"
       - "Bedtime"
       - "Motion"
+      - "Wake"
       - "Off"
