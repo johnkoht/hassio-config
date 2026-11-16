@@ -1,0 +1,27 @@
+#
+# Nino Medication Taken Clears Skip
+#
+# A dose that is marked taken is no longer skipped, whichever path set it
+# (script, push, button, or the dashboard toggle). Never both on.
+#
+
+automation:
+  - id: "nino_medication_taken_clears_skip"
+    alias: "Nino Medication Taken Clears Skip"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.nino_medication_1_taken
+        from: "off"
+        to: "on"
+        id: "1"
+      - trigger: state
+        entity_id: input_boolean.nino_medication_2_taken
+        from: "off"
+        to: "on"
+        id: "2"
+    conditions: []
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: "input_boolean.nino_medication_{{ trigger.id }}_skipped"

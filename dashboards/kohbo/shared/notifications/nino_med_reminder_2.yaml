@@ -1,8 +1,8 @@
 #
 # Nino Medication Reminder — Dose 2
 #
-# Shown in the notifications popup whenever dose 2 is untaken.
-# Cleared as soon as it's marked taken.
+# Shown in the notifications popup whenever dose 2 is untaken
+# and not skipped. Cleared as soon as it's marked taken or skipped.
 # Hidden while reminders are off.
 #
 type: conditional
@@ -13,6 +13,9 @@ conditions:
   - condition: state
     entity: input_boolean.nino_medication_2_taken
     state: "off"
+  - condition: state
+    entity: input_boolean.nino_medication_2_skipped
+    state_not: "on"
 card:
   type: custom:bubble-card
   card_type: button
@@ -32,6 +35,17 @@ card:
         perform_action: timer.start
         target:
           entity_id: timer.nino_medication_2_timer
+    # Skip this dose today
+    - entity: script.nino_medication_skip
+      icon: mdi:debug-step-over
+      state_background: false
+      show_background: false
+      tap_action:
+        action: perform-action
+        perform_action: script.nino_medication_skip
+        target: {}
+        data:
+          dose: "2"
     # Mark taken
     - entity: script.nino_medication_taken
       icon: mdi:check-circle
