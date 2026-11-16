@@ -6,7 +6,7 @@
 # router_tracked_devices:
 #   name: "Devices tracked by the router"
 #   entities:
-#     - device_tracker.cristinas_iphone_14_unifi
+#     - device_tracker.cristinas_iphone_17_unifi
 #     - device_tracker.john_iphone_14_unifi
 #     - device_tracker.joes_iphone_13
 #     - device_tracker.antoun_koht_2
