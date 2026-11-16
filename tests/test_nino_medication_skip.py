@@ -247,7 +247,8 @@ def test_both_pushes_offer_skip_with_a_fixed_id_and_the_ids_have_handlers():
     handlers = {}
     for name in ("nino_medication_push_action.yaml", "nino_medication_push_skip.yaml"):
         for t in _auto(name)["triggers"]:
-            handlers[t["event_data"]["action"]] = t["id"]
+            assert t["event_data"]["action"] not in handlers, "an action id has two handlers"
+            handlers[t["event_data"]["action"]] = (name, t["id"])
     # reminder push
     acts = [a for n in walk(reminder_auto()["actions"]) if isinstance(n, dict)
             and n.get("action") == "script.general_notification" for a in n["data"]["actions"]]
@@ -261,7 +262,9 @@ def test_both_pushes_offer_skip_with_a_fixed_id_and_the_ids_have_handlers():
         ids = [a["action"] for a in branch["then"][0]["data"]["data"]["actions"]]
         assert f"NINO_MEDICATION_SKIP_{n}" in ids and f"NINO_MEDICATION_TAKEN_{n}" in ids
         for i in ids:
-            assert handlers[i] == n
+            file, dose = handlers[i]
+            assert dose == n
+            assert file == ("nino_medication_push_skip.yaml" if "SKIP" in i else "nino_medication_push_action.yaml")
 
 
 def test_popup_cards_hide_a_skipped_dose_and_offer_skip():
