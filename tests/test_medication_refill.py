@@ -309,6 +309,29 @@ def test_push_action_only_matches_the_two_ids():
     assert act["data"]["days"] == "{{ trigger.id | int }}"
 
 
+def _gate(days_state, threshold="7"):
+    a = automation(SHARED / "medication_refill_push_action.yaml")
+    (cond,) = a["conditions"]
+    states = {DAYS: days_state, THRESH: threshold}
+    return render(cond["value_template"], states) == "True"
+
+
+@pytest.mark.parametrize("days,threshold,expected", [
+    ("5", "7", True), ("0", "7", True), ("6", "7", True),
+    ("7", "7", False), ("20", "7", False),            # refilled: an old push does nothing
+    ("unavailable", "7", False), ("unknown", "7", False), ("-1", "7", False),
+    ("5", "0", False), ("5", "unknown", False),       # thresholds unset: the alert is silent too
+])
+def test_push_action_only_acts_while_a_refill_is_outstanding(days, threshold, expected):
+    assert _gate(days, threshold) is expected
+
+
+@pytest.mark.parametrize("days", ["0", "3", "6", "7", "12", "unavailable", "-1"])
+def test_push_gate_agrees_with_the_alert(days):
+    """The gate is the alert's `low` test: a push is only tappable while it would be sent."""
+    assert _gate(days) == bool(_alert_pushes(days))
+
+
 # ----------------------------------------------------------- safety scope
 
 FORBIDDEN = ["critical_announcement", "voice_announcement", "emergency", "alarmo",
