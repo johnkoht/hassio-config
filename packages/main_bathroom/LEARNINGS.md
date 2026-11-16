@@ -15,3 +15,7 @@ Gated by the latch (on-type): `main_bathroom_lights_motion_on` and the night lig
 ## Occupancy-off listeners (checked for JK-1219)
 
 `main_bathroom_mode_off` now also turns `main_bathroom_occupied` off at house empty, Away and restart (not bedtime). Listeners: `main_bathroom_lights_off`, `main_bathroom_turn_off_outlets` (steamer and hair dryer plugs off; wanted when nobody is home), `main_bathroom_lights_reset_manual_toggle`, `main_bathroom_mode_auto` (guarded), `main_bedroom_not_occupied` (needs the bedroom occupied; `main_bedroom_mode_off` already clears that at the same times). The upper-floor sensors and the area cards only read the state.
+
+## Wake (JK-1226)
+
+`Wake` mirrors the main bedroom's. `main_bathroom_mode_wake` sets it when the bedroom goes to `Wake` and the bathroom is in `Bedtime`: night light automation off, regular motion on, sleep mode off. `main_bathroom_lights_motion_on` runs in Auto or Wake. `main_bathroom_mode_auto` clears it after 10 minutes (as the bedroom does). Its old bedroom-`Wake` trigger is gone: it raced the setter and sent the bathroom straight to Auto. The dashboard mode chip has no `Wake` state, same as the bedroom.
