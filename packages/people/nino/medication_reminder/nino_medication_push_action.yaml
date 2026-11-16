@@ -2,11 +2,11 @@
 # Nino Medication Push Action
 #
 # Marks a dose taken from the Medication Taken quick action on the
-# critical escalation push. The ids are fixed per dose (not per run
-# like the reminder's), so a tap works however long after the push.
-# Only acts while that dose's escalated flag is on (set when the push
-# is sent, cleared at the 3am reset), so a tap on yesterday's push
-# cannot mark today's dose taken. Clears the push after a tap.
+# reminder push and the critical escalation push. The ids are fixed per
+# dose, so a tap works until the 03:00 reset. Only acts while that dose
+# is outstanding (pending, or escalated today; not taken, not skipped).
+# The reset clears both flags, so a tap on yesterday's push does nothing.
+# Clears both pushes after a tap.
 #
 
 automation:
@@ -25,9 +25,13 @@ automation:
           action: "NINO_MEDICATION_TAKEN_2"
         id: "2"
     conditions:
-      - alias: "The escalation push for this dose is from today"
+      - alias: "The dose is outstanding today (pending or escalated, not taken, not skipped)"
         condition: template
-        value_template: "{{ is_state('input_boolean.nino_medication_' ~ trigger.id ~ '_escalated', 'on') }}"
+        value_template: >-
+          {{ not is_state('input_boolean.nino_medication_' ~ trigger.id ~ '_taken', 'on')
+             and not is_state('input_boolean.nino_medication_' ~ trigger.id ~ '_skipped', 'on')
+             and (states('sensor.nino_medication_pending_dose') | string == trigger.id | string
+                  or is_state('input_boolean.nino_medication_' ~ trigger.id ~ '_escalated', 'on')) }}
     actions:
       - action: script.nino_medication_taken
         data:
@@ -38,3 +42,9 @@ automation:
         data:
           devices: all
           tag: "nino-medication-escalation-{{ trigger.id }}"
+      - alias: "Clear the reminder push"
+        continue_on_error: true
+        action: script.clear_notifications
+        data:
+          devices: all
+          tag: "nino-medication-dose-{{ trigger.id }}"

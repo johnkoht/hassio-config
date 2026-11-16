@@ -27,7 +27,9 @@
 #
 # The push carries Medication Taken and Skip Dose quick actions with fixed ids
 # (NINO_MEDICATION_TAKEN_<dose>, caught by nino_medication_push_action.yaml;
-# NINO_MEDICATION_SKIP_<dose>, caught by nino_medication_push_skip.yaml). A tap opens Home > Notifications (home#notifications).
+# NINO_MEDICATION_SKIP_<dose>, caught by nino_medication_push_skip.yaml). A tap works
+# until the 03:00 reset clears the escalated flag, then does nothing. A tap on
+# the push body opens Home > Notifications (home#notifications).
 #
 # Each dose's `_escalated` boolean guards against re-sending a
 # critical push every 15 minutes once escalated; it's cleared by

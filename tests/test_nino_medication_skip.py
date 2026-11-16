@@ -126,7 +126,7 @@ def _resolved(dose, now_day, hhmm, **overrides):
 
 
 def test_taken_fallback_never_picks_a_skipped_dose_but_an_explicit_dose_wins():
-    assert _resolved("", "mon", "06:00", **SK1) == "2"            # earliest open skips dose 1
+    assert _resolved("", "mon", "<time>", **SK1) == "2"            # dose 2 due: dose 1 skipped is passed over
     assert _resolved("", "mon", "06:00", **SK1, **SK2) == "none"
     assert _resolved("1", "mon", "06:00", **SK1) == "1"           # explicit taken still wins
 
@@ -274,3 +274,14 @@ def test_popup_cards_hide_a_skipped_dose_and_offer_skip():
         subs = card["card"]["sub_button"]
         assert any(s["tap_action"].get("perform_action") == "script.nino_medication_skip"
                    and s["tap_action"]["data"]["dose"] == n for s in subs)
+
+
+# --- JK-1259: an early Alexa phrase after a dose 1 skip must not mark dose 2 ----
+
+def test_taken_fallback_waits_for_dose_2_to_be_due():
+    assert _resolved("", "mon", "06:00", **SK1) == "none"         # nothing due, dose 1 skipped
+    assert _resolved("", "mon", "<time>", **SK1) == "none"         # dose 2 not due yet
+    assert _resolved("", "mon", "<time>", **SK1) == "2"            # dose 2 due
+    assert _resolved("", "mon", "<time>", **SK1, **{"timer.nino_medication_2_timer": "active"}) == "2"  # snoozing = pending
+    assert _resolved("", "mon", "06:00") == "1"                   # an early dose 1 is still marked first
+    assert _resolved("", "mon", "<time>", **{"input_boolean.nino_medication_1_taken": "on"}) == "none"
