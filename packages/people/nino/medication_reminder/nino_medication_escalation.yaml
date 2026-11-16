@@ -24,6 +24,10 @@
 # would disable this net exactly when a restart caused the missed
 # dose. time_pattern polls and is restart-proof.
 #
+# The push carries a Medication Taken quick action with a fixed id
+# (NINO_MEDICATION_TAKEN_<dose>), caught by nino_medication_push_action.yaml
+# at any time. A tap opens Home > Notifications (home#notifications).
+#
 # Each dose's `_escalated` boolean guards against re-sending a
 # critical push every 15 minutes once escalated; it's cleared by
 # nino_medication_reminder_reset at 3am.
@@ -62,8 +66,14 @@ automation:
               title: "Nino's Medication Reminder"
               message: "Nino's Dose 1 medication is more than 2 hours late and still hasn't been marked taken."
               data:
+                tag: "nino-medication-escalation-1"
+                url: "/dashboard-kohbo/home#notifications"
+                clickAction: "/dashboard-kohbo/home#notifications"
                 push:
                   interruption-level: "critical"
+                actions:
+                  - action: "NINO_MEDICATION_TAKEN_1"
+                    title: "Medication Taken"
           - action: input_boolean.turn_on
             target:
               entity_id: input_boolean.nino_medication_1_escalated
@@ -89,8 +99,14 @@ automation:
               title: "Nino's Medication Reminder"
               message: "Nino's Dose 2 medication is more than 2 hours late and still hasn't been marked taken."
               data:
+                tag: "nino-medication-escalation-2"
+                url: "/dashboard-kohbo/home#notifications"
+                clickAction: "/dashboard-kohbo/home#notifications"
                 push:
                   interruption-level: "critical"
+                actions:
+                  - action: "NINO_MEDICATION_TAKEN_2"
+                    title: "Medication Taken"
           - action: input_boolean.turn_on
             target:
               entity_id: input_boolean.nino_medication_2_escalated

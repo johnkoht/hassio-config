@@ -1,0 +1,40 @@
+#
+# Nino Medication Push Action
+#
+# Marks a dose taken from the Medication Taken quick action on the
+# critical escalation push. The ids are fixed per dose (not per run
+# like the reminder's), so a tap works however long after the push.
+# Only acts while that dose's escalated flag is on (set when the push
+# is sent, cleared at the 3am reset), so a tap on yesterday's push
+# cannot mark today's dose taken. Clears the push after a tap.
+#
+
+automation:
+  - id: "nino_medication_push_action"
+    alias: "Nino Medication Push Action"
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "NINO_MEDICATION_TAKEN_1"
+        id: "1"
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "NINO_MEDICATION_TAKEN_2"
+        id: "2"
+    conditions:
+      - alias: "The escalation push for this dose is from today"
+        condition: template
+        value_template: "{{ is_state('input_boolean.nino_medication_' ~ trigger.id ~ '_escalated', 'on') }}"
+    actions:
+      - action: script.nino_medication_taken
+        data:
+          dose: "{{ trigger.id }}"
+      - alias: "Clear the escalation push"
+        continue_on_error: true
+        action: script.clear_notifications
+        data:
+          devices: all
+          tag: "nino-medication-escalation-{{ trigger.id }}"
