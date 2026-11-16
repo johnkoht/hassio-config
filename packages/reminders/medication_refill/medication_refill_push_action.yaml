@@ -1,7 +1,10 @@
 # Medication Refill Push Action
 #
 # Add 15 or 30 days of stock when a +15 / +30 button is tapped on the
-# low-stock push. The script clears the push, so a stale tap does nothing.
+# low-stock push. The ids are fixed and a tap on an old push still arrives, so
+# it only acts while a refill is outstanding: the same "low" test the alert
+# uses (days left known and under the threshold). Once stock is refilled
+# above the threshold, taps on older pushes do nothing.
 #
 
 automation:
@@ -19,7 +22,14 @@ automation:
         event_data:
           action: "MEDICATION_REFILLED_NINO_30"
         id: "30"
-    conditions: []
+    conditions:
+      - alias: "A refill is outstanding (days left known and under the threshold)"
+        condition: template
+        value_template: >-
+          {% set days = states('sensor.nino_medication_days_remaining') | int(-1) %}
+          {% set threshold = states('input_number.medication_refill_threshold_days') | float(0) %}
+          {{ has_value('sensor.nino_medication_days_remaining') and days >= 0
+             and threshold > 0 and days < threshold }}
     actions:
       - action: script.medication_refilled
         data:
