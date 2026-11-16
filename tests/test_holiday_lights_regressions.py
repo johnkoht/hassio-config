@@ -358,3 +358,85 @@ def test_christmas_season_schedule_group_and_popup_row():
         for row in card["entities"]
     ]
     assert any(r.get("entity") == "group.christmas_season_schedule" for r in rows)
+
+
+# --- Trees and playroom plugs off when the house is down (2026-11-15) ---
+
+CHRISTMAS_LIGHTS = REPO / "packages/holidays/christmas/lights"
+NOT_HOME = "christmas_plugs_off_when_not_home"
+
+
+def _not_home():
+    (auto,) = automations(CHRISTMAS_LIGHTS / f"{NOT_HOME}.yaml").values()
+    return auto
+
+
+def _group_members(unique_id):
+    content = yaml.safe_load((CHRISTMAS_LIGHTS / "christmas_lights_group.yaml").read_text())
+    return next(g for g in content["switch"] if g["unique_id"] == unique_id)["entities"]
+
+
+def test_not_home_file_matches_its_id():
+    assert _not_home()["id"] == NOT_HOME
+
+
+def _triggers_for(auto, entity, to, held):
+    out = []
+    for t in auto["triggers"]:
+        ids = t["entity_id"] if isinstance(t["entity_id"], list) else [t["entity_id"]]
+        if entity in ids and t.get("to") == to and bool(t.get("for")) == held:
+            out.append(t)
+    return out
+
+
+def test_not_home_triggers_cover_bedtime_away_and_unoccupied():
+    auto = _not_home()
+    for entity, to in [
+        ("input_select.house", "Bedtime"),
+        ("input_select.house", "Away"),
+        ("input_boolean.house_occupied", "off"),
+    ]:
+        assert _triggers_for(auto, entity, to, held=False), (entity, to)
+        (retry,) = _triggers_for(auto, entity, to, held=True)
+        assert retry["for"] == {"minutes": 3}
+
+
+def test_not_home_late_plug_trigger_covers_every_member_and_holds_a_minute():
+    auto = _not_home()
+    members = _group_members("christmas_trees") + _group_members("christmas_playroom_lights")
+    assert len(members) == 6
+    for plug in members:
+        held = _triggers_for(auto, plug, "on", held=True)
+        assert sorted(t["for"]["minutes"] for t in held) == [1, 3], plug
+
+
+def test_not_home_is_not_season_or_christmas_gated():
+    auto = _not_home()
+    text = str(auto["conditions"])
+    for gate in ("christmas_active", "christmas_season_active", "halloween"):
+        assert gate not in text
+    for c in auto["conditions"]:
+        assert c["condition"] == "or"  # only the house-down gate
+    assert "input_boolean.christmas_active" not in str(auto["triggers"])
+
+
+def test_not_home_gate_is_bedtime_away_or_unoccupied():
+    (gate,) = _not_home()["conditions"]
+    got = {(c["entity_id"], c["state"]) for c in gate["conditions"]}
+    assert got == {
+        ("input_select.house", "Bedtime"),
+        ("input_select.house", "Away"),
+        ("input_boolean.house_occupied", "off"),
+    }
+
+
+def test_not_home_targets_exactly_the_two_groups():
+    (action,) = _not_home()["actions"]
+    assert action["action"] == "switch.turn_off"
+    assert sorted(action["target"]["entity_id"]) == ["switch.christmas_playroom_lights", "switch.christmas_trees"]
+
+
+def test_not_home_leaves_the_front_yard_alone():
+    text = (CHRISTMAS_LIGHTS / f"{NOT_HOME}.yaml").read_text()
+    assert "front_yard" not in text
+    assert "switch.christmas_lights" not in text  # that master group contains the front yard on some branches
