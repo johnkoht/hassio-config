@@ -15,6 +15,11 @@ automation:
       - trigger: state
         entity_id: binary_sensor.nino_bed_occupied
         to: "on"
+      # Lamp turned ON (not an unavailable blip)
+      - trigger: state
+        entity_id: light.nino_bedroom_lamp
+        from: "off"
+        to: "on"
     conditions:
       # Not currently occupied
       - condition: state
@@ -33,6 +38,10 @@ automation:
           # Bed occupied
           - condition: state
             entity_id: binary_sensor.nino_bed_occupied
+            state: "on"
+          # Lamp is ON
+          - condition: state
+            entity_id: light.nino_bedroom_lamp
             state: "on"
     actions:
       - action: input_boolean.turn_on

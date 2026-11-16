@@ -198,4 +198,3 @@ kohbo:
   state-person-active-color: var(--primary-color)
   state-person-inactive-color: var(--light-grey-color)
   state-person-unavailable-color: var(--light-grey-color)
-  state-person-unavailable-color: var(--light-grey-color)

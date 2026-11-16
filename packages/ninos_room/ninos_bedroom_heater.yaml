@@ -64,7 +64,7 @@ automation:
         to: "on"
         for:
           minutes: 10
-      # Temperature is above 70.5
+      # Temperature is above 70.15
       - trigger: template
         value_template: >
           {{ is_number(states('sensor.nino_room_temperature'))

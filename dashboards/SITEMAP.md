@@ -21,7 +21,7 @@ The dashboard is organized into the following main sections:
 
 ### 🌡️ Climate
 - **Climate** (`climate/climate.yaml`)
-  - Climate control overview
+  - Climate control overview, indoor vs outdoor tiles and 24h temperature/humidity charts
 - **HVAC** (`climate/hvac.yaml`, `/dashboard-kohbo/climate-hvac`)
 - **Air Quality** (`climate/air_quality.yaml`, `/dashboard-kohbo/climate-air-quality`)
 - **Climate (Legacy)** (`climate/legacy.yaml`, `/dashboard-kohbo/climate-legacy`)

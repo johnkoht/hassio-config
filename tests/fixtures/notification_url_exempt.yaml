@@ -36,10 +36,6 @@
   reason: "Personal reminder"
 - path: packages/people/cristina/medication_reminder/cristina_friday_medication_reminder.yaml
   reason: "Personal reminder"
-- path: packages/people/nino/medication_reminder/nino_medication_escalation.yaml
-  reason: "Personal reminder"
-- path: packages/people/nino/medication_reminder/nino_medication_reminder.yaml
-  reason: "Personal reminder"
 - path: packages/reminders/medication_refill/medication_refill_low_stock_alert.yaml
   reason: "Personal reminder"
 - path: scripts.yaml

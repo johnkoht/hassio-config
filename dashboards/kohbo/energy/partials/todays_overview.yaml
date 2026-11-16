@@ -165,6 +165,24 @@ cards:
               fontSize: '10px'
             formatter: |
               EVAL: (val) => `${Math.round(val)}¢`
+        - id: outdoor_temp
+          seriesName: Outdoor
+          show: false
+          forceNiceScale: true
+      annotations:
+        # High-price alert threshold (binary_sensor.energy_prices_are_high: above 6¢)
+        yaxis:
+          - y: 6
+            yAxisIndex: 2
+            borderColor: '#E36001'
+            strokeDashArray: 4
+            label:
+              text: 'High 6¢'
+              position: left
+              style:
+                color: '#F8F9FA'
+                background: '#E36001'
+                fontSize: '9px'
       tooltip:
         x:
           format: 'HH:mm'
@@ -238,6 +256,23 @@ cards:
         stroke_width: 2
         curve: stepline
         yaxis_id: price
+        group_by:
+          func: avg
+          duration: 1h
+        show:
+          extremas: false
+          in_header: true
+          legend_value: true
+
+      # Outdoor temperature (line, hidden axis) for weather vs usage
+      - entity: sensor.tempest_temperature
+        type: line
+        name: Outdoor
+        color: var(--secondary-text-color)
+        unit: °F
+        stroke_width: 2
+        curve: smooth
+        yaxis_id: outdoor_temp
         group_by:
           func: avg
           duration: 1h
