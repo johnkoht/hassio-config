@@ -69,6 +69,11 @@ cards:
           template: empty_column
 
   #
+  # Indoor vs Outdoor — temperature and humidity now, with the difference
+  #
+  - !include /config/dashboards/kohbo/climate/partials/indoor_vs_outdoor.yaml
+
+  #
   # 24h Temperature Trend — Indoor vs Outdoor
   #
   - type: custom:stack-in-card
@@ -168,6 +173,88 @@ cards:
             type: line
             color: var(--secondary-text-color)
             stroke_width: 2
+
+  #
+  # 24h Humidity Trend — Indoor vs Outdoor
+  #
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_header
+        name: Humidity — Last 24h
+
+      - type: custom:apexcharts-card
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent;
+              border-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              padding-bottom: 16px;
+            }
+        graph_span: 24h
+        span:
+          end: hour
+        header:
+          show: false
+        apex_config:
+          chart:
+            height: 200
+          grid:
+            borderColor: 'rgba(255,255,255,0.05)'
+          legend:
+            show: true
+            position: bottom
+            horizontalAlign: center
+            fontSize: '11px'
+            markers:
+              width: 8
+              height: 8
+          stroke:
+            curve: smooth
+            width: 2
+          xaxis:
+            labels:
+              format: 'HH'
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          yaxis:
+            - min: 0
+              max: 100
+              tickAmount: 4
+              labels:
+                style:
+                  fontSize: '10px'
+                formatter: |
+                  EVAL: (val) => `${val.toFixed(0)}%`
+          tooltip:
+            x:
+              format: 'HH:mm'
+        series:
+          - entity: sensor.main_floor_humidity
+            name: Main Floor
+            type: line
+            color: var(--primary-color)
+          - entity: sensor.second_floor_humidity
+            name: Upper Floor
+            type: line
+            color: var(--accent-color)
+          - entity: sensor.tempest_humidity
+            name: Outdoor
+            type: line
+            color: var(--secondary-text-color)
 
   #
   # Navbar

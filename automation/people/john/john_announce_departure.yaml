@@ -2,28 +2,28 @@ id: "john_announce_departure"
 alias: John Announce Departure
 mode: parallel
 initial_state: "on"
-trigger:
-  - platform: state
+triggers:
+  - trigger: state
     entity_id: input_boolean.john_home
     to: "off"
     # Hold so a zone-edge flap announces once
     for:
       minutes: 1
-condition:
+conditions:
   # Somebody has been home for 5 minutes
   - condition: state
     entity_id: input_boolean.house_occupied
     state: "on"
     for:
       minutes: 5
-action:
+actions:
   # Announcement script
   - action: script.person_announcement
     data:
       person: john
       announcement_type: departure
   # # Announcement
-  # - service: script.voice_announcement
+  # - action: script.voice_announcement
   #   data:
   #     media_players: auto
   #     sound: "arcade"

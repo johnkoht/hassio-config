@@ -1,0 +1,141 @@
+#===========================================================================
+# PRICE ALERTS
+# Current price tier, the high / negative price alerts and their thresholds,
+# and the day-ahead peak hours. Thresholds mirror packages/energy/:
+#   high alert  > 6c  (binary_sensor.energy_prices_are_high)
+#   negative    < 0c  (binary_sensor.energy_prices_are_negative)
+#   day-ahead   peak >= 8c, high 6-8c (comed_day_ahead_derived.yaml)
+#===========================================================================
+
+type: custom:stack-in-card
+mode: vertical
+card_mod:
+  style: |
+    :host {
+      --stack-card-gap: 0;
+      --vertical-stack-card-gap: 0 !important;
+    }
+cards:
+  - type: custom:button-card
+    template: kohbo_card_header
+    name: Price Alerts
+
+  - type: custom:stack-in-card
+    mode: horizontal
+    cards:
+      # Current tier (low / normal / high / very high)
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.energy_price_tier
+        name: Price Now
+        show_state: true
+        state_display: |
+          [[[
+            const label = entity?.attributes?.label;
+            const c = parseFloat(entity?.attributes?.price_cents);
+            if (!label || isNaN(c)) return '—';
+            return label + ' · ' + c.toFixed(1) + '¢';
+          ]]]
+        styles:
+          state:
+            - font-size: 18px
+            - color: |
+                [[[ return entity?.attributes?.color || 'var(--primary-text-color)'; ]]]
+        variables:
+          show_divider: true
+
+      # High price alert (above 6c)
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: binary_sensor.energy_prices_are_high
+        name: High Alert 6¢+
+        show_state: true
+        state_display: |
+          [[[
+            if (entity?.state === 'on') return 'Active';
+            return entity?.state === 'off' ? 'Clear' : '—';
+          ]]]
+        styles:
+          state:
+            - font-size: 18px
+            - color: |
+                [[[ return entity?.state === 'on' ? 'var(--orange-color)' : 'var(--primary-text-color)'; ]]]
+        variables:
+          show_divider: true
+
+      # Negative price alert (below 0c)
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: binary_sensor.energy_prices_are_negative
+        name: Negative
+        show_state: true
+        state_display: |
+          [[[
+            if (entity?.state === 'on') return 'Active';
+            return entity?.state === 'off' ? 'Clear' : '—';
+          ]]]
+        styles:
+          state:
+            - font-size: 18px
+            - color: |
+                [[[ return entity?.state === 'on' ? 'var(--success-color)' : 'var(--primary-text-color)'; ]]]
+        variables:
+          show_divider: false
+
+  - type: custom:stack-in-card
+    mode: horizontal
+    cards:
+      # Day-ahead peak hours (8c+)
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.comed_day_ahead_peak_hours
+        name: Day-Ahead Peak 8¢+
+        show_state: true
+        state_display: |
+          [[[
+            const n = parseInt(entity?.state, 10);
+            return isNaN(n) ? '—' : n + (n === 1 ? ' hr' : ' hrs');
+          ]]]
+        styles:
+          state:
+            - font-size: 18px
+            - color: |
+                [[[ return parseInt(entity?.state, 10) > 0 ? 'var(--error-color)' : 'var(--primary-text-color)'; ]]]
+        variables:
+          show_divider: true
+
+      # Day-ahead high hours (6-8c)
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: sensor.comed_day_ahead_high_hours
+        name: Day-Ahead High 6-8¢
+        show_state: true
+        state_display: |
+          [[[
+            const n = parseInt(entity?.state, 10);
+            return isNaN(n) ? '—' : n + (n === 1 ? ' hr' : ' hrs');
+          ]]]
+        styles:
+          state:
+            - font-size: 18px
+            - color: |
+                [[[ return parseInt(entity?.state, 10) > 0 ? 'var(--orange-color)' : 'var(--primary-text-color)'; ]]]
+        variables:
+          show_divider: true
+
+      # Whether the high-price eco automations are armed
+      - type: custom:button-card
+        template: kohbo_energy_stat_card
+        entity: input_boolean.climate_energy_price_automations
+        name: Auto Eco
+        show_state: true
+        state_display: |
+          [[[ return entity?.state === 'on' ? 'On' : (entity?.state === 'off' ? 'Off' : '—'); ]]]
+        styles:
+          state:
+            - font-size: 18px
+        tap_action:
+          action: navigate
+          navigation_path: '#energy_settings_popup'
+        variables:
+          show_divider: false

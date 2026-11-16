@@ -1,3 +1,9 @@
+# Powder Room Not Occupied
+#
+# Clear occupancy once the door is open and the light is off,
+# or either has held for 5 minutes.
+#
+
 automation:
   - id: "powder_room_not_occupied"
     alias: "Powder Room Not Occupied"
@@ -58,4 +64,5 @@ automation:
                   minutes: 5
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.powder_room_occupied
+        target:
+          entity_id: input_boolean.powder_room_occupied

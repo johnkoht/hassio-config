@@ -1,3 +1,9 @@
+# Mudroom Bathroom Fan
+#
+# Template fan wrapping the fan switch so automations and the dashboard
+# can treat it as a fan.
+#
+
 template:
   - fan:
       - name: "Mudroom Bathroom Fan"

@@ -297,6 +297,10 @@ cards:
       - entity: sensor.nino_room_mean_temperature
         name: Nino
         type: line
+      - entity: sensor.tempest_temperature
+        name: Outdoor
+        type: line
+        color: var(--secondary-text-color)
 
   #
   # Navbar

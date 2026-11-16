@@ -1,5 +1,7 @@
 # Mudroom Bathroom Lights Motion On
 #
+# Turn the light on when motion is detected and the room is dim.
+#
 automation:
   - id: "mudroom_bathroom_motion_on"
     alias: "Mudroom Bathroom Lights Motion On"
@@ -9,6 +11,10 @@ automation:
         entity_id: binary_sensor.mudroom_bathroom_motion
         to: "on"
     conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
       # Mudroom bathroom is Auto
       - condition: state
         entity_id: input_select.mudroom_bathroom
@@ -20,11 +26,12 @@ automation:
       # Light is low
       - condition: numeric_state
         entity_id: sensor.mudroom_bathroom_illuminance
-        below: 200
+        below: 150
       # Lights are currently off
       - condition: state
         entity_id: light.mudroom_bathroom_main_lights
         state: "off"
     actions:
       - action: light.turn_on
-        entity_id: light.mudroom_bathroom_main_lights
+        target:
+          entity_id: light.mudroom_bathroom_main_lights
