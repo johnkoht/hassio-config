@@ -1,6 +1,8 @@
-# Automation to detect and initiate home for Joe
+# Automation to detect and initiate home for Nonna
 #
-# This automation will detect if Joe's home based on
+# iPhone Detect must agree, so a UniFi tracker blip alone can't mark her home.
+#
+# This automation will detect if Nonna's home based on
 # a bunch of triggers and conditions and then run a
 # script to handle home actions.
 #
@@ -17,6 +19,10 @@ automation:
       - trigger: state
         entity_id: binary_sensor.nonna_presence
         to: "on"
+      # iPhone detect tracker is detected home
+      - trigger: state
+        entity_id: device_tracker.mary_iphone_detect
+        to: "home"
       - trigger: event
         event_type: automation_reloaded
       - trigger: homeassistant
@@ -26,6 +32,10 @@ automation:
       - condition: state
         entity_id: input_boolean.nonna_home
         state: "off"
+      # iPhone detect agrees she's home
+      - condition: state
+        entity_id: device_tracker.mary_iphone_detect
+        state: "home"
       - or:
           # Bayesian presence is ON
           - condition: state
