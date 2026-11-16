@@ -374,3 +374,70 @@ def test_guest_mode_detect_triggers_are_held_against_flaps():
     detect = [t for t in on["trigger"] if "device_tracker.katia_iphone_detect" in _ids(t)]
     assert len(detect) == 1 and detect[0].get("for")
     assert set(GATED.values()) <= set(_ids(detect[0]))
+
+
+# ---- JK-1256: Nonna gated on iPhone detect like the parents ----
+
+NONNA = "person.mary_falbo"
+NONNA_DETECT = "device_tracker.mary_iphone_detect"
+
+
+def test_nonna_home_requires_iphone_detect():
+    """UniFi blips flapped nonna_home while she was away; detect must agree."""
+    auto = automation("packages/people/nonna/automations/nonna_is_home.yaml")
+    assert has_state_condition(auto, NONNA_DETECT, "home")
+    assert any(t.get("to") == "home" for t in state_triggers(auto, NONNA_DETECT))
+
+
+def test_nonna_announce_arrival_holds_and_requires_detect():
+    auto = automation("packages/people/nonna/automations/nonna_announce_arrival.yaml")
+    assert has_state_condition(auto, NONNA_DETECT, "home")
+    (trigger,) = state_triggers(auto, NONNA)
+    assert trigger.get("for"), "arrival must wait for detect to confirm"
+    actions = auto["actions"]
+    setter = next(i for i, a in enumerate(actions)
+                  if a.get("action") == "input_boolean.turn_on"
+                  and a["target"]["entity_id"] == "input_boolean.guest_mode_announced")
+    announce = next(i for i, a in enumerate(actions)
+                    if a.get("action") == "script.person_announcement")
+    assert setter < announce
+    assert not any(a.get("condition") for a in actions[:announce])
+
+
+def _garage_autos():
+    from types import SimpleNamespace  # noqa: F401
+    remotes = yaml.load((REPO / "packages/garage/doors/garage_doors_lock_remotes.yaml").read_text(),
+                        Loader=_Loader)["automation"][1]
+    assert remotes["id"] == "garage_doors_unlock_remotes"
+    door = automation("packages/mudroom/garage_entry_door/garage_entry_door_unlock_upon_arrival.yaml")
+    return [remotes, door]
+
+
+@pytest.mark.parametrize("idx", [0, 1])
+def test_garage_unlock_nonna_needs_detect_and_hold(idx):
+    from types import SimpleNamespace
+    auto = _garage_autos()[idx]
+    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
+    held = [t for t in auto["triggers"] if t.get("for")
+            and any(i.startswith("person.") for i in _ids(t))]
+    assert NONNA in _ids(held[0])
+    assert not any(NONNA in _ids(t) for t in plain)
+    tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
+    trig = SimpleNamespace(entity_id=NONNA)
+    assert _render(tmpl, {NONNA_DETECT: "home"}, trigger=trig)
+    for bad in ("not_home", "unknown", "unavailable"):
+        assert not _render(tmpl, {NONNA_DETECT: bad}, trigger=trig)
+
+
+def test_guest_mode_counts_nonna_only_with_detect():
+    from types import SimpleNamespace
+    on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
+    tmpl = [c for c in on["condition"] if c.get("condition") == "template"][0]["value_template"]
+    nonna = [SimpleNamespace(entity_id=NONNA, state="home")]
+    assert not _render(tmpl, {NONNA_DETECT: "not_home"}, expand=lambda g: nonna)
+    assert not _render(tmpl, {NONNA_DETECT: "unknown"}, expand=lambda g: nonna)
+    assert _render(tmpl, {NONNA_DETECT: "home"}, expand=lambda g: nonna)
+    sylvia = [SimpleNamespace(entity_id="person.sylvia", state="home")]
+    assert _render(tmpl, {NONNA_DETECT: "not_home"}, expand=lambda g: nonna + sylvia)
+    detect = [t for t in on["trigger"] if NONNA_DETECT in _ids(t)]
+    assert len(detect) == 1 and detect[0].get("for")
