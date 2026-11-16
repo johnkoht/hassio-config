@@ -1,7 +1,7 @@
 ---
 title: Nino Weekend Medication Timing
 slug: nino-weekend-medication-timing
-status: draft
+status: in-progress
 created: 2026-10-29
 has_pre_mortem: false
 has_review: false
@@ -10,7 +10,7 @@ has_prd: false
 
 # Nino Weekend Medication Timing
 
-Linear: JK-1168 (High), "Nino medication updates".
+Linear: JK-1168 (High), "Nino medication updates". Approved by John 2026-11-15, with one amendment: a "skip a dose" action (Task 10, section "Amendment: skip a dose"). JK-1257 (critical push quick action and deep link) ships separately, first, as PR #178; this branch builds on it.
 
 ## Problem
 
@@ -115,5 +115,66 @@ Until then, summer camp days behave as no-school days: dose 1 at <time> (or the 
 - **Summer starts at <time>** (decision 5, resolved). Intentional. A summer camp day with an early start is the same failure mode as extra A until the deferred camp tracking exists.
 - **Dashboard Snooze stays 15** on no-school days until extra B (decision 7).
 - **Privacy**: nothing here names a medication, dose, or any new personal detail; all times are already in the repo.
+
+## Amendment: skip a dose (John, 2026-11-15)
+
+**Ask.** A way to skip a dose. A skipped dose must not count as taken, must not use up supply, and must stop that dose's reminders and escalation.
+
+### Patterns found (so this adds nothing new in kind)
+
+- **State is a per-dose `input_boolean`** (`nino_medication_<n>_taken`, `_escalated`). Everything else is a reaction to a boolean flipping: the stock decrement triggers on `nino_medication_<n>_taken` off to on, the reminder's wait has a template trigger on it, the popup cards and dashboard rows read it. Skip follows the same shape with `nino_medication_<n>_skipped`.
+- **The taken path is `script.nino_medication_taken`** (dose field, else pending, else earliest open): turn the boolean on, cancel the dose timer. Callers: popup cards, the reminder's Taken push action, the ZHA button, Alexa, and (JK-1257) the escalation push handler. A skip script mirrors it.
+- **Snooze** is the dose timer (`timer.nino_medication_<n>_timer`, restored across restarts) plus a `SNOOZE_<run>` push action caught by the reminder's `wait_for_trigger`. Skip reuses both halves: cancel the timer, and add a `SKIP_<run>` action caught in the same wait.
+- **Supply (JK-1196, #108)** is `input_number.nino_medication_stock` in doses; days left is stock / 2. Two automations (`nino_medication_1_stock_decrement`, `_2_`) decrement once per `_taken` off to on, only above 0. Skip never touches `_taken`, so supply is untouched by construction; no change to those files, and a test proves it.
+- **Consumers of "is this dose still open?"** (all must learn skipped): the reminder's conditions and wait branches, the pending-dose sensor ("in play"), the escalation branches, `script.nino_medication_taken`'s `resolved_dose` ("open"), and the two popup cards.
+
+### Design
+
+Skipped is its own boolean, never a flavour of taken. Taken stays off, so the stock decrement, the "Dose n" toggle rows and any future "was it given" reader are untouched.
+
+**Test form everywhere: `not is_state(<skipped>, 'on')`**, never `is_state(<skipped>, 'off')` and never a state condition on `off`. A missing or unavailable helper must leave the reminder and the escalation backstop firing (same direction as the `nino_school_day` rule above and `packages/school/LEARNINGS.md`). The escalation header says it must fire when everything else has failed quietly.
+
+- **10a. Helpers.** `input_boolean.nino_medication_1_skipped` and `_2_skipped` in `nino_medication_reminder.yaml`, no `initial:`. Both cleared by the existing 03:00 reset (add them to its turn_off list).
+- **10b. `script.nino_medication_skip`.** Required field `dose` (1 or 2); no pending/earliest-open fallback until a caller needs one (Alexa is later). Acts only when that dose's `_taken` is not on, and turns `_skipped` on. Callable from the dashboard and the push handler.
+- **10c. `nino_medication_skipped.yaml` (one job: tidy up after a skip).** Trigger `_skipped` off to on, id = dose. Cancel that dose's timer; clear both pushes for the dose by tag (`nino-medication-dose-<n>`, `nino-medication-escalation-<n>`, `continue_on_error`). On the boolean, not in the script, so a dashboard toggle behaves exactly like the script.
+- **10c2. `nino_medication_unskipped.yaml` (one job: put a dose back).** Trigger `_skipped` on to off, id = dose. If the dose is untaken, the master toggle is on, the dose is due (now is at or past its time; dose 1 uses the effective time from Task 2) and its timer is idle, start that dose's timer for 1 minute (`timer.start` with `duration`), so the existing `timer.finished` path re-prompts. Without this, un-skipping by mistake leaves nothing to re-prompt (the time trigger has passed and the timer was cancelled); only the wake-up trigger or the escalation would. Before the dose is due, un-skipping does nothing extra: the time trigger fires as normal.
+- **10c3. `nino_medication_taken_clears_skip.yaml` (one job: never both).** Trigger `_taken` off to on, id = dose; turn that dose's `_skipped` off, if it is on. On the boolean, not in the script, because the "Dose n" toggle rows at `nino.yaml` flip `_taken` directly, and the toggle must not leave both on. (The un-skip automation sees this off flip: its untaken condition stops it starting a timer.)
+- **10d. Stop reminders, every path.** In `nino_medication_reminder`:
+  - the conditions block: `not is_state(<skipped>, 'on')` (covers the time triggers, the `timer.finished` re-prompt and the wake-up trigger);
+  - every in-run "still untaken" guard, each also requiring not skipped: the voice announcement `if`, the pre-wait `timer.start` `if`, the push `if`, and the Snooze branch `timer.start` `if`. A skip can land while the run is blocked on the voice announcement, after the conditions passed; without these guards the run restarts the timer and sends a fresh push that nothing clears;
+  - the `wait_for_trigger` gets a `skipped` template trigger so a run already waiting ends on a skip; the choose has no branch for it (default, no-op). The pre-wait guards cover a skip that is already on when the wait starts, which a template trigger would not catch.
+- **10e. Stop escalation.** Both escalation branches add `not is_state(<skipped>, 'on')`. Skipping an already-escalated dose is fine: the escalated boolean stays on, nothing resends.
+- **10f. Pending-dose sensor and taken script.** In `sensor.nino_medication_pending_dose`, a skipped dose is not in play (`dose_n_untaken` already uses the positive form; add `dose_n_not_skipped` alongside). In `script.nino_medication_taken`'s `resolved_dose`, a dose is "open" only if `_taken` is off and `_skipped` is not on; rewrite the comment that calls a skipped dose 1 "marked first", since "skipped" now means something else. An explicit `dose` still wins and `nino_medication_taken_clears_skip` (10c3) turns the skip off.
+- **10g. Quick actions and dashboard.**
+  - **Fixed ids on both pushes**, not per-run: the reminder push and the critical escalation push both send a Skip Dose action `NINO_MEDICATION_SKIP_<dose>`. A per-run id would be heard only by that run's wait (the failure JK-1257 fixed): if Nino is asleep when the timer finishes the next run is dropped at the Awake condition, and the old push keeps a Skip button nobody is listening for.
+  - **New file `nino_medication_push_skip.yaml`** (not an edit of `nino_medication_push_action.yaml`, which stays as shipped in #178; its test gets one small edit, see 10h): triggers on the two fixed ids with trigger ids "1" and "2", calls `script.nino_medication_skip` with `dose: "{{ trigger.id }}"`. Stale-tap gate (the ids never expire): act only if that dose is the pending dose or its `_escalated` flag is on, so a tap on yesterday's push cannot skip today's not-yet-due dose.
+  - The Taken action on the reminder push keeps its per-run id (unchanged; the same dead-button gap is a BACKLOG item, not in this task).
+  - Popup cards `nino_med_reminder_1.yaml` and `_2.yaml`: a Skip sub-button calling `script.nino_medication_skip`, and a second condition `not skipped` (a Lovelace state condition `state_not: "on"`, which is the positive form for dashboards). `nino.yaml` gets "Dose n skipped" toggle rows using `kohbo_boolean_entity_layout`, so a skip can be set or undone from the dashboard.
+- **10h. Tests** (`tests/test_nino_medication_skip.py`; no HA; `tests/test_nino_medication_push_action.py` gets only the handler-lookup edit below). Each site is pinned by name, so one edited file or block cannot satisfy it:
+  - the reminder conditions block, each in-run guard (voice, pre-wait timer, push, Snooze branch) and the wait trigger all carry the positive-form not-skipped test for the right dose, and none uses `is_state(..., 'off')` on a skipped boolean;
+  - both escalation branches carry it, plus a Jinja render: skipped dose 1 two hours late does not fire, unskipped does;
+  - the pending sensor and `resolved_dose` render for: dose 1 skipped (pending 2 once dose 2 is due, else none), dose 2 skipped, both skipped, skipped helper unavailable (dose still in play, fail open), skipped then taken by explicit dose;
+  - the stock decrement automations never reference `_skipped` and still trigger only on `_taken` off to on (supply untouched);
+  - the skip script acts only when `_taken` is not on; the cleanup automation cancels the right timer and clears both tags; the un-skip automation starts a timer only for an untaken, due dose with an idle timer; the taken-clears-skip automation exists for both doses;
+  - `tests/test_nino_medication_push_action.py` gets one stated edit: `_handler_ids()` reads both handler files (`nino_medication_push_action.yaml` and `nino_medication_push_skip.yaml`) and records which file handles each id, and the dose check applies per id (Taken ids to the first file, Skip ids to the second). Nothing else in it is loosened;
+  - `NINO_MEDICATION_SKIP_<dose>` appears as an action on both the reminder push and the escalation push (deleting it from either goes red);
+  - every action id either push sends (Taken, Snooze, the new Skip, the escalation ids) has a handler, and the skip handler is gated on pending or escalated;
+  - the popup cards carry the not-skipped condition; the 03:00 reset clears both skipped booleans.
+  - Sabotage pass: revert each consumer edit and confirm a test goes red.
+- **10i. Docs.** `docs/PEOPLE.md` medication section (own boolean; does not count; does not use supply; stops reminders and escalation; un-skipping re-prompts after a minute if due; cleared at 03:00; marking taken clears it); `dashboards/SITEMAP.md` row; `packages/people/LEARNINGS.md` one line.
+
+### Open decisions for the amendment
+
+11. **Skip scope.** Default: skip applies to today only (cleared at 03:00), per dose. Alternative: "skip until tomorrow" is the same thing; "skip the rest of the week" is a different feature, not built.
+12. **Skip after escalation.** Default: allowed and stops further reminders (the escalation fires once per dose anyway). The critical push is cleared by tag.
+13. **Taken after skip.** Default: an explicit taken wins, counts supply, and clears skipped (10c3). The no-dose fallbacks (button, Alexa) ignore a skipped dose. Known side effect, accepted: the earliest-open fallback has no due-time test, so after a dose 1 skip an early "Nino took his meds" marks dose 2 taken (BACKLOG).
+14. **Skip and supply.** Skipped doses do not use supply, so days left will read longer than the calendar by one dose per skip, which is correct (the pill is still in the bottle).
+
+### Risks added
+
+- **A reader of "open" missed**: a consumer that tests only `_taken` keeps nagging a skipped dose. Mitigation: the Task 10h structural test, and a grep for `nino_medication_[12]_taken` in review.
+- **Escalation push ids**: this branch edits the escalation JK-1257 (#178) changed, so it must merge after #178. The skip handler is a separate file, so #178's handler stays untouched; only its test's handler lookup is widened (10h).
+- **Skip toggled on an already-taken dose** from the dashboard row: allowed, nothing breaks (the stock only moves on `_taken` off to on); the row reads oddly until 03:00. Accepted.
+- **Privacy**: no new personal detail; entity names are generic.
 
 On approval → /approve → /ship nino-weekend-medication-timing

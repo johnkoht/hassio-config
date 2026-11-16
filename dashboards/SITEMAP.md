@@ -187,7 +187,8 @@ More → Sensors. Tabbed section (Overview / Offline / Low Battery) sharing `tem
 - Other Notifications:
   - Garbage Day
   - Leak Sensor Offline
-  - Nino Medication Reminder
+  - Nino Medication Reminder (Skip button; hidden when the dose is skipped)
+  - Nino popup: Medication Reminder Time (dose times and "No school earliest"), Dose n skipped toggles
   - Nino popup: Medication Supply (days left, add days, set days left) and Refill Alerts (alert/critical thresholds)
 
 ---

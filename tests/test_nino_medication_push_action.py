@@ -32,14 +32,19 @@ def _escalation_pushes():
     return out
 
 
+HANDLER_FILES = ("nino_medication_push_action.yaml", "nino_medication_push_skip.yaml")
+
+
 def _handler_ids():
-    """{event action id: dose} from every nino_medication_push_action trigger."""
-    autos = _load("nino_medication_push_action.yaml")
+    """{event action id: (handler file, dose)}; an id handled twice is an error."""
     ids = {}
-    for auto in autos:
-        for t in auto["triggers"]:
-            if t.get("event_type") == "mobile_app_notification_action":
-                ids[t["event_data"]["action"]] = t["id"]
+    for name in HANDLER_FILES:
+        for auto in _load(name):
+            for t in auto["triggers"]:
+                if t.get("event_type") == "mobile_app_notification_action":
+                    action_id = t["event_data"]["action"]
+                    assert action_id not in ids, f"{action_id} is handled by two automations"
+                    ids[action_id] = (name, t["id"])
     return ids
 
 
@@ -53,7 +58,11 @@ def test_critical_push_carries_a_taken_action_with_a_handler(dose):
     handlers = _handler_ids()
     for action_id in ids:
         assert action_id in handlers, f"{action_id} is sent but no automation handles it"
-        assert handlers[action_id] == dose, "the handler marks the wrong dose"
+        file, handled_dose = handlers[action_id]
+        assert handled_dose == dose, "the handler marks the wrong dose"
+        # Taken ids belong to the taken handler, Skip ids to the skip handler
+        want = HANDLER_FILES[1] if "SKIP" in action_id else HANDLER_FILES[0]
+        assert file == want, f"{action_id} is wired to {file}, not {want}"
 
 
 def test_handler_marks_the_dose_taken_and_clears_the_push():
