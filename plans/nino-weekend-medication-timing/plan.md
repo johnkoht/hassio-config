@@ -1,7 +1,7 @@
 ---
 title: Nino Weekend Medication Timing
 slug: nino-weekend-medication-timing
-status: approved
+status: in-progress
 created: 2026-10-29
 has_pre_mortem: false
 has_review: false
