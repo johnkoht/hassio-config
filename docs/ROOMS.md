@@ -23,7 +23,7 @@ This approach allows for granular control and avoids complex, monolithic automat
 | **Off** | No automations run. The room behaves like a "dumb" room with manual control only. |
 | **Away** | Room/house is unoccupied. Lights off, media off, climate adjusted. Used by common areas. |
 | **Bedtime** | Sleep mode with reduced lighting, no TTS, quiet automations. Used by bedrooms. |
-| **Wake** | Morning transition with gradual lighting increase. Used by main bedroom. |
+| **Wake** | Morning transition with gradual lighting increase. Used by the main bedroom and the main bathroom (set when the bedroom wakes; clears to Auto after 10 minutes). |
 | **DnD** | Do Not Disturb. Disables TTS, shows busy indicator, pauses non-essential automations. Used by the Office. |
 
 ---
