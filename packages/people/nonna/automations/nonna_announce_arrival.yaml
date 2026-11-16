@@ -8,10 +8,17 @@ automation:
         entity_id: person.mary_falbo
         from: "not_home"
         to: "home"
+        # Hold so detect can confirm; a UniFi blip alone never announces
+        for:
+          minutes: 1
     conditions:
       # A guest is home
       - condition: state
         entity_id: person.mary_falbo
+        state: "home"
+      # iPhone detect agrees
+      - condition: state
+        entity_id: device_tracker.mary_iphone_detect
         state: "home"
       # We've been home for at least 5 minutes
       - condition: state
@@ -20,6 +27,13 @@ automation:
         for:
           minutes: 5
     actions:
+      # Suppress the generic guest-mode announcement. Set it before the
+      # announcement: guest_mode_on checks the flag 2 minutes after Nonna
+      # counts, and the 1 minute hold plus the announcement would eat the margin.
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.guest_mode_announced
+
       # Announcement script
       - action: script.person_announcement
         data:
@@ -41,12 +55,3 @@ automation:
       #           "Knock knock. Who's there? Nonna is here!"
       #         ] | random
       #       }}
-
-      # If a guest mode has not been announced, then we'll
-      # set initiate guest_mode_announced so we the generic
-      # guest mode announcement doesn't fire as well
-      - condition: state
-        entity_id: input_boolean.guest_mode_announced
-        state: "off"
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.guest_mode_announced
