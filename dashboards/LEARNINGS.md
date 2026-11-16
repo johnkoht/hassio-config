@@ -57,3 +57,4 @@ automations do. Sensors page Power section, 2026-10-29.
 ## Custom icon sets load before the dashboard (2026-11-16)
 
 - `kohbo_icons.js` loads through `frontend: extra_module_url` in `configuration.yaml`, not only as a Lovelace resource. Resources load after the first view renders, and navbar-card never retries an icon it couldn't find, so a cold open on Home showed a navbar with only the `mdi:` More icon. Any new custom icon set goes in `extra_module_url` too. Changes there need an HA restart. `tests/test_frontend_icon_preload.py` guards it.
+- The old Lovelace resource (`/local/kohbo/kohbo_icons.js?v=…`, in `.storage`) still loads a second copy. That's harmless, but bumping its `?v=` no longer controls which copy the navbar uses. Remove it from Settings → Dashboards → Resources once the preload is confirmed live.
