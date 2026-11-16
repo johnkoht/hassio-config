@@ -97,6 +97,12 @@ cards:
             secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
             card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
 
+          - entity: input_boolean.nino_medication_1_skipped
+            icon: mdi:debug-step-over
+            name: Dose 1 skipped
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            state_color: true
+
           - entity: input_boolean.nino_medication_2_taken
             icon: kohbo:kohbo-medication
             name: Dose 2
@@ -111,6 +117,12 @@ cards:
             state: "{{ states[config.entity].state | title }}"
             secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
             card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+          - entity: input_boolean.nino_medication_2_skipped
+            icon: mdi:debug-step-over
+            name: Dose 2 skipped
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            state_color: true
 
       - type: custom:stack-in-card
         mode: vertical
@@ -128,6 +140,9 @@ cards:
                 card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
               - entity: input_datetime.nino_medication_2_time
                 name: Second dose at
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+              - entity: input_datetime.nino_medication_no_school_earliest
+                name: No school earliest
                 card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
       - type: custom:stack-in-card

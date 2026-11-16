@@ -4,7 +4,8 @@
 # Backstop for a missed dose. input_boolean.nino_medication_reminders
 # is its single deliberate off switch. Polls every 15 minutes and,
 # for either dose, sends a critical push once that dose is more than
-# 2 hours late and still untaken. Deliberately dumb and independent
+# 2 hours late (dose 1: after its effective time, later on no-school
+# days) and still untaken and not skipped. Deliberately dumb and independent
 # of the reminder automation, the pending-dose resolver, and house
 # notification policy (it ignores notification_level and the voice/push
 # toggles) — this is what still fires when everything
@@ -24,9 +25,9 @@
 # would disable this net exactly when a restart caused the missed
 # dose. time_pattern polls and is restart-proof.
 #
-# The push carries a Medication Taken quick action with a fixed id
-# (NINO_MEDICATION_TAKEN_<dose>), caught by nino_medication_push_action.yaml
-# at any time. A tap opens Home > Notifications (home#notifications).
+# The push carries Medication Taken and Skip Dose quick actions with fixed ids
+# (NINO_MEDICATION_TAKEN_<dose>, caught by nino_medication_push_action.yaml;
+# NINO_MEDICATION_SKIP_<dose>, caught by nino_medication_push_skip.yaml). A tap opens Home > Notifications (home#notifications).
 #
 # Each dose's `_escalated` boolean guards against re-sending a
 # critical push every 15 minutes once escalated; it's cleared by
@@ -52,13 +53,14 @@ automation:
         if:
           - condition: template
             value_template: >-
-              {% set t = states('input_datetime.nino_medication_1_time') %}
+              {% set t = states('sensor.nino_medication_1_effective_time') %}
               {% set ok = t not in ['unknown', 'unavailable', '', None] %}
               {{
                 ok
                 and is_state('input_boolean.nino_medication_1_taken', 'off')
+                and not is_state('input_boolean.nino_medication_1_skipped', 'on')
                 and is_state('input_boolean.nino_medication_1_escalated', 'off')
-                and now() >= today_at(t) + timedelta(hours=2)
+                and now() >= as_datetime(t) + timedelta(hours=2)
               }}
         then:
           - action: notify.ios_family
@@ -74,6 +76,8 @@ automation:
                 actions:
                   - action: "NINO_MEDICATION_TAKEN_1"
                     title: "Medication Taken"
+                  - action: "NINO_MEDICATION_SKIP_1"
+                    title: "Skip Dose"
           - action: input_boolean.turn_on
             target:
               entity_id: input_boolean.nino_medication_1_escalated
@@ -90,6 +94,7 @@ automation:
               {{
                 ok
                 and is_state('input_boolean.nino_medication_2_taken', 'off')
+                and not is_state('input_boolean.nino_medication_2_skipped', 'on')
                 and is_state('input_boolean.nino_medication_2_escalated', 'off')
                 and now() >= today_at(t) + timedelta(hours=2)
               }}
@@ -107,6 +112,8 @@ automation:
                 actions:
                   - action: "NINO_MEDICATION_TAKEN_2"
                     title: "Medication Taken"
+                  - action: "NINO_MEDICATION_SKIP_2"
+                    title: "Skip Dose"
           - action: input_boolean.turn_on
             target:
               entity_id: input_boolean.nino_medication_2_escalated
