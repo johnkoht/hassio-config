@@ -284,4 +284,4 @@ def test_taken_fallback_waits_for_dose_2_to_be_due():
     assert _resolved("", "mon", "<time>", **SK1) == "2"            # dose 2 due
     assert _resolved("", "mon", "<time>", **SK1, **{"timer.nino_medication_2_timer": "active"}) == "2"  # snoozing = pending
     assert _resolved("", "mon", "06:00") == "1"                   # an early dose 1 is still marked first
-    assert _resolved("", "mon", "<time>", **{"input_boolean.nino_medication_1_taken": "on"}) == "none"
+    assert _resolved("", "mon", "<time>", **{"input_boolean.nino_medication_1_taken": "on"}) == "2"  # dose 1 given: an early dose 2 still counts

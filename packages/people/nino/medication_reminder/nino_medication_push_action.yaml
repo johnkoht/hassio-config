@@ -4,9 +4,9 @@
 # Marks a dose taken from the Medication Taken quick action on the
 # reminder push and the critical escalation push. The ids are fixed per
 # dose, so a tap works until the 03:00 reset. Only acts while that dose
-# is outstanding (pending, or escalated today; not taken, not skipped).
-# The reset clears both flags, so a tap on yesterday's push does nothing.
-# Clears both pushes after a tap.
+# is outstanding today (pending, or escalated; not taken, not skipped).
+# A leftover push from yesterday does nothing until its dose is outstanding
+# again today. Clears both pushes after a tap.
 #
 
 automation:

@@ -495,7 +495,7 @@ script:
         name: Dose
         description: >-
           The dose number to mark as taken. Optional — when omitted,
-          uses the pending dose, else the earliest untaken dose today.
+          uses the pending dose, else the earliest open dose today (dose 2 only once due or dose 1 given).
         example: "1"
         selector:
           select:
@@ -505,8 +505,9 @@ script:
     variables:
       # Resolve the dose: requested, else pending, else earliest open
       # (untaken and not skipped; earliest-first is intentional: an early
-      # dose 1 is marked first; dose 2 only once it is due, so an early
-      # phrase after a dose 1 skip does not mark it), else "none" and no-ops.
+      # dose 1 is marked first; dose 2 only once it is due or dose 1 has been
+      # given, so an early phrase after a dose 1 skip does not mark it),
+      # else "none" and the script no-ops.
       resolved_dose: >-
         {% set requested = dose | default('', true) | string %}
         {% set pending = states('sensor.nino_medication_pending_dose') | string %}
@@ -515,7 +516,7 @@ script:
         {% set time_1_ok = time_1 not in ['unknown', 'unavailable', '', None] %}
         {% set time_2_ok = time_2 not in ['unknown', 'unavailable', '', None] %}
         {% set dose_1_open = time_1_ok and is_state('input_boolean.nino_medication_1_taken', 'off') and not is_state('input_boolean.nino_medication_1_skipped', 'on') %}
-        {% set dose_2_open = time_2_ok and now() >= today_at(time_2) and is_state('input_boolean.nino_medication_2_taken', 'off') and not is_state('input_boolean.nino_medication_2_skipped', 'on') %}
+        {% set dose_2_open = time_2_ok and (now() >= today_at(time_2) or is_state('input_boolean.nino_medication_1_taken', 'on')) and is_state('input_boolean.nino_medication_2_taken', 'off') and not is_state('input_boolean.nino_medication_2_skipped', 'on') %}
         {% if requested | string in ['1', '2'] %}
         {{ requested }}
         {% elif pending | string in ['1', '2'] %}
