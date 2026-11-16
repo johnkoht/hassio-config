@@ -149,12 +149,21 @@ These sensors aggregate individual person states:
 
 ---
 
+## Medication Timing and Skipping
+
+Nino's medication reminder (`packages/people/nino/medication_reminder/`) prompts for each dose, snoozes, and escalates a late dose with a critical push.
+
+- **No-school days.** When `binary_sensor.nino_school_day` is off (weekends, breaks, summer, holidays), dose 1 is not prompted before the "No school earliest" time in the Nino popup (08:00 when unset), its escalation counts from that time, and snoozes are 30 minutes instead of 15. Dose 2 only gets the longer snooze. If the school-day sensor is unavailable, the school-day timing is used.
+- **Skipping a dose.** Tap Skip Dose on the reminder or critical push, the Skip button on the notifications popup card, or turn on "Dose n skipped" in the Nino popup. A skipped dose is not taken: supply is not used, and its reminders and escalation stop. Skips clear at 03:00. Turning a skip off re-prompts after a minute if the dose is due. Marking the dose taken clears the skip.
+
+---
+
 ## Medication Stock
 
 Nino's medication has a supply count (`packages/people/nino/medication_refill/`, `packages/reminders/medication_refill/`).
 
 - **Stored in doses, shown in days.** `input_number.nino_medication_stock` holds doses (two a day, so a 30-day fill is 60). Nothing on the dashboard shows doses: `sensor.nino_medication_days_remaining` is doses / 2, rounded down. A stock of -1 means "not set yet": the sensor is `unavailable`, the dashboard says "Not set", and no alert fires.
-- **Counting.** Each time `input_boolean.nino_medication_1_taken` or `_2_taken` goes off to on (dashboard, push, button, Alexa), the stock drops by one. The 03:00 reset and a restart do not count. Un-toggling does not add one back; fix a mistake with "Set days left".
+- **Counting.** A skipped dose is never counted. Each time `input_boolean.nino_medication_1_taken` or `_2_taken` goes off to on (dashboard, push, button, Alexa), the stock drops by one. The 03:00 reset and a restart do not count. Un-toggling does not add one back; fix a mistake with "Set days left".
 - **Alerts.** Under `input_number.medication_refill_threshold_days` (7) a time-sensitive push to everyone, repeated daily at 09:00; under `input_number.medication_refill_critical_days` (3) a critical phone push. Both carry "+15 days" and "+30 days" buttons. A line is added to the morning announcement. This is a phone alert only, never the alarm or announcement path.
 - **Refilling and seeding, in the Nino popup.** Type days in "Days to enter", then tap "Add days to supply" (adds) or "Set days left" (replaces). Both clear the push. The push buttons add 15 or 30 days.
 

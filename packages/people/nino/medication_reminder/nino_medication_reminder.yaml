@@ -2,10 +2,16 @@
 # Nino Two-Dose Medication Reminder
 #
 # This package reminds us to give Nino his medication, twice a day.
-# Each dose (1 and 2) has its own scheduled time, taken/escalated
-# booleans, and 15-minute snooze timer, so the two doses track and
+# Each dose (1 and 2) has its own scheduled time, taken/skipped/
+# escalated booleans, and snooze timer, so the two doses track and
 # reset completely independently. Three toggles (master, voice,
 # push) switch the reminder and its channels on and off.
+#
+# No school (binary_sensor.nino_school_day reads off: weekend, break,
+# summer, holiday): dose 1 waits until the "no school earliest" time
+# (08:00 when unset) via sensor.nino_medication_1_effective_time, and
+# snoozes last 30 minutes instead of 15. Dose 2 only gets the longer
+# snooze. A skipped dose is not taken: no supply used, no reminders.
 #
 #
 # Per-Dose Taken Booleans
@@ -18,6 +24,18 @@ input_boolean:
   nino_medication_2_taken:
     name: Nino Medication 2 Taken
     icon: mdi:pill
+
+  #
+  # Per-Dose Skipped Booleans
+  # A skipped dose is not taken (no supply used) and stops that dose's
+  # reminders and escalation. Cleared at 3am. No `initial:`, so restore works.
+  #
+  nino_medication_1_skipped:
+    name: Nino Medication 1 Skipped
+    icon: mdi:debug-step-over
+  nino_medication_2_skipped:
+    name: Nino Medication 2 Skipped
+    icon: mdi:debug-step-over
 
   #
   # Per-Dose Escalation Booleans
@@ -46,7 +64,8 @@ input_boolean:
 
 #
 # Per-Dose Snooze Timers
-# Each timer snoozes its dose's reminder for 15 minutes. `restore: true`
+# Each timer snoozes its dose's reminder (15 minutes; the reminder starts
+# it for 30 on no-school days). `restore: true`
 # makes the timer survive an HA restart so a dose in flight isn't lost.
 #
 timer:
@@ -77,13 +96,21 @@ input_datetime:
     has_date: false
     has_time: true
     initial: "13:00:00"
+  # Earliest dose 1 time on a no-school day. No `initial:` (it would revert
+  # dashboard edits on every restart); unset reads as 08:00 in the sensor.
+  nino_medication_no_school_earliest:
+    name: Nino Medication No School Earliest
+    icon: mdi:clock-time-eight
+    has_date: false
+    has_time: true
 
 #
 # Pending Dose Resolver
 #
 # Single source of truth for "which dose is outstanding right now?".
 # A dose is in play if it is untaken AND (its scheduled time has
-# passed today OR its snooze timer is active). Among in-play doses,
+# passed today OR its snooze timer is active) and not skipped. Dose 1's
+# time is its effective time (later on no-school days). Among in-play doses,
 # the one with the latest scheduled time wins; a tie goes to the
 # higher dose number. If either scheduled time is unavailable
 # (e.g. during HA startup) or no dose is in play, this returns the
@@ -91,18 +118,43 @@ input_datetime:
 #
 template:
   - sensor:
+      #
+      # Dose 1 Effective Time
+      # Dose 1's time today. On a no-school day (school-day sensor reads off,
+      # a positive test so an unavailable sensor keeps the weekday time) it is
+      # raised to the no-school earliest time, 08:00 when that helper is unset.
+      # Unavailable while the dose 1 helper is, so nothing fires on bad input.
+      #
+      - name: "Nino Medication 1 Effective Time"
+        unique_id: nino_medication_1_effective_time
+        device_class: timestamp
+        icon: mdi:clock-check-outline
+        availability: >-
+          {{ states('input_datetime.nino_medication_1_time') not in ['unknown', 'unavailable', '', None] }}
+        state: >-
+          {% set base = today_at(states('input_datetime.nino_medication_1_time')) %}
+          {% set floor_set = state_attr('input_datetime.nino_medication_no_school_earliest', 'timestamp') | int(0) > 0 %}
+          {% set floor_time = states('input_datetime.nino_medication_no_school_earliest') if floor_set else '08:00:00' %}
+          {% if is_state('binary_sensor.nino_school_day', 'off') %}
+          {{ ([base, today_at(floor_time)] | max).isoformat() }}
+          {% else %}
+          {{ base.isoformat() }}
+          {% endif %}
+
       - name: "Nino Medication Pending Dose"
         unique_id: nino_medication_pending_dose
         icon: mdi:pill-multiple
         state: |-
-          {% set dose_1_time = states('input_datetime.nino_medication_1_time') %}
+          {% set dose_1_time = states('sensor.nino_medication_1_effective_time') %}
           {% set dose_2_time = states('input_datetime.nino_medication_2_time') %}
           {% set dose_1_ok = dose_1_time not in ['unknown', 'unavailable', '', None] %}
           {% set dose_2_ok = dose_2_time not in ['unknown', 'unavailable', '', None] %}
-          {% set dose_1_untaken = not is_state('input_boolean.nino_medication_1_taken', 'on') %}
-          {% set dose_2_untaken = not is_state('input_boolean.nino_medication_2_taken', 'on') %}
-          {% set dose_1_due = dose_1_ok and now() >= today_at(dose_1_time) %}
-          {% set dose_2_due = dose_2_ok and now() >= today_at(dose_2_time) %}
+          {% set dose_1_at = as_datetime(dose_1_time) if dose_1_ok else none %}
+          {% set dose_2_at = today_at(dose_2_time) if dose_2_ok else none %}
+          {% set dose_1_untaken = not is_state('input_boolean.nino_medication_1_taken', 'on') and not is_state('input_boolean.nino_medication_1_skipped', 'on') %}
+          {% set dose_2_untaken = not is_state('input_boolean.nino_medication_2_taken', 'on') and not is_state('input_boolean.nino_medication_2_skipped', 'on') %}
+          {% set dose_1_due = dose_1_ok and now() >= dose_1_at %}
+          {% set dose_2_due = dose_2_ok and now() >= dose_2_at %}
           {% set dose_1_snoozing = is_state('timer.nino_medication_1_timer', 'active') %}
           {% set dose_2_snoozing = is_state('timer.nino_medication_2_timer', 'active') %}
           {% set dose_1_in_play = dose_1_ok and dose_1_untaken and (dose_1_due or dose_1_snoozing) %}
@@ -110,7 +162,7 @@ template:
           {% if not dose_1_ok or not dose_2_ok %}
           none
           {% elif dose_1_in_play and dose_2_in_play %}
-          {{ 2 if today_at(dose_2_time) >= today_at(dose_1_time) else 1 }}
+          {{ 2 if dose_2_at >= dose_1_at else 1 }}
           {% elif dose_2_in_play %}
           2
           {% elif dose_1_in_play %}
@@ -137,9 +189,9 @@ automation:
     mode: parallel
     max: 4
     triggers:
-      # Dose 1 scheduled time
+      # Dose 1 scheduled time (effective: later on no-school days)
       - trigger: time
-        at: input_datetime.nino_medication_1_time
+        at: sensor.nino_medication_1_effective_time
         id: "1"
       # Dose 2 scheduled time
       - trigger: time
@@ -175,6 +227,10 @@ automation:
           {{ states('sensor.nino_medication_pending_dose') }}
         {% endif %}
       taken_boolean: "input_boolean.nino_medication_{{ dose }}_taken"
+      skipped_boolean: "input_boolean.nino_medication_{{ dose }}_skipped"
+      # 30 on a no-school day, else 15. Positive test: an unavailable
+      # school-day sensor keeps the shorter weekday snooze.
+      snooze_minutes: "{{ 30 if is_state('binary_sensor.nino_school_day', 'off') else 15 }}"
       snooze_timer: "timer.nino_medication_{{ dose }}_timer"
       dose_time: "input_datetime.nino_medication_{{ dose }}_time"
       tag: "nino-medication-dose-{{ dose }}"
@@ -190,6 +246,10 @@ automation:
       # Only run if this dose has not already been taken
       - condition: template
         value_template: "{{ is_state(taken_boolean, 'off') }}"
+      # Only run if this dose has not been skipped (positive test: an
+      # unavailable helper keeps the reminder going)
+      - condition: template
+        value_template: "{{ not is_state(skipped_boolean, 'on') }}"
       # Only run if this dose's snooze timer is not already running
       - condition: template
         value_template: "{{ is_state(snooze_timer, 'idle') }}"
@@ -210,6 +270,8 @@ automation:
         if:
           - condition: template
             value_template: "{{ is_state(taken_boolean, 'off') }}"
+          - condition: template
+            value_template: "{{ not is_state(skipped_boolean, 'on') }}"
           - alias: "Voice reminders are enabled"
             condition: state
             entity_id: input_boolean.nino_medication_voice
@@ -237,7 +299,7 @@ automation:
       #
       # This is the fix for the restart-durability bug: timers are
       # `restore: true`, so once this timer is running, an HA restart
-      # or reload during the 15-minute wait below no longer loses the
+      # or reload during the wait below no longer loses the
       # dose silently — the timer survives and still fires
       # `timer.finished` to re-prompt. Guarded on the taken boolean
       # in case it flipped between the conditions above and here.
@@ -246,10 +308,14 @@ automation:
         if:
           - condition: template
             value_template: "{{ is_state(taken_boolean, 'off') }}"
+          - condition: template
+            value_template: "{{ not is_state(skipped_boolean, 'on') }}"
         then:
           - action: timer.start
             target:
               entity_id: "{{ snooze_timer }}"
+            data:
+              duration: "00:{{ snooze_minutes }}:00"
 
       #
       # Set the action variables
@@ -257,6 +323,8 @@ automation:
       - variables:
           action_taken: "{{ 'TAKEN_' ~ context.id }}"
           action_snooze: "{{ 'SNOOZE_' ~ context.id }}"
+          # Fixed id (not per-run): a tap works however late
+          action_skip: "NINO_MEDICATION_SKIP_{{ dose }}"
 
       #
       # Send the notification
@@ -269,6 +337,8 @@ automation:
         if:
           - condition: template
             value_template: "{{ is_state(taken_boolean, 'off') }}"
+          - condition: template
+            value_template: "{{ not is_state(skipped_boolean, 'on') }}"
           - alias: "Push reminders are enabled"
             condition: state
             entity_id: input_boolean.nino_medication_push
@@ -286,13 +356,16 @@ automation:
                 - action: "{{ action_taken }}"
                   title: "Medication Taken"
                 - action: "{{ action_snooze }}"
-                  title: "Snooze 15 Minutes"
+                  title: "Snooze {{ snooze_minutes }} Minutes"
+                - action: "{{ action_skip }}"
+                  title: "Skip Dose"
 
       #
       # Wait for a response: the taken boolean flipping on (covers
       # the ZHA shortcut button and any other path that marks the
-      # dose taken), the push notification's Taken action, or the
-      # push notification's Snooze action.
+      # dose taken), the push notification's Taken action, the
+      # push notification's Snooze action, or the dose being skipped
+      # (ends the wait; the skip automation cleans up).
       #
       # The taken-trigger MUST be a template trigger, not a state
       # trigger — a state trigger's entity_id cannot be templated
@@ -312,8 +385,11 @@ automation:
             event_type: mobile_app_notification_action
             event_data:
               action: "{{ action_snooze }}"
-        timeout:
-          minutes: 15
+          - trigger: template
+            id: "skipped"
+            value_template: "{{ is_state(skipped_boolean, 'on') }}"
+        # Follows the snooze timer so a Snooze tap always has a listener
+        timeout: "00:{{ snooze_minutes }}:00"
 
       #
       # Branch on wait.trigger.id (NOT trigger.id — trigger still
@@ -328,19 +404,23 @@ automation:
               - action: script.nino_medication_taken
                 data:
                   dose: "{{ dose }}"
-          # Snoozed via the push action — restart the full 15 minutes
+          # Snoozed via the push action — restart the full snooze
           - conditions:
               - condition: template
                 value_template: "{{ wait.trigger is not none and wait.trigger.id == 'snooze' }}"
             sequence:
-              - alias: "Restart the full 15-minute snooze timer"
+              - alias: "Restart the full snooze timer"
                 if:
                   - condition: template
                     value_template: "{{ is_state(taken_boolean, 'off') }}"
+                  - condition: template
+                    value_template: "{{ not is_state(skipped_boolean, 'on') }}"
                 then:
                   - action: timer.start
                     target:
                       entity_id: "{{ snooze_timer }}"
+                    data:
+                      duration: "00:{{ snooze_minutes }}:00"
         # Timed out with no response (not wait.completed). No action
         # needed: the timer started before the wait is already
         # running and owns re-prompting via its own timer.finished
@@ -350,8 +430,8 @@ automation:
   #
   # Nino Medication Reminder Reset
   #
-  # Reset both doses at 3:00am — taken booleans, escalation booleans,
-  # and timers, so the next day starts clean for both doses
+  # Reset both doses at 3:00am — taken and skipped booleans, escalation
+  # booleans, and timers, so the next day starts clean for both doses
   # independently.
   #
   - id: "nino_medication_reminder_reset"
@@ -366,6 +446,12 @@ automation:
           entity_id:
             - input_boolean.nino_medication_1_taken
             - input_boolean.nino_medication_2_taken
+      # Clear both skipped booleans
+      - action: input_boolean.turn_off
+        target:
+          entity_id:
+            - input_boolean.nino_medication_1_skipped
+            - input_boolean.nino_medication_2_skipped
       # Clear both escalation booleans
       - action: input_boolean.turn_off
         target:
@@ -421,9 +507,9 @@ script:
               - "1"
               - "2"
     variables:
-      # Resolve the dose: requested, else pending, else earliest untaken
-      # (earliest-first is intentional: an early dose, or a skipped
-      # dose 1, is marked first), else "none" and the script no-ops.
+      # Resolve the dose: requested, else pending, else earliest open
+      # (untaken and not skipped; earliest-first is intentional: an early
+      # dose is marked first), else "none" and the script no-ops.
       resolved_dose: >-
         {% set requested = dose | default('', true) | string %}
         {% set pending = states('sensor.nino_medication_pending_dose') | string %}
@@ -431,8 +517,8 @@ script:
         {% set time_2 = states('input_datetime.nino_medication_2_time') %}
         {% set time_1_ok = time_1 not in ['unknown', 'unavailable', '', None] %}
         {% set time_2_ok = time_2 not in ['unknown', 'unavailable', '', None] %}
-        {% set dose_1_open = time_1_ok and is_state('input_boolean.nino_medication_1_taken', 'off') %}
-        {% set dose_2_open = time_2_ok and is_state('input_boolean.nino_medication_2_taken', 'off') %}
+        {% set dose_1_open = time_1_ok and is_state('input_boolean.nino_medication_1_taken', 'off') and not is_state('input_boolean.nino_medication_1_skipped', 'on') %}
+        {% set dose_2_open = time_2_ok and is_state('input_boolean.nino_medication_2_taken', 'off') and not is_state('input_boolean.nino_medication_2_skipped', 'on') %}
         {% if requested | string in ['1', '2'] %}
         {{ requested }}
         {% elif pending | string in ['1', '2'] %}
@@ -463,3 +549,29 @@ script:
           - action: timer.cancel
             target:
               entity_id: "timer.nino_medication_{{ resolved_dose }}_timer"
+
+  nino_medication_skip:
+    alias: "Nino Medication Skip"
+    mode: queued
+    fields:
+      dose:
+        name: Dose
+        description: >-
+          The dose number to skip today. A skipped dose is not taken: no
+          supply is used and its reminders and escalation stop.
+        example: "1"
+        required: true
+        selector:
+          select:
+            options:
+              - "1"
+              - "2"
+    sequence:
+      # Only a dose that has not been given can be skipped
+      - condition: template
+        value_template: >-
+          {{ dose | string in ['1', '2']
+             and not is_state('input_boolean.nino_medication_' ~ dose ~ '_taken', 'on') }}
+      - action: input_boolean.turn_on
+        target:
+          entity_id: "input_boolean.nino_medication_{{ dose }}_skipped"

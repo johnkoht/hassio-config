@@ -1,0 +1,49 @@
+#
+# Nino Medication Unskipped
+#
+# Put a dose back after a skip is undone. If the dose is due, untaken and
+# not already snoozing, start a 1 minute timer so the reminder re-prompts.
+# Before it is due the normal time trigger still fires.
+#
+
+automation:
+  - id: "nino_medication_unskipped"
+    alias: "Nino Medication Unskipped"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.nino_medication_1_skipped
+        from: "on"
+        to: "off"
+        id: "1"
+      - trigger: state
+        entity_id: input_boolean.nino_medication_2_skipped
+        from: "on"
+        to: "off"
+        id: "2"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nino_medication_reminders
+        state: "on"
+      - alias: "The dose has not been given"
+        condition: template
+        value_template: "{{ is_state('input_boolean.nino_medication_' ~ trigger.id ~ '_taken', 'off') }}"
+      - alias: "The dose is not already snoozing"
+        condition: template
+        value_template: "{{ is_state('timer.nino_medication_' ~ trigger.id ~ '_timer', 'idle') }}"
+      - alias: "The dose is due"
+        condition: template
+        value_template: >-
+          {% if trigger.id == '1' %}
+            {% set t = states('sensor.nino_medication_1_effective_time') %}
+            {{ t not in ['unknown', 'unavailable', '', None] and now() >= as_datetime(t) }}
+          {% else %}
+            {% set t = states('input_datetime.nino_medication_2_time') %}
+            {{ t not in ['unknown', 'unavailable', '', None] and now() >= today_at(t) }}
+          {% endif %}
+    actions:
+      - action: timer.start
+        target:
+          entity_id: "timer.nino_medication_{{ trigger.id }}_timer"
+        data:
+          duration: "00:01:00"

@@ -1,0 +1,39 @@
+#
+# Nino Medication Skipped
+#
+# Tidy up after a dose is skipped (script, push, dashboard toggle):
+# cancel its snooze timer and clear both of its pushes by tag.
+#
+
+automation:
+  - id: "nino_medication_skipped"
+    alias: "Nino Medication Skipped"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.nino_medication_1_skipped
+        from: "off"
+        to: "on"
+        id: "1"
+      - trigger: state
+        entity_id: input_boolean.nino_medication_2_skipped
+        from: "off"
+        to: "on"
+        id: "2"
+    conditions: []
+    actions:
+      - action: timer.cancel
+        target:
+          entity_id: "timer.nino_medication_{{ trigger.id }}_timer"
+      - alias: "Clear the reminder push"
+        continue_on_error: true
+        action: script.clear_notifications
+        data:
+          devices: all
+          tag: "nino-medication-dose-{{ trigger.id }}"
+      - alias: "Clear the escalation push"
+        continue_on_error: true
+        action: script.clear_notifications
+        data:
+          devices: all
+          tag: "nino-medication-escalation-{{ trigger.id }}"

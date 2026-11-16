@@ -1,0 +1,34 @@
+#
+# Nino Medication Push Skip
+#
+# Skips a dose from the Skip Dose quick action on the reminder and the
+# critical escalation pushes. The ids are fixed per dose, so only act on a
+# dose that is outstanding now (pending, or already escalated today): a tap
+# on yesterday's push must not skip today's dose.
+#
+
+automation:
+  - id: "nino_medication_push_skip"
+    alias: "Nino Medication Push Skip"
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "NINO_MEDICATION_SKIP_1"
+        id: "1"
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "NINO_MEDICATION_SKIP_2"
+        id: "2"
+    conditions:
+      - alias: "The dose is outstanding today"
+        condition: template
+        value_template: >-
+          {{ states('sensor.nino_medication_pending_dose') | string == trigger.id | string
+             or is_state('input_boolean.nino_medication_' ~ trigger.id ~ '_escalated', 'on') }}
+    actions:
+      - action: script.nino_medication_skip
+        data:
+          dose: "{{ trigger.id }}"

@@ -33,13 +33,15 @@ def _escalation_pushes():
 
 
 def _handler_ids():
-    """{event action id: dose} from every nino_medication_push_action trigger."""
-    autos = _load("nino_medication_push_action.yaml")
+    """{event action id: dose} from the push handlers (taken and skip)."""
     ids = {}
-    for auto in autos:
-        for t in auto["triggers"]:
-            if t.get("event_type") == "mobile_app_notification_action":
-                ids[t["event_data"]["action"]] = t["id"]
+    for name in ("nino_medication_push_action.yaml", "nino_medication_push_skip.yaml"):
+        if not (MED / name).exists():
+            continue
+        for auto in _load(name):
+            for t in auto["triggers"]:
+                if t.get("event_type") == "mobile_app_notification_action":
+                    ids[t["event_data"]["action"]] = t["id"]
     return ids
 
 
