@@ -1,0 +1,80 @@
+# Christmas Plugs Off When Not Home
+#
+# Trees and playroom plugs go off at Bedtime, Away or when the house is
+# empty, and a plug switched on by hand then goes off too. Not gated on
+# the season or Christmas mode. The front yard is left alone.
+#
+
+automation:
+  - id: "christmas_plugs_off_when_not_home"
+    alias: "Christmas plugs off when not home"
+    mode: "single"
+    triggers:
+      # House goes to Bedtime, Away or empty
+      - trigger: state
+        entity_id: input_select.house
+        to: "Bedtime"
+      - trigger: state
+        entity_id: input_select.house
+        to: "Away"
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+      # A plug is switched on while the house is already down
+      - trigger: state
+        entity_id:
+          - switch.family_room_smart_plug_25
+          - switch.smart_plug_9_switch
+          - switch.smart_plug_15_switch
+          - switch.smart_plug_16_switch
+          - switch.smart_plug_17_switch
+          - switch.smart_plug_18_switch
+        to: "on"
+        for:
+          minutes: 1
+      # Retry after 3 minutes in case a plug missed the first command
+      - trigger: state
+        entity_id: input_select.house
+        to: "Bedtime"
+        for:
+          minutes: 3
+      - trigger: state
+        entity_id: input_select.house
+        to: "Away"
+        for:
+          minutes: 3
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: 3
+      - trigger: state
+        entity_id:
+          - switch.family_room_smart_plug_25
+          - switch.smart_plug_9_switch
+          - switch.smart_plug_15_switch
+          - switch.smart_plug_16_switch
+          - switch.smart_plug_17_switch
+          - switch.smart_plug_18_switch
+        to: "on"
+        for:
+          minutes: 3
+    conditions:
+      - alias: "House is in Bedtime or Away, or nobody is home"
+        condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.house
+            state: "Bedtime"
+          - condition: state
+            entity_id: input_select.house
+            state: "Away"
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "off"
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.christmas_trees
+            - switch.christmas_playroom_lights
