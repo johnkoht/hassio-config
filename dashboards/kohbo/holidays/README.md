@@ -76,6 +76,7 @@ Plumbing is left out on purpose: `turn_on/off_christmas_lights`, `christmas_seas
 ## Caveats
 
 - **The Outdoor Spots card bypasses the Accent Lights boolean.** Spots switched on from the card aren't turned off by the bedtime automation, which acts on `input_boolean.exterior_accent_lights`. Use the Accent Lights row above the card as the main control.
+- **Trees and playroom plugs switch themselves off when the house is down.** At Bedtime, Away or unoccupied they go off even with Christmas mode off, so a tile turned on then reverts after a minute.
 - **The Hue power plugs are never on this dashboard.** The two front-left Hue power switches feed the spots and must stay on.
 
 ---
