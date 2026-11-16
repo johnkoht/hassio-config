@@ -200,8 +200,8 @@ def test_guest_mode_ignores_unconfirmed_parent_blip():
     blip = [member("person.sonia_koht", "home")]
     assert not run(blip, {"device_tracker.sonia_iphone_detect": "not_home"})
     assert run(blip, {"device_tracker.sonia_iphone_detect": "home"})
-    assert run(blip + [member("person.katia", "home")], {})
-    assert not run([member("person.katia", "not_home")], {})
+    assert run(blip + [member("person.sylvia", "home")], {})
+    assert not run([member("person.sylvia", "not_home")], {})
 
 
 def test_joe_arrival_suppresses_guest_mode_announcement():
@@ -275,8 +275,8 @@ def test_guest_mode_counts_joe_only_with_detect():
     assert not _render(tmpl, {JOE_DETECT: "unknown"}, expand=lambda g: joe)
     assert _render(tmpl, {JOE_DETECT: "home"}, expand=lambda g: joe)
     # an unconfirmed Joe does not hide a real guest
-    katia = SimpleNamespace(entity_id="person.katia", state="home")
-    assert _render(tmpl, {JOE_DETECT: "not_home"}, expand=lambda g: joe + [katia])
+    sylvia = SimpleNamespace(entity_id="person.sylvia", state="home")
+    assert _render(tmpl, {JOE_DETECT: "not_home"}, expand=lambda g: joe + [sylvia])
 
 
 def test_joe_has_no_room_presence_not_home_trigger():
@@ -291,3 +291,86 @@ def test_joe_has_no_room_presence_not_home_trigger():
         if "sensor.joe_room_presence" in text and "from:" in text and "trigger" in text:
             hits.append(rel)
     assert hits == []
+
+
+# ---- JK-1254: remaining false-arrival paths after JK-1251 ----
+
+GATED = {
+    "person.antoun_koht": "device_tracker.antoun_iphone_detect",
+    "person.sonia_koht": "device_tracker.sonia_iphone_detect",
+    "person.katia": "device_tracker.katia_iphone_detect",
+    "person.joe_falbo": "device_tracker.joe_iphone_detect",
+}
+
+
+def _ids(trigger):
+    e = trigger.get("entity_id", [])
+    return e if isinstance(e, list) else [e]
+
+
+def test_tayta_is_away_triggers_on_tayta_not_nonna():
+    """The trigger watched person.mary_falbo (Nonna), so Tayta leaving never fired it."""
+    auto = automation("packages/people/tayta/automations/tayta_is_away.yaml")
+    assert state_triggers(auto, "person.sonia_koht")
+    assert not state_triggers(auto, "person.mary_falbo")
+
+
+def test_garage_remotes_unlock_needs_detect_and_hold():
+    """A UniFi blip unlocked the garage remotes with no detect gate (JK-1254)."""
+    from types import SimpleNamespace
+    auto = yaml.load((REPO / "packages/garage/doors/garage_doors_lock_remotes.yaml").read_text(),
+                     Loader=_Loader)["automation"][1]
+    assert auto["id"] == "garage_doors_unlock_remotes"
+    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t
+             and any(i.startswith("person.") for i in _ids(t))]
+    held = [t for t in auto["triggers"] if t.get("for")
+            and any(i.startswith("person.") for i in _ids(t))]
+    assert held and set(GATED) <= set(_ids(held[0]))
+    for t in plain:
+        assert not set(GATED) & set(_ids(t))
+    tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
+    for who, det in GATED.items():
+        trig = SimpleNamespace(entity_id=who)
+        assert _render(tmpl, {det: "home"}, trigger=trig)
+        for bad in ("not_home", "unknown", "unavailable"):
+            assert not _render(tmpl, {det: bad}, trigger=trig)
+    # non-gated people and non-person triggers (bedtime, restart) still unlock
+    assert _render(tmpl, {}, trigger=SimpleNamespace(entity_id="person.john_koht"))
+    assert _render(tmpl, {}, trigger=SimpleNamespace())
+
+
+def test_garage_entry_door_katia_needs_detect_and_hold():
+    from types import SimpleNamespace
+    auto = automation("packages/mudroom/garage_entry_door/garage_entry_door_unlock_upon_arrival.yaml")
+    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
+    held = [t for t in auto["triggers"] if t.get("for")]
+    assert "person.katia" in _ids(held[0])
+    assert not any("person.katia" in _ids(t) for t in plain)
+    tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
+    trig = SimpleNamespace(entity_id="person.katia")
+    assert _render(tmpl, {"device_tracker.katia_iphone_detect": "home"}, trigger=trig)
+    assert not _render(tmpl, {"device_tracker.katia_iphone_detect": "not_home"}, trigger=trig)
+
+
+def test_guest_mode_counts_katia_only_with_detect():
+    """Katia's router-tracker blip turned guest mode on (JK-1254)."""
+    from types import SimpleNamespace
+    on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
+    tmpl = [c for c in on["condition"] if c.get("condition") == "template"][0]["value_template"]
+    det = "device_tracker.katia_iphone_detect"
+    katia = [SimpleNamespace(entity_id="person.katia", state="home")]
+    assert not _render(tmpl, {det: "not_home"}, expand=lambda g: katia)
+    assert not _render(tmpl, {det: "unknown"}, expand=lambda g: katia)
+    assert _render(tmpl, {det: "home"}, expand=lambda g: katia)
+    # an unconfirmed Katia does not hide a real guest
+    sylvia = [SimpleNamespace(entity_id="person.sylvia", state="home")]
+    assert _render(tmpl, {det: "not_home"}, expand=lambda g: katia + sylvia)
+
+
+def test_guest_mode_detect_triggers_are_held_against_flaps():
+    """A detect flap must not re-enable guest mode; the hold also lets UniFi
+    catch up to person.* when detect leads it."""
+    on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
+    detect = [t for t in on["trigger"] if "device_tracker.katia_iphone_detect" in _ids(t)]
+    assert len(detect) == 1 and detect[0].get("for")
+    assert set(GATED.values()) <= set(_ids(detect[0]))
