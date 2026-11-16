@@ -6,9 +6,9 @@ automation:
     alias: "Tayta is Away"
     initial_state: on
     triggers:
-      # Tayta not home
+      # Tayta not home (person.mary_falbo is Nonna, not Tayta)
       - trigger: state
-        entity_id: person.mary_falbo
+        entity_id: person.sonia_koht
         to: "not_home"
       # Handle restarts and reloads of HA
       - trigger: event
