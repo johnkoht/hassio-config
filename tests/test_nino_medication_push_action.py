@@ -67,10 +67,18 @@ def test_handler_marks_the_dose_taken_and_clears_the_push():
         assert data["tag"] == f"nino-medication-escalation-{dose}"
 
 
-def test_handler_has_no_conditions_so_a_late_tap_still_works():
+def test_handler_ignores_a_tap_on_a_previous_days_push():
+    """The ids never expire, so the handler gates on today's escalated flag (cleared at 3am)."""
     auto = _load("nino_medication_push_action.yaml")[0]
-    assert auto.get("conditions") == []
     assert auto["mode"] == "queued"
+    (cond,) = auto["conditions"]
+    assert "input_boolean.nino_medication_' ~ trigger.id ~ '_escalated" in cond["value_template"]
+    assert "'on'" in cond["value_template"]
+    reset = [a for a in _load("nino_medication_reminder.yaml") if a["id"] == "nino_medication_reminder_reset"][0]
+    cleared = [e for act in reset["actions"] if act.get("action") == "input_boolean.turn_off"
+               for e in act["target"]["entity_id"]]
+    assert {"input_boolean.nino_medication_1_escalated",
+            "input_boolean.nino_medication_2_escalated"} <= set(cleared)
 
 
 @pytest.mark.parametrize("dose", ["1", "2"])
