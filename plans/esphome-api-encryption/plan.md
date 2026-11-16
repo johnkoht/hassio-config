@@ -4,7 +4,7 @@ slug: esphome-api-encryption
 status: draft
 created: 2026-11-15
 has_pre_mortem: false
-has_review: false
+has_review: true
 has_prd: false
 linear: [JK-1249]
 depends_on: [JK-1245]
@@ -24,7 +24,7 @@ Sources: the HA `core.config_entries` file on epicurus (whether each ESPHome ent
 
 **Counts: 32 ESPHome entries in HA. 23 unencrypted, 9 encrypted.**
 
-Encrypted (9): Kitchen, Playroom, Main Bedroom West and Office (offline) Apollos; the Foyer proxy; the main bed sensor; the Nino bed sensor; plus 2 dead entries (the old "Nino's Bed" and the retired "aceb64" proxy). JK-1245 owns all 9 (it rotates keys on the live ones and deletes the dead ones). **This plan does not touch them.**
+Encrypted (9): Kitchen, Playroom, Main Bedroom West and Office (offline) Apollos; the Foyer proxy; the main bed sensor; the Nino bed sensor; plus 2 dead entries (the old "Nino's Bed" and the retired Atom proxy). JK-1245 owns all 9 (it rotates keys on the live ones and deletes the dead ones). **This plan does not touch them.**
 
 Unencrypted (23), grouped by how they would be encrypted:
 
@@ -42,11 +42,12 @@ Unencrypted (23), grouped by how they would be encrypted:
 
 Other facts that shape the plan:
 
-- **None of the 21 has a YAML in the builder today.** The only exception is Gianluca's bed sensor, whose YAML sits in the repo under the wrong name and isn't proven to match what's flashed. The three stale proxy YAMLs from JK-1239 (Gazebo, Jr. Suite, Nino's Bedroom) belong to devices that now run stock firmware with no key (JK-1245's findings), so they are replaced by this plan.
-- **Stock proxies are adoptable.** `esphome.bluetooth-proxy` ships a `dashboard_import`, so the builder can adopt them. **Adoption writes a key and an OTA password inline into the YAML.** Both must be moved to `!secret` before anything is committed, or `tests/test_esphome_no_inline_secrets.py` and gitleaks stop it. This is a hand step the plan names explicitly.
+- **None of the 21 has a working YAML today.** Gianluca's bed sensor has one in the repo under the wrong name, not proven to match what's flashed. Three stale proxy YAMLs from JK-1239 (Gazebo, Jr. Suite, Nino's Bedroom) belong to devices that now run stock firmware with no key. JK-1245's two sections disagree on exactly which three devices those YAMLs last flashed, so before deleting them this plan re-checks each against the builder's last-flash record. This plan also owns the hand-off from JK-1245 to retitle the three proxy entries that are named only by a hostname suffix (Garage, Playroom, Gazebo).
+- **Stock proxies are adoptable, but the plan doesn't use the adopt wizard.** `esphome.bluetooth-proxy` ships a `dashboard_import`. Adoption writes an inline API key into a new YAML (whether it also writes an OTA password is **unverified**; the pilot checks). The builder's `/config` is the `esphome/` directory inside the host's git checkout, so an adopted YAML lands there untracked, and the next `deploy.sh` (`git pull --ff-only`) aborts when a PR adds a file at the same path. **Chosen path (JK-1245's order): the YAML is hand-written in the repo, merged, deployed, then compiled and flashed from the builder.** If John adopts anyway, he does it under a scratch name that is deleted from the host before the deploy.
 - **Adopting compiles the current upstream package** (`@main`), and the live proxies run 2026.5.1 or 2026.7.4. The jump to the builder's 2026.10.1 changes firmware. Pin the package `ref:` to a commit SHA, as JK-1245 Phase 2 does for the Apollos.
 - **The OTA path is also open.** The stock proxies were flashed without an OTA password, so anyone on the LAN can push firmware to them. Encrypting the API doesn't close that. See Open Questions.
 - **ratgdo, Konnected and Screek are vendor firmware.** Whether each accepts a user-supplied `api: encryption: key:` (or has a published YAML to start from) is **unverified**. It is a decision gate in its batch, not an assumption.
+- **Unverified claims in this plan** (checked on the pilot or the gate, not assumed): that OTA staging on ESP8266 (ratgdo) behaves like the ESP32 inactive-partition write; that a ratgdo reboot leaves the door untouched; that a node rename keeps HA's entities (JK-1245's Nino rename is the first test); that HA raises a reauth flow when a keyless entry meets an encrypted device; and whether HA's ESPHome integration can set the key itself without a pasted value, which would simplify step 7.
 - **The ratgdo units are ESP8266.** Encrypted API costs RAM there, and the jump from 2024.6.2 to 2026.10.1 is large. Verify with a compile before any upload.
 
 ## Dependency on JK-1245
@@ -61,12 +62,12 @@ JK-1245 Phase 2 (pinned-firmware Apollos) is a dependency for exactly one device
 
 Rule: **one device mid-change at a time.** Order matters because the moment the device reboots with a key, HA's saved (empty) key stops working. HA's connection stays down until step 7.
 
-1. **Generate the key.** The helper adds `<name>_api_key` (base64 of 32 random bytes) to the builder's `secrets.yaml` on epicurus and prints names only. The repo copy `esphome/secrets.yaml` is gitignored and refreshed by `scp` afterwards. The repo never sees a value.
-2. **YAML.** Add `api: encryption: key: !secret <name>_api_key`. For adopted devices, replace the inline key and OTA password that adoption wrote with `!secret` references. Keep the node name unchanged (see Open Questions on renaming).
+1. **Generate the key.** JK-1245's `bin/esphome_rotate_secret.py` only replaces a name that already exists (it asserts exactly one match). This plan adds an `--add` mode (create a missing name, refuse an existing one) with its own test in PR A. Adding names is a host write, so it waits for John's go. Keys are base64 of 32 random bytes; output is names only. The repo copy `esphome/secrets.yaml` is gitignored and refreshed by `scp` afterwards. The repo never sees a value.
+2. **YAML (in the repo, merged and deployed first).** `api: encryption: key: !secret <room>_api_key`. Files and nodes are named by room (see Open Questions 2 for the node-rename call, decided before the pilot PR). If the node is renamed, the upload target and HA's stored host are still the OLD `.local` name until the entry updates.
 3. **Validate before touching the device.** `docker exec esphome esphome config /config/<file>.yaml >/dev/null` (its output renders secrets, so discard it), then `esphome compile`. A compile failure costs nothing.
 4. **Pre-flash snapshot.** Record `sensor.bermuda_global_active_proxy_count`, the state of `lock.front_door`, and for non-proxies the device's entity list and states.
-5. **Upload.** From the builder, Install, Wirelessly (or `esphome upload --device <node>.local`). OTA writes to the inactive partition and switches only on success. **If it fails, the device keeps its old unencrypted firmware, HA never noticed, and the loop restarts at step 3.**
-6. **Prove the key before HA.** A read-only `device_info` call with the new key (helper from the builder container, key via stdin, output names only) confirms the device is up, encrypted, and the same device (name matches). A plain call must now be refused.
+5. **Upload.** From the builder, Install, Wirelessly (or `esphome upload --device <target>`). The target is `<current-node>.local`; for a device that doesn't advertise on mDNS, the helper reads its host from HA's entry at run time and never writes it down. OTA writes to the inactive partition and switches only on success. **If it fails, the device keeps its old unencrypted firmware, HA never noticed, and the loop restarts at step 3.**
+6. **Prove the key before HA.** `bin/esphome_api_audit.py --key-stdin <room>` (built in PR A) makes a `device_info` call with the new key, key on stdin, output names only. It confirms the device is up, encrypted and the same device (name matches), and that a plain call is now refused.
 7. **Re-key HA.** `bin/esphome_rekey_ha.py` continues the reauth flow (`reauth_confirm`, `noise_psk`), or starts a reconfigure flow if no reauth is open. UI fallback if it doesn't match.
 8. **Health check.** Entry `loaded`; the device's entities are available and the snapshot matches; Bermuda count is back to its pre-flash value; the Level lock isn't `unavailable`; person room-presence sensors updated since the flash. For bed sensors, a sit test.
 
@@ -74,7 +75,7 @@ Rule: **one device mid-change at a time.** Order matters because the moment the 
 
 - *Device up but HA can't connect:* the key from step 6 already worked, so the fault is the HA entry. Re-run step 7, or paste the key in the UI.
 - *Device never comes back after the upload:* wait for the device's own Wi-Fi retry, then check mDNS and the router. Nothing was changed on HA, so only this device is affected. ESPHome safe mode and the fallback AP exist; otherwise serial or USB with **John at the device**.
-- *Encryption broke something and we want out:* revert the YAML change, compile, and OTA it. The OTA port doesn't depend on the API key, so the device can go back to unencrypted without a key.
+- *Encryption broke something and we want out:* revert the YAML, compile, and OTA it (the OTA port doesn't depend on the API key; if an OTA password was added in the same flash, the rollback needs it). **Then clear the key in HA** (reconfigure the entry with an empty key, or the UI): a client holding a key can't connect to a plain device, and HA won't raise a reauth for that. Then run the health check.
 - *A device can't be encrypted* (vendor firmware, ESP8266 memory): mark it **held** with the reason in the ticket. Don't retry in a loop.
 
 ## Batches
@@ -90,9 +91,9 @@ Order is least critical first. **Proxies are flashed one at a time with a light 
 | 4 | Proxies, bedrooms | Jr. Suite, Nino's Bedroom, Main Bedroom Bedside | Sleep and bedtime automations read these; daytime only, nobody in bed | Full check; confirm bed presence unaffected |
 | 5 | Bed sensor | Gianluca's bed sensor | After the proxies. JK-1245 already proved the bed-sensor loop on two others. Daytime sit test | Occupied/vacated sit test; bedtime and sleep helpers unchanged |
 | 6 | Presence | Main Bathroom Apollo (pinned ref, entity diff, as JK-1245 Phase 2); both Screek units | Presence sensors drive lights. After Phase 2 of JK-1245. **Gate:** Screek firmware must accept a key; the unreachable unit is found first | Entity diff; lights react in each room |
-| 7 | **Garage doors** | ratgdo 1, 2, 3, one at a time | Physical access. **Gate:** compile with encryption on ESP8266 first. Doors closed, someone home, no door moving | Each door's state, open/close command (John operates it), `garage-evening-autolock` inputs unchanged |
-| 8 | **Alarm panels** | Konnected panel 1, then 2 | Safety-critical, last. **Gate:** vendor firmware must accept a user key. Alarm disarmed, John home | Every zone reports; Alarmo disarmed and healthy; John opens a door sensor to confirm |
-| 9 | Close-out | The audit script across all entries | Done-when check | Zero plain-accepting entries except the held list |
+| 7 | **Garage doors** | ratgdo 1, 2, 3, one at a time | Physical access. **Gate:** compile with encryption on ESP8266 first. Doors closed, someone home, no door moving | Each door's state, open/close command (John operates it), the garage entry-door lock and arrival-detection inputs read as before |
+| 8 | **Alarm panels** | Konnected panel 1, then 2 | Safety-critical, last. **Gate:** vendor firmware must accept a user key. Alarm disarmed, John home, **`input_boolean.alarm_test_mode` on for the window** (otherwise a zone change during a panel reboot can escalate through `alarm_triggered` to `switch.noonlight_alarm`), and the auto-arm automations (`alarm_arm_if_john_away`, `alarm_arm_when_house_empty`, `alarm_arm_at_bedtime`) paused. Test mode confirmed off afterwards | Every zone reports; Alarmo disarmed and healthy; John opens a door sensor to confirm |
+| 9 | Close-out | The audit script across all entries | Done-when check | Zero plain-accepting and zero unreachable entries, except the held list and the named dead entries |
 
 ## What Claude preps and what John does
 
@@ -101,7 +102,7 @@ Order is least critical first. **Proxies are flashed one at a time with a light 
 - This plan, kept updated after each batch.
 - YAMLs for each device in a PR per batch, validated against the secret-name guard: the 12 proxies (using the `esphome.bluetooth-proxy` package with a pinned ref), Gianluca's bed sensor (renamed from `jr-suite-bed.yaml`, node unchanged), the Main Bathroom Apollo. YAMLs for ratgdo, Konnected and Screek come after the gate check on each.
 - Placeholder entries in `esphome/secrets.fake.yaml` for every new `!secret` name (the test requires them).
-- `bin/esphome_api_audit.py` and its test. Reads the ESPHome entries through the host config (host values stay in memory), tries an unauthenticated `device_info` against each, and prints one line per entry: `ENCRYPTED`, `PLAIN` or `UNREACHABLE`, **by name only. It catches exceptions and prints the exception type, never the message, because connection errors embed the address.** Exits non-zero when any non-held entry is `PLAIN`. A constant lists the held names.
+- `bin/esphome_api_audit.py` and its test. Reads the ESPHome entries through the host config (host values stay in memory), tries an unauthenticated `device_info` against each, and prints one line per entry: `ENCRYPTED`, `PLAIN` or `UNREACHABLE`, **by name only. It catches exceptions and prints the exception type, never the message, because connection errors embed the address.** Exits non-zero when any non-held entry is `PLAIN` **or `UNREACHABLE`** (an unreachable device must be named in the held list or a dead-entry list, or it fails close-out); the test covers that case. Constants list the held and dead names. It runs on epicurus: the host side reads `core.config_entries` and pipes the hosts over stdin into the builder container (which has `aioesphomeapi` but can't see `.storage`). The `--key-stdin <room>` mode (step 6) is part of the same script.
 - Deleting the three stale proxy YAMLs and their secret names once their devices have new ones.
 - Docs: `docs/` device notes and the memory entry for the loop.
 - The read-only host work: key generation through the helper, and the audit run. **Host writes (the helper adding secrets to the builder file) wait for John's go.**
@@ -117,8 +118,8 @@ Order is least critical first. **Proxies are flashed one at a time with a light 
 ## Tasks
 
 1. **Wait for the gate.** JK-1245 Phase 1 done and reported. Re-read the helpers it merged.
-2. **Prep PR A: audit script and test**, plus `secrets.fake.yaml` placeholders for batches 1 to 4. Run the audit once to record the baseline (expect 19 or 20 plain).
-3. **Verify vendor gates (read-only):** can ratgdo, Konnected and Screek firmware take a user key (published YAMLs, vendor docs, a local `esphome config` on a candidate). Record the answer on JK-1249. Find out why the second Screek is unreachable.
+2. **Prep PR A: audit script (with `--key-stdin`), the rotate helper's `--add` mode, their tests**, plus `secrets.fake.yaml` placeholders for batches 1 to 4. Run the audit once to record the baseline (expect 20 plain, counting held ZWA-2, plus the unreachable ones listed separately).
+3. **Verify gates (read-only):** first, which proxy sits on the Level lock's BLE path (Open Question 3), which gates batches 1 and 2. Then the vendor gates: can ratgdo, Konnected and Screek firmware take a user key (published YAMLs, vendor docs, a local `esphome config` on a candidate). Record the answer on JK-1249. Find out why the second Screek is unreachable.
 4. **Batches 1 to 8 per the table.** Per batch: a small PR with the YAMLs, `config` and `compile` for each, John flashes, the check runs, a one-line update on JK-1249.
 5. **Held list.** Anything vendor-blocked is documented as held with the reason, and the audit script's held constant is updated in the same PR.
 6. **Close-out.** Full audit, all green except the held list. Delete scratch files and the stale proxy YAMLs, update docs, close JK-1249.
@@ -127,21 +128,22 @@ Order is least critical first. **Proxies are flashed one at a time with a light 
 
 - **BLE coverage dips while a proxy reboots**, affecting Bermuda and possibly the Level lock's BLE path. One at a time, light check between, someone home.
 - **Plain-to-encrypted re-key path untested.** Pilot first; UI fallback.
-- **Adoption writes inline secrets.** The guard test and gitleaks will block a commit; the step is named so it isn't a surprise. Never push before they pass.
+- **An adopted YAML left on the host breaks the deploy pull.** Hand-written YAMLs in the repo are the default; scratch-name adoption is deleted before deploy.
+- **Adoption writes an inline key.** The guard test and gitleaks block a commit; never push before they pass.
 - **Upstream `@main` drift on adopted proxies.** Pin the ref to a SHA.
 - **ratgdo on ESP8266 runs out of memory or breaks on the ESPHome jump.** Compile first; hold if it doesn't fit. Reboot doesn't affect the door itself, but don't flash while a door moves.
 - **Alarm panel reboot while armed raises a false alarm or tamper.** Disarmed, John present.
 - **A secret value appearing in a transcript or the repo.** Never `cat` `secrets.yaml` or print `esphome config`; helpers print names only. The probe in this plan's research printed two addresses via a raw error message once; the audit script fixes that by design.
-- **Repo is public.** Plans, YAMLs, PR bodies and commits use names only. Node names carry the device's 6-character hostname suffix as existing YAMLs do; see Open Questions.
+- **Repo is public.** Plans, YAMLs, PR bodies and commits use names only. New YAMLs and files are named by room, so the 12 stock proxies add no hostname suffixes. Existing files that carry suffixes are not extended. Node renames are a flash-time decision (Open Question 2).
 - **Rollback is possible but needs John at the device if the firmware won't boot.**
 
 ## Open Questions for John
 
 1. **OTA passwords.** Stock proxies take firmware pushes from anyone on the LAN. Encrypting the API doesn't close that. Add an OTA password in the same flash (a single flash for passwordless devices), or keep this to the API only?
-2. **Node renames.** Live node names include a MAC-derived suffix (for example `esp32-bluetooth-proxy-xxxxxx`), which is then committed in each YAML. Rename each node to its room (HA matches by MAC and keeps entities, per JK-1245's findings), or keep names?
+2. **Node renames.** Live node names include a MAC-derived suffix, and the node name must appear in each YAML. The plan defaults to renaming each node to its room, so the public repo gets no new suffixes (HA matches by MAC; JK-1245's Nino rename is the first test of that). Say if you'd rather keep the names. Decide before the pilot PR.
 3. **Which proxy for the pilot, and which proxy sits on the Level lock's BLE path?** Needs your coverage map.
 4. **If vendor firmware can't take a key** (ratgdo, Konnected, Screek): accept as held exceptions, or isolate them with a firewall rule instead?
-5. **Who adopts?** Adopt from the builder yourself (it writes inline keys I then move to `!secret`), or do you want me to hand-write all YAMLs so you only press Install?
+5. **Who writes the YAMLs?** The plan defaults to me hand-writing them in the repo so you only press Install (an adopted YAML on the host would break the deploy pull). Say if you want to adopt anyway.
 6. **The Gianluca YAML** is named `jr-suite-bed.yaml` in the repo and its match with the flashed firmware isn't proven. OK to rename it and treat the builder-side compile as the check?
 7. **Held list.** ZWA-2 and HA Voice stay held. Anything else you want to exclude up front?
 
