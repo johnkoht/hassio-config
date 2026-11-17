@@ -1,0 +1,33 @@
+# Kids WiFi - Off Catch-Up
+#
+# After an HA start, turn the network off if the shutoff passed in the
+# last hour while HA was down. Covers a missed shutoff or snooze end.
+#
+
+automation:
+  - id: "kids_wifi_off_catch_up"
+    alias: "Kids WiFi - Off Catch-Up"
+    mode: single
+    triggers:
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: input_boolean.kids_wifi_schedule
+        state: "on"
+      - condition: state
+        entity_id: switch.kids_enabled
+        state: "on"
+      - alias: "The shutoff passed within the last hour"
+        condition: template
+        value_template: >-
+          {% set off_ts = state_attr('input_datetime.kids_wifi_off_at', 'timestamp') | float(0) %}
+          {{ off_ts > 0 and 0 <= now().timestamp() - off_ts < 3600 }}
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.kids_enabled
+      - action: script.clear_notifications
+        data:
+          devices: jk
+          tag: kids_wifi_off_warning
