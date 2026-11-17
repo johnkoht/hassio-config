@@ -1,3 +1,9 @@
+# Zigbee Router Unavailable
+#
+# Push when a mains-powered Zigbee router (every ZHA device labelled
+# zigbee_router) has been unavailable for 15 minutes.
+#
+
 automation:
   - id: "zigbee_router_unavailable"
     initial_state: on
@@ -5,6 +11,13 @@ automation:
     triggers:
       - trigger: state
         entity_id:
+          # Smart plugs
+          - switch.family_room_smart_plug_25
+          - switch.gazebo_smart_plug_switch
+          - switch.hsp2
+          - switch.hue_smart_plug_1
+          - switch.ikea_of_sweden_inspelning_smart_plug
+          - switch.office_office_lamp
           - switch.smart_plug_1_switch
           - switch.smart_plug_2_switch
           - switch.smart_plug_3_switch
@@ -23,10 +36,47 @@ automation:
           - switch.smart_plug_16_switch
           - switch.smart_plug_17_switch
           - switch.smart_plug_18_switch
-          - switch.gazebo_smart_plug_switch
+          - switch.smart_plug_19_switch
+          - switch.smart_plug_20_switch
+          - switch.smart_plug_21_switch
+          - switch.smart_plug_22_switch
+          - switch.smart_plug_23_switch
           - switch.tradfri_smart_plug_1_switch
           - switch.tradfri_smart_plug_2_switch
           - switch.tradfri_smart_plug_4_switch
+          - switch.upstairs_drying_machine
+          # Wall switches and fan switches
+          - light.gianluca_ceiling_light_switch
+          - light.laundry_room_main_lights
+          - light.main_bathroom_toilet_light
+          - light.mudroom_bathroom_fan
+          - light.mudroom_bathroom_main_lights
+          - light.office_light_switch
+          - light.powder_room_fan_switch
+          - light.powder_room_main_lights
+          # Lights and bulbs
+          - light.driveway_flood_light
+          - light.exterior_backyard_flood_east
+          - light.exterior_backyard_flood_west
+          - light.gianluca_ceiling_light_1
+          - light.gianluca_ceiling_light_2
+          - light.gianluca_ceiling_light_3
+          - light.gianluca_ceiling_light_4
+          - light.gianluca_lamp
+          - light.hue_outdoor_spot_7
+          - light.hue_spot_11_light
+          - light.hue_spot_12_light
+          - light.hue_spot_13_light
+          - light.hue_spot_14_light
+          - light.laundry_room_nightlight
+          - light.office_light_1
+          - light.office_light_2
+          - light.office_light_3
+          - light.office_light_4
+          - light.upstairs_hallway_nightlight_light
+          # Range extenders
+          - sensor.al001_wg001_z01_lqi
+          - sensor.al001_wg001_z01_lqi_2
         to: "unavailable"
         for:
           minutes: 15
