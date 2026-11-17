@@ -38,7 +38,7 @@ The warning writes both (`today_at()` of the helper that fired). A snooze writes
 
 ## Decisions
 
-**Warning.** `kids_wifi_off_warning` triggers `at:` two timestamp sensors (`sensor.kids_wifi_weekday_warning_time`, `sensor.kids_wifi_weekend_warning_time`), each `today_at(<off helper time>) - 10 minutes`, `device_class: timestamp`, timezone-aware (packages/school/LEARNINGS.md), `none` when the helper is unset. Support for `offset:` on an `input_datetime` could not be confirmed from the repo docs or tests (only timestamp sensors are proven), so the sensor pattern is used from the start and there is no build gate. Gates are the shutoff's own: schedule on, network on, helper set, school match for that helper. Fires only on nights the shutoff runs. No times in the repo.
+**Warning.** `kids_wifi_off_warning` triggers `at:` two timestamp sensors (`sensor.kids_wifi_weekday_warning_time`, `sensor.kids_wifi_weekend_warning_time`), each `today_at(<off helper time>) - 10 minutes`, `device_class: timestamp`, timezone-aware (packages/school/LEARNINGS.md), with an `availability:` template (helper `timestamp | int(0) > 0`) so an unset helper reads unavailable, not a wrong or `none` value. Support for `offset:` on an `input_datetime` could not be confirmed from the repo docs or tests (only timestamp sensors are proven), so the sensor pattern is used from the start and there is no build gate. Gates are the shutoff's own: schedule on, network on, helper set, school match for that helper. Fires only on nights the shutoff runs. No times in the repo.
 
 **Voice.** `script.voice_announcement`, priority `high`, `expires_in: 5`, chime `school-bell-chime`, explicit speakers `media_player.sonos_playroom` and `media_player.sonos_family_room`. Not `auto`, which only reaches occupied rooms among the adult-heavy list and misses a kid's bedroom. `media_player.ninos_room` was dropped: it is not verified to exist or to take `announce`, and one bad entity can fail the whole call. Gianluca's room and Nino's room have no confirmed speaker, a BACKLOG item. **Known limitation (settled by the brief, flagged for John):** the script itself drops announcements before 06:00 / after 23:00, with `speech_notifications` off, or while `bedtime` is on, and the documented rule is not to duplicate or bypass these. The push still goes out. If John wants the kids' warning to ignore `bedtime`, that is a separate decision to route through the engine.
 
@@ -55,14 +55,14 @@ The warning writes both (`today_at()` of the helper that fired). A snooze writes
 New, in `packages/network/kids_wifi/`:
 - `kids_wifi_snooze_helpers.yaml`: the two `input_datetime`s.
 - `kids_wifi_snooze_sensors.yaml`: the two warning-time timestamp sensors, plus `binary_sensor.kids_wifi_snooze_available` (network on and `now() < off_at`) and `binary_sensor.kids_wifi_snoozed` (available and `off_at > scheduled`). They use `now()`, so they re-render once a minute only.
-- `kids_wifi_off_warning.yaml`: warning automation.
-- `kids_wifi_snooze_script.yaml`: `script.kids_wifi_snooze`, field `minutes` (select 15/30). Needs the available sensor on and a later target; sets `off_at`; sends the confirmation. Shared by the push handler and dashboard.
+- `kids_wifi_off_warning.yaml`: warning automation. The voice step sits behind one `variables:` flag so the pending gate decision is a one-line change.
+- `kids_wifi_snooze_script.yaml`: `script.kids_wifi_snooze`, field `minutes` (select 15/30). Checks `now < off_at` directly (timestamps) and network on, not the minute-granular sensor. Refusal branches each send a push, tag `kids_wifi_off_warning`, with `url`: "already off" and "already snoozed until <stored time>" (target not later than `off_at`). Success sets `off_at` and sends the confirmation. Shared by the push handler and dashboard.
 - `kids_wifi_snooze_action_handler.yaml`: routes the two action ids to the script.
-- `kids_wifi_off_at.yaml`: trigger on `input_datetime.kids_wifi_off_at`, gated on schedule on, network on; turns the network off (the snooze path).
-- `kids_wifi_off_catch_up.yaml`: on HA start, the one-hour catch-up described above. Known edge: a manual turn-on after the shutoff, followed by a restart inside that hour, gets cut again.
+- `kids_wifi_off_at.yaml`: trigger on `input_datetime.kids_wifi_off_at`, gated on schedule on, network on and `off_at > scheduled` only. It must NOT gate on `now < off_at` or on `binary_sensor.kids_wifi_snoozed`: when the trigger fires `now >= off_at`. Turns the network off (the snooze path) and sends the same `clear_notification`.
+- `kids_wifi_off_catch_up.yaml`: on HA start (also sends the `clear_notification`), the one-hour catch-up described above. Known edge: a manual turn-on after the shutoff, followed by a restart inside that hour, gets cut again.
 
 Changed:
-- `kids_wifi_off_on_schedule.yaml`: skip when `off_at` is more than a minute in the future (a snooze is in force). Unset or past `off_at` does not block.
+- `kids_wifi_off_on_schedule.yaml`: skip when snoozed, meaning `off_at > scheduled and now < off_at` (timestamps). On an unsnoozed night `off_at == scheduled`, so the original path always runs and off-time edits still work; a stale `off_at` (past) or unset one never blocks. Also sends `clear_notification` (tag `kids_wifi_off_warning`, `devices: jk`) when it turns the network off.
 - `dashboards/kohbo/home/kids_wifi_popup.yaml`: a block shown when the available sensor is on: Snooze 15 and Snooze 30 buttons calling `script.kids_wifi_snooze`; when the snoozed sensor is on, a row showing the new shutoff time (`input_datetime.kids_wifi_off_at`).
 - `docs/AUTOMATIONS.md` (Kids WiFi entry), `dashboards/kohbo/home/README.md` if it lists popup contents, `packages/network` LEARNINGS.
 
@@ -77,6 +77,9 @@ Both shutoff automations may fire at the same instant on an unsnoozed night; `sw
 - Voice call uses `script.voice_announcement` and an explicit speaker list.
 - New entities the popup uses are defined in the package; no `HH:MM` clock times in the new files or popup.
 - `tests/test_notification_deep_links.py` stays green.
+- Condition renders: `kids_wifi_off_at` gate passes at `now == off_at` and `off_at + 1s` (and fails when `off_at == scheduled`); the off-on-schedule skip passes through when `off_at == scheduled` even after an edit to an earlier time inside the warning window, and skips when snoozed.
+- Script has refusal branches for "already off" and "not later", each sending a push with tag `kids_wifi_off_warning` and a `url`; each of the three shutoff files sends `clear_notification` with that tag.
+- Sabotage 0: drop `off_at > scheduled` from the skip rule; red. Sabotage 4: remove a refusal branch; red.
 - Sabotage 1: remove the snooze-in-force condition from a scratch copy of the off automation; test goes red. Sabotage 2: remove the `now < off_at` gate from the script; red. Sabotage 3: remove the catch-up's one-hour bound; red.
 
 ## Hand steps for John after merge
@@ -92,4 +95,4 @@ Reload YAML for Input datetimes, Template entities, Scripts and Automations (Dev
 ## Risks
 
 - Voice warning dropped by the script's own gates (time window, `speech_notifications`, `bedtime`). Mitigated by the push.
-- Editing an off time to under 10 minutes from now skips that night's warning and snooze.
+- Editing an off time to under 10 minutes from now, or a template reload after the warning time, skips that night's warning and snooze. Fails safe: the scheduled shutoff does not depend on the warning.
