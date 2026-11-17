@@ -1,7 +1,7 @@
 ---
 title: Kids WiFi Snooze
 slug: kids-wifi-snooze
-status: iterate-pending-john
+status: in-progress
 created: 2026-11-16
 issue: JK-1261
 has_pre_mortem: false
