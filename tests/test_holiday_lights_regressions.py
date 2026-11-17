@@ -357,7 +357,11 @@ def test_main_tree_is_on_plug_21_everywhere():
     page = (REPO / "dashboards/kohbo/holidays/christmas.yaml").read_text()
     assert "smart_plug_9" not in page
     assert "entity: switch.smart_plug_21_switch\n        name: Main Tree" in page
-    assert "sensor.smart_plug_9_active_power" not in (REPO / "dashboards/kohbo/energy/energy.yaml").read_text()
+    energy = (REPO / "dashboards/kohbo/energy/energy.yaml").read_text()
+    for text in (page, energy):
+        assert "sensor.smart_plug_21_power" in text
+        assert "smart_plug_21_active_power" not in text  # plug 21 has no _active_power
+    assert "sensor.smart_plug_9_active_power" not in energy
 
 
 def test_christmas_season_schedule_group_and_popup_row():
