@@ -1,7 +1,8 @@
 #
 # Kids WiFi Popup
 #
-# Kids network switch, the schedule toggle and its four on/off times.
+# Kids network switch, the schedule toggle and its four on/off times,
+# plus snooze buttons in the 10 minutes before the shutoff.
 #
 type: custom:bubble-card
 card_type: pop-up
@@ -65,6 +66,44 @@ cards:
                 - entity: input_datetime.kids_wifi_weekend_off_time
                   name: Weekend Off
                   card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  #
+  # Snooze (only between the warning and the shutoff)
+  #
+  - type: conditional
+    conditions:
+      - entity: binary_sensor.kids_wifi_snooze_available
+        state: 'on'
+    card:
+      type: horizontal-stack
+      cards:
+        - type: custom:button-card
+          name: Snooze 15 min
+          icon: mdi:alarm-snooze
+          tap_action:
+            action: perform-action
+            perform_action: script.kids_wifi_snooze
+            data:
+              minutes: "15"
+        - type: custom:button-card
+          name: Snooze 30 min
+          icon: mdi:alarm-snooze
+          tap_action:
+            action: perform-action
+            perform_action: script.kids_wifi_snooze
+            data:
+              minutes: "30"
+
+  - type: conditional
+    conditions:
+      - entity: binary_sensor.kids_wifi_snoozed
+        state: 'on'
+    card:
+      type: entities
+      entities:
+        - entity: input_datetime.kids_wifi_off_at
+          name: Shutoff snoozed to
+          icon: mdi:alarm-snooze
 
   - type: custom:button-card
     name: Weekday times apply when either kid has school (off the night before, on the morning of). Weekend times apply otherwise. Off times must be before midnight. Set all four times before turning the schedule on.

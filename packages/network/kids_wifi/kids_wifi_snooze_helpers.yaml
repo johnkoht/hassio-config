@@ -1,0 +1,17 @@
+# Kids WiFi Snooze Helpers
+#
+# Scheduled and effective shutoff for tonight. The warning writes both;
+# a snooze moves only the effective one. No initial, so they restore.
+#
+
+input_datetime:
+  kids_wifi_off_scheduled:
+    name: Kids WiFi Off Scheduled
+    icon: mdi:wifi-clock
+    has_date: true
+    has_time: true
+  kids_wifi_off_at:
+    name: Kids WiFi Off At
+    icon: mdi:wifi-clock
+    has_date: true
+    has_time: true
