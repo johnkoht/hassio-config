@@ -31,7 +31,7 @@ The warning writes both (`today_at()` of the helper that fired). A snooze writes
 
 ## Pass-2 fixes (ITERATE, not yet re-reviewed)
 
-- **Snoozed means `off_at > scheduled and now < off_at`.** That is the skip rule in `kids_wifi_off_on_schedule` and a condition on `kids_wifi_off_at`. Unsnoozed nights keep the single existing shutoff path, so an off-time edit after the warning still works and the two automations never double-fire. Test: edit to an earlier time inside the warning window; sabotage: drop the `off_at > scheduled` check.
+- **Snoozed means `off_at > scheduled and now < off_at`.** That full rule is the skip rule in `kids_wifi_off_on_schedule`. `kids_wifi_off_at` gates only on `off_at > scheduled` (it runs when `now >= off_at`, so it must never test `now < off_at`). Unsnoozed nights keep the single existing shutoff path, so an off-time edit after the warning still works and the two automations never double-fire. Test: edit to an earlier time inside the warning window; sabotage: drop the `off_at > scheduled` check.
 - **Refused taps answer.** A tap after the shutoff, or a shorter one than the current snooze, sends a push with the same tag giving the reason (already off, or already snoozed until the stored time). The shutoff clears the warning push by tag.
 - Compare times as timestamps (`state_attr(..., 'timestamp')` vs `now().timestamp()`); write helpers with `input_datetime.set_datetime` and `timestamp:`.
 - School choice is therefore made at the original shutoff on unsnoozed nights; only a snoozed night is locked in at the warning.
@@ -66,7 +66,7 @@ Changed:
 - `dashboards/kohbo/home/kids_wifi_popup.yaml`: a block shown when the available sensor is on: Snooze 15 and Snooze 30 buttons calling `script.kids_wifi_snooze`; when the snoozed sensor is on, a row showing the new shutoff time (`input_datetime.kids_wifi_off_at`).
 - `docs/AUTOMATIONS.md` (Kids WiFi entry), `dashboards/kohbo/home/README.md` if it lists popup contents, `packages/network` LEARNINGS.
 
-Both shutoff automations may fire at the same instant on an unsnoozed night; `switch.turn_off` is idempotent and the second run's "network on" gate fails.
+The two shutoff automations are mutually exclusive: `kids_wifi_off_at` needs `off_at > scheduled`, the original path skips only while snoozed.
 
 ## Tests (`tests/test_kids_wifi_snooze.py`)
 
@@ -79,6 +79,7 @@ Both shutoff automations may fire at the same instant on an unsnoozed night; `sw
 - `tests/test_notification_deep_links.py` stays green.
 - Condition renders: `kids_wifi_off_at` gate passes at `now == off_at` and `off_at + 1s` (and fails when `off_at == scheduled`); the off-on-schedule skip passes through when `off_at == scheduled` even after an edit to an earlier time inside the warning window, and skips when snoozed.
 - Script has refusal branches for "already off" and "not later", each sending a push with tag `kids_wifi_off_warning` and a `url`; each of the three shutoff files sends `clear_notification` with that tag.
+- Sabotage 5: add `now < off_at` to a scratch copy of the `kids_wifi_off_at` gate; the gate-render test goes red.
 - Sabotage 0: drop `off_at > scheduled` from the skip rule; red. Sabotage 4: remove a refusal branch; red.
 - Sabotage 1: remove the snooze-in-force condition from a scratch copy of the off automation; test goes red. Sabotage 2: remove the `now < off_at` gate from the script; red. Sabotage 3: remove the catch-up's one-hour bound; red.
 
@@ -93,6 +94,8 @@ Reload YAML for Input datetimes, Template entities, Scripts and Automations (Dev
 - Snoozing earlier than 10 minutes before the shutoff, or reviving the network after it goes off.
 
 ## Risks
+
+- Catch-up edge: on an unsnoozed night where the off time was edited later after the warning, an HA restart between the old `off_at` and the new time cuts the network at the old time.
 
 - Voice warning dropped by the script's own gates (time window, `speech_notifications`, `bedtime`). Mitigated by the push.
 - Editing an off time to under 10 minutes from now, or a template reload after the warning time, skips that night's warning and snooze. Fails safe: the scheduled shutoff does not depend on the warning.
