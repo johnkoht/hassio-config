@@ -7,7 +7,7 @@
 script:
   kids_wifi_snooze:
     alias: Kids WiFi Snooze
-    mode: single
+    mode: queued
     icon: mdi:alarm-snooze
     fields:
       minutes:
@@ -38,8 +38,9 @@ script:
               - action: script.general_notification
                 data:
                   devices: jk
+                  important: true
                   title: Kids WiFi
-                  message: "Too late to snooze: the kids' internet is already off."
+                  message: "The snooze window has closed (or the kids' internet is already off)."
                   tag: kids_wifi_off_warning
                   url: /dashboard-kohbo/home#kids_wifi
               - stop: "Too late to snooze"
@@ -51,6 +52,7 @@ script:
               - action: script.general_notification
                 data:
                   devices: jk
+                  important: true
                   title: Kids WiFi
                   message: "Already snoozed until {{ off_ts | timestamp_custom('%-I:%M %p') }}."
                   tag: kids_wifi_off_warning
@@ -64,6 +66,7 @@ script:
       - action: script.general_notification
         data:
           devices: jk
+          important: true
           title: Kids WiFi
           message: "Snoozed. The kids' internet turns off at {{ target_ts | timestamp_custom('%-I:%M %p') }}."
           tag: kids_wifi_off_warning
