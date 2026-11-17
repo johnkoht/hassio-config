@@ -105,12 +105,13 @@ def test_warning_triggers_on_sensors_and_has_shutoff_gates():
         assert needle in cond
 
 
-def test_warning_voice_uses_script_explicit_speakers_and_flag():
+def test_warning_voice_uses_script_auto_rooms_and_flag():
     a = auto("kids_wifi_off_warning.yaml")
     assert "voice_warning_enabled" in a["variables"]
     calls = actions_called(a["actions"], "script.voice_announcement")
     assert len(calls) == 1
-    assert calls[0]["data"]["media_players"] == ["media_player.sonos_playroom", "media_player.sonos_family_room"]
+    assert calls[0]["data"]["media_players"] == "auto"
+    assert calls[0]["data"]["priority"] == "high"
 
 
 def test_warning_push_actions_url_and_tag():
