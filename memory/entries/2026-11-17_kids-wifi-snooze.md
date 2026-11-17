@@ -1,6 +1,6 @@
 # Kids WiFi snooze (JK-1261)
 
-**What:** 10 minutes before the nightly kids WiFi shutoff, a warning goes to the playroom and family room speakers and to John's phone (Snooze 15 / Snooze 30). The Kids WiFi popup shows the same buttons in that window. A snooze sets the shutoff to the scheduled time plus 15 or 30 minutes (no stacking, so at most 30 past schedule). State is two `input_datetime`s (scheduled, effective), not a timer.
+**What:** 10 minutes before the nightly kids WiFi shutoff, a warning goes to the occupied-room speakers (`auto`) and to John's phone (Snooze 15 / Snooze 30). The Kids WiFi popup shows the same buttons in that window. A snooze sets the shutoff to the scheduled time plus 15 or 30 minutes (no stacking, so at most 30 past schedule). State is two `input_datetime`s (scheduled, effective), not a timer.
 
 **Learnings:**
 - Five plan reviews (ITERATE x4) changed the design: a timer plus latched boolean could latch on and lose a snooze across a restart (a restored expired timer fires `finished` before automations attach). The datetime design is time-bounded and restart-safe.
