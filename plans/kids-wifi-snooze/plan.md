@@ -38,7 +38,7 @@ The warning writes both (`today_at()` of the helper that fired). A snooze writes
 
 ## Decisions
 
-**Warning.** `kids_wifi_off_warning`: offset time trigger (`at: {entity_id: <off helper>, offset: "-00:10:00"}`) on the weekday and weekend helpers, with the shutoff's own gates (schedule on, network on, helper set, school match for that helper). Fires only on nights the shutoff runs. No times in the repo. **Build gate:** the repo has only used `offset:` on timestamp sensors, never on an `input_datetime`. John must see the first warning in the Logbook; the fallback is a template timestamp sensor of `off - 10 min` (the pattern in `packages/school`).
+**Warning.** `kids_wifi_off_warning` triggers `at:` two timestamp sensors (`sensor.kids_wifi_weekday_warning_time`, `sensor.kids_wifi_weekend_warning_time`), each `today_at(<off helper time>) - 10 minutes`, `device_class: timestamp`, timezone-aware (packages/school/LEARNINGS.md), `none` when the helper is unset. Support for `offset:` on an `input_datetime` could not be confirmed from the repo docs or tests (only timestamp sensors are proven), so the sensor pattern is used from the start and there is no build gate. Gates are the shutoff's own: schedule on, network on, helper set, school match for that helper. Fires only on nights the shutoff runs. No times in the repo.
 
 **Voice.** `script.voice_announcement`, priority `high`, `expires_in: 5`, chime `school-bell-chime`, explicit speakers `media_player.sonos_playroom` and `media_player.sonos_family_room`. Not `auto`, which only reaches occupied rooms among the adult-heavy list and misses a kid's bedroom. `media_player.ninos_room` was dropped: it is not verified to exist or to take `announce`, and one bad entity can fail the whole call. Gianluca's room and Nino's room have no confirmed speaker, a BACKLOG item. **Known limitation (settled by the brief, flagged for John):** the script itself drops announcements before 06:00 / after 23:00, with `speech_notifications` off, or while `bedtime` is on, and the documented rule is not to duplicate or bypass these. The push still goes out. If John wants the kids' warning to ignore `bedtime`, that is a separate decision to route through the engine.
 
@@ -54,7 +54,7 @@ The warning writes both (`today_at()` of the helper that fired). A snooze writes
 
 New, in `packages/network/kids_wifi/`:
 - `kids_wifi_snooze_helpers.yaml`: the two `input_datetime`s.
-- `kids_wifi_snooze_sensors.yaml`: `binary_sensor.kids_wifi_snooze_available` (network on and `now() < off_at`) and `binary_sensor.kids_wifi_snoozed` (available and `off_at > scheduled`). They use `now()`, so they re-render once a minute only.
+- `kids_wifi_snooze_sensors.yaml`: the two warning-time timestamp sensors, plus `binary_sensor.kids_wifi_snooze_available` (network on and `now() < off_at`) and `binary_sensor.kids_wifi_snoozed` (available and `off_at > scheduled`). They use `now()`, so they re-render once a minute only.
 - `kids_wifi_off_warning.yaml`: warning automation.
 - `kids_wifi_snooze_script.yaml`: `script.kids_wifi_snooze`, field `minutes` (select 15/30). Needs the available sensor on and a later target; sets `off_at`; sends the confirmation. Shared by the push handler and dashboard.
 - `kids_wifi_snooze_action_handler.yaml`: routes the two action ids to the script.
@@ -70,7 +70,7 @@ Both shutoff automations may fire at the same instant on an unsnoozed night; `sw
 
 ## Tests (`tests/test_kids_wifi_snooze.py`)
 
-- YAML parses; triggers as designed; warning uses offset `-00:10:00` on both helpers and the shutoff's gates.
+- YAML parses; triggers as designed; warning triggers on the two warning-time sensors, which render helper time minus 10 minutes (harness, incl. unset) and the shutoff's gates.
 - Off automation skips while snoozed (condition present and rendered with a Jinja harness for before, after and unset).
 - Script harness: target is scheduled plus N; a shorter target is ignored; stale `off_at` is rejected.
 - Push actions are `KIDS_WIFI_SNOOZE_15`/`_30`, none start with `SNOOZE_`/`PAUSE_`; the handler maps each to 15 and 30.
@@ -81,7 +81,7 @@ Both shutoff automations may fire at the same instant on an unsnoozed night; `sw
 
 ## Hand steps for John after merge
 
-Reload YAML for Input datetimes, Template entities, Scripts and Automations (Developer Tools, YAML). No restart. New helpers start unset. Watch the first warning night in the Logbook (offset trigger gate).
+Reload YAML for Input datetimes, Template entities, Scripts and Automations (Developer Tools, YAML). No restart. New helpers start unset. Watch the first warning night in the Logbook.
 
 ## Out of scope / BACKLOG
 
