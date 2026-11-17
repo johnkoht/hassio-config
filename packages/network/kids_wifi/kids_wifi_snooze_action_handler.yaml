@@ -1,0 +1,19 @@
+# Kids WiFi - Snooze Action Handler
+#
+# Handles the Snooze 15 / Snooze 30 buttons on the shutoff warning push.
+#
+
+automation:
+  - id: "kids_wifi_snooze_action_handler"
+    alias: "Kids WiFi - Snooze Action Handler"
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.event.data.action in ['KIDS_WIFI_SNOOZE_15', 'KIDS_WIFI_SNOOZE_30'] }}"
+    actions:
+      - action: script.kids_wifi_snooze
+        data:
+          minutes: "{{ trigger.event.data.action.split('_')[-1] }}"

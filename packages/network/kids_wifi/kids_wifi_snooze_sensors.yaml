@@ -1,0 +1,39 @@
+# Kids WiFi Snooze Sensors
+#
+# Warning times (off time minus 10 min) for the warning triggers, plus
+# two flags for the popup. The flags use now(), so they re-render each minute.
+#
+
+template:
+  - sensor:
+      - name: Kids WiFi Weekday Warning Time
+        unique_id: kids_wifi_weekday_warning_time
+        default_entity_id: sensor.kids_wifi_weekday_warning_time
+        device_class: timestamp
+        availability: "{{ state_attr('input_datetime.kids_wifi_weekday_off_time', 'timestamp') | int(0) > 0 }}"
+        state: "{{ today_at(states('input_datetime.kids_wifi_weekday_off_time')) - timedelta(minutes=10) }}"
+
+      - name: Kids WiFi Weekend Warning Time
+        unique_id: kids_wifi_weekend_warning_time
+        default_entity_id: sensor.kids_wifi_weekend_warning_time
+        device_class: timestamp
+        availability: "{{ state_attr('input_datetime.kids_wifi_weekend_off_time', 'timestamp') | int(0) > 0 }}"
+        state: "{{ today_at(states('input_datetime.kids_wifi_weekend_off_time')) - timedelta(minutes=10) }}"
+
+  - binary_sensor:
+      - name: Kids WiFi Snooze Available
+        unique_id: kids_wifi_snooze_available
+        default_entity_id: binary_sensor.kids_wifi_snooze_available
+        icon: mdi:alarm-snooze
+        state: >-
+          {{ is_state('switch.kids_enabled', 'on')
+             and state_attr('input_datetime.kids_wifi_off_at', 'timestamp') | float(0) > now().timestamp() }}
+
+      - name: Kids WiFi Snoozed
+        unique_id: kids_wifi_snoozed
+        default_entity_id: binary_sensor.kids_wifi_snoozed
+        icon: mdi:alarm-snooze
+        state: >-
+          {{ is_state('binary_sensor.kids_wifi_snooze_available', 'on')
+             and state_attr('input_datetime.kids_wifi_off_at', 'timestamp') | float(0)
+                 > state_attr('input_datetime.kids_wifi_off_scheduled', 'timestamp') | float(0) }}

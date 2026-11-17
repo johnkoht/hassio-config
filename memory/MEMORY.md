@@ -51,3 +51,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-11-14 · [joe-all-people-group](entries/2026-11-14_joe-all-people-group.md) — Joe back in extended_family (John's call, reverts #166's all_people listing); his arrival suppresses the guest-mode line; tests updated
 - 2026-11-14 · [joe-detect-gate](entries/2026-11-14_joe-detect-gate.md) — JK-1251 follow-up: Joe's home flag, arrival announcement (held 1 min), garage unlock and guest mode need iPhone detect; announced flag set before announcing
 - 2026-11-15 · [nino-weekend-timing-and-skip](entries/2026-11-15_nino-weekend-timing-and-skip.md) — JK-1168 no-school dose 1 floor, 30 min snooze, skip a dose; JK-1257 critical push Taken action + Home notifications link
+- 2026-11-17 · [kids-wifi-snooze](entries/2026-11-17_kids-wifi-snooze.md) — JK-1261 shutoff warning + Snooze 15/30 (push, popup); datetime state, not a timer
