@@ -80,7 +80,7 @@ A push to John (`devices: "jk"`, time-sensitive) when a **leak sensor or a `key_
 
 ## Zigbee routers
 
-Routers come from the **`zigbee_router` device label** ("Zigbee Router"), not a group. **A new router needs that label** (Settings → Devices → the device → Labels), or it won't be counted or listed. `sensor.zigbee_routers_online` scans `label_devices('zigbee_router')` once a minute (trigger-based, so plug power readings don't re-render it):
+Routers come from the **`zigbee_router` device label** ("Zigbee Router"), not a group. **A new router needs that label** (Settings → Devices → the device → Labels), or it won't be counted or listed. The offline push (`packages/system/alerts/zigbee_router_unavailable.yaml`) is a hand-kept list of each labelled router's primary entity, so **add a new router there too**, and to the set pinned in `tests/test_zigbee_router_alert.py`. It names the router from this sensor's `routers` map and stays quiet while the coordinator itself is down. `sensor.zigbee_routers_online` scans `label_devices('zigbee_router')` once a minute (trigger-based, so plug power readings don't re-render it):
 
 - **Primary entity:** the first enabled switch, light, fan, then sensor, skipping config and diagnostic ones (LQI, RSSI, LED, child lock, Inovelli options). A device with none falls back to its LQI sensor (range extenders), then number/select/update (the UZG router). A labelled device with no enabled entity counts as offline.
 - **Name:** "<Area> <Device>", without the area when the device name already contains it or starts with its first word (Gianluca's room → "Gianluca Ceiling Light 1"). No area, or an area that no longer exists, gives the device name alone.
