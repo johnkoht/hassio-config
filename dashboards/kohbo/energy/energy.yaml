@@ -127,7 +127,7 @@ cards:
         template: kohbo_device_energy_card
         variables:
           - name: Big Xmas Tree
-          - entity: sensor.smart_plug_9_active_power
+          - entity: sensor.smart_plug_21_power
           - icon: mdi:tree-outline
 
       # # Family Room Xmas Tree
