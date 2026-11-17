@@ -24,7 +24,7 @@ automation:
       - trigger: state
         entity_id:
           - switch.family_room_smart_plug_25
-          - switch.smart_plug_9_switch
+          - switch.smart_plug_21_switch
           - switch.smart_plug_15_switch
           - switch.smart_plug_16_switch
           - switch.smart_plug_17_switch
@@ -51,7 +51,7 @@ automation:
       - trigger: state
         entity_id:
           - switch.family_room_smart_plug_25
-          - switch.smart_plug_9_switch
+          - switch.smart_plug_21_switch
           - switch.smart_plug_15_switch
           - switch.smart_plug_16_switch
           - switch.smart_plug_17_switch

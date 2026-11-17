@@ -16,10 +16,10 @@ switch:
     name: "Christmas Trees"
     unique_id: christmas_trees
     entities:
-      # Family Room Tree
+      # Small tree (family room)
       - switch.family_room_smart_plug_25
-      # Dining Room Tree
-      - switch.smart_plug_9_switch
+      # Main tree (dining room bay window)
+      - switch.smart_plug_21_switch
 
   - platform: group
     name: "Christmas Playroom Lights"

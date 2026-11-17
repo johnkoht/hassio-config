@@ -59,10 +59,10 @@ utility_meter:
     cycle: daily
     always_available: true
 
-  # Smart Plug 9 - Big Xmas Tree
+  # Big Xmas Tree (the tree is on smart_plug_21; the key keeps its old plug 9 name)
   smart_plug_9_daily_energy:
     name: "Big Xmas Tree Daily Energy"
-    source: sensor.smart_plug_9_summation_delivered
+    source: sensor.smart_plug_21_summation_delivered
     cycle: daily
     always_available: true
 
