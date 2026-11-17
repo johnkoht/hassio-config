@@ -55,7 +55,7 @@ The warning writes both (`today_at()` of the helper that fired). A snooze writes
 New, in `packages/network/kids_wifi/`:
 - `kids_wifi_snooze_helpers.yaml`: the two `input_datetime`s.
 - `kids_wifi_snooze_sensors.yaml`: the two warning-time timestamp sensors, plus `binary_sensor.kids_wifi_snooze_available` (network on and `now() < off_at`) and `binary_sensor.kids_wifi_snoozed` (available and `off_at > scheduled`). They use `now()`, so they re-render once a minute only.
-- `kids_wifi_off_warning.yaml`: warning automation. The voice step sits behind one `variables:` flag so the pending gate decision is a one-line change.
+- `kids_wifi_off_warning.yaml`: warning automation. The voice step sits behind one `variables:` flag so the spoken step can be switched off in one line.
 - `kids_wifi_snooze_script.yaml`: `script.kids_wifi_snooze`, field `minutes` (select 15/30). Checks `now < off_at` directly (timestamps) and network on, not the minute-granular sensor. Refusal branches each send a push, tag `kids_wifi_off_warning`, with `url`: "already off" and "already snoozed until <stored time>" (target not later than `off_at`). Success sets `off_at` and sends the confirmation. Shared by the push handler and dashboard.
 - `kids_wifi_snooze_action_handler.yaml`: routes the two action ids to the script.
 - `kids_wifi_off_at.yaml`: trigger on `input_datetime.kids_wifi_off_at`, gated on schedule on, network on and `off_at > scheduled` only. It must NOT gate on `now < off_at` or on `binary_sensor.kids_wifi_snoozed`: when the trigger fires `now >= off_at`. Turns the network off (the snooze path) and sends the same `clear_notification`.

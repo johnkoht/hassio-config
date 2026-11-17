@@ -8,4 +8,4 @@
 - Substring tests on templates passed three sabotages; rendering the templates in a Jinja harness caught them.
 - Refusal and confirmation pushes need `important: true` or the Important level swallows them.
 
-**Follow-ups (BACKLOG):** other `restore: true` timers may lose `finished` on restart; catch-up needs the switch available at start; voice warning is dropped by `voice_announcement` gates (bedtime, 06:00-23:00) pending John's call; no speaker in the kids' bedrooms.
+**Follow-ups (BACKLOG):** other `restore: true` timers may lose `finished` on restart; catch-up needs the switch available at start; voice warning follows the normal `voice_announcement` gates (John's call: silent at bedtime is fine, the push still goes); no speaker in the kids' bedrooms.
