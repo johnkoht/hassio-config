@@ -50,8 +50,8 @@ def tmpl_condition(auto_cfg, alias_prefix):
 
 # ---- Jinja harness ---------------------------------------------------------
 TZ = timezone(timedelta(hours=-6))
-NOW = datetime(2026, 11, 16, 20, 25, tzinfo=TZ)
-SCHED = datetime(2026, 11, 16, 20, 30, tzinfo=TZ)
+NOW = datetime(2026, 1, 5, 4, 5, tzinfo=TZ)
+SCHED = datetime(2026, 1, 5, 4, 10, tzinfo=TZ)
 
 
 def render(template, off_at, scheduled=SCHED, now=NOW, switch="on"):
@@ -68,6 +68,26 @@ def render(template, off_at, scheduled=SCHED, now=NOW, switch="on"):
     )
     env.filters["timestamp_custom"] = lambda ts, fmt: datetime.fromtimestamp(ts, TZ).strftime("%I:%M %p")
     return env.from_string(template).render().strip()
+
+
+def render_ctx(template, ctx=None, states=None, now=NOW, attrs=None):
+    """Render with arbitrary variables (trigger, minutes, ...) and fake states."""
+    states = states or {}
+    attrs = attrs or {}
+    env = Environment()
+
+    def today_at(v):
+        h, m, sec = (int(x) for x in v.split(":"))
+        return now.replace(hour=h, minute=m, second=sec, microsecond=0)
+
+    env.globals.update(
+        now=lambda: now, timedelta=timedelta, today_at=today_at,
+        states=lambda e: states[e],
+        state_attr=lambda e, a: attrs[e].timestamp() if a == "timestamp" and attrs.get(e) else 0,
+        is_state=lambda e, s: states.get(e) == s,
+    )
+    env.filters["timestamp_custom"] = lambda ts, fmt: datetime.fromtimestamp(ts, TZ).strftime("%H:%M")
+    return env.from_string(template).render(**(ctx or {})).strip()
 
 
 # ---- structure ---------------------------------------------------------------
@@ -174,13 +194,65 @@ def test_catch_up_is_bounded_to_one_hour():
     assert render(cond, off, now=off - timedelta(minutes=5)) == "False"
 
 
-def test_script_window_logic_in_templates():
+def _script_eval(minutes, off_at, scheduled=SCHED, now=NOW, switch="on"):
+    """Run the script's variables and both refusal conditions; return the branch taken."""
     s = load("kids_wifi_snooze_script.yaml")["script"]["kids_wifi_snooze"]
-    branch_late, branch_short = [d for d in walk(s["sequence"]) if "choose" in d][0]["choose"]
-    late = branch_late["conditions"][0]["value_template"]
-    short = branch_short["conditions"][0]["value_template"]
-    assert "now_ts >= off_ts" in late and "target_ts <= off_ts" in short
-    assert s["variables"]["target_ts"].count("sched_ts") == 1  # scheduled + N, not now + N
+    attrs = {"input_datetime.kids_wifi_off_at": off_at, "input_datetime.kids_wifi_off_scheduled": scheduled}
+    ctx = {"minutes": minutes}
+    for k, v in s["variables"].items():
+        out = render_ctx(v, ctx, {"switch.kids_enabled": switch}, now, attrs)
+        ctx[k] = float(out)
+    late, short = [d for d in walk(s["sequence"]) if "choose" in d][0]["choose"]
+    for name, branch in (("late", late), ("short", short)):
+        if render_ctx(branch["conditions"][0]["value_template"], ctx, {"switch.kids_enabled": switch}, now, attrs) == "True":
+            return name, ctx
+    return "snooze", ctx
+
+
+def test_script_target_is_scheduled_plus_n_not_now_plus_n():
+    branch, ctx = _script_eval("15", off_at=SCHED)
+    assert branch == "snooze"
+    assert ctx["target_ts"] == (SCHED + timedelta(minutes=15)).timestamp()
+    assert _script_eval("30", off_at=SCHED, now=NOW + timedelta(minutes=3))[1]["target_ts"] == (SCHED + timedelta(minutes=30)).timestamp()
+
+
+def test_script_ignores_a_shorter_snooze_and_a_closed_window():
+    assert _script_eval("15", off_at=SCHED + timedelta(minutes=30))[0] == "short"
+    assert _script_eval("30", off_at=SCHED + timedelta(minutes=30))[0] == "short"
+    assert _script_eval("15", off_at=SCHED, now=SCHED + timedelta(minutes=1))[0] == "late"
+    assert _script_eval("15", off_at=SCHED, switch="off")[0] == "late"
+    # stale yesterday value
+    old = SCHED - timedelta(days=1)
+    assert _script_eval("15", off_at=old, scheduled=old)[0] == "late"
+
+
+def test_script_pushes_are_important_and_queued():
+    s = load("kids_wifi_snooze_script.yaml")["script"]["kids_wifi_snooze"]
+    assert s["mode"] == "queued"
+    pushes = actions_called(s["sequence"], "script.general_notification")
+    assert len(pushes) == 3 and all(p["data"].get("important") is True for p in pushes)
+
+
+def test_handler_maps_each_action_to_its_minutes():
+    a = auto("kids_wifi_snooze_action_handler.yaml")
+    tpl = actions_called(a["actions"], "script.kids_wifi_snooze")[0]["data"]["minutes"]
+    for action, mins in (("KIDS_WIFI_SNOOZE_15", "15"), ("KIDS_WIFI_SNOOZE_30", "30")):
+        assert render_ctx(tpl, {"trigger": {"event": {"data": {"action": action}}}}) == mins
+
+
+def test_warning_sensors_render_off_time_minus_ten_minutes():
+    sensors = load("kids_wifi_snooze_sensors.yaml")["template"][0]["sensor"]
+    for s in sensors:
+        helper = re.search(r"input_datetime\.kids_wifi_\w+_off_time", s["state"]).group(0)
+        out = render_ctx(s["state"], states={helper: "04:30:00"})
+        assert out == str(NOW.replace(hour=4, minute=20, second=0))
+
+
+def test_warning_picks_the_helper_for_its_trigger():
+    a = auto("kids_wifi_off_warning.yaml")
+    for tid, helper in (("weekday_off", "input_datetime.kids_wifi_weekday_off_time"),
+                        ("weekend_off", "input_datetime.kids_wifi_weekend_off_time")):
+        assert render_ctx(a["variables"]["off_helper"], {"trigger": {"id": tid}}) == helper
 
 
 def test_sensor_availability_guards_unset_helper():
@@ -189,3 +261,13 @@ def test_sensor_availability_guards_unset_helper():
         assert s["device_class"] == "timestamp"
         assert "int(0) > 0" in s["availability"]
         assert "timedelta(minutes=10)" in s["state"]
+
+
+def test_snooze_sensor_states():
+    sensors = load("kids_wifi_snooze_sensors.yaml")["template"][1]["binary_sensor"]
+    avail = [s for s in sensors if s["unique_id"] == "kids_wifi_snooze_available"][0]["state"]
+    attrs = {"input_datetime.kids_wifi_off_at": SCHED}
+    on = {"switch.kids_enabled": "on"}
+    assert render_ctx(avail, states=on, attrs=attrs) == "True"
+    assert render_ctx(avail, states=on, attrs=attrs, now=SCHED + timedelta(minutes=1)) == "False"
+    assert render_ctx(avail, states={"switch.kids_enabled": "off"}, attrs=attrs) == "False"
