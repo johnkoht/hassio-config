@@ -10,7 +10,8 @@ automation:
     alias: "Zigbee Router Unavailable"
     # queued with a tag per router, so two routers dropping together both push
     mode: queued
-    max: 10
+    max: 64
+    max_exceeded: silent
     triggers:
       - trigger: state
         entity_id:
