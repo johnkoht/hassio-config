@@ -8,6 +8,9 @@ automation:
   - id: "zigbee_router_unavailable"
     initial_state: on
     alias: "Zigbee Router Unavailable"
+    # queued with a tag per router, so two routers dropping together both push
+    mode: queued
+    max: 10
     triggers:
       - trigger: state
         entity_id:
@@ -80,13 +83,19 @@ automation:
         to: "unavailable"
         for:
           minutes: 15
+    conditions:
+      - alias: "Coordinator is up (zigbee_coordinator_offline covers a whole-radio outage)"
+        condition: template
+        value_template: "{{ config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') == 'loaded' }}"
     actions:
       - action: script.general_notification
         data:
           title: "Zigbee System Issue"
-          message: "There is an issue with the following Zigbee routers: {{ trigger.to_state.attributes.friendly_name }}"
+          message: >-
+            {% set names = state_attr('sensor.zigbee_routers_online', 'routers') or {} %}
+            {{ names.get(trigger.entity_id, trigger.to_state.attributes.friendly_name) }} has been offline for 15 minutes.
           devices: "jk"
           priority: "passive"
           important: true
-          tag: "d"
+          tag: "zigbee-router-{{ trigger.entity_id }}"
           url: /dashboard-kohbo/sensors#zigbee_routers_popup
