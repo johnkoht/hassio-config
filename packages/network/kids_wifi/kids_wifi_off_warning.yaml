@@ -1,0 +1,90 @@
+# Kids WiFi - Off Warning
+#
+# Ten minutes before the shutoff: record tonight's shutoff, push John with
+# Snooze 15 / 30, and warn the kids out loud. Same gates as the shutoff.
+#
+
+automation:
+  - id: "kids_wifi_off_warning"
+    alias: "Kids WiFi - Off Warning"
+    mode: single
+    variables:
+      # One switch for the spoken warning (the push always goes out)
+      voice_warning_enabled: true
+      off_helper: >-
+        {{ {
+          'weekday_off': 'input_datetime.kids_wifi_weekday_off_time',
+          'weekend_off': 'input_datetime.kids_wifi_weekend_off_time'
+        }[trigger.id] }}
+    triggers:
+      - trigger: time
+        at: sensor.kids_wifi_weekday_warning_time
+        id: weekday_off
+      - trigger: time
+        at: sensor.kids_wifi_weekend_warning_time
+        id: weekend_off
+    conditions:
+      - condition: state
+        entity_id: input_boolean.kids_wifi_schedule
+        state: "on"
+      - condition: state
+        entity_id: switch.kids_enabled
+        state: "on"
+      - alias: "The helper behind this warning is set"
+        condition: template
+        value_template: "{{ state_attr(off_helper, 'timestamp') | int(0) > 0 }}"
+      - alias: "Off time matches tomorrow's school status"
+        condition: or
+        conditions:
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: weekday_off
+              - condition: state
+                entity_id: binary_sensor.kids_school_tomorrow
+                state: "on"
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: weekend_off
+              - condition: state
+                entity_id: binary_sensor.kids_school_tomorrow
+                state: "off"
+    actions:
+      - alias: "Record tonight's shutoff (scheduled and effective)"
+        action: input_datetime.set_datetime
+        target:
+          entity_id:
+            - input_datetime.kids_wifi_off_scheduled
+            - input_datetime.kids_wifi_off_at
+        data:
+          timestamp: "{{ today_at(states(off_helper)).timestamp() | int }}"
+      - action: script.general_notification
+        data:
+          devices: jk
+          title: Kids WiFi
+          message: "The kids' internet turns off in 10 minutes."
+          priority: time-sensitive
+          tag: kids_wifi_off_warning
+          url: /dashboard-kohbo/home#kids_wifi
+          actions:
+            - action: KIDS_WIFI_SNOOZE_15
+              title: Snooze 15 min
+            - action: KIDS_WIFI_SNOOZE_30
+              title: Snooze 30 min
+      - alias: "Spoken warning for the kids"
+        if:
+          - condition: template
+            value_template: "{{ voice_warning_enabled }}"
+        then:
+          - action: script.voice_announcement
+            data:
+              media_players:
+                - media_player.sonos_playroom
+                - media_player.sonos_family_room
+              sound: school-bell-chime
+              priority: high
+              expires_in: 5
+              speech_message: >-
+                Heads up, kids. The internet turns off in 10 minutes.
+                Time to wind down and wrap up what you are doing.

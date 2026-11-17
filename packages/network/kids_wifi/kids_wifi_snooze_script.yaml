@@ -1,0 +1,70 @@
+# Kids WiFi Snooze
+#
+# Move tonight's shutoff to the scheduled time plus 15 or 30 minutes.
+# Used by the push actions and the popup. Refusals answer with a push.
+#
+
+script:
+  kids_wifi_snooze:
+    alias: Kids WiFi Snooze
+    mode: single
+    icon: mdi:alarm-snooze
+    fields:
+      minutes:
+        name: Minutes
+        description: Extra time past the scheduled shutoff
+        example: "15"
+        required: true
+        selector:
+          select:
+            options:
+              - "15"
+              - "30"
+    variables:
+      now_ts: "{{ now().timestamp() }}"
+      off_ts: "{{ state_attr('input_datetime.kids_wifi_off_at', 'timestamp') | float(0) }}"
+      sched_ts: "{{ state_attr('input_datetime.kids_wifi_off_scheduled', 'timestamp') | float(0) }}"
+      target_ts: "{{ sched_ts + (minutes | int(0)) * 60 }}"
+    sequence:
+      - alias: "Only 15 or 30 minutes"
+        condition: template
+        value_template: "{{ (minutes | int(0)) in [15, 30] }}"
+      - choose:
+          - alias: "Already off, or the window is closed"
+            conditions:
+              - condition: template
+                value_template: "{{ not is_state('switch.kids_enabled', 'on') or now_ts >= off_ts }}"
+            sequence:
+              - action: script.general_notification
+                data:
+                  devices: jk
+                  title: Kids WiFi
+                  message: "Too late to snooze: the kids' internet is already off."
+                  tag: kids_wifi_off_warning
+                  url: /dashboard-kohbo/home#kids_wifi
+              - stop: "Too late to snooze"
+          - alias: "Not later than the current snooze"
+            conditions:
+              - condition: template
+                value_template: "{{ target_ts <= off_ts }}"
+            sequence:
+              - action: script.general_notification
+                data:
+                  devices: jk
+                  title: Kids WiFi
+                  message: "Already snoozed until {{ off_ts | timestamp_custom('%-I:%M %p') }}."
+                  tag: kids_wifi_off_warning
+                  url: /dashboard-kohbo/home#kids_wifi
+              - stop: "Already snoozed that long"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.kids_wifi_off_at
+        data:
+          timestamp: "{{ target_ts | int }}"
+      - action: script.general_notification
+        data:
+          devices: jk
+          title: Kids WiFi
+          message: "Snoozed. The kids' internet turns off at {{ target_ts | timestamp_custom('%-I:%M %p') }}."
+          tag: kids_wifi_off_warning
+          url: /dashboard-kohbo/home#kids_wifi

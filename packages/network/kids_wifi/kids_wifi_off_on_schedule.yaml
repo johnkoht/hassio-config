@@ -2,6 +2,7 @@
 #
 # Turn the kids network off at the scheduled off time.
 # Weekday time applies when either kid has school tomorrow, weekend time otherwise.
+# Skipped while a snooze is in force (kids_wifi_off_at takes over).
 #
 
 automation:
@@ -47,7 +48,17 @@ automation:
               - condition: state
                 entity_id: binary_sensor.kids_school_tomorrow
                 state: "off"
+      - alias: "Not snoozed (a snooze moved the shutoff past this time)"
+        condition: template
+        value_template: >-
+          {% set off_ts = state_attr('input_datetime.kids_wifi_off_at', 'timestamp') | float(0) %}
+          {% set sched_ts = state_attr('input_datetime.kids_wifi_off_scheduled', 'timestamp') | float(0) %}
+          {{ not (off_ts > sched_ts and now().timestamp() < off_ts) }}
     actions:
       - action: switch.turn_off
         target:
           entity_id: switch.kids_enabled
+      - action: script.clear_notifications
+        data:
+          devices: jk
+          tag: kids_wifi_off_warning

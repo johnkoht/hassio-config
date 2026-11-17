@@ -1,0 +1,33 @@
+# Kids WiFi - Off At (snooze path)
+#
+# Turn the kids network off at the snoozed shutoff time. Gated on
+# off_at > scheduled only: this runs when now is already >= off_at.
+#
+
+automation:
+  - id: "kids_wifi_off_at"
+    alias: "Kids WiFi - Off At"
+    mode: single
+    triggers:
+      - trigger: time
+        at: input_datetime.kids_wifi_off_at
+    conditions:
+      - condition: state
+        entity_id: input_boolean.kids_wifi_schedule
+        state: "on"
+      - condition: state
+        entity_id: switch.kids_enabled
+        state: "on"
+      - alias: "A snooze moved the shutoff past the scheduled time"
+        condition: template
+        value_template: >-
+          {{ state_attr('input_datetime.kids_wifi_off_at', 'timestamp') | float(0)
+             > state_attr('input_datetime.kids_wifi_off_scheduled', 'timestamp') | float(0) }}
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.kids_enabled
+      - action: script.clear_notifications
+        data:
+          devices: jk
+          tag: kids_wifi_off_warning
