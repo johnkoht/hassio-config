@@ -344,6 +344,26 @@ def test_tree_energy_meter_reads_the_tree_plug():
     assert f"switch.{plug}" in trees
 
 
+
+def test_main_tree_is_on_plug_21_everywhere():
+    """The main tree moved from plug 9 to plug 21; plug 9 stays the dining room East Wall Outlet."""
+    group = yaml.safe_load((CHRISTMAS / "lights/christmas_lights_group.yaml").read_text())
+    trees = next(g for g in group["switch"] if g["unique_id"] == "christmas_trees")["entities"]
+    assert sorted(trees) == ["switch.family_room_smart_plug_25", "switch.smart_plug_21_switch"]
+    meters = yaml.safe_load(
+        (REPO / "packages/energy/sensors/device_daily_energy_meters.yaml").read_text()
+    )
+    assert meters["utility_meter"]["smart_plug_9_daily_energy"]["source"] == "sensor.smart_plug_21_summation_delivered"
+    page = (REPO / "dashboards/kohbo/holidays/christmas.yaml").read_text()
+    assert "smart_plug_9" not in page
+    assert "entity: switch.smart_plug_21_switch\n        name: Main Tree" in page
+    energy = (REPO / "dashboards/kohbo/energy/energy.yaml").read_text()
+    for text in (page, energy):
+        assert "sensor.smart_plug_21_power" in text
+        assert "smart_plug_21_active_power" not in text  # plug 21 has no _active_power
+    assert "sensor.smart_plug_9_active_power" not in energy
+
+
 def test_christmas_season_schedule_group_and_popup_row():
     content = yaml.safe_load((CHRISTMAS / "christmas_season_schedule.yaml").read_text())
     assert content["group"]["christmas_season_schedule"]["entities"] == [
