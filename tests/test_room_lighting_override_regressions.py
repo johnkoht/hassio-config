@@ -174,7 +174,12 @@ def helper_def(room, name):
 def test_flag_has_no_initial_and_latch_initial_off(room):
     """The hand flag must survive restarts (no initial); the latch starts off."""
     assert "initial" not in helper_def(room, f"{room}_lighting_automations")
-    assert helper_def(room, f"{room}_lights_manually_toggled").get("initial") in (False, "off")
+    latch = helper_def(room, f"{room}_lights_manually_toggled")
+    if room == "main_bedroom":
+        # JK-1262: a restart during bedtime lost the hand latch; it is restored now.
+        assert "initial" not in latch
+    else:
+        assert latch.get("initial") in (False, "off")
 
 
 # 2 ---------------------------------------------------------------------------

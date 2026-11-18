@@ -17,3 +17,10 @@ The flag is hand-only now. `garage_lights_manual_change` sets the separate latch
 ## Stale clone entity ids
 
 Live, the old detection automation ran as `automation.main_bedroom_lights_manually_turned_off_2` and the old not-occupied write as `automation.playroom_not_occupied_2` (clone-derived ids). Nothing in the repo references either.
+
+## Remotes unlocked during bedtime after a reload (JK-1262)
+
+`garage_doors_unlock_remotes` fires on HA start and on `automation_reloaded` and only checked that a remote was locked, so a deploy reload during bedtime unlocked all three remotes (the group lock is the fourth entity). The next restart then relocked them through `garage_doors_lock_remotes`, which is correct at bedtime. Restart and reload triggers now carry `id: restart` and are ignored while `input_boolean.bedtime` is on; bedtime-off and arrival still unlock. Restart relocking during bedtime stays.
+
+`garage_lights_auto` has no `initial:` so a restart restores it.
+
