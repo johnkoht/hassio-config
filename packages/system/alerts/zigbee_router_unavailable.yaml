@@ -15,26 +15,32 @@ automation:
     triggers:
       - trigger: time_pattern
         minutes: "/1"
+    # Rendered at trigger time, so the run only fires when a router is due.
+    # `this.last_changed` is when this automation was loaded (HA start or reload):
+    # a router already down by then restarts its clock at boot, so it is skipped
+    # rather than re-pushed on every restart.
+    variables:
+      due: >-
+        {% set routers = state_attr('sensor.zigbee_routers_online', 'routers') or {} %}
+        {% set ns = namespace(due=[]) %}
+        {% for e in routers %}
+          {% set s = states[e] %}
+          {% if s is not none and s.state == 'unavailable' and s.last_changed > this.last_changed %}
+            {% set age = (now() - s.last_changed).total_seconds() %}
+            {% if 900 <= age < 960 %}
+              {% set ns.due = ns.due + [e] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.due }}
     conditions:
       - alias: "Coordinator is up (zigbee_coordinator_offline covers a whole-radio outage)"
         condition: template
         value_template: "{{ config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') == 'loaded' }}"
+      - alias: "A router crossed 15 minutes unavailable this minute"
+        condition: template
+        value_template: "{{ due | count > 0 }}"
     actions:
-      - alias: "Routers whose unavailable streak crosses 15 minutes in this minute"
-        variables:
-          due: >-
-            {% set routers = state_attr('sensor.zigbee_routers_online', 'routers') or {} %}
-            {% set ns = namespace(due=[]) %}
-            {% for e in routers %}
-              {% set s = states[e] %}
-              {% if s is not none and s.state == 'unavailable' %}
-                {% set age = (now() - s.last_changed).total_seconds() %}
-                {% if 900 <= age < 960 %}
-                  {% set ns.due = ns.due + [e] %}
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-            {{ ns.due }}
       - repeat:
           for_each: "{{ due }}"
           sequence:

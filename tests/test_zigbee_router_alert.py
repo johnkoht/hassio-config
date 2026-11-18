@@ -23,12 +23,15 @@ class _S:
         self.last_changed = NOW - timedelta(seconds=minutes * 60)
 
 
-def _due(states, routers=ROUTERS):
-    tpl = _auto()["actions"][0]["variables"]["due"]
+LOADED_MIN = 120  # the automation was loaded two hours ago unless a test says otherwise
+
+
+def _due(states, routers=ROUTERS, loaded_min=LOADED_MIN):
+    tpl = _auto()["variables"]["due"]
     env = jinja2.Environment(extensions=["jinja2.ext.do"])
     states_obj = type("St", (), {"__getitem__": lambda self, k: states.get(k)})()
     out = env.from_string(tpl).render(
-        states=states_obj, now=lambda: NOW,
+        states=states_obj, now=lambda: NOW, this=_S("on", loaded_min),
         state_attr=lambda e, a: routers if (e, a) == ("sensor.zigbee_routers_online", "routers") else None,
     )
     return ast.literal_eval(out.strip())
@@ -76,12 +79,12 @@ def test_two_routers_dropping_together_both_alert():
 
 def test_coordinator_gate_mode_and_per_router_push():
     auto = _auto()
-    (cond,) = auto["conditions"]
+    cond = auto["conditions"][0]
     assert cond["condition"] == "template"
     assert "config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') == 'loaded'" in cond["value_template"]
     assert auto["mode"] == "queued" and auto["max_exceeded"] == "silent"
-    rep = auto["actions"][1]["repeat"]
-    assert "due" in rep["for_each"]
+    rep = auto["actions"][0]["repeat"]
+    assert rep["for_each"] == "{{ due }}"
     data = rep["sequence"][0]["data"]
     assert rep["sequence"][0]["action"] == "script.general_notification"
     assert data["tag"] == "zigbee-router-{{ repeat.item }}"
@@ -96,3 +99,16 @@ def test_zha_outage_pushes_nothing():
     for state, passes in (("loaded", True), ("setup_retry", False), ("not_loaded", False), (None, False)):
         out = gate.render(config_entry_attr=lambda *_a, st=state: st).strip()
         assert (out == "True") is passes, state
+
+
+def test_run_only_fires_when_a_router_is_due():
+    auto = _auto()
+    assert auto["conditions"][1]["value_template"] == "{{ due | count > 0 }}"
+
+
+def test_router_already_down_at_load_is_not_repushed():
+    # HA restart or automation reload resets last_changed of dead routers to the load time;
+    # 15 minutes later they must not all push again.
+    s = {"switch.plug_a": _S("unavailable", 15.5), "light.bulb_b": _S("unavailable", 15.5)}
+    assert _due(s, loaded_min=15.5) == []
+    assert _due(s, loaded_min=20) == ["switch.plug_a", "light.bulb_b"]
