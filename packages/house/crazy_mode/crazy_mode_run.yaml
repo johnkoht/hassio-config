@@ -1,0 +1,306 @@
+# Crazy Mode - Run
+#
+# Owns the clock: Crazy 5:00, Slow-mo 1:00, Cool-down 1:00, then the
+# restore. Started by crazy_mode_start with its lists; never run it by hand.
+# Every wait runs to a deadline, so a voice line can't stretch the run.
+#
+
+script:
+  crazy_mode_run:
+    alias: "Crazy Mode - Run"
+    icon: mdi:run-fast
+    mode: single
+    variables:
+      kitchen: media_player.sonos_kitchen
+      # Two distinct picks per run. No jumping, spinning, hopping or one-foot moves.
+      heavy_work:
+        - "Wall pushes! Push the wall like a mountain."
+        - "Big wall push. Hold it and stay strong."
+        - "Carry a couch cushion across the room."
+        - "Carry a stack of books, nice and slow."
+        - "Chair push-ups. Lift your body up."
+        - "Slow bear crawl to the next room."
+        - "Give someone a big squeeze hug."
+        - "Turtle shell! Curl up tight and breathe."
+      pick_a: "{{ range(8) | random }}"
+      pick_b: "{{ (pick_a + 1 + (range(7) | random)) % 8 }}"
+    sequence:
+      - alias: "Only run when crazy_mode_start handed over its lists"
+        condition: template
+        value_template: "{{ loop_lights is defined and speakers is defined }}"
+      - alias: "Start left the phase at Crazy (an abort in between sets it Off)"
+        condition: state
+        entity_id: input_select.crazy_mode_phase
+        state: "Crazy"
+      - variables:
+          t0: "{{ now().timestamp() }}"
+          base: "{{ states('input_number.crazy_mode_base_volume') | float(40) / 100 }}"
+          speech_vol: "{{ [states('input_number.crazy_mode_base_volume') | float(40) + 10, 75] | min | int }}"
+          fav_crazy: "{{ states('input_text.crazy_mode_favorite_crazy') }}"
+          fav_slowmo: "{{ states('input_text.crazy_mode_favorite_slowmo') }}"
+          fav_cooldown: "{{ states('input_text.crazy_mode_favorite_cooldown') }}"
+      #
+      # CRAZY (0:00 to 5:00)
+      #
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.crazy_mode_phase
+        data:
+          option: "Crazy"
+      - action: timer.start
+        target:
+          entity_id: timer.crazy_mode_phase
+        data:
+          duration: "00:05:00"
+      - action: media_player.volume_set
+        continue_on_error: true
+        target:
+          entity_id: "{{ speakers }}"
+        data:
+          volume_level: "{{ base }}"
+      - action: light.turn_on
+        continue_on_error: true
+        target:
+          entity_id: "{{ loop_lights }}"
+        data:
+          brightness_pct: 100
+          transition: 2
+      - action: media_player.select_source
+        continue_on_error: true
+        target:
+          entity_id: "{{ kitchen }}"
+        data:
+          source: "{{ fav_crazy }}"
+      - alias: "Shuffle has to be set after the source starts"
+        delay: 3
+      - action: media_player.shuffle_set
+        continue_on_error: true
+        target:
+          entity_id: "{{ kitchen }}"
+        data:
+          shuffle: true
+      - action: script.turn_on
+        target:
+          entity_id: script.announcement_engine
+        data:
+          variables:
+            sound_file: "/local/sounds/Notification-sound.mp3"
+            sound_length: 2
+            speech_message: "Crazy Mode! Crazy, then slow-mo, then cool-down. Socks off!"
+            speech_volume: "{{ speech_vol }}"
+            media_players: "{{ speakers }}"
+      - alias: "Five one-minute ticks; the stop button releases the wait"
+        repeat:
+          count: 5
+          sequence:
+            - wait_template: "{{ is_state('input_boolean.crazy_mode_stop_requested', 'on') }}"
+              timeout: "{{ [t0 + 60 * repeat.index - now().timestamp(), 0.5] | max }}"
+              continue_on_timeout: true
+            - alias: "Still running"
+              if:
+                - condition: state
+                  entity_id: input_boolean.crazy_mode_stop_requested
+                  state: "off"
+              then:
+                - alias: "Re-assert the lights; the kitchen vacancy automation ignores the latch"
+                  action: light.turn_on
+                  continue_on_error: true
+                  target:
+                    entity_id: "{{ loop_lights }}"
+                  data:
+                    brightness_pct: 100
+                - alias: "A minute left"
+                  if:
+                    - condition: template
+                      value_template: "{{ repeat.index == 4 }}"
+                  then:
+                    - action: script.turn_on
+                      target:
+                        entity_id: script.announcement_engine
+                      data:
+                        variables:
+                          sound_file: "/local/sounds/Notification-sound.mp3"
+                          sound_length: 2
+                          speech_message: "One more minute of Crazy Mode!"
+                          speech_volume: "{{ speech_vol }}"
+                          media_players: "{{ speakers }}"
+      #
+      # SLOW-MO (5:00 to 6:00). A stop in Crazy skips straight to Cool-down.
+      #
+      - alias: "Slow-mo unless the stop button was pressed"
+        if:
+          - condition: state
+            entity_id: input_boolean.crazy_mode_stop_requested
+            state: "off"
+        then:
+          - variables:
+              s0: "{{ now().timestamp() }}"
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.crazy_mode_phase
+            data:
+              option: "Slow-mo"
+          - action: timer.start
+            target:
+              entity_id: timer.crazy_mode_phase
+            data:
+              duration: "00:01:00"
+          - action: script.turn_on
+            target:
+              entity_id: script.announcement_engine
+            data:
+              variables:
+                sound_file: "/local/sounds/Notification-sound.mp3"
+                sound_length: 2
+                speech_message: "SLOW MOTION MODE!"
+                speech_volume: "{{ speech_vol }}"
+                media_players: "{{ speakers }}"
+          - parallel:
+              - alias: "Music: favorite, then a 10 s fade to about 70%"
+                sequence:
+                  - action: media_player.select_source
+                    continue_on_error: true
+                    target:
+                      entity_id: "{{ kitchen }}"
+                    data:
+                      source: "{{ fav_slowmo }}"
+                  - repeat:
+                      count: 5
+                      sequence:
+                        - if:
+                            - condition: state
+                              entity_id: input_boolean.crazy_mode_stop_requested
+                              state: "off"
+                          then:
+                            - action: media_player.volume_set
+                              continue_on_error: true
+                              target:
+                                entity_id: "{{ speakers }}"
+                              data:
+                                volume_level: "{{ base - (base * 0.3) * repeat.index / 5 }}"
+                            - delay: 2
+              - alias: "Lights: dim from 100% to 50% in six steps"
+                repeat:
+                  count: 6
+                  sequence:
+                    - if:
+                        - condition: state
+                          entity_id: input_boolean.crazy_mode_stop_requested
+                          state: "off"
+                      then:
+                        - action: light.turn_on
+                          continue_on_error: true
+                          target:
+                            entity_id: "{{ loop_lights }}"
+                          data:
+                            brightness_pct: "{{ (100 - 50 * repeat.index / 6) | round(0) | int }}"
+                            transition: 10
+                    - wait_template: "{{ is_state('input_boolean.crazy_mode_stop_requested', 'on') }}"
+                      timeout: "{{ [s0 + 10 * repeat.index - now().timestamp(), 0.5] | max }}"
+                      continue_on_timeout: true
+      #
+      # COOL-DOWN (always 60 s). Nothing below reads the stop button.
+      #
+      - variables:
+          c0: "{{ now().timestamp() }}"
+          v0: "{{ state_attr(kitchen, 'volume_level') | float(base) }}"
+          cool_vol: "{{ base * 0.45 }}"
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.crazy_mode_stop_requested
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.crazy_mode_phase
+        data:
+          option: "Cool-down"
+      - action: timer.start
+        target:
+          entity_id: timer.crazy_mode_phase
+        data:
+          duration: "00:01:00"
+      - action: light.turn_on
+        continue_on_error: true
+        target:
+          entity_id: "{{ loop_lights }}"
+        data:
+          brightness_pct: 30
+          transition: 3
+      - parallel:
+          - alias: "Heavy-work prompt, first pick"
+            action: script.turn_on
+            target:
+              entity_id: script.announcement_engine
+            data:
+              variables:
+                sound_file: "/local/sounds/Notification-sound.mp3"
+                sound_length: 2
+                speech_message: "{{ heavy_work[pick_a | int] }}"
+                speech_volume: "{{ speech_vol }}"
+                media_players: "{{ speakers }}"
+          - alias: "Music: favorite, then a 10 s fade to about 45%"
+            sequence:
+              - action: media_player.select_source
+                continue_on_error: true
+                target:
+                  entity_id: "{{ kitchen }}"
+                data:
+                  source: "{{ fav_cooldown }}"
+              - repeat:
+                  count: 5
+                  sequence:
+                    - action: media_player.volume_set
+                      continue_on_error: true
+                      target:
+                        entity_id: "{{ speakers }}"
+                      data:
+                        volume_level: "{{ v0 + (cool_vol - v0) * repeat.index / 5 }}"
+                    - delay: 2
+      - alias: "Ten-second ticks; the second prompt at tick three (half way)"
+        repeat:
+          count: 5
+          sequence:
+            - delay: "{{ [c0 + 10 * repeat.index - now().timestamp(), 0] | max }}"
+            - action: light.turn_on
+              continue_on_error: true
+              target:
+                entity_id: "{{ loop_lights }}"
+              data:
+                brightness_pct: 30
+            - if:
+                - condition: template
+                  value_template: "{{ repeat.index == 3 }}"
+              then:
+                - action: script.turn_on
+                  target:
+                    entity_id: script.announcement_engine
+                  data:
+                    variables:
+                      sound_file: "/local/sounds/Notification-sound.mp3"
+                      sound_length: 2
+                      speech_message: "{{ heavy_work[pick_b | int] }}"
+                      speech_volume: "{{ speech_vol }}"
+                      media_players: "{{ speakers }}"
+      - alias: "Fade the music out over the last 10 s, never a hard cut"
+        repeat:
+          count: 5
+          sequence:
+            - action: media_player.volume_set
+              continue_on_error: true
+              target:
+                entity_id: "{{ speakers }}"
+              data:
+                volume_level: "{{ cool_vol * (1 - repeat.index / 5) }}"
+            - delay: "{{ [c0 + 50 + 2 * repeat.index - now().timestamp(), 0] | max }}"
+      #
+      # END (7:00): closing line, then put the house back
+      #
+      - alias: "Closing line (the only blocking call, after the clock is done)"
+        action: script.announcement_engine
+        continue_on_error: true
+        data:
+          sound_file: "/local/sounds/Notification-sound.mp3"
+          sound_length: 2
+          speech_message: "Crazy Mode is over. Take a big breath. Save your world."
+          speech_volume: "{{ speech_vol }}"
+          media_players: "{{ speakers }}"
+      - action: script.crazy_mode_restore

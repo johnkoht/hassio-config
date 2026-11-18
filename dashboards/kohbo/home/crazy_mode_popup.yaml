@@ -1,0 +1,104 @@
+#
+# Crazy Mode Popup
+#
+# Start, stop (to Cool-down), phase and time left, the two run windows,
+# favorite names, base volume and the once-per-window override.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#crazy_mode'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+cards:
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Crazy Mode
+
+  #
+  # Start and stop
+  #
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        name: Start
+        icon: mdi:run-fast
+        entity: binary_sensor.crazy_mode_allowed
+        state:
+          - value: 'on'
+            color: var(--primary-color)
+        tap_action:
+          action: perform-action
+          perform_action: script.crazy_mode_start
+      - type: custom:button-card
+        name: Cool-down now
+        icon: mdi:stop-circle
+        tap_action:
+          action: perform-action
+          perform_action: script.crazy_mode_stop
+
+  - type: entities
+    entities:
+      - entity: input_select.crazy_mode_phase
+        name: Phase
+        icon: mdi:run-fast
+      - entity: timer.crazy_mode_phase
+        name: Time left
+      - entity: sensor.crazy_mode_reason
+        name: Can it start?
+        icon: mdi:help-circle-outline
+
+  - type: conditional
+    conditions:
+      - entity: sensor.crazy_mode_reason
+        state: favorite_missing
+    card:
+      type: custom:button-card
+      name: A favorite name is not on every speaker. Check the three names below, spelled exactly as in Sonos.
+      template: kohbo_card_section_description
+
+  - type: conditional
+    conditions:
+      - entity: sensor.crazy_mode_reason
+        state: window_unset
+    card:
+      type: custom:button-card
+      name: Set a window below (start before end, same day) before Crazy Mode can start.
+      template: kohbo_card_section_description
+
+  - type: custom:button-card
+    name: Allow another run
+    icon: mdi:restart
+    tap_action:
+      action: perform-action
+      perform_action: script.crazy_mode_allow_again
+
+  #
+  # Windows
+  #
+  - type: entities
+    entities:
+      - entity: input_datetime.crazy_mode_morning_start
+        name: Morning start
+      - entity: input_datetime.crazy_mode_morning_end
+        name: Morning end
+      - entity: input_datetime.crazy_mode_evening_start
+        name: Evening start
+      - entity: input_datetime.crazy_mode_evening_end
+        name: Evening end
+      - entity: input_datetime.crazy_mode_last_run
+        name: Last run
+
+  #
+  # Music
+  #
+  - type: entities
+    entities:
+      - entity: input_text.crazy_mode_favorite_crazy
+        name: Crazy favorite
+      - entity: input_text.crazy_mode_favorite_slowmo
+        name: Slow-mo favorite
+      - entity: input_text.crazy_mode_favorite_cooldown
+        name: Cool-down favorite
+      - entity: input_number.crazy_mode_base_volume
+        name: Base volume
