@@ -1,0 +1,85 @@
+# Crazy Mode Helpers
+#
+# Phase, timer, run windows, last run and music settings. No `initial:` on
+# anything, so dashboard edits and run state survive a restart (JK-1262).
+# Windows are set on the dashboard; no times live in this repo.
+#
+
+input_select:
+  crazy_mode_phase:
+    name: Crazy Mode Phase
+    icon: mdi:run-fast
+    options:
+      - "Off"
+      - "Crazy"
+      - "Slow-mo"
+      - "Cool-down"
+
+timer:
+  # Display only: time left in the phase. State lives in the select above.
+  crazy_mode_phase:
+    name: Crazy Mode Phase Time Left
+    icon: mdi:timer-outline
+
+input_datetime:
+  crazy_mode_morning_start:
+    name: Crazy Mode Morning Window Start
+    icon: mdi:clock-start
+    has_date: false
+    has_time: true
+  crazy_mode_morning_end:
+    name: Crazy Mode Morning Window End
+    icon: mdi:clock-end
+    has_date: false
+    has_time: true
+  crazy_mode_evening_start:
+    name: Crazy Mode Evening Window Start
+    icon: mdi:clock-start
+    has_date: false
+    has_time: true
+  crazy_mode_evening_end:
+    name: Crazy Mode Evening Window End
+    icon: mdi:clock-end
+    has_date: false
+    has_time: true
+  crazy_mode_last_run:
+    name: Crazy Mode Last Run
+    icon: mdi:history
+    has_date: true
+    has_time: true
+
+input_text:
+  # Set on the dashboard to the Sonos favorite names, exactly (case counts).
+  # Empty or unknown names refuse the start (favorite_missing).
+  crazy_mode_favorite_crazy:
+    name: Crazy Mode Favorite (Crazy)
+    icon: mdi:music
+    max: 100
+  crazy_mode_favorite_slowmo:
+    name: Crazy Mode Favorite (Slow-mo)
+    icon: mdi:music
+    max: 100
+  crazy_mode_favorite_cooldown:
+    name: Crazy Mode Favorite (Cool-down)
+    icon: mdi:music
+    max: 100
+
+input_number:
+  crazy_mode_base_volume:
+    name: Crazy Mode Base Volume
+    icon: mdi:volume-high
+    min: 20
+    max: 70
+    step: 5
+    mode: slider
+    unit_of_measurement: "%"
+
+input_boolean:
+  # On while the run asked for Cool-down early (stop button).
+  crazy_mode_stop_requested:
+    name: Crazy Mode Stop Requested
+    icon: mdi:stop-circle
+  # On when this run set the kitchen manual latch, so only it clears it.
+  crazy_mode_kitchen_latch_set:
+    name: Crazy Mode Set The Kitchen Latch
+    icon: mdi:lightbulb-auto

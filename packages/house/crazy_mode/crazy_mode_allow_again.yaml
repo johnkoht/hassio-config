@@ -1,0 +1,17 @@
+# Crazy Mode - Allow Again
+#
+# Parent override: forgets the last run so this window can run once more.
+# The other gates (house mode, emergency, window) still apply.
+#
+
+script:
+  crazy_mode_allow_again:
+    alias: "Crazy Mode - Allow Again"
+    icon: mdi:restart
+    mode: single
+    sequence:
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.crazy_mode_last_run
+        data:
+          timestamp: 86400
