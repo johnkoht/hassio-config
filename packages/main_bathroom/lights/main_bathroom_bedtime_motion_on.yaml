@@ -2,7 +2,7 @@
 #
 automation:
   - id: "main_bathroom_bedtime_motion_on"
-    initial_state: on
+    # No initial_state: the bathroom mode automations switch this at runtime, so HA must restore it.
     alias: "Main Bathroom Bedtime Motion On"
     triggers:
       # Motion detected

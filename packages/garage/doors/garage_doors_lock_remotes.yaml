@@ -71,9 +71,22 @@ automation:
       # Hassio restart/relaod
       - trigger: homeassistant
         event: start
+        id: "restart"
       - trigger: event
         event_type: automation_reloaded
+        id: "restart"
     conditions:
+      # A restart or reload must not unlock the remotes during bedtime
+      # (JK-1262); only a real bedtime-off or an arrival does.
+      - condition: or
+        conditions:
+          - condition: not
+            conditions:
+              - condition: trigger
+                id: "restart"
+          - condition: state
+            entity_id: input_boolean.bedtime
+            state: "off"
       # Only unlock if any of the remotes are locked
       - condition: state
         entity_id:

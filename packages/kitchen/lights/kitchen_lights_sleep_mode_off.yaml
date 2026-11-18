@@ -2,7 +2,7 @@
 #
 automation:
   - id: "kitchen_lights_sleep_mode_off"
-    initial_state: off
+    # No initial_state: kitchen_lights_sleep_mode_on switches this at runtime, so HA must restore it.
     alias: "Kitchen Lights Sleep Mode Off"
     triggers:
       # 15 minutes after sunrise

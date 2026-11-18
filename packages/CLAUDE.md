@@ -223,6 +223,7 @@ Migrated rooms (every room with enabled lighting automations) are listed in `MIG
 | `{room}_lighting_automations` | Hand only. No `initial:`, no automation writes it |
 | `{room}_lights_manually_toggled` | Set by `{room}_lights_manual_change` (hand changes only); cleared by `{room}_lights_reset_manual_toggle` |
 
+- `main_bedroom_lights_manually_toggled` has no `initial:` (JK-1262) so a restart keeps a hand latch; the other rooms' latches still start off.
 - Reset has three triggers and no conditions: `{room}_occupied` off for 30 s, `input_select.{room}` to Off, `house_occupied` off.
 - Gate order on ON automations: global, room flag, latch, then mode.
 - The room going Off turns lights off regardless of either flag. Room Off forces occupancy off only after the reset lands (ordering rule, tested).
@@ -266,3 +267,9 @@ actions:
       speech_message: "The washer is done."
       priority: "low"
 ```
+
+### Restart-surviving state (JK-1262)
+
+`initial:` on a helper and `initial_state:` on an automation re-apply on every HA restart and throw away the restored value. Leave both off anything that changes at runtime: helpers written by automations, the dashboard or an external client, and automations that another automation arms or disarms with `automation.turn_on/off` (the `*_sleep_mode_off`, `*_motion_off` and `nearly_home_off` pattern). Keep `initial_state` only on automations nothing toggles. A restart or reload trigger must not undo a bedtime state (the garage remote unlock ignores restarts while `input_boolean.bedtime` is on). `tests/test_restart_restore_regressions.py` pins this.
+
+`input_boolean.john_work_laptop_active` never had `initial:`. The work laptop's own client writes it (user-context `turn_on`/`turn_off` calls, several a day) and re-reports a few seconds after HA starts, so an "off" right after a restart is the laptop's current truth, not a reset. Nothing in this repo should write it.

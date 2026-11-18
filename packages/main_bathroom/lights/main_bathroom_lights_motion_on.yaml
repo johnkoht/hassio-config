@@ -1,6 +1,6 @@
 automation:
   - id: "main_bathroom_lights_motion_on"
-    initial_state: on
+    # No initial_state: the bathroom mode automations switch this at runtime, so HA must restore it.
     alias: "Main bathroom lights motion on"
     triggers:
       # Motion is detected
