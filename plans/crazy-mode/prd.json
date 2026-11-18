@@ -1,0 +1,134 @@
+{
+  "name": "crazy-mode",
+  "branchName": "feature/crazy-mode",
+  "goal": "One tap or Alexa phrase starts a 7-minute Crazy, Slow-mo, Cool-down run on the main-floor loop; every run ends in Cool-down and restores the house; once per allowed window.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Helpers",
+      "description": "Helpers (`packages/house/crazy_mode/crazy_mode_helpers.yaml`)",
+      "acceptanceCriteria": [
+        "no helper has an `initial` key.",
+        "window helpers have `has_time: true`, `has_date: false`; no time literal in any package YAML.",
+        "favorite names defaults are not stored in YAML as `initial`; the three names are seeded by the dashboard (documented).",
+        "base volume has min/max/step and unit `%`."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-2",
+      "title": "Allowed-window template sensor",
+      "description": "Allowed sensor (`crazy_mode_allowed.yaml`)",
+      "acceptanceCriteria": [
+        "renders off with the right reason for each case in a Jinja harness (inside window ok; outside; same-window already ran; other window ran earlier today still ok; start >= end unset; house Bedtime/Quiet/Away/Vacation; house_occupied off; emergency on; renamed favorite; missing speaker).",
+        "the sensor reads `input_select.house`, never sets it.",
+        "`reason` priority order is fixed and tested."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-3",
+      "title": "Start script",
+      "description": "Start script (`crazy_mode_start.yaml`)",
+      "acceptanceCriteria": [
+        "the snapshot steps precede AL off, the latch set, and the join.",
+        "refusal wording is \"Crazy Mode is recharging \u2014 back tonight / back tomorrow morning\" chosen by window; no speech for other reasons.",
+        "the script never writes `input_boolean.kitchen_lighting_automations` or the room flag; sets the latch only if it was off and records it.",
+        "the script has no `fields`, so an Alexa call works.",
+        "the engine call passes `sound_file` and `sound_length` and an explicit `media_players` list of the four Sonos."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-4",
+      "title": "Run script",
+      "description": "Run script (`crazy_mode_run.yaml`)",
+      "acceptanceCriteria": [
+        "no step calls `script.announcement_engine` with `action:` (all via `script.turn_on`), and every wait derives its timeout from a deadline.",
+        "Crazy and Slow-mo waits release on the stop boolean; Cool-down waits never read it.",
+        "lights are re-asserted at least every 60 s in Crazy and every step in Slow-mo/Cool-down; Cool-down brightness floor is never 0 or off.",
+        "heavy-work list has 8 entries, none containing jump, spin, hop, one-foot or balance; two distinct picks per run.",
+        "music volume changes happen in steps (no single call drops volume by more than 20 points to 0), and the run ends with `script.crazy_mode_restore`.",
+        "the closing line ends with \"Save your world.\""
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-5",
+      "title": "Stop, restore, emergency abort, start-up cleanup",
+      "description": "Stop, restore, abort, cleanup (`crazy_mode_stop.yaml`, `crazy_mode_restore.yaml`, `crazy_mode_emergency_abort.yaml`, `crazy_mode_cleanup_on_start.yaml`, `crazy_mode_allow_again.yaml`)",
+      "acceptanceCriteria": [
+        "`script.crazy_mode_stop` only sets the stop boolean while phase is Crazy or Slow-mo, and contains no `script.turn_off`.",
+        "`script.crazy_mode_restore` is `mode: single`, starts with a phase-not-Off condition, restores Sonos (`with_group: true`), the light scene (which includes the AL switches), clears the latch only if `crazy_mode_kitchen_latch_set`, clears the stop boolean, sets phase Off last.",
+        "emergency abort triggers on `binary_sensor.emergency_active` to on, calls `script.turn_off` on the run script, then the restore script, and is the only caller of `script.turn_off` on the run script.",
+        "start-up cleanup (HA start and `automation_reloaded`) sets phase Off, clears the stop boolean, turns AL on for kitchen, family room, foyer, clears the kitchen latch only if the script set it, and does not touch Sonos or lights.",
+        "`script.crazy_mode_allow_again` sets `last_run` to a fixed old timestamp."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-6",
+      "title": "Dashboard Home button and popup",
+      "description": "Dashboard (`dashboards/kohbo/home/crazy_mode_popup.yaml`, `home.yaml`)",
+      "acceptanceCriteria": [
+        "popup has hash `#crazy_mode` and is `!include`d next to the kids WiFi popup; the Home button navigates to it.",
+        "dashboard tests (`test_dashboard_views.py`) pass; no `type: conditional` with `condition: template`."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-7",
+      "title": "Tests",
+      "description": "Tests (`tests/test_crazy_mode.py`)",
+      "acceptanceCriteria": [
+        "covers every pinned guard in tasks 1-5 and the Jinja harness cases for the allowed sensor and the refusal line.",
+        "sabotage proof: removing the emergency trigger, adding an `initial:`, letting stop call `script.turn_off`, or editing a heavy-work entry to \"jump\" each turn a test red.",
+        "no real window times, names or routines in fixtures (synthetic times only)."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-8",
+      "title": "Docs and LEARNINGS",
+      "description": "Docs",
+      "acceptanceCriteria": [
+        "`packages/house/crazy_mode/README.md` (mechanism, helpers, entry points, deploy domains), `docs/` entry (AUTOMATIONS.md House Modes), and a `packages/house/LEARNINGS.md` note on `select_source` for Sonos favorites and the kitchen latch gap.",
+        "no times or kid routine detail in any doc."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-9",
+      "title": "Hand-off notes",
+      "description": "Hand-off notes",
+      "acceptanceCriteria": [
+        "PR body lists reload domains and John's manual steps: set the windows, seed the favorite names and volume, expose the script to Alexa and create the Routine, supervised first run."
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-11-17T00:00:00Z",
+    "totalTasks": 9,
+    "completedTasks": 9,
+    "failedTasks": 0
+  }
+}
