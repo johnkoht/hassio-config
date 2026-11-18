@@ -26,9 +26,9 @@ One automation, `time_pattern` every minute, no entity list.
 
 Why not the alternatives: a template trigger fires only false to true, so a second router dropping while the first is still down never fires. A trigger on the sensor attribute changes only when the offline set changes, and the 15 minutes would still need last_changed. A polling trigger is re-evaluated by construction after the sensor refreshes and after any reload, with no state to lose.
 
-Restart: HA resets `last_changed` at boot, which would re-push every dead router 15 minutes after each restart. The automation's own `this.last_changed` is its load time (HA start or reload), and a router only counts if it went unavailable after that. An outage that began before a restart or reload therefore never pushes (same as the old state trigger).
+Restart: HA resets `last_changed` at boot, which would re-push every dead router 15 minutes after each restart. The automation's own `states[this.entity_id].last_changed` is its load time (HA start or reload), and a router only counts if it went unavailable more than 5 minutes after that (grace for ZHA entities written just after load). An outage that began before a restart or reload therefore never pushes (same as the old state trigger).
 
-Run volume: `due` is an automation-level variable and a condition requires it non-empty, so the automation only triggers when it pushes.
+Run volume: `due` is an automation-level variable and a condition requires it non-empty, so it triggers every minute but only acts when a router is due (each poll still writes a failed-conditions trace; real pushes show in the Logbook).
 
 Known limits: a run missed inside a router's one-minute window (HA stopped or reloading, or ZHA reloading) loses that push; a radio that is broken while ZHA still reads loaded can still push per router (same as before).
 

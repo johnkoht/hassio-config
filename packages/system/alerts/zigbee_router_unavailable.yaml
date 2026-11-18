@@ -15,7 +15,7 @@ automation:
     triggers:
       - trigger: time_pattern
         minutes: "/1"
-    # Rendered at trigger time, so the run only fires when a router is due.
+    # Rendered at trigger time; it triggers every minute but only acts when a router is due.
     # The automation's own last_changed is when it was loaded (HA start or reload).
     # A router already down then restarts its clock at boot, so only routers that went
     # down 5+ minutes after load count; the rest are skipped, not re-pushed per restart.
