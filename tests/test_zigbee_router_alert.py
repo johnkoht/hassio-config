@@ -29,9 +29,13 @@ LOADED_MIN = 120  # the automation was loaded two hours ago unless a test says o
 def _due(states, routers=ROUTERS, loaded_min=LOADED_MIN):
     tpl = _auto()["variables"]["due"]
     env = jinja2.Environment(extensions=["jinja2.ext.do"])
+    states = {**states, "automation.zigbee_router_unavailable": _S("on", loaded_min)}
     states_obj = type("St", (), {"__getitem__": lambda self, k: states.get(k)})()
+    # HA's `this` is state.as_dict(): a dict whose timestamps are ISO strings, not datetimes
+    this = {"entity_id": "automation.zigbee_router_unavailable", "state": "on",
+            "last_changed": (NOW - timedelta(minutes=loaded_min)).isoformat()}
     out = env.from_string(tpl).render(
-        states=states_obj, now=lambda: NOW, this=_S("on", loaded_min),
+        states=states_obj, now=lambda: NOW, this=this, timedelta=timedelta,
         state_attr=lambda e, a: routers if (e, a) == ("sensor.zigbee_routers_online", "routers") else None,
     )
     return ast.literal_eval(out.strip())
@@ -107,8 +111,13 @@ def test_run_only_fires_when_a_router_is_due():
 
 
 def test_router_already_down_at_load_is_not_repushed():
-    # HA restart or automation reload resets last_changed of dead routers to the load time;
+    # HA restart or automation reload resets last_changed of dead routers to about the load time;
     # 15 minutes later they must not all push again.
     s = {"switch.plug_a": _S("unavailable", 15.5), "light.bulb_b": _S("unavailable", 15.5)}
     assert _due(s, loaded_min=15.5) == []
-    assert _due(s, loaded_min=20) == ["switch.plug_a", "light.bulb_b"]
+    # ZHA entities can be written a few seconds after the automation loads
+    assert _due(s, loaded_min=15.5 + 10 / 60) == []
+    assert _due(s, loaded_min=15.5 + 4) == []
+    # a router that dropped well after the load still alerts
+    assert _due(s, loaded_min=15.5 + 6) == ["switch.plug_a", "light.bulb_b"]
+    assert _due(s, loaded_min=120) == ["switch.plug_a", "light.bulb_b"]
