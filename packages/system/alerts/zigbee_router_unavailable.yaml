@@ -16,16 +16,18 @@ automation:
       - trigger: time_pattern
         minutes: "/1"
     # Rendered at trigger time, so the run only fires when a router is due.
-    # `this.last_changed` is when this automation was loaded (HA start or reload):
-    # a router already down by then restarts its clock at boot, so it is skipped
-    # rather than re-pushed on every restart.
+    # The automation's own last_changed is when it was loaded (HA start or reload).
+    # A router already down then restarts its clock at boot, so only routers that went
+    # down 5+ minutes after load count; the rest are skipped, not re-pushed per restart.
+    # (`this` is a dict with string timestamps, so read the live state object.)
     variables:
       due: >-
         {% set routers = state_attr('sensor.zigbee_routers_online', 'routers') or {} %}
+        {% set loaded = states[this.entity_id].last_changed + timedelta(minutes=5) %}
         {% set ns = namespace(due=[]) %}
         {% for e in routers %}
           {% set s = states[e] %}
-          {% if s is not none and s.state == 'unavailable' and s.last_changed > this.last_changed %}
+          {% if s is not none and s.state == 'unavailable' and s.last_changed > loaded %}
             {% set age = (now() - s.last_changed).total_seconds() %}
             {% if 900 <= age < 960 %}
               {% set ns.due = ns.due + [e] %}
