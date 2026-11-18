@@ -108,7 +108,8 @@ def test_unlock_remotes_does_not_unlock_on_restart_during_bedtime():
 def test_unlock_remotes_keeps_bedtime_off_and_arrival_triggers():
     a = automation(LOCKS, "garage_doors_unlock_remotes")
     plain = [t for t in a["triggers"] if t["trigger"] == "state"]
-    assert len(plain) == 2 and all("id" not in t for t in plain)
+    # bedtime-off, immediate arrivals, and held arrivals (JK-1254); none may carry the restart id
+    assert len(plain) == 3 and all("id" not in t for t in plain)
 
 
 # Generic guard: nothing new may be armed by another automation AND forced by initial_state.
