@@ -10,4 +10,3 @@ input_select:
       - "Deep Work"
       - "Task Mode"
       - "Tinkering"
-    initial: "Task Mode"

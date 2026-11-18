@@ -2,4 +2,3 @@ input_boolean:
   garage_lights_auto:
     name: Garage Lights auto
     icon: mdi:lightbulb-auto
-    initial: off

@@ -6,4 +6,3 @@ input_select:
       - Running
       - Finishing
       - Clean
-    initial: Idle

@@ -51,7 +51,7 @@ The Main Bedroom has a few states
 Two flags gate the automatic lights.
 
 - `input_boolean.main_bedroom_lighting_automations` is hand-only: no `initial:`, and no automation writes it.
-- `input_boolean.main_bedroom_lights_manually_toggled` is the manual latch. `main_bedroom_lights_manual_change` sets it on any hand on/off/brightness change of `light.main_bedroom_main_lights` (not the lamps in the group). Automation and Adaptive Lighting changes are ignored.
+- `input_boolean.main_bedroom_lights_manually_toggled` is the manual latch. `main_bedroom_lights_manual_change` sets it on any hand on/off/brightness change of `light.main_bedroom_main_lights` (not the lamps in the group). Automation and Adaptive Lighting changes are ignored. It has no `initial:`, so a restart restores it (JK-1262).
 - `main_bedroom_lights_reset_manual_toggle` clears the latch when the room has been unoccupied for 30 s, the room goes Off, or the house empties.
 
 **Motion on / day on gate order**: global `lighting_automations`, the room flag, the latch (must be off), then the room mode.
