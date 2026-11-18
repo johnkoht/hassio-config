@@ -8,7 +8,7 @@
 
 automation:
   - id: "office_lights_motion_off"
-    initial_state: off
+    # No initial_state: office_lights_motion_on switches this at runtime, so HA must restore it.
     alias: "Office lights motion off"
     mode: single
     triggers:

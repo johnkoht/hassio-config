@@ -8,7 +8,6 @@ input_boolean:
 input_number:
   main_bathroom_initial_humidity:
     name: Main Bathroom Initial Humidity
-    initial: 30
     min: 0
     max: 100
     step: 1

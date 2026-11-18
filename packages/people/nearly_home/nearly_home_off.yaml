@@ -4,7 +4,7 @@ automation:
   #
   - id: "nearly_home_off"
     alias: "Nearly Home - Turn Off"
-    initial_state: on
+    # No initial_state: nearly_home_on switches this at runtime, so HA must restore it.
     triggers:
       # We're home
       - trigger: state
