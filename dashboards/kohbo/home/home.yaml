@@ -437,6 +437,17 @@ cards:
           navigation_path: '#kids_wifi'
           haptic: light
 
+      # Crazy Mode
+      - type: custom:button-card
+        entity: input_select.crazy_mode_phase
+        name: Crazy Mode
+        template: kohbo_device_entity
+        icon: mdi:run-fast
+        tap_action:
+          action: navigate
+          navigation_path: '#crazy_mode'
+          haptic: light
+
       # Halloween (in season only)
       - type: conditional
         conditions:
@@ -583,3 +594,8 @@ cards:
   # Kids WiFi Popup
   #
   - !include /config/dashboards/kohbo/home/kids_wifi_popup.yaml
+
+  #
+  # Crazy Mode Popup
+  #
+  - !include /config/dashboards/kohbo/home/crazy_mode_popup.yaml

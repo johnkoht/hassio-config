@@ -95,3 +95,25 @@ Vacation). `scripts/house/house_away.yaml` is the one leftover writer.
   re-checks bedtime off, `armed_home` and occupied. A night-time bedtime end
   can no longer disarm, and a house re-armed during the wait stays armed. A
   wait that outlasts noon still disarms.
+
+## Crazy Mode: Sonos favorites, the clock and the kitchen latch (2026-11)
+
+- Sonos lists favorites as `source_list` entries, so `media_player.select_source`
+  plays one by name. A name that doesn't match does nothing and raises nothing;
+  the allowed sensor checks all three names against all four speakers and refuses
+  with `favorite_missing`. Call it on the group coordinator (the kitchen); volume
+  is still per speaker. Set shuffle a few seconds after the source starts.
+- A run script can't be told to skip ahead. The stop button sets a flag that only
+  the Crazy and Slow-mo waits read, so Cool-down can't be skipped, and
+  `script.turn_off` on the run is left to the emergency abort.
+- Calling `script.announcement_engine` with `action:` blocks for the chime, the
+  TTS and a 3 s tail, which would stretch the clock. Mid-run lines use
+  `script.turn_on` (not blocking); only the closing line blocks, after the clock.
+  The engine needs `sound_file` and `sound_length` even for speech.
+- `kitchen_lights_to_off` fires on vacancy and does not read
+  `kitchen_lights_manually_toggled` (only `kitchen_lighting_automations`), so the
+  latch doesn't hold the lights through a vacancy. The run re-asserts the lights
+  every tick; a script must never write the room flag.
+- Scene snapshots can carry Adaptive Lighting switches, so one `scene.create`
+  before the run and one `scene.turn_on` after puts the lights and AL back
+  together (take it before turning AL off).

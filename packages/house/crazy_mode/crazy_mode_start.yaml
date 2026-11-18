@@ -1,0 +1,145 @@
+# Crazy Mode - Start
+#
+# The one entry point (dashboard, Alexa). No fields. Checks the allowed
+# sensor, snapshots Sonos, the loop lights and Adaptive Lighting, joins the
+# speakers, then hands off to the run script. Refusals speak only for the
+# window reasons; house mode and emergency stay silent.
+#
+
+script:
+  crazy_mode_start:
+    alias: "Crazy Mode"
+    icon: mdi:run-fast
+    mode: single
+    variables:
+      speakers:
+        - media_player.sonos_kitchen
+        - media_player.sonos_family_room
+        - media_player.sonos_living_room
+        - media_player.sonos_playroom
+      # Leaf lights of the loop, not the groups: a group snapshot restores every member on
+      loop_lights:
+        - light.kitchen_main_light_switch
+        - light.kitchen_table_light_switch
+        - light.kitchen_island_pendants
+        - light.family_room_main_lights
+        - light.foyer_ceiling_lights
+        - light.foyer_chandelier
+        - light.foyer_coat_closet
+        - light.stairs_light
+        - light.stairs_sconces
+        - light.dining_room_main_lights
+        - light.living_room_main_lights
+      al_switches:
+        - switch.adaptive_lighting_kitchen
+        - switch.adaptive_lighting_family_room
+        - switch.adaptive_lighting_foyer
+    sequence:
+      - alias: "Refuse unless the allowed sensor is on"
+        if:
+          - condition: not
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.crazy_mode_allowed
+                state: "on"
+        then:
+          - alias: "Say so for the window reasons only"
+            if:
+              - condition: template
+                value_template: >-
+                  {{ states('sensor.crazy_mode_reason') in ['outside_window', 'already_ran'] }}
+            then:
+              - action: script.turn_on
+                target:
+                  entity_id: script.announcement_engine
+                data:
+                  variables:
+                    sound_file: "/local/sounds/Notification-sound.mp3"
+                    sound_length: 2
+                    speech_message: "Crazy Mode is recharging — back {{ state_attr('sensor.crazy_mode_reason', 'retry') }}"
+                    speech_volume: 45
+                    media_players:
+                      - media_player.sonos_kitchen
+          - stop: "Crazy Mode not allowed"
+      - alias: "Record the start and take the phase first (blocks a second tap)"
+        action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.crazy_mode_last_run
+        data:
+          timestamp: "{{ now().timestamp() | int }}"
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.crazy_mode_stop_requested
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.crazy_mode_phase
+        data:
+          option: "Crazy"
+      #
+      # Snapshots come before anything is changed
+      #
+      - alias: "Snapshot the speakers with their groups"
+        action: sonos.snapshot
+        continue_on_error: true
+        data:
+          entity_id: "{{ speakers }}"
+          with_group: true
+      - alias: "Snapshot the loop lights and which Adaptive Lighting switches are on"
+        action: scene.create
+        data:
+          scene_id: crazy_mode_snapshot
+          snapshot_entities: "{{ loop_lights + al_switches }}"
+      #
+      # Keep the kitchen's motion lighting out of the run. Only clear what we set.
+      #
+      - alias: "Set the kitchen latch if nobody had"
+        if:
+          - condition: state
+            entity_id: input_boolean.kitchen_lights_manually_toggled
+            state: "off"
+        then:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.crazy_mode_kitchen_latch_set
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.kitchen_lights_manually_toggled
+        else:
+          - alias: "Somebody else holds the latch; make sure we do not clear it later"
+            action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.crazy_mode_kitchen_latch_set
+      - alias: "Pause Adaptive Lighting in the loop"
+        action: switch.turn_off
+        continue_on_error: true
+        target:
+          entity_id: "{{ al_switches }}"
+      #
+      # Group the speakers under the kitchen
+      #
+      - alias: "Take each speaker out of its old group"
+        repeat:
+          for_each: "{{ speakers }}"
+          sequence:
+            - action: media_player.unjoin
+              continue_on_error: true
+              target:
+                entity_id: "{{ repeat.item }}"
+      - alias: "Join the other three to the kitchen"
+        action: media_player.join
+        continue_on_error: true
+        target:
+          entity_id: media_player.sonos_kitchen
+        data:
+          group_members:
+            - media_player.sonos_family_room
+            - media_player.sonos_living_room
+            - media_player.sonos_playroom
+      - alias: "Hand off to the run script (not blocking, so the abort can cancel it)"
+        action: script.turn_on
+        target:
+          entity_id: script.crazy_mode_run
+        data:
+          variables:
+            speakers: "{{ speakers }}"
+            loop_lights: "{{ loop_lights }}"

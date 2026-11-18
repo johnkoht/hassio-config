@@ -1,0 +1,21 @@
+# Crazy Mode - Stop
+#
+# Asks for Cool-down now. It never ends the run: Cool-down always plays.
+# Only the emergency abort stops a run outright.
+#
+
+script:
+  crazy_mode_stop:
+    alias: "Crazy Mode - Stop"
+    icon: mdi:stop-circle
+    mode: single
+    sequence:
+      - alias: "Only during Crazy or Slow-mo"
+        condition: state
+        entity_id: input_select.crazy_mode_phase
+        state:
+          - "Crazy"
+          - "Slow-mo"
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.crazy_mode_stop_requested

@@ -1,0 +1,79 @@
+# Crazy Mode - Restore
+#
+# Puts the house back: Sonos with its groups, the loop lights and Adaptive
+# Lighting (one scene), the kitchen latch if we set it. Ends with phase Off,
+# so a second call is a no-op. Called at the end of a run and by the abort.
+#
+
+script:
+  crazy_mode_restore:
+    alias: "Crazy Mode - Restore"
+    icon: mdi:backup-restore
+    mode: single
+    fields:
+      emergency:
+        name: Emergency
+        description: Set by the emergency abort; the loop lights end bright, not as they were
+        selector:
+          boolean:
+    variables:
+      speakers:
+        - media_player.sonos_kitchen
+        - media_player.sonos_family_room
+        - media_player.sonos_living_room
+        - media_player.sonos_playroom
+    sequence:
+      - alias: "Nothing to restore when the phase is already Off"
+        condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.crazy_mode_phase
+            state: "Off"
+      - action: sonos.restore
+        continue_on_error: true
+        data:
+          entity_id: "{{ speakers }}"
+          with_group: true
+      - action: scene.turn_on
+        continue_on_error: true
+        target:
+          entity_id: scene.crazy_mode_snapshot
+      - alias: "In an emergency the lights end bright, whatever the snapshot said"
+        if:
+          - condition: template
+            value_template: "{{ emergency | default(false) }}"
+        then:
+          - action: light.turn_on
+            continue_on_error: true
+            target:
+              entity_id:
+                - light.kitchen_lights
+                - light.family_room_main_lights
+                - light.foyer_lights
+                - light.dining_room_lights
+            data:
+              brightness_pct: 100
+      - alias: "Clear the kitchen latch only if this run set it"
+        if:
+          - condition: state
+            entity_id: input_boolean.crazy_mode_kitchen_latch_set
+            state: "on"
+        then:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.kitchen_lights_manually_toggled
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.crazy_mode_kitchen_latch_set
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.crazy_mode_stop_requested
+      - action: timer.cancel
+        target:
+          entity_id: timer.crazy_mode_phase
+      - alias: "Phase Off last, so an interrupted restore can run again"
+        action: input_select.select_option
+        target:
+          entity_id: input_select.crazy_mode_phase
+        data:
+          option: "Off"
