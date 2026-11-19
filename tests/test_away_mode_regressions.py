@@ -124,16 +124,21 @@ def test_katia_announce_arrival_holds_and_requires_detect():
     assert trigger.get("for"), "arrival must wait for detect to confirm"
 
 
-@pytest.mark.parametrize("path,boolean", [
-    ("packages/people/katia/automations/katia_announce_departure.yaml", "input_boolean.katia_home"),
-    ("packages/people/nonna/automations/nonna_announce_departure.yaml", "input_boolean.nonna_home"),
-    ("packages/people/jido/presence/jido_announce_departure.yaml", "input_boolean.jido_home"),
+@pytest.mark.parametrize("path,boolean,person", [
+    ("packages/people/katia/automations/katia_announce_departure.yaml",
+     "input_boolean.katia_home", "person.katia"),
+    ("packages/people/nonna/automations/nonna_announce_departure.yaml",
+     "input_boolean.nonna_home", "person.mary_falbo"),
+    ("packages/people/jido/presence/jido_announce_departure.yaml",
+     "input_boolean.jido_home", "person.antoun_koht"),
 ])
-def test_departure_follows_detect_gated_home_boolean(path, boolean):
-    """A UniFi blip ending flips person.* back to not_home; only the gated boolean may announce."""
+def test_departure_follows_detect_gated_home_boolean(path, boolean, person):
+    """A UniFi blip ending flips person.* back to not_home; only the gated boolean may announce,
+    and only once the person is away too (a Bayesian flap turns the boolean off while home)."""
     auto = automation(path)
     (trigger,) = auto["triggers"]
     assert trigger["entity_id"] == boolean and trigger["to"] == "off"
+    assert has_state_condition(auto, person, "not_home")
 
 
 PARENTS = [
