@@ -4,18 +4,14 @@ automation:
     mode: queued
     initial_state: on
     triggers:
+      # The detect-gated boolean, so a UniFi blip ending doesn't announce
       - trigger: state
-        entity_id: person.mary_falbo
-        from: "home"
-        to: "not_home"
+        entity_id: input_boolean.nonna_home
+        to: "off"
         # Hold so a zone-edge flap announces once
         for:
           minutes: 1
     conditions:
-      # Not home
-      - condition: state
-        entity_id: person.mary_falbo
-        state: "not_home"
       # We've been home for at least 5 minutes
       - condition: state
         entity_id: input_boolean.house_occupied
