@@ -116,6 +116,14 @@ def test_katia_home_requires_iphone_detect():
                for t in state_triggers(auto, "device_tracker.katia_iphone_detect"))
 
 
+def test_katia_announce_arrival_holds_and_requires_detect():
+    """A UniFi blip on a WiFi toggle announced Katia home (11-18); detect must agree."""
+    auto = automation("packages/people/katia/automations/katia_announce_arrival.yaml")
+    assert has_state_condition(auto, "device_tracker.katia_iphone_detect", "home")
+    (trigger,) = state_triggers(auto, "person.katia")
+    assert trigger.get("for"), "arrival must wait for detect to confirm"
+
+
 PARENTS = [
     ("tayta", "person.sonia_koht", "device_tracker.sonia_iphone_detect",
      "packages/people/tayta/automations/tayta_is_home.yaml",
