@@ -12,6 +12,10 @@ automation:
         for:
           minutes: 1
     conditions:
+      # Not home (a Bayesian flap can turn the boolean off while home)
+      - condition: state
+        entity_id: person.antoun_koht
+        state: "not_home"
       # We've been home for at least 5 minutes
       - condition: state
         entity_id: input_boolean.house_occupied
