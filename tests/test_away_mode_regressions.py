@@ -124,6 +124,18 @@ def test_katia_announce_arrival_holds_and_requires_detect():
     assert trigger.get("for"), "arrival must wait for detect to confirm"
 
 
+@pytest.mark.parametrize("path,boolean", [
+    ("packages/people/katia/automations/katia_announce_departure.yaml", "input_boolean.katia_home"),
+    ("packages/people/nonna/automations/nonna_announce_departure.yaml", "input_boolean.nonna_home"),
+    ("packages/people/jido/presence/jido_announce_departure.yaml", "input_boolean.jido_home"),
+])
+def test_departure_follows_detect_gated_home_boolean(path, boolean):
+    """A UniFi blip ending flips person.* back to not_home; only the gated boolean may announce."""
+    auto = automation(path)
+    (trigger,) = auto["triggers"]
+    assert trigger["entity_id"] == boolean and trigger["to"] == "off"
+
+
 PARENTS = [
     ("tayta", "person.sonia_koht", "device_tracker.sonia_iphone_detect",
      "packages/people/tayta/automations/tayta_is_home.yaml",
