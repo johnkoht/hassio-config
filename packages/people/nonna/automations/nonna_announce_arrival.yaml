@@ -8,9 +8,6 @@ automation:
         entity_id: person.mary_falbo
         from: "not_home"
         to: "home"
-        # Hold so detect can confirm; a UniFi blip alone never announces
-        for:
-          minutes: 1
     conditions:
       # A guest is home
       - condition: state
