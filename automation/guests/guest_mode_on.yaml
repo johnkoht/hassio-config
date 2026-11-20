@@ -7,8 +7,7 @@ trigger:
     from: "not_home"
     to: "home"
   # A parent's, Katia's, Nonna's or Joe's iPhone detect confirms them (see the
-  # condition below). Held 1 minute so a detect flap can't re-enable it, and
-  # so UniFi has caught up to person.* when detect leads.
+  # condition below). Held 1 minute so a detect flap can't re-enable it.
   - platform: state
     entity_id:
       - device_tracker.sonia_iphone_detect
