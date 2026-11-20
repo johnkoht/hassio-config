@@ -13,6 +13,10 @@ automation:
       - condition: state
         entity_id: person.katia
         state: "home"
+      # iPhone detect agrees
+      - condition: state
+        entity_id: device_tracker.katia_iphone_detect
+        state: "home"
       # We've been home for at least 5 minutes
       - condition: state
         entity_id: input_boolean.house_occupied

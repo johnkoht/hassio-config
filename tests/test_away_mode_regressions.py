@@ -116,6 +116,15 @@ def test_katia_home_requires_iphone_detect():
                for t in state_triggers(auto, "device_tracker.katia_iphone_detect"))
 
 
+def test_katia_announce_arrival_requires_detect_without_hold():
+    """A UniFi blip on a WiFi toggle announced Katia home (11-18). Her person now tracks detect
+    only, so the arrival fires at once and the detect condition is the backstop."""
+    auto = automation("packages/people/katia/automations/katia_announce_arrival.yaml")
+    assert has_state_condition(auto, "device_tracker.katia_iphone_detect", "home")
+    (trigger,) = state_triggers(auto, "person.katia")
+    assert not trigger.get("for"), "the person tracks detect only; a hold just announces late"
+
+
 PARENTS = [
     ("tayta", "person.sonia_koht", "device_tracker.sonia_iphone_detect",
      "packages/people/tayta/automations/tayta_is_home.yaml",
@@ -135,7 +144,7 @@ def test_parent_home_requires_iphone_detect(name, person, detect, is_home, annou
     arrival = automation(announce)
     assert has_state_condition(arrival, detect, "home")
     (trigger,) = state_triggers(arrival, person)
-    assert trigger.get("for"), "arrival must wait for detect to confirm"
+    assert not trigger.get("for"), "the person tracks detect only; a hold just announces late"
 
 
 def test_tayta_room_presence_unavailable_is_not_a_sighting():
@@ -156,6 +165,17 @@ def test_katia_bluetooth_home_ignores_unavailable():
         assert "unavailable" in tmpl and "unknown" in tmpl and "not in" in tmpl
 
 
+def _ids(trigger):
+    e = trigger.get("entity_id", [])
+    return e if isinstance(e, list) else [e]
+
+
+def arrives_without_hold(auto, person):
+    """The person has a plain to-home trigger and no held one."""
+    trigs = [t for t in auto["triggers"] if t.get("trigger") == "state" and person in _ids(t)]
+    return trigs and all(t.get("to") == "home" and not t.get("for") for t in trigs)
+
+
 def _render(tpl, states_map, **ctx):
     import jinja2
     from types import SimpleNamespace
@@ -164,14 +184,10 @@ def _render(tpl, states_map, **ctx):
         is_state=lambda e, v: states_map.get(e) == v, **ctx).strip() == "True"
 
 
-def test_garage_unlock_parents_need_detect_and_hold():
+def test_garage_unlock_parents_need_detect():
     auto = automation("packages/mudroom/garage_entry_door/garage_entry_door_unlock_upon_arrival.yaml")
-    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
-    held = [t for t in auto["triggers"] if t.get("for")]
-    parents = {"person.sonia_koht", "person.antoun_koht"}
-    assert parents <= set(held[0]["entity_id"])
-    assert not any(parents & set(t["entity_id"]) for t in plain
-                   if isinstance(t["entity_id"], list))
+    for who in ("person.sonia_koht", "person.antoun_koht"):
+        assert arrives_without_hold(auto, who)
     tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
     from types import SimpleNamespace
     for who, det in [("person.sonia_koht", "device_tracker.sonia_iphone_detect"),
@@ -241,21 +257,17 @@ def test_joe_home_requires_iphone_detect():
                for t in content["trigger"])
 
 
-def test_joe_announce_arrival_holds_and_requires_detect():
+def test_joe_announce_arrival_requires_detect_without_hold():
     auto = automation("packages/people/joe/automations/joe_announce_arrival.yaml")
     assert has_state_condition(auto, JOE_DETECT, "home")
     (trigger,) = state_triggers(auto, JOE)
-    assert trigger.get("for"), "arrival must wait for detect to confirm"
+    assert not trigger.get("for"), "the person tracks detect only; a hold just announces late"
 
 
-def test_garage_unlock_joe_needs_detect_and_hold():
+def test_garage_unlock_joe_needs_detect():
     from types import SimpleNamespace
     auto = automation("packages/mudroom/garage_entry_door/garage_entry_door_unlock_upon_arrival.yaml")
-    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
-    held = [t for t in auto["triggers"] if t.get("for")]
-    assert JOE in held[0]["entity_id"]
-    assert not any(JOE in (t["entity_id"] if isinstance(t["entity_id"], list) else [t["entity_id"]])
-                   for t in plain)
+    assert arrives_without_hold(auto, JOE)
     tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
     trig = SimpleNamespace(entity_id=JOE)
     assert _render(tmpl, {JOE_DETECT: "home"}, trigger=trig)
@@ -303,11 +315,6 @@ GATED = {
 }
 
 
-def _ids(trigger):
-    e = trigger.get("entity_id", [])
-    return e if isinstance(e, list) else [e]
-
-
 def test_tayta_is_away_triggers_on_tayta_not_nonna():
     """The trigger watched person.mary_falbo (Nonna), so Tayta leaving never fired it."""
     auto = automation("packages/people/tayta/automations/tayta_is_away.yaml")
@@ -315,19 +322,15 @@ def test_tayta_is_away_triggers_on_tayta_not_nonna():
     assert not state_triggers(auto, "person.mary_falbo")
 
 
-def test_garage_remotes_unlock_needs_detect_and_hold():
-    """A UniFi blip unlocked the garage remotes with no detect gate (JK-1254)."""
+def test_garage_remotes_unlock_needs_detect():
+    """A UniFi blip unlocked the garage remotes with no detect gate (JK-1254). The persons track
+    detect only now, so the trigger needs no hold; the detect condition stays as the backstop."""
     from types import SimpleNamespace
     auto = yaml.load((REPO / "packages/garage/doors/garage_doors_lock_remotes.yaml").read_text(),
                      Loader=_Loader)["automation"][1]
     assert auto["id"] == "garage_doors_unlock_remotes"
-    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t
-             and any(i.startswith("person.") for i in _ids(t))]
-    held = [t for t in auto["triggers"] if t.get("for")
-            and any(i.startswith("person.") for i in _ids(t))]
-    assert held and set(GATED) <= set(_ids(held[0]))
-    for t in plain:
-        assert not set(GATED) & set(_ids(t))
+    for who in GATED:
+        assert arrives_without_hold(auto, who)
     tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
     for who, det in GATED.items():
         trig = SimpleNamespace(entity_id=who)
@@ -339,13 +342,10 @@ def test_garage_remotes_unlock_needs_detect_and_hold():
     assert _render(tmpl, {}, trigger=SimpleNamespace())
 
 
-def test_garage_entry_door_katia_needs_detect_and_hold():
+def test_garage_entry_door_katia_needs_detect():
     from types import SimpleNamespace
     auto = automation("packages/mudroom/garage_entry_door/garage_entry_door_unlock_upon_arrival.yaml")
-    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
-    held = [t for t in auto["triggers"] if t.get("for")]
-    assert "person.katia" in _ids(held[0])
-    assert not any("person.katia" in _ids(t) for t in plain)
+    assert arrives_without_hold(auto, "person.katia")
     tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
     trig = SimpleNamespace(entity_id="person.katia")
     assert _render(tmpl, {"device_tracker.katia_iphone_detect": "home"}, trigger=trig)
@@ -368,8 +368,7 @@ def test_guest_mode_counts_katia_only_with_detect():
 
 
 def test_guest_mode_detect_triggers_are_held_against_flaps():
-    """A detect flap must not re-enable guest mode; the hold also lets UniFi
-    catch up to person.* when detect leads it."""
+    """A detect flap must not re-enable guest mode."""
     on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
     detect = [t for t in on["trigger"] if "device_tracker.katia_iphone_detect" in _ids(t)]
     assert len(detect) == 1 and detect[0].get("for")
@@ -389,11 +388,11 @@ def test_nonna_home_requires_iphone_detect():
     assert any(t.get("to") == "home" for t in state_triggers(auto, NONNA_DETECT))
 
 
-def test_nonna_announce_arrival_holds_and_requires_detect():
+def test_nonna_announce_arrival_requires_detect_without_hold():
     auto = automation("packages/people/nonna/automations/nonna_announce_arrival.yaml")
     assert has_state_condition(auto, NONNA_DETECT, "home")
     (trigger,) = state_triggers(auto, NONNA)
-    assert trigger.get("for"), "arrival must wait for detect to confirm"
+    assert not trigger.get("for"), "the person tracks detect only; a hold just announces late"
     actions = auto["actions"]
     setter = next(i for i, a in enumerate(actions)
                   if a.get("action") == "input_boolean.turn_on"
@@ -414,14 +413,10 @@ def _garage_autos():
 
 
 @pytest.mark.parametrize("idx", [0, 1])
-def test_garage_unlock_nonna_needs_detect_and_hold(idx):
+def test_garage_unlock_nonna_needs_detect(idx):
     from types import SimpleNamespace
     auto = _garage_autos()[idx]
-    plain = [t for t in auto["triggers"] if t.get("trigger") == "state" and "for" not in t]
-    held = [t for t in auto["triggers"] if t.get("for")
-            and any(i.startswith("person.") for i in _ids(t))]
-    assert NONNA in _ids(held[0])
-    assert not any(NONNA in _ids(t) for t in plain)
+    assert arrives_without_hold(auto, NONNA)
     tmpl = [c for c in auto["conditions"] if c.get("condition") == "template"][0]["value_template"]
     trig = SimpleNamespace(entity_id=NONNA)
     assert _render(tmpl, {NONNA_DETECT: "home"}, trigger=trig)
