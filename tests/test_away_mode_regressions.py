@@ -368,8 +368,7 @@ def test_guest_mode_counts_katia_only_with_detect():
 
 
 def test_guest_mode_detect_triggers_are_held_against_flaps():
-    """A detect flap must not re-enable guest mode; the hold also lets UniFi
-    catch up to person.* when detect leads it."""
+    """A detect flap must not re-enable guest mode."""
     on = yaml.load((REPO / "automation/guests/guest_mode_on.yaml").read_text(), Loader=_Loader)
     detect = [t for t in on["trigger"] if "device_tracker.katia_iphone_detect" in _ids(t)]
     assert len(detect) == 1 and detect[0].get("for")
