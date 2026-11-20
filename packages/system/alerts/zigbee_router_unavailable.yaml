@@ -1,102 +1,58 @@
 # Zigbee Router Unavailable
 #
-# Push when a mains-powered Zigbee router (every ZHA device labelled
-# zigbee_router) has been unavailable for 15 minutes.
+# Push when a zigbee_router-labelled device has been unavailable for 15 minutes.
+# Routers come from sensor.zigbee_routers_online (label-driven); no entity list here.
 #
 
 automation:
   - id: "zigbee_router_unavailable"
     initial_state: on
     alias: "Zigbee Router Unavailable"
-    # queued with a tag per router, so two routers dropping together both push
+    # queued, one push per router, so routers dropping together all push
     mode: queued
     max: 64
     max_exceeded: silent
     triggers:
-      - trigger: state
-        entity_id:
-          # Smart plugs
-          - switch.family_room_smart_plug_25
-          - switch.gazebo_smart_plug_switch
-          - switch.hsp2
-          - switch.hue_smart_plug_1
-          - switch.ikea_of_sweden_inspelning_smart_plug
-          - switch.office_office_lamp
-          - switch.smart_plug_1_switch
-          - switch.smart_plug_2_switch
-          - switch.smart_plug_3_switch
-          - switch.smart_plug_4_switch
-          - switch.smart_plug_5_switch
-          - switch.smart_plug_6_switch
-          - switch.smart_plug_7_switch
-          - switch.smart_plug_8_switch
-          - switch.smart_plug_9_switch
-          - switch.smart_plug_10_switch
-          - switch.smart_plug_11_switch
-          - switch.smart_plug_12_switch
-          - switch.smart_plug_13_switch
-          - switch.smart_plug_14_switch
-          - switch.smart_plug_15_switch
-          - switch.smart_plug_16_switch
-          - switch.smart_plug_17_switch
-          - switch.smart_plug_18_switch
-          - switch.smart_plug_19_switch
-          - switch.smart_plug_20_switch
-          - switch.smart_plug_21_switch
-          - switch.smart_plug_22_switch
-          - switch.smart_plug_23_switch
-          - switch.tradfri_smart_plug_1_switch
-          - switch.tradfri_smart_plug_2_switch
-          - switch.tradfri_smart_plug_4_switch
-          - switch.upstairs_drying_machine
-          # Wall switches and fan switches
-          - light.gianluca_ceiling_light_switch
-          - light.laundry_room_main_lights
-          - light.main_bathroom_toilet_light
-          - light.mudroom_bathroom_fan
-          - light.mudroom_bathroom_main_lights
-          - light.office_light_switch
-          - light.powder_room_fan_switch
-          - light.powder_room_main_lights
-          # Lights and bulbs
-          - light.driveway_flood_light
-          - light.exterior_backyard_flood_east
-          - light.exterior_backyard_flood_west
-          - light.gianluca_ceiling_light_1
-          - light.gianluca_ceiling_light_2
-          - light.gianluca_ceiling_light_3
-          - light.gianluca_ceiling_light_4
-          - light.gianluca_lamp
-          - light.hue_outdoor_spot_7
-          - light.hue_spot_11_light
-          - light.hue_spot_12_light
-          - light.hue_spot_13_light
-          - light.hue_spot_14_light
-          - light.laundry_room_nightlight
-          - light.office_light_1
-          - light.office_light_2
-          - light.office_light_3
-          - light.office_light_4
-          - light.upstairs_hallway_nightlight_light
-          # Range extenders
-          - sensor.al001_wg001_z01_lqi
-          - sensor.al001_wg001_z01_lqi_2
-        to: "unavailable"
-        for:
-          minutes: 15
+      - trigger: time_pattern
+        minutes: "/1"
+    # Rendered at trigger time; it triggers every minute but only acts when a router is due.
+    # The automation's own last_changed is when it was loaded (HA start or reload).
+    # A router already down then restarts its clock at boot, so only routers that went
+    # down 5+ minutes after load count; the rest are skipped, not re-pushed per restart.
+    # (`this` is a dict with string timestamps, so read the live state object.)
+    variables:
+      due: >-
+        {% set routers = state_attr('sensor.zigbee_routers_online', 'routers') or {} %}
+        {% set loaded = states[this.entity_id].last_changed + timedelta(minutes=5) %}
+        {% set ns = namespace(due=[]) %}
+        {% for e in routers %}
+          {% set s = states[e] %}
+          {% if s is not none and s.state == 'unavailable' and s.last_changed > loaded %}
+            {% set age = (now() - s.last_changed).total_seconds() %}
+            {% if 900 <= age < 960 %}
+              {% set ns.due = ns.due + [e] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.due }}
     conditions:
       - alias: "Coordinator is up (zigbee_coordinator_offline covers a whole-radio outage)"
         condition: template
         value_template: "{{ config_entry_attr('aca4c70dc280edb389f2148461676c66', 'state') == 'loaded' }}"
+      - alias: "A router crossed 15 minutes unavailable this minute"
+        condition: template
+        value_template: "{{ due | count > 0 }}"
     actions:
-      - action: script.general_notification
-        data:
-          title: "Zigbee System Issue"
-          message: >-
-            {% set names = state_attr('sensor.zigbee_routers_online', 'routers') or {} %}
-            {{ names.get(trigger.entity_id, trigger.to_state.attributes.friendly_name) }} has been offline for 15 minutes.
-          devices: "jk"
-          priority: "passive"
-          important: true
-          tag: "zigbee-router-{{ trigger.entity_id }}"
-          url: /dashboard-kohbo/sensors#zigbee_routers_popup
+      - repeat:
+          for_each: "{{ due }}"
+          sequence:
+            - action: script.general_notification
+              data:
+                title: "Zigbee System Issue"
+                message: >-
+                  {{ (state_attr('sensor.zigbee_routers_online', 'routers') or {}).get(repeat.item, repeat.item) }} has been offline for 15 minutes.
+                devices: "jk"
+                priority: "passive"
+                important: true
+                tag: "zigbee-router-{{ repeat.item }}"
+                url: /dashboard-kohbo/sensors#zigbee_routers_popup
