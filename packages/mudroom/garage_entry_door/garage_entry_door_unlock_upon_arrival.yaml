@@ -10,8 +10,8 @@ automation:
           - person.cristina_falbo
           - person.celi
         to: "home"
-      # Parents, Katia, Nonna and Joe: hold so iPhone detect can confirm (a UniFi blip
-      # alone must not unlock the door)
+      # Parents, Katia, Nonna and Joe: their person tracks iPhone detect only; the
+      # condition below still requires it (a UniFi blip alone must not unlock the door)
       - trigger: state
         entity_id:
           - person.antoun_koht
@@ -20,8 +20,6 @@ automation:
           - person.mary_falbo
           - person.joe_falbo
         to: "home"
-        for:
-          minutes: 1
       # House becomes occupied
       - trigger: state
         entity_id: input_boolean.house_occupied

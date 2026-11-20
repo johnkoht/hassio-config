@@ -56,8 +56,8 @@ automation:
           - person.cristina_falbo
           - person.celi
         to: "home"
-      # Parents, Katia, Nonna and Joe: hold so iPhone detect can confirm (a UniFi
-      # blip alone must not unlock the remotes)
+      # Parents, Katia, Nonna and Joe: their person tracks iPhone detect only; the
+      # condition below still requires it (a UniFi blip alone must not unlock the remotes)
       - trigger: state
         entity_id:
           - person.antoun_koht
@@ -66,8 +66,6 @@ automation:
           - person.mary_falbo
           - person.joe_falbo
         to: "home"
-        for:
-          minutes: 1
       # Hassio restart/relaod
       - trigger: homeassistant
         event: start
