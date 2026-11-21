@@ -1,0 +1,38 @@
+# Crazy Mode - Paused Timeout
+#
+# A run left paused for 10 minutes is abandoned: cancel it and put the house
+# back. No Cool-down, because nobody is there to do it.
+#
+
+automation:
+  - id: "crazy_mode_paused_timeout"
+    alias: "Crazy Mode - Paused Timeout"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.crazy_mode_paused
+        to: "on"
+        for:
+          minutes: 10
+    conditions:
+      - alias: "A run is active"
+        condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.crazy_mode_phase
+            state: "Off"
+      - alias: "The run script is the one that is paused"
+        condition: state
+        entity_id: script.crazy_mode_run
+        state: "on"
+    actions:
+      - alias: "Cancel the run and the scripts that could steer or restart it"
+        action: script.turn_off
+        target:
+          entity_id:
+            - script.crazy_mode_run
+            - script.crazy_mode_restart
+            - script.crazy_mode_pause
+            - script.crazy_mode_resume
+      - alias: "Put the house back"
+        action: script.crazy_mode_restore

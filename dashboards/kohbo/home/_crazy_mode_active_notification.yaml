@@ -1,0 +1,92 @@
+#
+# Crazy Mode Running Notification
+#
+#
+# Only display while a run is going (the phase is not Off).
+# The vacuum banner hides in the same time: the slot is shared.
+#
+type: conditional
+conditions:
+  - condition: state
+    entity: input_select.crazy_mode_phase
+    state_not: "Off"
+card:
+  type: custom:decluttering-card
+  template: horizontal_action_card_fixed
+  variables:
+    - entity: sensor.crazy_mode_status
+    - name: Crazy Mode
+    - template: kohbo_horizontal_action_card_crazy_mode_entity
+    - icon: mdi:run-fast
+    - tap_action: navigate
+    - navigation_path: '#crazy_mode'
+    #  Action Cards
+    - action_cards:
+      # Skip song (Crazy, not paused)
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:skip-next
+        tap_action:
+          action: perform-action
+          perform_action: script.crazy_mode_skip
+          haptic: medium
+        visibility:
+          - condition: state
+            entity: input_select.crazy_mode_phase
+            state: "Crazy"
+          - condition: state
+            entity: input_boolean.crazy_mode_paused
+            state: "off"
+      # Pause (Crazy or Slow-mo, not paused)
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:pause
+        tap_action:
+          action: perform-action
+          perform_action: script.crazy_mode_pause
+          haptic: medium
+        visibility:
+          - condition: state
+            entity: input_select.crazy_mode_phase
+            state:
+              - "Crazy"
+              - "Slow-mo"
+          - condition: state
+            entity: input_boolean.crazy_mode_paused
+            state: "off"
+      # Resume (while paused)
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:play
+        tap_action:
+          action: perform-action
+          perform_action: script.crazy_mode_resume
+          haptic: medium
+        visibility:
+          - condition: state
+            entity: input_boolean.crazy_mode_paused
+            state: "on"
+      # Restart (any run)
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:restart
+        tap_action:
+          action: perform-action
+          perform_action: script.crazy_mode_restart
+          haptic: medium
+        visibility:
+          - condition: state
+            entity: input_select.crazy_mode_phase
+            state_not: "Off"
+      # Stop (to Cool-down)
+      - type: custom:button-card
+        template: kohbo_chip_icon_action_card
+        icon: mdi:stop
+        tap_action:
+          action: perform-action
+          perform_action: script.crazy_mode_stop
+          haptic: medium
+        visibility:
+          - condition: state
+            entity: input_select.crazy_mode_phase
+            state_not: "Off"

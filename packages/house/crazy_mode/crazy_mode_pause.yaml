@@ -1,0 +1,57 @@
+# Crazy Mode - Pause
+#
+# Freezes the phase timer and the music; the run's ticks hold the lights.
+# Crazy and Slow-mo only: Cool-down is 60 s and can't be paused.
+#
+
+script:
+  crazy_mode_pause:
+    alias: "Crazy Mode - Pause"
+    icon: mdi:pause
+    mode: single
+    variables:
+      zone_key: "{{ 'basement' if is_state('input_text.crazy_mode_active_zone', 'Basement') else 'main_floor' }}"
+      cfg: "{{ state_attr('sensor.crazy_mode_zone_config', zone_key) or {} }}"
+      coordinator: "{{ cfg.get('coordinator', '') }}"
+    sequence:
+      - alias: "Only while a run is going: run on, start and restore off, no emergency"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: script.crazy_mode_run
+            state: "on"
+          - condition: state
+            entity_id: script.crazy_mode_start
+            state: "off"
+          - condition: state
+            entity_id: script.crazy_mode_restore
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.emergency_active
+            state: "off"
+      - alias: "Only during Crazy or Slow-mo, and not already paused"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.crazy_mode_phase
+            state:
+              - "Crazy"
+              - "Slow-mo"
+          - condition: state
+            entity_id: input_boolean.crazy_mode_paused
+            state: "off"
+      - action: timer.pause
+        target:
+          entity_id: timer.crazy_mode_phase
+      - alias: "Pause the music on the coordinator"
+        if:
+          - condition: template
+            value_template: "{{ coordinator != '' }}"
+        then:
+          - action: media_player.media_pause
+            continue_on_error: true
+            target:
+              entity_id: "{{ coordinator }}"
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.crazy_mode_paused

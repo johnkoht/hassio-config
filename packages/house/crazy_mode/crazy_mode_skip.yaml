@@ -1,0 +1,48 @@
+# Crazy Mode - Skip
+#
+# Next song. Crazy only: it is the one phase playing a playlist.
+#
+
+script:
+  crazy_mode_skip:
+    alias: "Crazy Mode - Skip"
+    icon: mdi:skip-next
+    mode: single
+    variables:
+      zone_key: "{{ 'basement' if is_state('input_text.crazy_mode_active_zone', 'Basement') else 'main_floor' }}"
+      cfg: "{{ state_attr('sensor.crazy_mode_zone_config', zone_key) or {} }}"
+      coordinator: "{{ cfg.get('coordinator', '') }}"
+    sequence:
+      - alias: "Only while a run is going: run on, start and restore off, no emergency"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: script.crazy_mode_run
+            state: "on"
+          - condition: state
+            entity_id: script.crazy_mode_start
+            state: "off"
+          - condition: state
+            entity_id: script.crazy_mode_restore
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.emergency_active
+            state: "off"
+      - alias: "Only during Crazy, and not paused"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.crazy_mode_phase
+            state: "Crazy"
+          - condition: state
+            entity_id: input_boolean.crazy_mode_paused
+            state: "off"
+      - alias: "Next track on the coordinator"
+        if:
+          - condition: template
+            value_template: "{{ coordinator != '' }}"
+        then:
+          - action: media_player.media_next_track
+            continue_on_error: true
+            target:
+              entity_id: "{{ coordinator }}"
