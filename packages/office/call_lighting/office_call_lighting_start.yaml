@@ -1,7 +1,8 @@
 # Office Call Lighting - Start
 #
-# On a call, pause Adaptive Lighting and set the daytime colour once
-# AL has warmed or dimmed the room. The flag is set first (latch).
+# On a call (office DnD, or a new call while it lingers), pause
+# Adaptive Lighting and set the daytime colour once AL has warmed
+# or dimmed the room. The flag is set first (latch).
 #
 
 automation:
