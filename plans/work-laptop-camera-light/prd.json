@@ -1,0 +1,94 @@
+{
+  "name": "work-laptop-camera-light",
+  "branchName": "feature/work-laptop-camera-light",
+  "goal": "El Gato light follows the work laptop camera while docked; DnD unchanged.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Helpers",
+      "description": "Add john_work_laptop_camera and john_work_laptop_docked input_booleans.",
+      "acceptanceCriteria": [
+        "Both files define one input_boolean each with name and icon, no initial:",
+        "Basenames unique across packages/"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "On automation",
+      "description": "Add work camera + docked source to office_camera_light_on.",
+      "acceptanceCriteria": [
+        "Triggers: work camera on for 2s, docked on; existing kept",
+        "Conditions: occupied, presence office, El Gato off, or(Mac camera on, work camera on AND docked on) with alias",
+        "Action uses target:; initial_state/id/alias unchanged",
+        "No john_dnd reference"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Off automation",
+      "description": "Add work camera + docked source to office_camera_light_off.",
+      "acceptanceCriteria": [
+        "Triggers: work camera off for 4s, docked off; existing kept",
+        "Conditions: Mac camera not on, not(work camera on AND docked on), El Gato on; no state off on sources",
+        "Action uses target:; initial_state/id/alias unchanged; header gets 1-2 line description",
+        "No john_dnd reference"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Tests",
+      "description": "tests/test_work_laptop_camera_light.py",
+      "acceptanceCriteria": [
+        "Helpers exist with no initial",
+        "On triggers/conditions reference both new entities; or contains Mac camera",
+        "Off triggers include both; no state off on sources; not covers work pair",
+        "No john_dnd in camera-light files; actions use target:",
+        "pytest tests/ passes"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Docs",
+      "description": "ROOMS.md, office README/LEARNINGS, PEOPLE.md tree",
+      "acceptanceCriteria": [
+        "ROOMS.md El Gato line updated",
+        "README + LEARNINGS describe new booleans and john_dnd not driving light",
+        "PEOPLE.md tree lists new helpers",
+        "No PII"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Laptop contract handoff",
+      "description": "plans/work-laptop-camera-light/laptop-contract.md",
+      "acceptanceCriteria": [
+        "Entity ids, on/off semantics, off on sleep/exit, re-sync on wake/start, REST shape with placeholders",
+        "HA deploys first; failed calls must not crash script"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-11-20T22:54:15-06:00",
+    "totalTasks": 6,
+    "completedTasks": 0,
+    "failedTasks": 0
+  }
+}
