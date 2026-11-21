@@ -1,7 +1,7 @@
 ---
 title: Work Laptop Camera Light
 slug: work-laptop-camera-light
-status: in-progress
+status: shipped
 created: 2026-11-20
 has_pre_mortem: false
 has_review: false
