@@ -1,0 +1,4 @@
+input_boolean:
+  john_work_laptop_camera:
+    name: John Work Laptop Camera
+    icon: mdi:webcam
