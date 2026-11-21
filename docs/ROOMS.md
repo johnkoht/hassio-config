@@ -89,7 +89,7 @@ My camera or mic turns on. The Office detects I'm on a call and transitions to *
 - Music stops immediately
 - A red light turns on outside the office door → family knows not to interrupt
 - TTS notifications are disabled → no "John, dinner's ready!" mid-presentation
-- The El Gato camera light turns on (synced with the personal Mac camera)
+- The El Gato camera light turns on when a camera is on at the desk: the personal Mac camera, or the work laptop camera while it's docked. Mic-only calls leave it off
 
 **Back to Work**
 
