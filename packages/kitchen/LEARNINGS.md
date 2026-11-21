@@ -38,7 +38,7 @@ Baseline before it shipped (7-day recorder read): 7 pendant changes, 3 with an a
 The two motion sensors read the room with the ceiling lights on, and the lights add about 290 lux at the main sensor and 125 at the table (507 → 217 and 483 → 358 when they went off). The old off point (both above 450) really meant about 220 lux of daylight, but nothing turned the lights back on above 150. After a day-off the kitchen sat between 150 and 450 with the lights off.
 
 The kitchen now departs from the house-wide 150 lux:
-- **On:** either sensor below 250, for both day-on and motion-on. The darker end decides, so the back of the kitchen counts.
+- **On:** either sensor below 250, for both day-on and motion-on. The darker end decides, so the back of the kitchen counts. Motion-on has no sun condition, so Dim-mode pendants also come on below 250 now (was 150).
 - **Off:** main above 700 and table above 550 for 10 min, which leaves at least about 400 lux of daylight on each after the lights go off.
 
 Keep off minus glow at least 100 above the on point, or the gap comes back. `tests/test_kitchen_daylight_thresholds.py` pins this. The glow shifts with Adaptive Lighting brightness, so re-measure it if the bulbs or the AL settings change. In winter the lights rarely reach the off point.
