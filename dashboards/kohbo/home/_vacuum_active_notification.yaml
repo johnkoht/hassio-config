@@ -3,10 +3,14 @@
 #
 #
 # Only display if the vacuum is cleaning
-# paused or idle
+# paused or idle, and no Crazy Mode run holds
+# the banner slot
 #
 type: conditional
 conditions:
+  - condition: state
+    entity: input_select.crazy_mode_phase
+    state: "Off"
   - condition: state
     entity: vacuum.main_floor_vacuum
     state:

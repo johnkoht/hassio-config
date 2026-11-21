@@ -1,8 +1,8 @@
 #
 # Crazy Mode Popup
 #
-# Start, stop (to Cool-down), phase and time left, the two run windows,
-# favorite names, base volume and the once-per-window override.
+# Idle: zone tiles, length slider, Start, the windows and music settings.
+# Running: phase and time left (text only), a Paused banner and the controls.
 #
 type: custom:bubble-card
 card_type: pop-up
@@ -16,89 +16,350 @@ cards:
     name: Crazy Mode
 
   #
-  # Start and stop
+  # Idle view
   #
-  - type: horizontal-stack
-    cards:
-      - type: custom:button-card
-        name: Start
-        icon: mdi:run-fast
-        entity: binary_sensor.crazy_mode_allowed
-        state:
-          - value: 'on'
-            color: var(--primary-color)
-        tap_action:
-          action: perform-action
-          perform_action: script.crazy_mode_start
-      - type: custom:button-card
-        name: Cool-down now
-        icon: mdi:stop-circle
-        tap_action:
-          action: perform-action
-          perform_action: script.crazy_mode_stop
-
-  - type: entities
-    entities:
-      - entity: input_select.crazy_mode_phase
-        name: Phase
-        icon: mdi:run-fast
-      - entity: timer.crazy_mode_phase
-        name: Time left
-      - entity: sensor.crazy_mode_reason
-        name: Can it start?
-        icon: mdi:help-circle-outline
-
   - type: conditional
     conditions:
-      - entity: sensor.crazy_mode_reason
-        state: favorite_missing
+      - condition: state
+        entity: input_select.crazy_mode_phase
+        state: "Off"
     card:
-      type: custom:button-card
-      name: A favorite name is not on every speaker. Check the three names below, spelled exactly as in Sonos.
-      template: kohbo_card_section_description
+      type: vertical-stack
+      cards:
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.crazy_mode_reason
+              state_not: ok
+          card:
+            type: custom:button-card
+            entity: sensor.crazy_mode_reason
+            name: >
+              [[[
+                const m = {
+                  running: 'A run is already going.',
+                  emergency: 'Not during an emergency.',
+                  house_mode: 'Not in this house mode.',
+                  not_occupied: 'Nobody is home.',
+                  window_unset: 'Set a window below (start before end, same day).',
+                  outside_window: 'Outside the allowed window.',
+                  already_ran: 'Already ran in this window.',
+                  favorite_missing: 'A favorite name is not on every speaker of this zone. Check the three names below, spelled exactly as in Sonos.'
+                };
+                return m[entity.state] || entity.state;
+              ]]]
+            icon: mdi:alert-circle-outline
+            layout: icon_name
+            show_icon: true
+            size: 24px
+            tap_action:
+              action: none
+            styles:
+              card:
+                - backdrop-filter: blur(10px)
+                - -webkit-backdrop-filter: blur(10px)
+                - padding: 10px
+              grid:
+                - grid-template-areas: '"i n"'
+                - grid-template-columns: 40px 1fr
+              name:
+                - justify-self: start
+                - font-weight: 500
+                - white-space: normal
+            card_mod:
+              style: |
+                ha-card {
+                  background: rgba(237, 71, 71, 0.8) !important;
+                  width: 100% !important;
+                  padding-right: 15px !important;
+                }
+        #
+        # Zone tiles
+        #
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              name: Main floor
+              icon: mdi:home-floor-1
+              entity: input_select.crazy_mode_zone
+              tap_action:
+                action: perform-action
+                perform_action: input_select.select_option
+                target:
+                  entity_id: input_select.crazy_mode_zone
+                data:
+                  option: Main floor
+                haptic: medium
+              styles:
+                card:
+                  - padding: 18px 10px
+                  - border: >
+                      [[[ return states['input_select.crazy_mode_zone'].state === 'Main floor' ? '2px solid var(--primary-color)' : '2px solid transparent'; ]]]
+            - type: custom:button-card
+              name: Basement
+              icon: mdi:home-floor-negative-1
+              entity: input_select.crazy_mode_zone
+              tap_action:
+                action: perform-action
+                perform_action: input_select.select_option
+                target:
+                  entity_id: input_select.crazy_mode_zone
+                data:
+                  option: Basement
+                haptic: medium
+              styles:
+                card:
+                  - padding: 18px 10px
+                  - border: >
+                      [[[ return states['input_select.crazy_mode_zone'].state === 'Basement' ? '2px solid var(--primary-color)' : '2px solid transparent'; ]]]
+        #
+        # Crazy length
+        #
+        - type: entities
+          entities:
+            - entity: input_number.crazy_mode_crazy_minutes
+              name: Crazy length
+        #
+        # Start
+        #
+        - type: custom:button-card
+          name: Start
+          show_icon: false
+          tap_action:
+            action: perform-action
+            perform_action: script.crazy_mode_start
+            haptic: heavy
+          card_mod:
+            style: |
+              :host {
+                padding: 15px 0 0 0 !important;
+              }
+              ha-card {
+                background: var(--primary-color) !important;
+                color: var(--primary-text-color) !important;
+                border-radius: 30px !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                padding: 15px 10px !important;
+              }
+        - type: custom:button-card
+          name: Allow another run
+          icon: mdi:restart
+          tap_action:
+            action: perform-action
+            perform_action: script.crazy_mode_allow_again
+        #
+        # Windows
+        #
+        - type: entities
+          entities:
+            - entity: input_datetime.crazy_mode_morning_start
+              name: Morning start
+            - entity: input_datetime.crazy_mode_morning_end
+              name: Morning end
+            - entity: input_datetime.crazy_mode_evening_start
+              name: Evening start
+            - entity: input_datetime.crazy_mode_evening_end
+              name: Evening end
+            - entity: input_datetime.crazy_mode_last_run
+              name: Last run
+        #
+        # Music
+        #
+        - type: entities
+          entities:
+            - entity: input_text.crazy_mode_favorite_crazy
+              name: Crazy favorite
+            - entity: input_text.crazy_mode_favorite_slowmo
+              name: Slow-mo favorite
+            - entity: input_text.crazy_mode_favorite_cooldown
+              name: Cool-down favorite
+            - entity: input_number.crazy_mode_base_volume
+              name: Base volume
 
+  #
+  # Run view
+  #
   - type: conditional
     conditions:
-      - entity: sensor.crazy_mode_reason
-        state: window_unset
+      - condition: state
+        entity: input_select.crazy_mode_phase
+        state_not: "Off"
     card:
-      type: custom:button-card
-      name: Set a window below (start before end, same day) before Crazy Mode can start.
-      template: kohbo_card_section_description
-
-  - type: custom:button-card
-    name: Allow another run
-    icon: mdi:restart
-    tap_action:
-      action: perform-action
-      perform_action: script.crazy_mode_allow_again
-
-  #
-  # Windows
-  #
-  - type: entities
-    entities:
-      - entity: input_datetime.crazy_mode_morning_start
-        name: Morning start
-      - entity: input_datetime.crazy_mode_morning_end
-        name: Morning end
-      - entity: input_datetime.crazy_mode_evening_start
-        name: Evening start
-      - entity: input_datetime.crazy_mode_evening_end
-        name: Evening end
-      - entity: input_datetime.crazy_mode_last_run
-        name: Last run
-
-  #
-  # Music
-  #
-  - type: entities
-    entities:
-      - entity: input_text.crazy_mode_favorite_crazy
-        name: Crazy favorite
-      - entity: input_text.crazy_mode_favorite_slowmo
-        name: Slow-mo favorite
-      - entity: input_text.crazy_mode_favorite_cooldown
-        name: Cool-down favorite
-      - entity: input_number.crazy_mode_base_volume
-        name: Base volume
+      type: vertical-stack
+      cards:
+        # Display only: the text sensor, never the timer entity, and taps do nothing
+        - type: custom:button-card
+          entity: sensor.crazy_mode_status
+          show_state: true
+          show_name: false
+          show_icon: true
+          icon: mdi:run-fast
+          layout: icon_name_state2nd
+          tap_action:
+            action: none
+          hold_action:
+            action: none
+          double_tap_action:
+            action: none
+          styles:
+            card:
+              - padding: 18px 10px
+            state:
+              - font-size: 18px
+              - font-weight: 600
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: input_boolean.crazy_mode_paused
+              state: "on"
+          card:
+            type: custom:button-card
+            name: Paused
+            icon: mdi:pause-circle
+            layout: icon_name
+            show_icon: true
+            size: 24px
+            tap_action:
+              action: none
+            card_mod:
+              style: |
+                ha-card {
+                  background: rgba(237, 71, 71, 0.8) !important;
+                  width: 100% !important;
+                }
+        - type: vertical-stack
+          cards:
+            - type: custom:button-card
+              name: Skip song
+              show_icon: false
+              tap_action:
+                action: perform-action
+                perform_action: script.crazy_mode_skip
+                haptic: heavy
+              visibility:
+                - condition: state
+                  entity: input_select.crazy_mode_phase
+                  state: "Crazy"
+                - condition: state
+                  entity: input_boolean.crazy_mode_paused
+                  state: "off"
+              card_mod:
+                style: |
+                  :host {
+                    padding: 0 !important;
+                  }
+                  ha-card {
+                    background: var(--primary-color) !important;
+                    color: var(--primary-text-color) !important;
+                    border-radius: 30px !important;
+                    font-size: 14px !important;
+                    font-weight: 500 !important;
+                    padding: 15px 10px !important;
+                  }
+            - type: custom:button-card
+              name: Pause
+              show_icon: false
+              tap_action:
+                action: perform-action
+                perform_action: script.crazy_mode_pause
+                haptic: heavy
+              visibility:
+                - condition: state
+                  entity: input_select.crazy_mode_phase
+                  state:
+                    - "Crazy"
+                    - "Slow-mo"
+                - condition: state
+                  entity: input_boolean.crazy_mode_paused
+                  state: "off"
+              card_mod:
+                style: |
+                  :host {
+                    padding: 0 !important;
+                  }
+                  ha-card {
+                    background: transparent !important;
+                    border: 1px solid var(--primary-color) !important;
+                    color: var(--primary-text-color) !important;
+                    border-radius: 30px !important;
+                    font-size: 14px !important;
+                    font-weight: 500 !important;
+                    padding: 15px 10px !important;
+                  }
+            - type: custom:button-card
+              name: Resume
+              show_icon: false
+              tap_action:
+                action: perform-action
+                perform_action: script.crazy_mode_resume
+                haptic: heavy
+              visibility:
+                - condition: state
+                  entity: input_boolean.crazy_mode_paused
+                  state: "on"
+              card_mod:
+                style: |
+                  :host {
+                    padding: 0 !important;
+                  }
+                  ha-card {
+                    background: var(--primary-color) !important;
+                    color: var(--primary-text-color) !important;
+                    border-radius: 30px !important;
+                    font-size: 14px !important;
+                    font-weight: 500 !important;
+                    padding: 15px 10px !important;
+                  }
+            - type: custom:button-card
+              name: Restart
+              show_icon: false
+              tap_action:
+                action: perform-action
+                perform_action: script.crazy_mode_restart
+                haptic: heavy
+              visibility:
+                - condition: state
+                  entity: input_select.crazy_mode_phase
+                  state_not: "Off"
+              card_mod:
+                style: |
+                  :host {
+                    padding: 0 !important;
+                  }
+                  ha-card {
+                    background: transparent !important;
+                    border: 1px solid var(--primary-color) !important;
+                    color: var(--primary-text-color) !important;
+                    border-radius: 30px !important;
+                    font-size: 14px !important;
+                    font-weight: 500 !important;
+                    padding: 15px 10px !important;
+                  }
+            - type: custom:button-card
+              name: Cool-down now
+              show_icon: false
+              tap_action:
+                action: perform-action
+                perform_action: script.crazy_mode_stop
+                haptic: heavy
+              visibility:
+                - condition: state
+                  entity: input_select.crazy_mode_phase
+                  state_not: "Off"
+              card_mod:
+                style: |
+                  :host {
+                    padding: 0 !important;
+                  }
+                  ha-card {
+                    background: transparent !important;
+                    border: 1px solid var(--primary-color) !important;
+                    color: var(--primary-text-color) !important;
+                    border-radius: 30px !important;
+                    font-size: 14px !important;
+                    font-weight: 500 !important;
+                    padding: 15px 10px !important;
+                  }

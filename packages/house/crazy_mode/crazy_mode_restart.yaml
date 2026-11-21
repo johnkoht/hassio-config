@@ -1,0 +1,63 @@
+# Crazy Mode - Restart
+#
+# Back to the top of Crazy, same run: no new snapshot, no last_run write, so
+# the original snapshot still restores the house and the once-per-window rule
+# sees one run. A parent control; never expose it to Alexa.
+#
+
+script:
+  crazy_mode_restart:
+    alias: "Crazy Mode - Restart"
+    icon: mdi:restart
+    mode: single
+    sequence:
+      - alias: "Only while a run is going: run on, start and restore off, no emergency"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: script.crazy_mode_run
+            state: "on"
+          - condition: state
+            entity_id: script.crazy_mode_start
+            state: "off"
+          - condition: state
+            entity_id: script.crazy_mode_restore
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.emergency_active
+            state: "off"
+      - alias: "Cancel the run"
+        action: script.turn_off
+        target:
+          entity_id: script.crazy_mode_run
+      - action: input_boolean.turn_off
+        target:
+          entity_id:
+            - input_boolean.crazy_mode_paused
+            - input_boolean.crazy_mode_stop_requested
+      - alias: "Wait for the old run to stop"
+        wait_template: "{{ is_state('script.crazy_mode_run', 'off') }}"
+        timeout: 5
+        continue_on_timeout: true
+      - alias: "Recheck: an emergency during the wait leaves the abort in charge"
+        condition: state
+        entity_id: binary_sensor.emergency_active
+        state: "off"
+      - alias: "Recheck: the abort or the paused timeout may have ended the run"
+        condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.crazy_mode_phase
+            state: "Off"
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.crazy_mode_phase
+        data:
+          option: "Crazy"
+      - alias: "Start the run again with the slider's current length and the active zone"
+        action: script.turn_on
+        target:
+          entity_id: script.crazy_mode_run
+        data:
+          variables:
+            crazy_minutes: "{{ [[states('input_number.crazy_mode_crazy_minutes') | float(5), 2] | max, 15] | min | int }}"
