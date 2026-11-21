@@ -41,7 +41,7 @@ The Kitchen has a few states that change throughout the day.
 - **Dim**: Dim the kitchen lights and change the brightness of lighting automations.
 
 ### Auto Mode
-Auto mode is the default mode during the day. 
+Auto mode is the default mode during the day. The ceiling lights come on when either motion sensor reads below 250 lux, and turn off only when daylight alone is bright (main above 700 and table above 550 with the lights on). See LEARNINGS.md for why the kitchen doesn't use the house-wide 150.
 
 ### Dim Mode
 In the evening, after the kids go to sleep, we're mostly in the family room or John's in his office. The kitchen is only used to walk through to the bathroom or for a quick snack. But since the light is off in the family room in the evenings, we want a little light in the house. Therefore, the Kitchen goes into a Dim Mode where the lights turn down to 10% as an evening light. During Dim Mode, the motion automations only turn the lights up to 40%, rather than the standard 100%. 
