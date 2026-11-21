@@ -53,3 +53,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-11-15 · [nino-weekend-timing-and-skip](entries/2026-11-15_nino-weekend-timing-and-skip.md) — JK-1168 no-school dose 1 floor, 30 min snooze, skip a dose; JK-1257 critical push Taken action + Home notifications link
 - 2026-11-17 · [kids-wifi-snooze](entries/2026-11-17_kids-wifi-snooze.md) — JK-1261 shutoff warning + Snooze 15/30 (push, popup); datetime state, not a timer
 - 2026-11-18 · [crazy-mode](entries/2026-11-18_crazy-mode-learnings.md) — timed Crazy/Slow-mo/Cool-down run; deadline clock, stop flag, one restore script, kitchen latch gap
+- 2026-11-20 · [crazy-mode-v2](entries/2026-11-20_crazy-mode-v2-learnings.md) — zones (Main floor, Basement), Crazy length slider, skip/pause/resume/restart; timer-driven clock, zone config sensor, cancel allowlist
