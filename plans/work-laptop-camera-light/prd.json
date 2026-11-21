@@ -11,9 +11,9 @@
         "Both files define one input_boolean each with name and icon, no initial:",
         "Basenames unique across packages/"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
@@ -25,9 +25,9 @@
         "Action uses target:; initial_state/id/alias unchanged",
         "No john_dnd reference"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3",
@@ -39,9 +39,9 @@
         "Action uses target:; initial_state/id/alias unchanged; header gets 1-2 line description",
         "No john_dnd reference"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4",
@@ -54,9 +54,9 @@
         "No john_dnd in camera-light files; actions use target:",
         "pytest tests/ passes"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5",
@@ -68,9 +68,9 @@
         "PEOPLE.md tree lists new helpers",
         "No PII"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-6",
@@ -80,15 +80,15 @@
         "Entity ids, on/off semantics, off on sleep/exit, re-sync on wake/start, REST shape with placeholders",
         "HA deploys first; failed calls must not crash script"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     }
   ],
   "metadata": {
     "createdAt": "2026-11-20T22:54:15-06:00",
     "totalTasks": 6,
-    "completedTasks": 0,
+    "completedTasks": 6,
     "failedTasks": 0
   }
 }
