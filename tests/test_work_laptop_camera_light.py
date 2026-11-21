@@ -43,6 +43,7 @@ def test_on_fires_for_work_camera_or_dock_and_requires_both():
     trig = {t["entity_id"]: t for t in on["triggers"]}
     assert trig[CAM]["to"] == "on" and trig[CAM]["for"] == {"seconds": 2}
     assert trig[DOCK]["to"] == "on"
+    assert trig["input_boolean.office_occupied"]["to"] == "on"
     assert MAC in trig
     source = next(c for c in on["conditions"] if c.get("condition") == "or")
     mac, pair = source["conditions"]
@@ -58,9 +59,13 @@ def test_off_fires_for_work_camera_or_undock_and_tolerates_stale_sources():
     assert trig[DOCK]["to"] == "off"
     # No source is required to be "off": unavailable/stale must still let it turn off
     assert not [e for e, s in states(off["conditions"]) if s == "off" and e in (MAC, CAM, DOCK)]
-    nots = [c for c in off["conditions"] if c.get("condition") == "not"]
-    pair = next(n for n in nots if CAM in str(n))
+    gate = next(c for c in off["conditions"] if c.get("condition") == "or" and CAM in str(c))
+    vacant, pair = gate["conditions"]
+    # The office emptying overrides stale laptop booleans
+    assert vacant == {"condition": "trigger", "id": "office_vacant"}
+    assert trig["input_boolean.office_occupied"]["id"] == "office_vacant"
     # HA's `not` fails if ANY child passes, so the pair must sit inside one `and`
+    assert pair["condition"] == "not"
     assert len(pair["conditions"]) == 1 and pair["conditions"][0]["condition"] == "and"
     assert sorted(states(pair["conditions"])) == [(CAM, "on"), (DOCK, "on")]
 

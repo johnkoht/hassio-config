@@ -189,6 +189,7 @@ packages/people/john/
 │   ├── john_dnd_boolean.yaml      # Do Not Disturb toggle (manual / work laptop camera or mic)
 │   ├── john_dnd_active.yaml       # binary_sensor.john_dnd_active, the derived DnD sensor
 │   ├── john_work_laptop_active_boolean.yaml  # Work laptop in use
+│   ├── john_computer_active.yaml  # binary_sensor.john_computer_active (Mac or work laptop in use)
 │   ├── john_work_laptop_camera_boolean.yaml  # Work laptop camera on (not mic); drives the El Gato
 │   └── john_work_laptop_docked_boolean.yaml  # Work laptop docked = at the desk
 └── input_boolean/
