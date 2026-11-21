@@ -1,5 +1,7 @@
 # Office Camera Light Off
 #
+# Turn the El Gato off once no camera is on at the desk
+# (personal Mac, or the work laptop while docked).
 #
 automation:
   - id: "office_camera_light_off"
@@ -12,8 +14,19 @@ automation:
         to: "off"
         for:
           seconds: 4
+      # Work laptop camera goes off
+      - trigger: state
+        entity_id: input_boolean.john_work_laptop_camera
+        to: "off"
+        for:
+          seconds: 4
+      # Work laptop undocked
+      - trigger: state
+        entity_id: input_boolean.john_work_laptop_docked
+        to: "off"
       # Office no longer occupied
       - trigger: state
+        id: office_vacant
         entity_id: input_boolean.office_occupied
         to: "off"
       # Laptop is turned off
@@ -27,10 +40,27 @@ automation:
           - condition: state
             entity_id: binary_sensor.johns_mbp_2026_camera_in_use
             state: "on"
+      # The office emptying overrides the laptop, whose booleans can go stale
+      - alias: "Office emptied, or work laptop camera is not on at the desk"
+        condition: or
+        conditions:
+          - condition: trigger
+            id: office_vacant
+          - condition: not
+            conditions:
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.john_work_laptop_camera
+                    state: "on"
+                  - condition: state
+                    entity_id: input_boolean.john_work_laptop_docked
+                    state: "on"
       # Camera light is ON
       - condition: state
         entity_id: light.office_el_gato_light
         state: "on"
     actions:
       - action: light.turn_off
-        entity_id: light.office_el_gato_light
+        target:
+          entity_id: light.office_el_gato_light

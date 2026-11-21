@@ -1,7 +1,7 @@
 # Office Camera Light On
 #
-# When I'm in my office and my camera comes on,
-# turn the El Gato light on
+# When I'm in my office and my camera comes on (personal Mac,
+# or the work laptop while docked), turn the El Gato light on
 #
 automation:
   - id: "office_camera_light_on"
@@ -14,27 +14,52 @@ automation:
         to: "on"
         for:
           seconds: 2
+      # Work laptop camera goes on
+      - trigger: state
+        entity_id: input_boolean.john_work_laptop_camera
+        to: "on"
+        for:
+          seconds: 2
+      # Work laptop docked mid-call
+      - trigger: state
+        entity_id: input_boolean.john_work_laptop_docked
+        to: "on"
       # John's room presence is the office
       - trigger: state
         entity_id: sensor.john_room_presence
         to: "office"
+      # Office occupied again (e.g. after a brief vacancy mid-call)
+      - trigger: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
     conditions:
       # Office is occupied
       - condition: state
         entity_id: input_boolean.office_occupied
         state: "on"
-      # Mac camera is on
-      - condition: state
-        entity_id: binary_sensor.johns_mbp_2026_camera_in_use
-        state: "on"
       # John's in the office
       - condition: state
         entity_id: sensor.john_room_presence
         state: "office"
+      - alias: "A camera is on at the desk"
+        condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.johns_mbp_2026_camera_in_use
+            state: "on"
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.john_work_laptop_camera
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.john_work_laptop_docked
+                state: "on"
       # Camera light is off
       - condition: state
         entity_id: light.office_el_gato_light
         state: "off"
     actions:
       - action: light.turn_on
-        entity_id: light.office_el_gato_light
+        target:
+          entity_id: light.office_el_gato_light

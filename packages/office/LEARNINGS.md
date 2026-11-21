@@ -14,7 +14,7 @@ Decisions per automation:
 | `office_lights_off` | room Off bypasses both flags; vacancy needs the hand flag (house flag added) |
 | `office_lights_day_off`, `office_lights_motion_off` | off-type: hand flag only (motion_off gained it) |
 | `office_lights_sync_*`, `office_lights_scene_toggle` | mirror or follow the user's switch/button: not gated |
-| `office_dnd_light_*`, `office_camera_light_*`, deep-work shelf lights | follow DnD, the Mac camera or focus mode, not occupancy: not gated |
+| `office_dnd_light_*`, `office_camera_light_*`, deep-work shelf lights | follow DnD, the Mac or docked work-laptop camera, or focus mode, not occupancy: not gated |
 
 DnD keeps the lights on: `office_lights_on` and `office_lights_day_on` pass Auto and DnD; `office_lights_motion_on` only Auto. The latch gate sits ahead of that mode block and passes the same modes.
 
@@ -37,4 +37,5 @@ DnD keeps the lights on: `office_lights_on` and `office_lights_day_on` pass Auto
 
 - DnD comes only from camera/mic: `binary_sensor.john_dnd_active` = `input_boolean.john_dnd` (manual toggle, or an external work-laptop writer) or the personal Mac camera/mic sensors. 5 s `delay_on`, no `delay_off`; `office_dnd_off` waits 2 min.
 - Mac sensors go unavailable when it sleeps, so camera-light off conditions use `not ... on`.
+- The El Gato follows `input_boolean.john_work_laptop_camera` AND `_docked`, not `john_dnd`: the laptop can't tell the El Gato camera from the built-in one, and `john_dnd` also fires on mic-only calls. HA's `not` fails if any child passes, so the work pair is wrapped in an `and` inside the `not`. The office-vacant trigger (`id: office_vacant`) bypasses the work pair, so a laptop that crashed with both booleans on can't hold the light on; the on side re-checks on occupancy returning.
 - The calendar DnD pieces (work call, personal time, Bayesian sensor) were deleted; their registry entries are ghosts.

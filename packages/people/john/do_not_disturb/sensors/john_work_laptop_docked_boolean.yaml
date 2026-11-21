@@ -1,0 +1,4 @@
+input_boolean:
+  john_work_laptop_docked:
+    name: John Work Laptop Docked
+    icon: mdi:laptop-account

@@ -75,6 +75,14 @@ The Office goes into Do Not Disturb (DnD) mode when I'm on a call. This will dis
 
 Eventually, this could also include Cristina or a guest. One thing to note, there is a state of DnD on John as well as the Office. The reason is that I might be in DnD mode but not in the office. Sometimes I take calls on the patio or the kitchen. 
 
+## Camera light
+
+The El Gato key light (`light.office_el_gato_light`) follows the camera, not DnD (`office_camera_light_on` / `_off`).
+
+- On when John is in the occupied office and the personal Mac camera is on, or the work laptop camera is on while it's docked.
+- Off when neither is on or the laptop undocks. The office emptying turns it off even if the laptop's booleans are stuck on; it doesn't override the Mac camera.
+- The work laptop writes `input_boolean.john_work_laptop_camera` and `input_boolean.john_work_laptop_docked` over its token. `input_boolean.john_dnd` (camera or mic) doesn't drive the light, so mic-only calls and undocked calls leave it off.
+
 ## Call lighting
 
 During a camera or audio call, once Adaptive Lighting has warmed or dimmed the ceiling bulbs, the room pauses AL and holds them at the tunable colour temperature and brightness. AL resumes about 3 minutes after the call ends: office DnD clears 2 minutes after the call, then AL waits 1 more minute.
