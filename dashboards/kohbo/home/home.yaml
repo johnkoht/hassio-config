@@ -549,6 +549,12 @@ cards:
 
 
   #
+  # Crazy Mode Running Notification
+  #
+  - !include /config/dashboards/kohbo/home/_crazy_mode_active_notification.yaml
+
+
+  #
   # Camera Notification
   #
   - !include /config/dashboards/kohbo/home/_front_door_camera_notification.yaml

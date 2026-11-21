@@ -1,7 +1,8 @@
 # Crazy Mode - Emergency Abort
 #
-# The only instant stop: alarm, smoke or emergency mode cancels the run,
-# then puts the house back (lights end bright). Not a Cool-down.
+# The only instant stop: alarm, smoke or emergency mode cancels the run and
+# every script that could restart or steer it, then puts the house back
+# (lights end bright). Not a Cool-down.
 #
 
 automation:
@@ -20,12 +21,15 @@ automation:
             entity_id: input_select.crazy_mode_phase
             state: "Off"
     actions:
-      - alias: "Cancel the run, and the start script if it is still setting up"
+      - alias: "Cancel the run, the start script if it is still setting up, and the control scripts"
         action: script.turn_off
         target:
           entity_id:
             - script.crazy_mode_run
             - script.crazy_mode_start
+            - script.crazy_mode_restart
+            - script.crazy_mode_pause
+            - script.crazy_mode_resume
       - alias: "Put the house back"
         action: script.crazy_mode_restore
         data:

@@ -1,0 +1,23 @@
+# Crazy Mode Status
+#
+# Display-only text for the banner and popup: phase and whole minutes left,
+# frozen while paused. Text on purpose, so nothing on the dashboard can open
+# the phase timer's Finish or Cancel dialog. `now()` refreshes it each minute.
+#
+
+template:
+  - sensor:
+      - name: Crazy Mode Status
+        unique_id: crazy_mode_status
+        default_entity_id: sensor.crazy_mode_status
+        icon: mdi:run-fast
+        state: >-
+          {% set ph = states('input_select.crazy_mode_phase') %}
+          {% set t = 'timer.crazy_mode_phase' %}
+          {% set st = states(t) %}
+          {% if st == 'active' %}{% set left = [as_timestamp(state_attr(t, 'finishes_at'), 0) - now().timestamp(), 0] | max %}
+          {%- elif st == 'paused' %}{% set p = (state_attr(t, 'remaining') | string).split(':') %}{% set left = (p[0] | int(0) * 3600 + p[1] | int(0) * 60 + p[2] | float(0)) if p | length == 3 else 0 %}
+          {%- else %}{% set left = 0 %}{% endif %}
+          {% set m = (left / 60) | round(0, 'ceil') | int %}
+          {% if ph == 'Off' %}Off
+          {%- else %}{{ 'Paused, ' if is_state('input_boolean.crazy_mode_paused', 'on') else '' }}{{ ph }}, {{ (m ~ ' min left') if m > 0 else 'finishing' }}{% endif %}

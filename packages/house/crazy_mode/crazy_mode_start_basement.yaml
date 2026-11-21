@@ -1,0 +1,15 @@
+# Crazy Mode - Start Basement
+#
+# A second Alexa phrase. No fields (Alexa can't pass any); it hands the zone to
+# start, so the picker is never changed.
+#
+
+script:
+  crazy_mode_start_basement:
+    alias: "Crazy Mode Basement"
+    icon: mdi:run-fast
+    mode: single
+    sequence:
+      - action: script.crazy_mode_start
+        data:
+          zone: "Basement"

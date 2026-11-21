@@ -1,8 +1,9 @@
 # Crazy Mode - Restore
 #
-# Puts the house back: Sonos with its groups, the loop lights and Adaptive
-# Lighting (one scene), the kitchen latch if we set it. Ends with phase Off,
-# so a second call is a no-op. Called at the end of a run and by the abort.
+# Puts the house back: the active zone's Sonos with their groups, its lights
+# and Adaptive Lighting (one scene, only if the zone has lights), the kitchen
+# latch if we set it. Ends with phase Off, so a second call is a no-op. Called
+# at the end of a run, by the abort and by the paused timeout.
 #
 
 script:
@@ -13,15 +14,12 @@ script:
     fields:
       emergency:
         name: Emergency
-        description: Set by the emergency abort; the loop lights end bright, not as they were
+        description: Set by the emergency abort; the zone's lights end bright, not as they were
         selector:
           boolean:
     variables:
-      speakers:
-        - media_player.sonos_kitchen
-        - media_player.sonos_family_room
-        - media_player.sonos_living_room
-        - media_player.sonos_playroom
+      # An empty or unknown active zone is Main floor
+      zone_key: "{{ 'basement' if is_state('input_text.crazy_mode_active_zone', 'Basement') else 'main_floor' }}"
     sequence:
       - alias: "Nothing to restore when the phase is already Off"
         condition: not
@@ -29,28 +27,46 @@ script:
           - condition: state
             entity_id: input_select.crazy_mode_phase
             state: "Off"
+      - alias: "The zone config can be missing while templates reload; give it a minute"
+        wait_template: "{{ state_attr('sensor.crazy_mode_zone_config', zone_key) is mapping }}"
+        timeout: 60
+        continue_on_timeout: true
+      - variables:
+          cfg: "{{ state_attr('sensor.crazy_mode_zone_config', zone_key) }}"
+          cfg_ok: "{{ state_attr('sensor.crazy_mode_zone_config', zone_key) is mapping }}"
+      - alias: "Without a config, restore what Sonos holds and say so"
+        if:
+          - condition: template
+            value_template: "{{ not cfg_ok }}"
+        then:
+          - action: system_log.write
+            data:
+              level: warning
+              logger: crazy_mode
+              message: "Crazy Mode restore ran without a zone config for {{ zone_key }}; lights and Adaptive Lighting were not restored"
       - action: sonos.restore
         continue_on_error: true
         data:
-          entity_id: "{{ speakers }}"
+          entity_id: "{{ cfg.speakers if cfg_ok else 'all' }}"
           with_group: true
-      - action: scene.turn_on
-        continue_on_error: true
-        target:
-          entity_id: scene.crazy_mode_snapshot
+      - alias: "Lights and Adaptive Lighting come back from the zone's snapshot (a zone with no lights has none)"
+        if:
+          - condition: template
+            value_template: "{{ cfg_ok and cfg.lights | length > 0 }}"
+        then:
+          - action: scene.turn_on
+            continue_on_error: true
+            target:
+              entity_id: "scene.{{ cfg.snapshot_scene }}"
       - alias: "In an emergency the lights end bright, whatever the snapshot said"
         if:
           - condition: template
-            value_template: "{{ emergency | default(false) }}"
+            value_template: "{{ emergency | default(false) and cfg_ok and cfg.emergency_lights | length > 0 }}"
         then:
           - action: light.turn_on
             continue_on_error: true
             target:
-              entity_id:
-                - light.kitchen_lights
-                - light.family_room_main_lights
-                - light.foyer_lights
-                - light.dining_room_lights
+              entity_id: "{{ cfg.emergency_lights }}"
             data:
               brightness_pct: 100
       - alias: "Clear the kitchen latch only if this run set it"
@@ -67,7 +83,9 @@ script:
               entity_id: input_boolean.crazy_mode_kitchen_latch_set
       - action: input_boolean.turn_off
         target:
-          entity_id: input_boolean.crazy_mode_stop_requested
+          entity_id:
+            - input_boolean.crazy_mode_stop_requested
+            - input_boolean.crazy_mode_paused
       - action: timer.cancel
         target:
           entity_id: timer.crazy_mode_phase

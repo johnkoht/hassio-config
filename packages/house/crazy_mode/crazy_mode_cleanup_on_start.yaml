@@ -1,8 +1,8 @@
 # Crazy Mode - Cleanup On Start
 #
 # A restart mid-run leaves the phase set and Adaptive Lighting off. Reset
-# the phase, turn Adaptive Lighting back on, clear what we latched.
-# Sonos and lights stay as they are: the snapshot did not survive.
+# the phase, turn the active zone's Adaptive Lighting back on, clear what we
+# latched. Sonos and lights stay as they are: the snapshot did not survive.
 #
 
 automation:
@@ -20,13 +20,35 @@ automation:
             entity_id: input_select.crazy_mode_phase
             state: "Off"
     actions:
-      - action: switch.turn_on
-        continue_on_error: true
-        target:
-          entity_id:
-            - switch.adaptive_lighting_kitchen
-            - switch.adaptive_lighting_family_room
-            - switch.adaptive_lighting_foyer
+      - alias: "Template entities load late after a start; give the zone config a minute"
+        wait_template: >-
+          {{ state_attr('sensor.crazy_mode_zone_config',
+             'basement' if is_state('input_text.crazy_mode_active_zone', 'Basement') else 'main_floor') is mapping }}
+        timeout: 60
+        continue_on_timeout: true
+      - variables:
+          cfg: >-
+            {{ state_attr('sensor.crazy_mode_zone_config',
+               'basement' if is_state('input_text.crazy_mode_active_zone', 'Basement') else 'main_floor') }}
+      - alias: "Without a config the zone's switches are unknown; say so"
+        if:
+          - condition: template
+            value_template: "{{ cfg is not mapping }}"
+        then:
+          - action: system_log.write
+            data:
+              level: warning
+              logger: crazy_mode
+              message: "Crazy Mode cleanup ran without a zone config; Adaptive Lighting was not turned back on"
+      - alias: "Adaptive Lighting back on (a zone with none has nothing to turn on)"
+        if:
+          - condition: template
+            value_template: "{{ cfg is mapping and cfg.al_switches | length > 0 }}"
+        then:
+          - action: switch.turn_on
+            continue_on_error: true
+            target:
+              entity_id: "{{ cfg.al_switches }}"
       - alias: "Clear the kitchen latch only if the run set it"
         if:
           - condition: state
@@ -41,7 +63,9 @@ automation:
               entity_id: input_boolean.crazy_mode_kitchen_latch_set
       - action: input_boolean.turn_off
         target:
-          entity_id: input_boolean.crazy_mode_stop_requested
+          entity_id:
+            - input_boolean.crazy_mode_stop_requested
+            - input_boolean.crazy_mode_paused
       - action: timer.cancel
         target:
           entity_id: timer.crazy_mode_phase
