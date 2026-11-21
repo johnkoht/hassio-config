@@ -49,7 +49,7 @@ The laptop script gains two raw signals, written with the same token it already 
 
 ## Risks
 
-- **Laptop misses an off (sleep, crash, lost network), so the camera boolean sticks on.** The light then only stays on while docked and the office is occupied; the existing office-unoccupied and `john_computer_active` off triggers clear it, and the wake/start re-sync fixes the boolean. Accepted, with no HA-side timeout.
+- **Laptop misses an off (sleep, crash, lost network), so the camera boolean sticks on.** The office-vacant off trigger bypasses the laptop pair (review fix), so the light goes off when the office empties; `john_computer_active` is no help since the same laptop writes it. The laptop re-sends state every 5 minutes and on wake/start. Accepted, with no HA-side timeout.
 - **Docked while in the chair** (e.g. laptop on a dock cable that reaches the chair): the light comes on. Accepted, because dock = desk is the agreed proxy.
 - **Bermuda room presence lags or misreads**, so the on-condition `john_room_presence = office` blocks the light. This is the same behaviour as the Mac path today; it stays as is for consistency, and the room-presence trigger re-fires once presence catches up.
 - **The laptop writes before the helpers exist** and the REST call fails. Ship HA first (task 6 ordering).

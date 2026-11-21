@@ -37,5 +37,5 @@ DnD keeps the lights on: `office_lights_on` and `office_lights_day_on` pass Auto
 
 - DnD comes only from camera/mic: `binary_sensor.john_dnd_active` = `input_boolean.john_dnd` (manual toggle, or an external work-laptop writer) or the personal Mac camera/mic sensors. 5 s `delay_on`, no `delay_off`; `office_dnd_off` waits 2 min.
 - Mac sensors go unavailable when it sleeps, so camera-light off conditions use `not ... on`.
-- The El Gato follows `input_boolean.john_work_laptop_camera` AND `_docked`, not `john_dnd`: the laptop can't tell the El Gato camera from the built-in one, and `john_dnd` also fires on mic-only calls. HA's `not` fails if any child passes, so the work pair is wrapped in an `and` inside the `not`.
+- The El Gato follows `input_boolean.john_work_laptop_camera` AND `_docked`, not `john_dnd`: the laptop can't tell the El Gato camera from the built-in one, and `john_dnd` also fires on mic-only calls. HA's `not` fails if any child passes, so the work pair is wrapped in an `and` inside the `not`. The office-vacant trigger (`id: office_vacant`) bypasses the work pair, so a laptop that crashed with both booleans on can't hold the light on; the on side re-checks on occupancy returning.
 - The calendar DnD pieces (work call, personal time, Bayesian sensor) were deleted; their registry entries are ghosts.

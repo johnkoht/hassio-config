@@ -26,6 +26,7 @@ automation:
         to: "off"
       # Office no longer occupied
       - trigger: state
+        id: office_vacant
         entity_id: input_boolean.office_occupied
         to: "off"
       # Laptop is turned off
@@ -39,17 +40,22 @@ automation:
           - condition: state
             entity_id: binary_sensor.johns_mbp_2026_camera_in_use
             state: "on"
-      - alias: "Work laptop camera is not on at the desk"
-        condition: not
+      # The office emptying overrides the laptop, whose booleans can go stale
+      - alias: "Office emptied, or work laptop camera is not on at the desk"
+        condition: or
         conditions:
-          - condition: and
+          - condition: trigger
+            id: office_vacant
+          - condition: not
             conditions:
-              - condition: state
-                entity_id: input_boolean.john_work_laptop_camera
-                state: "on"
-              - condition: state
-                entity_id: input_boolean.john_work_laptop_docked
-                state: "on"
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: input_boolean.john_work_laptop_camera
+                    state: "on"
+                  - condition: state
+                    entity_id: input_boolean.john_work_laptop_docked
+                    state: "on"
       # Camera light is ON
       - condition: state
         entity_id: light.office_el_gato_light

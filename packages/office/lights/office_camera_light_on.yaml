@@ -28,6 +28,10 @@ automation:
       - trigger: state
         entity_id: sensor.john_room_presence
         to: "office"
+      # Office occupied again (e.g. after a brief vacancy mid-call)
+      - trigger: state
+        entity_id: input_boolean.office_occupied
+        to: "on"
     conditions:
       # Office is occupied
       - condition: state

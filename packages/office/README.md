@@ -80,7 +80,7 @@ Eventually, this could also include Cristina or a guest. One thing to note, ther
 The El Gato key light (`light.office_el_gato_light`) follows the camera, not DnD (`office_camera_light_on` / `_off`).
 
 - On when John is in the occupied office and the personal Mac camera is on, or the work laptop camera is on while it's docked.
-- Off when neither is on, the laptop undocks, or the office empties.
+- Off when neither is on or the laptop undocks. The office emptying turns it off even if the laptop's booleans are stuck on; it doesn't override the Mac camera.
 - The work laptop writes `input_boolean.john_work_laptop_camera` and `input_boolean.john_work_laptop_docked` over its token. `input_boolean.john_dnd` (camera or mic) doesn't drive the light, so mic-only calls and undocked calls leave it off.
 
 ## Call lighting
