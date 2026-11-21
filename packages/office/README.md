@@ -79,13 +79,13 @@ Eventually, this could also include Cristina or a guest. One thing to note, ther
 
 The El Gato key light (`light.office_el_gato_light`) follows the camera, not DnD (`office_camera_light_on` / `_off`).
 
-- On when John is in the occupied office and the personal Mac camera is on, or the work laptop camera is on while it's docked.
+- On when John is in the occupied office and the personal Mac camera is on, or the work laptop camera is on while it's docked, for 8 s (plugging into the dock blips the camera about 4 s).
 - Off when neither is on or the laptop undocks. The office emptying turns it off even if the laptop's booleans are stuck on; it doesn't override the Mac camera.
 - The work laptop writes `input_boolean.john_work_laptop_camera` and `input_boolean.john_work_laptop_docked` over its token. `input_boolean.john_dnd` (camera or mic) doesn't drive the light, so mic-only calls and undocked calls leave it off.
 
 ## Call lighting
 
-During a camera or audio call, once Adaptive Lighting has warmed or dimmed the ceiling bulbs, the room pauses AL and holds them at the tunable colour temperature and brightness. AL resumes about 3 minutes after the call ends: office DnD clears 2 minutes after the call, then AL waits 1 more minute.
+During a camera or audio call, once Adaptive Lighting has warmed or dimmed the ceiling bulbs, the room pauses AL and holds them at the tunable colour temperature and brightness. AL resumes about 30 seconds after the call ends (`binary_sensor.john_dnd_active` off for 30 s), without waiting for office DnD to clear 2 minutes later. A new call inside that window re-pauses AL, since start also triggers on `john_dnd_active` going on.
 
 - Automations (`packages/office/call_lighting/`): `office_call_lighting_start`, `office_call_lighting_end`, `office_call_lighting_reset`.
 - Helpers: `input_boolean.office_call_lighting` (feature switch), `input_boolean.office_call_al_paused`, `input_number.office_call_color_temp`, `input_number.office_call_brightness`. Seed 3000 / 100, then turn the switch on.
