@@ -15,4 +15,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 *(Add: [Task N] MISSING_CONTEXT: what was missing and where to find it)*
 
 ## Decision Ledger
-- [2026-11-20] El Gato follows work laptop via new camera + docked booleans; `john_dnd` (camera OR mic) does not drive the light — docs affected: docs/ROOMS.md, packages/office/README.md, packages/office/LEARNINGS.md — status: open
+- [2026-11-20] El Gato follows work laptop via new camera + docked booleans; `john_dnd` (camera OR mic) does not drive the light — docs affected: docs/ROOMS.md, packages/office/README.md, packages/office/LEARNINGS.md — status: folded

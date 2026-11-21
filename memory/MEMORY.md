@@ -54,3 +54,4 @@ One line per entry. Detail lives in the linked file, never inline here.
 - 2026-11-17 · [kids-wifi-snooze](entries/2026-11-17_kids-wifi-snooze.md) — JK-1261 shutoff warning + Snooze 15/30 (push, popup); datetime state, not a timer
 - 2026-11-18 · [crazy-mode](entries/2026-11-18_crazy-mode-learnings.md) — timed Crazy/Slow-mo/Cool-down run; deadline clock, stop flag, one restore script, kitchen latch gap
 - 2026-11-20 · [crazy-mode-v2](entries/2026-11-20_crazy-mode-v2-learnings.md) — zones (Main floor, Basement), Crazy length slider, skip/pause/resume/restart; timer-driven clock, zone config sensor, cancel allowlist
+- 2026-11-20 · [work-laptop-camera-light](entries/2026-11-20_work-laptop-camera-light.md) — El Gato follows the work laptop camera only while docked (new camera + docked booleans, not john_dnd); HA `not` is NOR so wrap AND inside; vacancy trigger id bypasses stale external booleans
