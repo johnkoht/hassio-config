@@ -205,7 +205,7 @@ actions:
 - `restart` — when a new trigger should reset the current run (e.g. motion timers)
 
 ### Illuminance threshold
-The standard lighting threshold across all rooms is **150 lux** (on below 150, off above 151).
+The standard lighting threshold across all rooms is **150 lux** (on below 150, off above 151). Exception: the kitchen turns on below 250 and off only when daylight alone is bright (see `packages/kitchen/LEARNINGS.md`).
 
 ### Secrets
 Use `!secret` for all sensitive values:

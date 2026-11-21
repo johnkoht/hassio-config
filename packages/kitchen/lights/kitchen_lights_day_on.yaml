@@ -1,24 +1,33 @@
 # Kitchen Lights Day On
 #
+# Turn the ceiling lights on when the darker end of the kitchen drops
+# below 250 lux (kitchen-specific; see LEARNINGS.md).
+#
 automation:
   - id: "kitchen_lights_day_on"
     initial_state: on
     alias: "Kitchen Lights Day On"
     triggers:
-      # Light is low in the kitchen
+      # Light is low at either end of the kitchen
       - trigger: numeric_state
-        entity_id: sensor.kitchen_illuminance
-        below: 150
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        below: 250
         for:
           minutes: 2
       - trigger: numeric_state
-        entity_id: sensor.kitchen_illuminance
-        below: 125
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        below: 225
         for:
           minutes: 5
       - trigger: numeric_state
-        entity_id: sensor.kitchen_illuminance
-        below: 100
+        entity_id:
+          - sensor.kitchen_motion_sensor_main_illuminance
+          - sensor.kitchen_motion_sensor_table_illuminance
+        below: 200
         for:
           minutes: 10
       # The weather is bad outside
@@ -58,10 +67,15 @@ automation:
       - condition: state
         entity_id: sun.sun
         state: "above_horizon"
-      # Light is low in the kitchen
-      - condition: numeric_state
-        entity_id: sensor.kitchen_motion_sensor_main_illuminance
-        below: 150
+      # Light is low at either end of the kitchen
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.kitchen_motion_sensor_main_illuminance
+            below: 250
+          - condition: numeric_state
+            entity_id: sensor.kitchen_motion_sensor_table_illuminance
+            below: 250
       # Lights are currently off
       - condition: state
         entity_id: light.kitchen_ceiling_lights
