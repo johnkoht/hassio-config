@@ -83,6 +83,18 @@ group:
       - binary_sensor.interior_garage_door
       - binary_sensor.garage_glass_break
 
+  # Battery devices that aren't room-page sensors: on the Low Battery tab only, not in the offline count.
+  # Members are the battery sensors themselves. Lutron Picos expose no battery entity, so they can't be listed.
+  key_sensors_batteries:
+    name: Key Sensors - Battery Devices
+    entities:
+      - sensor.hue_dimmer_switch_1_battery_level
+      - sensor.hue_dimmer_switch_2_battery
+      - sensor.hue_dimmer_switch_2_battery_2
+      - sensor.hue_dimmer_switch_2_battery_3
+      - sensor.hue_dimmer_switch_4_battery
+      - sensor.hue_outdoor_motion_sensor_1_battery
+
   key_sensors_network:
     name: Key Sensors - Network
     entities:

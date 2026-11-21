@@ -4,7 +4,7 @@ Groups and template entities behind kohbo More → Sensors (`dashboards/kohbo/se
 
 ## What's tracked
 
-70 entities: the 60 physical sensors the room pages (`dashboards/kohbo/rooms/**`) use, one entity per device, including every leak sensor (`group.leak_sensors`, defined in `packages/leak_monitoring.yaml`), plus 10 safety and security devices. The room-page list was derived on 2026-10-16:
+70 entities: the 60 physical sensors the room pages (`dashboards/kohbo/rooms/**`) use, one entity per device, including every leak sensor (`group.leak_sensors`, defined in `packages/leak_monitoring.yaml`), plus 10 safety and security devices. The 6 Hue battery devices in `group.key_sensors_batteries` feed the Low Battery tab only. The room-page list was derived on 2026-10-16:
 
 - group and min_max wrappers were expanded to their members;
 - floor-level aggregates were skipped;
@@ -21,6 +21,7 @@ The Safety group was picked by John: the smoke detector, both door locks, the th
 | `group.key_sensors_climate` | Temperature / air (one entity per Awair or climate sensor) |
 | `group.key_sensors_presence` | Occupancy, mmWave, bed sensors |
 | `group.key_sensors_safety` | Smoke, locks, garage covers, gates, garage door and glass break |
+| `group.key_sensors_batteries` | Battery devices that aren't room-page sensors (the Hue dimmers and outdoor motion sensor). Low battery only, never counted offline. Lutron Picos expose no battery entity, so they can't be tracked |
 | `group.key_sensors_network` | The 5 Network rows |
 | `group.key_sensors_hue_spots` | Hue outdoor spots |
 
