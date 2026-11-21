@@ -1,0 +1,12 @@
+{
+  "name": "kids-ipad-blocking",
+  "branchName": "feature/kids-ipad-blocking",
+  "goal": "Per-kid iPad block toggles (UniFi firewall-policy switches) with Connected/Offline status in the Kids WiFi popup.",
+  "userStories": [
+    {"id": "task-1", "title": "Prerequisites + live verification", "description": "John: Fixed private address on each iPad, Kids added to UniFi tracked SSIDs. Homelab verifies switches, MAC membership, tracker ids.", "acceptanceCriteria": ["Both policy switches available and off", "Each iPad MAC in its policy", "Kids in tracked SSIDs", "Tracker ids recorded and home"], "status": "complete", "passes": true, "attemptCount": 0},
+    {"id": "task-2", "title": "iPads section in the popup", "description": "Two template-entity-row block toggles with tracker status in kids_wifi_popup.yaml.", "acceptanceCriteria": ["Rows per spec", "Secondary Connected/Offline + relative time", "Error colour when blocked", "Description sentence", "YAML parses, entity ids live, no clock times or MACs"], "status": "complete", "passes": true, "attemptCount": 0},
+    {"id": "task-3", "title": "Docs", "description": "AUTOMATIONS.md Kids WiFi entry sentence.", "acceptanceCriteria": ["One sentence on per-iPad toggles and Fixed address"], "status": "complete", "passes": true, "attemptCount": 0},
+    {"id": "task-4", "title": "Ship", "description": "Merge, deploy, John live-tests.", "acceptanceCriteria": ["Deployed --skip-ci --reload", "John confirms block/unblock"], "status": "complete", "passes": true, "attemptCount": 0}
+  ],
+  "metadata": {"createdAt": "2026-11-12T14:14:01Z", "totalTasks": 4, "completedTasks": 4, "failedTasks": 0}
+}
