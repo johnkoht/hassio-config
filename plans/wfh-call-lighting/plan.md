@@ -124,3 +124,5 @@ Facts read from the Yellow (read-only) that change or pin the plan. Where this c
 On approval → /approve → /ship wfh-call-lighting
 
 > **Addendum 2026-10-30 (#127):** At John's request the end wait is now 1 min, not 3, so AL resumes ~3 min after a call (2-min `office_dnd_off` debounce + 1 min).
+
+**Addendum 2026-11-20:** AL now resumes ~30 s after a call (`office_call_lighting_end` also triggers on `john_dnd_active` off for 30 s); start also triggers on `john_dnd_active` on so back-to-back calls re-pause. See `packages/office/README.md`.

@@ -111,10 +111,12 @@ def test_no_helper_has_initial():
 
 # start ----------------------------------------------------------------------
 def test_start_triggers_exact():
-    """Start fires on DnD held 10 s, or when AL's kelvin drops below the setting."""
+    """Start fires on DnD held 10 s, a new call (back-to-back, office still DnD), or AL's kelvin dropping."""
     assert START["triggers"] == [
         {"trigger": "state", "entity_id": "input_select.office", "to": "DnD",
          "for": {"seconds": 10}, "id": "dnd"},
+        {"trigger": "state", "entity_id": "binary_sensor.john_dnd_active", "to": "on",
+         "for": {"seconds": 10}, "id": "call"},
         {"trigger": "numeric_state", "entity_id": AL, "attribute": "color_temp_kelvin",
          "below": "input_number.office_call_color_temp", "id": "dusk"},
     ]
@@ -238,12 +240,14 @@ def test_gate_tracks_the_setting():
 
 # end / reset ----------------------------------------------------------------
 def test_end_triggers():
-    """End on leaving DnD for 1 min, or on the office emptying."""
+    """End on leaving DnD for 1 min, John's DnD off for 30 s, or the office emptying."""
     t = END["triggers"]
-    assert len(t) == 2
+    assert len(t) == 3
     assert t[0]["trigger"] == "state" and t[0]["entity_id"] == "input_select.office"
     assert t[0]["to"] == ["Auto", "Off"] and t[0]["for"] == {"minutes": 1}
-    assert t[1] == {"trigger": "state", "entity_id": "input_boolean.office_occupied", "to": "off",
+    assert t[1] == {"trigger": "state", "entity_id": "binary_sensor.john_dnd_active", "to": "off",
+                    "for": {"seconds": 30}, "id": "call_ended"}
+    assert t[2] == {"trigger": "state", "entity_id": "input_boolean.office_occupied", "to": "off",
                     "id": "vacated"}
 
 

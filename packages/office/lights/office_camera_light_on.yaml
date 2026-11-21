@@ -8,22 +8,24 @@ automation:
     initial_state: on
     alias: "Office Camera Light On"
     triggers:
-      # Mac camera goes on
+      # Mac camera goes on (8 s: plugging in blips the camera ~4 s)
       - trigger: state
         entity_id: binary_sensor.johns_mbp_2026_camera_in_use
         to: "on"
         for:
-          seconds: 2
+          seconds: 8
       # Work laptop camera goes on
       - trigger: state
         entity_id: input_boolean.john_work_laptop_camera
         to: "on"
         for:
-          seconds: 2
-      # Work laptop docked mid-call
+          seconds: 8
+      # Work laptop docked mid-call (8 s: docking can blip the camera)
       - trigger: state
         entity_id: input_boolean.john_work_laptop_docked
         to: "on"
+        for:
+          seconds: 8
       # John's room presence is the office
       - trigger: state
         entity_id: sensor.john_room_presence
