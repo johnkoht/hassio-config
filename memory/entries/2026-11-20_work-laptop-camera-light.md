@@ -10,3 +10,5 @@
 - `condition: trigger` inside an `or` is safe: triggers without an id get their index as id.
 
 **Follow-ups (BACKLOG):** HA-side staleness (treat the pair as off when `last_updated` > ~15 min); `office_dnd_light_*` still use root `entity_id`; a bare `pytest tests` needs `PYTHONPATH=tests`.
+
+**Hotfix (same day):** Plugging into the dock blipped the Mac camera ~4.4 s, past the 2 s on-wait, so the El Gato flashed; camera and dock on-triggers now wait 8 s. Call-lighting AL resumed ~3 min after a call; `office_call_lighting_end` now also fires on `john_dnd_active` off 30 s, and start fires on `john_dnd_active` on so a back-to-back call inside office DnD's 2-minute tail re-pauses AL.
