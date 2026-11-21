@@ -1,6 +1,7 @@
 # Key Sensor Counts
 #
 # Offline, low-battery and network-problem rollups over the key sensor groups.
+# group.key_sensors_batteries feeds the low-battery rollup only.
 # Sensors labelled "Known issue" (label_entities('known_issue')) are left out of the counts and listed under `known_issues`.
 #
 
@@ -23,10 +24,12 @@ template:
             {% set known = label_entities('known_issue') %}
             {% set members = expand('group.key_sensors_motion', 'group.key_sensors_doors', 'group.leak_sensors',
                                     'group.key_sensors_climate', 'group.key_sensors_presence', 'group.key_sensors_safety') %}
+            {# Battery-only members are checked for low battery, never counted offline. #}
+            {% set battery_only = expand('group.key_sensors_batteries') | map(attribute='entity_id') | reject('in', members | map(attribute='entity_id') | list) | list %}
             {% set ns = namespace(offline=[], offline_known=[], low={}, low_known={}) %}
-            {% for s in members %}
+            {% for s in members + expand(battery_only) %}
               {% set e = s.entity_id %}
-              {% if s.state in ['unavailable', 'unknown'] %}
+              {% if s.state in ['unavailable', 'unknown'] and e not in battery_only %}
                 {% if e in known %}{% set ns.offline_known = ns.offline_known + [e] %}{% else %}{% set ns.offline = ns.offline + [e] %}{% endif %}
               {% endif %}
               {% set d = device_id(e) %}
