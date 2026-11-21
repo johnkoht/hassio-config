@@ -1,0 +1,58 @@
+# Crazy Mode Zone Config
+#
+# The one place a zone's lists live; start, run, restore, cleanup and the
+# favorites check read it. Add a zone here and in input_select.crazy_mode_zone.
+# Leaf lights, not groups: a group snapshot restores every member on.
+#
+
+template:
+  - sensor:
+      - name: Crazy Mode Zone Config
+        unique_id: crazy_mode_zone_config
+        default_entity_id: sensor.crazy_mode_zone_config
+        icon: mdi:floor-plan
+        state: "ok"
+        attributes:
+          main_floor: >-
+            {{ {
+              'speakers': [
+                'media_player.sonos_kitchen',
+                'media_player.sonos_family_room',
+                'media_player.sonos_living_room',
+                'media_player.sonos_playroom'],
+              'coordinator': 'media_player.sonos_kitchen',
+              'lights': [
+                'light.kitchen_main_light_switch',
+                'light.kitchen_table_light_switch',
+                'light.kitchen_island_pendants',
+                'light.family_room_main_lights',
+                'light.foyer_ceiling_lights',
+                'light.foyer_chandelier',
+                'light.foyer_coat_closet',
+                'light.stairs_light',
+                'light.stairs_sconces',
+                'light.dining_room_main_lights',
+                'light.living_room_main_lights'],
+              'al_switches': [
+                'switch.adaptive_lighting_kitchen',
+                'switch.adaptive_lighting_family_room',
+                'switch.adaptive_lighting_foyer'],
+              'emergency_lights': [
+                'light.kitchen_lights',
+                'light.family_room_main_lights',
+                'light.foyer_lights',
+                'light.dining_room_lights'],
+              'kitchen_latch': true,
+              'snapshot_scene': 'crazy_mode_snapshot_main_floor'
+            } }}
+          # Music only: the Amp drives the ceiling speakers, and there are no smart lights.
+          basement: >-
+            {{ {
+              'speakers': ['media_player.sonos_basement'],
+              'coordinator': 'media_player.sonos_basement',
+              'lights': [],
+              'al_switches': [],
+              'emergency_lights': [],
+              'kitchen_latch': false,
+              'snapshot_scene': 'crazy_mode_snapshot_basement'
+            } }}

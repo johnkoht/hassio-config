@@ -117,3 +117,25 @@ Vacation). `scripts/house/house_away.yaml` is the one leftover writer.
 - Scene snapshots can carry Adaptive Lighting switches, so one `scene.create`
   before the run and one `scene.turn_on` after puts the lights and AL back
   together (take it before turning AL off).
+
+## Crazy Mode v2: a pause driven by the phase timer (2026-11)
+
+- A running `timer` freezes `remaining` at its last start; only `finishes_at`
+  moves. Progress while active is `finishes_at - now()`, while paused it is
+  `remaining` (the timer clears `finishes_at`). A deadline saved at phase start
+  keeps running through a pause, so nothing in Crazy or Slow-mo may save one.
+- `timer.start` with no duration resumes a paused timer, but on an idle timer
+  it starts the stored default; a stored 0 finishes at once. So Resume calls it
+  only when the timer is paused, every run-owned start passes a duration, and the
+  helper keeps a non-zero default.
+- A tick loop with 5 s steps needs a fired-once variable (declared before the
+  loop, set with the `variables` action) for each one-off line, or a threshold
+  such as "a minute left" repeats on every later tick.
+- A paused run still re-asserts its lights each tick: `kitchen_lights_to_off`
+  ignores the latch, so skipping the re-assert for a long pause would leave the
+  kitchen dark. Only ramps and fades stop.
+- Template sensors can't hand lists to scripts through variables, so a zone's
+  lists live as attributes of one template sensor and every reader falls back
+  loudly when it is missing during a reload.
+- An `input_number` with no `initial:` and no restored state starts at `min`.
+

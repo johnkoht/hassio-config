@@ -1,7 +1,9 @@
 # Crazy Mode Allowed
 #
 # One rule for the start script, the refusal line and the dashboard.
-# `sensor.crazy_mode_reason` holds the answer; the binary sensor is its "ok".
+# `sensor.crazy_mode_reason` holds the answer for the picked zone; the binary
+# sensor is its "ok". `sensor.crazy_mode_favorites` lists the zones whose
+# speakers all carry the three favorites (start checks the zone it was given).
 #
 
 template:
@@ -23,16 +25,8 @@ template:
           {% set in_m = m_ok and ms <= n < me %}
           {% set in_e = e_ok and es <= n < ee %}
           {% set ran = (in_m and ms <= last < me) or (in_e and es <= last < ee) %}
-          {% set favs = [states('input_text.crazy_mode_favorite_crazy'), states('input_text.crazy_mode_favorite_slowmo'), states('input_text.crazy_mode_favorite_cooldown')] %}
-          {% set ns = namespace(missing=false) %}
-          {% for sp in ['media_player.sonos_kitchen', 'media_player.sonos_family_room', 'media_player.sonos_living_room', 'media_player.sonos_playroom'] %}
-            {% set sl = state_attr(sp, 'source_list') %}
-            {% if sl is none or sl is string %}
-              {% set ns.missing = true %}
-            {% else %}
-              {% for f in favs %}{% if f not in sl %}{% set ns.missing = true %}{% endif %}{% endfor %}
-            {% endif %}
-          {% endfor %}
+          {% set zone = 'basement' if is_state('input_select.crazy_mode_zone', 'Basement') else 'main_floor' %}
+          {% set fav_ok = zone in (state_attr('sensor.crazy_mode_favorites', 'ok_zones') or []) %}
           {% if not is_state('input_select.crazy_mode_phase', 'Off') %}running
           {%- elif is_state('binary_sensor.emergency_active', 'on') %}emergency
           {%- elif states('input_select.house') in ['Bedtime', 'Quiet', 'Away', 'Vacation'] %}house_mode
@@ -40,7 +34,7 @@ template:
           {%- elif not (m_ok or e_ok) %}window_unset
           {%- elif not (in_m or in_e) %}outside_window
           {%- elif ran %}already_ran
-          {%- elif ns.missing %}favorite_missing
+          {%- elif not fav_ok %}favorite_missing
           {%- else %}ok{% endif %}
         attributes:
           # When the next run opens, for the spoken refusal.
@@ -63,3 +57,32 @@ template:
         state: "{{ is_state('sensor.crazy_mode_reason', 'ok') }}"
         attributes:
           reason: "{{ states('sensor.crazy_mode_reason') }}"
+
+  - sensor:
+      - name: Crazy Mode Favorites
+        unique_id: crazy_mode_favorites
+        default_entity_id: sensor.crazy_mode_favorites
+        icon: mdi:music
+        state: "ok"
+        attributes:
+          # Zone keys whose speakers all list the three favorites. A zone with
+          # no config is never listed, so an unavailable config refuses.
+          ok_zones: >-
+            {% set favs = [states('input_text.crazy_mode_favorite_crazy'), states('input_text.crazy_mode_favorite_slowmo'), states('input_text.crazy_mode_favorite_cooldown')] %}
+            {% set ns = namespace(ok=[]) %}
+            {% for z in ['main_floor', 'basement'] %}
+              {% set cfg = state_attr('sensor.crazy_mode_zone_config', z) %}
+              {% if cfg is mapping and cfg.speakers | length > 0 %}
+                {% set zs = namespace(good=true) %}
+                {% for sp in cfg.speakers %}
+                  {% set sl = state_attr(sp, 'source_list') %}
+                  {% if sl is none or sl is string %}
+                    {% set zs.good = false %}
+                  {% else %}
+                    {% for f in favs %}{% if f not in sl %}{% set zs.good = false %}{% endif %}{% endfor %}
+                  {% endif %}
+                {% endfor %}
+                {% if zs.good %}{% set ns.ok = ns.ok + [z] %}{% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.ok }}

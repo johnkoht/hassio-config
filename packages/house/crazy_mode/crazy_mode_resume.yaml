@@ -1,0 +1,73 @@
+# Crazy Mode - Resume
+#
+# Only while paused. Restarts the timer only if it is actually paused (a bare
+# start on an idle timer would finish at once), plays the music, says so.
+#
+
+script:
+  crazy_mode_resume:
+    alias: "Crazy Mode - Resume"
+    icon: mdi:play
+    mode: single
+    variables:
+      zone_key: "{{ 'basement' if is_state('input_text.crazy_mode_active_zone', 'Basement') else 'main_floor' }}"
+      cfg: "{{ state_attr('sensor.crazy_mode_zone_config', zone_key) or {} }}"
+      coordinator: "{{ cfg.get('coordinator', '') }}"
+      speakers: "{{ cfg.get('speakers', []) }}"
+      speech_vol: "{{ [states('input_number.crazy_mode_base_volume') | float(40) + 10, 75] | min | int }}"
+    sequence:
+      - alias: "Only while a run is going: run on, start and restore off, no emergency"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: script.crazy_mode_run
+            state: "on"
+          - condition: state
+            entity_id: script.crazy_mode_start
+            state: "off"
+          - condition: state
+            entity_id: script.crazy_mode_restore
+            state: "off"
+          - condition: state
+            entity_id: binary_sensor.emergency_active
+            state: "off"
+      - alias: "Only while paused"
+        condition: state
+        entity_id: input_boolean.crazy_mode_paused
+        state: "on"
+      - alias: "Resume the timer only if it is paused"
+        if:
+          - condition: state
+            entity_id: timer.crazy_mode_phase
+            state: "paused"
+        then:
+          - action: timer.start
+            target:
+              entity_id: timer.crazy_mode_phase
+      - alias: "Play the music on the coordinator"
+        if:
+          - condition: template
+            value_template: "{{ coordinator != '' }}"
+        then:
+          - action: media_player.media_play
+            continue_on_error: true
+            target:
+              entity_id: "{{ coordinator }}"
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.crazy_mode_paused
+      - alias: "Say so"
+        if:
+          - condition: template
+            value_template: "{{ speakers | length > 0 }}"
+        then:
+          - action: script.turn_on
+            target:
+              entity_id: script.announcement_engine
+            data:
+              variables:
+                sound_file: "/local/sounds/Notification-sound.mp3"
+                sound_length: 2
+                speech_message: "Here we go!"
+                speech_volume: "{{ speech_vol }}"
+                media_players: "{{ speakers }}"

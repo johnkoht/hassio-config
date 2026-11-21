@@ -15,6 +15,8 @@ The dashboard is organized into the following main sections:
     - Front Door Camera Notification
     - Driveway Front Camera Notification
     - Vacuum Active Notification
+    - Crazy Mode Active Notification (hides the vacuum banner while a run goes)
+    - Crazy Mode Popup (`home/crazy_mode_popup.yaml`): zone, length and Start; run controls
     - Safety Device Notification (conditional card under the header)
     - House Mode Popup
     - Kids WiFi Popup

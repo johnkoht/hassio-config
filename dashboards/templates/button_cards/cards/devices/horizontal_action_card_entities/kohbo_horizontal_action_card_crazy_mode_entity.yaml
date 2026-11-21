@@ -1,0 +1,10 @@
+#
+# Horizontal Action Card Crazy Mode Entity
+#
+# The banner's left side: shows the status text as it is
+# (sensor.crazy_mode_status) instead of "time since changed".
+#
+kohbo_horizontal_action_card_crazy_mode_entity:
+  template: kohbo_horizontal_action_card_entity
+  state_display: |
+    [[[ return entity.state; ]]]
