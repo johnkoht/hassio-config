@@ -1,28 +1,25 @@
 # Kitchen Lights Day Off
 #
+# Turn the lights off when daylight alone is bright enough. The sensors read
+# with the lights on, so the thresholds include their own glow (LEARNINGS.md).
+#
 automation:
   - id: "kitchen_lights_day_off"
     initial_state: on
     alias: "Kitchen Lights Day Off"
     triggers:
-      # If the lighting is better in the kitchen
+      # The main end of the kitchen is bright
       - trigger: numeric_state
-        entity_id: sensor.kitchen_illuminance
-        above: 450
+        entity_id: sensor.kitchen_motion_sensor_main_illuminance
+        above: 700
         for:
           minutes: 10
-      # If the lighting is better in the kitchen
+      # The table end of the kitchen is bright
       - trigger: numeric_state
-        entity_id: sensor.kitchen_illuminance
-        above: 500
+        entity_id: sensor.kitchen_motion_sensor_table_illuminance
+        above: 550
         for:
-          minutes: 5
-      # If the lighting is better in the kitchen
-      - trigger: numeric_state
-        entity_id: sensor.kitchen_illuminance
-        above: 600
-        for:
-          minutes: 3
+          minutes: 10
       # The weather is not bad outside anymore
       - trigger: state
         entity_id: input_boolean.bad_weather
@@ -52,17 +49,15 @@ automation:
       - condition: state
         entity_id: sun.sun
         state: "above_horizon"
-      # Light is low on both sensors
+      # Light is high on both sensors
       - condition: and
         conditions:
-          # Table sensor light is low
-          - condition: numeric_state
-            entity_id: sensor.kitchen_motion_sensor_table_illuminance
-            above: 450
-          # Main sensor light is low
           - condition: numeric_state
             entity_id: sensor.kitchen_motion_sensor_main_illuminance
-            above: 450
+            above: 700
+          - condition: numeric_state
+            entity_id: sensor.kitchen_motion_sensor_table_illuminance
+            above: 550
       # Lights are currently on
       - condition: state
         entity_id: light.kitchen_lights
@@ -70,8 +65,10 @@ automation:
     actions:
       # Turn OFF the lights
       - action: light.turn_off
-        entity_id: light.kitchen_lights
+        target:
+          entity_id: light.kitchen_lights
       # Turn off the boolean that identifies if the
       # lights were automatically turned on
       - action: input_boolean.turn_off
-        entity_id: input_boolean.kitchen_lights_auto
+        target:
+          entity_id: input_boolean.kitchen_lights_auto
