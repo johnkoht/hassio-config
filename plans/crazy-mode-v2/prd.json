@@ -1,0 +1,112 @@
+{
+  "name": "crazy-mode-v2",
+  "branchName": "feature/crazy-mode-v2",
+  "goal": "Zones, Crazy length, skip, pause/resume and restart for Crazy Mode, with a vacuum-style banner and popup.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Helpers and zone config",
+      "description": "See prd.md task-1",
+      "acceptanceCriteria": [
+        "prd.md task-1 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Allowed sensor is zone-aware",
+      "description": "See prd.md task-2",
+      "acceptanceCriteria": [
+        "prd.md task-2 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Start reads the zone",
+      "description": "See prd.md task-3",
+      "acceptanceCriteria": [
+        "prd.md task-3 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Run on the phase timer",
+      "description": "See prd.md task-4",
+      "acceptanceCriteria": [
+        "prd.md task-4 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Pause, Resume, Skip, Restart",
+      "description": "See prd.md task-5",
+      "acceptanceCriteria": [
+        "prd.md task-5 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Restore, abort, cleanup, paused timeout",
+      "description": "See prd.md task-6",
+      "acceptanceCriteria": [
+        "prd.md task-6 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-7",
+      "title": "Dashboard",
+      "description": "See prd.md task-7",
+      "acceptanceCriteria": [
+        "prd.md task-7 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-8",
+      "title": "Tests",
+      "description": "See prd.md task-8",
+      "acceptanceCriteria": [
+        "prd.md task-8 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-9",
+      "title": "Docs",
+      "description": "See prd.md task-9",
+      "acceptanceCriteria": [
+        "prd.md task-9 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-11-20T00:00:00Z",
+    "totalTasks": 9,
+    "completedTasks": 0,
+    "failedTasks": 0
+  }
+}
