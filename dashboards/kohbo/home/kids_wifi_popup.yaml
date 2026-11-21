@@ -2,7 +2,8 @@
 # Kids WiFi Popup
 #
 # Kids network switch, the schedule toggle and its four on/off times,
-# plus snooze buttons in the 10 minutes before the shutoff.
+# plus snooze buttons in the 10 minutes before the shutoff, and a
+# block toggle per iPad (UniFi firewall policy) with connected status.
 #
 type: custom:bubble-card
 card_type: pop-up
@@ -105,6 +106,45 @@ cards:
           name: Shutoff snoozed to
           icon: mdi:alarm-snooze
 
+  #
+  # iPads
+  #
   - type: custom:button-card
-    name: Weekday times apply when either kid has school (off the night before, on the morning of). Weekend times apply otherwise. Off times must be before midnight. Set all four times before turning the schedule on.
+    template: section_title
+    name: iPads
+  - type: entities
+    entities:
+      - type: custom:template-entity-row
+        entity: switch.unifi_network_block_nino
+        name: Block Nino's iPad
+        icon: mdi:tablet
+        toggle: true
+        secondary: >
+          {% set t = states.device_tracker.nino_ipad %}
+          {{ 'Connected' if t and t.state == 'home' else 'Offline' }}{% if t %} · {{ t.last_changed | relative_time }} ago{% endif %}
+        color: >
+          {% if is_state('switch.unifi_network_block_nino', 'on') %}
+            var(--error-color)
+          {% else %}
+            var(--light-grey-color)
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+      - type: custom:template-entity-row
+        entity: switch.unifi_network_block_gianluca
+        name: Block Gianluca's iPad
+        icon: mdi:tablet
+        toggle: true
+        secondary: >
+          {% set t = states.device_tracker.gianluca_ipad %}
+          {{ 'Connected' if t and t.state == 'home' else 'Offline' }}{% if t %} · {{ t.last_changed | relative_time }} ago{% endif %}
+        color: >
+          {% if is_state('switch.unifi_network_block_gianluca', 'on') %}
+            var(--error-color)
+          {% else %}
+            var(--light-grey-color)
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+  - type: custom:button-card
+    name: Weekday times apply when either kid has school (off the night before, on the morning of). Weekend times apply otherwise. Off times must be before midnight. Set all four times before turning the schedule on. Blocking an iPad cuts its internet but keeps it on WiFi, and the network schedule still applies on top.
     template: kohbo_card_section_description
