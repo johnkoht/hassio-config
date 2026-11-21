@@ -41,8 +41,10 @@ def test_helpers_exist_without_initial():
 def test_on_fires_for_work_camera_or_dock_and_requires_both():
     on = auto("office_camera_light_on")
     trig = {t["entity_id"]: t for t in on["triggers"]}
-    assert trig[CAM]["to"] == "on" and trig[CAM]["for"] == {"seconds": 2}
-    assert trig[DOCK]["to"] == "on"
+    # 8 s: plugging into the dock blips the camera ~4.4 s
+    assert trig[CAM]["to"] == "on" and trig[CAM]["for"] == {"seconds": 8}
+    assert trig[MAC]["for"] == {"seconds": 8}
+    assert trig[DOCK]["to"] == "on" and trig[DOCK]["for"] == {"seconds": 8}
     assert trig["input_boolean.office_occupied"]["to"] == "on"
     assert MAC in trig
     source = next(c for c in on["conditions"] if c.get("condition") == "or")
