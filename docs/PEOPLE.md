@@ -185,9 +185,14 @@ packages/people/john/
 │   ├── john_arrived_home.yaml     # Arrival automation
 │   ├── john_left_work.yaml        # Left work notification
 │   └── john_arrived_work.yaml     # Arrived at work notification
+├── do_not_disturb/sensors/
+│   ├── john_dnd_boolean.yaml      # Do Not Disturb toggle (manual / work laptop camera or mic)
+│   ├── john_dnd_active.yaml       # binary_sensor.john_dnd_active, the derived DnD sensor
+│   ├── john_work_laptop_active_boolean.yaml  # Work laptop in use
+│   ├── john_work_laptop_camera_boolean.yaml  # Work laptop camera on (not mic); drives the El Gato
+│   └── john_work_laptop_docked_boolean.yaml  # Work laptop docked = at the desk
 └── input_boolean/
-    ├── john_home_boolean.yaml     # Simple home/away flag
-    └── john_dnd.yaml              # Do Not Disturb toggle (manual / work laptop); binary_sensor.john_dnd_active is the derived sensor
+    └── john_home_boolean.yaml     # Simple home/away flag
 ```
 
 ---
