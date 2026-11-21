@@ -15,6 +15,13 @@ automation:
         for:
           seconds: 10
         id: dnd
+      # Next call while the office is still in DnD from the last one
+      - trigger: state
+        entity_id: binary_sensor.john_dnd_active
+        to: "on"
+        for:
+          seconds: 10
+        id: call
       - trigger: numeric_state
         entity_id: switch.adaptive_lighting_office
         attribute: color_temp_kelvin

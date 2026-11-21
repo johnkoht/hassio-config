@@ -17,6 +17,13 @@ automation:
         for:
           minutes: 1
         id: left_dnd
+      # Call ended: don't wait for the office's 2-minute DnD exit
+      - trigger: state
+        entity_id: binary_sensor.john_dnd_active
+        to: "off"
+        for:
+          seconds: 30
+        id: call_ended
       - trigger: state
         entity_id: input_boolean.office_occupied
         to: "off"
