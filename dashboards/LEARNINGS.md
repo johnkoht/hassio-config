@@ -58,3 +58,7 @@ automations do. Sensors page Power section, 2026-10-29.
 
 - `kohbo_icons.js` loads through `frontend: extra_module_url` in `configuration.yaml`, not only as a Lovelace resource. Resources load after the first view renders, and navbar-card never retries an icon it couldn't find, so a cold open on Home showed a navbar with only the `mdi:` More icon. Any new custom icon set goes in `extra_module_url` too. Changes there need an HA restart. `tests/test_frontend_icon_preload.py` guards it.
 - The old Lovelace resource (`/local/kohbo/kohbo_icons.js?v=…`, in `.storage`) still loads a second copy. That's harmless, but bumping its `?v=` no longer controls which copy the navbar uses. Remove it from Settings → Dashboards → Resources once the preload is confirmed live.
+
+## Toggles on template-entity-row (2026-11-20)
+
+- `custom:template-entity-row` with `toggle: true` renders `ha-entity-toggle` in the row's own shadow root, not under `hui-generic-entity-row`. `kohbo_boolean_entity_layout.yaml` never reaches it and the switch draws stock. Use `kohbo_template_toggle_entity_layout.yaml` (item layout plus kohbo switch CSS on the `ha-entity-toggle$` path).
