@@ -1,7 +1,7 @@
 ---
 title: Crazy Mode v2 - zones, length, skip, pause, restart
 slug: crazy-mode-v2
-status: in-progress
+status: shipped
 created: 2026-11-20
 has_pre_mortem: true
 has_review: true
