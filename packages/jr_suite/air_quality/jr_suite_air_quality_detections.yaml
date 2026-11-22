@@ -6,7 +6,9 @@
 automation:
   - id: "jr_suite_air_quality_detections"
     alias: Jr. Suite Air Quality Sensor Detections
-    mode: single
+    # Queued: the purifier script can wait 15 s, and single would drop triggers meanwhile.
+    mode: queued
+    max: 5
     initial_state: on
     triggers:
       # Triggered by any change to the air quality state

@@ -151,6 +151,12 @@ script:
               - if:
                   - condition: template
                     value_template: "{{ state_attr(purifier, 'preset_mode') != 'Sleep' }}"
+                  # Don't power it back on if a turn-off landed during the wait.
+                  - condition: template
+                    value_template: "{{ is_state(purifier, 'on') }}"
+                  - condition: state
+                    entity_id: input_boolean.construction_mode
+                    state: "off"
                 then:
                   - action: fan.set_preset_mode
                     data:
@@ -175,6 +181,12 @@ script:
               - if:
                   - condition: template
                     value_template: "{{ state_attr(purifier, 'preset_mode') != 'Auto' }}"
+                  # Don't power it back on if a turn-off landed during the wait.
+                  - condition: template
+                    value_template: "{{ is_state(purifier, 'on') }}"
+                  - condition: state
+                    entity_id: input_boolean.construction_mode
+                    state: "off"
                 then:
                   - action: fan.set_preset_mode
                     data:

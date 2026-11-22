@@ -194,3 +194,19 @@ def test_auto_and_sleep_recheck_the_preset(mode):
 def test_script_stays_queued():
     """Parallel runs would let an Auto re-check undo a newer Manual run on the same purifier."""
     assert _script()["mode"] == "queued"
+
+
+@pytest.mark.parametrize("mode", ["Auto", "Sleep"])
+def test_recheck_never_powers_a_turned_off_purifier_back_on(mode):
+    retry = next(s for s in _branch(mode) if "if" in s)
+    conds = retry["if"]
+    assert any("is_state(purifier, 'on')" in c.get("value_template", "") for c in conds)
+    assert any(c.get("entity_id") == "input_boolean.construction_mode" and c["state"] == "off"
+               for c in conds)
+
+
+@pytest.mark.parametrize("slug", ROOMS)
+def test_detection_is_queued_so_triggers_during_the_recheck_are_not_dropped(slug):
+    """The script call waits out the 15 s re-check; mode: single would drop triggers meanwhile."""
+    auto = load(REPO / f"{ROOMS[slug]}_detections.yaml")["automation"][0]
+    assert auto["mode"] == "queued"
