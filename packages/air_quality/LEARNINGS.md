@@ -27,3 +27,7 @@ The hysteresis memory (`this.state`) is lost across a dropout, a template reload
 ## Manual speed is lost right after a mode switch (2026-11-22)
 
 Right after the first deploy, three purifiers that had been on Sleep or Auto went to Manual 25% instead of 50% or 75%. The script's traces showed the right `set_percentage`. The Winix integration sends "manual" and then the speed back to back, and the unit keeps the low airflow that the mode switch sets. Purifiers that were already on Manual only get the speed command, and those landed correctly. Re-sending the speed alone a moment later worked, so the Manual branch now re-checks `percentage` after 15 s.
+
+## Cooking purge is one override path (2026-11-22)
+
+`input_boolean.cooking_air_purge`, the shared script's `purge` variable and `script.cooking_air_purge_apply` work together. The script reads the flag on every run, so the rooms' own AQ runs keep the kids' purifiers at 100% instead of fighting it. Don't add a separate automation that sets their speed. Known gap: the 2 h `for:` doesn't survive a restart, so a restart mid-purge after cooking ends leaves the flag on until a Bedtime, cooking-off or empty-house trigger.

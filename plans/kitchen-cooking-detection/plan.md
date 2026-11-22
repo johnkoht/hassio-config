@@ -1,7 +1,7 @@
 ---
 title: Kitchen Cooking Detection
 slug: kitchen-cooking-detection
-status: in-progress
+status: shipped
 created: 2026-11-21
 has_pre_mortem: false
 has_review: false
