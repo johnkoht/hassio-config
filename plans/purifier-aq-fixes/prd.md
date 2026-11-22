@@ -45,11 +45,11 @@
 **File:** `air_quality_set_purifier_mode.yaml`
 
 - After the Auto or Sleep branch, wait 15 s. If `preset_mode` doesn't match, re-send `set_preset_mode`.
-- The script mode becomes `parallel`, so the waits don't queue across rooms.
+- The script stays `queued` (max 20), so a re-check can't undo a newer run for the same purifier.
 
 **Acceptance criteria:**
 - The Auto and Sleep branches re-check `preset_mode` and retry.
-- The script is not `queued`.
+- The script stays `queued`.
 
 ## Task 5: Tests
 

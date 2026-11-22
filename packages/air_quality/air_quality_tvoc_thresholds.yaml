@@ -1,7 +1,8 @@
 # Toxic Chemicals AQI Thresholds
 #
 # Set variables to track threshold breaches
-# to set AQI state and automate purifiers
+# to set AQI state and automate purifiers.
+# No initial: so dashboard edits survive restarts (README.md).
 #
 input_number:
   #
