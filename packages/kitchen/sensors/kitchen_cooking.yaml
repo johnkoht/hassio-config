@@ -1,0 +1,33 @@
+# Kitchen Cooking
+#
+# On when kitchen PM2.5 jumps 8+ above its 15-minute low while the kitchen is
+# occupied (gas range, no power signal). Calibration in packages/kitchen/LEARNINGS.md.
+#
+sensor:
+  - platform: statistics
+    name: Kitchen PM2.5 15 Minute Low
+    unique_id: kitchen_pm2_5_15_minute_low
+    entity_id: sensor.kitchen_awair_pm2_5
+    state_characteristic: min
+    max_age:
+      minutes: 15
+    sampling_size: 200
+    keep_last_sample: true
+
+template:
+  - binary_sensor:
+      - name: Kitchen Cooking
+        unique_id: kitchen_cooking
+        icon: mdi:stove
+        availability: >
+          {{ has_value('sensor.kitchen_awair_pm2_5')
+             and has_value('sensor.kitchen_pm2_5_15_minute_low') }}
+        state: >
+          {{ is_state('input_boolean.kitchen_occupied', 'on')
+             and states('sensor.kitchen_awair_pm2_5') | float(0)
+                 - states('sensor.kitchen_pm2_5_15_minute_low') | float(0) >= 8 }}
+        # 3 min filters one-reading spikes; 30 min holds it while the air settles.
+        delay_on:
+          minutes: 3
+        delay_off:
+          minutes: 30

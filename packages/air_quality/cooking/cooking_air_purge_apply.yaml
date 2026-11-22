@@ -1,0 +1,20 @@
+# Cooking Air Purge Apply
+#
+# Re-run both kids' purifiers through the shared script, which reads the
+# purge flag. Called when the purge starts and ends.
+#
+script:
+  cooking_air_purge_apply:
+    alias: "Cooking Air Purge - Apply"
+    mode: queued
+    sequence:
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.gianlucas_bedroom_air_purifier
+          aqi_state: "{{ states('sensor.gianluca_bedroom_air_quality') }}"
+          room_state: "{{ states('input_select.gianlucas_bedroom') }}"
+      - action: script.air_quality_set_air_purifier_mode
+        data:
+          purifier: fan.ninos_bedroom_air_purifier
+          aqi_state: "{{ states('sensor.nino_bedroom_air_quality') }}"
+          room_state: "{{ states('input_select.ninos_bedroom') }}"

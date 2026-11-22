@@ -13,6 +13,12 @@ Each room with an Awair and a Winix purifier (kitchen, office, Jr suite, main be
 | Unhealthy | Manual 75% | Manual 50% | Manual 75% |
 | Hazardous | Manual 100% | Manual 75% | Manual 100% |
 
+**Cooking purge** (`cooking/`). When `binary_sensor.kitchen_cooking` turns on (see `packages/kitchen/README.md`), `input_boolean.cooking_air_purge` turns on and the kids' purifiers go to Manual 100%. The script applies that to every run for those two purifiers, unless their room is in Bedtime or set to Off. The purge ends, and both purifiers go back to the table above, when:
+- cooking stops;
+- it has run for 2 h;
+- both kids' rooms are in Bedtime;
+- or the house empties.
+
 `air_quality_alert.yaml` is separate. It reacts to the outdoor AQI and sets every purifier at once.
 
 ## Thresholds

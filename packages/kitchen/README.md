@@ -54,3 +54,9 @@ In the evening, after the kids go to sleep, we're mostly in the family room or J
 - `kitchen_lights_manually_toggled` is the override latch. `kitchen_lights_manual_change` sets it on a hand change of `light.kitchen_ceiling_lights` (wall, app, dashboard; automation and Adaptive Lighting changes are ignored). `kitchen_lights_reset_manual_toggle` clears it when the kitchen is unoccupied 30 s, goes Off, or the house empties.
 - Motion on and day on need the master switch on and the latch off. Room Off turns the lights off whatever either flag says (the house-wide switch still applies); vacancy only does so while the master switch is on.
 
+
+## Cooking detection
+The range is gas with no smart switch, so `binary_sensor.kitchen_cooking` (`sensors/kitchen_cooking.yaml`) works from the kitchen Awair instead. It turns on when PM2.5 jumps at least 8 above its 15-minute low while the kitchen is occupied, holds for 3 minutes before turning on, and stays on for 30 minutes after the air settles.
+
+- `kitchen_cooking_close_doors`: if a kid's door is open when cooking starts, a low-priority announcement asks to close it, naming the door. It repeats once 10 minutes later if a door is still open.
+- The kids' purifiers purge at 100% while cooking, until their room goes to Bedtime (see `packages/air_quality/README.md`).
