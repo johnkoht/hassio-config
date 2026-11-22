@@ -9,9 +9,14 @@ automation:
     mode: single
     initial_state: on
     triggers:
-      # Triggerd by any change to the air quality state
+      # Triggered by any change to the air quality state
       - trigger: state
         entity_id: sensor.nino_bedroom_air_quality
+        not_to:
+          - "unavailable"
+          - "unknown"
+        for:
+          minutes: 1
       # Trigger if nino's bedroom is set to bedtime
       - trigger: state
         entity_id: input_select.ninos_bedroom

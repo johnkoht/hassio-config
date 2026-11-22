@@ -12,6 +12,11 @@ automation:
       # Triggered by any change to the air quality state
       - trigger: state
         entity_id: sensor.kitchen_air_quality
+        not_to:
+          - "unavailable"
+          - "unknown"
+        for:
+          minutes: 1
 
       # Trigger if kitchen occupancy changes
       - trigger: state

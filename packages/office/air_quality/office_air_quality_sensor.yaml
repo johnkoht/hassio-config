@@ -1,30 +1,32 @@
+# Office Air Quality
+#
+# Worst of PM2.5, TVOC and CO2 against the shared thresholds. Steps up at a
+# threshold, steps down only below 80% of it (packages/air_quality/README.md).
+#
 template:
   - sensor:
       - name: "Office Air Quality"
         unique_id: sensor.office_air_quality
+        availability: >
+          {{ has_value('sensor.office_awair_pm2_5')
+             and has_value('sensor.office_awair_vocs')
+             and has_value('sensor.office_awair_carbon_dioxide') }}
         state: >
-          {% set pm25 = states('sensor.office_awair_pm2_5') | float %}
-          {% set voc = states('sensor.office_awair_vocs') | float %}
-          {% set co2 = states('sensor.office_awair_carbon_dioxide') | float %}
-
-          {% set pm25_mod = states('input_number.pm25_moderate') | float %}
-          {% set pm25_poor = states('input_number.pm25_poor') | float %}
-          {% set pm25_haz = states('input_number.pm25_hazardous') | float %}
-
-          {% set voc_mod = states('input_number.tvoc_moderate') | float %}
-          {% set voc_poor = states('input_number.tvoc_poor') | float %}
-          {% set voc_haz = states('input_number.tvoc_hazardous') | float %}
-
-          {% set co2_mod = states('input_number.co2_moderate') | float %}
-          {% set co2_poor = states('input_number.co2_poor') | float %}
-          {% set co2_haz = states('input_number.co2_hazardous') | float %}
-
-          {% if pm25 > pm25_haz or voc > voc_haz or co2 > co2_haz %}
-            Hazardous
-          {% elif pm25 > pm25_poor or voc > voc_poor or co2 > co2_poor %}
-            Unhealthy
-          {% elif pm25 > pm25_mod or voc > voc_mod or co2 > co2_mod %}
-            Moderate
-          {% else %}
-            Acceptable
-          {% endif %}
+          {% set r = [states('sensor.office_awair_pm2_5') | float(0),
+                      states('sensor.office_awair_vocs') | float(0),
+                      states('sensor.office_awair_carbon_dioxide') | float(0)] %}
+          {% set t = [
+            [states('input_number.pm25_moderate') | float(0), states('input_number.tvoc_moderate') | float(0), states('input_number.co2_moderate') | float(0)],
+            [states('input_number.pm25_poor') | float(0), states('input_number.tvoc_poor') | float(0), states('input_number.co2_poor') | float(0)],
+            [states('input_number.pm25_hazardous') | float(0), states('input_number.tvoc_hazardous') | float(0), states('input_number.co2_hazardous') | float(0)]
+          ] %}
+          {% set ns = namespace(up=0, hold=0) %}
+          {% for band in range(3) %}
+            {% for i in range(3) %}
+              {% if t[band][i] > 0 and r[i] > t[band][i] %}{% set ns.up = band + 1 %}{% endif %}
+              {% if t[band][i] > 0 and r[i] > t[band][i] * 0.8 %}{% set ns.hold = band + 1 %}{% endif %}
+            {% endfor %}
+          {% endfor %}
+          {% set levels = ['Acceptable', 'Moderate', 'Unhealthy', 'Hazardous'] %}
+          {% set cur = levels.index(this.state) if this.state in levels else 0 %}
+          {{ levels[ns.up] if ns.up >= cur else levels[[cur, ns.hold] | min] }}
