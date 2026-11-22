@@ -1,7 +1,10 @@
 script:
   air_quality_set_air_purifier_mode:
     alias: "Air Quality - Set Air Purifier Mode"
+    # Queued (not parallel) so a run's 15 s preset re-check can't undo a newer
+    # run for the same purifier. A house-wide dropout costs a short backlog.
     mode: "queued"
+    max: 20
     # description: >
     #   Set purifier mode based on local air quality.
     fields:
@@ -116,6 +119,10 @@ script:
       - condition: state
         entity_id: input_boolean.construction_mode
         state: "off"
+      # An Awair dropout makes the room sensor unavailable; never map that to Off.
+      - alias: "Air quality state is known"
+        condition: template
+        value_template: "{{ aqi_state in ['Acceptable', 'Moderate', 'Unhealthy', 'Hazardous'] }}"
       - choose:
           #
           # Turn OFF the air purifier
@@ -138,6 +145,17 @@ script:
                 data:
                   entity_id: "{{ purifier }}"
                   preset_mode: Sleep
+              # Winix can miss a preset right after power-on; re-check once.
+              - delay:
+                  seconds: 15
+              - if:
+                  - condition: template
+                    value_template: "{{ state_attr(purifier, 'preset_mode') != 'Sleep' }}"
+                then:
+                  - action: fan.set_preset_mode
+                    data:
+                      entity_id: "{{ purifier }}"
+                      preset_mode: Sleep
 
           #
           # Turn ON the air purifier in Auto mode
@@ -151,6 +169,17 @@ script:
                 data:
                   entity_id: "{{ purifier }}"
                   preset_mode: Auto
+              # Winix can miss a preset right after power-on; re-check once.
+              - delay:
+                  seconds: 15
+              - if:
+                  - condition: template
+                    value_template: "{{ state_attr(purifier, 'preset_mode') != 'Auto' }}"
+                then:
+                  - action: fan.set_preset_mode
+                    data:
+                      entity_id: "{{ purifier }}"
+                      preset_mode: Auto
 
           #
           # Turn ON the air purifier in Manual mode

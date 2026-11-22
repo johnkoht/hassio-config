@@ -12,6 +12,11 @@ automation:
       # Triggered by any change to the air quality state
       - trigger: state
         entity_id: sensor.gianluca_bedroom_air_quality
+        not_to:
+          - "unavailable"
+          - "unknown"
+        for:
+          minutes: 1
 
       # Trigger if gianluca's bedroom is set to bedtime
       - trigger: state
