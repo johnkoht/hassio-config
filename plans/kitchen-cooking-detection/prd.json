@@ -1,0 +1,14 @@
+{
+  "name": "kitchen-cooking-detection",
+  "branchName": "feature/kitchen-cooking-detection",
+  "goal": "HA detects cooking from the kitchen Awair, reminds us to close an open kid's door, and purges the kids' rooms at 100% until Bedtime.",
+  "userStories": [
+    {"id": "task-1", "title": "Calibrate from history", "description": "Simulate candidate rules over the recorder.", "acceptanceCriteria": ["Thresholds chosen from data and recorded in prd.md"], "status": "complete", "passes": true, "attemptCount": 1},
+    {"id": "task-2", "title": "Detection sensor", "description": "Statistics 15-min low + template binary sensor.", "acceptanceCriteria": ["PM2.5 jump >= 8 with kitchen occupied, delay_on 3 min, delay_off 30 min", "Unavailable without inputs"], "status": "pending", "passes": false, "attemptCount": 0},
+    {"id": "task-3", "title": "Door reminder", "description": "Announce open kids' doors once, repeat once after 10 min.", "acceptanceCriteria": ["Gated on house occupied and an open door", "Names the open doors", "One repeat only"], "status": "pending", "passes": false, "attemptCount": 0},
+    {"id": "task-4", "title": "Purge", "description": "Flag + on/off automations + script override for kids' purifiers.", "acceptanceCriteria": ["Manual 100 while flag on and room not Bedtime", "Four off paths", "Re-runs normal logic on off"], "status": "pending", "passes": false, "attemptCount": 0},
+    {"id": "task-5", "title": "Tests", "description": "tests/test_kitchen_cooking_detection.py", "acceptanceCriteria": ["Covers tasks 2-4", "Full suite green"], "status": "pending", "passes": false, "attemptCount": 0},
+    {"id": "task-6", "title": "Docs", "description": "Kitchen README/LEARNINGS, air quality README, docs/AUTOMATIONS.md.", "acceptanceCriteria": ["Docs match shipped behaviour"], "status": "pending", "passes": false, "attemptCount": 0}
+  ],
+  "metadata": {"createdAt": "2026-11-22T06:40:00Z", "totalTasks": 6, "completedTasks": 1, "failedTasks": 0}
+}
