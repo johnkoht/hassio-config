@@ -1,11 +1,11 @@
 ---
 title: Kitchen Cooking Detection
 slug: kitchen-cooking-detection
-status: approved
+status: shipped
 created: 2026-11-21
 has_pre_mortem: false
 has_review: false
-has_prd: false
+has_prd: true
 depends_on: purifier-aq-fixes
 ---
 

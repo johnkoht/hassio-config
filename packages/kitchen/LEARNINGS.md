@@ -42,3 +42,11 @@ The kitchen now departs from the house-wide 150 lux:
 - **Off:** main above 700 and table above 550 for 10 min, which leaves at least about 400 lux of daylight on each after the lights go off.
 
 Keep off minus glow at least 100 above the on point, or the gap comes back. `tests/test_kitchen_daylight_thresholds.py` pins this. The glow shifts with Adaptive Lighting brightness, so re-measure it if the bulbs or the AL settings change. In winter the lights rarely reach the off point.
+
+## Cooking detection calibration (2026-11-22)
+
+Calibrated on 8 days of recorder data. "PM2.5 at least 8 above its 15-minute low, kitchen occupied" fired 10 times. A 3-minute hold-on drops the one-reading spikes (one single reading hit 371) and leaves 5 sustained cooking events.
+
+A CO2 rise (gas burners) added no events, so it isn't used. The occupancy gate changed nothing in that window but costs nothing.
+
+If it misses or over-fires, look at `sensor.kitchen_pm2_5_15_minute_low` against `sensor.kitchen_awair_pm2_5` before changing the 8. The statistics sensor needs `sampling_size` above the default 20 to cover 15 minutes of Awair updates.

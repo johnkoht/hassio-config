@@ -1,0 +1,9 @@
+# Cooking Air Purge
+#
+# While on, the purifier script runs the kids' purifiers at 100% unless their
+# room is in Bedtime. No initial: so a restart keeps it.
+#
+input_boolean:
+  cooking_air_purge:
+    name: Cooking Air Purge
+    icon: mdi:air-purifier
