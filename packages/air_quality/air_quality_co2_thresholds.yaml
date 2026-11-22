@@ -1,7 +1,8 @@
 # Carbon Dioxide AQI Thresholds
 #
 # Set variables to track threshold breaches
-# to set AQI state and automate purifiers
+# to set AQI state and automate purifiers.
+# No initial: so dashboard edits survive restarts (README.md).
 #
 input_number:
   #
@@ -9,8 +10,7 @@ input_number:
   #
   co2_acceptable:
     name: CO2 Acceptable
-    initial: 600
-    min: 600
+    min: 0
     max: 999
     unit_of_measurement: ppm
     mode: box
@@ -21,8 +21,7 @@ input_number:
   #
   co2_moderate:
     name: CO2 Moderate
-    initial: 1000
-    min: 1000
+    min: 0
     max: 1999
     unit_of_measurement: ppm
     mode: box
@@ -33,8 +32,7 @@ input_number:
   #
   co2_poor:
     name: CO2 Poor
-    initial: 2000
-    min: 2000
+    min: 0
     max: 4499
     unit_of_measurement: ppm
     mode: box
@@ -45,8 +43,7 @@ input_number:
   #
   co2_hazardous:
     name: CO2 Hazardous
-    initial: 4500
-    min: 4500
+    min: 0
     max: 10000
     unit_of_measurement: ppm
     mode: box

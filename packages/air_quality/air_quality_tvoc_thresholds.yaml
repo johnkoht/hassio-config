@@ -1,7 +1,8 @@
 # Toxic Chemicals AQI Thresholds
 #
 # Set variables to track threshold breaches
-# to set AQI state and automate purifiers
+# to set AQI state and automate purifiers.
+# No initial: so dashboard edits survive restarts (README.md).
 #
 input_number:
   #
@@ -9,8 +10,7 @@ input_number:
   #
   tvoc_acceptable:
     name: TVOCs Acceptable
-    initial: 300
-    min: 300
+    min: 0
     max: 499
     unit_of_measurement: ppb
     mode: box
@@ -21,8 +21,7 @@ input_number:
   #
   tvoc_moderate:
     name: TVOCs Moderate
-    initial: 500
-    min: 500
+    min: 0
     max: 2999
     unit_of_measurement: ppb
     mode: box
@@ -33,8 +32,7 @@ input_number:
   #
   tvoc_poor:
     name: TVOCs Poor
-    initial: 3000
-    min: 3000
+    min: 0
     max: 24999
     unit_of_measurement: ppb
     mode: box
@@ -45,8 +43,7 @@ input_number:
   #
   tvoc_hazardous:
     name: TVOCs Hazardous
-    initial: 25000
-    min: 25000
+    min: 0
     max: 55000
     unit_of_measurement: ppb
     mode: box
