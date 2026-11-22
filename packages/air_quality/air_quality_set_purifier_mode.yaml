@@ -71,8 +71,16 @@ script:
       #
       # If the AQI is Acceptable and the room is set to Off,
       # then set the purifier to Off mode.
+      # Cooking purge (packages/air_quality/cooking/): kids' purifiers run at
+      # 100% until their room goes to Bedtime (or is set to Off by hand).
+      purge: >-
+        {{ is_state('input_boolean.cooking_air_purge', 'on')
+           and purifier in ['fan.ninos_bedroom_air_purifier', 'fan.gianlucas_bedroom_air_purifier']
+           and room_state not in ['Bedtime', 'Off'] }}
       set_mode: >-
-        {% if aqi_state == 'Hazardous' or aqi_state == 'Unhealthy' or aqi_state == 'Moderate' %}
+        {% if purge %}
+          Manual
+        {% elif aqi_state == 'Hazardous' or aqi_state == 'Unhealthy' or aqi_state == 'Moderate' %}
           Manual
         {% elif aqi_state == 'Acceptable' and room_state == 'Bedtime' %}
           Sleep
@@ -96,7 +104,9 @@ script:
       # then set the speed to 25%.
       #
       set_speed: >-
-        {% if aqi_state == 'Hazardous' and room_state == 'Bedtime' %}
+        {% if purge %}
+          100
+        {% elif aqi_state == 'Hazardous' and room_state == 'Bedtime' %}
           75
         {% elif aqi_state == 'Hazardous' %}
           100
