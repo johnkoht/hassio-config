@@ -8,7 +8,7 @@ sensor:
     name: Kitchen PM2.5 15 Minute Low
     unique_id: kitchen_pm2_5_15_minute_low
     entity_id: sensor.kitchen_awair_pm2_5
-    state_characteristic: min
+    state_characteristic: value_min
     max_age:
       minutes: 15
     sampling_size: 200

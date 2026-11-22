@@ -63,7 +63,8 @@ def test_statistics_low_is_a_15_minute_min_of_kitchen_pm25():
     stat = load(SENSOR)["sensor"][0]
     assert stat["platform"] == "statistics"
     assert stat["entity_id"] == "sensor.kitchen_awair_pm2_5"
-    assert stat["state_characteristic"] == "min"
+    # Numeric sources take value_min; plain "min" fails the schema and HA silently drops the sensor.
+    assert stat["state_characteristic"] == "value_min"
     assert stat["max_age"] == {"minutes": 15}
     assert stat["keep_last_sample"] is True
     # 15 min of ~1/min Awair updates must fit; the default of 20 would cut the window short.
