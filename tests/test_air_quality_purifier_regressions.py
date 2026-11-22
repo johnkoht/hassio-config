@@ -210,3 +210,18 @@ def test_detection_is_queued_so_triggers_during_the_recheck_are_not_dropped(slug
     """The script call waits out the 15 s re-check; mode: single would drop triggers meanwhile."""
     auto = load(REPO / f"{ROOMS[slug]}_detections.yaml")["automation"][0]
     assert auto["mode"] == "queued"
+
+
+def test_manual_rechecks_the_speed():
+    """2026-11-22: units coming from Sleep/Auto to Manual 50/75 sat at 25%; the speed was lost."""
+    seq = _branch("Manual")
+    delay = next(i for i, s in enumerate(seq) if "delay" in s)
+    assert seq[delay - 1]["action"] == "fan.set_percentage"
+    assert seq[delay]["delay"] == {"seconds": 15}
+    retry = seq[delay + 1]
+    conds = retry["if"]
+    assert "state_attr(purifier, 'percentage')" in conds[0]["value_template"]
+    assert any("is_state(purifier, 'on')" in c.get("value_template", "") for c in conds)
+    assert any(c.get("entity_id") == "input_boolean.construction_mode" for c in conds)
+    assert retry["then"][0]["action"] == "fan.set_percentage"
+    assert retry["then"][0]["data"]["percentage"] == "{{ set_speed }}"

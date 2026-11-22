@@ -23,3 +23,7 @@ The six room sensors are one template with the room slug and name substituted. `
 The detection automations call the script with `action:`, which waits for it to finish, including the 15 s preset re-check. In `mode: single` any trigger that arrived during that wait was dropped with "already running". They are `queued` (max 5) for that reason. The re-check also bails if the purifier was turned off or construction mode came on during the wait.
 
 The hysteresis memory (`this.state`) is lost across a dropout, a template reload or a restart. The next reading re-computes without it, which at worst shows a room one band lower until the next crossing.
+
+## Manual speed is lost right after a mode switch (2026-11-22)
+
+Right after the first deploy, three purifiers that had been on Sleep or Auto went to Manual 25% instead of 50% or 75%. The script's traces showed the right `set_percentage`. The Winix integration sends "manual" and then the speed back to back, and the unit keeps the low airflow that the mode switch sets. Purifiers that were already on Manual only get the speed command, and those landed correctly. Re-sending the speed alone a moment later worked, so the Manual branch now re-checks `percentage` after 15 s.

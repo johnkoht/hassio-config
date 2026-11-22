@@ -33,7 +33,7 @@ Removing `initial:` made HA keep the old values, so these were set once after th
 
 - **Hysteresis.** A room steps up as soon as any reading crosses a band's threshold. It steps down only once no reading is above 80% of the current band's threshold. With VOC sitting at 450 ppb, Moderate holds instead of flapping.
 - **Dropouts.** If any of the room's three Awair readings is unavailable, the room sensor is unavailable. The detection trigger ignores a change *to* unavailable, and the script stops on any state it doesn't know, so a dropout leaves the purifier as it was. Coming back from a dropout still re-syncs.
-- **Preset re-check.** The Auto and Sleep branches wait 15 s, then re-send the preset if the purifier didn't land on it. The script is `queued`, so that wait can't undo a newer run for the same purifier.
+- **Re-check.** The Auto and Sleep branches wait 15 s and re-send the preset if the purifier didn't land on it. The Manual branch does the same for the speed: coming from Auto or Sleep, a Winix drops the speed sent right after the switch to Manual and sits at 25%. The script is `queued`, so that wait can't undo a newer run for the same purifier.
 - **Missing thresholds.** A threshold helper that's missing or 0 is ignored, rather than reading every room as Hazardous.
 
 Tests: `tests/test_air_quality_purifier_regressions.py`.

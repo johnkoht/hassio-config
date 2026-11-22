@@ -209,3 +209,21 @@ script:
                 data:
                   entity_id: "{{ purifier }}"
                   percentage: "{{ set_speed }}"
+              # Coming from Auto/Sleep, Winix drops a speed sent right after
+              # the switch to Manual and sits at 25%; re-check once.
+              - delay:
+                  seconds: 15
+              - if:
+                  - condition: template
+                    value_template: "{{ state_attr(purifier, 'percentage') | int(0) != set_speed | int }}"
+                  # Don't power it back on if a turn-off landed during the wait.
+                  - condition: template
+                    value_template: "{{ is_state(purifier, 'on') }}"
+                  - condition: state
+                    entity_id: input_boolean.construction_mode
+                    state: "off"
+                then:
+                  - action: fan.set_percentage
+                    data:
+                      entity_id: "{{ purifier }}"
+                      percentage: "{{ set_speed }}"
