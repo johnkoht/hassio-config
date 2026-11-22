@@ -1,0 +1,30 @@
+# Cooking Air Purge On
+#
+# Cooking started: purge the kids' rooms at 100% until they go to Bedtime.
+#
+automation:
+  - id: "cooking_air_purge_on"
+    alias: "Cooking Air Purge On"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_cooking
+        from: "off"
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.construction_mode
+        state: "off"
+      - alias: "A kid's room isn't in Bedtime yet"
+        condition: template
+        value_template: >
+          {{ not (is_state('input_select.ninos_bedroom', 'Bedtime')
+                  and is_state('input_select.gianlucas_bedroom', 'Bedtime')) }}
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.cooking_air_purge
+      - action: script.cooking_air_purge_apply

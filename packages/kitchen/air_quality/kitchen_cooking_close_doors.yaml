@@ -1,0 +1,51 @@
+# Kitchen Cooking - Close Kids' Doors
+#
+# When cooking starts and a kid's door is open, ask once to close it, and
+# once more after 10 minutes if a door is still open.
+#
+automation:
+  - id: "kitchen_cooking_close_doors"
+    alias: "Kitchen Cooking - Close Kids' Doors"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_cooking
+        from: "off"
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - alias: "A kid's door is open"
+        condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.ninos_door_sensor_status
+            state: "on"
+          - condition: state
+            entity_id: binary_sensor.gianlucas_door_sensor_status
+            state: "on"
+    actions:
+      - repeat:
+          count: 2
+          sequence:
+            - variables:
+                doors: >-
+                  {% set open = [] %}
+                  {% if is_state('binary_sensor.ninos_door_sensor_status', 'on') %}{% set open = open + ["Nino's"] %}{% endif %}
+                  {% if is_state('binary_sensor.gianlucas_door_sensor_status', 'on') %}{% set open = open + ["Gianluca's"] %}{% endif %}
+                  {{ open | join(' and ') }}
+            - alias: "Still cooking and a door is still open"
+              condition: template
+              value_template: "{{ doors != '' and is_state('binary_sensor.kitchen_cooking', 'on') }}"
+            - action: script.voice_announcement
+              data:
+                media_players: auto
+                sound: chirp
+                priority: low
+                expires_in: 5
+                speech_message: >-
+                  We're cooking. Please close {{ doors }}
+                  {{ 'door' if ' and ' not in doors else 'doors' }} so the smell stays out of their rooms.
+            - delay:
+                minutes: 10

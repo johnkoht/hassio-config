@@ -1,0 +1,47 @@
+# Cooking Air Purge Off
+#
+# End the purge when cooking stops, after 2 h, when both kids' rooms are in
+# Bedtime, or when the house empties; hand the purifiers back to normal logic.
+#
+automation:
+  - id: "cooking_air_purge_off"
+    alias: "Cooking Air Purge Off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_cooking
+        to: "off"
+      - trigger: state
+        entity_id: input_boolean.cooking_air_purge
+        to: "on"
+        for:
+          hours: 2
+      - trigger: state
+        entity_id:
+          - input_select.ninos_bedroom
+          - input_select.gianlucas_bedroom
+        to: "Bedtime"
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.cooking_air_purge
+        state: "on"
+      - alias: "A Bedtime trigger only ends it once both rooms are in Bedtime"
+        condition: template
+        value_template: >
+          {{ trigger.entity_id not in ['input_select.ninos_bedroom', 'input_select.gianlucas_bedroom']
+             or (is_state('input_select.ninos_bedroom', 'Bedtime')
+                 and is_state('input_select.gianlucas_bedroom', 'Bedtime')) }}
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.cooking_air_purge
+      # An empty house is handled by the rooms' own turn-off automations.
+      - if:
+          - condition: state
+            entity_id: input_boolean.house_occupied
+            state: "on"
+        then:
+          - action: script.cooking_air_purge_apply
