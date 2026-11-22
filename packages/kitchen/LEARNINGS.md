@@ -50,3 +50,5 @@ Calibrated on 8 days of recorder data. "PM2.5 at least 8 above its 15-minute low
 A CO2 rise (gas burners) added no events, so it isn't used. The occupancy gate changed nothing in that window but costs nothing.
 
 If it misses or over-fires, look at `sensor.kitchen_pm2_5_15_minute_low` against `sensor.kitchen_awair_pm2_5` before changing the 8. The statistics sensor needs `sampling_size` above the default 20 to cover 15 minutes of Awair updates.
+
+**Statistics characteristic names (2026-11-22).** A numeric source takes `value_min`, `value_max` and so on, not `min`. With plain `min`, HA drops the sensor at setup without an error in the log, and the CI config check still passes. `binary_sensor.kitchen_cooking` then sits at unavailable. To validate, run the platform schema on the host: `docker exec homeassistant python -c` with `from homeassistant.components.statistics.sensor import PLATFORM_SCHEMA`.
