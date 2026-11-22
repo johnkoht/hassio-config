@@ -1,7 +1,7 @@
 ---
 title: Purifier AQ Fixes
 slug: purifier-aq-fixes
-status: in-progress
+status: shipped
 created: 2026-11-21
 has_pre_mortem: false
 has_review: false
