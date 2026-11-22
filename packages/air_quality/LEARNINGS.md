@@ -17,3 +17,9 @@ The script's 15 s re-check and retry is defensive. If a purifier still sticks, c
 ## Keep the six room templates identical
 
 The six room sensors are one template with the room slug and name substituted. `test_room_templates_are_identical_but_for_the_room` fails if one drifts. Change all six together.
+
+## A delay in the script blocks the calling automation
+
+The detection automations call the script with `action:`, which waits for it to finish, including the 15 s preset re-check. In `mode: single` any trigger that arrived during that wait was dropped with "already running". They are `queued` (max 5) for that reason. The re-check also bails if the purifier was turned off or construction mode came on during the wait.
+
+The hysteresis memory (`this.state`) is lost across a dropout, a template reload or a restart. The next reading re-computes without it, which at worst shows a room one band lower until the next crossing.
