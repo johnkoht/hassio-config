@@ -1,7 +1,7 @@
 ---
 title: Smart Climate Trial Tweaks
 slug: smart-climate-trial-tweaks
-status: in-progress
+status: shipped
 created: 2026-11-24
 has_pre_mortem: false
 has_review: false
