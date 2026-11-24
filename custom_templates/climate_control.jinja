@@ -6,6 +6,15 @@
   Rendered by sensor.climate_decision_<zone> and by tests. Reads state only: no now(), no side effects.
   Radiant zones never exceed 71 (constant, applied last); the garage is a constant 55 frost guard.
 #}
+{#
+  climate_live(zone) renders exactly True or False (no whitespace; HA parses it to a bool).
+  True when input_boolean.climate_live_control is on OR input_boolean.climate_live_<zone> is on;
+  any other state (off, unknown, unavailable, missing) is False. The only place those switches are read.
+#}
+{% macro climate_live(zone) -%}
+{%- if is_state('input_boolean.climate_live_control', 'on') or is_state('input_boolean.climate_live_' ~ zone, 'on') -%}True{%- else -%}False{%- endif -%}
+{%- endmacro %}
+
 {% macro climate_decision(zone) -%}
 {%- set RADIANT_CAP = 71 -%}
 {%- set RADIANT_FLOOR = 50 -%}

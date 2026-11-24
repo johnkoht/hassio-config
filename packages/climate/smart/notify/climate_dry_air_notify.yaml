@@ -27,7 +27,10 @@ automation:
           message: >-
             Indoor humidity is {{ states('sensor.average_indoor_humidity') }}%.
             The radiant cold-weather bump is skipped while the air is dry.
-            {% if not is_state('input_boolean.climate_live_control', 'on') %}(dry run){% endif %}
+            {% from 'climate_control.jinja' import climate_live %}
+            {% set ns = namespace(live=false) %}
+            {% for z in ['jr_suite', 'main_bedroom', 'ninos_bedroom', 'basement'] %}{% if climate_live(z) == 'True' %}{% set ns.live = true %}{% endif %}{% endfor %}
+            {% if not ns.live %}(dry run){% endif %}
           devices: "jk"
           priority: "passive"
           url: /dashboard-kohbo/climate-hvac#climate_settings_popup

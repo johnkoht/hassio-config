@@ -9,7 +9,8 @@ API
       .env(loader=None)     Jinja2 Environment (StrictUndefined) with states(), is_state(),
                             state_attr(), has_value(), now(), today_at(), timedelta, from_json,
                             to_json. Pass a jinja2.FileSystemLoader (e.g. on custom_templates/)
-                            as `loader` so `{% from 'x.jinja' import m %}` works.
+                            as `loader` to override the default (a FileSystemLoader on custom_templates/, so
+                            `{% from 'climate_control.jinja' import m %}` works).
       .render_entity(config, field="state", this_state=None) renders a template entity field
   make_env(ha, loader=None) same as FakeHA.env, standalone.
   Missing entities read as "unknown", like HA. Bool-like output: use truthy(s).
@@ -20,7 +21,7 @@ from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 
 import yaml
-from jinja2 import Environment, StrictUndefined
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -88,6 +89,8 @@ class FakeHA:
 
 
 def make_env(ha, loader=None):
+    if loader is None:
+        loader = FileSystemLoader(str(REPO / "custom_templates"))
     env = Environment(undefined=StrictUndefined, loader=loader)
     env.globals.update(
         states=ha._states,

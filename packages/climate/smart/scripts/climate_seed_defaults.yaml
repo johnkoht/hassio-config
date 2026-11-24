@@ -1,7 +1,7 @@
 # Climate - Reset Smart Climate Defaults
 #
-# Seeds every smart climate number and select, sets dry run, turns the
-# master on. The only place the default values live.
+# Seeds every smart climate number and select, turns every live switch off
+# (dry run) and turns the master on. The only place the default values live.
 
 script:
   climate_seed_defaults:
@@ -154,10 +154,18 @@ script:
           entity_id: input_select.climate_season
         data:
           option: Auto
-      - alias: "Dry run: live control off"
+      - alias: "Dry run: global and zone live switches off"
         action: input_boolean.turn_off
         target:
-          entity_id: input_boolean.climate_live_control
+          entity_id:
+            - input_boolean.climate_live_control
+            - input_boolean.climate_live_main_floor
+            - input_boolean.climate_live_second_floor
+            - input_boolean.climate_live_jr_suite
+            - input_boolean.climate_live_main_bedroom
+            - input_boolean.climate_live_ninos_bedroom
+            - input_boolean.climate_live_basement
+            - input_boolean.climate_live_garage
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.climate_automations
