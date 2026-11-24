@@ -210,7 +210,7 @@ EXT_OFF = "packages/climate/smart/modes/climate_away_extended_off.yaml"
 
 def ext_cond(tid, minutes_empty, **over):
     s = {"input_boolean.house_occupied": "off", "input_number.climate_away_delay": "30.0",
-         "input_number.climate_away_extended_delay": "120.0", "input_boolean.vacation_mode": "off"}
+         "input_number.climate_away_extended_delay": "2.0", "input_boolean.vacation_mode": "off"}
     s.update(over)
     ha = ha_with(s, {"input_boolean.house_occupied": NOW - timedelta(minutes=minutes_empty)})
     a = auto(EXT_ON)
@@ -223,7 +223,7 @@ def ext_cond(tid, minutes_empty, **over):
 def test_extended_on_timers():
     a = auto(EXT_ON)
     mins = [t["for"]["minutes"] for t in a["triggers"] if "for" in t]
-    ha = ha_with({"input_number.climate_away_delay": "30.0", "input_number.climate_away_extended_delay": "120.0"})
+    ha = ha_with({"input_number.climate_away_delay": "30.0", "input_number.climate_away_extended_delay": "2.0"})
     assert make_env(ha).from_string(mins[0]).render().strip() == "150"
     assert make_env(ha).from_string(mins[1]).render().strip() == "30"
     nh = [c for c in a["conditions"] if c.get("entity_id") == "input_boolean.nearly_home"][0]
@@ -429,3 +429,11 @@ def test_clock_regex_catches_literals():
     for s in ['at: "12:34:00"', "after: '12:34'", "before: 12:34", "today_at('12:34')", 'today_at("1:23")']:
         assert CLOCK.search(s), s
     assert not CLOCK.search("today_at(wake_s)")
+
+
+def test_extended_delay_is_hours():
+    """climate_away_extended_delay is in hours (unit h); the for: and age check convert."""
+    assert not ext_cond("restart", 40)          # 30 min + 2 h is 150 min, not 32
+    raw = (REPO / EXT_ON).read_text()
+    assert raw.count("climate_away_extended_delay') | float(0) * 60") == 2
+    assert 'minutes: "/15"' in raw
