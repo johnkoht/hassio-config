@@ -71,13 +71,15 @@
         {%- set parts.lst = parts.lst + ['Price offset ' ~ ('-' if side == 'heat' else '+') ~ (off | round(0) | int)] -%}
       {%- endif -%}
     {%- endif -%}
+    {#- Round half-up to whole degrees first, then clamp to whole-degree Away bounds -#}
+    {%- set t.v = (t.v + 0.5) | round(0, 'floor') | int -%}
     {%- if side == 'heat' -%}
-      {%- set t.v = [[t.v, away_heat] | max, 80] | min -%}
+      {%- set t.v = [[t.v, away_heat | round(0, 'ceil') | int] | max, 80] | min -%}
     {%- else -%}
-      {%- set t.v = [[t.v, 60] | max, away_cool] | min -%}
+      {%- set t.v = [[t.v, 60] | max, away_cool | round(0, 'floor') | int] | min -%}
     {%- endif -%}
     {%- set n.mode = side -%}
-    {%- set n.temp = t.v | round(0) | int -%}
+    {%- set n.temp = t.v | int -%}
     {%- set n.reason = parts.lst | join('; ') -%}
   {%- elif season == 'Cooling' -%}
     {%- set n.reason = 'Cooling season: radiant hands off' -%}
@@ -105,7 +107,7 @@
       {%- endif -%}
     {%- endif -%}
     {%- set t.v = [[t.v, RADIANT_FLOOR] | max, RADIANT_CAP] | min -%}
-    {%- set t.v = [((t.v * 2) | round(0)) / 2, RADIANT_CAP] | min -%}
+    {%- set t.v = [((t.v * 2 + 0.5) | round(0, 'floor')) / 2, RADIANT_CAP] | min -%}
     {%- set n.mode = 'heat' -%}{%- set n.temp = t.v -%}
     {%- set n.reason = why.s ~ ' ' ~ t.v -%}
   {%- endif -%}

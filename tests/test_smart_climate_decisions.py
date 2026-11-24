@@ -278,7 +278,36 @@ def test_sensor_templates_match_macro(zone):
 
 
 def test_sensor_null_temperature_is_unknown():
+    """`{{ none }}` renders "None", which HA parses to None -> state unknown, silently.
+    Rendering the string 'unknown' would log a non-numeric ERROR on every render."""
     cfg = entities(SENSORS)["climate_decision_main_floor"][1]
     ha = FakeHA({**NORMAL, "input_select.climate_mode_main_floor": "Override"})
-    assert ha.render(cfg["state"], loader=LOADER) == "unknown"
+    assert ha.render(cfg["state"], loader=LOADER) == "None"
+    assert "'unknown'" not in cfg["state"]
     assert ha.render(cfg["attributes"]["hvac_mode"], loader=LOADER) == "skip"
+
+
+# ---- Review fix: rounding before clamping (half-degree Away bounds) -------
+
+@pytest.mark.parametrize("zone", NEST)
+@pytest.mark.parametrize("away_heat,away_cool", [("64.5", "79.5"), ("65.5", "78.5"), ("65.0", "79.0")])
+def test_nest_never_leaves_away_band_with_half_degree_bounds(zone, away_heat, away_cool):
+    over = {"input_number.climate_away_heat": away_heat, "input_number.climate_away_cool": away_cool,
+            "input_select.climate_mode_" + zone: "Away", "input_boolean.climate_away_extended": "on"}
+    h = decide(zone, **over)
+    c = decide(zone, **over, **{"sensor.climate_active_season": "Cooling"})
+    assert h["temperature"] >= float(away_heat)
+    assert c["temperature"] <= float(away_cool)
+    assert isinstance(h["temperature"], int) and isinstance(c["temperature"], int)
+
+
+@pytest.mark.parametrize("value,expected", [("71.5", 72), ("68.5", 69), ("72.4", 72), ("72.6", 73)])
+def test_nest_rounds_half_up(value, expected):
+    d = decide("main_floor", **{"input_number.climate_main_floor_comfort_heat": value})
+    assert d["temperature"] == expected
+
+
+@pytest.mark.parametrize("value,expected", [("67.25", 67.5), ("67.74", 67.5), ("67.75", 68.0)])
+def test_radiant_rounds_half_up_to_half_degree(value, expected):
+    d = decide("jr_suite", **{"input_number.climate_radiant_comfort_heat": value})
+    assert d["temperature"] == expected
