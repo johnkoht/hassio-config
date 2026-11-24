@@ -192,8 +192,63 @@ cards:
         icon: mdi:home-thermometer
 
   - type: custom:button-card
-    name: Dry run. The logbook shows what Smart Climate would do, and nothing is written to the thermostats. Live control stays off until the old Eco automations are retired.
+    name: Each zone stays a dry run (the logbook shows what Smart Climate would do) unless its live switch is on. Trial the radiant zones and the garage only until the old Eco automations are retired.
     template: kohbo_card_section_description
+
+  - type: custom:button-card
+    template: section_title
+    name: Smart Climate Live
+  - type: entities
+    entities:
+      - entity: input_boolean.climate_live_main_floor
+        name: "Live: Main Floor (clashes with Eco)"
+        icon: mdi:home-thermometer
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.climate_live_second_floor
+        name: "Live: 2nd Floor (clashes with Eco)"
+        icon: mdi:home-thermometer
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.climate_live_jr_suite
+        name: "Live: Jr Suite"
+        icon: mdi:bed
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.climate_live_main_bedroom
+        name: "Live: Main Bedroom"
+        icon: mdi:bed-king
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.climate_live_ninos_bedroom
+        name: "Live: Ninos Bedroom"
+        icon: mdi:bed-double
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.climate_live_basement
+        name: "Live: Basement"
+        icon: mdi:stairs-down
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.climate_live_garage
+        name: "Live: Garage"
+        icon: mdi:garage
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
 
   #
   # Smart Climate Setpoints
