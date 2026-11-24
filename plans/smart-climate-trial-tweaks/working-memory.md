@@ -30,3 +30,5 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 NOTHING_NOVEL — Task 2.
 NOTHING_NOVEL — Task 3.
+
+NOTHING_NOVEL — Task 4.
