@@ -65,9 +65,10 @@
         "climate_live_control absent from dashboards/",
         "YAML parses"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "e6c86b13513a9d70e4d3c64adb83a65844d35b07"
     }
   ],
   "metadata": {
