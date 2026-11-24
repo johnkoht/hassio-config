@@ -40,11 +40,27 @@ Energy prices stop toggling Eco. Instead they shift the active setpoint by a few
 - **Keep the Eco preset and harden the restore:** treats the symptom and can't drive the radiant zones.
 - **Per-room smart vents:** a separate decision, out of scope here.
 
+**Decisions (John, 2026-11-24):**
+- **Starting setpoints.**
+  - Main floor and 2nd floor: heat 72–73°F, cool 75–76°F.
+  - Away: a 65°F floor and a 79°F ceiling.
+  - Sleep: 72°F.
+- **Radiant zones use temperature holds.** The Ecobees have no schedule of their own, so HA is the only writer.
+- **Radiant comfort is 67–68°F.**
+  - When it's very cold outside, the target rises to 69–71°F. The cutoff is an outdoor-temperature helper, starting at 15°F.
+  - Every radiant target is clamped to a **hard cap of 71°F**, whatever the mode, profile, forecast or price. Hotter floors dry the air out and damage the wood floors.
+  - The radiant slabs hold steady and don't do fast swings. Fast changes (arrivals, price shifts, short pre-heats) go to the Nests.
+- **Humidity guard.**
+  - When `sensor.average_indoor_humidity` drops below 30% (a helper), the radiant zones skip the cold-weather bump and stay at comfort, and John gets a push.
+- **Garage: frost guard at a fixed 55°F.** It has no Comfort, Sleep or Away modes.
+- **The kids' space heaters are out of v1.** They're logged during the soak.
+- **Turning the radiant zones on.** They're off now. HA turns them to `heat` the first time the season reads Heating, and John may also turn them on by hand before that.
+
 **Privacy:** the repo is public. Timing comes from live signals (bedtime, wake, presence) and a learned wake time, never from a household schedule written into YAML, plans or docs.
 
 ## Tasks
 
-1. **Inventory and data pull.** Confirm the 5 radiant zones (`climate.jr_suite`, `main_bedroom`, `ninos_bedroom`, `basement`, `garage`) and whether a 6th Ecobee exists (DEVICES.md lists 6). Check the supported `hvac_modes` and presets on the Nest and Ecobee. Ask `homelab` to pull from the recorder each zone's thermal drift and the minutes it takes to move 1°F, so lead times are based on real numbers.
+1. **Inventory and data pull.** Confirm the 5 radiant zones (`climate.jr_suite`, `main_bedroom`, `ninos_bedroom`, `basement`, `garage`) and whether a 6th Ecobee exists (DEVICES.md lists 6). The Nest rates can be measured now. The radiant zones were off as of 2026-11-24, so their rates get measured in their first week or two of running, within the dry-run soak. Check the supported `hvac_modes` and presets on the Nest and Ecobee. Ask `homelab` to pull from the recorder each zone's thermal drift and the minutes it takes to move 1°F, so lead times are based on real numbers.
 2. **Helpers (layer 1).** Profile setpoints, `climate_automations`, `climate_dry_run`, per-zone mode selects and season select, with dashboard-friendly names. Starting values come from the setpoint table in `docs/climate_automation_plan.md`.
 3. **Mode state machine (layer 2).** One automation file per transition (e.g. `climate_mode_sleep_on_bedtime.yaml`), following the existing room-mode pattern (`*_mode_auto` / `*_mode_off`), with the condition order global → room → feature.
 4. **Zone controller (layer 3).** `script.climate_apply_zone`, which is idempotent, uses explicit mode and setpoint, writes nothing when nothing changed, and does nothing in dry-run except write a logbook entry. Regression tests in `tests/` like `test_nest_eco_regressions.py`, including "never calls `set_preset_mode: eco`".
