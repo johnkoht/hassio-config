@@ -14,7 +14,7 @@ template:
         state: >-
           {% from 'climate_control.jinja' import climate_decision %}
           {% set t = (climate_decision('main_floor') | trim | from_json).temperature %}
-          {{ 'unknown' if t is none else t }}
+          {{ none if t is none else t }}
         attributes:
           hvac_mode: >-
             {% from 'climate_control.jinja' import climate_decision %}
@@ -34,7 +34,7 @@ template:
         state: >-
           {% from 'climate_control.jinja' import climate_decision %}
           {% set t = (climate_decision('second_floor') | trim | from_json).temperature %}
-          {{ 'unknown' if t is none else t }}
+          {{ none if t is none else t }}
         attributes:
           hvac_mode: >-
             {% from 'climate_control.jinja' import climate_decision %}
@@ -54,7 +54,7 @@ template:
         state: >-
           {% from 'climate_control.jinja' import climate_decision %}
           {% set t = (climate_decision('jr_suite') | trim | from_json).temperature %}
-          {{ 'unknown' if t is none else t }}
+          {{ none if t is none else t }}
         attributes:
           hvac_mode: >-
             {% from 'climate_control.jinja' import climate_decision %}
@@ -74,7 +74,7 @@ template:
         state: >-
           {% from 'climate_control.jinja' import climate_decision %}
           {% set t = (climate_decision('main_bedroom') | trim | from_json).temperature %}
-          {{ 'unknown' if t is none else t }}
+          {{ none if t is none else t }}
         attributes:
           hvac_mode: >-
             {% from 'climate_control.jinja' import climate_decision %}
@@ -94,7 +94,7 @@ template:
         state: >-
           {% from 'climate_control.jinja' import climate_decision %}
           {% set t = (climate_decision('ninos_bedroom') | trim | from_json).temperature %}
-          {{ 'unknown' if t is none else t }}
+          {{ none if t is none else t }}
         attributes:
           hvac_mode: >-
             {% from 'climate_control.jinja' import climate_decision %}
@@ -114,7 +114,7 @@ template:
         state: >-
           {% from 'climate_control.jinja' import climate_decision %}
           {% set t = (climate_decision('basement') | trim | from_json).temperature %}
-          {{ 'unknown' if t is none else t }}
+          {{ none if t is none else t }}
         attributes:
           hvac_mode: >-
             {% from 'climate_control.jinja' import climate_decision %}
@@ -134,7 +134,7 @@ template:
         state: >-
           {% from 'climate_control.jinja' import climate_decision %}
           {% set t = (climate_decision('garage') | trim | from_json).temperature %}
-          {{ 'unknown' if t is none else t }}
+          {{ none if t is none else t }}
         attributes:
           hvac_mode: >-
             {% from 'climate_control.jinja' import climate_decision %}
