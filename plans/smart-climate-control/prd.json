@@ -1,0 +1,103 @@
+{
+  "name": "smart-climate-control",
+  "branchName": "feature/smart-climate-control",
+  "goal": "Every climate zone gets one explicit decision (mode + setpoint) from zone mode, season and profiles; a controller writes it only on change and never uses Eco. Ships dry-run only.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Helpers and seed script",
+      "description": "See prd.md task-1",
+      "acceptanceCriteria": [
+        "prd.md task-1 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-2",
+      "title": "Season and condition sensors",
+      "description": "See prd.md task-2",
+      "acceptanceCriteria": [
+        "prd.md task-2 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-3",
+      "title": "Decision macro and decision sensors",
+      "description": "See prd.md task-3",
+      "acceptanceCriteria": [
+        "prd.md task-3 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-4",
+      "title": "Controller, apply automations, override detection",
+      "description": "See prd.md task-4",
+      "acceptanceCriteria": [
+        "prd.md task-4 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-5",
+      "title": "Mode resolver, Away stages, wake learning, precondition, dry-air push",
+      "description": "See prd.md task-5",
+      "acceptanceCriteria": [
+        "prd.md task-5 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-6",
+      "title": "Dashboard controls and docs",
+      "description": "See prd.md task-6",
+      "acceptanceCriteria": [
+        "prd.md task-6 ACs"
+      ],
+      "status": "pending",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-soak",
+      "title": "Dry-run soak (plan task 9)",
+      "description": "Operational, deferred out of this build: run dry-run alongside the old automations for a week+ of mixed weather; measure radiant rates; tune.",
+      "acceptanceCriteria": [
+        "Not built in this PR"
+      ],
+      "status": "deferred",
+      "passes": false,
+      "attemptCount": 0
+    },
+    {
+      "id": "task-migration",
+      "title": "Migration (plan task 10)",
+      "description": "Deferred until after the soak: retire old Eco/resume automations and scripts, turn climate_live_control on, repoint dashboard references.",
+      "acceptanceCriteria": [
+        "Not built in this PR"
+      ],
+      "status": "deferred",
+      "passes": false,
+      "attemptCount": 0
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-11-24T00:00:00Z",
+    "totalTasks": 8,
+    "completedTasks": 0,
+    "failedTasks": 0,
+    "deferredTasks": 2,
+    "buildTasks": 6
+  }
+}
