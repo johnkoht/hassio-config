@@ -1,0 +1,41 @@
+# Smart Climate Last Write
+#
+# When HA last wrote each zone. Override detection and the re-apply
+# cap read it. No `initial:`.
+
+input_datetime:
+  climate_main_floor_last_write:
+    name: Climate - Main Floor Last Write
+    has_date: true
+    has_time: true
+    icon: mdi:clock-check-outline
+
+  climate_second_floor_last_write:
+    name: Climate - 2nd Floor Last Write
+    has_date: true
+    has_time: true
+    icon: mdi:clock-check-outline
+
+  climate_jr_suite_last_write:
+    name: Climate - Jr Suite Last Write
+    has_date: true
+    has_time: true
+    icon: mdi:clock-check-outline
+
+  climate_main_bedroom_last_write:
+    name: Climate - Main Bedroom Last Write
+    has_date: true
+    has_time: true
+    icon: mdi:clock-check-outline
+
+  climate_ninos_bedroom_last_write:
+    name: Climate - Ninos Bedroom Last Write
+    has_date: true
+    has_time: true
+    icon: mdi:clock-check-outline
+
+  climate_basement_last_write:
+    name: Climate - Basement Last Write
+    has_date: true
+    has_time: true
+    icon: mdi:clock-check-outline
