@@ -1,0 +1,69 @@
+# Climate Away Extended On
+#
+# Stage two of Away: empty past the delay plus the extended delay, or
+# empty past the delay while on vacation. Not while someone is nearly home.
+#
+automation:
+  - id: "climate_away_extended_on"
+    alias: "Climate - Away Extended On"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: >-
+            {{ (states('input_number.climate_away_delay') | float(0)
+                + states('input_number.climate_away_extended_delay') | float(0)) | int }}
+        id: "extended"
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: "{{ states('input_number.climate_away_delay') | float(0) | int }}"
+        id: "vacation_hold"
+      - trigger: state
+        entity_id: input_boolean.vacation_mode
+        to: "on"
+        id: "vacation_on"
+      # Timers drop on restart and reload
+      - trigger: homeassistant
+        event: start
+        id: "restart"
+      - trigger: event
+        event_type: automation_reloaded
+        id: "restart"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.nearly_home
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.climate_away_extended
+        state: "off"
+      - alias: "Held long enough for this trigger"
+        condition: template
+        value_template: >-
+          {% set tid = trigger.id | default('') %}
+          {% set age = (now() - states.input_boolean.house_occupied.last_changed).total_seconds() / 60 %}
+          {% set delay = states('input_number.climate_away_delay') | float(0) %}
+          {% set ext = states('input_number.climate_away_extended_delay') | float(0) %}
+          {% set vac = is_state('input_boolean.vacation_mode', 'on') %}
+          {% if tid == 'extended' %}
+            true
+          {% elif tid == 'vacation_hold' %}
+            {{ vac }}
+          {% elif tid == 'vacation_on' %}
+            {{ age >= delay }}
+          {% else %}
+            {{ age >= delay + ext or (vac and age >= delay) }}
+          {% endif %}
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.climate_away_extended

@@ -35,6 +35,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [Task 2] Trigger-based hysteresis: `climate_active_season.yaml` reads `this.state` guarded by `this is defined and this.state in [...]`; plain binaries (very_cold, indoor_air_dry) hold with `this.state == 'on'` in the band.
 - [Task 3] Decision logic lives once in custom_templates/climate_control.jinja (`climate_decision(zone)` -> JSON string). Sensors call `climate_decision('<zone>') | trim | from_json`; null temperature renders 'unknown' (not 'None').
 - [Task 4] Controller: scripts compute everything in one `variables:` block, gate with `condition: template`, and re-read live state; override detect does the same in action-level variables. Interpreter-friendly: only variables/condition/if/stop/wait_template/action.
+- [Task 5] Resolver reads `states.input_boolean.house_occupied.last_changed` for the delay age; tests swap `Interpreter.env.globals["states"]` for a proxy with `.domain.name.last_changed` (tests/test_smart_climate_modes.py `_States`). `empty_hold` and `event` ids clear Override; `minor` and `restart` keep it.
+- [Task 5] Wake history is built as a list variable and joined only in the `set_value` data; a bare "1,2,3" renders as a tuple under native parsing (HA's wrapper stringifies to the original, the harness doesn't, so tests use `csv()`).
 *(Add: [Task N] pattern-name: description at file:line)*
 
 ## Active Gotchas
@@ -44,6 +46,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [Task 3] Jinja namespace attr named `items` clashes with dict method; use another name. Macro tests: render with FileSystemLoader on custom_templates/ and `{% from 'climate_control.jinja' import climate_decision %}`; tests/test_smart_climate_decisions.py has `decide(zone, **state_overrides)` and a NORMAL baseline state.
 - [Task 4] Harness `float`/`int` now raise without a default like HA (`"5.0"|int` fails, strings only go through int()); `has_value` is only unknown/unavailable/missing. A test helper must not render `state` when `availability` is false (HA doesn't).
 - [Task 4] After a mode change the apply script always writes the setpoint (the Nest's attribute lags with no optimistic state). Hold-ended path in override detect needs same mode + setpoint-only mismatch, otherwise a person turning an Ecobee off would be fought every 15 min.
+- [Task 5] climate_away_extended_on is single-mode with conditions per trigger id (extended / vacation_hold / vacation_on / restart). It also handles restart, which the contract didn't list, because `for:` timers drop on reload.
 *(Add: [Task N] issue the next developer must know about)*
 
 ## Shared Utilities Created

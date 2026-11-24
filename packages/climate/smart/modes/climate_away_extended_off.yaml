@@ -1,0 +1,23 @@
+# Climate Away Extended Off
+#
+# Ends stage two of Away when someone arrives or is nearly home.
+#
+automation:
+  - id: "climate_away_extended_off"
+    alias: "Climate - Away Extended Off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+      - trigger: state
+        entity_id: input_boolean.nearly_home
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.climate_away_extended
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.climate_away_extended
