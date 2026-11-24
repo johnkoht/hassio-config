@@ -131,3 +131,9 @@ def test_other_contract_helpers_exist():
         cfg = dt[f"climate_{z}_last_write"]
         assert cfg["has_date"] and cfg["has_time"]
     assert helpers("input_text")["climate_wake_history"]["max"] == 255
+
+
+def test_sleep_heat_seeds_main_floor_70_second_floor_72():
+    _, seeded = seeds()
+    assert seeded["climate_main_floor_sleep_heat"] == 70
+    assert seeded["climate_second_floor_sleep_heat"] == 72

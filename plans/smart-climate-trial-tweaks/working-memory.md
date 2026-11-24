@@ -27,3 +27,5 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 ## Decision Ledger
 *(Builder rulings that supersede or refine a documented rule. Entry: `[YYYY-MM-DD] ruling — docs affected: <paths or none-yet> — status: open|folded`.)*
 - [2026-11-24] Live control is per zone: global on OR zone switch on (supersedes PR #209's single switch) — docs affected: packages/climate/smart/README.md — status: folded (README, task-1)
+
+NOTHING_NOVEL — Task 2.

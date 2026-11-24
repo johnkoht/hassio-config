@@ -23,7 +23,7 @@ script:
         target:
           entity_id: input_number.climate_main_floor_sleep_heat
         data:
-          value: 72
+          value: 70
       - action: input_number.set_value
         target:
           entity_id: input_number.climate_main_floor_sleep_cool
