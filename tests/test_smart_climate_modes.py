@@ -274,36 +274,36 @@ def calls(res):
 
 
 def test_learn_short_bedtime_records_nothing():
-    assert learn("400,410,420", 3.9).actions == []
+    assert learn("760,770,780", 3.9).actions == []
 
 
 def test_learn_appends_and_median_odd():
-    hist, wake = calls(learn("400,410", 8, 7, 0))   # 420 appended
-    assert csv(hist[0]["data"]["value"]) == "400,410,420"
-    assert wake[0]["data"]["time"] == "06:50:00"        # median of 400,410,420 = 410
+    hist, wake = calls(learn("760,770", 8, 13, 0))   # 780 appended
+    assert csv(hist[0]["data"]["value"]) == "760,770,780"
+    assert wake[0]["data"]["time"] == "12:50:00"        # median of 760,770,780 = 770
 
 
 def test_learn_median_even_rounds_to_minute():
-    hist, wake = calls(learn("400,411,430", 8, 7, 0))   # 420 appended -> 400,411,420,430
-    assert wake[0]["data"]["time"] == "06:56:00"        # (411+420)/2 = 415.5 -> 416
+    hist, wake = calls(learn("760,771,790", 8, 13, 0))   # 780 appended -> 760,771,780,790
+    assert wake[0]["data"]["time"] == "12:56:00"        # (771+780)/2 = 775.5 -> 776
 
 
 def test_learn_trims_to_seven():
-    hist, wake = calls(learn("1,2,3,4,5,6,7", 8, 7, 0))
-    assert csv(hist[0]["data"]["value"]) == "2,3,4,5,6,7,420"
+    hist, wake = calls(learn("1,2,3,4,5,6,7", 8, 13, 0))
+    assert csv(hist[0]["data"]["value"]) == "2,3,4,5,6,7,780"
 
 
 def test_learn_first_entry_and_garbage_history():
     for raw in ("", "unknown", "abc,,x", "99999,-5"):
-        hist, wake = calls(learn(raw, 8, 7, 0))
-        assert csv(hist[0]["data"]["value"]) == "420"
-        assert wake[0]["data"]["time"] == "07:00:00"
-    hist, _ = calls(learn("x,300,,310", 8, 7, 0))
-    assert csv(hist[0]["data"]["value"]) == "300,310,420"
+        hist, wake = calls(learn(raw, 8, 13, 0))
+        assert csv(hist[0]["data"]["value"]) == "780"
+        assert wake[0]["data"]["time"] == "13:00:00"
+    hist, _ = calls(learn("x,600,,610", 8, 13, 0))
+    assert csv(hist[0]["data"]["value"]) == "600,610,780"
 
 
 # ------------------------------------------------------------ precondition
-def pre_ha(zone, minutes_before_wake, hist="400,410,420", season="Heating", **over):
+def pre_ha(zone, minutes_before_wake, hist="760,770,780", season="Heating", **over):
     wake = NOW + timedelta(minutes=minutes_before_wake)
     s = {
         "input_boolean.bedtime": "on",
@@ -359,8 +359,8 @@ def test_precondition_never_cases(zone):
     flat = {f"input_number.climate_{zone}_sleep_heat": "70.0"}
     assert not pre_fire(zone, 10, **flat)                       # delta 0
     assert not pre_fire(zone, 10, **{f"input_number.climate_{zone}_sleep_heat": "72.0"})  # delta < 0
-    assert not pre_fire(zone, 10, hist="400,410")               # < 3 entries
-    assert not pre_fire(zone, 10, hist="400,x,,410")            # garbage doesn't count
+    assert not pre_fire(zone, 10, hist="760,770")               # < 3 entries
+    assert not pre_fire(zone, 10, hist="760,x,,770")            # garbage doesn't count
     assert not pre_fire(zone, 10, **{"input_boolean.bedtime": "off"})
     assert not pre_fire(zone, 10, **{"input_datetime.predicted_wake_time": "unknown"})
     assert not pre_fire(zone, 10, **{"input_number.climate_precondition_max_lead": "0.0"})
@@ -426,6 +426,6 @@ def test_no_time_of_day_literals_in_smart_climate():
 
 
 def test_clock_regex_catches_literals():
-    for s in ['at: "06:30:00"', "after: '22:00'", "before: 07:15", "today_at('06:30')", 'today_at("6:30")']:
+    for s in ['at: "12:34:00"', "after: '12:34'", "before: 12:34", "today_at('12:34')", 'today_at("1:23")']:
         assert CLOCK.search(s), s
     assert not CLOCK.search("today_at(wake_s)")
