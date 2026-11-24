@@ -33,12 +33,14 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Discovered Patterns
 - [Task 2] Trigger-based hysteresis: `climate_active_season.yaml` reads `this.state` guarded by `this is defined and this.state in [...]`; plain binaries (very_cold, indoor_air_dry) hold with `this.state == 'on'` in the band.
+- [Task 3] Decision logic lives once in custom_templates/climate_control.jinja (`climate_decision(zone)` -> JSON string). Sensors call `climate_decision('<zone>') | trim | from_json`; null temperature renders 'unknown' (not 'None').
 *(Add: [Task N] pattern-name: description at file:line)*
 
 ## Active Gotchas
 - [Task 1] YAML 1.1: an unquoted `Off` option parses as boolean False. All select options in packages/climate/smart/helpers/climate_zone_modes.yaml are quoted; quote `Off`/`On`/`Yes`/`No` in any new option list, and test options against the parsed YAML (tests/test_smart_climate_static.py).
 - [Task 2] `input_number` states render as `5.0`: `| int(0)` on them gives 0 in HA. Use `| float(0) | int` (climate_forecast_*_swing.yaml).
 - [Task 2] Jinja has no `is list` test; check forecasts with `x is iterable and x is not string and x | count > 0`.
+- [Task 3] Jinja namespace attr named `items` clashes with dict method; use another name. Macro tests: render with FileSystemLoader on custom_templates/ and `{% from 'climate_control.jinja' import climate_decision %}`; tests/test_smart_climate_decisions.py has `decide(zone, **state_overrides)` and a NORMAL baseline state.
 *(Add: [Task N] issue the next developer must know about)*
 
 ## Shared Utilities Created
