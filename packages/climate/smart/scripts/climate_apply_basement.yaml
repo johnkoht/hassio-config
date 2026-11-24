@@ -1,0 +1,19 @@
+# Climate - Apply Basement
+#
+# Queues runs for this zone so they never interleave, then runs the shared
+# apply script and waits for it.
+
+script:
+  climate_apply_basement:
+    alias: "Climate - Apply Basement"
+    icon: mdi:thermostat-auto
+    mode: queued
+    max: 3
+    fields:
+      source:
+        description: "decision, drift, hold or start"
+    sequence:
+      - action: script.climate_apply_zone
+        data:
+          zone: "basement"
+          source: "{{ source | default('start') }}"
