@@ -28,7 +28,7 @@ Here are some of my favorite and most useful automations:
 ### Climate
 
 - **[Climate Automation](https://github.com/johnkoht/hassio-config/blob/master/packages/climate/main_floor/main_floor_climate_activate_eco_when_energy_is_expensive.yaml)**: I switched to hourly pricing with ComEd and have started to automate the HVAC/AC system to switch the Nests to Eco when prices spike and resume when they normalize. Resume restores the heat/cool mode saved before Eco, since the Nest sometimes flips it on its own.
-- **[Smart Climate Controller](https://github.com/johnkoht/hassio-config/blob/master/packages/climate/smart/README.md)**: a mode-based controller for the Nests, the radiant zones and the garage. It currently runs as a dry run: the logbook shows what it would set, and nothing is written to the thermostats yet.
+- **[Smart Climate Controller](https://github.com/johnkoht/hassio-config/blob/master/packages/climate/smart/README.md)**: a mode-based controller for the Nests, the radiant zones and the garage. Each zone runs as a dry run (the logbook shows what it would set) until that zone, or the whole controller, is switched live.
 
 ### Lighting
 
