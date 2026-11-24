@@ -1,0 +1,147 @@
+# Climate Decisions
+#
+# One decision sensor per zone. State is the target temperature; the logic
+# lives in custom_templates/climate_control.jinja.
+#
+template:
+  - sensor:
+      - name: "Climate Decision Main Floor"
+        unique_id: climate_decision_main_floor
+        default_entity_id: sensor.climate_decision_main_floor
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state_class: measurement
+        state: >-
+          {% from 'climate_control.jinja' import climate_decision %}
+          {% set t = (climate_decision('main_floor') | trim | from_json).temperature %}
+          {{ 'unknown' if t is none else t }}
+        attributes:
+          hvac_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('main_floor') | trim | from_json).hvac_mode }}
+          zone_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('main_floor') | trim | from_json).zone_mode }}
+          reason: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('main_floor') | trim | from_json).reason }}
+      - name: "Climate Decision Second Floor"
+        unique_id: climate_decision_second_floor
+        default_entity_id: sensor.climate_decision_second_floor
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state_class: measurement
+        state: >-
+          {% from 'climate_control.jinja' import climate_decision %}
+          {% set t = (climate_decision('second_floor') | trim | from_json).temperature %}
+          {{ 'unknown' if t is none else t }}
+        attributes:
+          hvac_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('second_floor') | trim | from_json).hvac_mode }}
+          zone_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('second_floor') | trim | from_json).zone_mode }}
+          reason: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('second_floor') | trim | from_json).reason }}
+      - name: "Climate Decision Jr Suite"
+        unique_id: climate_decision_jr_suite
+        default_entity_id: sensor.climate_decision_jr_suite
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state_class: measurement
+        state: >-
+          {% from 'climate_control.jinja' import climate_decision %}
+          {% set t = (climate_decision('jr_suite') | trim | from_json).temperature %}
+          {{ 'unknown' if t is none else t }}
+        attributes:
+          hvac_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('jr_suite') | trim | from_json).hvac_mode }}
+          zone_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('jr_suite') | trim | from_json).zone_mode }}
+          reason: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('jr_suite') | trim | from_json).reason }}
+      - name: "Climate Decision Main Bedroom"
+        unique_id: climate_decision_main_bedroom
+        default_entity_id: sensor.climate_decision_main_bedroom
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state_class: measurement
+        state: >-
+          {% from 'climate_control.jinja' import climate_decision %}
+          {% set t = (climate_decision('main_bedroom') | trim | from_json).temperature %}
+          {{ 'unknown' if t is none else t }}
+        attributes:
+          hvac_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('main_bedroom') | trim | from_json).hvac_mode }}
+          zone_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('main_bedroom') | trim | from_json).zone_mode }}
+          reason: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('main_bedroom') | trim | from_json).reason }}
+      - name: "Climate Decision Ninos Bedroom"
+        unique_id: climate_decision_ninos_bedroom
+        default_entity_id: sensor.climate_decision_ninos_bedroom
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state_class: measurement
+        state: >-
+          {% from 'climate_control.jinja' import climate_decision %}
+          {% set t = (climate_decision('ninos_bedroom') | trim | from_json).temperature %}
+          {{ 'unknown' if t is none else t }}
+        attributes:
+          hvac_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('ninos_bedroom') | trim | from_json).hvac_mode }}
+          zone_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('ninos_bedroom') | trim | from_json).zone_mode }}
+          reason: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('ninos_bedroom') | trim | from_json).reason }}
+      - name: "Climate Decision Basement"
+        unique_id: climate_decision_basement
+        default_entity_id: sensor.climate_decision_basement
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state_class: measurement
+        state: >-
+          {% from 'climate_control.jinja' import climate_decision %}
+          {% set t = (climate_decision('basement') | trim | from_json).temperature %}
+          {{ 'unknown' if t is none else t }}
+        attributes:
+          hvac_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('basement') | trim | from_json).hvac_mode }}
+          zone_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('basement') | trim | from_json).zone_mode }}
+          reason: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('basement') | trim | from_json).reason }}
+      - name: "Climate Decision Garage"
+        unique_id: climate_decision_garage
+        default_entity_id: sensor.climate_decision_garage
+        unit_of_measurement: "°F"
+        device_class: temperature
+        state_class: measurement
+        state: >-
+          {% from 'climate_control.jinja' import climate_decision %}
+          {% set t = (climate_decision('garage') | trim | from_json).temperature %}
+          {{ 'unknown' if t is none else t }}
+        attributes:
+          hvac_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('garage') | trim | from_json).hvac_mode }}
+          zone_mode: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('garage') | trim | from_json).zone_mode }}
+          reason: >-
+            {% from 'climate_control.jinja' import climate_decision %}
+            {{ (climate_decision('garage') | trim | from_json).reason }}
