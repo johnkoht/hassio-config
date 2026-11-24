@@ -110,6 +110,8 @@ nothing when none is live.
 - Away: the floor applies only in Heating and the ceiling only in Cooling
   (single setpoint, `heat_cool` is never used). Radiant zones are hands-off in
   Cooling.
+- Guest mode keeps the main floor at Comfort during Sleep (pre-wake still wins).
+  The Comfort-only price offset still does not apply; the forecast boost does.
 - Dry run can't validate Nest rounding or the Ecobee hold type; check both on the
   first live day.
 - The kids' space-heater automations are not part of this controller.

@@ -4,6 +4,7 @@
   climate_decision(zone) returns compact JSON:
     {"hvac_mode": heat|cool|off|skip, "temperature": number|null, "zone_mode": str, "reason": str}
   Rendered by sensor.climate_decision_<zone> and by tests. Reads state only: no now(), no side effects.
+  Main floor holds Comfort setpoints in Sleep while guest_mode is on (pre-wake still wins).
   Radiant zones never exceed 71 (constant, applied last); the garage is a constant 55 frost guard.
 #}
 {#
@@ -49,6 +50,8 @@
     {%- elif zm == 'Sleep' -%}
       {%- if is_state('input_boolean.climate_precondition_' ~ zone, 'on') -%}
         {%- set parts.lst = ['Pre-wake'] -%}
+      {%- elif zone == 'main_floor' and is_state('input_boolean.guest_mode', 'on') -%}
+        {%- set parts.lst = ['Guests: Comfort ' ~ side ~ ' ' ~ (comfort | round(0) | int)] -%}
       {%- else -%}
         {%- set t.v = states('input_number.climate_' ~ zone ~ '_sleep_' ~ side) | float(dflt) -%}
         {%- set parts.lst = ['Sleep ' ~ side ~ ' ' ~ (t.v | round(0) | int)] -%}
