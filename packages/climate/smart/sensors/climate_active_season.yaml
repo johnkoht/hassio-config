@@ -1,0 +1,42 @@
+# Climate Active Season
+#
+# Heating or Cooling. Trigger-based so it restores and the hysteresis memory
+# (this.state) survives a restart. Pinned select wins; Auto uses the 7-day mean.
+#
+template:
+  - triggers:
+      - trigger: state
+        entity_id:
+          - sensor.outdoor_temperature_7_day_mean
+          - input_select.climate_season
+          - input_number.climate_season_heat_below
+          - input_number.climate_season_cool_above
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    sensor:
+      - name: "Climate Active Season"
+        unique_id: climate_active_season
+        default_entity_id: sensor.climate_active_season
+        icon: mdi:sun-snowflake-variant
+        state: >-
+          {% set pin = states('input_select.climate_season') %}
+          {% set prev = this.state if this is defined and this is not none
+                        and this.state in ['Heating', 'Cooling'] else none %}
+          {% if pin in ['Heating', 'Cooling'] %}
+            {{ pin }}
+          {% elif not has_value('sensor.outdoor_temperature_7_day_mean') %}
+            {{ prev or 'Heating' }}
+          {% else %}
+            {% set m = states('sensor.outdoor_temperature_7_day_mean') | float(61) %}
+            {% if m <= states('input_number.climate_season_heat_below') | float(0) %}
+              Heating
+            {% elif m >= states('input_number.climate_season_cool_above') | float(999) %}
+              Cooling
+            {% elif prev %}
+              {{ prev }}
+            {% else %}
+              {{ 'Heating' if m < 61 else 'Cooling' }}
+            {% endif %}
+          {% endif %}

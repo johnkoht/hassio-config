@@ -1,0 +1,26 @@
+# Climate Indoor Air Dry
+#
+# On below the humidity floor; off again at floor + 2 (holds in between).
+#
+template:
+  - binary_sensor:
+      - name: "Climate Indoor Air Dry"
+        unique_id: climate_indoor_air_dry
+        default_entity_id: binary_sensor.climate_indoor_air_dry
+        availability: >-
+          {{ has_value('sensor.average_indoor_humidity')
+             and has_value('input_number.climate_humidity_floor') }}
+        state: >-
+          {% set h = states('sensor.average_indoor_humidity') | float %}
+          {% set f = states('input_number.climate_humidity_floor') | float %}
+          {% if h < f %}
+            true
+          {% elif h >= f + 2 %}
+            false
+          {% else %}
+            {{ this.state == 'on' }}
+          {% endif %}
+        delay_on:
+          minutes: 30
+        delay_off:
+          minutes: 30
