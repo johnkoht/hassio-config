@@ -101,9 +101,10 @@
   "metadata": {
     "createdAt": "2026-11-24T00:00:00Z",
     "totalTasks": 8,
-    "completedTasks": 0,
+    "completedTasks": 6,
     "failedTasks": 0,
     "deferredTasks": 2,
-    "buildTasks": 6
+    "buildTasks": 6,
+    "note": "task-soak and task-migration are deferred by design (operational soak, then a separate migration change); status shipped = the dry-run build."
   }
 }
