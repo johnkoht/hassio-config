@@ -218,6 +218,12 @@ Uses `kohbo_room_temperature_card` decluttering template.
 - **Severe Weather Warning** - Weather alert automation
 - **Severe Rain Incoming** - Rain prediction alerts
 
+#### Smart Climate (dry run)
+- Master switch, a confirmed reset-to-defaults button, season override and active season, and the six zone mode selects. There is no live-control toggle here; see `packages/climate/smart/README.md`.
+
+#### Smart Climate Setpoints
+- Floor comfort/sleep heat/cool, Away heat/cool and the four radiant heat setpoints.
+
 **Implementation:** Uses `custom:bubble-card` with `pop-up` card type, includes `entities` cards for automation toggles.
 
 ## Components Used
