@@ -121,6 +121,10 @@ script:
                       message: "{{ summary }} (mode not reached in 60 s, setpoint skipped)"
                       entity_id: "{{ climate_entity }}"
                   - stop: "Mode not reached"
+      - alias: "Live control still on after the wait"
+        condition: state
+        entity_id: input_boolean.climate_live_control
+        state: "on"
       - alias: "Setpoint (always after a mode change, the old one may be stale)"
         if:
           - condition: template
