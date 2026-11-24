@@ -60,4 +60,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Decision Ledger
 - [2026-11-24] Dry-run is `input_boolean.climate_live_control` off (inverted from the plan's `climate_dry_run`). Docs affected: plan.md Build corrections, prd.md. Status: folded.
-- [2026-11-24] Override detection is value-based plus a 180 s grace window, not context-based. Docs affected: plan.md, prd.md, packages/climate/LEARNINGS.md (task-6). Status: open.
+- [2026-11-24] Override detection is value-based plus a 180 s grace window, not context-based. Docs affected: plan.md, prd.md, packages/climate/LEARNINGS.md, packages/climate/smart/README.md. Status: folded.

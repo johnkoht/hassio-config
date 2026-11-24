@@ -139,3 +139,109 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
+
+  #
+  # Smart Climate (dry run)
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Smart Climate (dry run)
+  - type: entities
+    entities:
+      - entity: input_boolean.climate_automations
+        name: Smart Climate
+        icon: mdi:thermostat-auto
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - type: button
+        name: Reset Smart Climate Defaults
+        icon: mdi:backup-restore
+        action_name: Reset
+        tap_action:
+          action: perform-action
+          perform_action: script.climate_seed_defaults
+          confirmation:
+            text: Reset every smart climate setting to its default?
+
+      - entity: input_select.climate_season
+        name: Season Override
+        icon: mdi:sun-snowflake-variant
+
+      - entity: sensor.climate_active_season
+        name: Active Season
+        icon: mdi:sun-snowflake-variant
+      - entity: input_select.climate_mode_main_floor
+        name: Main Floor Mode
+        icon: mdi:home-thermometer
+      - entity: input_select.climate_mode_second_floor
+        name: 2nd Floor Mode
+        icon: mdi:home-thermometer
+      - entity: input_select.climate_mode_jr_suite
+        name: Jr Suite Mode
+        icon: mdi:home-thermometer
+      - entity: input_select.climate_mode_main_bedroom
+        name: Main Bedroom Mode
+        icon: mdi:home-thermometer
+      - entity: input_select.climate_mode_ninos_bedroom
+        name: Ninos Bedroom Mode
+        icon: mdi:home-thermometer
+      - entity: input_select.climate_mode_basement
+        name: Basement Mode
+        icon: mdi:home-thermometer
+
+  - type: custom:button-card
+    name: Dry run. The logbook shows what Smart Climate would do, and nothing is written to the thermostats. Live control stays off until the old Eco automations are retired.
+    template: kohbo_card_section_description
+
+  #
+  # Smart Climate Setpoints
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Smart Climate Setpoints
+  - type: entities
+    entities:
+      - entity: input_number.climate_main_floor_comfort_heat
+        name: Main Floor Comfort Heat
+        icon: mdi:thermometer
+      - entity: input_number.climate_main_floor_comfort_cool
+        name: Main Floor Comfort Cool
+        icon: mdi:thermometer
+      - entity: input_number.climate_main_floor_sleep_heat
+        name: Main Floor Sleep Heat
+        icon: mdi:thermometer
+      - entity: input_number.climate_main_floor_sleep_cool
+        name: Main Floor Sleep Cool
+        icon: mdi:thermometer
+      - entity: input_number.climate_second_floor_comfort_heat
+        name: 2nd Floor Comfort Heat
+        icon: mdi:thermometer
+      - entity: input_number.climate_second_floor_comfort_cool
+        name: 2nd Floor Comfort Cool
+        icon: mdi:thermometer
+      - entity: input_number.climate_second_floor_sleep_heat
+        name: 2nd Floor Sleep Heat
+        icon: mdi:thermometer
+      - entity: input_number.climate_second_floor_sleep_cool
+        name: 2nd Floor Sleep Cool
+        icon: mdi:thermometer
+      - entity: input_number.climate_away_heat
+        name: Away Heat
+        icon: mdi:thermometer
+      - entity: input_number.climate_away_cool
+        name: Away Cool
+        icon: mdi:thermometer
+      - entity: input_number.climate_radiant_comfort_heat
+        name: Radiant Comfort Heat
+        icon: mdi:heating-coil
+      - entity: input_number.climate_radiant_sleep_heat
+        name: Radiant Sleep Heat
+        icon: mdi:heating-coil
+      - entity: input_number.climate_radiant_cold_heat
+        name: Radiant Cold Weather Heat
+        icon: mdi:heating-coil
+      - entity: input_number.climate_radiant_away_heat
+        name: Radiant Away Heat
+        icon: mdi:heating-coil
