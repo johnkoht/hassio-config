@@ -1,7 +1,8 @@
 # Climate - Apply Drift Check
 #
-# Every 30 min (only while live control is on), and on start, reload, master on
-# or live on, re-run every zone's apply script. Writes only when a zone differs.
+# Every 30 min (only while a zone is live, and then only the live zones), and
+# on start, reload, master on or any live switch on, re-run every zone's apply
+# script. Writes only when a zone differs.
 
 automation:
   - id: "climate_apply_drift_check"
@@ -25,26 +26,54 @@ automation:
         entity_id: input_boolean.climate_live_control
         to: "on"
         id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_main_floor
+        to: "on"
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_second_floor
+        to: "on"
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_jr_suite
+        to: "on"
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_main_bedroom
+        to: "on"
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_ninos_bedroom
+        to: "on"
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_basement
+        to: "on"
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_garage
+        to: "on"
+        id: start
     conditions:
       - alias: "Master switch is on"
         condition: state
         entity_id: input_boolean.climate_automations
         state: "on"
-      - alias: "The 30 min tick only acts when live control is on"
+      - alias: "The 30 min tick only acts when a zone is live"
         condition: template
         value_template: >-
-          {{ trigger.id != 'tick' or is_state('input_boolean.climate_live_control', 'on') }}
+          {% from 'climate_control.jinja' import climate_live %}
+          {% set ns = namespace(live=false) %}
+          {% for z in ['main_floor', 'second_floor', 'jr_suite', 'main_bedroom', 'ninos_bedroom', 'basement', 'garage'] %}{% if climate_live(z) == 'True' %}{% set ns.live = true %}{% endif %}{% endfor %}
+          {{ trigger.id != 'tick' or ns.live }}
     actions:
       - action: script.turn_on
         target:
-          entity_id:
-            - script.climate_apply_main_floor
-            - script.climate_apply_second_floor
-            - script.climate_apply_jr_suite
-            - script.climate_apply_main_bedroom
-            - script.climate_apply_ninos_bedroom
-            - script.climate_apply_basement
-            - script.climate_apply_garage
+          entity_id: >-
+            {% from 'climate_control.jinja' import climate_live %}
+            {% set ns = namespace(l=[]) %}
+            {% for z in ['main_floor', 'second_floor', 'jr_suite', 'main_bedroom', 'ninos_bedroom', 'basement', 'garage'] %}{% if trigger.id != 'tick' or climate_live(z) == 'True' %}{% set ns.l = ns.l + ['script.climate_apply_' ~ z] %}{% endif %}{% endfor %}
+            {{ ns.l }}
         data:
           variables:
             source: "{{ 'drift' if trigger.id == 'tick' else 'start' }}"

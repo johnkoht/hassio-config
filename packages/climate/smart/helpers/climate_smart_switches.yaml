@@ -1,7 +1,8 @@
 # Smart Climate Switches
 #
-# Master switch, live-control switch and the Away and pre-wake flags.
-# Live control off = dry run (logbook only). No `initial:` (keeps restore).
+# Master switch, live switches (global and per zone) and the Away and pre-wake flags.
+# A zone is live when the global or its own switch is on; otherwise dry run
+# (logbook only). No `initial:` (keeps restore).
 
 input_boolean:
   climate_automations:
@@ -10,6 +11,34 @@ input_boolean:
 
   climate_live_control:
     name: Climate - Live Control
+    icon: mdi:thermostat-cog
+
+  climate_live_main_floor:
+    name: Climate - Live Main Floor
+    icon: mdi:thermostat-cog
+
+  climate_live_second_floor:
+    name: Climate - Live 2nd Floor
+    icon: mdi:thermostat-cog
+
+  climate_live_jr_suite:
+    name: Climate - Live Jr Suite
+    icon: mdi:thermostat-cog
+
+  climate_live_main_bedroom:
+    name: Climate - Live Main Bedroom
+    icon: mdi:thermostat-cog
+
+  climate_live_ninos_bedroom:
+    name: Climate - Live Ninos Bedroom
+    icon: mdi:thermostat-cog
+
+  climate_live_basement:
+    name: Climate - Live Basement
+    icon: mdi:thermostat-cog
+
+  climate_live_garage:
+    name: Climate - Live Garage
     icon: mdi:thermostat-cog
 
   climate_away_extended:

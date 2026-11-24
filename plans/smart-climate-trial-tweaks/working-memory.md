@@ -13,9 +13,12 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Active Gotchas
 - [PRD] A macro returns a string. It must render exactly `True`/`False`: HA native types turn that into a bool, but `true`/`false` (lowercase) or padded output stays a non-empty string, and `{{ not live }}` would then be False for a dry-run zone (it would write).
+- [Task 1] The drift check's tick gate lives in `conditions:` (any zone live) and the live-zone list in the `script.turn_on` target template, so a tick with no live zone makes no run at all. The macro is in `custom_templates`; `climate_live(z) == 'True'` is the string compare inside loops.
+- [Task 1] Harness `make_env` now defaults to a `FileSystemLoader` on `custom_templates/`; explicit loaders still win.
 *(Add: [Task N] issue the next developer must know about)*
 
 ## Shared Utilities Created
+- [Task 1] `climate_live(zone)` in custom_templates/climate_control.jinja (the one live-gate reader)
 *(Add: [Task N] functionName() in path/to/file)*
 
 ## Context Corrections
@@ -23,4 +26,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 ## Decision Ledger
 *(Builder rulings that supersede or refine a documented rule. Entry: `[YYYY-MM-DD] ruling — docs affected: <paths or none-yet> — status: open|folded`.)*
-- [2026-11-24] Live control is per zone: global on OR zone switch on (supersedes PR #209's single switch) — docs affected: packages/climate/smart/README.md — status: open (task-1)
+- [2026-11-24] Live control is per zone: global on OR zone switch on (supersedes PR #209's single switch) — docs affected: packages/climate/smart/README.md — status: folded (README, task-1)

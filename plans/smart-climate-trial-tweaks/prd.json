@@ -20,9 +20,9 @@
         "Static test: no direct climate_live_ template/condition read outside the macro; global not on dashboards",
         "README updated"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
