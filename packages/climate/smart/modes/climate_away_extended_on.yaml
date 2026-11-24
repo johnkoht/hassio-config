@@ -1,6 +1,6 @@
 # Climate Away Extended On
 #
-# Stage two of Away: empty past the delay plus the extended delay, or
+# Stage two of Away: empty past the delay plus the extended delay (hours), or
 # empty past the delay while on vacation. Not while someone is nearly home.
 #
 automation:
@@ -14,7 +14,7 @@ automation:
         for:
           minutes: >-
             {{ (states('input_number.climate_away_delay') | float(0)
-                + states('input_number.climate_away_extended_delay') | float(0)) | int }}
+                + states('input_number.climate_away_extended_delay') | float(0) * 60) | int }}
         id: "extended"
       - trigger: state
         entity_id: input_boolean.house_occupied
@@ -26,7 +26,11 @@ automation:
         entity_id: input_boolean.vacation_mode
         to: "on"
         id: "vacation_on"
-      # Timers drop on restart and reload
+      # Timers drop on restart and reload; the re-check replays them from
+      # the house's last change (which a restart resets)
+      - trigger: time_pattern
+        minutes: "/15"
+        id: "restart"
       - trigger: homeassistant
         event: start
         id: "restart"
@@ -52,7 +56,7 @@ automation:
           {% set tid = trigger.id | default('') %}
           {% set age = (now() - states.input_boolean.house_occupied.last_changed).total_seconds() / 60 %}
           {% set delay = states('input_number.climate_away_delay') | float(0) %}
-          {% set ext = states('input_number.climate_away_extended_delay') | float(0) %}
+          {% set ext = states('input_number.climate_away_extended_delay') | float(0) * 60 %}
           {% set vac = is_state('input_boolean.vacation_mode', 'on') %}
           {% if tid == 'extended' %}
             true
