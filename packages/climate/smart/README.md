@@ -31,7 +31,8 @@ write. No `climate.*` call is made for a zone until it is live
 | garage | `climate.garage` | frost guard | `..._garage` |
 
 Helpers: `input_boolean.climate_automations` (master), `climate_live_control`
-(global) and `climate_live_<zone>` (seven, one per zone), `climate_away_extended`, `climate_precondition_*`; `input_select.climate_season`
+(global) and `climate_live_<zone>` (seven, one per zone),
+`climate_away_extended`, `climate_precondition_*`; `input_select.climate_season`
 and `climate_mode_<zone>` (not the garage); `input_number` profiles and tuning;
 `input_datetime.climate_<zone>_last_write`, `predicted_wake_time`;
 `sensor.climate_active_season`.

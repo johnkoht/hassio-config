@@ -262,8 +262,13 @@ def violations(data):
 
 
 def _yaml_files():
-    for d in ("packages", "automation", "scripts"):
-        yield from (REPO / d).rglob("*.yaml")
+    for d in ("packages", "automation", "scripts", "sensors", "binary_sensors",
+              "templates", "template"):
+        if (REPO / d).is_dir():
+            yield from (REPO / d).rglob("*.yaml")
+    for f in ("automations.yaml", "scripts.yaml"):
+        if (REPO / f).is_file():
+            yield REPO / f
 
 
 def test_no_direct_reads_of_the_live_switches():
