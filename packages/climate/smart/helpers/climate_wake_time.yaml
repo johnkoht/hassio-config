@@ -1,0 +1,17 @@
+# Smart Climate Wake Time
+#
+# Learned wake time and the history it comes from (minutes after
+# midnight, newest last, at most 7). No `initial:`.
+
+input_datetime:
+  predicted_wake_time:
+    name: Climate - Predicted Wake Time
+    has_date: false
+    has_time: true
+    icon: mdi:alarm
+
+input_text:
+  climate_wake_history:
+    name: Climate - Wake History
+    max: 255
+    icon: mdi:history

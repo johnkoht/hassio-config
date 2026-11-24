@@ -35,9 +35,11 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 *(Add: [Task N] pattern-name: description at file:line)*
 
 ## Active Gotchas
+- [Task 1] YAML 1.1: an unquoted `Off` option parses as boolean False. All select options in packages/climate/smart/helpers/climate_zone_modes.yaml are quoted; quote `Off`/`On`/`Yes`/`No` in any new option list, and test options against the parsed YAML (tests/test_smart_climate_static.py).
 *(Add: [Task N] issue the next developer must know about)*
 
 ## Shared Utilities Created
+- [Task 1] tests/test_smart_climate_static.py has a tolerant loader (`add_multi_constructor("!", ...)`) and `helpers(domain)` returning every helper of a domain under packages/climate/smart/. Seed values live only in packages/climate/smart/scripts/climate_seed_defaults.yaml.
 *(Add: [Task N] functionName() in path/to/file)*
 
 ## Context Corrections

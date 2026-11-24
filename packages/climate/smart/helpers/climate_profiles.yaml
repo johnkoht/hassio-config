@@ -1,0 +1,140 @@
+# Smart Climate Profiles
+#
+# Comfort, Sleep and Away setpoints. Radiant maxima stay at or below 71.
+# Defaults live in script.climate_seed_defaults. No `initial:`.
+
+input_number:
+  climate_main_floor_comfort_heat:
+    name: Climate - Main Floor Comfort Heat
+    min: 60
+    max: 78
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:fire
+
+  climate_main_floor_comfort_cool:
+    name: Climate - Main Floor Comfort Cool
+    min: 68
+    max: 82
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:snowflake
+
+  climate_main_floor_sleep_heat:
+    name: Climate - Main Floor Sleep Heat
+    min: 60
+    max: 78
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:fire
+
+  climate_main_floor_sleep_cool:
+    name: Climate - Main Floor Sleep Cool
+    min: 68
+    max: 82
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:snowflake
+
+  climate_second_floor_comfort_heat:
+    name: Climate - 2nd Floor Comfort Heat
+    min: 60
+    max: 78
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:fire
+
+  climate_second_floor_comfort_cool:
+    name: Climate - 2nd Floor Comfort Cool
+    min: 68
+    max: 82
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:snowflake
+
+  climate_second_floor_sleep_heat:
+    name: Climate - 2nd Floor Sleep Heat
+    min: 60
+    max: 78
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:fire
+
+  climate_second_floor_sleep_cool:
+    name: Climate - 2nd Floor Sleep Cool
+    min: 68
+    max: 82
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:snowflake
+
+  climate_away_heat:
+    name: Climate - Away Heat
+    min: 55
+    max: 70
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:fire
+
+  climate_away_cool:
+    name: Climate - Away Cool
+    min: 74
+    max: 85
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:snowflake
+
+  climate_away_setback:
+    name: Climate - Away Setback
+    min: 0
+    max: 8
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:arrow-down-bold
+
+  climate_radiant_comfort_heat:
+    name: Climate - Radiant Comfort Heat
+    min: 60
+    max: 71
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:radiator
+
+  climate_radiant_sleep_heat:
+    name: Climate - Radiant Sleep Heat
+    min: 60
+    max: 71
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:radiator
+
+  climate_radiant_cold_heat:
+    name: Climate - Radiant Cold Weather Heat
+    min: 60
+    max: 71
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:radiator
+
+  climate_radiant_away_heat:
+    name: Climate - Radiant Away Heat
+    min: 55
+    max: 71
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:radiator

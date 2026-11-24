@@ -1,0 +1,122 @@
+# Smart Climate Tuning
+#
+# Thresholds, delays and rates used by the season, Away and pre-wake logic.
+# Defaults live in script.climate_seed_defaults. No `initial:`.
+
+input_number:
+  climate_radiant_cold_cutoff:
+    name: Climate - Radiant Cold Cutoff (Outdoor)
+    min: -20
+    max: 40
+    step: 1
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:thermometer-low
+
+  climate_humidity_floor:
+    name: Climate - Indoor Humidity Floor
+    min: 15
+    max: 50
+    step: 1
+    mode: box
+    unit_of_measurement: "%"
+    icon: mdi:water-percent
+
+  climate_season_heat_below:
+    name: Climate - Season Heat Below (7-Day Mean)
+    min: 40
+    max: 70
+    step: 1
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:thermometer-chevron-down
+
+  climate_season_cool_above:
+    name: Climate - Season Cool Above (7-Day Mean)
+    min: 50
+    max: 80
+    step: 1
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:thermometer-chevron-up
+
+  climate_away_delay:
+    name: Climate - Away Delay
+    min: 5
+    max: 240
+    step: 1
+    mode: box
+    unit_of_measurement: min
+    icon: mdi:timer-outline
+
+  climate_away_extended_delay:
+    name: Climate - Away Extended Delay
+    min: 0.5
+    max: 24
+    step: 0.5
+    mode: box
+    unit_of_measurement: h
+    icon: mdi:timer-sand
+
+  climate_main_floor_minutes_per_degree:
+    name: Climate - Main Floor Minutes per Degree
+    min: 1
+    max: 120
+    step: 1
+    mode: box
+    unit_of_measurement: min/°F
+    icon: mdi:speedometer
+
+  climate_second_floor_minutes_per_degree:
+    name: Climate - 2nd Floor Minutes per Degree
+    min: 1
+    max: 120
+    step: 1
+    mode: box
+    unit_of_measurement: min/°F
+    icon: mdi:speedometer
+
+  climate_precondition_max_lead:
+    name: Climate - Precondition Max Lead
+    min: 0
+    max: 240
+    step: 1
+    mode: box
+    unit_of_measurement: min
+    icon: mdi:clock-start
+
+  climate_forecast_lookahead:
+    name: Climate - Forecast Lookahead
+    min: 1
+    max: 12
+    step: 1
+    mode: box
+    unit_of_measurement: h
+    icon: mdi:weather-partly-cloudy
+
+  climate_forecast_swing:
+    name: Climate - Forecast Swing
+    min: 3
+    max: 30
+    step: 1
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:swap-vertical
+
+  climate_forecast_boost:
+    name: Climate - Forecast Boost
+    min: 0
+    max: 3
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:arrow-up-bold
+
+  climate_price_offset:
+    name: Climate - Price Offset
+    min: 0
+    max: 5
+    step: 0.5
+    mode: box
+    unit_of_measurement: °F
+    icon: mdi:currency-usd
