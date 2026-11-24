@@ -294,3 +294,29 @@ def test_global_live_switch_not_on_dashboards():
     for f in (REPO / "dashboards").rglob("*"):
         if f.is_file() and f.suffix in (".yaml", ".yml", ".json"):
             assert "climate_live_control" not in f.read_text(), f
+
+
+def test_settings_popup_has_a_live_row_per_zone():
+    import yaml
+
+    class L(yaml.SafeLoader):
+        pass
+
+    L.add_multi_constructor("!", lambda loader, suffix, node: None)
+    doc = yaml.load((REPO / "dashboards/kohbo/climate/_climate_settings_popup.yaml").read_text(), Loader=L)
+    rows = {}
+
+    def walk(n):
+        if isinstance(n, dict):
+            if str(n.get("entity", "")).startswith("input_boolean.climate_live_"):
+                rows[n["entity"]] = n.get("name", "")
+            for v in n.values():
+                walk(v)
+        elif isinstance(n, list):
+            for v in n:
+                walk(v)
+
+    walk(doc)
+    assert set(rows) == {sw(z) for z in ZONES}
+    assert "Eco" in rows[sw("main_floor")] and "Eco" in rows[sw("second_floor")]
+    assert GLOBAL not in rows
