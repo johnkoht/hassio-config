@@ -32,14 +32,18 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - Every phone push needs a `url` that opens a view or popup (test_notification_deep_links).
 
 ## Discovered Patterns
+- [Task 2] Trigger-based hysteresis: `climate_active_season.yaml` reads `this.state` guarded by `this is defined and this.state in [...]`; plain binaries (very_cold, indoor_air_dry) hold with `this.state == 'on'` in the band.
 *(Add: [Task N] pattern-name: description at file:line)*
 
 ## Active Gotchas
 - [Task 1] YAML 1.1: an unquoted `Off` option parses as boolean False. All select options in packages/climate/smart/helpers/climate_zone_modes.yaml are quoted; quote `Off`/`On`/`Yes`/`No` in any new option list, and test options against the parsed YAML (tests/test_smart_climate_static.py).
+- [Task 2] `input_number` states render as `5.0`: `| int(0)` on them gives 0 in HA. Use `| float(0) | int` (climate_forecast_*_swing.yaml).
+- [Task 2] Jinja has no `is list` test; check forecasts with `x is iterable and x is not string and x | count > 0`.
 *(Add: [Task N] issue the next developer must know about)*
 
 ## Shared Utilities Created
 - [Task 1] tests/test_smart_climate_static.py has a tolerant loader (`add_multi_constructor("!", ...)`) and `helpers(domain)` returning every helper of a domain under packages/climate/smart/. Seed values live only in packages/climate/smart/scripts/climate_seed_defaults.yaml.
+- [Task 2] tests/smart_climate_harness.py: `load(rel)`, `entities(rel)` ({unique_id: (domain, cfg)}), `FakeHA(states, attrs, now).render(tpl, this_state=..., loader=...)` / `.render_entity(cfg, field)`, `make_env(ha, loader)`, `truthy()`. Pass a `jinja2.FileSystemLoader` on custom_templates/ for task-3 macro imports. Missing entities read `unknown`.
 *(Add: [Task N] functionName() in path/to/file)*
 
 ## Context Corrections

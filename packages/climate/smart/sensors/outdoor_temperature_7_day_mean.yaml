@@ -1,0 +1,14 @@
+# Outdoor Temperature 7 Day Mean
+#
+# Rolling 7-day mean of the Tempest outdoor temperature; feeds the season sensor.
+#
+sensor:
+  - platform: statistics
+    name: "Outdoor Temperature 7 Day Mean"
+    unique_id: outdoor_temperature_7_day_mean
+    entity_id: sensor.tempest_temperature
+    state_characteristic: mean
+    max_age:
+      days: 7
+    sampling_size: 20000
+    precision: 1
