@@ -141,11 +141,11 @@ cards:
         state_color: true
 
   #
-  # Smart Climate (dry run)
+  # Smart Climate
   #
   - type: custom:button-card
     template: section_title
-    name: Smart Climate (dry run)
+    name: Smart Climate
   - type: entities
     entities:
       - entity: input_boolean.climate_automations
@@ -190,10 +190,6 @@ cards:
       - entity: input_select.climate_mode_basement
         name: Basement Mode
         icon: mdi:home-thermometer
-
-  - type: custom:button-card
-    name: Each zone stays a dry run (the logbook shows what Smart Climate would do) unless its live switch is on. Trial the radiant zones and the garage only until the old Eco automations are retired.
-    template: kohbo_card_section_description
 
   - type: custom:button-card
     template: section_title
@@ -249,6 +245,9 @@ cards:
         secondary_info: last-changed
         state_color: true
 
+  - type: custom:button-card
+    name: Each zone stays a dry run (the logbook shows what Smart Climate would do) unless its live switch is on. Trial the radiant zones and the garage only until the old Eco automations are retired.
+    template: kohbo_card_section_description
 
   #
   # Smart Climate Setpoints
