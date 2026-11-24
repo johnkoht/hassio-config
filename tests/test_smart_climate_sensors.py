@@ -171,8 +171,9 @@ def swing(name, temps, now="40", lookahead="6", amount="8"):
          "input_number.climate_forecast_lookahead": lookahead,
          "input_number.climate_forecast_swing": amount, FC: "2026-11-24T07:00"},
         {FC: {"forecast": temps}})
-    return (truthy(ha.render_entity(cfg, "availability")),
-            truthy(ha.render_entity(cfg, "state")))
+    avail = truthy(ha.render_entity(cfg, "availability"))
+    # HA never renders state while availability is false
+    return avail, avail and truthy(ha.render_entity(cfg, "state"))
 
 
 def test_cold_swing():
