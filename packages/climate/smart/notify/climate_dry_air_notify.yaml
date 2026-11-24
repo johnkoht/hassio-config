@@ -1,0 +1,33 @@
+# Climate Dry Air Notify
+#
+# Tells John when indoor air turns dry; the radiant cold-weather bump is
+# skipped. At most once every 12 hours.
+#
+automation:
+  - id: "climate_dry_air_notify"
+    alias: "Climate - Dry Air Notify"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.climate_indoor_air_dry
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - alias: "Not sent in the last 12 hours"
+        condition: template
+        value_template: >-
+          {% set last = this.attributes.last_triggered %}
+          {{ last is none or (now() - last).total_seconds() > 43200 }}
+    actions:
+      - action: script.general_notification
+        data:
+          title: "Indoor air is dry"
+          message: >-
+            Indoor humidity is {{ states('sensor.average_indoor_humidity') }}%.
+            The radiant cold-weather bump is skipped while the air is dry.
+            {% if not is_state('input_boolean.climate_live_control', 'on') %}(dry run){% endif %}
+          devices: "jk"
+          priority: "passive"
+          url: /dashboard-kohbo/climate-hvac#climate_settings_popup

@@ -1,0 +1,50 @@
+# Climate Precondition Main Floor Wake
+#
+# Turns the pre-wake flag on once the lead time before the predicted wake
+# opens, while the zone is still in Sleep.
+#
+automation:
+  - id: "climate_precondition_main_floor_wake"
+    alias: "Climate - Precondition Main Floor Wake"
+    mode: single
+    triggers:
+      - trigger: template
+        value_template: >-
+          {% set wake_s = states('input_datetime.predicted_wake_time') %}
+          {% set ns = namespace(n=0) %}
+          {% for p in states('input_text.climate_wake_history').split(',') %}
+            {% if (p | trim).isdigit() %}{% set ns.n = ns.n + 1 %}{% endif %}
+          {% endfor %}
+          {% set season = states('sensor.climate_active_season') %}
+          {% if season == 'Heating' %}
+            {% set delta = states('input_number.climate_main_floor_comfort_heat') | float(0)
+                           - states('input_number.climate_main_floor_sleep_heat') | float(0) %}
+          {% elif season == 'Cooling' %}
+            {% set delta = states('input_number.climate_main_floor_sleep_cool') | float(0)
+                           - states('input_number.climate_main_floor_comfort_cool') | float(0) %}
+          {% else %}
+            {% set delta = 0 %}
+          {% endif %}
+          {% set mpd = states('input_number.climate_main_floor_minutes_per_degree') | float(0) %}
+          {% set max_lead = states('input_number.climate_precondition_max_lead') | float(0) %}
+          {% set lead = [max_lead, (delta * mpd) | round(0, 'ceil')] | min %}
+          {{ is_state('input_boolean.bedtime', 'on')
+             and has_value('input_datetime.predicted_wake_time')
+             and ns.n >= 3
+             and lead > 0
+             and now() >= today_at(wake_s) - timedelta(minutes=lead)
+             and now() < today_at(wake_s) }}
+    conditions:
+      - condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - condition: state
+        entity_id: input_select.climate_mode_main_floor
+        state: "Sleep"
+      - condition: state
+        entity_id: input_boolean.climate_precondition_main_floor
+        state: "off"
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.climate_precondition_main_floor
