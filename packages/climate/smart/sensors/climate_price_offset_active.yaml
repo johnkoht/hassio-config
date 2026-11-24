@@ -1,0 +1,19 @@
+# Climate Price Offset Active
+#
+# Expensive power, price automations on, not entertaining, not extreme weather.
+# 15 min dwell either way (the PR #22 value).
+#
+template:
+  - binary_sensor:
+      - name: "Climate Price Offset Active"
+        unique_id: climate_price_offset_active
+        default_entity_id: binary_sensor.climate_price_offset_active
+        state: >-
+          {{ is_state('binary_sensor.energy_prices_are_high', 'on')
+             and is_state('input_boolean.climate_energy_price_automations', 'on')
+             and is_state('input_boolean.entertainment_mode', 'off')
+             and is_state('binary_sensor.extreme_climate', 'off') }}
+        delay_on:
+          minutes: 15
+        delay_off:
+          minutes: 15

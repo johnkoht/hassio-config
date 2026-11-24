@@ -1,0 +1,48 @@
+# Climate Wake Time Learn
+#
+# When a bedtime of at least 4 h ends, record the minute of day and set the
+# predicted wake time to the median of the last 7.
+#
+automation:
+  - id: "climate_wake_time_learn"
+    alias: "Climate - Wake Time Learn"
+    mode: queued
+    max: 3
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        from: "on"
+        to: "off"
+    actions:
+      - variables:
+          bedtime_hours: >-
+            {{ (now() - trigger.from_state.last_changed).total_seconds() / 3600 }}
+          # Valid entries only (0-1439), newest last, at most 7; a list
+          history: >-
+            {% set ns = namespace(l=[]) %}
+            {% for p in states('input_text.climate_wake_history').split(',') %}
+              {% set v = p | trim %}
+              {% if v.isdigit() and (v | int) < 1440 %}
+                {% set ns.l = ns.l + [v | int] %}
+              {% endif %}
+            {% endfor %}
+            {% set ns.l = (ns.l + [now().hour * 60 + now().minute])[-7:] %}
+            {{ ns.l }}
+      - alias: "Bedtime lasted at least 4 hours"
+        condition: template
+        value_template: "{{ bedtime_hours | float(0) >= 4 }}"
+      - variables:
+          median: >-
+            {% set s = history | sort %}
+            {% set n = s | count %}
+            {% if n % 2 == 1 %}{{ s[n // 2] }}{% else %}{{ (s[n // 2 - 1] + s[n // 2] + 1) // 2 }}{% endif %}
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.climate_wake_history
+        data:
+          value: "{{ history | join(',') }}"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.predicted_wake_time
+        data:
+          time: "{{ '%02d:%02d:00' | format(median | int // 60, median | int % 60) }}"

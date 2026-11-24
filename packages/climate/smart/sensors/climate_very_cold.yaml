@@ -1,0 +1,26 @@
+# Climate Very Cold
+#
+# On below the radiant cold cutoff; off again at cutoff + 2 (holds in between).
+#
+template:
+  - binary_sensor:
+      - name: "Climate Very Cold"
+        unique_id: climate_very_cold
+        default_entity_id: binary_sensor.climate_very_cold
+        availability: >-
+          {{ has_value('sensor.tempest_temperature')
+             and has_value('input_number.climate_radiant_cold_cutoff') }}
+        state: >-
+          {% set t = states('sensor.tempest_temperature') | float %}
+          {% set c = states('input_number.climate_radiant_cold_cutoff') | float %}
+          {% if t < c %}
+            true
+          {% elif t >= c + 2 %}
+            false
+          {% else %}
+            {{ this.state == 'on' }}
+          {% endif %}
+        delay_on:
+          minutes: 30
+        delay_off:
+          minutes: 30

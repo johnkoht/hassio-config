@@ -1,0 +1,116 @@
+{#
+  Climate Control - decision macro
+
+  climate_decision(zone) returns compact JSON:
+    {"hvac_mode": heat|cool|off|skip, "temperature": number|null, "zone_mode": str, "reason": str}
+  Rendered by sensor.climate_decision_<zone> and by tests. Reads state only: no now(), no side effects.
+  Radiant zones never exceed 71 (constant, applied last); the garage is a constant 55 frost guard.
+#}
+{% macro climate_decision(zone) -%}
+{%- set RADIANT_CAP = 71 -%}
+{%- set RADIANT_FLOOR = 50 -%}
+{%- set GARAGE_FROST = 55 -%}
+{%- set n = namespace(mode='skip', temp=none, reason='', zm='') -%}
+{%- if zone == 'garage' -%}
+  {%- set n.mode = 'heat' -%}{%- set n.temp = GARAGE_FROST -%}{%- set n.reason = 'Frost guard' -%}{%- set n.zm = 'Frost guard' -%}
+{%- else -%}
+  {%- set zm = states('input_select.climate_mode_' ~ zone) -%}
+  {%- set season = states('sensor.climate_active_season') -%}
+  {%- set n.zm = zm -%}
+  {%- set nest = zone in ['main_floor', 'second_floor'] -%}
+  {%- if zm not in ['Comfort', 'Sleep', 'Away', 'Off', 'Override'] -%}
+    {%- set n.reason = 'Zone mode unknown' -%}
+  {%- elif zm == 'Override' -%}
+    {%- set n.reason = 'Override: hands off' -%}
+  {%- elif zm == 'Off' -%}
+    {%- set n.mode = 'off' -%}{%- set n.reason = 'Zone off' -%}
+  {%- elif season not in ['Heating', 'Cooling'] -%}
+    {%- set n.reason = 'Season unknown' -%}
+  {%- elif nest -%}
+    {%- set side = 'heat' if season == 'Heating' else 'cool' -%}
+    {%- set dflt = 65 if side == 'heat' else 79 -%}
+    {%- set comfort = states('input_number.climate_' ~ zone ~ '_comfort_' ~ side) | float(dflt) -%}
+    {%- set away_heat = states('input_number.climate_away_heat') | float(65) -%}
+    {%- set away_cool = states('input_number.climate_away_cool') | float(79) -%}
+    {%- set setback = states('input_number.climate_away_setback') | float(0) -%}
+    {%- set parts = namespace(lst=[]) -%}
+    {%- set t = namespace(v=comfort) -%}
+    {%- if zm == 'Comfort' -%}
+      {%- set parts.lst = ['Comfort ' ~ side ~ ' ' ~ (comfort | round(0) | int)] -%}
+    {%- elif zm == 'Sleep' -%}
+      {%- if is_state('input_boolean.climate_precondition_' ~ zone, 'on') -%}
+        {%- set parts.lst = ['Pre-wake'] -%}
+      {%- else -%}
+        {%- set t.v = states('input_number.climate_' ~ zone ~ '_sleep_' ~ side) | float(dflt) -%}
+        {%- set parts.lst = ['Sleep ' ~ side ~ ' ' ~ (t.v | round(0) | int)] -%}
+      {%- endif -%}
+    {%- else -%}
+      {%- if is_state('input_boolean.climate_away_extended', 'on') -%}
+        {%- set t.v = away_heat if side == 'heat' else away_cool -%}
+        {%- set parts.lst = ['Away extended'] -%}
+      {%- else -%}
+        {%- set t.v = comfort - setback if side == 'heat' else comfort + setback -%}
+        {%- set parts.lst = ['Away setback'] -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if zm in ['Comfort', 'Sleep'] -%}
+      {%- set boost = states('input_number.climate_forecast_boost') | float(0) -%}
+      {%- if boost > 0 and season == 'Heating' and is_state('binary_sensor.climate_forecast_cold_swing', 'on') -%}
+        {%- set t.v = t.v + boost -%}
+        {%- set parts.lst = parts.lst + ['Forecast cold swing +' ~ (boost | round(0) | int)] -%}
+      {%- elif boost > 0 and season == 'Cooling' and is_state('binary_sensor.climate_forecast_warm_swing', 'on') -%}
+        {%- set t.v = t.v - boost -%}
+        {%- set parts.lst = parts.lst + ['Forecast warm swing -' ~ (boost | round(0) | int)] -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if zm == 'Comfort' and is_state('binary_sensor.climate_price_offset_active', 'on')
+          and not (zone == 'second_floor' and (is_state('input_boolean.ninos_bedroom_occupied', 'on') or is_state('input_boolean.gianlucas_room_occupied', 'on'))) -%}
+      {%- set off = states('input_number.climate_price_offset') | float(0) -%}
+      {%- if off > 0 -%}
+        {%- set t.v = t.v - off if side == 'heat' else t.v + off -%}
+        {%- set parts.lst = parts.lst + ['Price offset ' ~ ('-' if side == 'heat' else '+') ~ (off | round(0) | int)] -%}
+      {%- endif -%}
+    {%- endif -%}
+    {#- Round half-up to whole degrees first, then clamp to whole-degree Away bounds -#}
+    {%- set t.v = (t.v + 0.5) | round(0, 'floor') | int -%}
+    {%- if side == 'heat' -%}
+      {%- set t.v = [[t.v, away_heat | round(0, 'ceil') | int] | max, 80] | min -%}
+    {%- else -%}
+      {%- set t.v = [[t.v, 60] | max, away_cool | round(0, 'floor') | int] | min -%}
+    {%- endif -%}
+    {%- set n.mode = side -%}
+    {%- set n.temp = t.v | int -%}
+    {%- set n.reason = parts.lst | join('; ') -%}
+  {%- elif season == 'Cooling' -%}
+    {%- set n.reason = 'Cooling season: radiant hands off' -%}
+  {%- else -%}
+    {%- set comfort = states('input_number.climate_radiant_comfort_heat') | float(65) -%}
+    {%- set sleep = states('input_number.climate_radiant_sleep_heat') | float(65) -%}
+    {%- set away = states('input_number.climate_radiant_away_heat') | float(65) -%}
+    {%- set cold = states('input_number.climate_radiant_cold_heat') | float(65) -%}
+    {%- set t = namespace(v=comfort) -%}
+    {%- set why = namespace(s='') -%}
+    {%- if zm == 'Comfort' -%}
+      {%- set why.s = 'Comfort heat' -%}
+    {%- elif zm == 'Sleep' -%}
+      {%- set t.v = sleep -%}{%- set why.s = 'Sleep heat' -%}
+    {%- elif is_state('input_boolean.climate_away_extended', 'on') -%}
+      {%- set t.v = away -%}{%- set why.s = 'Away extended' -%}
+    {%- else -%}
+      {%- set why.s = 'Away (slab holds)' -%}
+    {%- endif -%}
+    {%- if zm in ['Comfort', 'Sleep'] and is_state('binary_sensor.climate_very_cold', 'on') -%}
+      {%- if is_state('binary_sensor.climate_indoor_air_dry', 'off') -%}
+        {%- set t.v = [t.v, cold] | max -%}{%- set why.s = why.s ~ '; Cold bump' -%}
+      {%- else -%}
+        {%- set why.s = why.s ~ '; Cold bump (dry air: skipped)' -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- set t.v = [[t.v, RADIANT_FLOOR] | max, RADIANT_CAP] | min -%}
+    {%- set t.v = [((t.v * 2 + 0.5) | round(0, 'floor')) / 2, RADIANT_CAP] | min -%}
+    {%- set n.mode = 'heat' -%}{%- set n.temp = t.v -%}
+    {%- set n.reason = why.s ~ ' ' ~ t.v -%}
+  {%- endif -%}
+{%- endif -%}
+{{ {'hvac_mode': n.mode, 'temperature': n.temp, 'zone_mode': n.zm, 'reason': n.reason} | to_json }}
+{%- endmacro %}

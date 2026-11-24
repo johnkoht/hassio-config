@@ -1,0 +1,50 @@
+# Climate - Apply Drift Check
+#
+# Every 30 min (only while live control is on), and on start, reload, master on
+# or live on, re-run every zone's apply script. Writes only when a zone differs.
+
+automation:
+  - id: "climate_apply_drift_check"
+    alias: "Climate - Apply Drift Check"
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        minutes: "/30"
+        id: tick
+      - trigger: homeassistant
+        event: start
+        id: start
+      - trigger: event
+        event_type: automation_reloaded
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_automations
+        to: "on"
+        id: start
+      - trigger: state
+        entity_id: input_boolean.climate_live_control
+        to: "on"
+        id: start
+    conditions:
+      - alias: "Master switch is on"
+        condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - alias: "The 30 min tick only acts when live control is on"
+        condition: template
+        value_template: >-
+          {{ trigger.id != 'tick' or is_state('input_boolean.climate_live_control', 'on') }}
+    actions:
+      - action: script.turn_on
+        target:
+          entity_id:
+            - script.climate_apply_main_floor
+            - script.climate_apply_second_floor
+            - script.climate_apply_jr_suite
+            - script.climate_apply_main_bedroom
+            - script.climate_apply_ninos_bedroom
+            - script.climate_apply_basement
+            - script.climate_apply_garage
+        data:
+          variables:
+            source: "{{ 'drift' if trigger.id == 'tick' else 'start' }}"

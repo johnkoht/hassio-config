@@ -16,3 +16,19 @@ To handle this:
 - If the Nest flips mode right after going into Eco, nothing corrects it
   until resume runs. A flip that comes minutes later is also not caught.
   (2026-10-13)
+
+## Smart climate controller: thermostat write behaviour (2026-11-24)
+
+- **Nest state arrives only via Pub/Sub, in a fresh context.** The SDM
+  integration writes no optimistic state, so the context can't tell HA's
+  writes from a person's. Override detection compares values instead and
+  allows a 180 s grace after HA's own write.
+- **Nest `set_temperature` applies to the current mode.** Wait for the mode to
+  change before setting the temperature.
+- **Ecobee writes state in the caller's context, then polls every 180 s** with a
+  fresh one. `preset_mode: temp` means a hold is active; it's not a preset to
+  set. The hold ending is the "hold ended" rule in override detection.
+- **Numeric template sensors must render `none`**, not the string `'unknown'`;
+  the string logs an error on every render.
+- **Macros in `custom_templates/` need `homeassistant.reload_custom_templates`
+  before `template.reload`**, or the sensors keep the old macro.
