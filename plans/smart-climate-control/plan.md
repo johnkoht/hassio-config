@@ -1,11 +1,11 @@
 ---
 title: Smart Climate Control
 slug: smart-climate-control
-status: draft
+status: shipped
 created: 2026-10-14
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 ---
 
 # Smart Climate Control
@@ -85,5 +85,28 @@ Energy prices stop toggling Eco. Instead they shift the active setpoint by a few
 - **Big-bang cutover breaks comfort**: dry-run soak first, the master kill switch, and the old automations stay in git so they can be brought back.
 - **PII leaks into the public repo**: no schedules in config, plans or commits. Grep the diff before each push.
 - **Existing exposure:** `docs/climate_automation_plan.md` already holds household schedule details in a public repo. Fix it separately, and ask before rewriting history.
+
+## Build corrections (pre-mortem + review, 2026-11-24)
+
+The pre-mortem and review found engineering faults in the layer text above. John's decisions are unchanged. `prd.md` supersedes the layer text wherever they differ:
+
+- **Dry-run polarity is inverted.**
+  - `input_boolean.climate_live_control` must be on for any `climate.*` write. Anything else is dry-run. A fresh boolean is off, so that's safe.
+  - It replaces `climate_dry_run`.
+  - The master `climate_automations` also starts off.
+  - The live toggle is not on the dashboard in this build.
+- **Override detection is value-based, not context-based.**
+  - The Nest writes every state change with a fresh context (verified in the installed integration), so context can't tell HA from a person.
+  - Override = differs from HA's decision and lands more than 180 s after HA's last write.
+  - An Ecobee hold ending (preset leaves `temp`) is re-applied, not flagged.
+- **One mode resolver** (the `house_mode_resolve` pattern) instead of one file per transition.
+- **A seed script** sets the starting values from the Decisions block only. Helpers have no `initial:`, so they start at their minimum.
+- **Single-setpoint control.**
+  - Heating → `heat`, Cooling → `cool`; the Away floor applies in Heating and the ceiling in Cooling.
+  - No `heat_cool`, and never the Eco preset.
+  - Radiant zones are hands-off in Cooling.
+- **Per-zone serialised controller.** A re-apply cap (no drift or hold re-write within 15 min of the last write) stops a Nest-vs-HA ping-pong.
+- **Two-stage Away.** First a setback; the full Away band only after the house has been empty past a configurable delay, or on Vacation. Covers the measured main floor recovery of about 3.5 h.
+- **Scope.** Task 9 (soak) is operational and task 10 (migration) runs after it. Neither is built in this change, and the old automations stay untouched.
 
 On approval → /approve → /ship smart-climate-control

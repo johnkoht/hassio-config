@@ -1,0 +1,213 @@
+# Climate Mode Resolve
+#
+# The only writer of the zone mode selects. Derives the house mode from
+# state; Override clears only on house events, Off is never touched.
+#
+automation:
+  - id: "climate_mode_resolve"
+    alias: "Climate - Mode Resolve"
+    mode: queued
+    max: 10
+    triggers:
+      # Arrival: wait so an arrival can end bedtime first
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "on"
+        for:
+          seconds: 10
+        id: "event"
+      # Departure: held for the Away delay; a depart event
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: "{{ states('input_number.climate_away_delay') | float(0) | int }}"
+        id: "empty_hold"
+      - trigger: state
+        entity_id: input_boolean.bedtime
+        to:
+          - "on"
+          - "off"
+        id: "event"
+      - trigger: state
+        entity_id:
+          - input_boolean.vacation_mode
+          - input_boolean.guest_mode
+          - input_boolean.quiet_mode
+        to:
+          - "on"
+          - "off"
+        id: "minor"
+      - trigger: state
+        entity_id: input_boolean.nearly_home
+        to: "on"
+        id: "event"
+      # Restarts and reloads drop the timers above, so resolve again
+      - trigger: homeassistant
+        event: start
+        id: "restart"
+      - trigger: event
+        event_type: automation_reloaded
+        id: "restart"
+      - trigger: state
+        entity_id: input_boolean.climate_automations
+        to: "on"
+        id: "restart"
+    # Variables and conditions live in actions on purpose: automation-level
+    # ones render when the trigger fires, before a queued run starts.
+    actions:
+      - alias: "Smart climate is on"
+        condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - variables:
+          # Empty when an input isn't on/off or the house is inside the delay
+          house: >-
+            {% set known = ['on', 'off'] %}
+            {% set occ = states('input_boolean.house_occupied') %}
+            {% set vac = states('input_boolean.vacation_mode') %}
+            {% set guest = states('input_boolean.guest_mode') %}
+            {% set bed = states('input_boolean.bedtime') %}
+            {% set near = states('input_boolean.nearly_home') %}
+            {% set delay = states('input_number.climate_away_delay') | float(0) %}
+            {% set tid = trigger.id | default('') %}
+            {% if occ not in known or vac not in known or guest not in known
+                  or bed not in known or near not in known %}
+            {% elif occ == 'off' and near == 'on' %}
+            Comfort
+            {%- elif occ == 'off' and vac == 'on' %}
+            Away
+            {%- elif occ == 'off' and guest != 'on' %}
+            {%- if tid in ['empty_hold', 'restart']
+                   or (now() - states.input_boolean.house_occupied.last_changed).total_seconds() >= delay * 60 %}
+            Away
+            {%- endif %}
+            {%- elif bed == 'on' %}
+            Sleep
+            {%- else %}
+            Comfort
+            {%- endif %}
+          clear_override: >-
+            {{ (trigger.id | default('')) in ['event', 'empty_hold'] }}
+      - variables:
+          house_second: >-
+            {{ 'Sleep' if is_state('input_boolean.quiet_mode', 'on')
+                          and house | trim == 'Comfort' else house | trim }}
+      - alias: "Pre-wake flags off, only the ones that are on"
+        if:
+          - alias: "Not a restart"
+            condition: template
+            value_template: "{{ (trigger.id | default('')) != 'restart' }}"
+        then:
+          - if:
+              - condition: state
+                entity_id: input_boolean.climate_precondition_main_floor
+                state: "on"
+            then:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.climate_precondition_main_floor
+          - if:
+              - condition: state
+                entity_id: input_boolean.climate_precondition_second_floor
+                state: "on"
+            then:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.climate_precondition_second_floor
+      - alias: "Main floor mode"
+        if:
+          - alias: "Resolved, not Off, differs, and Override only clears on an event"
+            condition: template
+            value_template: >-
+              {{ house | trim != ''
+                 and states('input_select.climate_mode_main_floor') not in ['Off', 'unknown', 'unavailable']
+                 and states('input_select.climate_mode_main_floor') != house | trim
+                 and (states('input_select.climate_mode_main_floor') != 'Override'
+                      or clear_override | string | lower == 'true') }}
+        then:
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.climate_mode_main_floor
+            data:
+              option: "{{ house | trim }}"
+      - alias: "2nd floor mode"
+        if:
+          - alias: "Resolved, not Off, differs, and Override only clears on an event"
+            condition: template
+            value_template: >-
+              {{ house_second | trim != ''
+                 and states('input_select.climate_mode_second_floor') not in ['Off', 'unknown', 'unavailable']
+                 and states('input_select.climate_mode_second_floor') != house_second | trim
+                 and (states('input_select.climate_mode_second_floor') != 'Override'
+                      or clear_override | string | lower == 'true') }}
+        then:
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.climate_mode_second_floor
+            data:
+              option: "{{ house_second | trim }}"
+      - alias: "Jr suite mode"
+        if:
+          - alias: "Resolved, not Off, differs, and Override only clears on an event"
+            condition: template
+            value_template: >-
+              {{ house | trim != ''
+                 and states('input_select.climate_mode_jr_suite') not in ['Off', 'unknown', 'unavailable']
+                 and states('input_select.climate_mode_jr_suite') != house | trim
+                 and (states('input_select.climate_mode_jr_suite') != 'Override'
+                      or clear_override | string | lower == 'true') }}
+        then:
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.climate_mode_jr_suite
+            data:
+              option: "{{ house | trim }}"
+      - alias: "Main bedroom mode"
+        if:
+          - alias: "Resolved, not Off, differs, and Override only clears on an event"
+            condition: template
+            value_template: >-
+              {{ house | trim != ''
+                 and states('input_select.climate_mode_main_bedroom') not in ['Off', 'unknown', 'unavailable']
+                 and states('input_select.climate_mode_main_bedroom') != house | trim
+                 and (states('input_select.climate_mode_main_bedroom') != 'Override'
+                      or clear_override | string | lower == 'true') }}
+        then:
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.climate_mode_main_bedroom
+            data:
+              option: "{{ house | trim }}"
+      - alias: "Ninos bedroom mode"
+        if:
+          - alias: "Resolved, not Off, differs, and Override only clears on an event"
+            condition: template
+            value_template: >-
+              {{ house | trim != ''
+                 and states('input_select.climate_mode_ninos_bedroom') not in ['Off', 'unknown', 'unavailable']
+                 and states('input_select.climate_mode_ninos_bedroom') != house | trim
+                 and (states('input_select.climate_mode_ninos_bedroom') != 'Override'
+                      or clear_override | string | lower == 'true') }}
+        then:
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.climate_mode_ninos_bedroom
+            data:
+              option: "{{ house | trim }}"
+      - alias: "Basement mode"
+        if:
+          - alias: "Resolved, not Off, differs, and Override only clears on an event"
+            condition: template
+            value_template: >-
+              {{ house | trim != ''
+                 and states('input_select.climate_mode_basement') not in ['Off', 'unknown', 'unavailable']
+                 and states('input_select.climate_mode_basement') != house | trim
+                 and (states('input_select.climate_mode_basement') != 'Override'
+                      or clear_override | string | lower == 'true') }}
+        then:
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.climate_mode_basement
+            data:
+              option: "{{ house | trim }}"

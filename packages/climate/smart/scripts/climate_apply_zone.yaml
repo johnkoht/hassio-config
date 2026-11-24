@@ -1,0 +1,152 @@
+# Climate - Apply Zone
+#
+# Writes one zone's decision to its thermostat, only when it differs.
+# Dry run (live control not "on") logs one line and makes no climate calls.
+# Never touches presets.
+
+script:
+  climate_apply_zone:
+    alias: "Climate - Apply Zone"
+    icon: mdi:thermostat-auto
+    mode: parallel
+    max: 10
+    fields:
+      zone:
+        description: "main_floor, second_floor, jr_suite, main_bedroom, ninos_bedroom, basement or garage"
+      source:
+        description: "decision, drift, hold or start"
+    sequence:
+      - variables:
+          climate_entity: >-
+            {{ {'main_floor': 'climate.nest_main_floor',
+                'second_floor': 'climate.nest_2nd_floor'}.get(zone, 'climate.' ~ zone) }}
+          decision_entity: "sensor.climate_decision_{{ zone }}"
+          want_mode: "{{ state_attr(decision_entity, 'hvac_mode') | string }}"
+          reason: "{{ state_attr(decision_entity, 'reason') | string }}"
+          want_temp: >-
+            {% set v = states(decision_entity) | float(none) %}
+            {% if want_mode in ['heat', 'cool'] and v is not none %}
+              {{ [v, 71] | min if zone in ['jr_suite', 'main_bedroom', 'ninos_bedroom', 'basement'] else v }}
+            {% else %}
+              {{ none }}
+            {% endif %}
+          cur_mode: "{{ states(climate_entity) }}"
+          cur_temp: "{{ state_attr(climate_entity, 'temperature') }}"
+          live: "{{ is_state('input_boolean.climate_live_control', 'on') }}"
+          age: >-
+            {{ now().timestamp()
+               - as_timestamp(states('input_datetime.climate_' ~ zone ~ '_last_write'), 0) }}
+          need_mode: "{{ want_mode in ['heat', 'cool', 'off'] and cur_mode != want_mode }}"
+          need_temp: >-
+            {{ want_mode in ['heat', 'cool'] and want_temp is number
+               and (cur_temp is not number or (cur_temp - want_temp) | abs >= 0.5) }}
+          summary: >-
+            {{ zone }} ({{ source }}): {{ cur_mode }} {{ cur_temp }} -> {{ want_mode }} {{ want_temp }}, {{ reason }}
+      - alias: "Master switch is on"
+        condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - alias: "Known zone with a usable decision and thermostat"
+        condition: template
+        value_template: >-
+          {{ zone in ['main_floor', 'second_floor', 'jr_suite', 'main_bedroom',
+                      'ninos_bedroom', 'basement', 'garage']
+             and want_mode in ['heat', 'cool', 'off']
+             and cur_mode not in ['unknown', 'unavailable'] }}
+      - alias: "Zone is not in Override (garage has no mode)"
+        condition: template
+        value_template: >-
+          {{ zone == 'garage' or not is_state('input_select.climate_mode_' ~ zone, 'Override') }}
+      - alias: "Mode or setpoint differs"
+        condition: template
+        value_template: "{{ need_mode or need_temp }}"
+      - alias: "Re-apply cap: a drift or hold write within 15 min is a fight"
+        if:
+          - condition: template
+            value_template: "{{ live and source in ['drift', 'hold'] and age < 900 }}"
+        then:
+          - action: logbook.log
+            data:
+              name: "Climate fight"
+              message: "{{ summary }} (skipped, written under 15 min ago)"
+              entity_id: "{{ climate_entity }}"
+          - stop: "Re-apply cap"
+      - alias: "Dry run: log only"
+        if:
+          - condition: template
+            value_template: "{{ not live }}"
+        then:
+          - action: logbook.log
+            data:
+              name: "Climate dry run"
+              message: "{{ summary }}"
+              entity_id: "{{ climate_entity }}"
+          - stop: "Dry run"
+      - alias: "Stamp the write time"
+        if:
+          - condition: template
+            value_template: "{{ zone != 'garage' }}"
+        then:
+          - action: input_datetime.set_datetime
+            target:
+              entity_id: "input_datetime.climate_{{ zone }}_last_write"
+            data:
+              datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+      - alias: "Mode first; the thermostat sets the setpoint for its current mode"
+        if:
+          - condition: template
+            value_template: "{{ need_mode }}"
+        then:
+          - action: climate.set_hvac_mode
+            target:
+              entity_id: "{{ climate_entity }}"
+            data:
+              hvac_mode: "{{ want_mode }}"
+          - alias: "Wait for the new mode unless turning off"
+            if:
+              - condition: template
+                value_template: "{{ want_mode != 'off' }}"
+            then:
+              - wait_template: "{{ is_state(climate_entity, want_mode) }}"
+                timeout: 60
+                continue_on_timeout: true
+              - alias: "Mode never arrived"
+                if:
+                  - condition: template
+                    value_template: "{{ not wait.completed }}"
+                then:
+                  - action: logbook.log
+                    data:
+                      name: "Climate set"
+                      message: "{{ summary }} (mode not reached in 60 s, setpoint skipped)"
+                      entity_id: "{{ climate_entity }}"
+                  - stop: "Mode not reached"
+      - alias: "Live control still on after the wait"
+        condition: state
+        entity_id: input_boolean.climate_live_control
+        state: "on"
+      - alias: "Setpoint (always after a mode change, the old one may be stale)"
+        if:
+          - condition: template
+            value_template: "{{ want_temp is number and (need_mode or need_temp) }}"
+        then:
+          - action: climate.set_temperature
+            target:
+              entity_id: "{{ climate_entity }}"
+            data:
+              temperature: "{{ want_temp }}"
+      - alias: "Stamp again so the grace window covers a slow Ecobee poll"
+        if:
+          - condition: template
+            value_template: "{{ zone != 'garage' }}"
+        then:
+          - action: input_datetime.set_datetime
+            target:
+              entity_id: "input_datetime.climate_{{ zone }}_last_write"
+            data:
+              datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+      - action: logbook.log
+        data:
+          name: "Climate set"
+          message: "{{ summary }}"
+          entity_id: "{{ climate_entity }}"

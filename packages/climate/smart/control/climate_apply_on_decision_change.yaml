@@ -1,0 +1,39 @@
+# Climate - Apply on Decision Change
+#
+# When a zone's decision changes and holds for 30 s, queue that zone's apply script.
+
+automation:
+  - id: "climate_apply_on_decision_change"
+    alias: "Climate - Apply on Decision Change"
+    mode: queued
+    max: 10
+    triggers:
+      - trigger: state
+        entity_id:
+          - sensor.climate_decision_main_floor
+          - sensor.climate_decision_second_floor
+          - sensor.climate_decision_jr_suite
+          - sensor.climate_decision_main_bedroom
+          - sensor.climate_decision_ninos_bedroom
+          - sensor.climate_decision_basement
+          - sensor.climate_decision_garage
+        for:
+          seconds: 30
+    conditions:
+      - alias: "Master switch is on"
+        condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - alias: "Target or mode changed, not just the reason text"
+        condition: template
+        value_template: >-
+          {{ trigger.from_state is not none and trigger.to_state is not none
+             and (trigger.from_state.state != trigger.to_state.state
+                  or trigger.from_state.attributes.hvac_mode != trigger.to_state.attributes.hvac_mode) }}
+    actions:
+      - action: script.turn_on
+        target:
+          entity_id: "script.climate_apply_{{ trigger.entity_id.split('climate_decision_')[1] }}"
+        data:
+          variables:
+            source: decision

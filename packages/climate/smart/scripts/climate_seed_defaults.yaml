@@ -1,0 +1,163 @@
+# Climate - Reset Smart Climate Defaults
+#
+# Seeds every smart climate number and select, sets dry run, turns the
+# master on. The only place the default values live.
+
+script:
+  climate_seed_defaults:
+    alias: "Climate - Reset Smart Climate Defaults"
+    icon: mdi:backup-restore
+    mode: single
+    sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_main_floor_comfort_heat
+        data:
+          value: 72
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_main_floor_comfort_cool
+        data:
+          value: 76
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_main_floor_sleep_heat
+        data:
+          value: 72
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_main_floor_sleep_cool
+        data:
+          value: 72
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_second_floor_comfort_heat
+        data:
+          value: 72
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_second_floor_comfort_cool
+        data:
+          value: 76
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_second_floor_sleep_heat
+        data:
+          value: 72
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_second_floor_sleep_cool
+        data:
+          value: 72
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_away_heat
+        data:
+          value: 65
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_away_cool
+        data:
+          value: 79
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_away_setback
+        data:
+          value: 3
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_radiant_comfort_heat
+        data:
+          value: 68
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_radiant_sleep_heat
+        data:
+          value: 68
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_radiant_cold_heat
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_radiant_away_heat
+        data:
+          value: 65
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_radiant_cold_cutoff
+        data:
+          value: 15
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_humidity_floor
+        data:
+          value: 30
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_season_heat_below
+        data:
+          value: 58
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_season_cool_above
+        data:
+          value: 64
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_away_delay
+        data:
+          value: 30
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_away_extended_delay
+        data:
+          value: 4
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_main_floor_minutes_per_degree
+        data:
+          value: 31
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_second_floor_minutes_per_degree
+        data:
+          value: 12
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_precondition_max_lead
+        data:
+          value: 120
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_forecast_lookahead
+        data:
+          value: 4
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_forecast_swing
+        data:
+          value: 10
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_forecast_boost
+        data:
+          value: 1
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.climate_price_offset
+        data:
+          value: 2
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.climate_season
+        data:
+          option: Auto
+      - alias: "Dry run: live control off"
+        action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.climate_live_control
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.climate_automations

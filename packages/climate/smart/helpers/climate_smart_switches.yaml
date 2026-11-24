@@ -1,0 +1,25 @@
+# Smart Climate Switches
+#
+# Master switch, live-control switch and the Away and pre-wake flags.
+# Live control off = dry run (logbook only). No `initial:` (keeps restore).
+
+input_boolean:
+  climate_automations:
+    name: Climate - Smart Automations
+    icon: mdi:thermostat-auto
+
+  climate_live_control:
+    name: Climate - Live Control
+    icon: mdi:thermostat-cog
+
+  climate_away_extended:
+    name: Climate - Away Extended
+    icon: mdi:home-export-outline
+
+  climate_precondition_main_floor:
+    name: Climate - Precondition Main Floor
+    icon: mdi:clock-start
+
+  climate_precondition_second_floor:
+    name: Climate - Precondition 2nd Floor
+    icon: mdi:clock-start

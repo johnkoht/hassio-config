@@ -1,0 +1,26 @@
+# Climate Forecast Warm Swing
+#
+# On when the highest temperature in the next climate_forecast_lookahead hourly
+# forecast entries is climate_forecast_swing or more away from outdoors now.
+#
+template:
+  - binary_sensor:
+      - name: "Climate Forecast Warm Swing"
+        unique_id: climate_forecast_warm_swing
+        default_entity_id: binary_sensor.climate_forecast_warm_swing
+        availability: >-
+          {% set f = state_attr('sensor.pirateweather_hourly_forecast', 'forecast') %}
+          {{ f is iterable and f is not string and f | count > 0
+             and has_value('sensor.tempest_temperature')
+             and has_value('input_number.climate_forecast_lookahead')
+             and has_value('input_number.climate_forecast_swing') }}
+        state: >-
+          {% set f = state_attr('sensor.pirateweather_hourly_forecast', 'forecast') %}
+          {% set n = states('input_number.climate_forecast_lookahead') | float(0) | int %}
+          {% set t = states('sensor.tempest_temperature') | float %}
+          {% set swing = states('input_number.climate_forecast_swing') | float %}
+          {% set temps = f[:n] | selectattr('temperature', 'defined')
+                         | map(attribute='temperature') | map('float') | list %}
+          {{ temps | count > 0 and temps | max >= t + swing }}
+        delay_off:
+          minutes: 30

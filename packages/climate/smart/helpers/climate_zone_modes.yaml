@@ -1,0 +1,73 @@
+# Smart Climate Zone Modes
+#
+# One mode select per zone (not the garage) plus the season select.
+# Written by the mode resolver; Override means hands off. No `initial:`.
+
+input_select:
+  climate_mode_main_floor:
+    name: Climate - Main Floor Mode
+    options:
+      - "Comfort"
+      - "Sleep"
+      - "Away"
+      - "Off"
+      - "Override"
+    icon: mdi:home-thermometer
+
+  climate_mode_second_floor:
+    name: Climate - 2nd Floor Mode
+    options:
+      - "Comfort"
+      - "Sleep"
+      - "Away"
+      - "Off"
+      - "Override"
+    icon: mdi:home-thermometer
+
+  climate_mode_jr_suite:
+    name: Climate - Jr Suite Mode
+    options:
+      - "Comfort"
+      - "Sleep"
+      - "Away"
+      - "Off"
+      - "Override"
+    icon: mdi:home-thermometer
+
+  climate_mode_main_bedroom:
+    name: Climate - Main Bedroom Mode
+    options:
+      - "Comfort"
+      - "Sleep"
+      - "Away"
+      - "Off"
+      - "Override"
+    icon: mdi:home-thermometer
+
+  climate_mode_ninos_bedroom:
+    name: Climate - Ninos Bedroom Mode
+    options:
+      - "Comfort"
+      - "Sleep"
+      - "Away"
+      - "Off"
+      - "Override"
+    icon: mdi:home-thermometer
+
+  climate_mode_basement:
+    name: Climate - Basement Mode
+    options:
+      - "Comfort"
+      - "Sleep"
+      - "Away"
+      - "Off"
+      - "Override"
+    icon: mdi:home-thermometer
+
+  climate_season:
+    name: Climate - Season
+    options:
+      - "Auto"
+      - "Heating"
+      - "Cooling"
+    icon: mdi:sun-snowflake-variant

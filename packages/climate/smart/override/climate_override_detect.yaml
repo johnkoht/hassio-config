@@ -1,0 +1,117 @@
+# Climate - Override Detect
+#
+# Detects a hand change by value, not context: the thermostat differs from the
+# decision and HA did not write the zone in the last 180 s. The Nest gives every
+# state a fresh context, so context can't tell HA from a person.
+
+automation:
+  - id: "climate_override_detect"
+    alias: "Climate - Override Detect"
+    mode: queued
+    max: 10
+    triggers:
+      - trigger: state
+        entity_id:
+          - climate.nest_main_floor
+          - climate.nest_2nd_floor
+          - climate.jr_suite
+          - climate.main_bedroom
+          - climate.ninos_bedroom
+          - climate.basement
+        to:
+          - heat
+          - cool
+          - heat_cool
+          - "off"
+      - trigger: state
+        entity_id:
+          - climate.nest_main_floor
+          - climate.nest_2nd_floor
+          - climate.jr_suite
+          - climate.main_bedroom
+          - climate.ninos_bedroom
+          - climate.basement
+        attribute: temperature
+    # Variables and conditions live in actions: queued runs must read fresh state.
+    actions:
+      - variables:
+          climate_entity: "{{ trigger.entity_id }}"
+          zone: >-
+            {{ {'climate.nest_main_floor': 'main_floor',
+                'climate.nest_2nd_floor': 'second_floor'}.get(climate_entity, climate_entity.split('.')[1]) }}
+          decision_entity: "sensor.climate_decision_{{ zone }}"
+          want_mode: "{{ state_attr(decision_entity, 'hvac_mode') | string }}"
+          want_temp: "{{ states(decision_entity) | float(none) }}"
+          cur_mode: "{{ states(climate_entity) }}"
+          cur_temp: "{{ state_attr(climate_entity, 'temperature') }}"
+          mode_differs: "{{ cur_mode not in ['unknown', 'unavailable'] and cur_mode != want_mode }}"
+          temp_differs: >-
+            {{ not mode_differs and want_mode in ['heat', 'cool']
+               and want_temp is number and cur_temp is number
+               and (cur_temp - want_temp) | abs >= 1 }}
+          is_ecobee: "{{ zone in ['jr_suite', 'main_bedroom', 'ninos_bedroom', 'basement'] }}"
+          hold_ended: "{{ is_ecobee and temp_differs and state_attr(climate_entity, 'preset_mode') | string != 'temp' }}"
+          live: "{{ is_state('input_boolean.climate_live_control', 'on') }}"
+          summary: >-
+            {{ zone }}: thermostat {{ cur_mode }} {{ cur_temp }}, decision {{ want_mode }} {{ want_temp }}
+      - alias: "Master switch is on"
+        condition: state
+        entity_id: input_boolean.climate_automations
+        state: "on"
+      - alias: "Zone mode is Comfort, Sleep or Away"
+        condition: template
+        value_template: >-
+          {{ states('input_select.climate_mode_' ~ zone) in ['Comfort', 'Sleep', 'Away'] }}
+      - alias: "Decision is heat, cool or off"
+        condition: template
+        value_template: "{{ want_mode in ['heat', 'cool', 'off'] }}"
+      - alias: "Thermostat differs from the decision"
+        condition: template
+        value_template: "{{ mode_differs or temp_differs }}"
+      - alias: "HA did not write this zone in the last 180 s"
+        condition: template
+        value_template: >-
+          {{ now().timestamp()
+             - as_timestamp(states('input_datetime.climate_' ~ zone ~ '_last_write'), 0) > 180 }}
+      - if:
+          - alias: "Ecobee hold ended, same mode, setpoint back on schedule"
+            condition: template
+            value_template: "{{ hold_ended }}"
+        then:
+          - if:
+              - condition: template
+                value_template: "{{ live }}"
+            then:
+              - action: script.turn_on
+                target:
+                  entity_id: "script.climate_apply_{{ zone }}"
+                data:
+                  variables:
+                    source: hold
+            else:
+              - action: logbook.log
+                data:
+                  name: "Climate dry run"
+                  message: "hold ended, would re-apply: {{ summary }}"
+                  entity_id: "{{ climate_entity }}"
+        else:
+          - if:
+              - condition: template
+                value_template: "{{ live }}"
+            then:
+              - action: input_select.select_option
+                target:
+                  entity_id: "input_select.climate_mode_{{ zone }}"
+                data:
+                  option: Override
+              - action: logbook.log
+                data:
+                  name: "Climate override"
+                  message: "{{ summary }}"
+                  entity_id: "{{ climate_entity }}"
+            else:
+              - action: logbook.log
+                data:
+                  name: "Climate dry run"
+                  message: "would mark Override: {{ summary }}"
+                  entity_id: "{{ climate_entity }}"
