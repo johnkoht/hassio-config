@@ -34,6 +34,7 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 ## Discovered Patterns
 - [Task 2] Trigger-based hysteresis: `climate_active_season.yaml` reads `this.state` guarded by `this is defined and this.state in [...]`; plain binaries (very_cold, indoor_air_dry) hold with `this.state == 'on'` in the band.
 - [Task 3] Decision logic lives once in custom_templates/climate_control.jinja (`climate_decision(zone)` -> JSON string). Sensors call `climate_decision('<zone>') | trim | from_json`; null temperature renders 'unknown' (not 'None').
+- [Task 4] Controller: scripts compute everything in one `variables:` block, gate with `condition: template`, and re-read live state; override detect does the same in action-level variables. Interpreter-friendly: only variables/condition/if/stop/wait_template/action.
 *(Add: [Task N] pattern-name: description at file:line)*
 
 ## Active Gotchas
@@ -41,11 +42,14 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - [Task 2] `input_number` states render as `5.0`: `| int(0)` on them gives 0 in HA. Use `| float(0) | int` (climate_forecast_*_swing.yaml).
 - [Task 2] Jinja has no `is list` test; check forecasts with `x is iterable and x is not string and x | count > 0`.
 - [Task 3] Jinja namespace attr named `items` clashes with dict method; use another name. Macro tests: render with FileSystemLoader on custom_templates/ and `{% from 'climate_control.jinja' import climate_decision %}`; tests/test_smart_climate_decisions.py has `decide(zone, **state_overrides)` and a NORMAL baseline state.
+- [Task 4] Harness `float`/`int` now raise without a default like HA (`"5.0"|int` fails, strings only go through int()); `has_value` is only unknown/unavailable/missing. A test helper must not render `state` when `availability` is false (HA doesn't).
+- [Task 4] After a mode change the apply script always writes the setpoint (the Nest's attribute lags with no optimistic state). Hold-ended path in override detect needs same mode + setpoint-only mismatch, otherwise a person turning an Ecobee off would be fought every 15 min.
 *(Add: [Task N] issue the next developer must know about)*
 
 ## Shared Utilities Created
 - [Task 1] tests/test_smart_climate_static.py has a tolerant loader (`add_multi_constructor("!", ...)`) and `helpers(domain)` returning every helper of a domain under packages/climate/smart/. Seed values live only in packages/climate/smart/scripts/climate_seed_defaults.yaml.
 - [Task 2] tests/smart_climate_harness.py: `load(rel)`, `entities(rel)` ({unique_id: (domain, cfg)}), `FakeHA(states, attrs, now).render(tpl, this_state=..., loader=...)` / `.render_entity(cfg, field)`, `make_env(ha, loader)`, `truthy()`. Pass a `jinja2.FileSystemLoader` on custom_templates/ for task-3 macro imports. Missing entities read `unknown`.
+- [Task 4] tests/smart_climate_harness.py: `run_actions(seq, ha, variables, wait='completed'|'timeout', on_action=None)` -> RunResult(.actions service calls, .trace incl. wait_template/stop, .names()); `Interpreter`, `native()`, `ha_float`, `ha_int`, `as_timestamp`.
 *(Add: [Task N] functionName() in path/to/file)*
 
 ## Context Corrections
