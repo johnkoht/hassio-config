@@ -2,6 +2,7 @@
 from pathlib import Path
 
 import yaml
+from jinja2 import Environment
 
 REPO = Path(__file__).resolve().parent.parent
 PKG = REPO / "packages/laundry"
@@ -48,17 +49,63 @@ def test_condition_ladder_order_and_gates():
     by = {c["entity_id"]: c for c in conds if c.get("entity_id")}
     assert by[NIGHT]["state"] == "on" and by[MAIN]["state"] == "off"
     assert by[TOGGLE]["state"] == "on" and by["input_select.laundry_room"]["state"] == "Auto"
-    text = FILE.read_text()
-    assert "Away" in text and "Vacation" in text
-    assert "is_number" in text and "very_high" in text
+    assert "Away" in conds[2]["value_template"] and "Vacation" in conds[2]["value_template"]
+    assert conds[-1]["condition"] == "template"
 
 
-def test_colour_map_is_rgb_not_css_and_covers_every_tier():
+def _env(states_map):
+    env = Environment()
+    env.filters["is_number"] = lambda v: isinstance(v, (int, float)) or _isnum(v)
+    return env, (lambda eid: states_map.get(eid, "unknown")), (
+        lambda eid, st: states_map.get(eid, "unknown") == st)
+
+
+def _isnum(v):
+    try:
+        float(v)
+        return True
+    except (TypeError, ValueError):
+        return False
+
+
+def _render(tpl, states_map):
+    env, states, is_state = _env(states_map)
+    a = auto()
+    out = env.from_string(tpl).render(
+        states=states, is_state=is_state, tier_colors=a["variables"]["tier_colors"],
+        negative_color=a["variables"]["negative_color"])
+    return out.strip()
+
+
+def _valid(tier, price):
+    tpl = auto()["conditions"][-1]["value_template"]
+    return _render(tpl, {"sensor.energy_price_tier": tier,
+                         "sensor.comed_current_hour_average_price": price}) == "True"
+
+
+def test_validity_condition_passes_real_tier_and_price():
+    for tier in ("low", "normal", "high", "very_high"):
+        assert _valid(tier, "4.2") and _valid(tier, "-1.5")
+
+
+def test_validity_condition_rejects_bad_feed_or_unknown_tier():
+    for tier in ("unknown", "unavailable", "extreme", ""):
+        assert not _valid(tier, "4.2"), tier
+    for price in ("unknown", "unavailable", "abc", ""):
+        assert not _valid("low", price), price
+
+
+def test_colour_map_is_rgb_and_renders_each_tier_and_negative():
     action = auto()["actions"][0]
     data = action["data"]
-    for tier in ("low", "normal", "high", "very_high"):
-        assert f"'{tier}':" in data["rgb_color"]
-    assert "var(" not in data["rgb_color"] and "color_name" not in data
-    assert "[160, 40, 255]" in data["rgb_color"]
+    assert auto()["variables"]["tier_colors"].keys() == {"low", "normal", "high", "very_high"}
+    assert "var(" not in str(auto()["variables"]) and "color_name" not in data
+    for tier, rgb in auto()["variables"]["tier_colors"].items():
+        assert len(rgb) == 3 and all(0 <= c <= 255 for c in rgb)
+        out = _render(data["rgb_color"], {"sensor.energy_price_tier": tier})
+        assert out == str(rgb), tier
+    neg = _render(data["rgb_color"], {"sensor.energy_price_tier": "low",
+                                      "binary_sensor.energy_prices_are_negative": "on"})
+    assert neg == "[160, 40, 255]"
     assert "Bedtime" in data["brightness_pct"]
     assert action["target"]["entity_id"] == NIGHT

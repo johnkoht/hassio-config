@@ -9,6 +9,13 @@ automation:
   - id: "laundry_room_nightlight_price_color"
     alias: "Laundry Room nightlight price color"
     mode: restart
+    variables:
+      tier_colors:
+        low: [0, 200, 60]
+        normal: [40, 100, 255]
+        high: [255, 120, 0]
+        very_high: [255, 20, 20]
+      negative_color: [160, 40, 255]
     triggers:
       # Price tier settled (it flaps, so it must hold)
       - trigger: state
@@ -65,11 +72,12 @@ automation:
       - condition: state
         entity_id: light.laundry_room_main_lights
         state: "off"
-      # The tier sensor reads unavailable as low (green), so check the feed
+      # The tier sensor reads unavailable as low (green), so check the feed.
+      # A tier with no colour (a new one) also stops here.
       - condition: template
-        alias: "Price and tier are real values"
+        alias: "Price is a number and the tier has a colour"
         value_template: >
-          {{ states('sensor.energy_price_tier') in ['low', 'normal', 'high', 'very_high']
+          {{ states('sensor.energy_price_tier') in tier_colors
              and states('sensor.comed_current_hour_average_price') | is_number }}
     actions:
       - alias: "Colour by tier, dim at Bedtime"
@@ -78,10 +86,6 @@ automation:
           entity_id: light.laundry_room_nightlight
         data:
           rgb_color: >
-            {% if is_state('binary_sensor.energy_prices_are_negative', 'on') %}
-              {{ [160, 40, 255] }}
-            {% else %}
-              {{ {'low': [0, 200, 60], 'normal': [40, 100, 255],
-                  'high': [255, 120, 0], 'very_high': [255, 20, 20]}[states('sensor.energy_price_tier')] }}
-            {% endif %}
+            {{ negative_color if is_state('binary_sensor.energy_prices_are_negative', 'on')
+               else tier_colors[states('sensor.energy_price_tier')] }}
           brightness_pct: "{{ 5 if is_state('input_select.house', 'Bedtime') else 15 }}"
