@@ -4,7 +4,7 @@
 # Indoor and outdoor air quality, plus air purifier management.
 #   - Outdoor AQI (Des Plaines) + construction mode
 #   - Main floor and upper floor AQI summaries
-#   - Per-room AQI (6 Awair rooms) — tap-through to room drilldown (phase 2)
+#   - Per-room AQI (8 Awair rooms, incl. basement + datacenter) — tap-through to room drilldown (phase 2)
 #   - Air purifier controls (7 units) + construction mode lock
 #
 type: custom:vertical-layout
@@ -173,6 +173,12 @@ cards:
       - entity: sensor.nino_bedroom_awair_score
         name: Nino
         type: line
+      - entity: sensor.awair_element_basement_score
+        name: Basement
+        type: line
+      - entity: sensor.awair_element_basement_datacenter_score
+        name: Datacenter
+        type: line
 
   #
   # Per-Room AQI Score
@@ -186,46 +192,60 @@ cards:
     square: false
     cards:
       - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
+        template: kohbo_room_aqi_card
         variables:
           - name: Kitchen
           - entity: sensor.kitchen_awair_score
           - icon: mdi:fridge
 
       - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
+        template: kohbo_room_aqi_card
         variables:
           - name: Jr. Suite
           - entity: sensor.jr_suite_awair_score
           - icon: kohbo:kohbo-bed
 
       - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
+        template: kohbo_room_aqi_card
         variables:
           - name: Office
           - entity: sensor.office_awair_score
           - icon: kohbo:kohbo-laptop
 
       - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
+        template: kohbo_room_aqi_card
         variables:
           - name: Main Bedroom
           - entity: sensor.main_bedroom_awair_score
           - icon: kohbo:kohbo-bed-king
 
       - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
+        template: kohbo_room_aqi_card
         variables:
           - name: Gianluca's Bedroom
           - entity: sensor.gianluca_bedroom_awair_score
           - icon: kohbo:kohbo-bed-single
 
       - type: custom:decluttering-card
-        template: kohbo_room_temperature_card
+        template: kohbo_room_aqi_card
         variables:
           - name: Nino's Bedroom
           - entity: sensor.nino_bedroom_awair_score
           - icon: kohbo:kohbo-bed-single
+
+      - type: custom:decluttering-card
+        template: kohbo_room_aqi_card
+        variables:
+          - name: Basement
+          - entity: sensor.awair_element_basement_score
+          - icon: mdi:home-floor-b
+
+      - type: custom:decluttering-card
+        template: kohbo_room_aqi_card
+        variables:
+          - name: Datacenter
+          - entity: sensor.awair_element_basement_datacenter_score
+          - icon: mdi:server
 
   #
   # Air Purifier Controls

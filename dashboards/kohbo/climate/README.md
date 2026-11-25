@@ -86,6 +86,8 @@ When radiant floor heating is on, displays a 2-column grid of zone thermostats:
 
 Each zone card opens a detailed thermostat popup when tapped.
 
+**Garage** (`climate.garage`, Ecobee floor heating) sits in its own row below and is always shown: it is a frost guard and is not in `group.radiant_floor_heating_group`. It opens `#garage_thermostat`.
+
 ### 6. Room Temperature Monitoring
 
 Organized by floor sections:
@@ -105,8 +107,12 @@ Organized by floor sections:
 - Nino's Bedroom
 
 #### Misc. Areas
+- Basement (`sensor.awair_element_basement_temperature`)
+- Datacenter (`sensor.awair_element_basement_datacenter_temperature`)
 - Attic
-- Datacenter (Basement)
+- Garage (`sensor.temperature`, the Ecobee garage thermostat's own sensor)
+
+The basement Awairs keep the integration's default ids (`awair_element_basement_*`, `awair_element_basement_datacenter_*`), not the `{room}_awair_*` pattern.
 
 Each room displays:
 - Room name with icon
@@ -237,6 +243,7 @@ Uses `kohbo_room_temperature_card` decluttering template.
 - `thermostat_popup` - Main HVAC thermostat control popup
 - `thermostat_radiant_floor_popup` - Radiant floor zone thermostat popup
 - `kohbo_room_temperature_card` - Individual room temperature display cards
+- `kohbo_room_aqi_card` - Per-room Awair score cards on the Air Quality tab: shown as `AQI` (Awair reports `%`), coloured by the `kohbo_device_aqi_entity` bands (<20 purple, <40 red, <60 orange, <80 yellow, 80+ green)
 - `top_toolbar` - Standard page header toolbar
 
 ### Button Card Templates

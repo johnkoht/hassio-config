@@ -62,3 +62,9 @@ automations do. Sensors page Power section, 2026-10-29.
 ## Toggles on template-entity-row (2026-11-20)
 
 - `custom:template-entity-row` with `toggle: true` renders `ha-entity-toggle` in the row's own shadow root, not under `hui-generic-entity-row`. `kohbo_boolean_entity_layout.yaml` never reaches it and the switch draws stock. Use `kohbo_template_toggle_entity_layout.yaml` (item layout plus kohbo switch CSS on the `ha-entity-toggle$` path).
+
+## Climate tab devices (2026-11-24)
+
+- Awair scores report `%` as their unit. mini-graph-card takes the unit from the entity first, then from the card's `unit:`. `kohbo_room_aqi_card` sets `unit: AQI` and colours its bands to match `kohbo_device_aqi_entity`. The same hex bands also appear in the office AQI graph, so change all three together.
+- The two basement Awairs kept the integration's default ids: `sensor.awair_element_basement_*` and `sensor.awair_element_basement_datacenter_*`. The first is also a prefix of the second, so match exact ids. The garage Ecobee's own temperature sensor has the bare id `sensor.temperature`.
+- `climate.garage` is not in `group.radiant_floor_heating_group`, so the HVAC tab shows it outside the radiant conditional cards. Inside them it would be hidden whenever the group is off.
