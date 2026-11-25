@@ -51,7 +51,7 @@ automation:
                and (cur_temp - want_temp) | abs >= 1 }}
           is_ecobee: "{{ zone in ['jr_suite', 'main_bedroom', 'ninos_bedroom', 'basement'] }}"
           hold_ended: "{{ is_ecobee and temp_differs and state_attr(climate_entity, 'preset_mode') | string != 'temp' }}"
-          live: "{{ is_state('input_boolean.climate_live_control', 'on') }}"
+          live: "{% from 'climate_control.jinja' import climate_live %}{{ climate_live(zone) }}"
           summary: >-
             {{ zone }}: thermostat {{ cur_mode }} {{ cur_temp }}, decision {{ want_mode }} {{ want_temp }}
       - alias: "Master switch is on"

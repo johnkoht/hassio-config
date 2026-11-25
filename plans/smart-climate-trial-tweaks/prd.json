@@ -1,0 +1,80 @@
+{
+  "name": "smart-climate-trial-tweaks",
+  "branchName": "feature/smart-climate-trial-tweaks",
+  "goal": "Per-zone live control for smart climate, main-floor Sleep seed 70, and a guest Sleep rule on the main floor.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Per-zone live gate",
+      "description": "Seven climate_live_<zone> helpers, climate_live(zone) macro, every reader switched to it, seed turns all off, harness default loader, README. See prd.md decisions 1-6, 8.",
+      "acceptanceCriteria": [
+        "Macro truth table tested (global/zone/unknown/missing; renders exactly True/False)",
+        "Apply: garage live with global off writes only the garage; others log dry run with zero climate calls",
+        "Apply: post-wait re-check uses the macro",
+        "Global on makes every zone live",
+        "Unknown zone switch = dry run",
+        "Override detect uses per-zone live",
+        "Drift check: per-zone on triggers; tick acts only on live zones; start runs all",
+        "Dry-air (dry run) unless a radiant zone is live",
+        "Seed turns off global and all seven zone switches",
+        "Static test: no direct climate_live_ template/condition read outside the macro; global not on dashboards",
+        "README updated"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "345facb0"
+    },
+    {
+      "id": "task-2",
+      "title": "Main-floor Sleep seed",
+      "description": "Seed main-floor sleep heat 70 (from 72); README defaults.",
+      "acceptanceCriteria": [
+        "Test asserts main-floor sleep heat seed 70 and second-floor 72",
+        "Within helper bounds"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "bb25c4a75c296c9bc81727d686ab72afe4140d19"
+    },
+    {
+      "id": "task-3",
+      "title": "Guest Sleep rule",
+      "description": "Main floor Sleep with guest_mode on uses Comfort (heat or cool), reason Guests; pre-wake wins. See decision 7.",
+      "acceptanceCriteria": [
+        "Guest on Sleep Heating -> comfort heat, reason has Guests",
+        "Cooling -> comfort cool",
+        "Pre-wake wins",
+        "Guest off/unknown -> sleep heat",
+        "Second floor and radiant unchanged",
+        "Main floor Comfort/Away unchanged"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "d0d14b66"
+    },
+    {
+      "id": "task-4",
+      "title": "Dashboard live toggles",
+      "description": "Per-zone live toggles in the climate settings popup; Nest rows warn about the Eco clash; no global switch.",
+      "acceptanceCriteria": [
+        "Seven rows using existing pattern",
+        "Nest rows warn",
+        "climate_live_control absent from dashboards/",
+        "YAML parses"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "e6c86b13513a9d70e4d3c64adb83a65844d35b07"
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-11-24T13:14:56-06:00",
+    "totalTasks": 4,
+    "completedTasks": 4,
+    "failedTasks": 0
+  }
+}

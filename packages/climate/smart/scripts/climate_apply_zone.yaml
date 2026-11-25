@@ -1,7 +1,7 @@
 # Climate - Apply Zone
 #
 # Writes one zone's decision to its thermostat, only when it differs.
-# Dry run (live control not "on") logs one line and makes no climate calls.
+# Dry run (zone not live, see `climate_live`) logs one line and makes no climate calls.
 # Never touches presets.
 
 script:
@@ -32,7 +32,7 @@ script:
             {% endif %}
           cur_mode: "{{ states(climate_entity) }}"
           cur_temp: "{{ state_attr(climate_entity, 'temperature') }}"
-          live: "{{ is_state('input_boolean.climate_live_control', 'on') }}"
+          live: "{% from 'climate_control.jinja' import climate_live %}{{ climate_live(zone) }}"
           age: >-
             {{ now().timestamp()
                - as_timestamp(states('input_datetime.climate_' ~ zone ~ '_last_write'), 0) }}
@@ -122,9 +122,8 @@ script:
                       entity_id: "{{ climate_entity }}"
                   - stop: "Mode not reached"
       - alias: "Live control still on after the wait"
-        condition: state
-        entity_id: input_boolean.climate_live_control
-        state: "on"
+        condition: template
+        value_template: "{% from 'climate_control.jinja' import climate_live %}{{ climate_live(zone) }}"
       - alias: "Setpoint (always after a mode change, the old one may be stale)"
         if:
           - condition: template

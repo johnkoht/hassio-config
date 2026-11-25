@@ -32,3 +32,9 @@ To handle this:
   the string logs an error on every render.
 - **Macros in `custom_templates/` need `homeassistant.reload_custom_templates`
   before `template.reload`**, or the sensors keep the old macro.
+- **A boolean macro must render exactly `True` or `False` (2026-11-24).** A
+  macro's output is a string; HA's native parsing turns only `True`/`False`
+  into a bool. Lowercase or padded output stays a non-empty string, so
+  `{{ not live }}` would go False and a dry-run zone would write. In Jinja,
+  compare it as a string (`climate_live(z) == 'True'`). Scripts and automations
+  that import a custom template also need `reload_custom_templates` first.

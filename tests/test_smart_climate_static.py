@@ -8,6 +8,7 @@ import yaml
 
 REPO = Path(__file__).resolve().parent.parent
 SMART = REPO / "packages" / "climate" / "smart"
+LIVE_ZONES = ["main_floor", "second_floor", "jr_suite", "main_bedroom", "ninos_bedroom", "basement", "garage"]
 ZONES = ["main_floor", "second_floor", "jr_suite", "main_bedroom", "ninos_bedroom", "basement"]
 
 
@@ -75,7 +76,9 @@ def test_seed_script_modes_and_switches():
              for s in script["sequence"]]
     assert ("input_select.select_option", "input_select.climate_season",
             {"option": "Auto"}) in calls
-    assert ("input_boolean.turn_off", "input_boolean.climate_live_control", None) in calls
+    off = [c for c in calls if c[0] == "input_boolean.turn_off"]
+    assert off and set(off[0][1]) == {"input_boolean.climate_live_control",
+                                      *(f"input_boolean.climate_live_{z}" for z in LIVE_ZONES)}
     assert ("input_boolean.turn_on", "input_boolean.climate_automations", None) in calls
 
 
@@ -128,3 +131,9 @@ def test_other_contract_helpers_exist():
         cfg = dt[f"climate_{z}_last_write"]
         assert cfg["has_date"] and cfg["has_time"]
     assert helpers("input_text")["climate_wake_history"]["max"] == 255
+
+
+def test_sleep_heat_seeds_main_floor_70_second_floor_72():
+    _, seeded = seeds()
+    assert seeded["climate_main_floor_sleep_heat"] == 70
+    assert seeded["climate_second_floor_sleep_heat"] == 72

@@ -2,8 +2,8 @@
 
 A mode-based controller for the HVAC and radiant zones. It runs as a dry run:
 it decides what each thermostat should be, and the logbook shows what it would
-write. No `climate.*` call is made until live control is turned on, which
-happens at migration.
+write. No `climate.*` call is made for a zone until it is live
+(its own switch, or the global one at migration).
 
 ## Layers and owners
 
@@ -30,7 +30,8 @@ happens at migration.
 | basement | `climate.basement` | radiant | `..._basement` |
 | garage | `climate.garage` | frost guard | `..._garage` |
 
-Helpers: `input_boolean.climate_automations` (master), `climate_live_control`,
+Helpers: `input_boolean.climate_automations` (master), `climate_live_control`
+(global) and `climate_live_<zone>` (seven, one per zone),
 `climate_away_extended`, `climate_precondition_*`; `input_select.climate_season`
 and `climate_mode_<zone>` (not the garage); `input_number` profiles and tuning;
 `input_datetime.climate_<zone>_last_write`, `predicted_wake_time`;
@@ -39,8 +40,12 @@ and `climate_mode_<zone>` (not the garage); `input_number` profiles and tuning;
 ## Safety model
 
 - The master switch (`climate_automations`) stops everything when off.
-- Live control polarity: only `on` writes. Off, unknown and unavailable all mean
-  dry run, so a fresh install is safe.
+- Live polarity, per zone: a zone writes only when `climate_live_control`
+  (global) or its own `climate_live_<zone>` is `on`. Off, unknown, unavailable
+  and missing all mean dry run, so a fresh install is safe. The macro
+  `climate_live(zone)` in `custom_templates/climate_control.jinja` is the only
+  reader; a static test fails on any other template or state condition that
+  reads these switches.
 - Radiant setpoints never exceed 71 (a constant, applied last). The garage is a
   constant 55 heat guard.
 - Presets are never touched, so Eco is never set or cleared.
@@ -61,9 +66,15 @@ and `climate_mode_<zone>` (not the garage); `input_number` profiles and tuning;
    input_select, input_datetime, input_text, `homeassistant.reload_custom_templates`,
    then `template.reload`, `statistics.reload`, script, automation.
 2. Run "Climate - Reset Smart Climate Defaults" once (dashboard: Settings,
-   Smart Climate). It seeds every number and select, keeps live control off and
-   turns the master on.
-3. Leave live control off. The logbook starts filling.
+   Smart Climate). It seeds every number and select, turns the global and every
+   zone live switch off and turns the master on.
+3. Leave every live switch off. The logbook starts filling.
+
+## Trial one zone
+
+Turn on one `climate_live_<zone>`; every other zone stays dry run. Go live
+with the radiant zones and the garage only until migration: the two Nests
+(main_floor, second_floor) clash with the old Eco and resume automations.
 
 ## Reading the soak
 
@@ -79,8 +90,9 @@ and `climate_mode_<zone>` (not the garage); `input_number` profiles and tuning;
 
 `for:` timers drop on restart and reload. The mode resolver and
 `climate_away_extended_on` re-run on start. Extended Away restarts its clock
-after a restart. The drift check re-applies on start, reload, master on and
-live on.
+after a restart. The drift check re-applies every zone on start, reload, master on
+and any live switch on. Its 30 min tick runs only the live zones, and does
+nothing when none is live.
 
 ## Inventory (from the build)
 
@@ -98,6 +110,8 @@ live on.
 - Away: the floor applies only in Heating and the ceiling only in Cooling
   (single setpoint, `heat_cool` is never used). Radiant zones are hands-off in
   Cooling.
+- Guest mode keeps the main floor at Comfort during Sleep (pre-wake still wins).
+  The Comfort-only price offset still does not apply; the forecast boost does.
 - Dry run can't validate Nest rounding or the Ecobee hold type; check both on the
   first live day.
 - The kids' space-heater automations are not part of this controller.
@@ -105,7 +119,7 @@ live on.
 ## Migration (plan task 10)
 
 After the soak: delete (not disable) the old automations and scripts listed in
-`plans/smart-climate-control/plan.md` task 10, turn live control on, repoint the
+`plans/smart-climate-control/plan.md` task 10, turn the global live switch on, repoint the
 dashboard's old Eco rows (`automation.main_floor_climate_to_eco`) in
 `dashboards/kohbo/climate/_climate_settings_popup.yaml`, and update the climate
 README, `../LEARNINGS.md` and `docs/AUTOMATIONS.md`.
