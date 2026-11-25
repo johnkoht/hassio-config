@@ -82,7 +82,7 @@ Every "shows when" rule is a template binary_sensor in `packages/house/quick_act
 - **Shows when:** it is dark (`sun.sun` below horizon), or the lamp is currently on (so a lit lamp can always be switched off). Hidden in daylight when off.
 - **Tap:** `light.toggle` on that lamp. Row label shows on/off from the entity.
 - **Visibility:** John and Cristina.
-- **Notes:** "nightlight" is taken to mean the bedroom lamp. Nino's 07:00 off automation will still turn his lamp off later, which is fine.
+- **Notes:** "nightlight" is taken to mean the bedroom lamp. Nino's morning off automation will still turn his lamp off later, which is fine.
 
 ### 4. Toggle Nino's bedtime music
 
@@ -91,7 +91,7 @@ Every "shows when" rule is a template binary_sensor in `packages/house/quick_act
 - **Shows when:** dark (`sun.sun` below horizon) and Nino's room is not in mode Off (`input_select.ninos_bedroom`), or the music is currently playing (so it can always be stopped). "Makes sense": also require that Nino's bed is occupied to start it, so it can't blast an empty room.
 - **Tap:** `script.nino_sleep_music_start` or `_stop`, depending on state.
 - **Visibility:** John and Cristina.
-- **Notes:** the existing automation hard-codes 19:00 to 07:00 in its conditions; I am not copying that, and I leave the existing automation's window alone (out of scope). The existing `_manual_start` automation sets the flag if the speaker is started by hand, so the toggle stays consistent either way.
+- **Notes:** the existing automation hard-codes a fixed evening window in its conditions; I am not copying that, and I leave the existing automation's window alone (out of scope). The existing `_manual_start` automation sets the flag if the speaker is started by hand, so the toggle stays consistent either way.
 
 ### 5. Toggle DnD for me
 
