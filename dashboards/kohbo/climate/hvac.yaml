@@ -3,7 +3,7 @@
 #
 # All thermostats and per-room temperatures.
 #   - Nest main + upper floor HVAC
-#   - Radiant floor zones (conditional)
+#   - Radiant floor zones (conditional) + garage floor heating
 #   - Room temperature grid (main floor, upper floor, misc)
 #   - 24h trend across all main rooms
 #
@@ -108,6 +108,21 @@ cards:
           tap_action:
             action: navigate
             navigation_path: '#basement_thermostat'
+
+  #
+  # Garage Floor Heating — always shown (frost guard, not in the radiant group)
+  #
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: climate.garage
+        name: Garage
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: navigate
+          navigation_path: '#garage_thermostat'
 
   #
   # Main Floor Room Temperatures
@@ -215,16 +230,31 @@ cards:
       - type: custom:decluttering-card
         template: kohbo_room_temperature_card
         variables:
-          - name: Attic
-          - entity: sensor.attic_climate_temperature
-          - icon: mdi:home-floor-a
+          - name: Basement
+          - entity: sensor.awair_element_basement_temperature
+          - icon: mdi:home-floor-b
 
       - type: custom:decluttering-card
         template: kohbo_room_temperature_card
         variables:
           - name: Datacenter
-          - entity: sensor.basement_datacenter_climate_temperature
+          - entity: sensor.awair_element_basement_datacenter_temperature
           - icon: mdi:server
+
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Attic
+          - entity: sensor.attic_climate_temperature
+          - icon: mdi:home-floor-a
+
+      # Ecobee garage thermostat's own sensor (registry id is the bare sensor.temperature)
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Garage
+          - entity: sensor.temperature
+          - icon: mdi:garage
 
   #
   # Room Temperature Trend — Last 24h
@@ -346,7 +376,16 @@ cards:
       - hash: "#basement_thermostat"
       - entity: climate.basement
       - name: Basement
-      - temperature_sensor: sensor.sensor.basement_temperature
+      - temperature_sensor: sensor.awair_element_basement_temperature
+      - outside_temperature_sensor: sensor.tempest_temperature
+
+  - type: custom:decluttering-card
+    template: thermostat_radiant_floor_popup
+    variables:
+      - hash: "#garage_thermostat"
+      - entity: climate.garage
+      - name: Garage
+      - temperature_sensor: sensor.temperature
       - outside_temperature_sensor: sensor.tempest_temperature
 
   #
