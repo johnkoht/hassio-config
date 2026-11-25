@@ -53,8 +53,8 @@
         "button-card custom_fields interpolate only entity states/fixed labels (unsafeHTML)",
         "Existing test suite green"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "complete",
+      "passes": true,
       "attemptCount": 0
     },
     {

@@ -195,3 +195,212 @@ def test_count_sensor(who):
         assert count(rows[:i]) == i
     s = {r: "unavailable" for r in rows}
     assert int(FakeHA(s, now=NOW).render_entity(c)) == 0
+
+
+# ---------------------------------------------------------------------------
+# Task 3: dashboard pop-up and header chip
+# ---------------------------------------------------------------------------
+import re  # noqa: E402
+
+DASH = REPO / "dashboards"
+HOME = DASH / "kohbo/home/home.yaml"
+POPUP = DASH / "kohbo/home/_quick_actions_popup.yaml"
+ALLOWED_SECRETS = {"john_ha_user_id", "cristina_ha_user_id"}
+
+
+class _Secret(str):
+    pass
+
+
+def _loader(base):
+    class L(yaml.SafeLoader):
+        pass
+
+    def res(raw):
+        raw = raw.strip()
+        return REPO / raw[len("/config/"):] if raw.startswith("/config/") else (base / raw)
+
+    def inc(loader, node):
+        return _load_dash(res(loader.construct_scalar(node)))
+
+    def inc_dir(loader, node):
+        d = res(loader.construct_scalar(node))
+        return [_load_dash(f) for f in sorted(d.rglob("*.yaml"))]
+
+    for t in ("!include",):
+        L.add_constructor(t, inc)
+    for t in ("!include_dir_named", "!include_dir_merge_named", "!include_dir_list",
+              "!include_dir_merge_list"):
+        L.add_constructor(t, inc_dir)
+    L.add_constructor("!secret", lambda l, n: _Secret(l.construct_scalar(n)))
+    return L
+
+
+def _load_dash(path):
+    return yaml.load(Path(path).read_text(), Loader=_loader(Path(path).parent))
+
+
+def _walk(node):
+    if isinstance(node, dict):
+        yield node
+        for v in node.values():
+            yield from _walk(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _walk(v)
+
+
+def _popup():
+    return _load_dash(POPUP)
+
+
+def _person_blocks():
+    """{secret key: the person's top-level conditional card}"""
+    out = {}
+    for c in _popup()["cards"]:
+        if c.get("type") == "conditional":
+            cond = c["conditions"][0]
+            assert cond["condition"] == "user"
+            out[str(cond["users"][0])] = c
+    return out
+
+
+def _conditions(node):
+    """Every condition dict under any conditional card or visibility list."""
+    found = []
+    for n in _walk(node):
+        if n.get("type") == "conditional":
+            found += n["conditions"]
+        if isinstance(n.get("visibility"), list):
+            found += n["visibility"]
+    return found
+
+
+def _kinds(conds):
+    for c in conds:
+        yield c["condition"]
+        if "conditions" in c:
+            yield from _kinds(c["conditions"])
+
+
+def test_popup_is_included_and_chip_hash_matches():
+    assert "_quick_actions_popup.yaml" in HOME.read_text()
+    home = _load_dash(HOME)
+    popup = [n for n in _walk(home) if n.get("hash") == "#quick_actions"]
+    assert len(popup) == 1 and popup[0]["card_type"] == "pop-up"
+    chips = [n for n in _walk(home["cards"][0])
+             if n.get("icon") == "mdi:lightning-bolt"]
+    assert len(chips) == 2
+    for chip in chips:
+        assert chip["tap_action"]["navigation_path"] == "#quick_actions"
+        assert chip["entity"] in ("sensor.quick_actions_john_count",
+                                  "sensor.quick_actions_cristina_count")
+        assert chip["custom_fields"]["badge"].strip() == "[[[ return entity.state; ]]]"
+    assert {c["entity"] for c in chips} == {"sensor.quick_actions_john_count",
+                                            "sensor.quick_actions_cristina_count"}
+
+
+def test_header_keeps_three_slots():
+    toolbar = _load_dash(HOME)["cards"][0]["card"]
+    assert len(toolbar["cards"]) == 3
+
+
+def test_conditionals_use_only_state_user_and_or_not():
+    conds = _conditions(_popup()) + _conditions(_load_dash(HOME)["cards"][0])
+    assert conds
+    assert set(_kinds(conds)) <= {"state", "user", "and", "or", "not"}
+
+
+def test_conditional_cards_never_use_template_condition():
+    assert "condition: template" not in POPUP.read_text()
+
+
+def _room_sensor_areas(person):
+    text = (REPO / f"packages/house/quick_actions/quick_action_{person}_room.yaml").read_text()
+    return re.findall(r"'([a-z_]+)',", text)
+
+
+def _dashboard_rooms(block):
+    rows = []
+    for n in _walk(block):
+        if n.get("type") == "conditional":
+            c = n["conditions"][0]
+            if c.get("entity", "").endswith("_room_presence"):
+                rows.append((c["state"], n["card"]["tap_action"]["navigation_path"]))
+    return rows
+
+
+def test_room_rows_match_the_room_sensors_and_views():
+    root = _load_dash(DASH / "kohbo/kohbo.yaml")
+    views = {v["path"] for v in root["views"] if isinstance(v, dict) and v.get("path")}
+    blocks = _person_blocks()
+    assert set(blocks) == ALLOWED_SECRETS
+    for person in ("john", "cristina"):
+        sensor_areas = _room_sensor_areas(person)
+        rows = _dashboard_rooms(blocks[f"{person}_ha_user_id"])
+        areas = [a for a, _ in rows]
+        assert len(sensor_areas) == 15
+        assert len(areas) == len(set(areas)) == 15
+        assert set(areas) == set(sensor_areas)
+        for area, path in rows:
+            assert path.startswith("/dashboard-kohbo/")
+            assert path[len("/dashboard-kohbo/"):] in views, path
+        for n in _walk(blocks[f"{person}_ha_user_id"]):
+            if n.get("type") == "conditional" and n["conditions"][0].get("entity", "").endswith("_room_presence"):
+                assert f"sensor.{person}_room_presence" == n["conditions"][0]["entity"]
+
+
+def test_cristina_has_no_dnd_and_john_does():
+    blocks = _person_blocks()
+    cristina = yaml.safe_dump(_strip(blocks["cristina_ha_user_id"]))
+    john = yaml.safe_dump(_strip(blocks["john_ha_user_id"]))
+    assert "john_dnd" not in cristina
+    assert "input_boolean.john_dnd" in john and "binary_sensor.john_dnd_active" in john
+
+
+def _strip(node):
+    if isinstance(node, _Secret):
+        return str(node)
+    if isinstance(node, dict):
+        return {k: _strip(v) for k, v in node.items()}
+    if isinstance(node, list):
+        return [_strip(v) for v in node]
+    return node
+
+
+def test_each_person_sees_own_lamp_only_and_the_shared_rows():
+    blocks = _person_blocks()
+    for person, lamp, other in (("john", "light.hue_ambiance_lamp_1", "light.hue_ambiance_lamp_1_2"),
+                                ("cristina", "light.hue_ambiance_lamp_1_2", None)):
+        text = yaml.safe_dump(_strip(blocks[f"{person}_ha_user_id"]))
+        assert f"entity_id: {lamp}\n" in text
+        assert f"binary_sensor.quick_action_{person}_bedside_lamp" in text
+        other_person = "cristina" if person == "john" else "john"
+        assert f"quick_action_{other_person}_bedside_lamp" not in text
+        for needle in ("quick_action_nino_nightlight", "quick_action_gianluca_nightlight",
+                       "script.nino_sleep_music_start", "script.nino_sleep_music_stop",
+                       "input_boolean.camera_notifications", "input_boolean.nino_home_today",
+                       "input_boolean.gianluca_home_today", f"sensor.quick_actions_{person}_count"):
+            assert needle in text, (person, needle)
+    # John's lamp id is a prefix of Cristina's, so John must not see hers
+    assert "light.hue_ambiance_lamp_1_2" not in yaml.safe_dump(
+        _strip(blocks["john_ha_user_id"]))
+
+
+def test_only_the_two_user_id_secrets_are_used_under_dashboards():
+    used = set()
+    for f in DASH.rglob("*.yaml"):
+        used |= set(re.findall(r"!secret\s+(\S+)", f.read_text()))
+    assert used == ALLOWED_SECRETS
+    fake = yaml.safe_load((REPO / "secrets.fake.yaml").read_text())
+    assert ALLOWED_SECRETS <= set(fake)
+
+
+def test_button_card_custom_fields_interpolate_only_entity_state():
+    scopes = [_popup(), _load_dash(HOME)["cards"][0]]  # pop-up and header only
+    for scope in scopes:
+        for n in _walk(scope):
+            if n.get("type") == "custom:button-card" and "custom_fields" in n:
+                for v in n["custom_fields"].values():
+                    assert isinstance(v, str)
+                    assert v.strip() == "[[[ return entity.state; ]]]", v

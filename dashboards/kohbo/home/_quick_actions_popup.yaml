@@ -1,0 +1,754 @@
+#
+# Quick Actions Popup
+#
+# Per-person pop-up: only the actions that apply right now. Each person's
+# block is gated by a `condition: user` (ids come from secrets.yaml); every
+# row is a `conditional` on a quick_action_* sensor (state/user only, never
+# template). Room links must match packages/house/quick_actions/quick_action_*_room.yaml.
+#
+type: custom:bubble-card
+card_type: pop-up
+hash: '#quick_actions'
+close_by_clicking_outside: true
+styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+cards:
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: Quick Actions
+
+  #
+  # John rows
+  #
+  - type: conditional
+    conditions:
+      - condition: user
+        users:
+          - !secret john_ha_user_id
+    card:
+      type: vertical-stack
+      cards:
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.quick_actions_john_count
+              state: "0"
+          card:
+            type: custom:button-card
+            name: No suggestions right now
+            icon: mdi:check-circle-outline
+            tap_action:
+              action: none
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "dining_room"
+          card:
+            type: custom:button-card
+            name: "Go to Dining Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-dining-room'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "family_room"
+          card:
+            type: custom:button-card
+            name: "Go to Family Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-family-room'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "foyer"
+          card:
+            type: custom:button-card
+            name: "Go to Foyer"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-foyer'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "gianlucas_room"
+          card:
+            type: custom:button-card
+            name: "Go to Gianluca's Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-gianluca-bedroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "jr_suite"
+          card:
+            type: custom:button-card
+            name: "Go to Jr Suite"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-jr-suite'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "kitchen"
+          card:
+            type: custom:button-card
+            name: "Go to Kitchen"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-kitchen'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "laundry_room"
+          card:
+            type: custom:button-card
+            name: "Go to Laundry Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-laundry'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "main_bathroom"
+          card:
+            type: custom:button-card
+            name: "Go to Main Bathroom"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-main-bathroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "main_bedroom"
+          card:
+            type: custom:button-card
+            name: "Go to Main Bedroom"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-main-bedroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "mud_room"
+          card:
+            type: custom:button-card
+            name: "Go to Mud Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-mudroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "nino_room"
+          card:
+            type: custom:button-card
+            name: "Go to Nino's Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-ninos-bedroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "office"
+          card:
+            type: custom:button-card
+            name: "Go to Office"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-office'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "playroom"
+          card:
+            type: custom:button-card
+            name: "Go to Playroom"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-playroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "powder_room"
+          card:
+            type: custom:button-card
+            name: "Go to Powder Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-powder-room'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.john_room_presence
+              state: "upstairs_hallway"
+          card:
+            type: custom:button-card
+            name: "Go to Upstairs Hallway"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-upstairs-hallway'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_john_bedside_lamp
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: light.hue_ambiance_lamp_1
+            name: "Bedside lamp off"
+            icon: mdi:lamp
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_off
+              haptic: light
+              target:
+                entity_id: light.hue_ambiance_lamp_1
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_nightlight
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: light.nino_bedroom_lamp
+            name: "Nino's nightlight"
+            icon: mdi:lightbulb-night
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: perform-action
+              perform_action: light.toggle
+              haptic: light
+              target:
+                entity_id: light.nino_bedroom_lamp
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_gianluca_nightlight
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: light.gianluca_lamp
+            name: "Gianluca's nightlight"
+            icon: mdi:lightbulb-night
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: perform-action
+              perform_action: light.toggle
+              haptic: light
+              target:
+                entity_id: light.gianluca_lamp
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_music
+              state: "on"
+            - condition: state
+              entity: media_player.ninos_room
+              state: "playing"
+          card:
+            type: custom:button-card
+            name: "Stop Nino's sleep music"
+            icon: mdi:music-off
+            tap_action:
+              action: perform-action
+              perform_action: script.nino_sleep_music_stop
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_music
+              state: "on"
+            - condition: state
+              entity: media_player.ninos_room
+              state_not: "playing"
+          card:
+            type: custom:button-card
+            name: "Start Nino's sleep music"
+            icon: mdi:music
+            tap_action:
+              action: perform-action
+              perform_action: script.nino_sleep_music_start
+              haptic: light
+        - type: custom:button-card
+          entity: input_boolean.john_dnd
+          name: "Do not disturb"
+          icon: mdi:minus-circle
+          show_state: true
+          state_display: >
+            [[[
+              if (entity.state === 'on') return 'On';
+              if (states['binary_sensor.john_dnd_active'].state === 'on') return 'Off (Mac camera/mic is holding it)';
+              return 'Off';
+            ]]]
+          tap_action:
+            action: toggle
+            haptic: light
+        - type: custom:button-card
+          entity: input_boolean.camera_notifications
+          name: "Camera alerts"
+          icon: mdi:cctv
+          show_state: true
+          state_display: >
+            [[[
+              return entity.state === 'on' ? 'On' : 'Off';
+            ]]]
+          tap_action:
+            action: toggle
+            haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_home_today
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: input_boolean.nino_home_today
+            name: "Nino: home today"
+            icon: mdi:home-account
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: toggle
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_gianluca_home_today
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: input_boolean.gianluca_home_today
+            name: "Gianluca: home today"
+            icon: mdi:home-account
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: toggle
+              haptic: light
+
+  #
+  # Cristina rows
+  #
+  - type: conditional
+    conditions:
+      - condition: user
+        users:
+          - !secret cristina_ha_user_id
+    card:
+      type: vertical-stack
+      cards:
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.quick_actions_cristina_count
+              state: "0"
+          card:
+            type: custom:button-card
+            name: No suggestions right now
+            icon: mdi:check-circle-outline
+            tap_action:
+              action: none
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "dining_room"
+          card:
+            type: custom:button-card
+            name: "Go to Dining Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-dining-room'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "family_room"
+          card:
+            type: custom:button-card
+            name: "Go to Family Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-family-room'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "foyer"
+          card:
+            type: custom:button-card
+            name: "Go to Foyer"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-foyer'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "gianlucas_room"
+          card:
+            type: custom:button-card
+            name: "Go to Gianluca's Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-gianluca-bedroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "jr_suite"
+          card:
+            type: custom:button-card
+            name: "Go to Jr Suite"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-jr-suite'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "kitchen"
+          card:
+            type: custom:button-card
+            name: "Go to Kitchen"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-kitchen'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "laundry_room"
+          card:
+            type: custom:button-card
+            name: "Go to Laundry Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-laundry'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "main_bathroom"
+          card:
+            type: custom:button-card
+            name: "Go to Main Bathroom"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-main-bathroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "main_bedroom"
+          card:
+            type: custom:button-card
+            name: "Go to Main Bedroom"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-main-bedroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "mud_room"
+          card:
+            type: custom:button-card
+            name: "Go to Mud Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-mudroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "nino_room"
+          card:
+            type: custom:button-card
+            name: "Go to Nino's Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-ninos-bedroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "office"
+          card:
+            type: custom:button-card
+            name: "Go to Office"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-office'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "playroom"
+          card:
+            type: custom:button-card
+            name: "Go to Playroom"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-playroom'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "powder_room"
+          card:
+            type: custom:button-card
+            name: "Go to Powder Room"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-powder-room'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: sensor.cristina_room_presence
+              state: "upstairs_hallway"
+          card:
+            type: custom:button-card
+            name: "Go to Upstairs Hallway"
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '/dashboard-kohbo/rooms-upstairs-hallway'
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_cristina_bedside_lamp
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: light.hue_ambiance_lamp_1_2
+            name: "Bedside lamp off"
+            icon: mdi:lamp
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: perform-action
+              perform_action: light.turn_off
+              haptic: light
+              target:
+                entity_id: light.hue_ambiance_lamp_1_2
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_nightlight
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: light.nino_bedroom_lamp
+            name: "Nino's nightlight"
+            icon: mdi:lightbulb-night
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: perform-action
+              perform_action: light.toggle
+              haptic: light
+              target:
+                entity_id: light.nino_bedroom_lamp
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_gianluca_nightlight
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: light.gianluca_lamp
+            name: "Gianluca's nightlight"
+            icon: mdi:lightbulb-night
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: perform-action
+              perform_action: light.toggle
+              haptic: light
+              target:
+                entity_id: light.gianluca_lamp
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_music
+              state: "on"
+            - condition: state
+              entity: media_player.ninos_room
+              state: "playing"
+          card:
+            type: custom:button-card
+            name: "Stop Nino's sleep music"
+            icon: mdi:music-off
+            tap_action:
+              action: perform-action
+              perform_action: script.nino_sleep_music_stop
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_music
+              state: "on"
+            - condition: state
+              entity: media_player.ninos_room
+              state_not: "playing"
+          card:
+            type: custom:button-card
+            name: "Start Nino's sleep music"
+            icon: mdi:music
+            tap_action:
+              action: perform-action
+              perform_action: script.nino_sleep_music_start
+              haptic: light
+        - type: custom:button-card
+          entity: input_boolean.camera_notifications
+          name: "Camera alerts"
+          icon: mdi:cctv
+          show_state: true
+          state_display: >
+            [[[
+              return entity.state === 'on' ? 'On' : 'Off';
+            ]]]
+          tap_action:
+            action: toggle
+            haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_nino_home_today
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: input_boolean.nino_home_today
+            name: "Nino: home today"
+            icon: mdi:home-account
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: toggle
+              haptic: light
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: binary_sensor.quick_action_gianluca_home_today
+              state: "on"
+          card:
+            type: custom:button-card
+            entity: input_boolean.gianluca_home_today
+            name: "Gianluca: home today"
+            icon: mdi:home-account
+            show_state: true
+            state_display: >
+              [[[
+                return entity.state === 'on' ? 'On' : 'Off';
+              ]]]
+            tap_action:
+              action: toggle
+              haptic: light

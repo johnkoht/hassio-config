@@ -32,6 +32,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - **[Task 2] Entities created** (packages/house/quick_actions/, 11 files, live templates): `binary_sensor.quick_action_{john,cristina}_bedside_lamp`, `_{nino,gianluca}_nightlight`, `_nino_music`, `_{nino,gianluca}_home_today`, `_{john,cristina}_room`; `sensor.quick_actions_{john,cristina}_count`. Tests reuse `FakeHA` from tests/smart_climate_harness.py. The room sensors hold the 15-area list inline; task-3 test must check it matches the dashboard conditionals.
 - **[Task 2] Start-time parsing** uses `as_timestamp(states(...), none)` (harness has no `as_datetime`); invalid/unavailable gives none -> off.
 
+- **[Task 3] Dashboard pop-up**: `dashboards/kohbo/home/_quick_actions_popup.yaml`, one `condition: user` block per person (`!secret john_ha_user_id` / `cristina_ha_user_id`), each a vertical-stack of conditionals on the task-2 sensors. Header: left = shield + empty_column spacer, right = two per-user lightning chips (user visibility, badge custom_field = entity.state, `visibility: hidden` at 0 so width stays) + bell, each in a nested stack. Tests in test_quick_actions.py use their own dashboard loader that keeps `!secret` as a tagged string; test_dashboard_views loader now accepts `!secret`; test_john_dnd_simplify allow-list gained the popup. Unverified without a live DOM: nested-stack centring, badge position, rendering of `not` condition.
+
 ## Active Gotchas
 
 - **Package filenames are keyed by basename across the whole tree** (`!include_dir_named`). Prefix new files `quick_action_*`. `.yml` files are never loaded.
