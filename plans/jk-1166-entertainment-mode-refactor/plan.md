@@ -1,11 +1,11 @@
 ---
 title: Entertainment Mode Refactor
 slug: jk-1166-entertainment-mode-refactor
-status: draft
+status: in-progress
 created: 2026-11-23
 has_pre_mortem: false
 has_review: false
-has_prd: false
+has_prd: true
 linear: JK-1166
 ---
 
@@ -40,6 +40,20 @@ Each first-floor room reacts to the boolean itself: mode on pauses that room's A
 - **Speakers:** indoor `sonos_kitchen`, `sonos_family_room`, `sonos_living_room` (the dining room's speaker), `sonos_playroom`; outdoor `sonos_patio`, `sonos_pool`, `sonos_gazebo`. Nothing in the repo today stops outdoor music; `sunroom_not_occupied` only reads `sonos_patio` to clear its own flag.
 - **Crazy Mode is the model for music** (`packages/house/crazy_mode/`): a template sensor holds the zone's speaker lists (`sensor.crazy_mode_zone_config`), favourites are Sonos favourite names in `input_text` helpers played with `media_player.select_source`, the volume is an `input_number`, and nothing carries `initial:`. Its main-floor zone has the same four indoor speakers.
 - **Party Time** (`packages/playroom/party_time/`) plays a hard-coded Spotify playlist with `media_player.play_media`. It is a playroom button, not a mode, and I leave it alone. It has a bug (below).
+
+## Decisions (John, Linear comment 2026-11-25; counts as /approve for both phases)
+
+All ten questions are answered yes, and the defaults above stand. Q3 reads "if it's on, yes": the family room TV stays on if it was already on, and the mode never turns it on. Q4: no new playroom or dining room speech switches. Q5: Sonos favourites for now.
+
+Additions from his comment:
+
+- **Dining room speaker.** The dining room is sometimes called the living room (it was once one room with the dining space). Its Sonos is `media_player.sonos_living_room`, confirmed in the repo: `dashboards/kohbo/rooms/main_floor/dining_room.yaml` shows the "Dining Room" music card on that player, and `announcement_engine`, `doorbell_ring` and `hourly_dong` target it. No `sonos_dining_room` exists anywhere. No host check was needed.
+- **The TV is not part of the music grouping.** `media_player.sony_bravia_tv` is never in a zone list and music never calls it. I also read this as "don't hijack the TV's sound": when the TV is on, the music group leaves out `media_player.sonos_family_room` (the room's speaker usually carries the TV audio), so joining can't cut the TV audio. Confirm after deploy (post-deploy check). The TV stays on through the mode via the `family_room_tv_off` gate.
+- **Crazy Mode and entertainment music are mutually exclusive, both ways.**
+  - Entertainment music skips its start while `input_select.crazy_mode_phase` is not `Off` (as planned).
+  - Reverse: `sensor.crazy_mode_reason` gets a new `entertainment` reason (after `emergency`, before `house_mode`) that refuses a Crazy Mode start while `input_boolean.entertainment_mode` is on. It is silent, like the house-mode and emergency refusals; only the window reasons are spoken. This keeps Crazy Mode from snapshotting, regrouping and restoring the speakers under an entertainment session.
+  - A mode that turns on in the middle of a Crazy run starts no music (the Crazy guard); the run finishes and restores as usual.
+- **Party Time bug.** `playroom_deactivate_party_time` is not touched by this work, so the `turn_on` that should be `turn_off` stays a BACKLOG item.
 
 ## Approach
 
@@ -115,7 +129,7 @@ Tests: zone config shapes for both zones, start conditions and order, the stop t
 
 Phase 2 depends on phase 1 only for the boolean. It can ship separately.
 
-## Open questions for John (defaults in bold)
+## Questions (all answered yes by John, 2026-11-25; defaults in bold)
 
 1. **Foyer, office and main bedroom today pause Adaptive Lighting with the mode.** Keep that as small per-room files (**yes, no behaviour change**) or drop it and leave only kitchen, family room and playroom?
 2. **Master speech switch.** It is house-wide, so I keep one small pause/resume pair for it in `house/entertainment/` (**yes**). Room switches are handled per room. OK?
@@ -126,7 +140,7 @@ Phase 2 depends on phase 1 only for the boolean. It can ship separately.
 7. **Volume.** One slider for indoor and outdoor, 30% (**one slider**) or a second slider for outdoor?
 8. **Auto-off.** The mode turns off when the house empties (as today). Since a restart no longer clears a forgotten mode, also turn it off when bedtime starts (**yes**)? A fixed time cap instead or as well?
 9. **Mode off stops the music we started** (**yes**) rather than leaving it playing.
-10. **Crazy Mode overlap.** Entertainment music doesn't start while a Crazy Mode run is active (**yes**). Should Crazy Mode also refuse to start during the mode? (Default no; out of scope.)
+10. **Crazy Mode overlap.** Entertainment music doesn't start while a Crazy Mode run is active (**yes**). **Resolved:** Crazy Mode also refuses to start while the mode is on (see Decisions).
 
 ## Risks and checks at build time
 
