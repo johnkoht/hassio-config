@@ -99,14 +99,14 @@ Every "shows when" rule is a template binary_sensor in `packages/house/quick_act
 - **Shows when:** always, for John, with state. Not counted in the badge.
 - **Tap:** `input_boolean.toggle` on `john_dnd`.
 - **Visibility:** John only.
-- **Missing for Cristina:** there is no `cristina_dnd`. Her menu simply has no DnD row. If she wants one, that is a new helper and a separate decision (see Q3).
+- **Missing for Cristina:** there is no `cristina_dnd`. Her menu simply has no DnD row. If she wants one, that is a new helper and a separate decision.
 - **Note:** when `john_dnd_active` is on because of the camera or mic, toggling the boolean off will not clear it. The row label should read from `john_dnd_active` and say which source holds it, or the tap looks broken.
 
 ### 6. Pause camera notifications
 
 - **Entities (found):** global `input_boolean.camera_notifications`, plus one per camera (`<camera>_camera_notifications`). `camera_notifications_activate` turns the global on in Away mode (and at bedtime); `camera_notifications_deactivate` turns it off when someone is home, a door opens, someone arrives or a garage door opens.
 - **Catch:** the global is automation-driven. A manual "pause" while it is on will be undone the next time an activation trigger fires, and a manual "resume" while someone is home will be undone by the deactivate rules. There is no timed-snooze helper (the repo has one for door-left-open and Kids WiFi, not for cameras).
-- **Plan:** toggle the global boolean, and show its true state, plus the row is labelled "Camera alerts: on/off". I do not propose a timed snooze in v1. If John wants "pause for an hour", that needs a new helper and a change to the two automations, which is a separate plan (see Q2).
+- **Plan:** toggle the global boolean, and show its true state, plus the row is labelled "Camera alerts: on/off". I do not propose a timed snooze in v1. If John wants "pause for an hour", that needs a new helper and a change to the two automations, which is a separate plan. John chose the plain toggle (2026-11-25).
 - **Shows when:** always, with state. Not counted in the badge.
 - **Tap:** `input_boolean.toggle` on `camera_notifications`.
 - **Visibility:** John and Cristina.
@@ -114,10 +114,10 @@ Every "shows when" rule is a template binary_sensor in `packages/house/quick_act
 ### 7. Toggle kid home from school
 
 - **Entities (found):** `input_boolean.nino_home_today`, `input_boolean.gianluca_home_today` ("stays home today": suppresses drop-off pings and pickup, departure and medication reminders). Cleared by `school_overrides_reset` at the end of the day. School-day sensors: `binary_sensor.nino_school_day`, `binary_sensor.gianluca_school_day`. End-of-day: `sensor.primary_school_dismissal_time_today`, `sensor.parochial_school_dismissal_time_today`.
-- **Shows when:** the kid's school-day sensor is on and now is before that school's dismissal sensor, or the kid's `home_today` is already on (so it can be undone). No fixed days or hours: the school package already derives holidays, late starts and early dismissals.
+- **Shows when:** the kid's school-day sensor is on and now is within 60 minutes either side of that school's start time today (`sensor.primary_school_start_time_today` for Nino, `sensor.parochial_school_start_time_today` for Gianluca), or the kid's `home_today` is already on (so it can be undone). The start sensors already account for holidays and late starts, and are unavailable on no-school days, so the row stays hidden then. No fixed days or hours in the YAML.
 - **Tap:** `input_boolean.toggle` on that kid's `home_today`. Label reads "Nino: home today" with on/off.
 - **Visibility:** John and Cristina.
-- **Wording to confirm:** I read "kids home from school" as "kid is staying home today", which is what `home_today` means in this repo (see Q1).
+- **Meaning (John, 2026-11-25):** "staying home today", the existing `home_today` flag.
 
 ## Files (expected)
 
@@ -132,7 +132,7 @@ Every "shows when" rule is a template binary_sensor in `packages/house/quick_act
 
 Command: `PYTHONPATH=tests /Users/johnkoht/code/hassio-config/tests/.venv/bin/python -m pytest -q tests`.
 
-1. Template render per rule: shown and hidden cases, and `unavailable` inputs giving hidden. Bedside lamp needs all three of lamp on, in the room, in bed. Nightlight rows show in the dark or when on. Music row hides with Nino's room in Off. Kid-home row hides after dismissal when off and stays when on.
+1. Template render per rule: shown and hidden cases, and `unavailable` inputs giving hidden. Bedside lamp needs all three of lamp on, in the room, in bed. Nightlight rows show in the dark or when on. Music row hides with Nino's room in Off. Kid-home row shows inside the ±60 min start window, hides outside it and when the start sensor is unavailable, and stays while `home_today` is on.
 2. Sleep music refactor: `nino_sleep_music_on` still ends with the same play sequence and flag-set (call the script), and the start and stop scripts carry the same calls the automation had. Sabotage: break the script and see it fail.
 3. Every area in the room-link rows has a view path in `kohbo.yaml`; no area listed twice.
 4. Pop-up shape: rows use `condition: state` only (no `template`), the pop-up is included in `home.yaml`, the hash `#quick_actions` matches the header chip's navigate.
@@ -145,15 +145,15 @@ Manual after deploy (John): the header chip and badge on a phone, no title shift
 
 - **`!secret` inside a `users:` list.** Unproven; the fallback is described above. Checked first in the build.
 - **Wrong area ids** would silently hide a room row. Mitigated by reading the live registry and the view-path test.
-- **Camera pause fights its own automations.** Surfaced honestly in the label, not hidden (Q2).
+- **Camera pause fights its own automations.** Surfaced honestly in the label, not hidden.
 - **Header layout.** Verified on the live DOM, not from source.
 - **Kids' music and lamps are touched by existing automations.** The toggles act the same way a hand would, and the existing flag-clear and off automations keep working.
 
-## Open questions (minimum)
+## Decisions (John, 2026-11-25)
 
-1. **"Toggle kids home from school":** do you mean "stays home today" (the existing `home_today` flags, default) or "got home from school"? Default assumes the first.
-2. **Camera pause:** the global switch is flipped by automations, so a manual pause can be undone within minutes. Default: ship a plain toggle that shows the true state. Say if you want a timed pause (needs a helper plus edits to the activate and deactivate automations).
-3. **Cristina's menu:** default gives her rows 1, 2 (her lamp), 3, 4, 6, 7 and no DnD (she has no DnD helper). OK?
+1. **Kid row:** "staying home today" (`home_today`). Shown only on school days, from an hour before to an hour after that school's start.
+2. **Camera pause:** a plain toggle that shows the true state. No timed pause.
+3. **Cristina's menu:** rows 1, 2 (her lamp), 3, 4, 6, 7; no DnD row.
 
 ## Out of scope
 
