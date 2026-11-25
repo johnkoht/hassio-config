@@ -14,9 +14,9 @@
         "bedtime off turns the boolean off; speech pause/resume turn input_boolean.speech_notifications off/on on the boolean edges",
         "no entertainment file uses automation.turn_on/off or initial_state"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-2",
@@ -28,9 +28,9 @@
         "dining room has no file",
         "filename equals id; header comment; modern syntax; conditions global to feature"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-3",
@@ -40,9 +40,9 @@
         "each of the 8 has the condition first in conditions",
         "TV never turned on by the mode"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-4",
@@ -53,9 +53,9 @@
         "existing tests updated, KNOWN_REMAINING drops entertainment_mode_deactivated, HELPERS has the boolean",
         "full suite green"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-5",
@@ -67,9 +67,9 @@
         "outdoor speakers are patio, pool, gazebo; coordinator patio",
         "no TV entity in any list"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-6",
@@ -81,9 +81,9 @@
         "stop only when flag on; clears flag",
         "zone change only while mode and flag on"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-7",
@@ -94,9 +94,9 @@
         "start refusal is silent for it",
         "existing crazy tests stay green"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-8",
@@ -106,9 +106,9 @@
         "only existing and new helper entities are referenced",
         "dashboard tests green"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     },
     {
       "id": "task-9",
@@ -118,15 +118,15 @@
         "sabotage: drop crazy guard, drop started-flag condition on stop",
         "full suite green"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
     }
   ],
   "metadata": {
     "createdAt": "2026-11-24T00:00:00Z",
     "totalTasks": 9,
-    "completedTasks": 0,
+    "completedTasks": 9,
     "failedTasks": 0
   }
 }

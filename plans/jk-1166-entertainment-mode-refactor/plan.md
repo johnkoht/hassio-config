@@ -1,10 +1,10 @@
 ---
 title: Entertainment Mode Refactor
 slug: jk-1166-entertainment-mode-refactor
-status: in-progress
+status: complete
 created: 2026-11-23
 has_pre_mortem: false
-has_review: false
+has_review: true
 has_prd: true
 linear: JK-1166
 ---
