@@ -1,0 +1,51 @@
+# Doorbell Message
+#
+# The text the doorbell screen should show, resolved from house mode,
+# entertainment mode, the calendar date and the sun. Max 30 characters
+# (Protect's limit). Applied by doorbell_message_apply.
+#
+
+template:
+  - sensor:
+      - name: "Doorbell Message"
+        unique_id: doorbell_message
+        default_entity_id: sensor.doorbell_message
+        state: >-
+          {% set house = states('input_select.house') %}
+          {% set sun = states('sun.sun') %}
+          {% set rising = state_attr('sun.sun', 'rising') %}
+          {% set n = now() %}
+          {% set md = n.month * 100 + n.day %}
+          {# start, end (MMDD, inclusive), text #}
+          {% set holidays = [
+            (101, 101, 'Happy New Year!'),
+            (214, 214, "Happy Valentine's Day!"),
+            (317, 317, "Happy St. Patrick's Day!"),
+            (704, 704, 'Happy 4th of July!'),
+            (1025, 1031, 'Happy Halloween!'),
+            (1220, 1225, 'Merry Christmas!'),
+            (1231, 1231, 'Happy New Year!'),
+          ] %}
+          {% set ns = namespace(text='') %}
+          {% for start, end, text in holidays %}
+            {% if start <= md <= end %}{% set ns.text = text %}{% endif %}
+          {% endfor %}
+          {# 4th Thursday of November #}
+          {% if n.month == 11 and n.weekday() == 3 and 22 <= n.day <= 28 %}
+            {% set ns.text = 'Happy Thanksgiving!' %}
+          {% endif %}
+          {% if house in ['Away', 'Vacation', 'Bedtime'] %}
+            DO NOT DISTURB
+          {%- elif house == 'Quiet' %}
+            SHHH…KIDS SLEEPING
+          {%- elif is_state('input_boolean.entertainment_mode', 'on') %}
+            Come on in…
+          {%- elif ns.text %}
+            {{ ns.text }}
+          {%- elif sun == 'above_horizon' and rising == true %}
+            Good morning!
+          {%- elif sun == 'below_horizon' and rising == false %}
+            Good evening!
+          {%- else %}
+            Welcome!
+          {%- endif %}

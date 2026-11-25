@@ -1,0 +1,40 @@
+# Doorbell Message Apply
+#
+# Keep the doorbell screen showing sensor.doorbell_message. Writes the text
+# entity (no expiry); the select path expires after the NVR reset timeout.
+#
+
+automation:
+  - id: "doorbell_message_apply"
+    alias: "Doorbell Message - Apply"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: sensor.doorbell_message
+      # Protect reload, NVR reset, doorbell reboot or an app edit
+      - trigger: state
+        entity_id: text.front_door_camera_doorbell
+        for:
+          seconds: 30
+      - trigger: time_pattern
+        minutes: "/30"
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+    conditions:
+      - alias: "A message is resolved"
+        condition: template
+        value_template: >-
+          {{ states('sensor.doorbell_message') not in ['', 'unknown', 'unavailable'] }}
+      - alias: "The doorbell differs from it"
+        condition: template
+        value_template: >-
+          {{ states('text.front_door_camera_doorbell') not in ['unknown', 'unavailable']
+             and states('text.front_door_camera_doorbell') != states('sensor.doorbell_message') }}
+    actions:
+      - action: text.set_value
+        target:
+          entity_id: text.front_door_camera_doorbell
+        data:
+          value: "{{ states('sensor.doorbell_message') }}"

@@ -139,3 +139,9 @@ Vacation). `scripts/house/house_away.yaml` is the one leftover writer.
   loudly when it is missing during a reload.
 - An `input_number` with no `initial:` and no restored state starts at `min`.
 
+
+## The doorbell message expires through the Protect select (JK-82)
+
+`select.front_door_camera_doorbell_text` writes with the NVR's default reset timeout, so every message set through it reverted to `Default Message (WELCOME!)` 8 to 15 minutes later (recorder, 11-20 onward; no Protect reload involved). `text.front_door_camera_doorbell` writes with no reset time, and is the only way to show free text. Protect's limit is 30 characters, not HA's 255.
+
+`doorbell/doorbell_message.yaml` resolves the text and `doorbell_message_apply.yaml` writes it, only when it differs. Nothing should write the select. The resolver never selects `Entertainment` on `input_select.house`, so Entertainment text keys off `input_boolean.entertainment_mode`.

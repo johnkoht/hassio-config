@@ -1,7 +1,7 @@
 ---
 title: Doorbell Message (JK-82)
 slug: jk-82-doorbell-message
-status: draft
+status: shipped
 created: 2026-11-23
 has_pre_mortem: false
 has_review: false
