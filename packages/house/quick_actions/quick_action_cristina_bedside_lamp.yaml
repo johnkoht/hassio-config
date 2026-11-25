@@ -1,0 +1,16 @@
+# Quick Action - Cristina Bedside Lamp
+#
+# Shows when Cristina's bedside lamp is on and Cristina is in bed in the main bedroom.
+# Unavailable or unknown states read as off.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action Cristina Bedside Lamp"
+        unique_id: quick_action_cristina_bedside_lamp
+        default_entity_id: binary_sensor.quick_action_cristina_bedside_lamp
+        icon: mdi:lamp
+        state: >-
+          {{ is_state('light.hue_ambiance_lamp_1_2', 'on')
+             and is_state('sensor.cristina_room_presence', 'main_bedroom')
+             and is_state('input_boolean.cristina_in_bed', 'on') }}

@@ -1,0 +1,16 @@
+# Quick Action - Gianluca Nightlight
+#
+# Shows when it is dark out or Gianluca's lamp is already on, so it can be toggled.
+# A lamp that is unavailable or unknown reads as off, even when dark.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action Gianluca Nightlight"
+        unique_id: quick_action_gianluca_nightlight
+        default_entity_id: binary_sensor.quick_action_gianluca_nightlight
+        icon: mdi:lightbulb-night
+        state: >-
+          {{ is_state('light.gianluca_lamp', 'on')
+             or (is_state('sun.sun', 'below_horizon')
+                 and states('light.gianluca_lamp') not in ['unavailable', 'unknown']) }}

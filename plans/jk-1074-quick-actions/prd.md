@@ -1,0 +1,65 @@
+# PRD: Home Quick Actions (JK-1074)
+
+## Goal
+
+A ⚡ quick-actions pop-up in the Home header. It lists only the actions that apply to the person holding the phone right now, each one tap: room link, bedside lamp off, kids' nightlights, Nino's music, John's DnD, camera alerts, and kids staying home.
+
+Plan: `plan.md`. Risks and fixes: `pre-mortem.md` (with the adjudication) and `review.md`.
+
+## Tasks
+
+### 1. Nino sleep music start/stop scripts (`task-1`)
+
+Extract the four start actions from packages/ninos_room/**/nino_sleep_music_on.yaml into script.nino_sleep_music_start (verbatim, same order), add script.nino_sleep_music_stop mirroring what nino_sleep_music_off does (pause + clear flag), and make nino_sleep_music_on call the start script. All triggers/conditions of nino_sleep_music_on stay byte-identical.
+
+**Acceptance criteria**
+- script.nino_sleep_music_start exists and contains exactly the actions previously inline in nino_sleep_music_on, in the same order
+- script.nino_sleep_music_stop pauses media_player.ninos_room and turns off input_boolean.nino_sleep_music_playing, same as nino_sleep_music_off
+- nino_sleep_music_on's triggers and conditions are unchanged; its actions call script.nino_sleep_music_start
+- New test in tests/test_quick_actions.py asserts the above; sabotage (removing an action from the script) makes it fail
+- Script files follow the repo's scripts-in-packages pattern (find an existing package script and copy its shape); modern syntax; short header comment
+
+### 2. Quick-action template binary_sensors and count sensors (`task-2`)
+
+Create packages/house/quick_actions/quick_action_*.yaml (one rule per file): bedside lamp for John and Cristina, Nino and Gianluca nightlight rows, Nino music row, Nino and Gianluca home-today rows, room-link mapped sensor per person, and a per-person count sensor for the badge. Live templates (no trigger:) since they read few entities and the kid-home rule needs now().
+
+**Acceptance criteria**
+- binary_sensor.quick_action_john_bedside_lamp on iff light.hue_ambiance_lamp_1 is on AND sensor.john_room_presence == main_bedroom AND input_boolean.john_is_in_bed on; Cristina's uses light.hue_ambiance_lamp_1_2, sensor.cristina_room_presence, input_boolean.cristina_in_bed; unavailable/unknown lamp -> off
+- binary_sensor.quick_action_nino_nightlight / _gianluca_nightlight on iff (sun.sun below_horizon) or the lamp (light.nino_bedroom_lamp / light.gianluca_lamp) is on; unavailable lamp -> off
+- binary_sensor.quick_action_nino_music on iff media_player.ninos_room == playing, OR (sun below horizon AND input_select.ninos_bedroom != Off AND binary_sensor.nino_bed_occupied on); unavailable player -> off
+- binary_sensor.quick_action_nino_home_today / _gianluca_home_today on iff the kid's home_today is on, OR (binary_sensor.<kid>_school_day on AND the school start sensor (primary for Nino, parochial for Gianluca) is a valid timestamp AND |now - start| <= 60 min). Unavailable/unknown start sensor -> off unless home_today on. Header comment says it is intentionally a live now() template.
+- binary_sensor.quick_action_john_room / _cristina_room on iff the person's room_presence is in the mapped area list (see working-memory area map); not_home/unknown/unavailable -> off
+- sensor.quick_actions_john_count / _cristina_count = number of that person's contextual rows on (room, own bedside lamp, nightlights x2, music, kid home x2); DnD and camera rows excluded
+- No hard-coded clock times, no names/schedules beyond existing entity ids; numeric comparisons coerce types
+- Template render tests in tests/test_quick_actions.py using the repo's existing template-render test helper (find it in tests/), covering shown, hidden and unavailable cases for every sensor, incl. ±60 min window edges
+- Test that every package YAML basename is unique (or extend an existing one if it already exists)
+
+### 3. Quick actions pop-up and header chip (`task-3`)
+
+Add dashboards/kohbo/home/_quick_actions_popup.yaml (bubble-card pop-up, hash #quick_actions, kohbo_popup_styles like #notifications) and a ⚡ chip with a badge from the per-person count sensor in home.yaml's header, wrapped with the bell in one nested stack so the header keeps three slots. Rows: room link (one conditional per mapped area on the person's room_presence, navigate to /dashboard-kohbo/rooms-<slug>), bedside lamp (turn off own lamp), nightlights (light.toggle), music (script start/stop by media_player state), DnD for John (toggle input_boolean.john_dnd; label from binary_sensor.john_dnd_active and says when the Mac holds it), camera alerts (toggle input_boolean.camera_notifications, shows true state), kid home (toggle home_today). Per-user rows use visibility condition: user with users: [!secret john_ha_user_id] / [!secret cristina_ha_user_id]. Empty state 'Nothing right now'.
+
+**Acceptance criteria**
+- All conditional rows use condition: state / user only; no condition: template
+- Pop-up included in home.yaml; header chip navigates to #quick_actions; deep-link test stays green
+- Room-link map exactly matches the working-memory area map; test asserts every target path is a registered view and no area is listed twice
+- Cristina sees rows 1,2(her lamp),3,4,6,7 and no DnD; John sees all incl. DnD
+- secrets.fake.yaml gains john_ha_user_id and cristina_ha_user_id placeholders; test fails on any !secret under dashboards/ other than those two
+- Badge reads the viewing person's count sensor and hides at 0
+- button-card custom_fields interpolate only entity states/fixed labels (unsafeHTML)
+- Existing test suite green
+
+### 4. Docs and learnings (`task-4`)
+
+Update dashboards/kohbo/home/README.md, dashboards/SITEMAP.md, the Nino room README/docs that list the sleep music automations, packages/house README if it lists subpackages, and add LEARNINGS entries for first-use patterns (first !secret in dashboards, condition: user).
+
+**Acceptance criteria**
+- Docs mention the pop-up, its rows and their rules, the new scripts, and the host secrets prerequisite
+- No PII (no user ids, schedules, times) in docs
+
+## Deploy (after merge; John has approved the ship)
+
+1. **Host secrets.** Add `john_ha_user_id` and `cristina_ha_user_id` to the host `secrets.yaml`. Back the file up first, take the values from `.storage/auth`, and never print them.
+2. **Deploy.** Run `./deploy.sh --reload --skip-ci` from the merge commit.
+3. **Reload.** Reload Template entities and Scripts over REST.
+4. **Verify.** Websocket `lovelace/config` for kohbo loads. The new sensors have states.
+5. **No restart.**

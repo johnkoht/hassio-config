@@ -14,7 +14,7 @@ class _Loader(yaml.SafeLoader):
 
 # Keep every !include tag as its path string; nothing is resolved while loading.
 for _tag in ("!include", "!include_dir_list", "!include_dir_merge_list",
-             "!include_dir_named", "!include_dir_merge_named"):
+             "!include_dir_named", "!include_dir_merge_named", "!secret"):
     _Loader.add_constructor(_tag, lambda loader, node: loader.construct_scalar(node))
 
 

@@ -47,24 +47,4 @@ automation:
       - condition: template
         value_template: "{{ not is_state('media_player.ninos_room', 'playing') }}"
     actions:
-      # Set play mode first so the first track is shuffled too
-      - action: media_player.shuffle_set
-        target:
-          entity_id: media_player.ninos_room
-        data:
-          shuffle: true
-      - action: media_player.repeat_set
-        target:
-          entity_id: media_player.ninos_room
-        data:
-          repeat: "all"
-      - action: media_player.play_media
-        target:
-          entity_id: media_player.ninos_room
-        data:
-          media_content_type: "playlist"
-          media_content_id: "spotify:playlist:0Aip39YSo3rqFim2uiRCc6"
-          enqueue: "replace"
-      - action: input_boolean.turn_on
-        target:
-          entity_id: input_boolean.nino_sleep_music_playing
+      - action: script.nino_sleep_music_start

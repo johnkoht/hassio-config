@@ -1,0 +1,17 @@
+# Nino Sleep Music Stop
+#
+# Pause the sleep music and clear the playing flag.
+# Called by the quick-actions pop-up.
+#
+
+script:
+  nino_sleep_music_stop:
+    alias: "Nino's Bedroom - Sleep Music Stop"
+    mode: single
+    sequence:
+      - action: media_player.media_pause
+        target:
+          entity_id: media_player.ninos_room
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.nino_sleep_music_playing

@@ -1,0 +1,30 @@
+# Quick Action - Cristina Room
+#
+# Shows when Cristina's room presence is one of the areas that have a room view.
+# Keep this list in step with the dashboard's quick actions pop-up.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action Cristina Room"
+        unique_id: quick_action_cristina_room
+        default_entity_id: binary_sensor.quick_action_cristina_room
+        icon: mdi:door-open
+        state: >-
+          {{ states('sensor.cristina_room_presence') in [
+               'dining_room',
+               'family_room',
+               'foyer',
+               'gianlucas_room',
+               'jr_suite',
+               'kitchen',
+               'laundry_room',
+               'main_bathroom',
+               'main_bedroom',
+               'mud_room',
+               'nino_room',
+               'office',
+               'playroom',
+               'powder_room',
+               'upstairs_hallway',
+             ] }}

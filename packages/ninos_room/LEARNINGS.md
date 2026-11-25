@@ -11,3 +11,5 @@ Listeners of occupancy going off: bedroom heater off, and purifier off (30 min) 
 ## Lamp as an occupancy signal (JK-1163)
 
 `light.nino_bedroom_lamp` off to on (never from unavailable) marks the room occupied, and the lamp is an OR branch of the occupied condition. It is deliberately NOT in the not-occupied conditions: a lamp or nightlight left on overnight must not hold occupancy; lamp off 5 min is only an extra trigger to clear. Bedtime mode keys on `nino_in_bed` and is untouched. The 22:00 nightlight needs the lamp already on, so it cannot create occupancy by itself.
+
+`nino_sleep_music_start` / `_stop` are shared with the Home quick actions pop-up. `nino_sleep_music_on` calls the start script, so change the playlist there only.

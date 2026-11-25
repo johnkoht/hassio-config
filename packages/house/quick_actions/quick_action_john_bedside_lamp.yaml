@@ -1,0 +1,16 @@
+# Quick Action - John Bedside Lamp
+#
+# Shows when John's bedside lamp is on and John is in bed in the main bedroom.
+# Unavailable or unknown states read as off.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action John Bedside Lamp"
+        unique_id: quick_action_john_bedside_lamp
+        default_entity_id: binary_sensor.quick_action_john_bedside_lamp
+        icon: mdi:lamp
+        state: >-
+          {{ is_state('light.hue_ambiance_lamp_1', 'on')
+             and is_state('sensor.john_room_presence', 'main_bedroom')
+             and is_state('input_boolean.john_is_in_bed', 'on') }}

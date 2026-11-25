@@ -1,0 +1,19 @@
+# Quick Action - Nino Music
+#
+# Shows when Nino's speaker is playing, or when it is dark, his room is not Off
+# and he is in bed. An unavailable or unknown speaker reads as off.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action Nino Music"
+        unique_id: quick_action_nino_music
+        default_entity_id: binary_sensor.quick_action_nino_music
+        icon: mdi:music
+        state: >-
+          {%- set player = states('media_player.ninos_room') -%}
+          {{ player == 'playing'
+             or (player not in ['unavailable', 'unknown']
+                 and is_state('sun.sun', 'below_horizon')
+                 and not is_state('input_select.ninos_bedroom', 'Off')
+                 and is_state('binary_sensor.nino_bed_occupied', 'on')) }}

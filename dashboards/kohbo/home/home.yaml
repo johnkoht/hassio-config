@@ -25,35 +25,142 @@ cards:
         # Safety alert: always holds the left slot so the title stays centred;
         # visible only while a safety device needs attention
         #
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          entity: binary_sensor.safety_devices_need_attention
-          icon: mdi:shield-alert
-          show_state: false
-          tap_action:
-            action: navigate
-            navigation_path: '/dashboard-kohbo/sensors-offline'
-          styles:
-            card:
-              - background-color: >
-                  [[[ return entity?.state === 'on' ? 'var(--error-color)' : 'transparent' ]]]
-              - box-shadow: none
-              - visibility: >
-                  [[[ return entity?.state === 'on' ? 'visible' : 'hidden' ]]]
-            icon:
-              - color: white
+        - type: custom:mod-card
+          card_mod:
+            style:
+              .: |
+                :host {
+                  flex: 0 0 auto !important;
+                }
+              hui-horizontal-stack-card$: |
+                #root {
+                  gap: 5px !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: kohbo_header_chip_card
+                entity: binary_sensor.safety_devices_need_attention
+                icon: mdi:shield-alert
+                show_state: false
+                tap_action:
+                  action: navigate
+                  navigation_path: '/dashboard-kohbo/sensors-offline'
+                styles:
+                  card:
+                    - background-color: >
+                        [[[ return entity?.state === 'on' ? 'var(--error-color)' : 'transparent' ]]]
+                    - box-shadow: none
+                    - visibility: >
+                        [[[ return entity?.state === 'on' ? 'visible' : 'hidden' ]]]
+                  icon:
+                    - color: white
+              # Spacer, same width as the quick-actions chip on the right
+              - type: custom:button-card
+                template: empty_column
 
+        # Title
         - type: custom:button-card
           template: kohbo_header_page_title
           name: Home
 
-        - type: custom:button-card
-          template: kohbo_header_chip_card
-          icon: mdi:bell
-          icon_color: var(--secondary-text-color)
-          tap_action:
-            action: navigate
-            navigation_path: '#notifications'
+        #
+        # Right slot: quick actions (one chip per person, so the badge reads
+        # that person's count sensor) + the bell. The chip keeps its space
+        # when the count is 0 (visibility: hidden), like the safety chip.
+        #
+        - type: custom:mod-card
+          card_mod:
+            style:
+              .: |
+                :host {
+                  flex: 0 0 auto !important;
+                }
+              hui-horizontal-stack-card$: |
+                #root {
+                  gap: 5px !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: kohbo_header_chip_card
+                entity: sensor.quick_actions_john_count
+                icon: mdi:lightning-bolt
+                icon_color: var(--secondary-text-color)
+                show_state: false
+                visibility:
+                  - condition: user
+                    users:
+                      - !secret john_ha_user_id
+                tap_action:
+                  action: navigate
+                  navigation_path: '#quick_actions'
+                custom_fields:
+                  badge: >
+                    [[[ return entity.state; ]]]
+                styles:
+                  card:
+                    - position: relative
+                    - visibility: >
+                        [[[ return (parseInt(entity.state) > 0) ? 'visible' : 'hidden' ]]]
+                  custom_fields:
+                    badge:
+                      - position: absolute
+                      - top: 2px
+                      - right: 2px
+                      - min-width: 16px
+                      - height: 16px
+                      - line-height: 16px
+                      - border-radius: 8px
+                      - font-size: 11px
+                      - font-weight: 600
+                      - background-color: var(--primary-color)
+                      - color: white
+
+              - type: custom:button-card
+                template: kohbo_header_chip_card
+                entity: sensor.quick_actions_cristina_count
+                icon: mdi:lightning-bolt
+                icon_color: var(--secondary-text-color)
+                show_state: false
+                visibility:
+                  - condition: user
+                    users:
+                      - !secret cristina_ha_user_id
+                tap_action:
+                  action: navigate
+                  navigation_path: '#quick_actions'
+                custom_fields:
+                  badge: >
+                    [[[ return entity.state; ]]]
+                styles:
+                  card:
+                    - position: relative
+                    - visibility: >
+                        [[[ return (parseInt(entity.state) > 0) ? 'visible' : 'hidden' ]]]
+                  custom_fields:
+                    badge:
+                      - position: absolute
+                      - top: 2px
+                      - right: 2px
+                      - min-width: 16px
+                      - height: 16px
+                      - line-height: 16px
+                      - border-radius: 8px
+                      - font-size: 11px
+                      - font-weight: 600
+                      - background-color: var(--primary-color)
+                      - color: white
+
+              - type: custom:button-card
+                template: kohbo_header_chip_card
+                icon: mdi:bell
+                icon_color: var(--secondary-text-color)
+                tap_action:
+                  action: navigate
+                  navigation_path: '#notifications'
 
   #
   # Quick Overview
@@ -582,6 +689,12 @@ cards:
   # Notifications Popup
   #
   - !include /config/dashboards/kohbo/shared/kohbo_notification_popup.yaml
+
+
+  #
+  # Quick Actions Popup
+  #
+  - !include /config/dashboards/kohbo/home/_quick_actions_popup.yaml
 
 
   #

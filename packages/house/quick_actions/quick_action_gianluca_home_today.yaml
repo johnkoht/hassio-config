@@ -1,0 +1,19 @@
+# Quick Action - Gianluca Home Today
+#
+# Shows when Gianluca is marked home today, or within an hour of school starting
+# on a school day. Deliberately a live now() template (re-renders each minute),
+# not trigger-based. A missing or invalid start time reads as off.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action Gianluca Home Today"
+        unique_id: quick_action_gianluca_home_today
+        default_entity_id: binary_sensor.quick_action_gianluca_home_today
+        icon: mdi:home-account
+        state: >-
+          {%- set start = as_timestamp(states('sensor.parochial_school_start_time_today'), none) -%}
+          {{ is_state('input_boolean.gianluca_home_today', 'on')
+             or (is_state('binary_sensor.gianluca_school_day', 'on')
+                 and start is not none
+                 and (now().timestamp() - start) | abs <= 3600) }}

@@ -28,6 +28,7 @@ home/
 ├── house_mode_popup.yaml                     # House mode selector popup
 ├── kids_wifi_popup.yaml                      # Kids WiFi schedule, snooze and iPad blocks popup
 ├── crazy_mode_popup.yaml                     # Crazy Mode start, stop, windows and music popup
+├── _quick_actions_popup.yaml                 # Per-user quick actions popup (#quick_actions)
 ├── _vacuum_active_notification.yaml          # Vacuum running notification
 ├── _front_door_camera_notification.yaml      # Front door person banner (Protect person sensor)
 └── _driveway_front_camera_notification.yaml  # Driveway person banner (Protect person sensor)
@@ -45,6 +46,7 @@ The top header contains:
 - **Notifications Button** - Bell icon linking to `#notifications` popup
 - **House Mode Chip** - Current house mode (Auto, Away, Quiet, Bedtime, Entertainment, Vacation) with color-coded icons (opens house mode popup)
 - **Energy Usage Chip** - Real-time power consumption with color-coded status (links to [energy dashboard](../energy/README.md))
+- **Quick Actions Chip** - Lightning bolt with a badge of the contextual rows showing (opens `#quick_actions`); hidden at 0 and per user
 - **People Avatars** - Shows people currently at home (John, Cristina, Nonna, Katia, Celi) with status indicators (sleeping, DND)
 
 ### Security Overview
@@ -116,6 +118,21 @@ Accessed via the House Mode chip in the header. Allows selection of:
 - **Vacation** - Extended away mode
 
 The mode is derived from the Quiet, Bedtime, Vacation and house-occupied toggles, so a pick here lasts only until one of them changes. Toggle those to change it.
+
+### Quick Actions Popup
+
+`#quick_actions`, opened by the lightning chip. Each person sees their own block (`condition: user` on `!secret john_ha_user_id` / `cristina_ha_user_id`; the secrets must exist on the host before deploy). Rows come from `packages/house/quick_actions/` binary sensors, so each shows only when it applies:
+
+- **Go to <room>** - the person's room presence is an area with a room view (`binary_sensor.quick_action_<person>_room`)
+- **Bedside lamp off** - `quick_action_<person>_bedside_lamp`
+- **Nino's / Gianluca's nightlight** - `quick_action_{nino,gianluca}_nightlight`
+- **Start / stop Nino's sleep music** - `quick_action_nino_music`, via `script.nino_sleep_music_start` / `_stop`
+- **Nino / Gianluca: home today** - `quick_action_{nino,gianluca}_home_today`
+- **Do not disturb** (John only) and **Camera alerts** - always present, not counted
+
+The chip badge is `sensor.quick_actions_<person>_count` (contextual rows only). With none showing, the pop-up reads "No suggestions right now".
+
+Deploy: add the two user-id secrets on the host first, then `--reload` plus a Template entities reload (the sensors) and a Scripts reload. No restart.
 
 ### Thermostat Popups
 

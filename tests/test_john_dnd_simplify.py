@@ -48,6 +48,7 @@ def test_john_dnd_boolean_used_only_by_sensor_and_toggle():
     assert users == {
         "packages/people/john/do_not_disturb/sensors/john_dnd_active.yaml",
         "dashboards/templates/button_cards/people/john.yaml",
+        "dashboards/kohbo/home/_quick_actions_popup.yaml",  # JK-1074 DnD toggle row
     }
 
 
