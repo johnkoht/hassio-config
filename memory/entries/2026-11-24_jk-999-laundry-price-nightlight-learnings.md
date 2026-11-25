@@ -1,6 +1,6 @@
 # jk-999-laundry-price-nightlight — 2026-11-24
 
-**Metrics:** lite ship, one automation, one helper, 5 new tests; full suite 2374 passed, 9 skipped. Shipped as a PR.
+**Metrics:** lite ship, one automation, one helper, 7 new tests; reviewer APPROVED twice. The validity condition is rendered through jinja in the tests and three sabotage mutations (tier check, is_number, debounce) go red. Shipped as a PR.
 
 **What shipped:**
 - `laundry_room_nightlight_price_color` recolours `light.laundry_room_nightlight` by `sensor.energy_price_tier`: green, blue, orange, red; purple when prices are negative. 15% brightness, 5% at Bedtime.
@@ -13,4 +13,5 @@
 
 **Follow-ups (BACKLOG):**
 - Fix the `float(0)` green-on-unavailable in the tier sensor itself.
+- The tier-to-colour map is one `variables` dict, so an unknown tier fails the condition and does nothing.
 - Optional: turn the nightlight on automatically when dark (not built; John chose recolour-only).
