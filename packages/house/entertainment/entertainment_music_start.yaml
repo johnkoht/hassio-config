@@ -3,8 +3,8 @@
 # Groups the chosen zone's speakers under its coordinator and plays the
 # chosen Sonos favorite at the set volume. Called when the mode turns on and
 # when the zone changes. Skips quietly unless every guard holds. Crazy Mode
-# and this never run together. With the family room TV on, the family room
-# speaker is left out so the TV keeps its sound.
+# and this never run together. The TV is a separate device: it is never
+# grouped, called, turned on or turned off here.
 #
 
 script:
@@ -16,7 +16,6 @@ script:
       zone_name: "{{ states('input_select.entertainment_music_zone') }}"
       zone_key: "{{ 'indoor' if zone_name == 'Indoor' else 'outdoor' if zone_name == 'Outdoor' else '' }}"
       cfg: "{{ state_attr('sensor.entertainment_zone_config', zone_key) if zone_key else none }}"
-      tv_on: "{{ is_state('media_player.sony_bravia_tv', 'on') }}"
       favorite: "{{ states('input_text.entertainment_favorite') }}"
     sequence:
       - alias: "Entertainment mode is on"
@@ -54,11 +53,9 @@ script:
               logger: entertainment_mode
               message: "Entertainment music not started: favorite missing on {{ cfg.coordinator }}"
           - stop: "Favorite missing"
-      - alias: "Take the family room speaker out of the group while the TV is on"
+      - alias: "Read the zone once"
         variables:
-          speakers: >-
-            {{ cfg.speakers | reject('eq', 'media_player.sonos_family_room') | list
-               if (zone_key == 'indoor' and tv_on) else cfg.speakers }}
+          speakers: "{{ cfg.speakers }}"
           coordinator: "{{ cfg.coordinator }}"
           volume: "{{ [[states('input_number.entertainment_volume') | float(30), 10] | max, 70] | min / 100 }}"
       - alias: "Remember what this session started"

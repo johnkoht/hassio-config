@@ -164,4 +164,4 @@ it is right after any restart.
   house both end it.
 - Crazy Mode refuses while the mode is on (reason `entertainment`), and the
   music start skips while a Crazy run is active.
-- `sonos_living_room` is the dining room's speaker.
+- `sonos_living_room` is the dining room's speaker. `sonos_family_room` is an Amp on in-ceiling speakers, separate from the TV, so it always joins the music group; the mode never touches the TV.

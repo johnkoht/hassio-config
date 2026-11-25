@@ -16,8 +16,9 @@
 **Gotchas:**
 - There was a fifth "music off" automation (`playroom_media_player_unjoin`) nobody had listed.
 - The dining room's speaker is `sonos_living_room`.
+- I guessed the family room Sonos was the TV's soundbar and dropped it from the group while the TV was on; John said they are separate devices (an Amp on in-ceiling speakers), so it always joins. Ask before encoding a guess about hardware.
 - The old docs claimed a BLE auto trigger that no longer exists.
 
 **Follow-ups:**
-- Post-deploy: set the volume slider to 30 once; pick a favorite; confirm the template select lists favorites and whether `sonos_family_room` is the TV's soundbar.
+- Post-deploy: set the volume slider to 30 once; pick a favorite; confirm the template select lists favorites.
 - Backlog: `playroom_deactivate_party_time` turns its boolean on instead of off.
