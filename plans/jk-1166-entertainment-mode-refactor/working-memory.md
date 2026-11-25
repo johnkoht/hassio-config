@@ -14,4 +14,4 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 ## Context Corrections
 
 ## Decision Ledger
-- [2026-11-25] Crazy Mode and entertainment music are mutually exclusive both ways; Crazy refuses (silent, reason entertainment) while the mode is on - docs affected: packages/house/crazy_mode/README.md, packages/house/entertainment/README.md - status: open
+- [2026-11-25] Crazy Mode and entertainment music are mutually exclusive both ways; Crazy refuses (silent, reason entertainment) while the mode is on - docs affected: packages/house/crazy_mode/README.md, packages/house/entertainment/README.md - status: folded
