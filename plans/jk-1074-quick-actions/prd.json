@@ -14,9 +14,10 @@
         "New test in tests/test_quick_actions.py asserts the above; sabotage (removing an action from the script) makes it fail",
         "Script files follow the repo's scripts-in-packages pattern (find an existing package script and copy its shape); modern syntax; short header comment"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "a8765294"
     },
     {
       "id": "task-2",
