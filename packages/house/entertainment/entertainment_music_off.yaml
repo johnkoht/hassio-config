@@ -1,0 +1,22 @@
+# Entertainment Music Off
+#
+# Stop the music this mode started when entertainment mode turns off.
+#
+
+automation:
+  - id: "entertainment_music_off"
+    initial_state: on
+    alias: "Entertainment Music - Off"
+    triggers:
+      # Entertainment mode turns off
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "on"
+        to: "off"
+    conditions:
+      # This mode started the music
+      - condition: state
+        entity_id: input_boolean.entertainment_music_started
+        state: "on"
+    actions:
+      - action: script.entertainment_music_stop

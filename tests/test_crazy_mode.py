@@ -411,6 +411,16 @@ def test_emergency_refuses_and_outranks_house_mode():
     assert reason(states={"binary_sensor.emergency_active": "on", "input_select.house": "Quiet"}) == "emergency"
 
 
+def test_entertainment_mode_refuses_and_ranks_between_emergency_and_house_mode():
+    ent = {"input_boolean.entertainment_mode": "on"}
+    assert reason(states=ent) == "entertainment"
+    assert reason(states={**ent, "input_select.house": "Quiet"}) == "entertainment"
+    assert reason(states={**ent, "input_boolean.house_occupied": "off"}) == "entertainment"
+    assert reason(states={**ent, "binary_sensor.emergency_active": "on"}) == "emergency"
+    assert reason(states={**ent, "input_select.crazy_mode_phase": "Crazy"}) == "running"
+    assert reason(states={"input_boolean.entertainment_mode": "off"}) == "ok"
+
+
 def test_running_phase_refuses_first():
     assert reason(states={"input_select.crazy_mode_phase": "Crazy",
                           "binary_sensor.emergency_active": "on"}) == "running"
@@ -557,7 +567,7 @@ def test_refusal_speaks_only_for_window_reasons_on_the_zone_coordinator():
     speak = first["then"][0]
     cond = speak["if"][0]["value_template"]
     assert "outside_window" in cond and "already_ran" in cond
-    for silent in ("house_mode", "emergency", "not_occupied", "running", "favorite_missing"):
+    for silent in ("house_mode", "emergency", "entertainment", "not_occupied", "running", "favorite_missing"):
         assert silent not in cond
     call = called(speak["then"], "script.turn_on")[0]
     v = call["data"]["variables"]

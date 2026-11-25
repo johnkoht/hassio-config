@@ -1,0 +1,30 @@
+# Kitchen Entertainment Mode On
+#
+# Entertainment mode turns on: pause Adaptive Lighting and the room's speech notifications.
+# The room's other automations that would undo this check the mode themselves.
+#
+
+automation:
+  - id: "kitchen_entertainment_mode_on"
+    initial_state: on
+    alias: "Kitchen - Entertainment Mode On"
+    triggers:
+      # Entertainment mode turns on
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "off"
+        to: "on"
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      # Pause Adaptive Lighting
+      - action: switch.turn_off
+        target:
+          entity_id: switch.adaptive_lighting_kitchen
+      # Turn off the kitchen speech notifications
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.kitchen_speech_notifications

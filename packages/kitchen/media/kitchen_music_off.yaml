@@ -16,6 +16,10 @@ automation:
         entity_id: input_select.kitchen
         to: "Off"
     conditions:
+      # Entertainment mode is NOT on (the mode owns this, JK-1166)
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
       - condition: state
         entity_id: media_player.sonos_kitchen
         state: "playing"
