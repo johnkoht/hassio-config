@@ -1,7 +1,7 @@
 ---
 title: Laundry nightlight shows the energy price
 slug: jk-999-laundry-price-nightlight
-status: draft
+status: shipped
 created: 2026-11-23
 linear: JK-999
 has_pre_mortem: false

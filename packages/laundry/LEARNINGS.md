@@ -13,3 +13,7 @@ Left alone: `laundry_room_occupied` triggers on `switch.laundry_room_main_lights
 ## Occupancy-off listeners (checked for JK-1219)
 
 `laundry_room_mode_off` now also turns `laundry_room_occupied` off at house empty, Away, bedtime and restart. Listeners of occupancy going off: `laundry_room_lights_off` (lights already go off on the Off mode at those times), `laundry_room_lights_reset_manual_toggle`. The first-floor area sensors only read the state; washer/dryer automations do not use it.
+
+## Price nightlight (JK-999)
+
+`laundry_room_nightlight_price_color` colours `light.laundry_room_nightlight` by `sensor.energy_price_tier` only while the light is already on. The tier flaps with the 5-minute price feed, so the tier and negative triggers need `for: 10 min`. The tier sensor renders an unavailable price as `low` (green), so the automation also requires the price to be a number. The tier's `color` attribute is CSS variables; the RGB map lives in the automation. The toggle `laundry_room_price_nightlight` is hand-only with no `initial:`.
