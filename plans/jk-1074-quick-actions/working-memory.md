@@ -27,6 +27,8 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 - **[Orchestrator] Every plan entity exists live** (2026-11-25). `light.hue_ambiance_lamp_1_2` (Cristina's lamp) is currently unavailable, so its row hides by design.
 - **[Orchestrator] Nino and Gianluca map to different schools.** Nino uses `sensor.primary_school_start_time_today`. Gianluca uses `sensor.parochial_school_start_time_today`. Both are device_class timestamp and unavailable on no-school days.
 
+- **[Task 1] Package scripts call convention**: package automations call scripts with `action: script.<name>`; script-in-package files use a top-level `script:` key (one file per script, name = basename).
+
 ## Active Gotchas
 
 - **Package filenames are keyed by basename across the whole tree** (`!include_dir_named`). Prefix new files `quick_action_*`. `.yml` files are never loaded.
