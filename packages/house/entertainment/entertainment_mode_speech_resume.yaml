@@ -1,0 +1,19 @@
+# Entertainment Mode Speech Resume
+#
+# Turn the house-wide speech notifications back on when entertainment mode ends.
+#
+
+automation:
+  - id: "entertainment_mode_speech_resume"
+    initial_state: on
+    alias: "Entertainment Mode - Speech Resume"
+    triggers:
+      # Entertainment mode turns off
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "on"
+        to: "off"
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.speech_notifications

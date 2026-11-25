@@ -1,5 +1,9 @@
+# Entertainment Mode
+#
+# The boolean rooms react to. No `initial:` so a restart keeps it (JK-1262).
+#
+
 input_boolean:
   entertainment_mode:
     name: Entertainment Mode
     icon: mdi:liquor
-    initial: off

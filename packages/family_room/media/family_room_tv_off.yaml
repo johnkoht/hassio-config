@@ -17,6 +17,10 @@ automation:
         entity_id: input_select.family_room
         to: "Off"
     conditions:
+      # Entertainment mode is NOT on (the mode owns this, JK-1166)
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
       # TV is ON
       - condition: state
         entity_id: media_player.sony_bravia_tv
