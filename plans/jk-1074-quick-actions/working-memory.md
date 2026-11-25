@@ -29,6 +29,9 @@ Cross-task knowledge. Every developer reads this before starting and updates it 
 
 - **[Task 1] Package scripts call convention**: package automations call scripts with `action: script.<name>`; script-in-package files use a top-level `script:` key (one file per script, name = basename).
 
+- **[Task 2] Entities created** (packages/house/quick_actions/, 11 files, live templates): `binary_sensor.quick_action_{john,cristina}_bedside_lamp`, `_{nino,gianluca}_nightlight`, `_nino_music`, `_{nino,gianluca}_home_today`, `_{john,cristina}_room`; `sensor.quick_actions_{john,cristina}_count`. Tests reuse `FakeHA` from tests/smart_climate_harness.py. The room sensors hold the 15-area list inline; task-3 test must check it matches the dashboard conditionals.
+- **[Task 2] Start-time parsing** uses `as_timestamp(states(...), none)` (harness has no `as_datetime`); invalid/unavailable gives none -> off.
+
 ## Active Gotchas
 
 - **Package filenames are keyed by basename across the whole tree** (`!include_dir_named`). Prefix new files `quick_action_*`. `.yml` files are never loaded.

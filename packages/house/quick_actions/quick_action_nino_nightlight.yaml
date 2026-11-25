@@ -1,0 +1,16 @@
+# Quick Action - Nino Nightlight
+#
+# Shows when it is dark out or Nino's lamp is already on, so it can be toggled.
+# A lamp that is unavailable or unknown reads as off, even when dark.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action Nino Nightlight"
+        unique_id: quick_action_nino_nightlight
+        default_entity_id: binary_sensor.quick_action_nino_nightlight
+        icon: mdi:lightbulb-night
+        state: >-
+          {{ is_state('light.nino_bedroom_lamp', 'on')
+             or (is_state('sun.sun', 'below_horizon')
+                 and states('light.nino_bedroom_lamp') not in ['unavailable', 'unknown']) }}

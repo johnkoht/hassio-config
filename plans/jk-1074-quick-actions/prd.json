@@ -34,9 +34,10 @@
         "Template render tests in tests/test_quick_actions.py using the repo's existing template-render test helper (find it in tests/), covering shown, hidden and unavailable cases for every sensor, incl. \u00b160 min window edges",
         "Test that every package YAML basename is unique (or extend an existing one if it already exists)"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 0,
+      "commitSha": "PENDING"
     },
     {
       "id": "task-3",

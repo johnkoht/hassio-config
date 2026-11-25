@@ -1,0 +1,30 @@
+# Quick Action - John Room
+#
+# Shows when John's room presence is one of the areas that have a room view.
+# Keep this list in step with the dashboard's quick actions pop-up.
+#
+
+template:
+  - binary_sensor:
+      - name: "Quick Action John Room"
+        unique_id: quick_action_john_room
+        default_entity_id: binary_sensor.quick_action_john_room
+        icon: mdi:door-open
+        state: >-
+          {{ states('sensor.john_room_presence') in [
+               'dining_room',
+               'family_room',
+               'foyer',
+               'gianlucas_room',
+               'jr_suite',
+               'kitchen',
+               'laundry_room',
+               'main_bathroom',
+               'main_bedroom',
+               'mud_room',
+               'nino_room',
+               'office',
+               'playroom',
+               'powder_room',
+               'upstairs_hallway',
+             ] }}

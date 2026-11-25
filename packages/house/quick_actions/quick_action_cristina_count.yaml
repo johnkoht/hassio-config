@@ -1,0 +1,22 @@
+# Quick Actions - Cristina Count
+#
+# Number of Cristina's contextual quick-action rows currently showing, for the
+# header badge. The DnD and camera rows are always present and not counted.
+#
+
+template:
+  - sensor:
+      - name: "Quick Actions Cristina Count"
+        unique_id: quick_actions_cristina_count
+        default_entity_id: sensor.quick_actions_cristina_count
+        icon: mdi:flash
+        state: >-
+          {{ [
+               is_state('binary_sensor.quick_action_cristina_room', 'on'),
+               is_state('binary_sensor.quick_action_cristina_bedside_lamp', 'on'),
+               is_state('binary_sensor.quick_action_nino_nightlight', 'on'),
+               is_state('binary_sensor.quick_action_gianluca_nightlight', 'on'),
+               is_state('binary_sensor.quick_action_nino_music', 'on'),
+               is_state('binary_sensor.quick_action_nino_home_today', 'on'),
+               is_state('binary_sensor.quick_action_gianluca_home_today', 'on'),
+             ] | select | list | length }}
