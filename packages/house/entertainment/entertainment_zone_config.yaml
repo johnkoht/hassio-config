@@ -1,0 +1,32 @@
+# Entertainment Zone Config
+#
+# The speakers for each music zone; start and stop read it. The dining room's
+# speaker is `sonos_living_room`. Its own lists, so Crazy Mode can change
+# independently. No TV in any list: music never touches the TV.
+#
+
+template:
+  - sensor:
+      - name: Entertainment Zone Config
+        unique_id: entertainment_zone_config
+        default_entity_id: sensor.entertainment_zone_config
+        icon: mdi:speaker-multiple
+        state: "ok"
+        attributes:
+          indoor: >-
+            {{ {
+              'speakers': [
+                'media_player.sonos_kitchen',
+                'media_player.sonos_family_room',
+                'media_player.sonos_living_room',
+                'media_player.sonos_playroom'],
+              'coordinator': 'media_player.sonos_kitchen'
+            } }}
+          outdoor: >-
+            {{ {
+              'speakers': [
+                'media_player.sonos_patio',
+                'media_player.sonos_pool',
+                'media_player.sonos_gazebo'],
+              'coordinator': 'media_player.sonos_patio'
+            } }}

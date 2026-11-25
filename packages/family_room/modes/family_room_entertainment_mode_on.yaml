@@ -1,0 +1,30 @@
+# Family Room Entertainment Mode On
+#
+# Entertainment mode turns on: pause Adaptive Lighting and the room's speech notifications.
+# The room's other automations that would undo this check the mode themselves.
+#
+
+automation:
+  - id: "family_room_entertainment_mode_on"
+    initial_state: on
+    alias: "Family Room - Entertainment Mode On"
+    triggers:
+      # Entertainment mode turns on
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "off"
+        to: "on"
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      # Pause Adaptive Lighting
+      - action: switch.turn_off
+        target:
+          entity_id: switch.adaptive_lighting_family_room
+      # Turn off the family room speech notifications
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.family_room_speech_notifications

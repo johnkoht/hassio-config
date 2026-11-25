@@ -1,0 +1,43 @@
+# Entertainment Music Stop
+#
+# Pauses and ungroups the zone this mode started, and only that: the started
+# flag must be on. Called when the mode turns off and when the zone changes.
+#
+
+script:
+  entertainment_music_stop:
+    alias: "Entertainment Music Stop"
+    icon: mdi:music-off
+    mode: single
+    variables:
+      zone_key: "{{ 'indoor' if is_state('input_text.entertainment_active_zone', 'Indoor') else 'outdoor' if is_state('input_text.entertainment_active_zone', 'Outdoor') else '' }}"
+      cfg: "{{ state_attr('sensor.entertainment_zone_config', zone_key) if zone_key else none }}"
+    sequence:
+      - alias: "This mode started the music"
+        condition: state
+        entity_id: input_boolean.entertainment_music_started
+        state: "on"
+      - alias: "Pause and ungroup, if the zone is known"
+        if:
+          - condition: template
+            value_template: "{{ cfg is mapping }}"
+        then:
+          - action: media_player.media_pause
+            continue_on_error: true
+            target:
+              entity_id: "{{ cfg.coordinator }}"
+          - repeat:
+              for_each: "{{ cfg.speakers }}"
+              sequence:
+                - action: media_player.unjoin
+                  continue_on_error: true
+                  target:
+                    entity_id: "{{ repeat.item }}"
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.entertainment_music_started
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.entertainment_active_zone
+        data:
+          value: ""

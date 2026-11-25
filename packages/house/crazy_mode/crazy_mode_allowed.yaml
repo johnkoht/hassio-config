@@ -29,6 +29,7 @@ template:
           {% set fav_ok = zone in (state_attr('sensor.crazy_mode_favorites', 'ok_zones') or []) %}
           {% if not is_state('input_select.crazy_mode_phase', 'Off') %}running
           {%- elif is_state('binary_sensor.emergency_active', 'on') %}emergency
+          {%- elif is_state('input_boolean.entertainment_mode', 'on') %}entertainment
           {%- elif states('input_select.house') in ['Bedtime', 'Quiet', 'Away', 'Vacation'] %}house_mode
           {%- elif not is_state('input_boolean.house_occupied', 'on') %}not_occupied
           {%- elif not (m_ok or e_ok) %}window_unset

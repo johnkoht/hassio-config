@@ -95,7 +95,8 @@ so its Finish and Cancel dialog can't end a phase.
 
 ## Reasons (first match wins)
 
-`running`, `emergency`, `house_mode` (Bedtime, Quiet, Away, Vacation),
+`running`, `emergency`, `entertainment` (entertainment mode is on; Crazy Mode
+and the mode's music never share the speakers, JK-1166), `house_mode` (Bedtime, Quiet, Away, Vacation),
 `not_occupied`, `window_unset`, `outside_window`, `already_ran`,
 `favorite_missing` (the picked zone's speakers), else `ok`. The house mode is
 read, never set. `sensor.crazy_mode_favorites` lists the zones whose speakers

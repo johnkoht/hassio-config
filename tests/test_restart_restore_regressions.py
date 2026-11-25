@@ -60,6 +60,7 @@ HELPERS = [
     ("packages/people/john/focus_mode/john_focus_mode.yaml", "input_select", "john_focus_mode"),
     ("packages/laundry/main_level_washer/main_level_washer_status.yaml",
      "input_select", "main_level_washer_status"),
+    ("packages/house/entertainment/entertainment_mode.yaml", "input_boolean", "entertainment_mode"),
 ]
 
 
@@ -118,7 +119,7 @@ KNOWN_REMAINING = {
     "alarm_arm_if_john_away", "bedtime_mode_vacation_off", "bedtime_mode_vacation_on",
     "cristina_commute_arrived_home_station", "cristina_commute_departed_city_station",
     "cristina_commute_passing_midway_station", "cristina_daily_medication_reminder",
-    "cristina_is_not_commuting", "entertainment_mode_deactivated", "foyer_lights_nightlight_off",
+    "cristina_is_not_commuting", "foyer_lights_nightlight_off",
     "garage_doors_close_when_home", "garbage_day_is_today_reminder",
     "john_arrived_home_station", "john_departed_city_station", "john_is_not_commuting",
     "john_passing_midway_station", "full_moon_notification", "ninos_bathroom_heater_on",

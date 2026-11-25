@@ -1,0 +1,132 @@
+{
+  "name": "jk-1166-entertainment-mode-refactor",
+  "branchName": "feature/jk-1166-entertainment-mode-refactor",
+  "goal": "Each first-floor room reacts to entertainment mode itself, the mode survives a restart, and phase 2 plays music in a chosen zone.",
+  "userStories": [
+    {
+      "id": "task-1",
+      "title": "Restart-safe boolean and house-level pieces",
+      "description": "Drop initial from entertainment_mode, delete the two central automations, add house-empty off (with for), bedtime off, master speech pause/resume.",
+      "acceptanceCriteria": [
+        "input_boolean.entertainment_mode has no initial",
+        "entertainment_mode_activated and _deactivated files are gone",
+        "house-empty off triggers on house_occupied off for 2 minutes and turns the boolean off only when it is on",
+        "bedtime off turns the boolean off; speech pause/resume turn input_boolean.speech_notifications off/on on the boolean edges",
+        "no entertainment file uses automation.turn_on/off or initial_state"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-2",
+      "title": "Per-room on/off pairs",
+      "description": "Kitchen, family room, playroom, foyer, office, main bedroom each get <room>_entertainment_mode_on/_off in packages/<room>/modes/.",
+      "acceptanceCriteria": [
+        "on files turn the room's AL switch off (and kitchen/family room speech boolean off)",
+        "off files turn the AL switch on; kitchen and family room speech back on only if occupied and in the same modes as the room's speech_on automation",
+        "dining room has no file",
+        "filename equals id; header comment; modern syntax; conditions global to feature"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-3",
+      "title": "Gate the automations that fight the mode",
+      "description": "Add entertainment_mode off as the first condition on kitchen/family_room/playroom music off, family_room_tv_off, playroom_media_player_unjoin, kitchen/family_room speech_notifications_on, house_mode_speech_on.",
+      "acceptanceCriteria": [
+        "each of the 8 has the condition first in conditions",
+        "TV never turned on by the mode"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-4",
+      "title": "Phase 1 tests and docs",
+      "description": "tests/test_entertainment_mode.py; update test_office_call_lighting and test_restart_restore_regressions; README, LEARNINGS, AUTOMATIONS.md.",
+      "acceptanceCriteria": [
+        "new tests pass and each sabotage in the plan goes red",
+        "existing tests updated, KNOWN_REMAINING drops entertainment_mode_deactivated, HELPERS has the boolean",
+        "full suite green"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-5",
+      "title": "Music helpers and zone config",
+      "description": "input_select zone, input_text favourite, template select playlist, input_number volume, started flag, sensor.entertainment_zone_config (indoor via sonos_living_room as dining, outdoor).",
+      "acceptanceCriteria": [
+        "no helper has initial",
+        "indoor speakers are kitchen, family_room, living_room, playroom; coordinator kitchen",
+        "outdoor speakers are patio, pool, gazebo; coordinator patio",
+        "no TV entity in any list"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-6",
+      "title": "Music start, stop and zone-change automations",
+      "description": "Start on mode on with guards, stop on mode off when started flag set, move on zone change.",
+      "acceptanceCriteria": [
+        "start guards: house_occupied, bedtime off, no emergency, crazy phase Off, zone not Off, favourite in source_list",
+        "volume set from helper/100 on speakers; every zone speaker joins, including the family room Sonos (the TV is a separate device)",
+        "stop only when flag on; clears flag",
+        "zone change only while mode and flag on"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-7",
+      "title": "Crazy Mode mutual exclusion",
+      "description": "Add an entertainment reason to sensor.crazy_mode_reason.",
+      "acceptanceCriteria": [
+        "reason is entertainment when the mode is on (after emergency, before house_mode)",
+        "start refusal is silent for it",
+        "existing crazy tests stay green"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-8",
+      "title": "Dashboard popup controls",
+      "description": "House mode popup gets zone, playlist and volume next to the Entertainment toggle.",
+      "acceptanceCriteria": [
+        "only existing and new helper entities are referenced",
+        "dashboard tests green"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    },
+    {
+      "id": "task-9",
+      "title": "Phase 2 tests and docs",
+      "description": "Tests for zone config, start/stop, crazy reason, helpers; README/LEARNINGS.",
+      "acceptanceCriteria": [
+        "sabotage: drop crazy guard, drop started-flag condition on stop",
+        "full suite green"
+      ],
+      "status": "completed",
+      "passes": true,
+      "attemptCount": 1
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-11-24T00:00:00Z",
+    "totalTasks": 9,
+    "completedTasks": 9,
+    "failedTasks": 0
+  }
+}
