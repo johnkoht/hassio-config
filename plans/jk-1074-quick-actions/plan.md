@@ -3,139 +3,158 @@ title: Home Quick Actions
 slug: jk-1074-quick-actions
 status: draft
 created: 2026-11-23
+revised: 2026-11-24
 linear: JK-1074
 has_pre_mortem: false
 has_review: false
 has_prd: false
-related: [notification-deep-links, room-lighting-override, crazy-mode-v2]
+related: [notification-deep-links, room-lighting-override, kid-at-school-detection]
 ---
 
 # Home Quick Actions
 
+> Revised after John's answers: phones only, a flyout menu, and his own action list (Linear comment on JK-1074). The first draft's notification count, bed-light-group and vacuum chips are dropped; none maps onto his list.
+
 ## Problem
 
-The Home view shows everything all the time. The things you would act on right now ("the light is still on and I'm in bed", "the vacuum is running") live in different places: a bell in the header, a banner at the bottom, a room page two taps away. JK-1074 asks for one contextual row that offers only the actions that make sense at this moment.
+The things John does by hand several times a day are scattered: a lamp is two taps into a room page, Do Not Disturb is on the People page, camera notifications are on the security page, "Nino stays home today" is on the School page. He wants one place, on the Home view, that offers only what makes sense right now.
 
 ## Goal
 
-A "Suggested actions" row on Home. Each suggestion appears only while it applies, does its job in one tap, and disappears when it no longer applies. With nothing to suggest, the row takes no space.
+A quick actions flyout on Home. It lists only the actions that apply to the person holding the phone at this moment, each one tap. Per-person: John's menu is not Cristina's.
 
-## Findings (verified in this tree)
+## John's list, and what exists
 
-- **Home banners are fixed to the screen, not in the page.** `horizontal_action_card_fixed` sets `position: fixed; bottom: 89px` (`dashboards/templates/decluttering/cards/horizontal_action_card_fixed.yaml`). Two banners that show together would draw on top of each other. The vacuum banner and Crazy Mode banner already share one slot by design (the vacuum banner requires `crazy_mode_phase` = Off). The new row must therefore be an in-page row, not a fourth fixed banner.
-- **The vacuum case already exists.** `home/_vacuum_active_notification.yaml` shows pause, play and "return to base" for `vacuum.main_floor_vacuum` while it is `cleaning`, `paused` or `idle`. Return to base is one tap. John's "robot just started, stop and dock" is, in practice, already built. I would not duplicate it (see Q1).
-- **Notifications have no count.** `#notifications` (`shared/kohbo_notification_popup.yaml`) is a list of 20 `conditional` cards. Each shows or hides by its own state or numeric condition. Nothing aggregates them, and nothing is "unread": they are live conditions that clear when the problem clears. So the honest feature is "N things need attention", not "unread".
-- **Room presence works, the link target does not map 1:1.** `sensor.<person>_room_presence` is an HA `area_id` (e.g. `main_bedroom`; `not_home` and `unknown` are also possible). Dashboard room views are `rooms-<slug>` (19 views, listed in `kohbo.yaml`). Area ids in the repo are inconsistent with those slugs in places (`nino_room`, `mud_room` and `mudroom` all appear in presence code), and the area registry is not in the repo. The area to path map must be built from the live registry, not guessed.
-- **Existing stale links.** `rooms/partials/main_floor_room_cards.yaml` navigates to `/dashboard-kohbo/office`, `/family-room` and others, while the views are registered as `rooms-office`, `rooms-family-room`. This looks like a bug but is out of scope; I will confirm on the live dashboard and file a BACKLOG item if so.
-- **Bed and light signals exist.** `binary_sensor.john_bed_occupied`, `binary_sensor.cristina_bed_occupied`, `input_boolean.john_is_in_bed` (and one per person), `binary_sensor.somebody_in_bed`. Bedroom lights: `light.main_bedroom_lights` (ceiling plus two Hue lamps, group), `light.main_bedroom_all_lights` (adds the bathroom). `light.main_bedroom_main_lights` is the ceiling only and is the entity the manual-override automation watches.
-- **A manual off from the dashboard sets the room's manual latch.** `main_bedroom_lights_manual_change` treats a user-initiated change on `light.main_bedroom_main_lights` as a hand change. That is the intended behaviour for "I turned them off myself", so the chip should turn off the group and let that existing logic run. No new latch.
-- **No per-user pattern in the repo yet.** There is no `condition: user` or `hass.user` use anywhere in `dashboards/`. HA user ids are identifiers, so in this public repo they go through `!secret`, not inline.
-- **Tests.** Dashboard YAML tests parse with `!include` kept as strings (`tests/test_dashboard_views.py`); template rendering tests use a small jinja harness (`tests/test_kitchen_cooking_detection.py`). Both patterns fit here.
+| # | Action | Verdict |
+|---|---|---|
+| 1 | Link to the room you're in | Buildable. Needs the live area-to-view map. |
+| 2 | Turn off my bedside nightlight | Buildable. Entities exist. |
+| 3 | Toggle Nino's / Gianluca's nightlights | Buildable. Entities exist. |
+| 4 | Toggle Nino's bedtime music | Needs one new script (the start sequence is inline in an automation). |
+| 5 | Toggle DnD for me | Buildable for John. Cristina has no DnD helper. |
+| 6 | Pause camera notifications | Buildable, with one catch (below). |
+| 7 | Toggle kid home from school | Buildable. Helpers and school-day sensors exist. |
 
-## Proposed design
+## Where the flyout opens from
 
-### Shape: template binary_sensor per suggestion, chip per sensor
+**Recommendation: a ⚡ chip in the Home header, next to the bell, opening a `#quick_actions` bubble-card pop-up with a badge count.**
 
-Each suggestion is a trigger-free `template` binary_sensor that says "this applies now". Logic lives in one place and is testable. The dashboard only maps sensor to chip.
+Why, against the fixed-banner finding:
+- The bottom area is already contested. `horizontal_action_card_fixed` pins every banner at `bottom: 89px` (just above the navbar). The vacuum and Crazy Mode banners already take turns in that slot and the camera banners can also show. A floating bottom button would sit on or under whichever banner is up, on exactly the phones this is for.
+- The header is free of that conflict and has a precedent: the bell opens `#notifications` the same way, from the same row, as a pop-up in `home.yaml`. Same component, same styles (`kohbo_popup_styles.yaml`), nothing new to learn or to break.
+- The thumb-reach argument for a bottom button is real but weaker than a button that is covered by a banner some of the time.
 
-- File per suggestion under `packages/house/quick_actions/` (one job per file, per repo style), plus one `quick_actions_any` binary_sensor (OR of the others, per person where needed).
-- Row on Home: one `conditional` (`condition: state` on `quick_actions_any`, because conditional cards reject `condition: template`) wrapping a `custom:mod-card` using `page_chip_layout_wrap.yaml` (the plain `page_chip_layout` pins height 45px and would clip). Inside it, each chip is its own `conditional` on its sensor. The outer conditional is what keeps the empty row from leaving a 45px gap.
-- Placement: in-flow, directly under the Quick Overview block and above Security Overview. Banners stay as they are.
-- Chip look: the existing `kohbo_chip_card` template. Icon plus short label. Tap does the action with `haptic: medium`, matching the banners.
-- button-card renders `custom_fields` as HTML, so labels are static text. No entity text is interpolated into a chip.
+Header layout: the header is three chips (safety alert on the left holding its slot so the title stays centred, title, bell). Adding a ⚡ means two chips on the right, so the left needs a matching pair or spacer or the title shifts. I'll confirm the fix on the live DOM, per the earlier lesson that reasoning about this CSS from source made it worse.
 
-### Per person
+Badge: the number of contextual actions available right now (items 1 to 4, 6 and 7 below when they show; the always-there toggles do not count, otherwise it never reads zero). It comes from a per-person count sensor.
 
-Two people drive the bed and room suggestions. Approach:
+Inside the pop-up: one row per action, each a `conditional` on a binary_sensor (`condition: state`; conditional cards reject `condition: template`). Rows with no applicable action do not render. The pop-up with nothing to show says "Nothing right now".
 
-1. Per-person sensors with generic names (`binary_sensor.john_suggest_bed_light_off`, `binary_sensor.cristina_suggest_bed_light_off`, and so on).
-2. Each person's chips carry `visibility: condition: user` with their HA user id from `!secret` (`john_ha_user_id`, `cristina_ha_user_id`; placeholders in `secrets.fake.yaml`).
-3. A device with no matching user (a shared wall tablet logged in as a family account) sees only the house-wide suggestions. See Q3.
+## Per-user visibility
 
-I considered a single sensor with a list attribute rendered by one button-card JS block. It is less YAML but untestable in pytest and hides logic in JS. Rejected.
+- Phones only, so each phone is signed in as its person. Rows carry `visibility` with `condition: user`, using the HA user id read through `!secret` (`john_ha_user_id`, `cristina_ha_user_id`; placeholders in `secrets.fake.yaml`). The repo is public, so no real ids go in.
+- Not yet proven: that `!secret` is accepted inside a `users:` list in dashboard YAML. First thing the build checks, on a render. If it is not, the fallback is a person-name helper per user, set from the companion app, with `condition: state`.
+- John's ids: `sensor.john_room_presence`, `binary_sensor.john_bed_occupied`, `input_boolean.john_is_in_bed`. Cristina's: `sensor.cristina_room_presence`, `binary_sensor.cristina_bed_occupied`, `input_boolean.cristina_in_bed`.
 
-### v1 suggestions
+## The actions
 
-| # | Suggestion | Shows when | Tap | Notes |
-|---|---|---|---|---|
-| 1 | Turn off bedroom lights | person's `*_bed_occupied` on for 2 min, and `light.main_bedroom_lights` on | `light.turn_off` on the group | The 2-min `for:` stops flapping while getting into bed. Only the person in bed sees it. If both are in bed, both see it (Q2). |
-| 2 | Go to your room | person's `room_presence` is a mapped area | navigate to `rooms-<slug>` | Mapped areas only. Hidden for `not_home`, `unknown` and unmapped areas. |
-| 3 | N notifications | count of active notification conditions is above 0 | navigate `#notifications` | Needs the new count sensor, below. Label "3 need attention", not "unread". |
-| 4 | Vacuum | covered by the existing banner | n/a | Dropped from v1 unless John wants the banner replaced (Q1). |
+Every "shows when" rule is a template binary_sensor in `packages/house/quick_actions/` (one file each). No clock times are hard-coded in new code: day and hour come from existing sensors. `unavailable` and `unknown` inputs always resolve to hidden.
 
-Note on #2: Home is not a room page, so "not the room you are already on" is moot there. The chip shows whenever the person is in a mapped room. It is a Home-view feature only in v1.
+### 1. Room you're in
 
-### Area to room map (suggestion 2)
+- **Entities:** `sensor.<person>_room_presence` (state is an HA `area_id`; also `not_home`, `unknown`). Views are `rooms-<slug>`.
+- **Shows when:** the person's presence is an area that has a mapped room page.
+- **Tap:** navigate to `/dashboard-kohbo/rooms-<slug>`.
+- **Visibility:** each person sees their own.
+- **Build note:** one row per mapped area (about 19), each a `conditional` on `state` of the presence sensor. No JS, no helper. The area ids in the repo are inconsistent with the view slugs (`nino_room`, `mud_room` and `mudroom` all appear), and the area registry is not in the repo, so the map is read from the live registry (homelab agent, read-only) before writing. A test asserts every mapped path is a real view.
 
-A Lovelace card cannot look up a path from an entity state without JS, so there are two options:
+### 2. Turn off my bedside nightlight
 
-- (a) one chip per mapped room, each a conditional on `room_presence == <area>`. About 19 small chips per person, written once, static and readable. Condition `state` on `sensor.<person>_room_presence` works directly with no helper sensor.
-- (b) one chip with a button-card JS `tap_action` that builds the path from the sensor state. Smaller YAML, needs JS testing in the live DOM.
+- **Entities (found):** John's lamp `light.hue_ambiance_lamp_1`, Cristina's `light.hue_ambiance_lamp_1_2` (labelled "John's Lamp" and "Cristina's Lamp" on the bedroom page). Both belong to the `light.main_bedroom_lights` group. `main_bedroom_john_night_light` turns John's lamp on at night; `main_bedroom_john_night_light_off` turns both off 10 minutes after he is in bed, or 10 minutes after the lamp came on.
+- **Shows when:** the person's lamp is on, and the person's `room_presence` is `main_bedroom`, and the person is in bed (`input_boolean.<person>_is_in_bed` / `_in_bed`). Optionally relax "in bed" to "bed occupied" if the helper lags (to decide at build against a recorder sample).
+- **Tap:** `light.turn_off` on that person's lamp only.
+- **Visibility:** each person sees only their own lamp.
+- **Notes:** the existing automation already switches it off after about 10 minutes in bed, so this row mostly covers the first 10 minutes and the cases where lighting automations or the room mode block that automation. It turns off a lamp entity, not `light.main_bedroom_main_lights`, so it does not trip the manual-override latch.
 
-Default: (a). It is dull but needs no new sensors, no JS, and fails safe (an unmapped area shows nothing). The map becomes a test: every area in the list must have a registered view path.
+### 3. Toggle Nino's and Gianluca's nightlights
 
-### Notification count (suggestion 3)
+- **Entities (found):** `light.nino_bedroom_lamp`, `light.gianluca_lamp`. Nino's lamp has its own on and off automations (`nino_nightlight_turn_on`, `nino_nightlight_turn_off`). Gianluca's lamp has remote-toggle automations only, no schedule.
+- **Shows when:** it is dark (`sun.sun` below horizon), or the lamp is currently on (so a lit lamp can always be switched off). Hidden in daylight when off.
+- **Tap:** `light.toggle` on that lamp. Row label shows on/off from the entity.
+- **Visibility:** John and Cristina.
+- **Notes:** "nightlight" is taken to mean the bedroom lamp. Nino's 07:00 off automation will still turn his lamp off later, which is fine.
 
-New `sensor.notifications_active_count` in `packages/house/quick_actions/`. It re-expresses each of the 20 popup conditions in one template. That is a second copy of the rules, so drift is the real risk. Mitigation is a parity test: parse every file in `dashboards/kohbo/shared/notifications/` and assert that the set of entities its conditions reference equals the set the count sensor references (minus an explicit, commented exempt list, e.g. the commented-out water shortage card). A new popup card without a count entry fails the test.
+### 4. Toggle Nino's bedtime music
 
-Alternative considered: put a badge on the header bell instead of a chip. It is the more natural spot and could come later using the same sensor.
+- **Entities (found):** `media_player.ninos_room`; flag `input_boolean.nino_sleep_music_playing`; `binary_sensor.nino_bed_occupied`. Automations: `nino_sleep_music_on` (starts after 3 minutes in bed, ceiling off, lamp under 20%), `_off`, `_flag_clear`, `_manual_start`, `_playing`.
+- **Missing:** a start script. The start sequence (shuffle on, repeat all, play the playlist, set the flag) is inline in `nino_sleep_music_on`. Plan: extract it to `script.nino_sleep_music_start` and have the automation call it, so there is one copy. Stopping reuses what `nino_sleep_music_off` does (pause and clear the flag), as a short `script.nino_sleep_music_stop`.
+- **Shows when:** dark (`sun.sun` below horizon) and Nino's room is not in mode Off (`input_select.ninos_bedroom`), or the music is currently playing (so it can always be stopped). "Makes sense": also require that Nino's bed is occupied to start it, so it can't blast an empty room.
+- **Tap:** `script.nino_sleep_music_start` or `_stop`, depending on state.
+- **Visibility:** John and Cristina.
+- **Notes:** the existing automation hard-codes 19:00 to 07:00 in its conditions; I am not copying that, and I leave the existing automation's window alone (out of scope). The existing `_manual_start` automation sets the flag if the speaker is started by hand, so the toggle stays consistent either way.
 
-### Not in v1
+### 5. Toggle DnD for me
 
-No automation acts on its own. These are buttons only. No new popups. Header bell stays.
+- **Entities (found):** `input_boolean.john_dnd` (manual DnD), read by `binary_sensor.john_dnd_active`, which is also on while the Mac camera or mic is in use. `set_focus_mode` and the office call lighting also touch it.
+- **Shows when:** always, for John, with state. Not counted in the badge.
+- **Tap:** `input_boolean.toggle` on `john_dnd`.
+- **Visibility:** John only.
+- **Missing for Cristina:** there is no `cristina_dnd`. Her menu simply has no DnD row. If she wants one, that is a new helper and a separate decision (see Q3).
+- **Note:** when `john_dnd_active` is on because of the camera or mic, toggling the boolean off will not clear it. The row label should read from `john_dnd_active` and say which source holds it, or the tap looks broken.
 
-## Ranked extra ideas (from real entities in the repo)
+### 6. Pause camera notifications
 
-Each is "show only when relevant, one tap". Ranked by value for effort, using entities already present.
+- **Entities (found):** global `input_boolean.camera_notifications`, plus one per camera (`<camera>_camera_notifications`). `camera_notifications_activate` turns the global on in Away mode (and at bedtime); `camera_notifications_deactivate` turns it off when someone is home, a door opens, someone arrives or a garage door opens.
+- **Catch:** the global is automation-driven. A manual "pause" while it is on will be undone the next time an activation trigger fires, and a manual "resume" while someone is home will be undone by the deactivate rules. There is no timed-snooze helper (the repo has one for door-left-open and Kids WiFi, not for cameras).
+- **Plan:** toggle the global boolean, and show its true state, plus the row is labelled "Camera alerts: on/off". I do not propose a timed snooze in v1. If John wants "pause for an hour", that needs a new helper and a change to the two automations, which is a separate plan (see Q2).
+- **Shows when:** always, with state. Not counted in the badge.
+- **Tap:** `input_boolean.toggle` on `camera_notifications`.
+- **Visibility:** John and Cristina.
 
-1. **Close the garage** ("garage open at night"): `cover.garage_doors` open after sunset or in Bedtime mode. Tap closes. Existing `garage_doors_auto_close_timeout` automation handles the timeout; this is the manual shortcut.
-2. **Lock the front door**: `lock.front_door` unlocked, house mode Bedtime or Away. One tap `lock.lock`. Pairs with the security overview.
-3. **Arm the alarm for the night**: `alarm_control_panel.alarmo` disarmed and `binary_sensor.somebody_in_bed` on. One tap runs the existing arm-at-bedtime path (confirm which script).
-4. **Nino medication given**: when the dose reminder is active (`input_boolean.nino_medication_1_taken` / `_2_taken` off inside the dose window), chip calls `script.nino_medication_taken`. The notification popup already has these two cards; this puts them one tap from Home. Highest daily value, but touches a medical flow, so I would ship it after v1 and keep its behaviour identical to the existing buttons.
-5. **Move laundry along**: `input_select.main_level_washer_status` / `_dryer_status` / `upstairs_washer_status` reads "done" -> chip "Laundry ready" linking to the laundry room view.
-6. **Turn off the house**: the "Turn Off the House" button exists in `house_mode_popup.yaml`; surface it when leaving (everyone's room is `not_home` but lights are on).
-7. **Kids bedtime check**: lights on in the kids' rooms while `input_select.house` is Bedtime; one tap turns them off.
-8. **Do Not Disturb**: `input_boolean.john_dnd` is on when a call is detected; offer "Clear DnD" when the call has ended and DnD is still on. Needs a look at the current DnD sources first.
-9. **Crazy Mode quick stop**: already in its own banner; no action.
+### 7. Toggle kid home from school
+
+- **Entities (found):** `input_boolean.nino_home_today`, `input_boolean.gianluca_home_today` ("stays home today": suppresses drop-off pings and pickup, departure and medication reminders). Cleared by `school_overrides_reset` at the end of the day. School-day sensors: `binary_sensor.nino_school_day`, `binary_sensor.gianluca_school_day`. End-of-day: `sensor.primary_school_dismissal_time_today`, `sensor.parochial_school_dismissal_time_today`.
+- **Shows when:** the kid's school-day sensor is on and now is before that school's dismissal sensor, or the kid's `home_today` is already on (so it can be undone). No fixed days or hours: the school package already derives holidays, late starts and early dismissals.
+- **Tap:** `input_boolean.toggle` on that kid's `home_today`. Label reads "Nino: home today" with on/off.
+- **Visibility:** John and Cristina.
+- **Wording to confirm:** I read "kids home from school" as "kid is staying home today", which is what `home_today` means in this repo (see Q1).
 
 ## Files (expected)
 
-- `packages/house/quick_actions/` (new): `bed_light_off_john.yaml`, `bed_light_off_cristina.yaml`, `notifications_active_count.yaml`, `quick_actions_any.yaml` (+ `LEARNINGS.md` once there is a lesson).
-- `dashboards/kohbo/home/_quick_actions.yaml` (new row) and one `!include` in `home/home.yaml`.
-- `secrets.fake.yaml`: two placeholder user ids. Real ids go in the gitignored `secrets.yaml` by John (or via the homelab agent).
-- `docs/`: update `dashboards/kohbo/home/README.md` file tree and `dashboards/SITEMAP.md`.
+- `packages/house/quick_actions/`: one binary_sensor file per rule (bedside lamp per person, nightlights, music, kid home, room link helpers if needed), a per-person count sensor, and `LEARNINGS.md` once there is a lesson.
+- `packages/ninos_room/media/`: new `nino_sleep_music_start.yaml` and `nino_sleep_music_stop.yaml` scripts; `nino_sleep_music_on.yaml` changed to call the start script (the only edit to an existing automation).
+- `dashboards/kohbo/home/_quick_actions_popup.yaml` (new pop-up), one `!include` and the ⚡ header chip in `home.yaml`.
+- `secrets.fake.yaml`: two placeholder user ids.
+- Docs: `dashboards/kohbo/home/README.md`, `dashboards/SITEMAP.md`, the Nino room README if one lists the sleep music automations.
 - `tests/test_quick_actions.py` (new).
 
 ## Test plan
 
-Run with `PYTHONPATH=tests /Users/johnkoht/code/hassio-config/tests/.venv/bin/python -m pytest -q tests`.
+Command: `PYTHONPATH=tests /Users/johnkoht/code/hassio-config/tests/.venv/bin/python -m pytest -q tests`.
 
-1. Template rendering for the bed-light sensor: bed off or lights off gives off; both on gives on; `unavailable` bed sensor gives off (no suggestion on missing data).
-2. Notification parity test (above). Plus a sabotage check: add a fake card in a temp dir copy and see it fail.
-3. Room links: every area in the chip list has a view in `kohbo.yaml`; no duplicate chip for an area.
-4. Row shape: outer `conditional` uses `condition: state` only (no `template`), row uses `page_chip_layout_wrap`, and the file is included from `home.yaml`.
-5. No real user id, address or area-identifying value in committed files (gitleaks hook runs on commit).
-6. Syntax: existing `test_modern_syntax`, `test_yaml_syntax`, `test_naming`, `test_entity_references`, `test_dashboard_views` stay green.
+1. Template render per rule: shown and hidden cases, and `unavailable` inputs giving hidden. Bedside lamp needs all three of lamp on, in the room, in bed. Nightlight rows show in the dark or when on. Music row hides with Nino's room in Off. Kid-home row hides after dismissal when off and stays when on.
+2. Sleep music refactor: `nino_sleep_music_on` still ends with the same play sequence and flag-set (call the script), and the start and stop scripts carry the same calls the automation had. Sabotage: break the script and see it fail.
+3. Every area in the room-link rows has a view path in `kohbo.yaml`; no area listed twice.
+4. Pop-up shape: rows use `condition: state` only (no `template`), the pop-up is included in `home.yaml`, the hash `#quick_actions` matches the header chip's navigate.
+5. Public repo hygiene: no real user id or address in committed files (gitleaks hook runs on commit); fixtures synthetic.
+6. Existing suites stay green: `test_modern_syntax`, `test_yaml_syntax`, `test_naming`, `test_entity_references`, `test_dashboard_views`, the school and Nino medication tests.
 
-Manual checks after deploy (John or the homelab agent, read-only for me): the row appears and collapses to nothing when empty; the chip row does not clip at phone width; the dashboard cache is refreshed by touching the root `kohbo.yaml` (deploy does this). Dashboard-only changes, so no HA restart. The new template sensors need a Template reload (`--reload` does not reload them), which John does.
+Manual after deploy (John): the header chip and badge on a phone, no title shift, the pop-up clears when empty. Deploy needs a Template reload and a Scripts reload (`--reload` covers scripts and automations but not template entities), then the dashboard cache refreshes on the `kohbo.yaml` mtime, which `deploy.sh` touches. No HA restart.
 
 ## Risks
 
-- **Two copies of the notification rules** (mitigated by the parity test).
-- **Wrong area ids** make a room chip silently never show. Mitigation: build the map from the live area registry via the `homelab` agent before writing it.
-- **User ids in a public repo.** Mitigation: `!secret` only, placeholders in `secrets.fake.yaml`. If `!secret` is not accepted inside a visibility `users:` list in dashboard YAML, fall back to person-based sensors and drop the per-user chip filter (Q3). I will verify this in the build phase on a render, not assume it.
-- **Chip row height.** Using the wrap layout and an outer conditional, verified against the live DOM per John's earlier lesson on dashboard CSS, not reasoned from the source.
-- **Hue lamps** in the bedroom group can be offline; `light.turn_off` on a group with an unavailable member still works for the rest.
+- **`!secret` inside a `users:` list.** Unproven; the fallback is described above. Checked first in the build.
+- **Wrong area ids** would silently hide a room row. Mitigated by reading the live registry and the view-path test.
+- **Camera pause fights its own automations.** Surfaced honestly in the label, not hidden (Q2).
+- **Header layout.** Verified on the live DOM, not from source.
+- **Kids' music and lamps are touched by existing automations.** The toggles act the same way a hand would, and the existing flag-clear and off automations keep working.
 
-## Open questions for John
+## Open questions (minimum)
 
-1. **Vacuum.** The banner already offers pause, play and "return to base". Keep it as is and skip the vacuum chip? (Default: yes.)
-2. **Who sees "turn off bedroom lights"?** Default: only the person whose bed sensor is on. If the other person is still reading, they may not want it. Alternative: show to both, or require both beds occupied.
-3. **How do you open the dashboard?** Per person on a phone (user filter works), or on a shared wall tablet? A shared tablet cannot be "John" or "Cristina". Default: per-user chips on phones, house-wide chips for any device.
-4. **"Your room" chip.** Default is the Home view only. Do you also want it as a chip in the header, or on every room page ("jump to where I am")?
-5. **Notifications.** OK with "N need attention" instead of "unread"? And badge on the bell later?
-6. **Extra ideas.** Which of the ranked list do you want in v1 (default: none beyond the four, add garage close, lock front door, and the Nino medication chip as a v2)?
+1. **"Toggle kids home from school":** do you mean "stays home today" (the existing `home_today` flags, default) or "got home from school"? Default assumes the first.
+2. **Camera pause:** the global switch is flipped by automations, so a manual pause can be undone within minutes. Default: ship a plain toggle that shows the true state. Say if you want a timed pause (needs a helper plus edits to the activate and deactivate automations).
+3. **Cristina's menu:** default gives her rows 1, 2 (her lamp), 3, 4, 6, 7 and no DnD (she has no DnD helper). OK?
 
 ## Out of scope
 
-Automations that act without a tap; per-room contextual panels on room pages; Android widgets; changing the notification popup; the stale `/dashboard-kohbo/office`-style links (BACKLOG candidate).
+The notification count, bed-light group and vacuum chips; per-room contextual panels; a timed camera snooze; a Cristina DnD helper; the older `/dashboard-kohbo/<room>` links in `rooms/partials/main_floor_room_cards.yaml` that don't match the registered `rooms-<slug>` views (BACKLOG candidate; unconfirmed).
