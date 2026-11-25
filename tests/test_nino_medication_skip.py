@@ -99,22 +99,22 @@ SK2 = {"input_boolean.nino_medication_2_skipped": "on"}
 
 
 def test_pending_dose_ignores_a_skipped_dose():
-    assert world("mon", "<time>", "on", **SK1)[2] == "none"       # dose 1 skipped, dose 2 not due
-    assert world("mon", "<time>", "on", **SK1)[2] == "2"
-    assert world("mon", "<time>", "on", **SK2)[2] == "1"          # dose 2 skipped, dose 1 still open
-    assert world("mon", "<time>", "on", **SK1, **SK2)[2] == "none"
+    assert world("mon", "07:45", "on", **SK1)[2] == "none"       # dose 1 skipped, dose 2 not due
+    assert world("mon", "13:05", "on", **SK1)[2] == "2"
+    assert world("mon", "13:05", "on", **SK2)[2] == "1"          # dose 2 skipped, dose 1 still open
+    assert world("mon", "13:05", "on", **SK1, **SK2)[2] == "none"
     # taken is not skipped: a taken dose 1 leaves dose 2 pending
-    assert world("mon", "<time>", "on", **{"input_boolean.nino_medication_1_taken": "on"})[2] == "2"
+    assert world("mon", "13:05", "on", **{"input_boolean.nino_medication_1_taken": "on"})[2] == "2"
 
 
 def test_a_snoozing_skipped_dose_is_not_in_play():
-    assert world("mon", "<time>", "on", **SK1, **{"timer.nino_medication_1_timer": "active"})[2] == "none"
+    assert world("mon", "07:45", "on", **SK1, **{"timer.nino_medication_1_timer": "active"})[2] == "none"
 
 
 def test_fail_open_when_the_skipped_helper_is_unavailable():
     un = {"input_boolean.nino_medication_1_skipped": "unavailable"}
-    assert world("mon", "<time>", "on", **un)[2] == "1"
-    ha = Ha({"input_boolean.nino_medication_1_skipped": "unavailable"}, at("mon", "<time>"))
+    assert world("mon", "07:45", "on", **un)[2] == "1"
+    ha = Ha({"input_boolean.nino_medication_1_skipped": "unavailable"}, at("mon", "07:45"))
     cond = [c for c in reminder_auto()["conditions"] if "skipped_boolean" in c.get("value_template", "")][0]
     assert ha.render(cond["value_template"], skipped_boolean="input_boolean.nino_medication_1_skipped") == "True"
 
@@ -126,7 +126,7 @@ def _resolved(dose, now_day, hhmm, **overrides):
 
 
 def test_taken_fallback_never_picks_a_skipped_dose_but_an_explicit_dose_wins():
-    assert _resolved("", "mon", "<time>", **SK1) == "2"            # dose 2 due: dose 1 skipped is passed over
+    assert _resolved("", "mon", "12:50", **SK1) == "2"            # dose 2 due: dose 1 skipped is passed over
     assert _resolved("", "mon", "06:00", **SK1, **SK2) == "none"
     assert _resolved("1", "mon", "06:00", **SK1) == "1"           # explicit taken still wins
 
@@ -137,17 +137,17 @@ def _esc(n, day, hhmm, **overrides):
 
 
 def test_escalation_does_not_fire_for_a_skipped_dose():
-    assert _esc(1, "mon", "<time>")
-    assert not _esc(1, "mon", "<time>", **SK1)
-    assert _esc(2, "mon", "<time>")
-    assert not _esc(2, "mon", "<time>", **SK2)
+    assert _esc(1, "mon", "10:00")
+    assert not _esc(1, "mon", "10:00", **SK1)
+    assert _esc(2, "mon", "15:30")
+    assert not _esc(2, "mon", "15:30", **SK2)
 
 
 def test_skip_script_only_acts_on_a_dose_not_taken():
     s = script("nino_medication_skip")
     cond = s["sequence"][0]["value_template"]
     ha = Ha({"input_boolean.nino_medication_1_taken": "off", "input_boolean.nino_medication_2_taken": "on"},
-            at("mon", "<time>"))
+            at("mon", "08:00"))
     assert ha.render(cond, dose="1") == "True"
     assert ha.render(cond, dose="2") == "False"
     assert ha.render(cond, dose="3") == "False"
@@ -214,26 +214,26 @@ def _unskip_passes(dose, hhmm, **states):
 
 def test_unskip_restarts_only_a_due_untaken_idle_dose():
     base = {"input_boolean.nino_medication_reminders": "on"}
-    assert _unskip_passes("1", "<time>", **base)
-    assert not _unskip_passes("1", "<time>", **base)                                    # not due yet
-    assert not _unskip_passes("1", "<time>", **base, **{"input_boolean.nino_medication_1_taken": "on"})
-    assert not _unskip_passes("1", "<time>", **base, **{"timer.nino_medication_1_timer": "active"})
-    assert not _unskip_passes("1", "<time>", **{"input_boolean.nino_medication_reminders": "off"})
-    assert _unskip_passes("2", "<time>", **base)
-    assert not _unskip_passes("2", "<time>", **base)
+    assert _unskip_passes("1", "08:00", **base)
+    assert not _unskip_passes("1", "07:00", **base)                                    # not due yet
+    assert not _unskip_passes("1", "08:00", **base, **{"input_boolean.nino_medication_1_taken": "on"})
+    assert not _unskip_passes("1", "08:00", **base, **{"timer.nino_medication_1_timer": "active"})
+    assert not _unskip_passes("1", "08:00", **{"input_boolean.nino_medication_reminders": "off"})
+    assert _unskip_passes("2", "12:50", **base)
+    assert not _unskip_passes("2", "12:30", **base)
     a = _auto("nino_medication_unskipped.yaml")
     assert a["actions"][0]["action"] == "timer.start" and a["actions"][0]["data"]["duration"] == "00:01:00"
 
 
 def _skip_gate(dose, **states):
     a = _auto("nino_medication_push_skip.yaml")
-    ha, _, pending = world("mon", "<time>", "on", **states)
+    ha, _, pending = world("mon", "08:00", "on", **states)
     ha.states["sensor.nino_medication_pending_dose"] = pending
     return ha.render(a["conditions"][0]["value_template"], trigger={"id": dose}) == "True"
 
 
 def test_push_skip_acts_only_on_an_outstanding_dose():
-    assert _skip_gate("1")                                   # dose 1 pending at <time>
+    assert _skip_gate("1")                                   # dose 1 pending at 08:00
     assert not _skip_gate("2")                               # dose 2 not due: yesterday's push
     assert _skip_gate("2", **{"input_boolean.nino_medication_2_escalated": "on"})
     a = _auto("nino_medication_push_skip.yaml")
@@ -280,8 +280,8 @@ def test_popup_cards_hide_a_skipped_dose_and_offer_skip():
 
 def test_taken_fallback_waits_for_dose_2_to_be_due():
     assert _resolved("", "mon", "06:00", **SK1) == "none"         # nothing due, dose 1 skipped
-    assert _resolved("", "mon", "<time>", **SK1) == "none"         # dose 2 not due yet
-    assert _resolved("", "mon", "<time>", **SK1) == "2"            # dose 2 due
-    assert _resolved("", "mon", "<time>", **SK1, **{"timer.nino_medication_2_timer": "active"}) == "2"  # snoozing = pending
+    assert _resolved("", "mon", "12:30", **SK1) == "none"         # dose 2 not due yet
+    assert _resolved("", "mon", "12:45", **SK1) == "2"            # dose 2 due
+    assert _resolved("", "mon", "12:30", **SK1, **{"timer.nino_medication_2_timer": "active"}) == "2"  # snoozing = pending
     assert _resolved("", "mon", "06:00") == "1"                   # an early dose 1 is still marked first
-    assert _resolved("", "mon", "<time>", **{"input_boolean.nino_medication_1_taken": "on"}) == "2"  # dose 1 given: an early dose 2 still counts
+    assert _resolved("", "mon", "12:30", **{"input_boolean.nino_medication_1_taken": "on"}) == "2"  # dose 1 given: an early dose 2 still counts

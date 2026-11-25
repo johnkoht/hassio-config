@@ -1,7 +1,7 @@
 """
 Nino weekend medication timing (JK-1168, plans/nino-weekend-medication-timing).
 
-On a no-school day dose 1 waits for a floor time (<time> unless set), escalation
+On a no-school day dose 1 waits for a floor time (08:00 unless set), escalation
 counts from it, and snoozes are 30 minutes. Reads repo files only (no HA).
 """
 import sys
@@ -87,44 +87,44 @@ def test_snooze_minutes_is_positive_off_and_drives_every_snooze_length():
 def test_effective_time_across_days():
     cases = [
         # (day, school_day, floor, expected effective time-of-day)
-        ("mon", "on", None, "<time>"),          # school day: unchanged
-        ("sat", "off", None, "<time>"),         # no school, unset floor: <time>
-        ("sat", "off", "<time>", "<time>"),   # no school, configured floor
-        ("sat", "off", "<time>", "<time>"),   # floor earlier than dose 1: dose 1 wins
-        ("sat", "unavailable", None, "<time>"), # unavailable school sensor: weekday time
+        ("mon", "on", None, "07:10"),          # school day: unchanged
+        ("sat", "off", None, "08:00"),         # no school, unset floor: 08:00
+        ("sat", "off", "08:40:00", "08:40"),   # no school, configured floor
+        ("sat", "off", "07:00:00", "07:10"),   # floor earlier than dose 1: dose 1 wins
+        ("sat", "unavailable", None, "07:10"), # unavailable school sensor: weekday time
     ]
     for day, school, floor, want in cases:
         _, eff, _ = world(day, "06:00", school, floor)
-        assert eff[<time>] == want, (day, school, floor, eff)
+        assert eff[11:16] == want, (day, school, floor, eff)
 
 
 def test_effective_time_with_a_base_later_than_the_floor():
-    _, eff, _ = world("sat", "06:00", "off", None, **{"input_datetime.nino_medication_1_time": "<time>"})
-    assert eff[<time>] == "<time>"
+    _, eff, _ = world("sat", "06:00", "off", None, **{"input_datetime.nino_medication_1_time": "09:15:00"})
+    assert eff[11:16] == "09:15"
 
 
 def test_effective_time_is_unavailable_when_dose_1_helper_is():
-    _, eff, pending = world("sat", "<time>", "off", None, **{"input_datetime.nino_medication_1_time": "unavailable"})
+    _, eff, pending = world("sat", "09:00", "off", None, **{"input_datetime.nino_medication_1_time": "unavailable"})
     assert eff == "unavailable" and pending == "none"
 
 
 def test_pending_dose_on_a_no_school_morning():
-    awake_early = world("sat", "<time>", "off")[2]
-    after_floor = world("sat", "<time>", "off")[2]
-    assert awake_early == "none"      # the wake-up trigger resolves to nothing before <time>
+    awake_early = world("sat", "06:50", "off")[2]
+    after_floor = world("sat", "08:01", "off")[2]
+    assert awake_early == "none"      # the wake-up trigger resolves to nothing before 08:00
     assert after_floor == "1"
-    assert world("mon", "<time>", "on")[2] == "1"   # school day unchanged
-    assert world("mon", "<time>", "on")[2] == "none"
+    assert world("mon", "07:11", "on")[2] == "1"   # school day unchanged
+    assert world("mon", "07:09", "on")[2] == "none"
 
 
 def test_pending_dose_two_still_resolves_after_its_time():
-    assert world("sat", "<time>", "off", **{"input_boolean.nino_medication_1_taken": "on"})[2] == "2"
+    assert world("sat", "13:01", "off", **{"input_boolean.nino_medication_1_taken": "on"})[2] == "2"
 
 
 def test_snooze_minutes_renders():
     var = reminder_auto()["variables"]["snooze_minutes"]
     for school, want in (("off", "30"), ("on", "15"), ("unavailable", "15")):
-        ha = Ha({"binary_sensor.nino_school_day": school}, at("sat", "<time>"))
+        ha = Ha({"binary_sensor.nino_school_day": school}, at("sat", "08:00"))
         assert ha.render(var) == want
 
 
@@ -135,7 +135,7 @@ def _escalation_fires(day, hhmm, school):
 
 
 def test_dose_1_escalation_counts_from_the_effective_time():
-    assert not _escalation_fires("sat", "<time>", "off")
-    assert _escalation_fires("sat", "<time>", "off")
-    assert _escalation_fires("mon", "<time>", "on")       # school day: <time> + 2h
-    assert not _escalation_fires("mon", "<time>", "on")
+    assert not _escalation_fires("sat", "09:59", "off")
+    assert _escalation_fires("sat", "10:01", "off")
+    assert _escalation_fires("mon", "09:11", "on")       # school day: dose 1 + 2h
+    assert not _escalation_fires("mon", "09:09", "on")
