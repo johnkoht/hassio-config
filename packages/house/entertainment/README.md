@@ -1,0 +1,59 @@
+# Entertainment Mode
+
+`input_boolean.entertainment_mode` is toggled from the house mode popup. It has
+no `initial:`, so a restart keeps it. Each room reacts to it on its own; there
+is no central automation that does the work.
+
+## Rooms
+
+`packages/<room>/modes/<room>_entertainment_mode_on.yaml` and `_off.yaml` (the
+main bedroom's are in `mode/`):
+
+| Room | On | Off |
+|---|---|---|
+| Kitchen | Adaptive Lighting off, room speech off | Adaptive Lighting on; speech on if the room is occupied and Auto or Dim |
+| Family room | same | same, if occupied and Auto |
+| Playroom, foyer, office, main bedroom | Adaptive Lighting off | Adaptive Lighting on |
+| Dining room | nothing to pause (no Adaptive Lighting, no speech switch) | |
+
+The "on" files need the house occupied. The "off" files have no conditions: the
+house emptying ends the mode, and the rooms still have to resume.
+
+To add a room, copy a pair. Basenames must be globally unique.
+
+## House-level
+
+- `entertainment_mode_speech_pause` / `_resume`: the house-wide `input_boolean.speech_notifications`.
+- `entertainment_mode_house_empty_off`: house empty for 2 minutes ends the mode.
+- `entertainment_mode_bedtime_off`: bedtime ends the mode.
+
+## What stands down while the mode is on
+
+These check `input_boolean.entertainment_mode` is `off` as their first condition
+(never `automation.turn_off`, which a restart would undo): `kitchen_music_off`,
+`family_room_music_off`, `family_room_tv_off`, `playroom_music_off`,
+`playroom_media_player_unjoin`, `kitchen_speech_notifications_on`,
+`family_room_speech_notifications_on`, `house_mode_speech_on`. The family room
+TV is never turned on or off by the mode.
+
+## Music
+
+Starts with the mode, stops with it (only what it started).
+
+- `input_select.entertainment_music_zone`: Indoor, Outdoor or Off.
+- `select.entertainment_playlist`: a dropdown of the kitchen speaker's Sonos
+  favorites; it writes `input_text.entertainment_favorite`. A Spotify playlist
+  works once it is saved as a Sonos favorite.
+- `input_number.entertainment_volume`: set it once (it starts at 10).
+- `sensor.entertainment_zone_config`: indoor is kitchen, family room, living
+  room (the dining room's speaker) and playroom; outdoor is patio, pool and gazebo.
+- `script.entertainment_music_start` / `_stop`, called by `entertainment_music_on`,
+  `_off` and `_zone_change`. Changing the zone during a session moves the music; a
+  new playlist waits for the next start.
+- Start skips quietly unless the mode is on, the house is occupied, it is not
+  bedtime, there is no emergency and Crazy Mode is not running. A missing favorite
+  logs a warning.
+- With the family room TV on, the family room speaker stays out of the group so
+  the TV keeps its sound.
+- Crazy Mode refuses to start while the mode is on (`sensor.crazy_mode_reason` =
+  `entertainment`), so the two never share the speakers.

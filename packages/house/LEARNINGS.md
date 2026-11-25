@@ -145,3 +145,23 @@ Vacation). `scripts/house/house_away.yaml` is the one leftover writer.
 `select.front_door_camera_doorbell_text` writes with the NVR's default reset timeout, so every message set through it reverted to `Default Message (WELCOME!)` 8 to 15 minutes later (recorder, 11-20 onward; no Protect reload involved). `text.front_door_camera_doorbell` writes with no reset time, and is the only way to show free text. Protect's limit is 30 characters, not HA's 255.
 
 `doorbell/doorbell_message.yaml` resolves the text and `doorbell_message_apply.yaml` writes it, only when it differs. Nothing should write the select. The resolver never selects `Entertainment` on `input_select.house`, so Entertainment text keys off `input_boolean.entertainment_mode`.
+
+## Entertainment mode: rooms gate on the boolean, nothing is armed (JK-1166)
+
+The mode used to be two central automations, one armed by the other with
+`automation.turn_on/off` and `initial_state`. A restart left that pair wrong,
+and `initial: off` on the boolean ended the mode silently. Now each room has an
+on/off pair, and the automations that would undo the mode (music off, speech on,
+TV off, the playroom unjoin, `house_mode_speech_on`) carry
+`entertainment_mode: off` as their first condition. A condition is read live, so
+it is right after any restart.
+
+- `playroom_media_player_unjoin` is a fifth "music off" automation (it also
+  unjoins on a 10 and 30 minute pause); it had to be gated too.
+- The room "off" files have no conditions: the house emptying ends the mode, so
+  the resume must run with nobody home.
+- A forgotten mode now survives a restart, so bedtime and 2 minutes of an empty
+  house both end it.
+- Crazy Mode refuses while the mode is on (reason `entertainment`), and the
+  music start skips while a Crazy run is active.
+- `sonos_living_room` is the dining room's speaker.
