@@ -2,9 +2,20 @@
 # Friday Evening Medication Reminder
 #
 # This automation is used to remind Cristina to take her Friday evening medication.
-# It will send a notification to her phone at <time> on Fridays.
+# It will send a notification to her phone at the time set in her popup.
 # She can snooze it for 30 minutes if needed.
 #
+
+#
+# Weekly Evening Medication Time
+# Set in Cristina's popup. No `initial:` (it reverts dashboard edits on restart).
+#
+input_datetime:
+  cristina_medication_weekly_time:
+    name: Cristina Medication Weekly Time
+    icon: mdi:clock-outline
+    has_date: false
+    has_time: true
 
 #
 # Friday Evening Medication Boolean
@@ -33,7 +44,7 @@ automation:
   #
   # Cristina Friday Medication Reminder
   #
-  # Send her an actionable notification at <time> on Fridays. She
+  # Send her an actionable notification at her weekly time. She
   # can snooze it for 30 minutes if needed. If she doesn't respond
   # then it will automatically snooze.
   #
@@ -41,9 +52,9 @@ automation:
     alias: "Cristina Friday Medication Reminder"
     initial_state: false
     triggers:
-      # Trigger at <time> on Fridays
+      # Trigger at her weekly medication time (the condition picks the day)
       - trigger: time
-        at: "00:00:00"
+        at: input_datetime.cristina_medication_weekly_time
       - trigger: event
         event_type: timer.finished
         event_data:

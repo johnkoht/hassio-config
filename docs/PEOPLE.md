@@ -153,6 +153,7 @@ These sensors aggregate individual person states:
 
 Nino's medication reminder (`packages/people/nino/medication_reminder/`) prompts for each dose, snoozes, and escalates a late dose with a critical push.
 
+- **Times.** Each dose time is set in the Nino popup, and Cristina's reminder times in hers. They are helpers with no default, so a recreated helper reads 00:00 until it is set again.
 - **No-school days.** When `binary_sensor.nino_school_day` is off (weekends, breaks, summer, holidays), dose 1 is not prompted before the "No school earliest" time in the Nino popup (08:00 when unset), its escalation counts from that time, and snoozes are 30 minutes instead of 15. Dose 2 only gets the longer snooze. If the school-day sensor is unavailable, the school-day timing is used.
 - **Skipping a dose.** Tap Skip Dose on the reminder or critical push, the Skip button on the notifications popup card, or turn on "Dose n skipped" in the Nino popup. A skipped dose is not taken: supply is not used, and its reminders and escalation stop. Skips clear at 03:00. Turning a skip off re-prompts after a minute if the dose is due. Marking the dose taken clears the skip.
 
