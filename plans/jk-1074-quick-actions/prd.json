@@ -65,9 +65,10 @@
         "Docs mention the pop-up, its rows and their rules, the new scripts, and the host secrets prerequisite",
         "No PII (no user ids, schedules, times) in docs"
       ],
-      "status": "pending",
-      "passes": false,
-      "attemptCount": 0
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "9e4105d1"
     }
   ],
   "metadata": {
