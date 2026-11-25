@@ -303,8 +303,8 @@ def test_reset_conditions():
 
 def test_entertainment_toggles_same_al_switch():
     """The guard matters because entertainment mode also drives the office AL switch."""
-    for name in ("activated", "deactivated"):
-        text = (REPO / f"packages/house/entertainment/entertainment_mode_{name}.yaml").read_text()
+    for name in ("on", "off"):
+        text = (REPO / f"packages/office/modes/office_entertainment_mode_{name}.yaml").read_text()
         assert AL in text, name
 
 

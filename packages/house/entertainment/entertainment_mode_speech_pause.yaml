@@ -1,0 +1,25 @@
+# Entertainment Mode Speech Pause
+#
+# Turn the house-wide speech notifications off while entertaining. The rooms
+# handle their own speech switches.
+#
+
+automation:
+  - id: "entertainment_mode_speech_pause"
+    initial_state: on
+    alias: "Entertainment Mode - Speech Pause"
+    triggers:
+      # Entertainment mode turns on
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "off"
+        to: "on"
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.speech_notifications

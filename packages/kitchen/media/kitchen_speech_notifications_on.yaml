@@ -15,6 +15,10 @@ automation:
         entity_id: input_select.kitchen
         to: "Auto"
     conditions:
+      # Entertainment mode is NOT on (the mode owns this, JK-1166)
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
       # Kitchen is occupied
       - condition: state
         entity_id: input_boolean.kitchen_occupied

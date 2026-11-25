@@ -1,0 +1,27 @@
+# Entertainment Mode House Empty Off
+#
+# End entertainment mode when the house has been empty for 2 minutes. The
+# rooms resume themselves from the boolean going off. The delay rides out a
+# group reload (see packages/house/LEARNINGS.md).
+#
+
+automation:
+  - id: "entertainment_mode_house_empty_off"
+    initial_state: on
+    alias: "Entertainment Mode - House Empty Off"
+    triggers:
+      # The house is no longer occupied
+      - trigger: state
+        entity_id: input_boolean.house_occupied
+        to: "off"
+        for:
+          minutes: 2
+    conditions:
+      # Entertainment mode is on
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.entertainment_mode
