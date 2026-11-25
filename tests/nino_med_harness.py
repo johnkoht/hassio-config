@@ -94,9 +94,10 @@ def at(day, hhmm):
     return datetime(2026, 11, d, h, m, tzinfo=timezone(timedelta(hours=-6)))
 
 
+# Dose times are neutral test values, not the household's schedule (public repo).
 BASE_STATES = {
-    "input_datetime.nino_medication_1_time": "07:30:00",
-    "input_datetime.nino_medication_2_time": "13:00:00",
+    "input_datetime.nino_medication_1_time": "07:10:00",
+    "input_datetime.nino_medication_2_time": "12:40:00",
     "input_datetime.nino_medication_no_school_earliest": "00:00:00",
     "input_boolean.nino_medication_1_taken": "off",
     "input_boolean.nino_medication_2_taken": "off",

@@ -82,6 +82,7 @@ timer:
 
 #
 # Per-Dose Scheduled Times
+# Set in the Nino popup. No `initial:` (it reverts dashboard edits on restart).
 #
 input_datetime:
   nino_medication_1_time:
@@ -89,13 +90,11 @@ input_datetime:
     icon: mdi:clock-time-seven
     has_date: false
     has_time: true
-    initial: "07:30:00"
   nino_medication_2_time:
     name: Nino Medication 2 Time
     icon: mdi:clock-time-seven
     has_date: false
     has_time: true
-    initial: "13:00:00"
   # Earliest dose 1 time on a no-school day. No `initial:` (it would revert
   # dashboard edits on every restart); unset reads as 08:00 in the sensor.
   nino_medication_no_school_earliest:

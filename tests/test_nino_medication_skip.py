@@ -126,7 +126,7 @@ def _resolved(dose, now_day, hhmm, **overrides):
 
 
 def test_taken_fallback_never_picks_a_skipped_dose_but_an_explicit_dose_wins():
-    assert _resolved("", "mon", "13:30", **SK1) == "2"            # dose 2 due: dose 1 skipped is passed over
+    assert _resolved("", "mon", "12:50", **SK1) == "2"            # dose 2 due: dose 1 skipped is passed over
     assert _resolved("", "mon", "06:00", **SK1, **SK2) == "none"
     assert _resolved("1", "mon", "06:00", **SK1) == "1"           # explicit taken still wins
 
@@ -219,7 +219,7 @@ def test_unskip_restarts_only_a_due_untaken_idle_dose():
     assert not _unskip_passes("1", "08:00", **base, **{"input_boolean.nino_medication_1_taken": "on"})
     assert not _unskip_passes("1", "08:00", **base, **{"timer.nino_medication_1_timer": "active"})
     assert not _unskip_passes("1", "08:00", **{"input_boolean.nino_medication_reminders": "off"})
-    assert _unskip_passes("2", "13:30", **base)
+    assert _unskip_passes("2", "12:50", **base)
     assert not _unskip_passes("2", "12:30", **base)
     a = _auto("nino_medication_unskipped.yaml")
     assert a["actions"][0]["action"] == "timer.start" and a["actions"][0]["data"]["duration"] == "00:01:00"
@@ -281,7 +281,7 @@ def test_popup_cards_hide_a_skipped_dose_and_offer_skip():
 def test_taken_fallback_waits_for_dose_2_to_be_due():
     assert _resolved("", "mon", "06:00", **SK1) == "none"         # nothing due, dose 1 skipped
     assert _resolved("", "mon", "12:30", **SK1) == "none"         # dose 2 not due yet
-    assert _resolved("", "mon", "13:00", **SK1) == "2"            # dose 2 due
+    assert _resolved("", "mon", "12:45", **SK1) == "2"            # dose 2 due
     assert _resolved("", "mon", "12:30", **SK1, **{"timer.nino_medication_2_timer": "active"}) == "2"  # snoozing = pending
     assert _resolved("", "mon", "06:00") == "1"                   # an early dose 1 is still marked first
     assert _resolved("", "mon", "12:30", **{"input_boolean.nino_medication_1_taken": "on"}) == "2"  # dose 1 given: an early dose 2 still counts

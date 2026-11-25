@@ -87,11 +87,11 @@ def test_snooze_minutes_is_positive_off_and_drives_every_snooze_length():
 def test_effective_time_across_days():
     cases = [
         # (day, school_day, floor, expected effective time-of-day)
-        ("mon", "on", None, "07:30"),          # school day: unchanged
+        ("mon", "on", None, "07:10"),          # school day: unchanged
         ("sat", "off", None, "08:00"),         # no school, unset floor: 08:00
-        ("sat", "off", "08:30:00", "08:30"),   # no school, configured floor
-        ("sat", "off", "07:00:00", "07:30"),   # floor earlier than dose 1: dose 1 wins
-        ("sat", "unavailable", None, "07:30"), # unavailable school sensor: weekday time
+        ("sat", "off", "08:40:00", "08:40"),   # no school, configured floor
+        ("sat", "off", "07:00:00", "07:10"),   # floor earlier than dose 1: dose 1 wins
+        ("sat", "unavailable", None, "07:10"), # unavailable school sensor: weekday time
     ]
     for day, school, floor, want in cases:
         _, eff, _ = world(day, "06:00", school, floor)
@@ -113,8 +113,8 @@ def test_pending_dose_on_a_no_school_morning():
     after_floor = world("sat", "08:01", "off")[2]
     assert awake_early == "none"      # the wake-up trigger resolves to nothing before 08:00
     assert after_floor == "1"
-    assert world("mon", "07:31", "on")[2] == "1"   # school day unchanged
-    assert world("mon", "07:29", "on")[2] == "none"
+    assert world("mon", "07:11", "on")[2] == "1"   # school day unchanged
+    assert world("mon", "07:09", "on")[2] == "none"
 
 
 def test_pending_dose_two_still_resolves_after_its_time():
@@ -137,5 +137,5 @@ def _escalation_fires(day, hhmm, school):
 def test_dose_1_escalation_counts_from_the_effective_time():
     assert not _escalation_fires("sat", "09:59", "off")
     assert _escalation_fires("sat", "10:01", "off")
-    assert _escalation_fires("mon", "09:31", "on")       # school day: 07:30 + 2h
-    assert not _escalation_fires("mon", "09:29", "on")
+    assert _escalation_fires("mon", "09:11", "on")       # school day: dose 1 + 2h
+    assert not _escalation_fires("mon", "09:09", "on")

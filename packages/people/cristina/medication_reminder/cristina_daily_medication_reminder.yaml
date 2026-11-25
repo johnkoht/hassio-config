@@ -2,10 +2,21 @@
 # Daily Morning Medication Reminder
 #
 # This automation is used to remind Cristina to take her morning medication.
-# It will send a notification to her phone at 7:30am and 8:15am.
+# It will send a notification to her phone at the time set in her popup.
 # She can snooze it for 90 minutes if needed.
 #
 #
+
+#
+# Daily Morning Medication Time
+# Set in Cristina's popup. No `initial:` (it reverts dashboard edits on restart).
+#
+input_datetime:
+  cristina_medication_morning_time:
+    name: Cristina Medication Morning Time
+    icon: mdi:clock-outline
+    has_date: false
+    has_time: true
 
 #
 # Daily Morning Medication Bolean
@@ -34,19 +45,17 @@ automation:
   #
   # Cristina Daily Medication Reminder
   #
-  # Send her an actionable notification at 7:30am and 8:15am. She
-  # can snooze it for 30 minutes if needed. If she doesn't respond
+  # Send her an actionable notification at her morning time. She
+  # can snooze it if needed. If she doesn't respond
   # then it will automatically snooze.
   #
   - id: "cristina_daily_medication_reminder"
     alias: "Cristina Daily Medication Reminder"
     initial_state: false
     triggers:
-      # Trigger at 7:30am
+      # Trigger at her morning medication time
       - trigger: time
-        at: "07:30:00"
-      # - trigger: time
-      #   at: "08:15:00"
+        at: input_datetime.cristina_medication_morning_time
       # Trigger when the timer is finished
       - trigger: event
         event_type: timer.finished

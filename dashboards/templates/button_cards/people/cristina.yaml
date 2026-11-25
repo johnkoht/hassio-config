@@ -117,6 +117,11 @@ cards:
         state_color: true
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
+      - entity: input_datetime.cristina_medication_morning_time
+        icon: mdi:clock-outline
+        name: Daily Reminder Time
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
       - entity: input_boolean.cristina_friday_medication_taken
         icon: kohbo:kohbo-medication
         name: Friday Medication
@@ -129,6 +134,11 @@ cards:
         name: Friday Reminder
         secondary_info: last-changed
         state_color: true
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+      - entity: input_datetime.cristina_medication_weekly_time
+        icon: mdi:clock-outline
+        name: Friday Reminder Time
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
 
   #
