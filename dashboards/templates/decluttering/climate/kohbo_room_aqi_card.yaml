@@ -1,0 +1,31 @@
+#
+# Room AQI card: an Awair score (0-100, higher is better) as a mini graph.
+# Bands match kohbo_device_aqi_entity: <20 purple, <40 red, <60 orange,
+# <80 yellow, 80+ green. Awair reports the score in %, so the unit is overridden.
+#
+kohbo_room_aqi_card:
+  card:
+    type: custom:mini-graph-card
+    name: '[[name]]'
+    icon: '[[icon]]'
+    unit: AQI
+    points_per_hour: 2
+    line_width: 4
+    decimals: 0
+    smoothing: true
+    color_thresholds_transition: hard
+    color_thresholds:
+      - color: "#6155F5"
+        value: 0
+      - color: "#ED4747"
+        value: 20
+      - color: "#E36001"
+        value: 40
+      - color: "#FFD166"
+        value: 60
+      - color: "#06D6A0"
+        value: 80
+    entities:
+      - entity: '[[entity]]'
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_graph_styles.yaml
+    animate: true
