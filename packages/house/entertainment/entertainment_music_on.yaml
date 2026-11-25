@@ -1,0 +1,18 @@
+# Entertainment Music On
+#
+# Start the music when entertainment mode turns on.
+#
+
+automation:
+  - id: "entertainment_music_on"
+    initial_state: on
+    alias: "Entertainment Music - On"
+    triggers:
+      # Entertainment mode turns on
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "off"
+        to: "on"
+    actions:
+      # The script holds the guards (occupied, bedtime, emergency, Crazy Mode, zone, favorite)
+      - action: script.entertainment_music_start

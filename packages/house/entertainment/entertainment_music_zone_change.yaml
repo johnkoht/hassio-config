@@ -1,0 +1,26 @@
+# Entertainment Music Zone Change
+#
+# Move the music when the zone changes while entertainment mode is on (from
+# Off, it starts). A new playlist waits for the next start.
+#
+
+automation:
+  - id: "entertainment_music_zone_change"
+    initial_state: on
+    alias: "Entertainment Music - Zone Change"
+    triggers:
+      # The zone is changed
+      - trigger: state
+        entity_id: input_select.entertainment_music_zone
+        not_from:
+          - "unknown"
+          - "unavailable"
+    conditions:
+      # Entertainment mode is on
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "on"
+    actions:
+      # Stop what this mode started (it does nothing if it started nothing), then start the new zone
+      - action: script.entertainment_music_stop
+      - action: script.entertainment_music_start

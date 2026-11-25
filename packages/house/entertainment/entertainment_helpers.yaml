@@ -1,0 +1,59 @@
+# Entertainment Music Helpers
+#
+# Zone, playlist and volume for the music that starts with the mode. No
+# `initial:` on anything, so dashboard choices survive a restart (JK-1262).
+# Set the volume once on the dashboard (it starts at the minimum).
+#
+
+input_select:
+  entertainment_music_zone:
+    name: Entertainment Music Zone
+    icon: mdi:speaker-multiple
+    options:
+      - "Indoor"
+      - "Outdoor"
+      - "Off"
+
+input_text:
+  # The Sonos favorite to play, exactly (case counts). Set by the playlist select.
+  entertainment_favorite:
+    name: Entertainment Favorite
+    icon: mdi:music
+    max: 100
+  # The zone the running session started in; stop reads this copy.
+  entertainment_active_zone:
+    name: Entertainment Active Zone
+    icon: mdi:speaker-multiple
+    max: 20
+
+input_number:
+  entertainment_volume:
+    name: Entertainment Volume
+    icon: mdi:volume-medium
+    min: 10
+    max: 70
+    step: 5
+    mode: slider
+    unit_of_measurement: "%"
+
+input_boolean:
+  # On while the mode's own music is playing, so stop only touches what it started.
+  entertainment_music_started:
+    name: Entertainment Music Started
+    icon: mdi:music-circle
+
+template:
+  - select:
+      # The dropdown: Sonos favorites (Spotify playlists saved as favorites too).
+      - name: Entertainment Playlist
+        unique_id: entertainment_playlist
+        default_entity_id: select.entertainment_playlist
+        icon: mdi:playlist-music
+        state: "{{ states('input_text.entertainment_favorite') }}"
+        options: "{{ state_attr('media_player.sonos_kitchen', 'source_list') or [] }}"
+        select_option:
+          - action: input_text.set_value
+            target:
+              entity_id: input_text.entertainment_favorite
+            data:
+              value: "{{ option }}"

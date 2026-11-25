@@ -122,6 +122,16 @@ cards:
         secondary_info: last-changed
         state_color: true
 
+      # Entertainment music: where it plays, what, and how loud (starts with the mode)
+      - entity: input_select.entertainment_music_zone
+        name: Entertainment Music
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+      - entity: select.entertainment_playlist
+        name: Entertainment Playlist
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+      - entity: input_number.entertainment_volume
+        name: Entertainment Volume
+
       # Guest Mode
       - entity: input_boolean.guest_mode
         name: Guest Mode

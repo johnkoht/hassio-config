@@ -1,0 +1,111 @@
+# Entertainment Music Start
+#
+# Groups the chosen zone's speakers under its coordinator and plays the
+# chosen Sonos favorite at the set volume. Called when the mode turns on and
+# when the zone changes. Skips quietly unless every guard holds. Crazy Mode
+# and this never run together. With the family room TV on, the family room
+# speaker is left out so the TV keeps its sound.
+#
+
+script:
+  entertainment_music_start:
+    alias: "Entertainment Music Start"
+    icon: mdi:music
+    mode: single
+    variables:
+      zone_name: "{{ states('input_select.entertainment_music_zone') }}"
+      zone_key: "{{ 'indoor' if zone_name == 'Indoor' else 'outdoor' if zone_name == 'Outdoor' else '' }}"
+      cfg: "{{ state_attr('sensor.entertainment_zone_config', zone_key) if zone_key else none }}"
+      tv_on: "{{ is_state('media_player.sony_bravia_tv', 'on') }}"
+      favorite: "{{ states('input_text.entertainment_favorite') }}"
+    sequence:
+      - alias: "Entertainment mode is on"
+        condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "on"
+      - alias: "House is occupied"
+        condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - alias: "Not bedtime"
+        condition: state
+        entity_id: input_boolean.bedtime
+        state: "off"
+      - alias: "No emergency"
+        condition: state
+        entity_id: binary_sensor.emergency_active
+        state: "off"
+      - alias: "Crazy Mode is not running"
+        condition: state
+        entity_id: input_select.crazy_mode_phase
+        state: "Off"
+      - alias: "A zone is chosen and configured"
+        condition: template
+        value_template: "{{ cfg is mapping }}"
+      - alias: "A missing favorite is a fault, not a silent skip"
+        if:
+          - condition: template
+            value_template: >-
+              {{ favorite == '' or favorite not in (state_attr(cfg.coordinator, 'source_list') or []) }}
+        then:
+          - action: system_log.write
+            data:
+              level: warning
+              logger: entertainment_mode
+              message: "Entertainment music not started: favorite missing on {{ cfg.coordinator }}"
+          - stop: "Favorite missing"
+      - alias: "Take the family room speaker out of the group while the TV is on"
+        variables:
+          speakers: >-
+            {{ cfg.speakers | reject('eq', 'media_player.sonos_family_room') | list
+               if (zone_key == 'indoor' and tv_on) else cfg.speakers }}
+          coordinator: "{{ cfg.coordinator }}"
+          volume: "{{ [[states('input_number.entertainment_volume') | float(30), 10] | max, 70] | min / 100 }}"
+      - alias: "Remember what this session started"
+        action: input_text.set_value
+        target:
+          entity_id: input_text.entertainment_active_zone
+        data:
+          value: "{{ zone_name }}"
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.entertainment_music_started
+      - alias: "Take each speaker out of its old group"
+        repeat:
+          for_each: "{{ speakers }}"
+          sequence:
+            - action: media_player.unjoin
+              continue_on_error: true
+              target:
+                entity_id: "{{ repeat.item }}"
+      - alias: "Join the rest to the coordinator, only when there is more than one speaker"
+        if:
+          - condition: template
+            value_template: "{{ speakers | length > 1 }}"
+        then:
+          - action: media_player.join
+            continue_on_error: true
+            target:
+              entity_id: "{{ coordinator }}"
+            data:
+              group_members: "{{ speakers | reject('eq', coordinator) | list }}"
+      - action: media_player.volume_set
+        continue_on_error: true
+        target:
+          entity_id: "{{ speakers }}"
+        data:
+          volume_level: "{{ volume }}"
+      - action: media_player.select_source
+        continue_on_error: true
+        target:
+          entity_id: "{{ coordinator }}"
+        data:
+          source: "{{ favorite }}"
+      - alias: "Shuffle has to be set after the source starts"
+        delay: 3
+      - action: media_player.shuffle_set
+        continue_on_error: true
+        target:
+          entity_id: "{{ coordinator }}"
+        data:
+          shuffle: true

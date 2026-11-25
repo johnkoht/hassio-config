@@ -196,7 +196,12 @@ def test_gated_automation_checks_the_mode_first(rel):
 
 def test_tv_is_never_turned_on_by_the_mode():
     for f in list(ENT_DIR.glob("*.yaml")) + list((PKG / "family_room").rglob("*entertainment*")):
-        assert "sony_bravia_tv" not in f.read_text(), f.name
+        text = f.read_text()
+        if f.name == "entertainment_music_start.yaml":
+            # the one place the TV is read: is_state, never a call target
+            assert text.count("sony_bravia_tv") == 1 and "is_state('media_player.sony_bravia_tv'" in text
+        else:
+            assert "sony_bravia_tv" not in text, f.name
 
 
 def test_speech_off_automations_stay_ungated():
