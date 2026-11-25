@@ -38,3 +38,22 @@ To handle this:
   `{{ not live }}` would go False and a dry-run zone would write. In Jinja,
   compare it as a string (`climate_live(z) == 'True'`). Scripts and automations
   that import a custom template also need `reload_custom_templates` first.
+
+## Resume when leaving a labelled zone (JK-1194)
+
+`climate_resume_when_leaving_labelled_zone` resumes the Nests when an adult
+leaves a zone carrying the `climate_trigger` label, with the house empty.
+
+- `trigger: zone` takes fixed entity ids and can't follow a label. The
+  automation triggers on the persons' state and reads
+  `label_entities('climate_trigger')` in a condition, so a newly labelled zone
+  works with no YAML edit. Only UI-created zones can take a label.
+- A person's state is the zone's friendly name, so the condition compares
+  names. `not_to` on the trigger makes it ignore GPS attribute updates, which
+  would otherwise reset the 3-minute `for:`.
+- It only helps once a floor is in Eco (Eco starts after 30 minutes empty). A
+  leave before that does nothing, and a resume between minute 30 and 60 can be
+  re-Eco'd by the 60-minute trigger of `*_climate_to_eco`.
+- After the smart-climate migration this trigger becomes an input to
+  `smart/modes/climate_mode_resolve.yaml` (an "arrival expected" signal) and
+  this automation goes away.

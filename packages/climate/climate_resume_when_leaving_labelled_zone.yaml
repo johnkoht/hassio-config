@@ -1,0 +1,57 @@
+# Climate - Resume When Leaving a Labelled Zone
+#
+# An adult leaves a zone labelled climate_trigger while the house is empty:
+# take the Nests out of Eco, so the house is warm or cool on arrival.
+# Add a place by labelling its zone in the UI; no YAML edit.
+#
+
+automation:
+  - id: "climate_resume_when_leaving_labelled_zone"
+    alias: "Climate - Resume When Leaving a Labelled Zone"
+    mode: single
+    triggers:
+      # not_to keeps GPS attribute updates from resetting the wait;
+      # for: ignores a blip out of the zone and back
+      - trigger: state
+        entity_id:
+          - person.john_koht
+          - person.cristina_falbo
+        not_to:
+          - "unavailable"
+          - "unknown"
+        for:
+          minutes: 3
+    conditions:
+      - alias: "House is empty"
+        condition: state
+        entity_id: input_boolean.house_occupied
+        state: "off"
+      - alias: "Left a labelled zone, and not for another labelled zone or home"
+        condition: template
+        value_template: >-
+          {% set ns = namespace(names=[]) %}
+          {% for z in label_entities('climate_trigger') if z.startswith('zone.') %}
+            {% set ns.names = ns.names + [state_attr(z, 'friendly_name')] %}
+          {% endfor %}
+          {{ trigger.from_state.state in ns.names
+             and trigger.to_state.state not in ns.names + ['home', 'unavailable', 'unknown'] }}
+      - alias: "At least one Nest is in a preset (e.g. Eco)"
+        condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ state_attr('climate.nest_main_floor', 'preset_mode') not in [none, 'none'] }}"
+          - condition: template
+            value_template: "{{ state_attr('climate.nest_second_floor', 'preset_mode') not in [none, 'none'] }}"
+    actions:
+      - alias: "Main floor is in a preset"
+        if:
+          - condition: template
+            value_template: "{{ state_attr('climate.nest_main_floor', 'preset_mode') not in [none, 'none'] }}"
+        then:
+          - action: script.main_floor_climate_to_resume
+      - alias: "Second floor is in a preset"
+        if:
+          - condition: template
+            value_template: "{{ state_attr('climate.nest_second_floor', 'preset_mode') not in [none, 'none'] }}"
+        then:
+          - action: script.second_floor_climate_to_resume
