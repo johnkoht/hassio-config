@@ -4,7 +4,7 @@ slug: jk-82-doorbell-message
 status: shipped
 created: 2026-11-23
 has_pre_mortem: false
-has_review: false
+has_review: true
 has_prd: false
 ---
 
