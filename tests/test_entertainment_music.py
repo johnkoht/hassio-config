@@ -2,7 +2,7 @@
 Phase 2 of JK-1166: the music that starts with entertainment mode.
 
 Static structure plus real-jinja renders of the zone config, the speaker
-filter (TV on) and the volume clamp. Crazy Mode and this never share the
+speakers and the volume clamp. Crazy Mode and this never share the
 speakers; both directions are pinned here.
 """
 import ast
@@ -44,6 +44,7 @@ def walk(node):
             yield from walk(v)
 
 
+START_TEXT = (ENT_DIR / "entertainment_music_start.yaml").read_text()
 HELPERS = load(ENT_DIR / "entertainment_helpers.yaml")
 START = load(ENT_DIR / "entertainment_music_start.yaml")["script"]["entertainment_music_start"]
 STOP = load(ENT_DIR / "entertainment_music_stop.yaml")["script"]["entertainment_music_stop"]
@@ -133,15 +134,15 @@ def _var(name):
     return next(s for s in START["sequence"] if s.get("variables") and name in s["variables"])["variables"][name]
 
 
-def test_family_room_speaker_leaves_the_group_only_with_tv_on_indoors():
+def test_every_zone_speaker_joins_including_the_family_room_sonos():
+    """The family room Sonos (an Amp on in-ceiling speakers) is separate from the TV and always joins."""
     tpl = _var("speakers")
-    fr = "media_player.sonos_family_room"
-    on = ast.literal_eval(render(tpl, cfg=zone("indoor"), zone_key="indoor", tv_on=True))
-    off = ast.literal_eval(render(tpl, cfg=zone("indoor"), zone_key="indoor", tv_on=False))
-    out = ast.literal_eval(render(tpl, cfg=zone("outdoor"), zone_key="outdoor", tv_on=True))
-    assert fr not in on and len(on) == 3
-    assert fr in off and len(off) == 4
-    assert out == zone("outdoor")["speakers"]
+    for key in ("indoor", "outdoor"):
+        z = zone(key)
+        got = ast.literal_eval(render(tpl, cfg=z, zone_key=key))
+        assert got == z["speakers"]
+    assert "media_player.sonos_family_room" in zone("indoor")["speakers"]
+    assert "sony_bravia_tv" not in START_TEXT and "tv_on" not in START_TEXT
 
 
 def test_volume_is_thirty_percent_at_thirty_and_clamped():

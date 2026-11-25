@@ -53,7 +53,7 @@ Starts with the mode, stops with it (only what it started).
 - Start skips quietly unless the mode is on, the house is occupied, it is not
   bedtime, there is no emergency and Crazy Mode is not running. A missing favorite
   logs a warning.
-- With the family room TV on, the family room speaker stays out of the group so
-  the TV keeps its sound.
+- The family room Sonos (an Amp on in-ceiling speakers) always joins indoor
+  music. The TV is a separate device the mode never groups, calls, turns on or off.
 - Crazy Mode refuses to start while the mode is on (`sensor.crazy_mode_reason` =
   `entertainment`), so the two never share the speakers.

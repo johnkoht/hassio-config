@@ -54,7 +54,7 @@ input_select zone, input_text favourite, template select playlist, input_number 
 Start on mode on with guards, stop on mode off when started flag set, move on zone change.
 
 - AC: start guards: house_occupied, bedtime off, no emergency, crazy phase Off, zone not Off, favourite in source_list
-- AC: volume set from helper/100 on speakers; family room speaker left out when the TV is on
+- AC: volume set from helper/100 on speakers; every zone speaker joins, including the family room Sonos (the TV is a separate device)
 - AC: stop only when flag on; clears flag
 - AC: zone change only while mode and flag on
 
