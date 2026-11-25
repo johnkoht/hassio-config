@@ -1,7 +1,7 @@
 ---
 title: Home Quick Actions
 slug: jk-1074-quick-actions
-status: in-progress
+status: shipped
 created: 2026-11-23
 revised: 2026-11-24
 linear: JK-1074
