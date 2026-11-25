@@ -1,13 +1,13 @@
 ---
 title: Home Quick Actions
 slug: jk-1074-quick-actions
-status: draft
+status: in-progress
 created: 2026-11-23
 revised: 2026-11-24
 linear: JK-1074
-has_pre_mortem: false
-has_review: false
-has_prd: false
+has_pre_mortem: true
+has_review: true
+has_prd: true
 related: [notification-deep-links, room-lighting-override, kid-at-school-detection]
 ---
 
