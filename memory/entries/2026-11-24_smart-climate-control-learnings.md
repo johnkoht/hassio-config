@@ -4,7 +4,7 @@
 
 **What shipped:**
 - Each zone (2 Nests, 4 radiant Ecobees, the garage) has one decision sensor, driven by a Jinja macro in `custom_templates/climate_control.jinja`.
-- Per-zone queued controller scripts write only on a diff, and never use Eco. `climate_live_control` must be `on` for any `climate.*` call.
+- Per-zone queued controller scripts write only on a diff, and never use Eco. `climate_live_control` must be `on` for any `climate.*` call (since smart-climate-trial-tweaks: the global or the zone's own `climate_live_<zone>`).
 - A mode resolver, two-stage Away, a learned wake time with a pre-wake flag, value-based override detection, and a dry-air push.
 
 **Pre-mortem vs reality:**

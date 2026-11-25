@@ -89,6 +89,47 @@ def test_sleep_and_precondition():
     assert mode("main_floor", "Sleep", **{"input_boolean.climate_precondition_second_floor": "on"})["temperature"] == 70
 
 
+GUEST = "input_boolean.guest_mode"
+
+
+def test_guest_sleep_main_floor_uses_comfort():
+    d = mode("main_floor", "Sleep", **{GUEST: "on"})
+    assert (d["hvac_mode"], d["temperature"], d["zone_mode"]) == ("heat", 72, "Sleep")
+    assert "Guests" in d["reason"] and d["reason"].startswith("Guests")
+    d = mode("main_floor", "Sleep", **{GUEST: "on", "sensor.climate_active_season": "Cooling"})
+    assert (d["hvac_mode"], d["temperature"]) == ("cool", 76)
+    assert d["reason"].startswith("Guests")
+
+
+def test_guest_sleep_prewake_wins():
+    d = mode("main_floor", "Sleep", **{GUEST: "on", "input_boolean.climate_precondition_main_floor": "on"})
+    assert "pre-wake" in d["reason"].lower() and "Guests" not in d["reason"]
+    assert d["temperature"] == 72
+
+
+@pytest.mark.parametrize("guest", ["off", "unknown", "unavailable"])
+def test_guest_not_on_is_normal_sleep(guest):
+    d = mode("main_floor", "Sleep", **{GUEST: guest})
+    assert d["temperature"] == 70 and "Guests" not in d["reason"]
+
+
+@pytest.mark.parametrize("zone", ["second_floor"] + RADIANT)
+def test_guest_sleep_other_zones_unchanged(zone):
+    assert mode(zone, "Sleep", **{GUEST: "on"}) == mode(zone, "Sleep", **{GUEST: "off"})
+
+
+@pytest.mark.parametrize("m", ["Comfort", "Away"])
+def test_guest_comfort_away_main_floor_unchanged(m):
+    assert mode("main_floor", m, **{GUEST: "on"}) == mode("main_floor", m, **{GUEST: "off"})
+
+
+def test_guest_sleep_price_offset_off_forecast_boost_on():
+    d = mode("main_floor", "Sleep", **{GUEST: "on", "binary_sensor.climate_price_offset_active": "on"})
+    assert d["temperature"] == 72 and "Price offset" not in d["reason"]
+    d = mode("main_floor", "Sleep", **{GUEST: "on", "binary_sensor.climate_forecast_cold_swing": "on"})
+    assert d["temperature"] == 73 and "Forecast cold swing +1" in d["reason"]
+
+
 def test_away_setback_and_extended():
     d = mode("main_floor", "Away")
     assert (d["hvac_mode"], d["temperature"]) == ("heat", 69)
