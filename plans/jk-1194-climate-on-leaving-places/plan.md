@@ -1,7 +1,7 @@
 ---
 title: Resume climate when we leave certain places
 slug: jk-1194-climate-on-leaving-places
-status: approved
+status: in-progress
 created: 2026-11-23
 has_pre_mortem: false
 has_review: false
