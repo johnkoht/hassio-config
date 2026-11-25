@@ -1,7 +1,7 @@
 ---
 title: Resume climate when we leave certain places
 slug: jk-1194-climate-on-leaving-places
-status: draft
+status: approved
 created: 2026-11-23
 has_pre_mortem: false
 has_review: false
@@ -55,6 +55,10 @@ A fix needs the Eco automations to respect an "arrival expected" flag. That belo
 ## Smart climate plan
 
 `plans/smart-climate-control/plan.md` replaces Eco and resume with a mode state machine whose inputs include `nearly_home`. Conditions 2 and 3 above, plus the 3-minute `for:`, are exactly an "arrival expected" input. When that plan lands, the state machine takes this trigger as an input and this automation's actions become a mode change. The label lookup lives in one template condition, so it lifts cleanly into a binary_sensor then.
+
+## Update 2026-11-24
+
+John approved with the defaults. The `climate_trigger` label is live on four UI-created zones. The smart climate controller has merged and runs as a dry run alongside the old Eco and resume automations, which still drive the Nests, so this design stays: it calls the existing floor resume scripts. After the smart-climate migration this trigger becomes an input to `packages/climate/smart/modes/climate_mode_resolve.yaml` (like `nearly_home`) and this automation is removed. That part is not built here.
 
 ## Tests
 
