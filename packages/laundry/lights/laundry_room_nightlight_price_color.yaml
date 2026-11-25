@@ -1,0 +1,87 @@
+# Laundry Room Nightlight Price Color
+#
+# While the nightlight is on, colour it by the energy price tier
+# (green, blue, orange, red; purple when negative). The tier must
+# hold 10 minutes, since it flips with the 5-minute price feed.
+# Dimmed at Bedtime. The room light wins.
+#
+automation:
+  - id: "laundry_room_nightlight_price_color"
+    alias: "Laundry Room nightlight price color"
+    mode: restart
+    triggers:
+      # Price tier settled (it flaps, so it must hold)
+      - trigger: state
+        entity_id: sensor.energy_price_tier
+        to:
+          - "low"
+          - "normal"
+          - "high"
+          - "very_high"
+        for:
+          minutes: 10
+      # Price went negative or recovered, and held
+      - trigger: state
+        entity_id: binary_sensor.energy_prices_are_negative
+        to:
+          - "on"
+          - "off"
+        for:
+          minutes: 10
+      # Nightlight turned on: colour it straight away
+      - trigger: state
+        entity_id: light.laundry_room_nightlight
+        from: "off"
+        to: "on"
+      # Bedtime starts or ends: change the brightness
+      - trigger: state
+        entity_id: input_select.house
+    conditions:
+      # Lighting automations must be enabled
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: template
+        alias: "House is not Away or Vacation"
+        value_template: "{{ states('input_select.house') not in ['Away', 'Vacation'] }}"
+      # Laundry room lighting automations are enabled and the room is Auto
+      - condition: state
+        entity_id: input_boolean.laundry_room_lighting_automations
+        state: "on"
+      - condition: state
+        entity_id: input_select.laundry_room
+        state: "Auto"
+      # This feature is enabled
+      - condition: state
+        entity_id: input_boolean.laundry_room_price_nightlight
+        state: "on"
+      # Nightlight is on, and the room light is not
+      - condition: state
+        entity_id: light.laundry_room_nightlight
+        state: "on"
+      - condition: state
+        entity_id: light.laundry_room_main_lights
+        state: "off"
+      # The tier sensor reads unavailable as low (green), so check the feed
+      - condition: template
+        alias: "Price and tier are real values"
+        value_template: >
+          {{ states('sensor.energy_price_tier') in ['low', 'normal', 'high', 'very_high']
+             and states('sensor.comed_current_hour_average_price') | is_number }}
+    actions:
+      - alias: "Colour by tier, dim at Bedtime"
+        action: light.turn_on
+        target:
+          entity_id: light.laundry_room_nightlight
+        data:
+          rgb_color: >
+            {% if is_state('binary_sensor.energy_prices_are_negative', 'on') %}
+              {{ [160, 40, 255] }}
+            {% else %}
+              {{ {'low': [0, 200, 60], 'normal': [40, 100, 255],
+                  'high': [255, 120, 0], 'very_high': [255, 20, 20]}[states('sensor.energy_price_tier')] }}
+            {% endif %}
+          brightness_pct: "{{ 5 if is_state('input_select.house', 'Bedtime') else 15 }}"

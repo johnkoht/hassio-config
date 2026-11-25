@@ -1,0 +1,5 @@
+# Hand-only toggle: laundry nightlight shows the energy price tier. No `initial:`, never written by automations.
+input_boolean:
+  laundry_room_price_nightlight:
+    name: Laundry Room Price Nightlight
+    icon: mdi:lightbulb-on-outline
