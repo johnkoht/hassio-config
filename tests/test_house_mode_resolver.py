@@ -219,25 +219,7 @@ def _writes_house(node):
 
 # --- side effects -----------------------------------------------------------
 
-DOORBELL = {
-    "Auto": "WELCOME!",
-    "Away": "DO NOT DISTURB",
-    "Bedtime": "DO NOT DISTURB",
-    "Quiet": "SHHH…KIDS SLEEPING",
-    "Vacation": "DO NOT DISTURB",  # "Please do not disturb!" is not a live option
-}
-
-
-def test_doorbell_text_follows_every_option_but_entertainment():
-    auto = automation(f"{MODES}/house_mode_doorbell_text.yaml")
-    assert set(auto["triggers"][0]["to"]) == set(DOORBELL)
-    option = auto["actions"][0]["data"]["option"]
-    for mode, text in DOORBELL.items():
-        class To:  # trigger.to_state.state
-            state = mode
-        env = Environment(undefined=StrictUndefined)
-        out = env.from_string(option).render(trigger={"to_state": To}).strip()
-        assert out == text
+# The doorbell text moved to tests/test_doorbell_message.py (JK-82).
 
 
 def test_speech_on_only_for_auto_and_only_if_off():
