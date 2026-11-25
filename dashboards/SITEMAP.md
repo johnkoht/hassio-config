@@ -20,6 +20,7 @@ The dashboard is organized into the following main sections:
     - Safety Device Notification (conditional card under the header)
     - House Mode Popup
     - Kids WiFi Popup
+    - Quick Actions Popup (`home/_quick_actions_popup.yaml`, `#quick_actions`): per-user contextual rows, opened by the header lightning chip
 
 ### 🌡️ Climate
 - **Climate** (`climate/climate.yaml`)

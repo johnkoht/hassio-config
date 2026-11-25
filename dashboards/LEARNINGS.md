@@ -68,3 +68,8 @@ automations do. Sensors page Power section, 2026-10-29.
 - Awair scores report `%` as their unit. mini-graph-card takes the unit from the entity first, then from the card's `unit:`. `kohbo_room_aqi_card` sets `unit: AQI` and colours its bands to match `kohbo_device_aqi_entity`. The same hex bands also appear in the office AQI graph, so change all three together.
 - The two basement Awairs kept the integration's default ids: `sensor.awair_element_basement_*` and `sensor.awair_element_basement_datacenter_*`. The first is also a prefix of the second, so match exact ids. The garage Ecobee's own temperature sensor has the bare id `sensor.temperature`.
 - `climate.garage` is not in `group.radiant_floor_heating_group`, so the HVAC tab shows it outside the radiant conditional cards. Inside them it would be hidden whenever the group is off.
+
+## Quick actions (JK-1074, 2026-11-25)
+
+- **First `!secret` in the dashboard.** YAML-mode Lovelace resolves it (`lovelace/dashboard.py`), and an undefined key fails the WHOLE dashboard. Add `john_ha_user_id` and `cristina_ha_user_id` to the host `secrets.yaml` before deploy; placeholders live in `secrets.fake.yaml`. Test dashboard loaders must accept `!secret`.
+- **First `condition: user` per-user rows.** One block per person in `home/_quick_actions_popup.yaml`; visibility rules live in `packages/house/quick_actions/` sensors, not in the card.
