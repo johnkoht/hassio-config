@@ -35,6 +35,10 @@ cards:
               state: "0"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.quick_actions_john_count
+            variables:
+              hint: ''
             name: No suggestions right now
             icon: mdi:check-circle-outline
             tap_action:
@@ -46,6 +50,10 @@ cards:
               state: "dining_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Dining Room"
             icon: mdi:door-open
             tap_action:
@@ -59,6 +67,10 @@ cards:
               state: "family_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Family Room"
             icon: mdi:door-open
             tap_action:
@@ -72,6 +84,10 @@ cards:
               state: "foyer"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Foyer"
             icon: mdi:door-open
             tap_action:
@@ -85,6 +101,10 @@ cards:
               state: "gianlucas_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Gianluca's Room"
             icon: mdi:door-open
             tap_action:
@@ -98,6 +118,10 @@ cards:
               state: "jr_suite"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Jr Suite"
             icon: mdi:door-open
             tap_action:
@@ -111,6 +135,10 @@ cards:
               state: "kitchen"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Kitchen"
             icon: mdi:door-open
             tap_action:
@@ -124,6 +152,10 @@ cards:
               state: "laundry_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Laundry Room"
             icon: mdi:door-open
             tap_action:
@@ -137,6 +169,10 @@ cards:
               state: "main_bathroom"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Main Bathroom"
             icon: mdi:door-open
             tap_action:
@@ -150,6 +186,10 @@ cards:
               state: "main_bedroom"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Main Bedroom"
             icon: mdi:door-open
             tap_action:
@@ -163,6 +203,10 @@ cards:
               state: "mud_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Mud Room"
             icon: mdi:door-open
             tap_action:
@@ -176,6 +220,10 @@ cards:
               state: "nino_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Nino's Room"
             icon: mdi:door-open
             tap_action:
@@ -189,6 +237,10 @@ cards:
               state: "office"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Office"
             icon: mdi:door-open
             tap_action:
@@ -202,6 +254,10 @@ cards:
               state: "playroom"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Playroom"
             icon: mdi:door-open
             tap_action:
@@ -215,6 +271,10 @@ cards:
               state: "powder_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Powder Room"
             icon: mdi:door-open
             tap_action:
@@ -228,6 +288,10 @@ cards:
               state: "upstairs_hallway"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.john_room_presence
+            variables:
+              hint: '›'
             name: "Go to Upstairs Hallway"
             icon: mdi:door-open
             tap_action:
@@ -241,14 +305,12 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: light.hue_ambiance_lamp_1
-            name: "Bedside lamp off"
+            variables:
+              hint: Turn off
+            name: "Bedside lamp"
             icon: mdi:lamp
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: perform-action
               perform_action: light.turn_off
@@ -262,14 +324,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: light.nino_bedroom_lamp
             name: "Nino's nightlight"
             icon: mdi:lightbulb-night
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: perform-action
               perform_action: light.toggle
@@ -283,14 +341,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: light.gianluca_lamp
             name: "Gianluca's nightlight"
             icon: mdi:lightbulb-night
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: perform-action
               perform_action: light.toggle
@@ -307,7 +361,11 @@ cards:
               state: "playing"
           card:
             type: custom:button-card
-            name: "Stop Nino's sleep music"
+            template: kohbo_quick_action_row
+            entity: media_player.ninos_room
+            variables:
+              hint: Stop
+            name: "Nino's sleep music"
             icon: mdi:music-off
             tap_action:
               action: perform-action
@@ -323,35 +381,35 @@ cards:
               state_not: "playing"
           card:
             type: custom:button-card
-            name: "Start Nino's sleep music"
+            template: kohbo_quick_action_row
+            entity: media_player.ninos_room
+            variables:
+              hint: Start
+            name: "Nino's sleep music"
             icon: mdi:music
             tap_action:
               action: perform-action
               perform_action: script.nino_sleep_music_start
               haptic: light
         - type: custom:button-card
+          template: kohbo_quick_action_row
           entity: input_boolean.john_dnd
           name: "Do not disturb"
           icon: mdi:minus-circle
-          show_state: true
-          state_display: >
+          show_label: true
+          label: >
             [[[
-              if (entity.state === 'on') return 'On';
-              if (states['binary_sensor.john_dnd_active'].state === 'on') return 'Off (Mac camera/mic is holding it)';
-              return 'Off';
+              return entity.state !== 'on' && states['binary_sensor.john_dnd_active']?.state === 'on'
+                ? 'Held on by the Mac camera/mic' : '';
             ]]]
           tap_action:
             action: toggle
             haptic: light
         - type: custom:button-card
+          template: kohbo_quick_action_row
           entity: input_boolean.camera_notifications
           name: "Camera alerts"
           icon: mdi:cctv
-          show_state: true
-          state_display: >
-            [[[
-              return entity.state === 'on' ? 'On' : 'Off';
-            ]]]
           tap_action:
             action: toggle
             haptic: light
@@ -362,14 +420,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: input_boolean.nino_home_today
             name: "Nino: home today"
             icon: mdi:home-account
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: toggle
               haptic: light
@@ -380,14 +434,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: input_boolean.gianluca_home_today
             name: "Gianluca: home today"
             icon: mdi:home-account
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: toggle
               haptic: light
@@ -410,6 +460,10 @@ cards:
               state: "0"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.quick_actions_cristina_count
+            variables:
+              hint: ''
             name: No suggestions right now
             icon: mdi:check-circle-outline
             tap_action:
@@ -421,6 +475,10 @@ cards:
               state: "dining_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Dining Room"
             icon: mdi:door-open
             tap_action:
@@ -434,6 +492,10 @@ cards:
               state: "family_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Family Room"
             icon: mdi:door-open
             tap_action:
@@ -447,6 +509,10 @@ cards:
               state: "foyer"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Foyer"
             icon: mdi:door-open
             tap_action:
@@ -460,6 +526,10 @@ cards:
               state: "gianlucas_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Gianluca's Room"
             icon: mdi:door-open
             tap_action:
@@ -473,6 +543,10 @@ cards:
               state: "jr_suite"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Jr Suite"
             icon: mdi:door-open
             tap_action:
@@ -486,6 +560,10 @@ cards:
               state: "kitchen"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Kitchen"
             icon: mdi:door-open
             tap_action:
@@ -499,6 +577,10 @@ cards:
               state: "laundry_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Laundry Room"
             icon: mdi:door-open
             tap_action:
@@ -512,6 +594,10 @@ cards:
               state: "main_bathroom"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Main Bathroom"
             icon: mdi:door-open
             tap_action:
@@ -525,6 +611,10 @@ cards:
               state: "main_bedroom"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Main Bedroom"
             icon: mdi:door-open
             tap_action:
@@ -538,6 +628,10 @@ cards:
               state: "mud_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Mud Room"
             icon: mdi:door-open
             tap_action:
@@ -551,6 +645,10 @@ cards:
               state: "nino_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Nino's Room"
             icon: mdi:door-open
             tap_action:
@@ -564,6 +662,10 @@ cards:
               state: "office"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Office"
             icon: mdi:door-open
             tap_action:
@@ -577,6 +679,10 @@ cards:
               state: "playroom"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Playroom"
             icon: mdi:door-open
             tap_action:
@@ -590,6 +696,10 @@ cards:
               state: "powder_room"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Powder Room"
             icon: mdi:door-open
             tap_action:
@@ -603,6 +713,10 @@ cards:
               state: "upstairs_hallway"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
+            entity: sensor.cristina_room_presence
+            variables:
+              hint: '›'
             name: "Go to Upstairs Hallway"
             icon: mdi:door-open
             tap_action:
@@ -616,14 +730,12 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: light.hue_ambiance_lamp_1_2
-            name: "Bedside lamp off"
+            variables:
+              hint: Turn off
+            name: "Bedside lamp"
             icon: mdi:lamp
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: perform-action
               perform_action: light.turn_off
@@ -637,14 +749,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: light.nino_bedroom_lamp
             name: "Nino's nightlight"
             icon: mdi:lightbulb-night
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: perform-action
               perform_action: light.toggle
@@ -658,14 +766,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: light.gianluca_lamp
             name: "Gianluca's nightlight"
             icon: mdi:lightbulb-night
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: perform-action
               perform_action: light.toggle
@@ -682,7 +786,11 @@ cards:
               state: "playing"
           card:
             type: custom:button-card
-            name: "Stop Nino's sleep music"
+            template: kohbo_quick_action_row
+            entity: media_player.ninos_room
+            variables:
+              hint: Stop
+            name: "Nino's sleep music"
             icon: mdi:music-off
             tap_action:
               action: perform-action
@@ -698,21 +806,21 @@ cards:
               state_not: "playing"
           card:
             type: custom:button-card
-            name: "Start Nino's sleep music"
+            template: kohbo_quick_action_row
+            entity: media_player.ninos_room
+            variables:
+              hint: Start
+            name: "Nino's sleep music"
             icon: mdi:music
             tap_action:
               action: perform-action
               perform_action: script.nino_sleep_music_start
               haptic: light
         - type: custom:button-card
+          template: kohbo_quick_action_row
           entity: input_boolean.camera_notifications
           name: "Camera alerts"
           icon: mdi:cctv
-          show_state: true
-          state_display: >
-            [[[
-              return entity.state === 'on' ? 'On' : 'Off';
-            ]]]
           tap_action:
             action: toggle
             haptic: light
@@ -723,14 +831,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: input_boolean.nino_home_today
             name: "Nino: home today"
             icon: mdi:home-account
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: toggle
               haptic: light
@@ -741,14 +845,10 @@ cards:
               state: "on"
           card:
             type: custom:button-card
+            template: kohbo_quick_action_row
             entity: input_boolean.gianluca_home_today
             name: "Gianluca: home today"
             icon: mdi:home-account
-            show_state: true
-            state_display: >
-              [[[
-                return entity.state === 'on' ? 'On' : 'Off';
-              ]]]
             tap_action:
               action: toggle
               haptic: light
