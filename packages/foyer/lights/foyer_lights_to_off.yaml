@@ -11,6 +11,11 @@ automation:
       - trigger: state
         entity_id: input_select.foyer
         to: "Away"
+      # Entertainment mode ends: re-check
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "on"
+        to: "off"
     conditions:
       # Lighting automations are enabled
       - condition: state
@@ -25,6 +30,15 @@ automation:
           - condition: state
             entity_id: input_select.foyer
             state: "Away"
+      # Away always turns off; Off waits for entertainment mode to end
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.foyer
+            state: "Away"
+          - condition: state
+            entity_id: input_boolean.entertainment_mode
+            state: "off"
       # Lights are ON
       - condition: state
         entity_id: light.foyer_lights

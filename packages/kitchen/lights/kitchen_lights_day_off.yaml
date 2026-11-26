@@ -24,6 +24,11 @@ automation:
       - trigger: state
         entity_id: input_boolean.bad_weather
         to: "off"
+      # Entertainment mode ends: re-check
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "on"
+        to: "off"
     conditions:
       # Lighting automation is enabled
       - condition: state
@@ -33,6 +38,10 @@ automation:
       - condition: state
         entity_id: input_boolean.kitchen_lighting_automations
         state: "on"
+      # Entertainment mode is off
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
       # Kitchen is Auto
       - condition: state
         entity_id: input_select.kitchen

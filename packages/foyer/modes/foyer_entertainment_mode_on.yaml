@@ -24,3 +24,9 @@ automation:
       - action: switch.turn_off
         target:
           entity_id: switch.adaptive_lighting_foyer
+      # Turn the lights on at full brightness, whatever the daylight
+      - action: light.turn_on
+        target:
+          entity_id: light.foyer_lights
+        data:
+          brightness_pct: 100

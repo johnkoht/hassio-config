@@ -16,10 +16,19 @@ automation:
       - trigger: state
         entity_id: input_boolean.family_room_occupied
         to: "off"
+      # Entertainment mode ends: re-check
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "on"
+        to: "off"
     conditions:
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      # Entertainment mode is off
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
       - condition: or
         conditions:
           - condition: state

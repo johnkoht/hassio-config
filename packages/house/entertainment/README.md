@@ -11,13 +11,28 @@ main bedroom's are in `mode/`):
 
 | Room | On | Off |
 |---|---|---|
-| Kitchen | Adaptive Lighting off, room speech off | Adaptive Lighting on; speech on if the room is occupied and Auto or Dim |
-| Family room | same | same, if occupied and Auto |
-| Playroom, foyer, office, main bedroom | Adaptive Lighting off | Adaptive Lighting on |
-| Dining room | nothing to pause (no Adaptive Lighting, no speech switch) | |
+| Kitchen | Adaptive Lighting off, `light.kitchen_lights` and `light.kitchen_led` on at 100%, room speech off | Adaptive Lighting on; speech on if the room is occupied and Auto or Dim |
+| Family room | Adaptive Lighting off, `light.family_room_main_lights` on at 100%, room speech off | Adaptive Lighting on; speech on if occupied and Auto |
+| Foyer | Adaptive Lighting off, `light.foyer_lights` on at 100% | Adaptive Lighting on |
+| Dining room | `light.dining_room_lights` on at 100% (no Adaptive Lighting, no speech switch) | nothing (no off file) |
+| Playroom, office, main bedroom | Adaptive Lighting off | Adaptive Lighting on |
 
-The "on" files need the house occupied. The "off" files have no conditions: the
-house emptying ends the mode, and the rooms still have to resume.
+Lights come on whatever the daylight (no lux gate). The "on" files need the
+house occupied. The "off" files have no conditions: the house emptying ends the
+mode, and the rooms still have to resume.
+
+## Light hold and hand-back
+
+While the mode is on, the lights-off automations stand down: `foyer_lights_to_off`
+(Off path only; Away still turns off), `foyer_lights_day_off`,
+`foyer_lights_nightlight_off`, `kitchen_lights_to_off`, `kitchen_lights_day_off`,
+`family_room_lights_to_off` and `dining_room_lights_off`. Each has an
+`entertainment_mode` is `off` condition.
+
+When the mode ends, each one also triggers (`on` to `off`) and its normal
+conditions decide: an empty or Off room goes dark, any other keeps its lights.
+Nothing turns lights off directly. Occupied Auto rooms stay on until their usual
+rules turn them off.
 
 To add a room, copy a pair. Basenames must be globally unique.
 
