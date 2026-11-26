@@ -1,7 +1,8 @@
 #
 # Quick Actions Popup
 #
-# Per-person pop-up: only the actions that apply right now. Each person's
+# Per-person pop-up: only the actions that apply right now. Rows are Bubble
+# buttons, like the Notifications pop-up. Each person's
 # block is gated by a `condition: user` (ids come from secrets.yaml); every
 # row is a `conditional` on a quick_action_* sensor (state/user only, never
 # template). Room links must match packages/house/quick_actions/quick_action_*_room.yaml.
@@ -34,323 +35,415 @@ cards:
               entity: sensor.quick_actions_john_count
               state: "0"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.quick_actions_john_count
-            variables:
-              hint: ''
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
             name: No suggestions right now
             icon: mdi:check-circle-outline
             tap_action:
               action: none
+            button_action:
+              tap_action:
+                action: none
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "dining_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Dining Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Dining Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-dining-room'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-dining-room
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-dining-room
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-dining-room
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "family_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Family Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Family Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-family-room'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-family-room
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-family-room
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-family-room
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "foyer"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Foyer"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Foyer
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-foyer'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-foyer
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-foyer
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-foyer
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "gianlucas_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Gianluca's Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Gianluca's Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-gianluca-bedroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-gianluca-bedroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-gianluca-bedroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-gianluca-bedroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "jr_suite"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Jr Suite"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Jr Suite
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-jr-suite'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-jr-suite
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-jr-suite
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-jr-suite
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "kitchen"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Kitchen"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Kitchen
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-kitchen'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-kitchen
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-kitchen
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-kitchen
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "laundry_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Laundry Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Laundry Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-laundry'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-laundry
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-laundry
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-laundry
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "main_bathroom"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Main Bathroom"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Main Bathroom
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-main-bathroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-main-bathroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bathroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bathroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "main_bedroom"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Main Bedroom"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Main Bedroom
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-main-bedroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-main-bedroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bedroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bedroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "mud_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Mud Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Mud Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-mudroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-mudroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-mudroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-mudroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "nino_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Nino's Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Nino's Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-ninos-bedroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-ninos-bedroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-ninos-bedroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-ninos-bedroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "office"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Office"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Office
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-office'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-office
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-office
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-office
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "playroom"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Playroom"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Playroom
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-playroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-playroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-playroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-playroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "powder_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Powder Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Powder Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-powder-room'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-powder-room
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-powder-room
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-powder-room
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.john_room_presence
               state: "upstairs_hallway"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.john_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Upstairs Hallway"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Upstairs Hallway
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-upstairs-hallway'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-upstairs-hallway
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-upstairs-hallway
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-upstairs-hallway
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_john_bedside_lamp
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: light.hue_ambiance_lamp_1
-            variables:
-              hint: Turn off
-            name: "Bedside lamp"
+            name: Bedside lamp
             icon: mdi:lamp
-            tap_action:
-              action: perform-action
-              perform_action: light.turn_off
-              haptic: light
-              target:
-                entity_id: light.hue_ambiance_lamp_1
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_nino_nightlight
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: light.nino_bedroom_lamp
-            name: "Nino's nightlight"
+            name: Nino's nightlight
             icon: mdi:lightbulb-night
-            tap_action:
-              action: perform-action
-              perform_action: light.toggle
-              haptic: light
-              target:
-                entity_id: light.nino_bedroom_lamp
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_gianluca_nightlight
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: light.gianluca_lamp
-            name: "Gianluca's nightlight"
+            name: Gianluca's nightlight
             icon: mdi:lightbulb-night
-            tap_action:
-              action: perform-action
-              perform_action: light.toggle
-              haptic: light
-              target:
-                entity_id: light.gianluca_lamp
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
@@ -360,17 +453,27 @@ cards:
               entity: media_player.ninos_room
               state: "playing"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: media_player.ninos_room
-            variables:
-              hint: Stop
-            name: "Nino's sleep music"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Nino's sleep music
             icon: mdi:music-off
             tap_action:
               action: perform-action
               perform_action: script.nino_sleep_music_stop
-              haptic: light
+              target: {}
+            button_action:
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_stop
+                target: {}
+            sub_button:
+            - icon: mdi:stop
+              show_background: false
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_stop
+                target: {}
         - type: conditional
           conditions:
             - condition: state
@@ -380,68 +483,81 @@ cards:
               entity: media_player.ninos_room
               state_not: "playing"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: media_player.ninos_room
-            variables:
-              hint: Start
-            name: "Nino's sleep music"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Nino's sleep music
             icon: mdi:music
             tap_action:
               action: perform-action
               perform_action: script.nino_sleep_music_start
-              haptic: light
-        - type: custom:button-card
-          template: kohbo_quick_action_row
+              target: {}
+            button_action:
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_start
+                target: {}
+            sub_button:
+            - icon: mdi:play
+              show_background: false
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_start
+                target: {}
+        - type: custom:bubble-card
+          card_type: button
+          button_type: switch
           entity: input_boolean.john_dnd
-          name: "Do not disturb"
+          name: Do not disturb
           icon: mdi:minus-circle
-          show_label: true
-          label: >
-            [[[
-              return entity.state !== 'on' && states['binary_sensor.john_dnd_active']?.state === 'on'
-                ? 'Held on by the Mac camera/mic' : '';
-            ]]]
-          tap_action:
-            action: toggle
-            haptic: light
-        - type: custom:button-card
-          template: kohbo_quick_action_row
+          show_state: true
+          sub_button:
+          - entity: binary_sensor.john_dnd_active
+            icon: mdi:laptop
+            name: Mac
+            show_background: false
+            tap_action:
+              action: none
+            visibility:
+            - condition: state
+              entity: binary_sensor.john_dnd_active
+              state: 'on'
+            - condition: state
+              entity: input_boolean.john_dnd
+              state: 'off'
+        - type: custom:bubble-card
+          card_type: button
+          button_type: switch
           entity: input_boolean.camera_notifications
-          name: "Camera alerts"
+          name: Camera alerts
           icon: mdi:cctv
-          tap_action:
-            action: toggle
-            haptic: light
+          show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_nino_home_today
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: input_boolean.nino_home_today
-            name: "Nino: home today"
+            name: 'Nino: home today'
             icon: mdi:home-account
-            tap_action:
-              action: toggle
-              haptic: light
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_gianluca_home_today
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: input_boolean.gianluca_home_today
-            name: "Gianluca: home today"
+            name: 'Gianluca: home today'
             icon: mdi:home-account
-            tap_action:
-              action: toggle
-              haptic: light
-
+            show_state: true
   #
   # Cristina rows
   #
@@ -459,323 +575,415 @@ cards:
               entity: sensor.quick_actions_cristina_count
               state: "0"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.quick_actions_cristina_count
-            variables:
-              hint: ''
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
             name: No suggestions right now
             icon: mdi:check-circle-outline
             tap_action:
               action: none
+            button_action:
+              tap_action:
+                action: none
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "dining_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Dining Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Dining Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-dining-room'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-dining-room
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-dining-room
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-dining-room
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "family_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Family Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Family Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-family-room'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-family-room
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-family-room
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-family-room
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "foyer"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Foyer"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Foyer
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-foyer'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-foyer
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-foyer
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-foyer
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "gianlucas_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Gianluca's Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Gianluca's Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-gianluca-bedroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-gianluca-bedroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-gianluca-bedroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-gianluca-bedroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "jr_suite"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Jr Suite"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Jr Suite
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-jr-suite'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-jr-suite
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-jr-suite
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-jr-suite
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "kitchen"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Kitchen"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Kitchen
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-kitchen'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-kitchen
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-kitchen
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-kitchen
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "laundry_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Laundry Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Laundry Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-laundry'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-laundry
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-laundry
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-laundry
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "main_bathroom"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Main Bathroom"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Main Bathroom
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-main-bathroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-main-bathroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bathroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bathroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "main_bedroom"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Main Bedroom"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Main Bedroom
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-main-bedroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-main-bedroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bedroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-main-bedroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "mud_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Mud Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Mud Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-mudroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-mudroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-mudroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-mudroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "nino_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Nino's Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Nino's Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-ninos-bedroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-ninos-bedroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-ninos-bedroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-ninos-bedroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "office"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Office"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Office
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-office'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-office
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-office
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-office
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "playroom"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Playroom"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Playroom
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-playroom'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-playroom
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-playroom
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-playroom
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "powder_room"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Powder Room"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Powder Room
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-powder-room'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-powder-room
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-powder-room
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-powder-room
         - type: conditional
           conditions:
             - condition: state
               entity: sensor.cristina_room_presence
               state: "upstairs_hallway"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: sensor.cristina_room_presence
-            variables:
-              hint: '›'
-            name: "Go to Upstairs Hallway"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Go to Upstairs Hallway
             icon: mdi:door-open
             tap_action:
               action: navigate
-              navigation_path: '/dashboard-kohbo/rooms-upstairs-hallway'
-              haptic: light
+              navigation_path: /dashboard-kohbo/rooms-upstairs-hallway
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-upstairs-hallway
+            sub_button:
+            - icon: mdi:chevron-right
+              show_background: false
+              tap_action:
+                action: navigate
+                navigation_path: /dashboard-kohbo/rooms-upstairs-hallway
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_cristina_bedside_lamp
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: light.hue_ambiance_lamp_1_2
-            variables:
-              hint: Turn off
-            name: "Bedside lamp"
+            name: Bedside lamp
             icon: mdi:lamp
-            tap_action:
-              action: perform-action
-              perform_action: light.turn_off
-              haptic: light
-              target:
-                entity_id: light.hue_ambiance_lamp_1_2
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_nino_nightlight
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: light.nino_bedroom_lamp
-            name: "Nino's nightlight"
+            name: Nino's nightlight
             icon: mdi:lightbulb-night
-            tap_action:
-              action: perform-action
-              perform_action: light.toggle
-              haptic: light
-              target:
-                entity_id: light.nino_bedroom_lamp
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_gianluca_nightlight
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: light.gianluca_lamp
-            name: "Gianluca's nightlight"
+            name: Gianluca's nightlight
             icon: mdi:lightbulb-night
-            tap_action:
-              action: perform-action
-              perform_action: light.toggle
-              haptic: light
-              target:
-                entity_id: light.gianluca_lamp
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
@@ -785,17 +993,27 @@ cards:
               entity: media_player.ninos_room
               state: "playing"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: media_player.ninos_room
-            variables:
-              hint: Stop
-            name: "Nino's sleep music"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Nino's sleep music
             icon: mdi:music-off
             tap_action:
               action: perform-action
               perform_action: script.nino_sleep_music_stop
-              haptic: light
+              target: {}
+            button_action:
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_stop
+                target: {}
+            sub_button:
+            - icon: mdi:stop
+              show_background: false
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_stop
+                target: {}
         - type: conditional
           conditions:
             - condition: state
@@ -805,50 +1023,57 @@ cards:
               entity: media_player.ninos_room
               state_not: "playing"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
-            entity: media_player.ninos_room
-            variables:
-              hint: Start
-            name: "Nino's sleep music"
+            type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Nino's sleep music
             icon: mdi:music
             tap_action:
               action: perform-action
               perform_action: script.nino_sleep_music_start
-              haptic: light
-        - type: custom:button-card
-          template: kohbo_quick_action_row
+              target: {}
+            button_action:
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_start
+                target: {}
+            sub_button:
+            - icon: mdi:play
+              show_background: false
+              tap_action:
+                action: perform-action
+                perform_action: script.nino_sleep_music_start
+                target: {}
+        - type: custom:bubble-card
+          card_type: button
+          button_type: switch
           entity: input_boolean.camera_notifications
-          name: "Camera alerts"
+          name: Camera alerts
           icon: mdi:cctv
-          tap_action:
-            action: toggle
-            haptic: light
+          show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_nino_home_today
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: input_boolean.nino_home_today
-            name: "Nino: home today"
+            name: 'Nino: home today'
             icon: mdi:home-account
-            tap_action:
-              action: toggle
-              haptic: light
+            show_state: true
         - type: conditional
           conditions:
             - condition: state
               entity: binary_sensor.quick_action_gianluca_home_today
               state: "on"
           card:
-            type: custom:button-card
-            template: kohbo_quick_action_row
+            type: custom:bubble-card
+            card_type: button
+            button_type: switch
             entity: input_boolean.gianluca_home_today
-            name: "Gianluca: home today"
+            name: 'Gianluca: home today'
             icon: mdi:home-account
-            tap_action:
-              action: toggle
-              haptic: light
+            show_state: true

@@ -121,14 +121,14 @@ The mode is derived from the Quiet, Bedtime, Vacation and house-occupied toggles
 
 ### Quick Actions Popup
 
-`#quick_actions`, opened by the lightning chip. Each person sees their own block (`condition: user` on `!secret john_ha_user_id` / `cristina_ha_user_id`; the secrets must exist on the host before deploy). Rows come from `packages/house/quick_actions/` binary sensors, so each shows only when it applies:
+`#quick_actions`, opened by the lightning chip. Each person sees their own block (`condition: user` on `!secret john_ha_user_id` / `cristina_ha_user_id`; the secrets must exist on the host before deploy). Rows come from `packages/house/quick_actions/` binary sensors, so each shows only when it applies. Rows are Bubble Card buttons, the same as the Notifications pop-up: switch rows for toggles, name rows with a sub-button for links and scripts.
 
 - **Go to <room>** - the person's room presence is an area with a room view (`binary_sensor.quick_action_<person>_room`)
-- **Bedside lamp off** - `quick_action_<person>_bedside_lamp`
+- **Bedside lamp** - `quick_action_<person>_bedside_lamp`
 - **Nino's / Gianluca's nightlight** - `quick_action_{nino,gianluca}_nightlight`
 - **Start / stop Nino's sleep music** - `quick_action_nino_music`, via `script.nino_sleep_music_start` / `_stop`
 - **Nino / Gianluca: home today** - `quick_action_{nino,gianluca}_home_today`
-- **Do not disturb** (John only) and **Camera alerts** - always present, not counted
+- **Do not disturb** (John only; a laptop sub-button shows while the Mac holds DnD on) and **Camera alerts** - always present, not counted
 
 The chip badge is `sensor.quick_actions_<person>_count` (contextual rows only). With none showing, the pop-up reads "No suggestions right now".
 

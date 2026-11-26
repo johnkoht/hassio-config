@@ -373,7 +373,7 @@ def test_each_person_sees_own_lamp_only_and_the_shared_rows():
     for person, lamp, other in (("john", "light.hue_ambiance_lamp_1", "light.hue_ambiance_lamp_1_2"),
                                 ("cristina", "light.hue_ambiance_lamp_1_2", None)):
         text = yaml.safe_dump(_strip(blocks[f"{person}_ha_user_id"]))
-        assert f"entity_id: {lamp}\n" in text
+        assert f"entity: {lamp}\n" in text
         assert f"binary_sensor.quick_action_{person}_bedside_lamp" in text
         other_person = "cristina" if person == "john" else "john"
         assert f"quick_action_{other_person}_bedside_lamp" not in text
