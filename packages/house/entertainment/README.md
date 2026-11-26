@@ -30,7 +30,8 @@ While the mode is on, the lights-off automations stand down: `foyer_lights_to_of
 `entertainment_mode` is `off` condition.
 
 When the mode ends, each one also triggers (`on` to `off`) and its normal
-conditions decide: an empty or Off room goes dark, any other keeps its lights.
+conditions decide: an empty or Off room goes dark, any other keeps its lights
+(the kitchen re-checks vacancy only, so an occupied kitchen in Off stays lit).
 Nothing turns lights off directly. Occupied Auto rooms stay on until their usual
 rules turn them off.
 

@@ -1,7 +1,7 @@
 ---
 title: Entertainment Mode Lights
 slug: entertainment-mode-lights
-status: in-progress
+status: shipped
 created: 2026-11-26
 has_pre_mortem: false
 has_review: false

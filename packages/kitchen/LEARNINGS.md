@@ -56,3 +56,5 @@ If it misses or over-fires, look at `sensor.kitchen_pm2_5_15_minute_low` against
 ## Entertainment mode holds the lights off automations
 
 `kitchen_lights_to_off` and `kitchen_lights_day_off` need `input_boolean.entertainment_mode` off, and both also trigger when it goes off. Its mode-end trigger has id `entertainment_off`, not `room_off`, so only the vacancy branch can pass.
+
+`light.kitchen_led` is turned on by entertainment mode, but no automation turns it off (it is not in `light.kitchen_lights`). After a party it stays on until it is switched off by hand, as it does today.
