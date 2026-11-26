@@ -52,3 +52,9 @@ A CO2 rise (gas burners) added no events, so it isn't used. The occupancy gate c
 If it misses or over-fires, look at `sensor.kitchen_pm2_5_15_minute_low` against `sensor.kitchen_awair_pm2_5` before changing the 8. The statistics sensor needs `sampling_size` above the default 20 to cover 15 minutes of Awair updates.
 
 **Statistics characteristic names (2026-11-22).** A numeric source takes `value_min`, `value_max` and so on, not `min`. With plain `min`, HA drops the sensor at setup without an error in the log, and the CI config check still passes. `binary_sensor.kitchen_cooking` then sits at unavailable. To validate, run the platform schema on the host: `docker exec homeassistant python -c` with `from homeassistant.components.statistics.sensor import PLATFORM_SCHEMA`.
+
+## Entertainment mode holds the lights off automations
+
+`kitchen_lights_to_off` and `kitchen_lights_day_off` need `input_boolean.entertainment_mode` off, and both also trigger when it goes off. Its mode-end trigger has id `entertainment_off`, not `room_off`, so only the vacancy branch can pass.
+
+`light.kitchen_led` is turned on by entertainment mode, but no automation turns it off (it is not in `light.kitchen_lights`). After a party it stays on until it is switched off by hand, as it does today.

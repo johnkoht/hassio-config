@@ -1,0 +1,27 @@
+# Dining Room Entertainment Mode On
+#
+# Entertainment mode turns on: turn the lights on. No Adaptive Lighting to pause.
+#
+
+automation:
+  - id: "dining_room_entertainment_mode_on"
+    initial_state: on
+    alias: "Dining Room - Entertainment Mode On"
+    triggers:
+      # Entertainment mode turns on
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "off"
+        to: "on"
+    conditions:
+      # House is occupied
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    actions:
+      # Turn the lights on at full brightness, whatever the daylight
+      - action: light.turn_on
+        target:
+          entity_id: light.dining_room_lights
+        data:
+          brightness_pct: 100

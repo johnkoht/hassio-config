@@ -30,11 +30,21 @@ automation:
         entity_id: input_boolean.lighting_automations
         to: "on"
         id: "house_flag_on"
+      # Entertainment mode ends: re-check
+      - trigger: state
+        entity_id: input_boolean.entertainment_mode
+        from: "on"
+        to: "off"
+        id: "entertainment_off"
     conditions:
       # Lighting automations enabled
       - condition: state
         entity_id: input_boolean.lighting_automations
         state: "on"
+      # Entertainment mode is off
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "off"
       # Lights are currently on
       - condition: state
         entity_id: light.kitchen_lights

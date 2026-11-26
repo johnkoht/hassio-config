@@ -146,7 +146,137 @@ def test_kitchen_resume_matches_the_speech_on_automation():
 
 
 def test_dining_room_has_no_entertainment_pause():
-    assert not list((PKG / "dining_room").rglob("*entertainment*"))
+    # nothing to pause, so only an on-file (lights) and never an off-file
+    found = sorted(p.name for p in (PKG / "dining_room").rglob("*entertainment*"))
+    assert found == ["dining_room_entertainment_mode_on.yaml"]
+
+
+# ---- the lights ---------------------------------------------------------------
+ON_LIGHTS = {
+    "foyer": ["light.foyer_lights"],
+    "kitchen": ["light.kitchen_lights", "light.kitchen_led"],
+    "family_room": ["light.family_room_main_lights"],
+}
+
+
+def turn_ons(a):
+    return [s for s in walk(a["actions"]) if s.get("action") == "light.turn_on"]
+
+
+def action_order(a):
+    return [s["action"] for s in a["actions"]]
+
+
+@pytest.mark.parametrize("room", ON_LIGHTS)
+def test_room_on_turns_on_its_lights_after_the_adaptive_lighting_pause(room):
+    a = room_auto(room, "on")
+    ons = turn_ons(a)
+    assert len(ons) == 1
+    ent = ons[0]["target"]["entity_id"]
+    assert (ent if isinstance(ent, list) else [ent]) == ON_LIGHTS[room]
+    assert ons[0]["data"] == {"brightness_pct": 100}
+    order = action_order(a)
+    assert order.index("switch.turn_off") < order.index("light.turn_on")
+    # no lux gate, and the house-occupied gate is the only condition
+    assert a["conditions"] == [{"condition": "state", "entity_id": "input_boolean.house_occupied", "state": "on"}]
+
+
+def test_dining_room_on_file():
+    f = PKG / "dining_room/modes/dining_room_entertainment_mode_on.yaml"
+    a = auto(f)
+    assert a["id"] == f.stem == "dining_room_entertainment_mode_on"
+    assert a["alias"] == "Dining Room - Entertainment Mode On"
+    assert a["initial_state"] in (True, "on")
+    t = a["triggers"][0]
+    assert (t["trigger"], t["entity_id"], t["from"], t["to"]) == ("state", ENT, "off", "on")
+    assert a["conditions"] == [{"condition": "state", "entity_id": "input_boolean.house_occupied", "state": "on"}]
+    ons = turn_ons(a)
+    assert len(ons) == 1 and ons[0]["target"]["entity_id"] == "light.dining_room_lights"
+    assert ons[0]["data"] == {"brightness_pct": 100}
+    assert [x for x in action_order(a)] == ["light.turn_on"]
+
+
+# ---- hold while on, hand back on off ----------------------------------------
+OFF_AUTOS = [
+    "foyer/lights/foyer_lights_to_off.yaml",
+    "foyer/lights/foyer_lights_day_off.yaml",
+    "foyer/lights/foyer_lights_nightlight_off.yaml",
+    "kitchen/lights/kitchen_lights_to_off.yaml",
+    "kitchen/lights/kitchen_lights_day_off.yaml",
+    "family_room/lights/family_room_lights_to_off.yaml",
+    "dining_room/lights/dining_room_lights_off.yaml",
+]
+MODE_OFF_COND = {"condition": "state", "entity_id": ENT, "state": "off"}
+
+
+def mode_off_triggers(a):
+    return [t for t in a["triggers"] if t.get("entity_id") == ENT]
+
+
+@pytest.mark.parametrize("rel", OFF_AUTOS)
+def test_off_automation_has_the_mode_off_trigger(rel):
+    ts = mode_off_triggers(auto(PKG / rel))
+    assert len(ts) == 1
+    assert (ts[0]["trigger"], ts[0]["from"], ts[0]["to"]) == ("state", "on", "off")
+
+
+@pytest.mark.parametrize("rel", [r for r in OFF_AUTOS if "foyer_lights_to_off" not in r])
+def test_off_automation_holds_while_the_mode_is_on(rel):
+    assert MODE_OFF_COND in auto(PKG / rel)["conditions"]
+
+
+@pytest.mark.parametrize("rel", OFF_AUTOS)
+def test_off_automations_add_no_turn_off_for_the_mode(rel):
+    # the hand-back is the existing conditions deciding, never a direct turn_off
+    assert ENT not in str([s for s in walk(auto(PKG / rel)["actions"])])
+
+
+def test_foyer_to_off_holds_the_off_path_but_not_away():
+    a = auto(PKG / "foyer/lights/foyer_lights_to_off.yaml")
+    assert MODE_OFF_COND not in a["conditions"]
+    hold = next(c for c in a["conditions"]
+                if c.get("condition") == "or" and MODE_OFF_COND in c["conditions"])
+    away = {"condition": "state", "entity_id": "input_select.foyer", "state": "Away"}
+    assert away in hold["conditions"]
+    # Away is still a trigger, and still an accepted state
+    assert any(t.get("entity_id") == "input_select.foyer" and t["to"] == "Away" for t in a["triggers"])
+
+
+def test_kitchen_to_off_mode_end_defers_to_the_vacancy_branch():
+    a = auto(PKG / "kitchen/lights/kitchen_lights_to_off.yaml")
+    t = mode_off_triggers(a)[0]
+    assert t["id"] not in ("room_off",)
+    # the room_off branch is gated by trigger id, so mode end can only pass via vacancy
+    branch = next(c for c in a["conditions"] if c.get("condition") == "or")
+    assert {"condition": "trigger", "id": "room_off"} in branch["conditions"]
+    assert {"condition": "state", "entity_id": "input_boolean.kitchen_occupied", "state": "off"} in \
+        next(c for c in branch["conditions"] if c["condition"] == "and")["conditions"]
+
+
+def test_foyer_nightlight_off_cannot_fire_at_night_on_mode_end():
+    # the sun condition stays true all evening, so mode end also needs dark_outside off
+    a = auto(PKG / "foyer/lights/foyer_lights_nightlight_off.yaml")
+    t = mode_off_triggers(a)[0]
+    gate = next(c for c in a["conditions"]
+                if c.get("condition") == "or" and any(x.get("condition") == "not" for x in c["conditions"]))
+    assert {"condition": "trigger", "id": t["id"]} in gate["conditions"][0]["conditions"]
+    assert {"condition": "state", "entity_id": "input_boolean.dark_outside", "state": "off"} in gate["conditions"]
+
+
+def test_foyer_day_off_mode_end_needs_good_weather():
+    a = auto(PKG / "foyer/lights/foyer_lights_day_off.yaml")
+    t = mode_off_triggers(a)[0]
+    gate = next(c for c in a["conditions"]
+                if c.get("condition") == "or" and any(x.get("condition") == "not" for x in c["conditions"]))
+    assert {"condition": "trigger", "id": t["id"]} in gate["conditions"][0]["conditions"]
+    assert {"condition": "state", "entity_id": "input_boolean.bad_weather", "state": "off"} in gate["conditions"]
+
+
+def test_every_to_away_file_ignores_the_mode():
+    files = list(PKG.rglob("*_to_away.yaml"))
+    assert {f.name for f in files} >= {"kitchen_lights_to_away.yaml", "family_room_lights_to_away.yaml"}
+    for f in files:
+        assert "entertainment" not in f.read_text(), f.name
 
 
 # ---- house-level pieces -----------------------------------------------------

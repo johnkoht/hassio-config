@@ -28,3 +28,9 @@ automation:
       - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.family_room_speech_notifications
+      # Turn the lights on at full brightness, whatever the daylight
+      - action: light.turn_on
+        target:
+          entity_id: light.family_room_main_lights
+        data:
+          brightness_pct: 100

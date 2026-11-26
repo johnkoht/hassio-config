@@ -20,3 +20,7 @@ With `family_room_lights_to_on` gone, nothing turns the family room lights on au
 ## `family_room_mode_off` clears occupancy (JK-1219, PR 6)
 
 Audit of `family_room_occupied` going off at the Off triggers (house empty, Away, bedtime on, HA start, automation reload): music pause, TV off and lights off already fire on the select going Off, so nothing new there; speech notifications off and the announcement room lists (`announceable_rooms`, voice/critical/doorbell/hourly speech) just stop targeting the room, which is wanted at those times. The start/reload triggers are gated by the same conditions, so forcing it off there only happens when the room is already going Off. `family_room_mode_auto` triggers on occupancy ON only, so nothing bounces (test pins it). Mode-only room: no hand flag, no latch.
+
+## Entertainment mode holds the lights off
+
+`family_room_lights_to_off` needs `input_boolean.entertainment_mode` off and also triggers when it goes off, so an empty or Off room goes dark at mode end. The mode turns `light.family_room_main_lights` on at 100%.
