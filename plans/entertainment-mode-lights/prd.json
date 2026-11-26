@@ -3,10 +3,66 @@
   "branchName": "feature/entertainment-mode-lights",
   "goal": "Entertainment mode turns on the main-floor lights and keeps them on while the mode is on. When the mode ends, each room goes back to its normal logic.",
   "userStories": [
-    {"id": "task-1", "title": "Room on-files turn the lights on", "description": "Add a light turn_on after the Adaptive Lighting pause in the foyer, kitchen and family room on-files, and create a dining room on-file.", "acceptanceCriteria": ["Each room turns on its listed lights at 100%, after the Adaptive Lighting pause", "A new dining_room_entertainment_mode_on with the same trigger and condition as the other rooms", "No lux condition"], "status": "pending", "passes": false, "attemptCount": 0},
-    {"id": "task-2", "title": "Hold while on, hand back on off", "description": "Add a mode-off condition and a mode on-to-off trigger to seven off automations. The Away paths stay as they are.", "acceptanceCriteria": ["All seven automations have the condition and the trigger", "The foyer still turns its lights off for Away while the mode is on", "No direct turn_off is added, and *_to_away is unchanged"], "status": "pending", "passes": false, "attemptCount": 0},
-    {"id": "task-3", "title": "Tests", "description": "Add structural tests to tests/test_entertainment_mode.py, plus a sabotage check.", "acceptanceCriteria": ["The tests cover the on-files, the hold, the hand-back and the Away bypass, and that *_to_away is untouched", "The sabotage check makes a test fail", "The full suite passes"], "status": "pending", "passes": false, "attemptCount": 0},
-    {"id": "task-4", "title": "Docs", "description": "Update the room table in the entertainment README, and add notes to the room LEARNINGS.md files and the kitchen README.", "acceptanceCriteria": ["The README lists the lights, the hold and the hand-back", "The room docs mention the hold briefly"], "status": "pending", "passes": false, "attemptCount": 0}
+    {
+      "id": "task-1",
+      "title": "Room on-files turn the lights on",
+      "description": "Add a light turn_on after the Adaptive Lighting pause in the foyer, kitchen and family room on-files, and create a dining room on-file.",
+      "acceptanceCriteria": [
+        "Each room turns on its listed lights at 100%, after the Adaptive Lighting pause",
+        "A new dining_room_entertainment_mode_on with the same trigger and condition as the other rooms",
+        "No lux condition"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "fc76c970"
+    },
+    {
+      "id": "task-2",
+      "title": "Hold while on, hand back on off",
+      "description": "Add a mode-off condition and a mode on-to-off trigger to seven off automations. The Away paths stay as they are.",
+      "acceptanceCriteria": [
+        "All seven automations have the condition and the trigger",
+        "The foyer still turns its lights off for Away while the mode is on",
+        "No direct turn_off is added, and *_to_away is unchanged"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "fc76c970"
+    },
+    {
+      "id": "task-3",
+      "title": "Tests",
+      "description": "Add structural tests to tests/test_entertainment_mode.py, plus a sabotage check.",
+      "acceptanceCriteria": [
+        "The tests cover the on-files, the hold, the hand-back and the Away bypass, and that *_to_away is untouched",
+        "The sabotage check makes a test fail",
+        "The full suite passes"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "fc76c970"
+    },
+    {
+      "id": "task-4",
+      "title": "Docs",
+      "description": "Update the room table in the entertainment README, and add notes to the room LEARNINGS.md files and the kitchen README.",
+      "acceptanceCriteria": [
+        "The README lists the lights, the hold and the hand-back",
+        "The room docs mention the hold briefly"
+      ],
+      "status": "complete",
+      "passes": true,
+      "attemptCount": 1,
+      "commitSha": "fc76c970"
+    }
   ],
-  "metadata": {"createdAt": "2026-11-26T00:00:00Z", "totalTasks": 4, "completedTasks": 0, "failedTasks": 0}
+  "metadata": {
+    "createdAt": "2026-11-26T00:00:00Z",
+    "totalTasks": 4,
+    "completedTasks": 4,
+    "failedTasks": 0
+  }
 }

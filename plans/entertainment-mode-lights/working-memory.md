@@ -12,5 +12,9 @@ Knowledge shared across tasks. Every developer reads this before starting and ad
 ## Shared Utilities Created
 
 ## Context Corrections
+- PRD said the foyer nightlight-off sunrise/dark_outside condition gates a mode-end trigger. It does not: `condition: sun after: sunrise` stays true until midnight, so an evening mode end (automation armed by nightlight_on, chandelier on) would have put out the chandelier. Fixed with a `not trigger entertainment_off` / `dark_outside off` or-gate.
+- `foyer_lights_day_off` has no lux condition, so a mode end before 18:00 would turn the chandelier off in bad weather. Same gate with `bad_weather off`.
 
 ## Decision Ledger
+- Mode-end trigger id `entertainment_off` on the kitchen/foyer files that use `condition: trigger`; kitchen `room_off` branch cannot pass on it, so vacancy decides.
+- Dining room gets no off file: lights stay on and `dining_room_lights_off` takes over.
