@@ -199,6 +199,21 @@ def test_music_automations_wiring():
         assert "automation.turn" not in text
 
 
+def test_choosing_a_playlist_starts_music_only_when_none_has_started():
+    # Regression: the mode turned on before any playlist was chosen, the start
+    # stopped on "favorite missing", and the playlist picked seconds later did nothing.
+    pc = auto("entertainment_music_playlist_chosen.yaml")
+    (trig,) = pc["triggers"]
+    assert trig["entity_id"] == "input_text.entertainment_favorite"
+    assert "from" not in trig and "not_from" not in trig  # from "unknown" must fire
+    assert {"unknown", "unavailable", ""} <= set(trig["not_to"])
+    assert pc["conditions"] == [
+        {"condition": "state", "entity_id": ENT, "state": "on"},
+        {"condition": "state", "entity_id": "input_boolean.entertainment_music_started", "state": "off"},
+    ]
+    assert [s["action"] for s in pc["actions"]] == ["script.entertainment_music_start"]
+
+
 # ---- Crazy Mode and entertainment never share the speakers ------------------
 def test_crazy_mode_refuses_while_the_mode_is_on():
     text = (PKG / "house/crazy_mode/crazy_mode_allowed.yaml").read_text()

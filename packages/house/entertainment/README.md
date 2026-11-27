@@ -64,8 +64,9 @@ Starts with the mode, stops with it (only what it started).
 - `sensor.entertainment_zone_config`: indoor is kitchen, family room, living
   room (the dining room's speaker) and playroom; outdoor is patio, pool and gazebo.
 - `script.entertainment_music_start` / `_stop`, called by `entertainment_music_on`,
-  `_off` and `_zone_change`. Changing the zone during a session moves the music; a
-  new playlist waits for the next start.
+  `_off`, `_zone_change` and `_playlist_chosen`. Changing the zone during a session
+  moves the music. A playlist chosen while the mode is on and nothing has started
+  (none was picked yet) starts it; a change while music plays waits for the next start.
 - Start skips quietly unless the mode is on, the house is occupied, it is not
   bedtime, there is no emergency and Crazy Mode is not running. A missing favorite
   logs a warning.
