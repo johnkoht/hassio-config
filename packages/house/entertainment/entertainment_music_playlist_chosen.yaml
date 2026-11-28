@@ -1,0 +1,30 @@
+# Entertainment Music Playlist Chosen
+#
+# A playlist picked while the mode is on and its music hasn't started (none
+# was chosen yet) starts it. A change while music plays waits for the next start.
+#
+
+automation:
+  - id: "entertainment_music_playlist_chosen"
+    initial_state: on
+    alias: "Entertainment Music - Playlist Chosen"
+    triggers:
+      # A playlist is chosen
+      - trigger: state
+        entity_id: input_text.entertainment_favorite
+        not_to:
+          - "unknown"
+          - "unavailable"
+          - ""
+    conditions:
+      # Entertainment mode is on
+      - condition: state
+        entity_id: input_boolean.entertainment_mode
+        state: "on"
+      # This session's music hasn't started
+      - condition: state
+        entity_id: input_boolean.entertainment_music_started
+        state: "off"
+    actions:
+      # The script holds the remaining guards (occupied, bedtime, emergency, Crazy Mode, zone, favorite)
+      - action: script.entertainment_music_start
